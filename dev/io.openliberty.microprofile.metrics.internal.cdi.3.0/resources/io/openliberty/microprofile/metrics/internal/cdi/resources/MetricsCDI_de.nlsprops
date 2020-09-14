@@ -25,6 +25,6 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 
 #Cannot resolve forwarding gauge.
-cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: The value for the gauge metric {0} could not be resolved.
-cannot.resolve.metric.warning.CWMMC3000W.explanation=The underlying method for the gauge could not be resolved. This is commonly caused by accessing a metric where the application has been unloaded.
-cannot.resolve.metric.warning.CWMMC3000W.useraction=No action required. The gauge will be automatically unregistered.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: Der Wert f\u00fcr die Messwertgeberdaten {0} konnte nicht aufgel\u00f6st werden.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=Die zugrundeliegende Methode f\u00fcr den Messwert konnte nicht aufgel\u00f6st werden. Dies wird h\u00e4ufig durch den Zugriff auf eine Metrik verursacht, in der die Anwendung entladen wurde.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=Es ist keine Aktion erforderlich. Die Registrierung des Messwerts wird automatisch aufgehoben.

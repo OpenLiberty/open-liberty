@@ -1,0 +1,62 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Validarea documentului OpenAPI a produs erorile urm\u0103toare:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Documentul OpenAPI este invalid.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Furniza\u0163i un document OpenAPI valid care rezolv\u0103 eroarea raportat\u0103.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validarea documentului OpenAPI a produs avertismentele urm\u0103toare:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Documentul OpenAPI con\u0163ine date care nu sunt \u00een formatul recomandat.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Furniza\u0163i un document OpenAPI valid care rezolv\u0103 avertismentul raportat.
+
+CSS_NOT_PROCESSED=CWWKO1652W: Serverul nu poate citi documentul CSS specificat {0} datorit\u0103 {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Documentul de CSS nu poate fi procesat din cauza unei erori de validitate.
+CSS_NOT_PROCESSED.useraction=Furniza\u0163i un document Swagger valid.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: Valoarea care a fost specificat\u0103 pentru proprietatea {0} nu este suportat\u0103. Valoarea trebuie sa fie {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Valoarea pentru proprietatea specificat\u0103 fie nu este valid\u0103, fie nu este acceptat\u0103 de cadrul de lucru OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Furniza\u0163i o valoare valid\u0103 pentru proprietate \u00een fi\u015fierul CSS personalizat pentru interfa\u0163a de utilizator OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: Imaginea de fundal care a fost specificat\u0103 la {0} nu exist\u0103 sau este invalid\u0103.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Imaginea de fundal nu exist\u0103 sau este invalid\u0103.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Furniza\u0163i o valoare valid\u0103.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: Fi\u015fierul CSS personalizat {0} care a fost specificat pentru interfa\u0163a de utilizator OpenAPI nu a fost procesat. Serverul va restaura valorile implicite pentru interfa\u0163a de utilizator OpenAPI. Motiv={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Serverul nu poate procesa fi\u015fierul CSS personalizat. Serverul va restaura valorile implicite pentru interfa\u0163a de utilizator OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Furniza\u0163i un fi\u015fier CSS personalizat valid pentru interfa\u0163a de utilizator OpenAPI, \u00eempreun\u0103 cu toate dependen\u0163ele.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: Serverul cite\u015fte documentul CSS specificat {0} dar nu poate g\u0103si <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Documentul CSS care este specificat nu con\u0163ine <.swagger-ui .headerbar > sau nu este formatat s\u0103 \u00eendeplineasc\u0103 constr\u00e2ngerile cerute de server.
+CSS_SECTION_NOT_FOUND.useraction=Furniza\u0163i un fi\u015fier CSS valid care con\u0163ine <.swagger-ui .headerbar > \u00een formatul cerut.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: A e\u015fuat \u00eenc\u0103rcarea clasei de filtrare OpenAPI: {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=Nu a putut fi g\u0103sit\u0103 sau \u00eenc\u0103rcat\u0103 clasa de filtrare OpenAPI specificat\u0103.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa specificat\u0103 exist\u0103 \u015fi implementa\u0163i interfa\u0163a OASFilter.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: A e\u015fuat \u00eenc\u0103rcarea clasei de cititor de modele OpenAPI: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Nu a putut fi g\u0103sit\u0103 sau \u00eenc\u0103rcat\u0103 clasa de cititor de modele OpenAPI specificat\u0103.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa specificat\u0103 exist\u0103 \u015fi implementa\u0163i interfa\u0163a OASModelReader.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: A e\u015fuat parsarea documentului OpenAPI pentru aplica\u0163ia: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=A e\u015fuat parsarea documentului OpenAPI din folderul META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul este \u00een format YAML sau JSON corect.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplica\u0163ia {0} a fost procesat\u0103 \u015fi a fost produs un document OpenAPI.
+OPENAPI_APPLICATION_PROCESSED.explanation=S-a generat documentul OpenAPI pentru aplica\u0163ia specificat\u0103. Poate fi vizualizat la punctul final /openapi.
+OPENAPI_APPLICATION_PROCESSED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.

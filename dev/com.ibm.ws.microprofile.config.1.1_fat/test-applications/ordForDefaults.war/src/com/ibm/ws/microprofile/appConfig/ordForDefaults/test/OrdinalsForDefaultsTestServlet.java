@@ -18,7 +18,9 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -33,6 +35,7 @@ public class OrdinalsForDefaultsTestServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void defaultsMixedOrdinals() throws Exception {
         System.setProperty("onlyInSysProps", "onlyInSysProps.sysPropsValue");
         System.setProperty("sysPropsOverriddenInOrd320", "OrdsysPropsOverriddenInOrd330.OrdsysPropsValue");
@@ -59,6 +62,7 @@ public class OrdinalsForDefaultsTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void defaultsOrdinalFromSource() throws Exception {
         System.setProperty("config_ordinal", "330");
         System.setProperty("Ord320OverriddenInOrd330", "Ord320OverriddenInOrd330.Ord330Value");

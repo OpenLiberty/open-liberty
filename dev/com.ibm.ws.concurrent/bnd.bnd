@@ -49,7 +49,7 @@ Service-Component:\
     threadGroupTracker=com.ibm.ws.concurrent.internal.ThreadGroupTracker;\
     properties:='\
       contextService.target=(id=unbound),\
-      creates.objectClass=|java.util.concurrent.ThreadFactory|jakarta.enterprise.concurrent.ManagedThreadFactory|javax.enterprise.concurrent.ManagedThreadFactory',\
+      creates.objectClass=|java.util.concurrent.ThreadFactory|javax.enterprise.concurrent.ManagedThreadFactory',\
   com.ibm.ws.concurrent.tracker;\
       provide:='\
         com.ibm.ws.container.service.metadata.ComponentMetaDataListener,\

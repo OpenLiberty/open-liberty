@@ -43,7 +43,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 public class AcmeHistory {
 	private static final TraceComponent tc = Tr.register(AcmeHistory.class);
 	private String spaceDelim = "                  ";
-	private final String acmeFileName = AcmeConstants.ACME_HISTORY_FILE;
+	private final String acmeFileName = AcmeConstants.ACME_HISTORY_DIR + AcmeConstants.ACME_HISTORY_FILE;
 	private final int FILE_EXISTS = 0;
 	private final int FILE_CREATED = 1;
 	private final int FILE_NOT_CREATED = 2;
@@ -68,7 +68,7 @@ public class AcmeHistory {
 		if (acmefilecreation > FILE_EXISTS) {
 			return true;
 		}
-		File file = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
+		File file = wslocation.getServerWorkareaResource(acmeFileName).asFile();
 		String fileDirURI = currentDirectoryURI;
 		try {
 		    BufferedReader br = new BufferedReader(new FileReader(file));
@@ -106,9 +106,15 @@ public class AcmeHistory {
      *          2 if the file was not created
 	 */
 	private int createAcmeFile(WsLocationAdmin wslocation) {
-		acmeFile = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
+		acmeFile = wslocation.getServerWorkareaResource(acmeFileName).asFile();
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Acme history filed prepped from workarea " + acmeFile.getAbsolutePath());
+		}
 		if (acmeFile.exists()) {
 			return FILE_EXISTS;
+		}
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Acme history does not exist, write initial entry");
 		}
 		headers = new ArrayList<String>();
 		acmeFile.getParentFile().mkdirs();
@@ -121,9 +127,9 @@ public class AcmeHistory {
 		headers.add("# Date" + spaceDelim + "Serial" + spaceDelim + "DirectoryURI" + spaceDelim + "Account URI" + spaceDelim + "Expiration");
 		headers.add("# -------------------------------------------------------------------------------------------------------------------------");
 		
+		FileWriter fr = null;
 		try {
 			acmeFile.createNewFile();
-			FileWriter fr;
 			fr = new FileWriter(acmeFile, false);
 			for (String h: headers) {
 				fr.write(h + "\n");
@@ -131,7 +137,17 @@ public class AcmeHistory {
 	       	fr.close();
 	       	return FILE_CREATED;
 		} catch (IOException e) {
+			Tr.event(tc, "Stack trace of IOException", e);
 			Tr.error(tc, "CWPKI2072W", acmeFile.getAbsolutePath(), e.getMessage());
+		} finally {
+			if (fr != null) {
+				try {
+					fr.close();
+				} catch (IOException e) {
+					Tr.event(tc, "Stack trace of IOException while closing", e);
+					Tr.error(tc, "CWPKI2072W", acmeFile.getAbsolutePath(), e.getMessage());
+				}
+			}
 		}
 		return FILE_NOT_CREATED;
 	}
@@ -181,8 +197,8 @@ public class AcmeHistory {
 			rewriteFile = true;
 			acmeHistoryEntries.remove(0);
 		}
-		File file = wslocation.getServerWorkareaResource("acmeca/" + acmeFileName).asFile();
-       	FileWriter fr;
+		File file = wslocation.getServerWorkareaResource(acmeFileName).asFile();
+		FileWriter fr = null;
 		try {
 
 			if (rewriteFile) {
@@ -200,9 +216,18 @@ public class AcmeHistory {
 				//write the new entry
 			   	fr.write(newEntry.toString() + "\n");
 			}
-		   	fr.close();
+
 		} catch (IOException e) {
 			Tr.error(tc, "CWPKI2072W", file.getAbsolutePath(), e.getMessage());
+		} finally {
+			if (fr != null) {
+				try {
+					fr.close();
+				} catch (IOException e) {
+					Tr.event(tc, "Stack trace of IOException while closing", e);
+					Tr.error(tc, "CWPKI2072W", acmeFile.getAbsolutePath(), e.getMessage());
+				}
+			}
 		}
 	}
 	

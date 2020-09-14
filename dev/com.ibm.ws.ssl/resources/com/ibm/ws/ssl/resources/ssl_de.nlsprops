@@ -92,7 +92,7 @@ Suchen Sie nach vorangegangenen Nachrichten, die sich m\u00f6glicherweise auf di
 Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Das Zertifikat mit dem Alias {0} aus dem Keystore {1} verf\u00e4llt in {2} Tagen.
-ssl.expiration.warning.CWPKI0016W.explanation=Ein Zertifikat im Keystore steht kurz vor dem Verfallsdatum.
+ssl.expiration.warning.CWPKI0016W.explanation=Ein Zertifikat im Keystore steht kurz vor dem Ablaufdatum.
 ssl.expiration.warning.CWPKI0016W.useraction=\u00d6ffnen Sie den Keystore und \u00fcberpr\u00fcfen Sie die Verfallsdaten aller Zertifikate im Keystore. Generieren Sie bei Bedarf neue Zertifikate.
 # -------------------------------------------------------------------------------------------------
 ssl.expiration.expired.CWPKI0017E=CWPKI0017E: Das Zertifikat mit dem Alias {1} aus dem Keystore {2} ist verfallen.
@@ -258,7 +258,7 @@ ssl.trustmanager.signer.prompt.CWPKI0109I=  Verfallsdatum:
 ################################################################################
 # -------------------------------------------------------------------------------------------------
 crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: Es wurde versucht, Schl\u00fcssel auf der Basis des Schl\u00fcsselsatzes {0} zu generieren, aber dieser Schl\u00fcsselsatz ist nicht f\u00fcr die Generierung von Schl\u00fcsseln generiert. Nachricht: {1}
-crypto.key.generate.configuration.error.CWPKI0200E.explanation=Dieser Fehler kann folgende Gr\u00fcnde haben: F\u00fcr das KeySet ist keine keyGenerationClass definiert, die keyGenerationClass wurde nicht gefunden, dem KeySet ist ein schreibgesch\u00fctzter Keystore zugeordnet, oder der Keystore l\u00e4sst das Schreiben geheimer Schl\u00fcssel nicht zu.
+crypto.key.generate.configuration.error.CWPKI0200E.explanation=Dieser Fehler kann folgende Gr\u00fcnde haben: F\u00fcr das KeySet ist keine keyGenerationClass definiert, die keyGenerationClass wurde nicht gefunden, dem KeySet ist ein schreibgesch\u00fctzter Keystore zugeordnet oder der Keystore l\u00e4sst das Schreiben geheimer Schl\u00fcssel nicht zu.
 crypto.key.generate.configuration.error.CWPKI0200E.useraction=\u00c4ndern Sie die Konfiguration so, dass die richtige keyGenerationClass definiert und ein Keystore-Typ konfiguriert ist, der das Schreiben geheimer Schl\u00fcssel zul\u00e4sst.
 # -------------------------------------------------------------------------------------------------
 crypto.key.getkey.error.CWPKI0201E=CWPKI0201E: Fehler beim Abrufen des Schl\u00fcsselalias {0} aus Schl\u00fcsselsatz {1}. Ausnahme: {2}
@@ -266,11 +266,11 @@ crypto.key.getkey.error.CWPKI0201E.explanation=Beim Abrufen der Schl\u00fcssel a
 crypto.key.getkey.error.CWPKI0201E.useraction=\u00dcberpr\u00fcfen Sie die KeySet-Konfiguration.
 # -------------------------------------------------------------------------------------------------
 crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: Fehler beim Instanzieren der Schl\u00fcsselerstellungsklasse {0}, die im Schl\u00fcsselsatz {1} konfiguriert ist. Nachricht: {2}
-crypto.key.generate.class.load.error.CWPKI0202E.explanation=Dieser Fehler kann die folgenden Gr\u00fcnde haben: Die Laufzeitumgebung hat die f\u00fcr das KeySet konfigurierte Schl\u00fcsselerstellungsklasse nicht gefunden, oder die Klasse implementiert weder "com.ibm.websphere.crypto.KeyGenerator" noch "com.ibm.websphere.crypto.KeyPairGenerator".
+crypto.key.generate.class.load.error.CWPKI0202E.explanation=Dieser Fehler kann die folgenden Gr\u00fcnde haben: Die Laufzeitumgebung hat die f\u00fcr das KeySet konfigurierte Schl\u00fcsselerstellungsklasse nicht gefunden oder die Klasse implementiert weder "com.ibm.websphere.crypto.KeyGenerator" noch "com.ibm.websphere.crypto.KeyPairGenerator".
 crypto.key.generate.class.load.error.CWPKI0202E.useraction=Vergewissern Sie sich, dass die konfigurierte Schl\u00fcsselerstellungsklasse an einer Position definiert ist, die die Laufzeitumgebung des Anwendungsservers finden kann. Suchen Sie im Information Center nach Informationen dazu, wie angepasste Klassen angegeben werden, so dass sie von der Laufzeitumgebung gefunden werden.
 # -------------------------------------------------------------------------------------------------
 crypto.key.import.error.CWPKI0203E=CWPKI0203E: Der Versuch, Schl\u00fcssel in den Schl\u00fcsselsatz {0} zu importieren, ist fehlgeschlagen. Ausnahme: {1}
-crypto.key.import.error.CWPKI0203E.explanation=Die \u00fcbergebenen Schl\u00fcssel haben m\u00f6glicherweise nicht das korrekte Format, oder die Schl\u00fcssel konnten nicht im Keystore gespeichert werden.
+crypto.key.import.error.CWPKI0203E.explanation=Die \u00fcbergebenen Schl\u00fcssel haben m\u00f6glicherweise nicht das korrekte Format oder die Schl\u00fcssel konnten nicht im Keystore gespeichert werden.
 crypto.key.import.error.CWPKI0203E.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme und passen Sie die Konfiguration entsprechend an.
 # -------------------------------------------------------------------------------------------------
 crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: Bei einer geplanten Schl\u00fcsselerstellung f\u00fcr die Schl\u00fcsselsatzgruppe {0} ist ein Fehler aufgetreten. Ausnahme: {1}
@@ -345,7 +345,7 @@ ssl.signer.general.error.CWPKI0314E.explanation=\u00dcberpr\u00fcfen Sie in der 
 ssl.signer.general.error.CWPKI0314E.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
 # -------------------------------------------------------------------------------------------------
 ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Die SSL-Konfigurationseigenschaften sind null. M\u00f6glicherweise ist bei der Syntaxanalyse der SSL-Clientkonfiguration ein Fehler aufgetreten.
-ssl.no.properties.error.CWPKI0315E.explanation=Es sind keine SSL-Konfigurationseigenschaften definiert. Die Eigenschaft \'com.ibm.SSL.ConfigURL\' ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df definiert, oder bei der Syntaxanalyse der SSL-Clientkonfiguration ist ein Fehler aufgetreten.
+ssl.no.properties.error.CWPKI0315E.explanation=Es sind keine SSL-Konfigurationseigenschaften definiert. Die Eigenschaft \'com.ibm.SSL.ConfigURL\' ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df definiert oder beim Parsing der SSL-Clientkonfiguration ist ein Fehler aufgetreten.
 ssl.no.properties.error.CWPKI0315E.useraction=\u00dcberpr\u00fcfen Sie die Datei ssl.client.props auf Fehler und stellen Sie sicher, dass die Eigenschaft \'com.ibm.SSL.ConfigURL\' gesetzt ist.
 
 ################################################################################
@@ -433,7 +433,7 @@ ssl.ca.client.keystore.readonly.explanation=Das System versucht, ein empfangenes
 ssl.ca.client.keystore.readonly.useraction=Geben Sie einen Keystore an, der beschreibbar ist.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.receive.failed=CWPKI0420E: Die Zertifikatsanforderung wurde von der CA verarbeitet, konnte aber nicht im Keystore gespeichert werden. Das Zertifikat wird widerrufen, und die Anforderung muss wiederholt werden. Sehen Sie sich die vorherigen Fehlernachrichten an, und beheben Sie die Probleme, bevor Sie die Zertifikatsanforderung wiederholen. 
-ssl.ca.client.receive.failed.explanation=Die von der CA, (Certificate Authority, Zertifizierungsstelle) empfangene Zertifikatsanforderung konnte nicht erfolgreich im angegebenen Keystore gespeichert werden. Deshalb wurde das Zertifikat widerrufen, und Sie m\u00fcssen die Anforderung wiederholen, um ein neues Zertifikat anzufordern.
+ssl.ca.client.receive.failed.explanation=Die von der CA, (Certificate Authority, Zertifizierungsstelle) empfangene Zertifikatsanforderung konnte nicht erfolgreich im angegebenen Keystore gespeichert werden. Deshalb wurde das Zertifikat widerrufen und Sie m\u00fcssen die Anforderung wiederholen, um ein neues Zertifikat anzufordern.
 ssl.ca.client.receive.failed.useraction=Sehen Sie sich die vorherigen Fehlernachrichten an, die sich auf das Speichern des Keystores beziehen, und beheben Sie die Probleme, bevor Sie die Zertifikatsanforderung wiederholen. 
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.created=CWPKI0421I: Es wurde eine PKCS10-Zertifikatsanforderung mit dem Alias {0} erstellt. Die Anforderung wird in der Datei {1} gespeichert.  
@@ -545,7 +545,7 @@ security.addprovider.error.explanation=Beim Hinzuf\u00fcgen des Verschl\u00fcsse
 security.addprovider.error.useraction=CMSG0002                                                                  
 #--------------------------------------------------------------------------------------------------
 DEFAULT_OPTIONS_ERROR=CWPKI0801E: Es kann keine SSL-Standardkonfiguration erstellt werden. Ausnahme: {0}
-DEFAULT_OPTIONS_ERROR.explanation=Beim Erstellen der SSL-Standardkonfiguration ist ein Fehler aufgetreten.
+DEFAULT_OPTIONS_ERROR.explanation=Beim Erstellen der Standard-SSL-Konfiguration ist ein Fehler aufgetreten.
 DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.start=CWPKI0802I: Das SSL-Zertifikat wird erstellt. Dieser Vorgang kann einige Sekunden dauern.
@@ -618,7 +618,7 @@ ssl.defaultKeyStore.expected.CWPKI0817A.explanation=Die SSL-Initialisierung wurd
 ssl.defaultKeyStore.expected.CWPKI0817A.useraction=Wenn SSL nicht erforderlich ist, kann diese Nachricht ignoriert werden. Wenn SSL erforderlich ist, \u00fcberpr\u00fcfen Sie die Konfiguration und f\u00fcgen Sie den fehlenden Keystore hinzu oder \u00e4ndern Sie die Standard-SSL-Konfiguration so, dass sie einen anderen Keystore verwendet.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: Die SSL-Standardkonfiguration verweist auf ein Element <keyStore> mit dem ID-Wert {0}, das nicht in der Konfiguration vorhanden ist oder in dessen Definition ein Kennwort fehlt. Definieren Sie einen Keystore mit der ID {0} oder aktualisieren Sie das Element <ssl id="defaultSSLConfig" keyStoreRef="{0}" /> so, dass es auf einen vorhandenen Keystore verweist.
-ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=Die SSL-Standardkonfiguration erwartet das Element keystore, das aber nicht vorhanden ist.
+ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=Die Standard-SSL-Konfiguration erwartet das Element keystore, das aber nicht vorhanden ist.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und \u00e4ndern Sie die Konfiguration so, dass sie auf einen vorhandenen Keystore verweist, oder definieren Sie den referenzierten Keystore.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: Der Standard-Keystore konnte nicht erstellt werden, weil kein Kennwort im Element <keyStore id="defaultKeyStore"/> konfiguriert wurde und die Umgebungsvariable 'keystore_password' nicht gesetzt ist.
@@ -665,4 +665,8 @@ ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=\u00dcberpr\u00fcfen Si
 ssl.update.certificate.error=CWPKI0829E: Fehler beim Aktualisieren des SSL-Zertifikats. {0}
 ssl.update.certificate.error.explanation=Das SSL-Zertifikat konnte an der angegebenen Position nicht aktualisiert werden.
 ssl.update.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Suchen Sie in den FFDC-Protokollen nach weiteren Fehlern im Zusammenhang mit dem Generieren oder Laden von Schl\u00fcsseln.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Das Zertifikat mit dem SubjectDN {0} aus der Umgebungsvariablen {1} wird dem Keystore {2} hinzugef\u00fcgt.
+ssl.certificate.add.CWPKI0830I.explanation=Ein Zertifikat wurde aus einer Umgebungsvariablen in der Konfiguration abgerufen und der Keystore-Datei hinzugef\u00fcgt.
+ssl.certificate.add.CWPKI0830I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------

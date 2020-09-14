@@ -61,7 +61,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
-                WCGetMappingTest.class,
                 WCEncodingTest.class,
                 WCTrailersTest.class,
                 // TFB:
@@ -73,8 +72,9 @@ import componenttest.rules.repeater.RepeatTests;
                 WCAddJspFileTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
-                WC5JakartaServletTest.class,
                 // @Server Annotations
+                WC5JakartaServletTest.class,
+                WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class,
                 WCServletPathForDefaultMappingDefault.class,

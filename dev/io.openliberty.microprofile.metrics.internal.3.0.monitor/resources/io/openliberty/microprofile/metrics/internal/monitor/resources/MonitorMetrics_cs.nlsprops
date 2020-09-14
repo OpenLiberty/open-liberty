@@ -18,10 +18,10 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
-FEATURE_REGISTERED=CWPMI2009I: Metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm mpMetrics.
-FEATURE_REGISTERED.explanation=Funkce monitor-1.0 a mpMetrics-3.0 jsou povoleny a metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm mpMetrics.
+FEATURE_REGISTERED=CWPMI2003I: Metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm mpMetrics.
+FEATURE_REGISTERED.explanation=Funkce monitorov\u00e1n\u00ed v\u00fdkonu a funkce metrik MicroProfile jsou povoleny. Metriky monitorov\u00e1n\u00ed lze na\u010d\u00edst prost\u0159ednictv\u00edm metrik MicroProfile.
 FEATURE_REGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
-FEATURE_UNREGISTERED=CWPMI2010I: V\u0161echny metriky monitorov\u00e1n\u00ed byly z mpmetrics odregistrov\u00e1ny.
-FEATURE_UNREGISTERED.explanation=Funkce monitor-1.0, mpMetrics-3.0 nebo ob\u011b funkce byly odebr\u00e1ny ze serveru a v\u0161echny metriky monitorov\u00e1n\u00ed byly z mpMetrics odregistrov\u00e1ny.
+FEATURE_UNREGISTERED=CWPMI2004I: V\u0161echny metriky monitorov\u00e1n\u00ed byly z mpmetrics odregistrov\u00e1ny.
+FEATURE_UNREGISTERED.explanation=Funkce monitorov\u00e1n\u00ed v\u00fdkonu, funkce metrik MicroProfile nebo ob\u011b funkce byly odebr\u00e1ny ze serveru. V\u0161echny metriky monitorov\u00e1n\u00ed byly z metrik MicroProfile odregistrov\u00e1ny.
 FEATURE_UNREGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.

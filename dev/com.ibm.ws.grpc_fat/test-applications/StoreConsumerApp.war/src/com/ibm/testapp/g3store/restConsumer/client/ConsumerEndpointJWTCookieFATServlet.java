@@ -97,7 +97,7 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
 
     /**
      * This test will send a valid JWT token in Cookie header added via ClientRequestFilter
-     * The Cookie header will be propagated using GrpcTarget.
+     * The Cookie header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with JWT token Cookie header , delete data.
      * The test passes when correct "appName" is asserted in response.
@@ -107,13 +107,13 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetApp_JWTCookie_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_CookieAuth_GrpcTarget(req, resp);
+    public void testGetApp_JWTCookie_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_CookieAuth_GrpcClient(req, resp);
     }
 
     /**
      * This test will send a valid JWT token in Cookie header added via ClientRequestFilter
-     * The Cookie header will be propagated using GrpcTarget.
+     * The Cookie header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with JWT token Cookie header , delete data.
      * But the server side will have bad RolesAllowed set,
@@ -125,8 +125,8 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetApp_BadRole_JWTCookie_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_BadRole_CookieAuth_GrpcTarget(req, resp);
+    public void testGetApp_BadRole_JWTCookie_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_BadRole_CookieAuth_GrpcClient(req, resp);
     }
 
     /**
@@ -134,9 +134,9 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_CookieAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_CookieAuth_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "testGetAppName_CookieAuth_GrpcTarget";
+        final String m = "testGetAppName_CookieAuth_GrpcClient";
 
         // create
         // secure query app name
@@ -194,9 +194,9 @@ public class ConsumerEndpointJWTCookieFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_BadRole_CookieAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_BadRole_CookieAuth_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "testGetAppName_BadRole_CookieAuth_GrpcTarget";
+        final String m = "testGetAppName_BadRole_CookieAuth_GrpcClient";
 
         // create
         // secure query app name

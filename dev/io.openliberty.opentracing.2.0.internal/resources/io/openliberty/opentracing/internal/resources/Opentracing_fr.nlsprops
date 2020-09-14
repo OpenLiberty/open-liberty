@@ -89,4 +89,4 @@ OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=Reportez-vous \u00e0 la docume
 # An Opentracing API error has occurred: {0}
 temporary.CWMOT9999E=CWMOT9999E: Une erreur Opentracing API est survenue : {0}
 temporary.CWMOT9999E.explanation=Une erreur Opentracing API emp\u00eachant une op\u00e9ration normale est survenue.
-temporary.CWMOT9999E.useraction=Consultez les journaux FFDC et le texte de l'exception pour identifier le probl\u00e8me.
+temporary.CWMOT9999E.useraction=Consultez les journaux de l'outil de diagnostic de premier niveau (FFDC) et le texte de l'exception pour identifier le probl\u00e8me.

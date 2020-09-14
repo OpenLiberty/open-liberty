@@ -69,7 +69,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with JWT token
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * Only uncomment RolesAllowed here if need to test security for RestEndpoint.
      *
@@ -96,14 +96,14 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
             log.finest(m + ": this authHeader will be added to grpc request = " + authHeader);
         }
 
-        if (m.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcTarget")) {
+        if (m.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
             String cookieHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.COOKIE);
             if (log.isLoggable(Level.FINE)) {
                 log.finest(m + ": this cookie Header will be added to grpc request = " + cookieHeader);
             }
         }
 
-        // Authorization header will be passed with grpcTarget
+        // Authorization header will be passed with grpcClient
         // connect to gRPC service running in Store server
         startService_BlockingStub(ConsumerUtils.getStoreServerHost(), ConsumerUtils.getStoreServerPort());
 
@@ -119,9 +119,9 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthException e) {
 
-            if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcTarget")) ||
-                (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) ||
-                (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget"))) {
+            if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcClient")) ||
+                (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcClient")) ||
+                (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient"))) {
                 return Response.status(Status.OK).entity(e.getMessage()).build();
             } else {
                 return Response.status(Status.UNAUTHORIZED).build();
@@ -181,7 +181,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Basic
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * This will also test the security for this RESTEndpoint.
      *
@@ -234,7 +234,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Bad Basic Auth values
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      * Test if correct grpc return code are sent from the server.
      *
      *

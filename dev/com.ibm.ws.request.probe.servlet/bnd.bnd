@@ -17,6 +17,8 @@ Bundle-Description: ServletRequestProbe: Servlet Request Probe; version=${bVersi
 
 WS-TraceGroup: com.ibm.ws.request.probe.servlet
 
+jakartaeeMe: true
+
 Import-Package: com.ibm.wsspi.probeExtension, \
     javax.servlet, \
     com.ibm.wsspi.request.probe.bci, \

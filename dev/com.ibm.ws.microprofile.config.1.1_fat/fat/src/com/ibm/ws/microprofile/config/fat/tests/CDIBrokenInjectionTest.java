@@ -25,11 +25,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -86,6 +88,7 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testMethodUnnamed() throws Exception {
         List<String> errors = server.findStringsInLogs("ConfigUnnamedMethodInjectionBean.*setSimpleKey6.*The property name must be specified for Constructor and Method configuration property injection");
         assertNotNull("error not found", errors);
@@ -93,6 +96,7 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testConstructorUnnamed() throws Exception {
         List<String> errors = server.findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
         assertNotNull("error not found", errors);
@@ -100,6 +104,7 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testNonExistantKey() throws Exception {
         List<String> errors = server.findStringsInLogs("CWMCG5003E.*PIZZA_MISSING_PROP.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Pizza");
         assertNotNull(errors);
@@ -107,6 +112,7 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testDogConverterMissing() throws Exception {
         List<String> errors = server.findStringsInLogs("CWMCG5003E.*DOG_KEY.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Dog");
         assertNotNull(errors);

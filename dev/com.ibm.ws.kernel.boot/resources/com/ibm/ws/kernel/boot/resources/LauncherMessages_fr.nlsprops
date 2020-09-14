@@ -32,7 +32,7 @@
 # ---------- ERROR msgs ----------------------------
 
 audit.launchTime=CWWKE0001I: Le serveur {0} a \u00e9t\u00e9 lanc\u00e9.
-audit.launchTime.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+audit.launchTime.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 audit.launchTime.useraction=Aucune action n'est \
 requise.
 
@@ -42,7 +42,7 @@ audit.kernelStartTime.useraction=Aucune action n'est \
 requise.
 
 info.bootstrapChange=CWWKE0003I: Les emplacements d'amor\u00e7age ont chang\u00e9, de sorte que le serveur devra \u00eatre red\u00e9marr\u00e9 proprement.
-info.bootstrapChange.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.bootstrapChange.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.bootstrapChange.useraction=Aucune action n'est \
 requise.
 
@@ -243,7 +243,7 @@ error.packageServerError.explanation=Impossible d'empaqueter le serveur indiqu\u
 error.packageServerError.useraction=Passez en revue les journaux du serveur pour plus d'informations. Si le probl\u00e8me persiste, reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support/.
 
 error.serverCommand.init=CWWKE0052E: Impossible d''initialiser l''\u00e9couteur de commande du serveur en raison d''une exception d''entr\u00e9e-sortie {0}
-error.serverCommand.init.explanation=Une exception inattendue s'est produite lors de l'initialisation de l'\u00e9couteur de commande du serveur.
+error.serverCommand.init.explanation=Une exception inattendue s'est produite lors de l'initialisation du programme d'\u00e9coute de commande du serveur.
 error.serverCommand.init.useraction=Consultez les journaux du serveur afin d'identifier la raison pour laquelle la commande a \u00e9chou\u00e9. Si le probl\u00e8me persiste, reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support/.
 
 warning.unrecognized.command=CWWKE0053W: Commande non reconnue : {0}
@@ -258,7 +258,7 @@ error.fileNotFound.useraction=V\u00e9rifiez que le chemin existe, que vous y ave
 # Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: Arr\u00eat du serveur demand\u00e9 le {0,date,full} \u00e0 {0,time,short}. Le serveur {1} est en cours d''arr\u00eat.
-info.stop.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.stop.request.received.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.stop.request.received.useraction=Aucune action n'est \
 requise.
 
@@ -267,7 +267,7 @@ error.unableZipDir.explanation=Une exception IOException s'est produite.
 error.unableZipDir.useraction=Faites une nouvelle tentative. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 info.introspect.request.received=CWWKE0057I: Demande d'introspection re\u00e7ue. Le serveur prend un clich\u00e9 (dump) de son \u00e9tat.
-info.introspect.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.introspect.request.received.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.introspect.request.received.useraction=Aucune action n'est \
 requise.
 
@@ -314,12 +314,12 @@ error.creatingNewServerMkDirFail.explanation=Le serveur sp\u00e9cifi\u00e9 ne pe
 error.creatingNewServerMkDirFail.useraction=Assurez-vous que l'espace disque est suffisant pour cr\u00e9er le serveur et que l'emplacement est dot\u00e9 des droits en \u00e9criture appropri\u00e9s avant d'essayer de cr\u00e9er de nouveau le serveur.
 
 info.javadump.request.received=CWWKE0067I: Demande de clich\u00e9 Java re\u00e7ue.
-info.javadump.request.received.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.javadump.request.received.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.javadump.request.received.useraction=Aucune action n'est \
 requise.
 
 info.javadump.created=CWWKE0068I: Clich\u00e9 Java cr\u00e9\u00e9 : {0}
-info.javadump.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.javadump.created.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.javadump.created.useraction=Aucune action n'est \
 requise.
 
@@ -418,7 +418,7 @@ error.serverJavaDumpCommandPortDisabled.explanation=Le port de commande du serve
 error.serverJavaDumpCommandPortDisabled.useraction=Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, ce clich\u00e9 peut \u00eatre demand\u00e9 depuis la console de l'op\u00e9rateur.  Pour plus d'informations, voir le Centre de documentation.
 
 info.javadump.zos.system.created=CWWKE0092I: La demande de clich\u00e9 de transaction Java System Transaction Dump (SYSTDUMP) a abouti.
-info.javadump.zos.system.created.explanation=Ce message est fourni \u00e0 titre d'information uniquement. Veuillez consulter le journal du syst\u00e8me pour plus de d\u00e9tails sur le nom et le volume du jeu de donn\u00e9es qui contient la sortie du clich\u00e9 syst\u00e8me Java.
+info.javadump.zos.system.created.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif. Veuillez consulter le journal du syst\u00e8me pour plus de d\u00e9tails sur le nom et le volume du jeu de donn\u00e9es qui contient la sortie du clich\u00e9 syst\u00e8me Java.
 info.javadump.zos.system.created.useraction=Aucune action n'est \
 requise.
 
@@ -474,7 +474,7 @@ error.zosProcStart.start.length.explanation=Le nom de la proc\u00e9dure, le nom 
 error.zosProcStart.start.length.useraction=Utilisez des noms de serveur et de proc\u00e9dure plus courts, de telle sorte que la commande de d\u00e9marrage MVS comporte moins de 126 caract\u00e8res.
 
 info.addProductExtension=CWWKE0108I: L''extension de produit {0} a \u00e9t\u00e9 activ\u00e9e \u00e0 l''aide d''un programme. L''identificateur de produit de l''extension de produit est {1}. L''emplacement d''installation de l''extension de produit est {2}.
-info.addProductExtension.explanation= Ce message est fourni \u00e0 titre d'information uniquement. L'extension de produit a \u00e9t\u00e9 ajout\u00e9e par un appel du SPI com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
+info.addProductExtension.explanation= Il s'agit d'un message \u00e0 caract\u00e8re informatif. L'extension de produit a \u00e9t\u00e9 ajout\u00e9e par un appel du SPI com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Aucune action n'est \
 requise.
 
@@ -525,7 +525,7 @@ error.creatingNewClientMkDirFail.explanation=Le client sp\u00e9cifi\u00e9 ne peu
 error.creatingNewClientMkDirFail.useraction=Assurez-vous que l'espace disque est suffisant pour cr\u00e9er le client et qu'il est possible d'\u00e9crire \u00e0 l'emplacement, puis effectuez une nouvelle tentative. 
 
 audit.launchTime.client=CWWKE0907I: Le client {0} a \u00e9t\u00e9 lanc\u00e9.
-audit.launchTime.client.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+audit.launchTime.client.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 audit.launchTime.client.useraction=Aucune action n'est \
 requise.
 
@@ -536,7 +536,7 @@ requise.
 
 # {0} The server name 
 info.java2security.started=CWWKE0909I: Le serveur {0} a d\u00e9marr\u00e9 avec la s\u00e9curit\u00e9 Java 2 activ\u00e9e
-info.java2security.started.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+info.java2security.started.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 info.java2security.started.useraction=Aucune action n'est \
 requise.
 
@@ -562,7 +562,7 @@ error.java.security.exception.codebase.useraction=Pour plus de d\u00e9tails, con
 \  V\u00e9rifiez que le gestionnaire de s\u00e9curit\u00e9 n'a pas d\u00e9j\u00e0 \u00e9t\u00e9 d\u00e9fini en d\u00e9marrant le serveur avec l'option -Djava.security.manager.  \
 Si un de ces \u00e9l\u00e9ments (ou les deux) est d\u00e9fini, supprimez les param\u00e8tres et red\u00e9marrez le serveur avec l'\u00e9l\u00e9ment Java 2 Security activ\u00e9 en sp\u00e9cifiant la propri\u00e9t\u00e9 websphere.java.security dans le fichier bootstrap.properties.
 
-warning.zOS.java.security.permdenied1=CWWKE0914W: La strat\u00e9gie de s\u00e9curit\u00e9 Java 2 a signal\u00e9 une violation possible des droits d''acc\u00e8s de la s\u00e9curit\u00e9 Java 2. Pour plus d''informations, consultez le Knowledge Center.{0} Droit : {1} Code :{2} Emplacement de base du code : {3}
+warning.zOS.java.security.permdenied1=CWWKE0914W: La strat\u00e9gie de s\u00e9curit\u00e9 Java 2 a signal\u00e9 une violation possible des droits d''acc\u00e8s de la s\u00e9curit\u00e9 Java 2. Pour plus d''informations, consultez le Knowledge Center. {0} Droit : {1} Code :{2} Emplacement de base du code : {3}
 warning.zOS.java.security.permdenied1.explanation=La m\u00e9thode checkPermission() de Java Security Manager a lanc\u00e9 une exception SecurityException sur le droit (Permission) concern\u00e9. Un appelant de la pile d'appels ne dispose pas des droits d'acc\u00e8s requis.  Cela ne provoque pas d'incident si l'appelant g\u00e8re correctement cette exception.
 warning.zOS.java.security.permdenied1.useraction=V\u00e9rifiez que l'op\u00e9ration tent\u00e9e est autoris\u00e9e en v\u00e9rifiant tous les fichiers de r\u00e8gles de s\u00e9curit\u00e9 Java 2 et le code d'application. Il est possible que des droits d'acc\u00e8s suppl\u00e9mentaires soient requis, qu'un appel AccessController.doPrivileged soit n\u00e9cessaire dans un partie du code dans la pile d'appels ou que le gestionnaire de s\u00e9curit\u00e9 ait interdit l'acc\u00e8s d'une ressource \u00e0 un appelant ne poss\u00e9dant pas les droits requis.
 
@@ -734,6 +734,10 @@ error.package.usr.jar.useraction=Indiquez pour --archive un nom de fichier dont 
 error.missing.version.files=CWWKE0952E: Les informations de version ne peuvent pas \u00eatre lues depuis le r\u00e9pertoire {0}.
 error.missing.version.files.explanation=Le r\u00e9pertoire contenant les fichiers d'informations de version n'existe pas ou ne peut pas \u00eatre lu par l'utilisateur en cours.
 error.missing.version.files.useraction=Assurez-vous que le r\u00e9pertoire existe et qu'il peut \u00eatre lu par l'utilisateur en cours. 
+
+warning.earlyRelease=CWWKE0953W: Cette version de {0} est une version d''\u00e9dition anticip\u00e9e non prise en charge.
+warning.earlyRelease.explanation=De nouvelles fonctions qui n'ont pas \u00e9t\u00e9 enti\u00e8rement test\u00e9es sont mises \u00e0 disposition dans les versions anticip\u00e9es pour que les utilisateurs puissent envoyer leurs commentaires avant qu'elles ne soient incluses dans une \u00e9dition prise en charge.
+warning.earlyRelease.useraction=N'utilisez pas de version d'\u00e9dition anticip\u00e9e sur des syst\u00e8mes de production car elles ne sont pas prises en charge.
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

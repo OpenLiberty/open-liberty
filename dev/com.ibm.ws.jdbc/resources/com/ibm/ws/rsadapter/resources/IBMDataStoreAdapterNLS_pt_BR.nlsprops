@@ -70,7 +70,7 @@ DSA_INTERNAL_WARNING.useraction=Visite o Web site de suporte da IBM para obter i
 # 
 # {0}        The exception.
 DSA_ERROR=DSRA0080E: Foi recebida uma exce\u00e7\u00e3o pelo Data Store Adapter. Consulte mensagem de exce\u00e7\u00e3o original: {0}.
-DSA_ERROR.explanation=O backend do banco de dados gerou uma exce\u00e7\u00e3o que foi capturada pelo Adaptador de Armaz\u00e9m de Dados.
+DSA_ERROR.explanation=O back-end do banco de dados gerou uma exce\u00e7\u00e3o que foi capturada pelo Adaptador de Armaz\u00e9m de Dados.
 DSA_ERROR.useraction=Consulte o texto do erro reportado pelo software de banco de dados para poss\u00edveis origem do erro.
 
 # 0081-0087 deleted
@@ -82,7 +82,7 @@ DSA_GENERIC_MSG.useraction=Examine a opera\u00e7\u00e3o, a exce\u00e7\u00e3o e o
 # 0090 deleted
 
 UNSUPPORTED_METHOD=DSRA0091I: O m\u00e9todo {0} n\u00e3o \u00e9 suportado para esse banco de dados backend
-UNSUPPORTED_METHOD.explanation=Um erro interno ocorreu.
+UNSUPPORTED_METHOD.explanation=Ocorreu um erro interno.
 UNSUPPORTED_METHOD.useraction=Visite o Web site de suporte da IBM para obter informa\u00e7\u00f5es sobre a determina\u00e7\u00e3o de problemas.
 
 #TRANSLATOR Do Not Translate: DataSource
@@ -171,8 +171,8 @@ ORACLE_RAC_RETRY.useraction=Aguarde at\u00e9 que o gerenciador de transa\u00e7\u
 #
 # {0}        The datasource JNDI name.
 TBC_NOT_SUPPORTED=DSRA0400W: Datasource {0}: n\u00e3o suporta o acoplamento de ramifica\u00e7\u00e3o compacta
-TBC_NOT_SUPPORTED.explanation=O banco de dados ou o provedor jdbc especificado pelo datasource  n\u00e3o suporta a op\u00e7\u00e3o de acoplamento de ramifica\u00e7\u00e3o compacta.  O acoplamento de ramifica\u00e7\u00e3o compacta \u00e9 suportado apenas com um banco de dados DB2 para z/OS acessado pelo driver JCC Universal DB2.  A op\u00e7\u00e3o padr\u00e3o de acoplamento de ramifica\u00e7\u00e3o ampla ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para acoplamento de ramifica\u00e7\u00e3o compacta, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
-TBC_NOT_SUPPORTED.useraction=Voc\u00ea deve configurar o datasource para usar um n\u00edvel suportado de banco de dados e driver JDBC, ou configurar seu aplicativo para n\u00e3o exigir o acoplamento de ramifica\u00e7\u00e3o compacta.
+TBC_NOT_SUPPORTED.explanation=O banco de dados ou o provedor JDBC especificado pela origem de dados n\u00e3o suporta a op\u00e7\u00e3o de alto acoplamento de ramifica\u00e7\u00e3o.  O alto acoplamento de ramifica\u00e7\u00e3o \u00e9 suportado apenas com um banco de dados DB2 para z/OS acessado pelo driver JCC Universal DB2.  A op\u00e7\u00e3o padr\u00e3o de acoplamento fraco de ramifica\u00e7\u00e3o ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para alto acoplamento de ramifica\u00e7\u00e3o, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
+TBC_NOT_SUPPORTED.useraction=Deve-se configurar a origem de dados para usar um n\u00edvel suportado de banco de dados e driver JDBC, ou configurar seu aplicativo para n\u00e3o exigir o alto acoplamento de ramifica\u00e7\u00e3o.
 
 # 0401 deleted
 
@@ -180,14 +180,14 @@ TBC_NOT_SUPPORTED.useraction=Voc\u00ea deve configurar o datasource para usar um
 #
 # {0}        The datasource JNDI name.
 TBC_DB_NOT_SUPPORTED=DSRA0402W: Datasource {0}: a vers\u00e3o do banco de dados n\u00e3o suporta o acoplamento de ramifica\u00e7\u00e3o compacta
-TBC_DB_NOT_SUPPORTED.explanation=O banco de dados especificado pela origem de dados n\u00e3o suporta a op\u00e7\u00e3o de acoplamento de ramifica\u00e7\u00e3o compacta.  O acoplamento de ramifica\u00e7\u00e3o compacta \u00e9 suportado apenas com conex\u00f5es do tipo 4 para o DB2 para z/OS V8 (+ APAR PK47713) ou DB2 para Linux, UNIX, Windows V8 e vers\u00f5es mais recentes.  A op\u00e7\u00e3o padr\u00e3o de acoplamento de ramifica\u00e7\u00e3o ampla ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para acoplamento de ramifica\u00e7\u00e3o compacta, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
+TBC_DB_NOT_SUPPORTED.explanation=O banco de dados especificado pela origem de dados n\u00e3o suporta a op\u00e7\u00e3o de alto acoplamento de ramifica\u00e7\u00e3o.  O alto acoplamento de ramifica\u00e7\u00e3o \u00e9 suportado apenas com conex\u00f5es do tipo 4 para o DB2 para z/OS V8 (+ APAR PK47713) ou DB2 para Linux, UNIX, Windows V8 e vers\u00f5es mais recentes.  A op\u00e7\u00e3o padr\u00e3o de acoplamento de ramifica\u00e7\u00e3o ampla ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para acoplamento de ramifica\u00e7\u00e3o compacta, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
 TBC_DB_NOT_SUPPORTED.useraction=Voc\u00ea deve configurar o datasource para usar um n\u00edvel suportado de banco de dados e driver JDBC, ou configurar seu aplicativo para n\u00e3o exigir o acoplamento de ramifica\u00e7\u00e3o compacta.
 
 # 0403W      TBC_JCC_NOT_SUPPORTED
 #
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0}: n\u00e3o suporta o acoplamento de ramifica\u00e7\u00e3o compacta porque o driver JCC do DB2 est\u00e1 em um n\u00edvel incorreto
-TBC_JCC_NOT_SUPPORTED.explanation=O provedor jdbc especificado pelo datasource  n\u00e3o suporta a op\u00e7\u00e3o de acoplamento de ramifica\u00e7\u00e3o compacta.  O acoplamento de ramifica\u00e7\u00e3o compacta \u00e9 suportado apenas com os n\u00edveis m\u00ednimos do driver JCC Universal do DB2 vers\u00e3o 3.51 ou 3.6, quando em pacote configur\u00e1vel com os n\u00edveis de servi\u00e7o do DB2 9.5 ou 9, ou do driver JCC4 vers\u00e3o 4.1.  A op\u00e7\u00e3o padr\u00e3o de acoplamento de ramifica\u00e7\u00e3o ampla ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para acoplamento de ramifica\u00e7\u00e3o compacta, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
+TBC_JCC_NOT_SUPPORTED.explanation=O provedor JDBC especificado pela origem de dados n\u00e3o suporta a op\u00e7\u00e3o de alto acoplamento de ramifica\u00e7\u00e3o.  O alto acoplamento de ramifica\u00e7\u00e3o \u00e9 suportado apenas com os n\u00edveis m\u00ednimos do driver JCC Universal do DB2 vers\u00e3o 3.51 ou 3.6, quando em pacote configur\u00e1vel com os n\u00edveis de servi\u00e7o do DB2 9.5 ou 9, ou do driver JCC4 vers\u00e3o 4.1.  A op\u00e7\u00e3o padr\u00e3o de acoplamento de ramifica\u00e7\u00e3o ampla ser\u00e1 usada.  Isso pode causar tempos limites de bloqueio, conflitos e/ou retrocessos da transa\u00e7\u00e3o se o aplicativo estiver projetado para acoplamento de ramifica\u00e7\u00e3o compacta, pois os bloqueios de banco de dados n\u00e3o ser\u00e3o compartilhados entre as se\u00e7\u00f5es de transa\u00e7\u00e3o na mesma transa\u00e7\u00e3o global.
 TBC_JCC_NOT_SUPPORTED.useraction=Voc\u00ea deve configurar o datasource para usar um n\u00edvel suportado de banco de dados e driver JDBC, ou configurar seu aplicativo para n\u00e3o exigir o acoplamento de ramifica\u00e7\u00e3o compacta.
 
 # ----------------------------------------------------------------------------
@@ -232,8 +232,8 @@ DSRA4000.no.suitable.driver.explanation=Uma origem de dados ou uma implementa\u0
 DSRA4000.no.suitable.driver.useraction=Verifique se as configura\u00e7\u00f5es do driver JDBC e da biblioteca est\u00e3o corretas. Se as classes de implementa\u00e7\u00e3o ainda n\u00e3o foram localizadas, especifique-as manualmente na configura\u00e7\u00e3o.
 
 DSRA4001.no.suitable.driver.nested=DSRA4001E: N\u00e3o foram localizadas implementa\u00e7\u00f5es de {0} para {1}. Procurado em: {2}. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. Procurado em pacotes: {3}.
-DSRA4001.no.suitable.driver.nested.explanation=Uma origem de dados ou uma implementa\u00e7\u00e3o de driver pode n\u00e3o ser localizada por diversas raz\u00f5es. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. O driver JDBC pode n\u00e3o identificar corretamente sua implementa\u00e7\u00e3o java.sql.Driver ou pode n\u00e3o ter uma implementa\u00e7\u00e3o java.sql.Driver. Ou a l\u00f3gica integrada do servidor para identificar classes de implementa\u00e7\u00e3o de origem de dados n\u00e3o se aplica a todos os drivers.
-DSRA4001.no.suitable.driver.nested.useraction=Verifique se as configura\u00e7\u00f5es do driver JDBC e da biblioteca est\u00e3o corretas. Se as classes de implementa\u00e7\u00e3o ainda n\u00e3o forem localizadas, especifique-as manualmente na configura\u00e7\u00e3o.
+DSRA4001.no.suitable.driver.nested.explanation=Uma origem de dados ou uma implementa\u00e7\u00e3o do driver pode n\u00e3o ser localizada por diversas raz\u00f5es. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. O driver JDBC pode n\u00e3o identificar corretamente sua implementa\u00e7\u00e3o java.sql.Driver ou pode n\u00e3o ter uma implementa\u00e7\u00e3o java.sql.Driver. Ou a l\u00f3gica integrada do servidor para identificar classes de implementa\u00e7\u00e3o de origem de dados n\u00e3o se aplica a todos os drivers.
+DSRA4001.no.suitable.driver.nested.useraction=Verifique se as configura\u00e7\u00f5es do driver JDBC e da biblioteca est\u00e3o corretas. Se as classes de implementa\u00e7\u00e3o ainda n\u00e3o foram localizadas, especifique-as manualmente na configura\u00e7\u00e3o.
 
 DSRA4003.driver.null=DSRA4003E: Um elemento jdbcDriver v\u00e1lido n\u00e3o p\u00f4de ser localizado para o dataSource {0}.
 DSRA4003.driver.null.explanation=Um elemento jdbcDriver v\u00e1lido n\u00e3o p\u00f4de ser localizado para o dataSource especificado.
@@ -323,7 +323,7 @@ ORACLE_TRACE_WARNING.useraction=Examine a exce\u00e7\u00e3o, corrija o problema 
 # 
 META_DATA_EXCEPTION=DSRA7018I: O acesso aos metadados do banco de dados causou uma exce\u00e7\u00e3o de conex\u00e3o n\u00e3o-stale.  A execu\u00e7\u00e3o normal ser\u00e1 reiniciada.  A exce\u00e7\u00e3o \u00e9: {0}
 META_DATA_EXCEPTION.explanation=Ocorreu uma exce\u00e7\u00e3o quando o Application Server estava tentando obter ou acessar o objeto de metadados do banco de dados.
-META_DATA_EXCEPTION.useraction=Verifique se os metadados est\u00e3o ativados no banco de dados backend.
+META_DATA_EXCEPTION.useraction=Verifique se os metadados est\u00e3o ativados no banco de dados back-end.
 
 # 7019-7042 deleted
 # 7600-7606 deleted
@@ -644,9 +644,12 @@ NO_NEGATIVE_FETCH_SIZES.useraction=Escolha um valor para o tamanho da busca que 
 # TRANSLATOR Do not translate: Kerberos
 KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: O Application Server n\u00e3o suporta o Kerberos no banco de dados backend que est\u00e1 sendo utilizado.  Nenhum nome de usu\u00e1rio e senha ser\u00e1 usado para obter uma conex\u00e3o.
 KERBEROS_NOT_SUPPORTED_WARNING.explanation= O Application Server n\u00e3o suporta a autentica\u00e7\u00e3o de Kerberos no banco de dados que \u00e9 usado. O nome de usu\u00e1rio e a senha n\u00e3o ser\u00e3o usados ao obter uma conex\u00e3o.
-KERBEROS_NOT_SUPPORTED_WARNING.useraction= Desative o Kerberos ou use um backend DB2 com o driver JDBC DB2 Universal.
+KERBEROS_NOT_SUPPORTED_WARNING.useraction= Desative o Kerberos ou use um back-end DB2 com o driver JDBC DB2 Universal.
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: O uso do SDK IBM Java 8 com um banco de dados Oracle n\u00e3o \u00e9 suportado. O driver JDBC do Oracle suporta apenas a autentica\u00e7\u00e3o do Kerberos usando as APIs de seguran\u00e7a padr\u00e3o dispon\u00edveis no OpenJDK, OpenJ9 ou outros SDKs similares.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=O uso do SDK IBM Java 8 com um banco de dados Oracle n\u00e3o \u00e9 suportado. O driver JDBC do Oracle suporta apenas a autentica\u00e7\u00e3o do Kerberos usando as APIs de seguran\u00e7a padr\u00e3o dispon\u00edveis no OpenJDK, OpenJ9 ou outros SDKs similares.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Desative a autentica\u00e7\u00e3o do Kerberos para a origem de dados do Oracle ou mude para um SDK Java diferente al\u00e9m do SDK IBM Java 8.
 # 9600-9603 deleted 
 # 9900 deleted

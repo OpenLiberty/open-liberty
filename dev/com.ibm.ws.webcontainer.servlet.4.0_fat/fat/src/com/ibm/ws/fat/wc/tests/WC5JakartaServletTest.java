@@ -10,22 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test Servlet 5 native jakarta.servlet (i.e not transformer)
@@ -36,38 +42,32 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-public class WC5JakartaServletTest extends LoggingTest {
+public class WC5JakartaServletTest {
 
     private static final Logger LOG = Logger.getLogger(WC5JakartaServletTest.class.getName());
     private static final String APP_NAME = "Servlet5TestApp";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet50_wcServer");
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet50_wcServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void before() throws Exception {
         LOG.info("Setup : add " + APP_NAME + " war to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), APP_NAME + ".war", true, "servlet5snoop.war.servlets");
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart(APP_NAME, WC5JakartaServletTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "servlet5snoop.war.servlets");
+
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WC5JakartaServletTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         LOG.info("testCleanUp : stop server");
-        SHARED_SERVER.getLibertyServer().stopServer();
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     /**
@@ -77,6 +77,22 @@ public class WC5JakartaServletTest extends LoggingTest {
      */
     @Test
     public void testSimple_Servlet50() throws Exception {
-        SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/Servlet5TestApp/snoop5", "END OF SNOOP 5. TEST PASS");
+        String expectedResponse = "END OF SNOOP 5. TEST PASS";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/snoop5";
+
+        LOG.info("url: " + url);
+        LOG.info("expectedResponse: " + expectedResponse);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+            }
+        }
     }
 }

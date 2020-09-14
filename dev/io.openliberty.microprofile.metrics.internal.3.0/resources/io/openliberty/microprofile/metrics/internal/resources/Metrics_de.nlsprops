@@ -25,116 +25,115 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 
 #Accept Header not acceptable.
-notAcceptable.info.CWMMC0000I=CWMMC0000I: The accept header format {0} is incorrect.
-notAcceptable.info.CWMMC0000I.explanation=The accept header uses an unsupported format.
-notAcceptable.info.CWMMC0000I.useraction=Use appropriate headers.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Das Accept-Header-Format {0} ist falsch.
+notAcceptable.info.CWMMC0000I.explanation=Der Accept-Header verwendet ein nicht unterst\u00fctztes Format.
+notAcceptable.info.CWMMC0000I.useraction=Verwenden Sie entsprechende Header.
 
 #Method Not Allowed
-requestType.info.CWMMC0001I=CWMMC0001I: The method request type must be GET or OPTIONS.
-requestType.info.CWMMC0001I.explanation=The request type is not supported. The type must be GET or OPTIONS.
-requestType.info.CWMMC0001I.useraction=Make GET or OPTIONS requests.
+requestType.info.CWMMC0001I=CWMMC0001I: Der Methodenanforderungstyp muss GET oder OPTIONS sein.
+requestType.info.CWMMC0001I.explanation=Der Anforderungstyp wird nicht unterst\u00fctzt. Der Typ muss GET oder OPTIONS sein.
+requestType.info.CWMMC0001I.useraction=Erstellen Sie GET- oder OPTIONS-Anforderungen.
 
 #Metric was not found.
-metricNotFound.info.CWMMC0002I=CWMMC0002I: The {0} metric name was not found.
-metricNotFound.info.CWMMC0002I.explanation=The metric does not exist.
-metricNotFound.info.CWMMC0002I.useraction=Enter the correct metric name.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: Der {0}-Metrikname wurde nicht gefunden.
+metricNotFound.info.CWMMC0002I.explanation=Die Metrik ist nicht vorhanden.
+metricNotFound.info.CWMMC0002I.useraction=Geben Sie den richtigen Metriknamen ein.
 
 #Registry was not found.
-registryNotFound.info.CWMMC0003I=CWMMC0003I: The {0} registry was not found.
-registryNotFound.info.CWMMC0003I.explanation=The registry does not exist.
-registryNotFound.info.CWMMC0003I.useraction=Enter the correct registry name.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: Die {0}-Registry wurde nicht gefunden.
+registryNotFound.info.CWMMC0003I.explanation=Die Registry ist nicht vorhanden.
+registryNotFound.info.CWMMC0003I.useraction=Geben Sie den richtigen Registry-Namen ein.
 
 #Registry is empty.
-emptyRegistry.info.CWMMC0004I=CWMMC0004I: The {0} registry has no content.
-emptyRegistry.info.CWMMC0004I.explanation=The registry is empty.
-emptyRegistry.info.CWMMC0004I.useraction=Populate the registry with metrics.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: Die {0}-Registry hat keinen Inhalt.
+emptyRegistry.info.CWMMC0004I.explanation=Die Registry ist leer.
+emptyRegistry.info.CWMMC0004I.useraction=F\u00fcllen Sie die Registry mit Metriken.
 
 #An internal error occurred. The exception is {0}.
-internal.error.CWMMC0005E=CWMMC0005E: An internal error occurred: {0}
-internal.error.CWMMC0005E.explanation=The application server experienced an internal error.
-internal.error.CWMMC0005E.useraction=Gather a set of traces and open a new issue against your application server.
+internal.error.CWMMC0005E=CWMMC0005E: Es ist ein interner Fehler aufgetreten: {0}
+internal.error.CWMMC0005E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0005E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
 
 #Generic error for internal failures. 
-internal.error.CWMMC0006E=CWMMC0006E: An internal error occurred.
-internal.error.CWMMC0006E.explanation=The application server experienced an internal error.
-internal.error.CWMMC0006E.useraction=Gather a set of traces and open a new issue against your application server.
+internal.error.CWMMC0006E=CWMMC0006E: Es ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0006E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0006E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
 
 #Memory usedHeap message
-memory.usedHeap.description=Displays the amount of used heap memory in bytes.
+memory.usedHeap.description=Zeigt die Menge des belegten Heapspeichers in Bytes an.
 
 #Memory committedHeap message
-memory.committedHeap.description=Displays the amount of memory in bytes that is committed for the Java virtual machine to use. This amount of memory is guaranteed for the Java virtual machine to use.
+memory.committedHeap.description=Zeigt die Speicherkapazit\u00e4t in Bytes an, die f\u00fcr die Nutzung der Java Virtual Machine festgeschrieben ist. Diese Speicherkapazit\u00e4t ist f\u00fcr die Nutzung der Java Virtual Machine garantiert.
 
 #Memory maxHeap message
-memory.maxHeap.description=Displays the maximum amount of heap memory in bytes that can be used for memory management. This attribute displays -1 if the maximum heap memory size is undefined. This amount of memory is not guaranteed to be available for memory management if it is greater than the amount of committed memory. The Java virtual machine may fail to allocate memory even if the amount of used memory does not exceed this maximum size.
+memory.maxHeap.description=Zeigt die maximale Heapspeicherkapazit\u00e4t in Bytes an, die f\u00fcr das Speichermanagement verwendet werden kann. Dieses Attribut zeigt -1 an, wenn die Gr\u00f6\u00dfe der maximalen Heapspeicherkapazit\u00e4t nicht definiert ist. Die Verf\u00fcgarkeit dieser Speicherkapazit\u00e4t ist nicht f\u00fcr das Speichermanagement garantiert, wenn sie gr\u00f6\u00dfer ist als die Kapazit\u00e4t an gebundenem Speicher. Es ist m\u00f6glich, dass die JVM den Speicher nicht zuordnen kann, auch wenn die Menge des belegten Speichers diesen H\u00f6chstwert nicht \u00fcberschreitet.
 
 #Jvm uptime message
-jvm.uptime.description=Displays the start time of the Java virtual machine in milliseconds. This attribute displays the approximate time when the Java virtual machine started.
+jvm.uptime.description=Zeigt die Startzeit der Java Virtual Machine in Millisekunden an. Dieses Attribut zeigt die n\u00e4herungsweise berechnete Zeit an, zu der die Java Virtual Machine gestartet wurde.
 
 #Thread count message
-thread.count.description=Displays the current number of live threads including both daemon and non-daemon threads.
+thread.count.description=Zeigt die aktuelle Anzahl von Live-Threads, einschlie\u00dflich D\u00e4monthreads und Threads, die kein D\u00e4monthread sind, an.
 
 #Thread daemon count message
-thread.daemon.count.description=Displays the current number of live daemon threads.
+thread.daemon.count.description=Zeigt die aktuelle Anzahl von Live-D\u00e4monthreads an.
 
 #Thread max count message
-thread.max.count.description=Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
+thread.max.count.description=Zeigt den Spitzenwert der Live-Threads an, seit die Java Virtual Machine gestartet wurde oder seit der Spitzenwert zur\u00fcckgesetzt wurde. Dies schlie\u00dft D\u00e4monthreads und Threads, die kein D\u00e4monthread sind, ein.
 
 #Classloader currentLoadedClass count message
-classloader.currentLoadedClass.count.description=Displays the number of classes that are currently loaded in the Java virtual machine.
+classloader.currentLoadedClass.count.description=Zeigt die Anzahl der Klassen an, die momentan in der Java Virtual Machine geladen sind.
 
 #Classloader totalLoadedClass count message
-classloader.totalLoadedClass.count.description=Displays the total number of classes that have been loaded since the Java virtual machine has started execution.
+classloader.totalLoadedClass.count.description=Zeigt die Gesamtzahl der Klassen an, die geladen wurden, seit die Java Virtual Machine mit der Ausf\u00fchrung begonnen hat.
 
 #Classloader totalUnloadedClass count message
-classloader.totalUnloadedClass.count.description=Displays the total number of classes unloaded since the Java virtual machine has started execution.
+classloader.totalUnloadedClass.count.description=Zeigt die Gesamtzahl der Klassen an, die entladen wurden, seit die Java Virtual Machine mit der Ausf\u00fchrung begonnen hat.
 
 #Cpu availableProcessors message
-cpu.availableProcessors.description=Displays the number of processors available to the Java virtual machine. This value may change during a particular invocation of the virtual machine.
+cpu.availableProcessors.description=Zeigt die Anzahl der Prozessoren an, die der Java Virtual Machine zur Verf\u00fcgung stehen. Dieser Wert kann sich bei einem bestimmten Aufruf der virtuellen Maschine \u00e4ndern.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=Displays the system load average for the last minute. The system load average is the sum of the number of runnable entities queued to the available processors and the number of runnable entities running on the available processors averaged over a period of time. The way in which the load average is calculated is operating system specific but is typically a damped time-dependent average. If the load average is not available, a negative value is displayed. This attribute is designed to provide a hint about the system load and may be queried frequently. The load average may be unavailable on some platform where it is expensive to implement this method.
+cpu.systemLoadAverage.description=Zeigt die durchschnittliche Systembelastung in der letzten Minute an. Die durchschnittliche Systembelastung ist die Summe aus der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die f\u00fcr die verf\u00fcgbaren Prozessoren in eine Warteschlange eingereiht wurden, und der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die von den verf\u00fcgbaren Prozessoren ausgef\u00fchrt wurden, f\u00fcr die \u00fcber eine bestimmte Zeit ein Durchschnittswert ermittelt wurde. Die Art und Weise, wie die durchschnittliche Last berechnet wird, ist betriebssystemspezifisch. In der Regel handelt es sich um einen abgeschw\u00e4chten zeitabh\u00e4ngigen Mittelwert. Wenn keine durchschnittliche Last verf\u00fcgbar ist, wird ein negativer Wert angezeigt. Dieses Attribut soll einen Hinweis zur Systembelastung bereitstellen und kann h\u00e4ufig abgefragt werden. Die durchschnittliche Last ist m\u00f6glicherweise f\u00fcr einige Plattformen, f\u00fcr die die Implementierung dieser Methode kostenintensiv ist, nicht verf\u00fcgbar.
 
 #Cpu processCpuLoad message
-cpu.processCpuLoad.description=Displays the 'recent cpu usage' for the Java Virtual Machine process.
+cpu.processCpuLoad.description=Zeigt die k\u00fcrzliche CPU-Auslastung f\u00fcr den Java Virtual Machine-Prozess an.
 
 #Cpu processCpuTime message
-cpu.processCpuTime.description=Displays the CPU time used by the process on which the Java virtual machine is running.
-
+cpu.processCpuTime.description=Zeigt die CPU-Zeit an, die von dem Prozess verwendet wird, in dem die Java Virtual Machine ausgef\u00fchrt wird. 
 #Garbage collection count message
-garbageCollectionCount.description=Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+garbageCollectionCount.description=Zeigt die Gesamtzahl der Erfassungen an, die erstellt wurden. Dieses Attribut gibt -1 an, wenn der Zahl der Erfassungen f\u00fcr diesen Collector nicht definiert ist.
 
 #Garbage collection time message
-garbageCollectionTime.description=Displays the approximate accumulated collection elapsed time in milliseconds. This attribute displays -1 if the collection elapsed time is undefined for this collector. The Java virtual machine implementation may use a high resolution timer to measure the elapsed time. This attribute may display the same value even if the collection count has been incremented if the collection elapsed time is very short.
+garbageCollectionTime.description=Zeigt die n\u00e4herungsweise berechnete, kumulierte, abgelaufene Zeit f\u00fcr die Erfassung in Millisekunden an. Dieses Attribut zeigt -1 an, wenn f\u00fcr diesen Collector die abgelaufene Zeit f\u00fcr Erfassungen nicht definiert ist. Die Java Virtual Machine-Implementierung verwendet m\u00f6glicherweise einen hochaufl\u00f6senden Zeitgeber zur Messung der abgelaufenen Zeit. Dieses Attribut zeigt m\u00f6glicherweise auch dann denselben Wert an, wenn der Erfassungsz\u00e4hler erh\u00f6ht wurde, wenn die abgelaufene Zeit f\u00fcr die Erfassung sehr kurz ist. 
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------
-threadpool.activeThreads.description=The number of threads that are running tasks.
-threadpool.size.description=The size of the thread pool.
+threadpool.activeThreads.description=Die Anzahl der Threads, die Tasks ausf\u00fchren.
+threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
 
-servlet.request.total.description=The number of visits to this servlet since the start of the server.
-servlet.responseTime.total.description=The total response time of this servlet since the start of the server.
+servlet.request.total.description=Die Anzahl der Aufrufe dieses Servlets seit dem Start des Servers.
+servlet.responseTime.total.description=Die Gesamtantwortzeit dieses Servlets seit dem Start des Servers.
 
-connectionpool.create.total.description=The total number of managed connections that have been created since the pool creation.
-connectionpool.destroy.total.description=The total number of managed connections that have been destroyed since the pool creation.
-connectionpool.managedConnections.description=The number of managed connections in the free, shared, and unshared pools.
-connectionpool.connectionHandles.description=The number of connections that are in use. This number might include multiple connections that are shared from a single managed connection.
-connectionpool.freeConnections.description=The number of managed connections in the free pool.
+connectionpool.create.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
+connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung gel\u00f6scht wurden.
+connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.
+connectionpool.connectionHandles.description=Die Anzahl der Verbindungen, die im Gebrauch sind. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
+connectionpool.freeConnections.description=Die Anzahl verwalteter Verbindungen im freien Pool.
 
-session.create.total.description=The number of sessions that have logged in since this metric was enabled.
-session.liveSessions.description=The number of users that are currently logged in.
-session.activeSessions.description=The number of concurrently active sessions. (A session is active if the product is currently processing a request that uses that user session).
-session.invalidated.total.description=The number of sessions that have logged out since this metric was enabled.
-session.invalidatedbyTimeout.total.description=The number of sessions that have logged out by timeout since this metric was enabled.
+session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
+session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
+session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)
+session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik abgemeldet wurden.
+session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
 
 
-REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server.
+REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # A Metrics API error has occurred: {0}
-temporary.CWMMC9999E=CWMMC9999E: A Metrics API error occurred: {0}
-temporary.CWMMC9999E.explanation=A Metrics API error prevents normal operation.
-temporary.CWMMC9999E.useraction=Review the FFDC logs and exception text to identify the problem.
+temporary.CWMMC9999E=CWMMC9999E: Es ist ein Fehler in der Metrics-API aufgetreten: {0}
+temporary.CWMMC9999E.explanation=Es ist ein Metrics-API-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMMC9999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.

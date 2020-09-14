@@ -128,6 +128,17 @@ session.activeSessions.description=N\u00famero de sesiones activas simult\u00e1n
 session.invalidated.total.description=N\u00famero de sesiones cerradas desde la habilitaci\u00f3n de esta m\u00e9trica.
 session.invalidatedbyTimeout.total.description=N\u00famero de sesiones cerradas por tiempo de espera excedido desde la habilitaci\u00f3n de esta m\u00e9trica.
 
+grpc.server.rpcStarted.total.description=El n\u00famero total de RPC iniciadas en el servidor.
+grpc.server.rpcCompleted.total.description=El n\u00famero total de RPC completadas en el servidor, independientemente de si fueron exitosas o fallidas.
+grpc.server.sentMessages.total.description=El n\u00famero total de mensajes de corriente de datos enviados por el servidor.
+grpc.server.receivedMessages.total.description=El n\u00famero total de mensajes de corriente de datos recibidos del cliente.
+grpc.server.responseTime.total.description=El tiempo de respuesta total de las RPC completadas.
+
+grpc.client.rpcStarted.total.description=El n\u00famero total de RPC iniciadas en el cliente.
+grpc.client.rpcCompleted.total.description=El n\u00famero total de RPC completadas en el cliente, independientemente de si fueron exitosas o fallidas.
+grpc.client.sentMessages.total.description=El n\u00famero total de mensajes de corriente de datos enviados por el cliente.
+grpc.client.receivedMessages.total.description=El n\u00famero total de mensajes de corriente de datos recibidos del servidor.
+grpc.client.responseTime.total.description=El tiempo de respuesta total de las RPC completadas.
 
 REST.request.description=N\u00famero de invocaciones y tiempo de respuesta de este m\u00e9todo de recurso RESTful desde el inicio del servidor.
 #-----------------------------------------------------------------------------------------------------------------------------
