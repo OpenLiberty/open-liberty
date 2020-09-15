@@ -24,6 +24,8 @@ public class MediaTypeHeaderDelegate implements RuntimeDelegate.HeaderDelegate
    private static Map<MediaType, String> reverseMap = new ConcurrentHashMap<MediaType, String>();
    private static final int MAX_MT_CACHE_SIZE =
                    // Liberty Change
+                   // This has been fixed in Resteasy 4.5.7.Final. We can remove this class
+                   // when we upgrade Resteasy to 4.5.7.Final or newer.
                    AccessController.doPrivileged(new PrivilegedAction<Integer>() {
                        @Override
                        public Integer run() {
