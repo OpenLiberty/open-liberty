@@ -10,15 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.fat.extended;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -40,13 +37,5 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.withoutModification()
-                   .andWith(new FeatureReplacementAction(setOf("jaxrs-2.1", "jaxrs-2.0"), setOf("jaxrs-2.2")).withID("RESTEasy"));
-    
-    private static Set<String> setOf(String...strings) {
-        Set<String> set = new HashSet<>();
-        for (String s : strings) {
-            set.add(s);
-        }
-        return set;
-    }
+                   .andWith(new JakartaEE9Action());
 }

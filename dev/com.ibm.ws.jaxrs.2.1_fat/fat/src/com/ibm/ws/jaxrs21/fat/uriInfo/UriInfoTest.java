@@ -20,10 +20,11 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-@SkipForRepeat("RESTEasy")
+@SkipForRepeat(JakartaEE9Action.ID)
 @RunWith(FATRunner.class)
 public class UriInfoTest extends FATServletClient {
 
