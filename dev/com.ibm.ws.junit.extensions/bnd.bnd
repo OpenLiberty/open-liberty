@@ -26,7 +26,7 @@ instrument.disabled: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	org.apache.ant:ant;version=1.9.15,\
-	org.apache.ant:ant-junit;version=1.9.6,\
+	org.apache.ant:ant-junit;version=1.9.15,\
 	org.jmock:jmock;version=2.5.1,\
 	org.osgi:osgi.core;version=7.0.0,\
 	org.osgi:org.osgi.service.component;version=1.4.0
