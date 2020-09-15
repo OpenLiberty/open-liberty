@@ -70,7 +70,7 @@
     <dataSource jndiName="jdbc/postgres/defaultAutoCommit" type="javax.sql.ConnectionPoolDataSource">
       <jdbcDriver libraryRef="PostgresLib" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
-                             defaultAutoCommit="true"/>
+                             defaultAutoCommit="true" connectTimeout="10s"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/defaultAutoCommitOff" type="javax.sql.ConnectionPoolDataSource">
