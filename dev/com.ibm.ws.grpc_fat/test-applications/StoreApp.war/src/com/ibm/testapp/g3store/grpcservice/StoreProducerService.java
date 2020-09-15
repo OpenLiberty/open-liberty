@@ -21,8 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import com.ibm.test.g3store.grpc.AppProducerServiceGrpc;
 import com.ibm.test.g3store.grpc.AppRequest;
@@ -38,8 +39,6 @@ import com.ibm.testapp.g3store.cache.AppCacheFactory;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.utilsStore.StoreUtils;
 
-import io.grpc.Context;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -499,7 +498,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
     // -------------------------------------------------------------------------
 
-    public static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 10000000;
+    public static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 1000; //WDW 10000000;
     public static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 

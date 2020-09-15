@@ -454,7 +454,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 2000000;
+    public static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 1000; //WDW 2000000;
     public static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
     public static int CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
