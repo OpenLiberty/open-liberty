@@ -21,11 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
@@ -107,7 +105,7 @@ public class FeatureDefinitionUtils {
         final String featureName;
         final String symbolicName;
         final String shortName;
-        final Set<String> alternateNames;
+        final Collection<String> alternateNames;
         final int featureVersion;
         final Visibility visibility;
         final AppForceRestart appRestart;
@@ -126,7 +124,7 @@ public class FeatureDefinitionUtils {
         ImmutableAttributes(String repoType,
                             String symbolicName,
                             String shortName,
-                            Set<String> alternateNames,
+                            Collection<String> alternateNames,
                             int featureVersion,
                             Visibility visibility,
                             AppForceRestart appRestart,
@@ -386,7 +384,7 @@ public class FeatureDefinitionUtils {
 
         private String symbolicName = null;
         private Map<String, String> symNameAttributes = null;
-        private Set<String> alternateNames = null;
+        private List<String> alternateNames = null;
 
         /**
          * The Manifest is required so we can build ImmutableAttributes from
@@ -404,29 +402,27 @@ public class FeatureDefinitionUtils {
          *
          * @return A (possibly empty) set of alternate names.
          */
-        Set<String> getAltNames() {
+        List<String> getAltNames() {
 
             if (alternateNames == null) {
-                Set<String> result;
+                List<String> result;
                 String ibmAltNames;
                 try {
                     ibmAltNames = getMainAttributeValue(IBM_ALT_NAMES);
                 } catch (IOException e) {
-                    return Collections.<String> emptySet();
+                    return Collections.<String> emptyList();
                 }
 
                 if (ibmAltNames == null) {
-                    result = Collections.<String> emptySet();
+                    result = Collections.<String> emptyList();
                 } else {
                     Map<String, Map<String, String>> data = ManifestHeaderProcessor.parseImportString(ibmAltNames);
-
-                    result = new HashSet<String>();
-                    for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                        //any attributes are not supported and will be ignored.
-                        result.add(entry.getKey());
+                    result = new ArrayList<String>(data.keySet().size());
+                    for (String name : data.keySet()) {
+                        result.add(FeatureRepository.lowerFeature(name));
                     }
                 }
-                alternateNames = Collections.<String> unmodifiableSet(result);
+                alternateNames = Collections.<String> unmodifiableList(result);
             }
             return alternateNames;
         }

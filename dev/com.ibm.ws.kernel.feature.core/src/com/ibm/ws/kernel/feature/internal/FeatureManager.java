@@ -1658,19 +1658,15 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (isRootFeature && !isExtension) {
                     // Only report this message for core features included as root features in the server.xml
                     Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
-                    if (altName != null && isRootFeature) {
-                        Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
-                    }
                 } else {
                     Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
                 }
             } else {
                 // Not on Open Liberty
                 Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
-                if (altName != null && isRootFeature) {
-                    Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
-                }
-
+            }
+            if (altName != null && isRootFeature && !isExtension) {
+                Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
             }
             installStatus.addMissingFeature(missing);
         }

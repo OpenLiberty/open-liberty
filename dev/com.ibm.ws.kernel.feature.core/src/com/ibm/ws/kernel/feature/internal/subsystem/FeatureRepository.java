@@ -128,7 +128,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * @return The existing feature name or null if no match
      */
     public String matchesAlternate(String featureName) {
-        return alternateFeatureNameToPublicName.get(featureName);
+        return alternateFeatureNameToPublicName.get(lowerFeature(featureName));
     }
 
     /**
@@ -384,7 +384,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
         out.writeUTF(iAttr.activationType.toString());
 
-        out.writeShort(iAttr.alternateNames.size());
+        out.writeInt(iAttr.alternateNames.size());
         for (String s : iAttr.alternateNames) {
             out.writeUTF(s);
         }
@@ -460,8 +460,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
         ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
-        short altNamesCount = in.readShort();
-        Set<String> altNames = new HashSet<>();
+        int altNamesCount = in.readInt();
+        List<String> altNames = new ArrayList<>(altNamesCount);
         for (int x = 0; x < altNamesCount; x++) {
             altNames.add(in.readUTF());
         }
