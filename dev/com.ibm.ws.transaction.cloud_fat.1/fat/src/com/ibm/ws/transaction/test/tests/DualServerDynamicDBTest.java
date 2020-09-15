@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -48,11 +47,7 @@ public class DualServerDynamicDBTest extends DualServerDynamicCoreTest {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
 
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
-    }
-
 }

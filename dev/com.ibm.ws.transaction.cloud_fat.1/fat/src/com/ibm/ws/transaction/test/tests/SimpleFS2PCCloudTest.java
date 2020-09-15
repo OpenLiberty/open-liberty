@@ -45,8 +45,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
     private FileLock fLock;
     private FileChannel fChannel;
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/SimpleFS2PCCloudServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/SimpleFS2PCCloudServlet";
     protected static final int FScloud2ServerPort = 9992;
+    private static final long LOG_SEARCH_TIMEOUT = 300000;
 
     @Server("com.ibm.ws.transaction_FSCLOUD001")
     @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
@@ -71,6 +72,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(longLeaseLengthFSServer1, APP_NAME, "com.ibm.ws.transaction.*");
 
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        longLeaseLengthFSServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     @AfterClass
