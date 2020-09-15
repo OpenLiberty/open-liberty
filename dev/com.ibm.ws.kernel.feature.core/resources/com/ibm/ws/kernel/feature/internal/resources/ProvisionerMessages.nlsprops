@@ -218,7 +218,7 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Th
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Specify a compatible version of the configured features that caused the conflict in the server.xml file, and ensure the server.xml file uses either Jakarta EE or Java EE features, but not both.
 
 #CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
-MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: An existing feature definition, {1}, is a possible match for the feature {0} which was not found. 
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: An existing feature definition, {1}, is a possible match for the {0} feature that was not found. 
 MISSING_FEATURE_HAS_ALT_NAME.explanation=The feature manager cannot find a definition for a feature specified in the server configuration. The name specified might match an existing feature definition.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Consider specifying the named, existing feature definition instead. 
 
