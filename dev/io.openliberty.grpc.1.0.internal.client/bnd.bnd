@@ -107,6 +107,7 @@ instrument.disabled: true
   io.netty:netty-resolver;version=4.1.51.Final,\
   io.netty:netty-transport;version=4.1.51.Final,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
