@@ -36,7 +36,7 @@ import componenttest.topology.utils.LDAPUtils;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.tds.attrMappingVar1");
     private static final Class<?> c = URAPIs_TDSLDAPTest_URAttrMappingVar1.class;
