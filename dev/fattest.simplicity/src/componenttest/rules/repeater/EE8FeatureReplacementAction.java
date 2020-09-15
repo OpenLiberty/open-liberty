@@ -52,7 +52,11 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "mdb-3.2",
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
-                                                 "websocket-1.1" };
+                                                 "websocket-1.1",
+                                                 "jms-2.0",
+                                                 "wasJmsClient-2.0",
+                                                 "wasJmsServer-1.0",
+                                                 "wasJmsSecurity-1.0" };
 
     public static final Set<String> EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
 

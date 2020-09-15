@@ -11,4 +11,4 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.jakarta.jms.3.0
+Bundle-SymbolicName: io.openliberty.jakarta.messaging.3.0
