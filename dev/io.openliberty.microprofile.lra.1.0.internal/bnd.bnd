@@ -31,8 +31,7 @@ Private-Package: io.openliberty.microprofile.lra.internal.resources
     
 -dsannotations: \
     io.openliberty.microprofile.lra.internal.LraFilterComponent, \
-    io.openliberty.microprofile.lra.internal.LraConfig, \
-    io.openliberty.microprofile.lra.internal.CdiExtensionComponent
+    io.openliberty.microprofile.lra.internal.LraConfig
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF

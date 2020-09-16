@@ -1,3 +1,5 @@
+package io.openliberty.microprofile.lra.internal;
+
 /*******************************************************************************
  * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.lra.internal;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,17 +33,17 @@ public class CdiExtensionComponent implements CDIExtensionMetadata {
 
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
-
+        System.err.println("I am registering an extension");
         return Collections.singleton(LRACDIExtension.class);
     }
 
     @Override
     public Set<Class<?>> getBeanClasses() {
+        System.err.println("I am getting some beans");
         Set<Class<?>> beans = new HashSet<>();
         beans.add(ServerLRAFilter.class);
         beans.add(LRAParticipantResource.class);
         return beans;
-        //return Set.of(ServerLRAFilter.class, LRAParticipantResource.class);
     }
 
 }
