@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.api;
 
-import java.awt.PageAttributes.MediaType;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.security.AccessController;
@@ -20,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -30,7 +28,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
@@ -469,7 +469,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
     public static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
     public static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
     public static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
-    public static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1; //WDW 10;
+    public static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
 
     public static CountDownLatch stressLatch = null;
 

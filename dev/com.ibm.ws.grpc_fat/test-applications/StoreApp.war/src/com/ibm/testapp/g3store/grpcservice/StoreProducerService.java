@@ -21,9 +21,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLEngineResult.Status;
-
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.JsonFormat;
 import com.ibm.test.g3store.grpc.AppProducerServiceGrpc;
 import com.ibm.test.g3store.grpc.AppRequest;
@@ -39,6 +38,8 @@ import com.ibm.testapp.g3store.cache.AppCacheFactory;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.utilsStore.StoreUtils;
 
+import io.grpc.Context;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 /**

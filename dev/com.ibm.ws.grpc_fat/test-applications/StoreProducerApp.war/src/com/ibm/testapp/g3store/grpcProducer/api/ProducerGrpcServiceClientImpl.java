@@ -17,8 +17,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLEngineResult.Status;
-
 import com.google.protobuf.Empty;
 import com.ibm.test.g3store.grpc.AppRequest;
 import com.ibm.test.g3store.grpc.AppResponse;
@@ -43,6 +41,7 @@ import com.ibm.testapp.g3store.restProducer.model.DeleteAllRestResponse;
 import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
 import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 
+import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.ClientCallStreamObserver;
