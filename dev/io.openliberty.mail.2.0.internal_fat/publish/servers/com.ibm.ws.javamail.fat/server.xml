@@ -5,7 +5,8 @@
     <feature>localConnector-1.0</feature>
     <feature>mail-2.0</feature>
     <feature>jndi-1.0</feature>
-    <feature>enterpriseBeansLite-4.0</feature>
+    <!-- uncomment whe EJB 4.0 is fully functional --> 
+    <!-- feature>enterpriseBeansLite-4.0</feature -->
   </featureManager>
 
   <include optional="true" location="../fatTestPorts.xml"/>

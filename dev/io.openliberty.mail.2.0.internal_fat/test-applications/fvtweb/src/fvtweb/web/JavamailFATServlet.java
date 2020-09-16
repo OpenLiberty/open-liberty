@@ -21,9 +21,8 @@ import javax.naming.InitialContext;
 
 import org.junit.Test;
 
-import fvtweb.ejb.JavamailTestLocal;
+//import fvtweb.ejb.JavamailTestLocal;
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.mail.MailSessionDefinition;
 import jakarta.mail.Session;
 import jakarta.servlet.ServletException;
@@ -56,8 +55,8 @@ public class JavamailFATServlet extends HttpServlet {
     @Resource(name = "javamail/mergeMS", lookup = "java:comp/env/javamail/mergeDef")
     private Session mergeMS;
 
-    @EJB
-    JavamailTestLocal jtBean;
+    //@EJB
+    //JavamailTestLocal jtBean;
 
     private static final long serialVersionUID = 7709282314904580334L;
 
@@ -198,9 +197,11 @@ public class JavamailFATServlet extends HttpServlet {
      * TODO: Enable when EJB 4.0 is available
      */
     //@Test
-    public void testEjbJavamailSessionCreated() throws Throwable {
-        jtBean.testLookupJavamailAnnotation();
-    }
+    /*
+     * public void testEjbJavamailSessionCreated() throws Throwable {
+     * jtBean.testLookupJavamailAnnotation();
+     * }
+     */
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
