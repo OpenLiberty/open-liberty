@@ -42,7 +42,7 @@ Import-Package: \
             javax.crypto;resolution:=optional, \
             javax.crypto.spec;resolution:=optional, \
             jakarta.enterprise.context.spi;resolution:=optional, \
-            jajakartavax.enterprise.inject.spi;resolution:=optional, \
+            jakarta.enterprise.inject.spi;resolution:=optional, \
             javax.imageio;resolution:=optional, \
             javax.imageio.stream;resolution:=optional, \
             jakarta.jms;resolution:=optional, \

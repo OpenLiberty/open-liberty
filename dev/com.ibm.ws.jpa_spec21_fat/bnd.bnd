@@ -23,7 +23,7 @@ src: \
 	test-framework/src
 
 fat.project: true
-tested.features: jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
+tested.features: jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0, connectors-2.0, mdb-4.0, messagingserver-3.0, messagingclient-3.0
 
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
