@@ -60,19 +60,23 @@ public class LiteBucketSet2Test {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        // Prepare the server which runs the messaging engine.
-
-        engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("Lite2Engine.xml");
 
-        // Prepare the server which runs the messaging client and which
-        // runs the test application.
+        engineServer.startServer("LiteBucketSet2_Engine.log");
+
+        String changedMessageFromLog = engineServer.waitForStringInLog(
+            "CWWKF0011I.*",
+            engineServer.getMatchingLogFile("trace.log") );
+        assertNotNull(
+            "Could not find the upload message in the new file",
+            changedMessageFromLog);
+
+        //
 
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
+
         clientServer.setServerConfigurationFile("Lite2Client.xml");
 
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118077_APPNAME, CONSUMER_118077_PACKAGES);
@@ -80,23 +84,24 @@ public class LiteBucketSet2Test {
         TestUtils.addDropinsWebApp(clientServer, CONTEXT_INJECT_APPNAME, CONTEXT_INJECT_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, PRODUCER_118073_APPNAME, PRODUCER_118073_PACKAGES);
 
-        // Start both servers.  Start the engine first, so that its resources
-        // are available when the client starts.
-
-        engineServer.startServer("LiteBucketSet2_Engine.log");
         clientServer.startServer("LiteBucketSet2_Client.log");
+
+        changedMessageFromLog = clientServer.waitForStringInLog(
+            "CWWKF0011I.*",
+            clientServer.getMatchingLogFile("trace.log") );
+        assertNotNull(
+            "Could not find the upload message in the new file",
+            changedMessageFromLog);
     }
 
     @org.junit.AfterClass
     public static void tearDown() {
-        // Stop the messaging client ...
         try {
             clientServer.stopServer();
         } catch ( Exception e ) {
             e.printStackTrace();
         }
 
-        // ... then stop the messaging engine.
         try {
             engineServer.stopServer();
         } catch ( Exception e ) {

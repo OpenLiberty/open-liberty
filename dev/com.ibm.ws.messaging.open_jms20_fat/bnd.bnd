@@ -17,18 +17,17 @@ src: \
   test-applications/JMSConsumer_118076/src, \
   test-applications/JMSConsumer_118077/src, \
   test-applications/JMSContextInject/src, \
-  test-applications/JMSDCF/src, \
-  test-applications/JMSDCFVar/src, \
-  test-applications/JMSMBeans/src, \
+  test-applications/JMSDefaultCFVariation/src, \
+  test-applications/JMSDefaultConnectionFactoryTest/src, \
+  test-applications/JMSMbeans/src, \
   test-applications/JMSProducer/src, \
   test-applications/JMSProducer_118073/src, \
   test-applications/JMSRedelivery_120846/src, \
   test-applications/SharedSubscription/src, \
-  test-applications/SharedSubscriptionWithMsgSel/src
-
-# test-applications/jmsmdb/src, \
-# test-applications/mdbapp/src, \
-# test-applications/mdbapp1/src
+  test-applications/SharedSubscriptionWithMsgSel/src, \
+  test-applications/jmsmdb/src, \
+  test-applications/mdbapp/src, \
+  test-applications/mdbapp1/src
 
 test.project: true
 

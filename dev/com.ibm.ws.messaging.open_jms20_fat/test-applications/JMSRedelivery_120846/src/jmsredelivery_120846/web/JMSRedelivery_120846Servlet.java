@@ -39,33 +39,6 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSRedelivery_120846Servlet extends HttpServlet {
 
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
-        JMSContext context = qcf.createContext();
-
-        int numMsgs = 0;
-
-        QueueBrowser qb = context.createBrowser(q);
-        Enumeration e = qb.getEnumeration();
-        JMSConsumer consumer = context.createConsumer(q);
-        while ( e.hasMoreElements() ) {
-            Message message = (Message) e.nextElement();
-            numMsgs++;
-        }
-
-        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
-            Message msg = consumer.receive();
-        }
-
-        context.close();
-    }
-
-    //
-
-    // jmsQCFBindings points to jndi_JMS_BASE_QCF, which is the
-    // connection factory used for remote connections.
-    //
-    // MDBs use the queue factory with this name.
-
     public static QueueConnectionFactory jmsQCFBindings;
     public static QueueConnectionFactory jmsQCFTCP;
     public static Queue jmsQueue;
@@ -73,323 +46,249 @@ public class JMSRedelivery_120846Servlet extends HttpServlet {
     public static Queue jmsQueue2;
     public static Queue jmsQueue10;
     public static Queue jmsQueue11;
+    public static boolean exceptionFlag;
 
-    public static TopicConnectionFactory jmsTopicCF; // defect 175486
+    // for defect 175486
+    public static TopicConnectionFactory jmsTopicCF;
     public static Topic jmsTopic1;
     public static Topic jmsTopic2;
 
     @Override
     public void init() throws ServletException {
+        // TODO Auto-generated method stub
+
         super.init();
-
         try {
-            jmsQCFBindings = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCFBindings);
-
-        try {
-            jmsQCFTCP = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + jmsQCFTCP);
-
-        try {
-            jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'jndi_INPUT_Q':\n" + jmsQueue);
-
-        try {
-            jmsQueue1 = (Queue) new InitialContext().lookup("java:comp/env/eis/queue1");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'eis/queue1':\n" + jmsQueue1);
-
-        try {
-            jmsQueue2 = (Queue) new InitialContext().lookup("java:comp/env/eis/queue2");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'eis/queue2':\n" + jmsQueue2);
-
-        try {
-            jmsQueue10 = (Queue) new InitialContext().lookup("java:comp/env/eis/queue/test");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'eis/queue/test':\n" + jmsQueue10);
-
-        try {
-            jmsQueue11 = (Queue) new InitialContext().lookup("java:comp/env/eis/Queue11/test");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'eis/Queue11/test':\n" + jmsQueue11);
-
-        // defect 175486
-        try {
-            jmsTopicCF = (TopicConnectionFactory)
-                new InitialContext().lookup("java:comp/env/eis/tcf");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Topic connection factory 'java:comp/env/eis/tcf':\n" + jmsTopicCF);
-
-        try {
+            jmsQCFBindings = getQCFBindings();
+            jmsQCFTCP = getQCFTCP();
+            jmsQueue = getQueue("jndi_INPUT_Q");
+            jmsQueue1 = getQueue("eis/queue1");
+            jmsQueue2 = getQueue("eis/queue2");
+            jmsQueue10 = getQueue("queue/test");
+            jmsQueue11 = getQueue("Queue11/test");
+            //for defect 175486
+            jmsTopicCF = getTCF();
             jmsTopic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Topic 'java:comp/env/eis/topic1':\n" + jmsTopic1);
-
-        try {
             jmsTopic2 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
-        } catch ( NamingException e ) {
+
+        } catch (NamingException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("Topic 'java:comp/env/eis/topic2':\n" + jmsTopic2);
 
-        if ( (jmsQCFBindings == null) || (jmsQCFTCP == null) ||
-             (jmsQueue == null) || (jmsQueue1 == null) || (jmsQueue2 == null) ||
-             (jmsQueue10 == null) || (jmsQueue11 == null) ||
-             (jmsTopicCF == null) || (jmsTopic1 == null) || (jmsTopic2 == null) ) {
-            throw new ServletException("Failed JMS initialization");
-        }
     }
 
-    /**
-     * Handle a GET request to this servlet: Invoke the test method specified as
-     * request paramater "test".
-     *
-     * The test method throws an exception when it fails.  If no exception
-     * is thrown by the test method, indicate success through the response
-     * output.  If an exception is thrown, omit the success indication.
-     * Instead, display an error indication and display the exception stack
-     * to the response output.
-     *
-     * @param request The HTTP request which is being processed.
-     * @param response The HTTP response which is being processed.
-     *
-     * @throws ServletException Thrown in case of a servlet processing error.
-     * @throws IOException Thrown in case of an input/output error.
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-
+    @Override
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
         String test = request.getParameter("test");
-
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-
-        // The injection engine doesn't like this at the class level.
-        TraceComponent tc = Tr.register(JMSRedelivery_120846Servlet.class);
-
+        final TraceComponent tc = Tr.register(JMSRedelivery_120846Servlet.class); // injection
+        // engine
+        // doesn't
+        // like
+        // this
+        // at
+        // the
+        // class
+        // level
         Tr.entry(this, tc, test);
         try {
-            System.out.println(" Starting : " + test);
-            getClass()
-                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
-                .invoke(this, request, response);
+            System.out.println("Start: " + test);
+            getClass().getMethod(test, HttpServletRequest.class,
+                                 HttpServletResponse.class).invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
-            System.out.println(" Ending : " + test);
-
+            System.out.println("End: " + test);
             Tr.exit(this, tc, test);
-
-        } catch ( Throwable e ) {
-            if ( e instanceof InvocationTargetException ) {
-                e = e.getCause();
-            }
-
+        } catch (Throwable x) {
+            if (x instanceof InvocationTargetException)
+                x = x.getCause();
+            Tr.exit(this, tc, test, x);
             out.println("<pre>ERROR in " + test + ":");
-            System.out.println(" Ending : " + test);
-            System.out.println(" <ERROR> " + e.getMessage() + " </ERROR>");
-            e.printStackTrace(out);
+            System.out.println(" Error: " + test);
+            x.printStackTrace(out);
             out.println("</pre>");
-
-            Tr.exit(this, tc, test, e);
         }
     }
 
-    //
+    public void testInitialJMSXDeliveryCount_B_SecOff(HttpServletRequest request,
+                                                      HttpServletResponse response) throws Throwable {
 
-    public void testInitialJMSXDeliveryCount_B_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
+        exceptionFlag = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-
         JMSProducer producer = jmsContext.createProducer();
+
         producer.send(jmsQueue, "testInitialJMSXDeliveryCount_B_SecOff");
 
         JMSConsumer consumer = jmsContext.createConsumer(jmsQueue);
-        TextMessage msgIn = (TextMessage) consumer.receive(5000);
 
-        boolean testFailed = false;
-        if ( msgIn.getIntProperty("JMSXDeliveryCount") != 1 ) {
-            testFailed = true;
+        TextMessage msg = (TextMessage) consumer.receive(5000);
+        System.out.println(msg.getText());
+
+        if (!(msg.getIntProperty("JMSXDeliveryCount") == 1)) {
+            System.out.println("The received message is : " + msg.getText() + " and the Initial JMSXDeliveryCount value expected is 1 but actual value is "
+                               + msg.getIntProperty("JMSXDeliveryCount"));
+            exceptionFlag = true;
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testInitialJMSXDeliveryCount_B_SecOff failed");
-        }
+        if (exceptionFlag)
+            throw new WrongException("testInitialJMSXDeliveryCount_B_SecOff failed");
     }
 
-    public void testInitialJMSXDeliveryCount_TcpIp_SecOff(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public void testInitialJMSXDeliveryCount_TcpIp_SecOff(HttpServletRequest request,
+                                                          HttpServletResponse response) throws Throwable {
 
+        exceptionFlag = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-
         JMSProducer producer = jmsContext.createProducer();
+
         producer.send(jmsQueue, "testInitialJMSXDeliveryCount_TcpIp_SecOff");
 
         JMSConsumer consumer = jmsContext.createConsumer(jmsQueue);
-        TextMessage msgIn = (TextMessage) consumer.receive(5000);
 
-        boolean testFailed = false;
-        if ( msgIn.getIntProperty("JMSXDeliveryCount") != 1) {
-            testFailed = true;
+        TextMessage msg = (TextMessage) consumer.receive(5000);
+        System.out.println(msg.getText());
+
+        if (!(msg.getIntProperty("JMSXDeliveryCount") == 1)) {
+            System.out.println("The received message is : " + msg.getText() + " and the Initial JMSXDeliveryCount value expected is 1 but actual value is "
+                               + msg.getIntProperty("JMSXDeliveryCount"));
+            exceptionFlag = true;
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testInitialJMSXDeliveryCount_TcpIp_SecOff failed");
-        }
+        if (exceptionFlag)
+            throw new WrongException("testInitialJMSXDeliveryCount_TcpIp_SecOff failed");
     }
 
-    public void testRDC_B(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        Queue sendQueue = jmsQueue1;
-        Queue replyQueue = jmsQueue;
+    public void testRDC_B(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsQCFBindings.createContext();
-        JMSConsumer receiver = context.createConsumer(replyQueue);
 
+        Queue replyQueue = (Queue) new InitialContext()
+                        .lookup("java:comp/env/jndi_INPUT_Q");
+
+        emptyQueue(jmsQCFBindings, jmsQueue1);
         emptyQueue(jmsQCFBindings, replyQueue);
-        emptyQueue(jmsQCFBindings, sendQueue);
+        TextMessage msg = context.createTextMessage("testRDC_B");
+        context.createProducer().send(jmsQueue1, msg);
 
-        String msgOutText = "testRDC_B";
-        TextMessage msgOut = context.createTextMessage(msgOutText);
-        context.createProducer().send(sendQueue, msgOut);
+        JMSConsumer receiver = context.createConsumer(replyQueue);
+        MapMessage rec_msg;
+        rec_msg = (MapMessage) receiver.receive(30000);
 
-        MapMessage msgIn = (MapMessage) receiver.receive(30000);
+        System.out.println("Message text : " + rec_msg.getStringProperty("msgText"));
+        System.out.println("Is message redelivered : " + rec_msg.getBooleanProperty("redelivered"));
+        System.out.println("JMSDeliveryCount value is : " + rec_msg.getIntProperty("deliveryCount"));
 
-        boolean testFailed = false;
-        if ( (msgIn == null) || !msgOutText.equals( msgIn.getStringProperty("msgText") ) ||
-             !msgIn.getBooleanProperty("redelivered") ||
-             (msgIn.getIntProperty("deliveryCount") != 2) ) {
-            testFailed = true;
-        }
+        if (!(rec_msg.getStringProperty("msgText").equals("testRDC_B") && rec_msg.getBooleanProperty("redelivered") && rec_msg.getIntProperty("deliveryCount") == 2))
+            exceptionFlag = true;
 
         context.close();
-
-        if ( testFailed ) {
-            throw new Exception("testRDC_B failed: msgIn [ " + msgIn + " ]");
-        }
+        if (exceptionFlag)
+            throw new WrongException("testRDC_B failed");
     }
 
-    public void testRDC_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        Queue sendQueue = jmsQueue1;
-        Queue receiveQueue = jmsQueue;
+    public void testRDC_TcpIp(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
 
         JMSContext context = jmsQCFBindings.createContext();
-        emptyQueue(jmsQCFBindings, sendQueue);
-        emptyQueue(jmsQCFBindings, receiveQueue);
+        Queue replyQueue = (Queue) new InitialContext()
+                        .lookup("java:comp/env/jndi_INPUT_Q");
+        //here jmsQCFBindings points to jndi_JMS_BASE_QCF which is the CF used to connect for remote connections (check server.xml). 
+        //The reason for this is the MDB uses QCF with this name and it expects all transactions should use the same.
+        emptyQueue(jmsQCFBindings, jmsQueue1);
+        emptyQueue(jmsQCFBindings, replyQueue);
+        TextMessage msg = context.createTextMessage("testRDC_TcpIp");
 
-        String msgOutText = "testRDC_TcpIp";
-        TextMessage msgOut = context.createTextMessage(msgOutText);
-        context.createProducer().send(sendQueue, msgOut);
+        context.createProducer().send(jmsQueue1, msg);
 
-        JMSConsumer receiver = context.createConsumer(receiveQueue);
-        MapMessage msgIn = (MapMessage) receiver.receive(30000);
+        JMSConsumer receiver = context.createConsumer(replyQueue);
+        MapMessage rec_msg;
+        rec_msg = (MapMessage) receiver.receive(30000);
 
-        boolean testFailed = false;
-        if ( (msgIn == null) || !msgOutText.equals( msgIn.getStringProperty("msgText") ) ||
-             !msgIn.getBooleanProperty("redelivered") ||
-             (msgIn.getIntProperty("deliveryCount") != 2) ) {
-            testFailed = true;
-        }
+        System.out.println("Message text : " + rec_msg.getStringProperty("msgText"));
+        System.out.println("Is message redelivered : " + rec_msg.getBooleanProperty("redelivered"));
+        System.out.println("JMSDeliveryCount value is : " + rec_msg.getIntProperty("deliveryCount"));
+
+        if (!(rec_msg.getStringProperty("msgText").equals("testRDC_TcpIp") && rec_msg.getBooleanProperty("redelivered") && rec_msg.getIntProperty("deliveryCount") == 2))
+            exceptionFlag = true;
 
         context.close();
+        if (exceptionFlag)
+            throw new WrongException("testRDC_TcpIp failed");
 
-        if ( testFailed ) {
-            throw new Exception("testRDC_TcpIp failed");
-        }
     }
 
-    public void testMaxRDC_B(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        Queue sendQueue = jmsQueue2;
-        Queue receiveQueue = jmsQueue;
+    public void testMaxRDC_B(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsQCFBindings.createContext();
 
-        emptyQueue(jmsQCFBindings, sendQueue);
-        emptyQueue(jmsQCFBindings, receiveQueue);
+        Queue replyQueue = (Queue) new InitialContext()
+                        .lookup("java:comp/env/jndi_INPUT_Q");
 
-        TextMessage msgOut = context.createTextMessage("testMaxRDC_B");
-        context.createProducer().send(sendQueue, msgOut);
+        emptyQueue(jmsQCFBindings, jmsQueue2);
+        emptyQueue(jmsQCFBindings, replyQueue);
+        TextMessage msg = context.createTextMessage("testMaxRDC_B");
+        context.createProducer().send(jmsQueue2, msg);
 
-        JMSConsumer receiver = context.createConsumer(receiveQueue);
-        TextMessage msgIn = (TextMessage) receiver.receive(30000);
+        JMSConsumer receiver = context.createConsumer(replyQueue);
+        TextMessage rec_msg;
+        rec_msg = (TextMessage) receiver.receive(30000);
 
-        boolean testFailed = false;
-        if ( msgIn != null ) {
-            testFailed = true;
+        if (rec_msg != null) {
+            exceptionFlag = true;
+            System.out.println("Message exists : " + rec_msg.getText());
+
         }
 
         context.close();
-
-        if ( testFailed ) {
-            throw new Exception("testMaxRDC_B failed");
-        }
+        if (exceptionFlag)
+            throw new WrongException("testMaxRDC_B failed");
     }
 
-    public void testMaxRDC_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        Queue sendQueue = jmsQueue2;
-        Queue receiveQueue = jmsQueue;
+    public void testMaxRDC_TcpIp(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsQCFBindings.createContext();
+        //here jmsQCFBindings points to jndi_JMS_BASE_QCF which is the CF used to connect for remote connections (check server.xml). 
+        //The reason for this is the MDB uses QCF with this name and it expects all transactions should use the same.
+        Queue replyQueue = (Queue) new InitialContext()
+                        .lookup("java:comp/env/jndi_INPUT_Q");
 
-        emptyQueue(jmsQCFBindings, sendQueue);
-        emptyQueue(jmsQCFBindings, receiveQueue);
+        emptyQueue(jmsQCFBindings, jmsQueue2);
+        emptyQueue(jmsQCFBindings, replyQueue);
+        TextMessage msg = context.createTextMessage("testMaxRDC_TcpIp");
+        context.createProducer().send(jmsQueue2, msg);
 
-        TextMessage msgOut = context.createTextMessage("testMaxRDC_TcpIp");
-        context.createProducer().send(sendQueue, msgOut);
+        JMSConsumer receiver = context.createConsumer(replyQueue);
+        TextMessage rec_msg;
+        rec_msg = (TextMessage) receiver.receive(30000);
 
-        JMSConsumer receiver = context.createConsumer(receiveQueue);
-        TextMessage msgIn = (TextMessage) receiver.receive(30000);
+        if (rec_msg != null) {
+            exceptionFlag = true;
+            System.out.println("Message exists : " + rec_msg.getText());
 
-        boolean testFailed = false;
-        if ( msgIn != null ) {
-            testFailed = true;
         }
 
         context.close();
-
-        if ( testFailed ) {
-            throw new Exception("testMaxRDC_TcpIp failed");
-        }
+        if (exceptionFlag)
+            throw new WrongException("testMaxRDC_TcpIp failed");
     }
 
-    public void testQueueSendMDB(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public void testQueueSendMDB(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue10);
@@ -397,36 +296,47 @@ public class JMSRedelivery_120846Servlet extends HttpServlet {
         TextMessage msg = context.createTextMessage("testQueueSendMDB");
         context.createProducer().send(jmsQueue10, msg);
 
+        System.out.println("Sent message: " + msg.getText());
+
         context.close();
+
     }
 
-    public void testAnnotatedMDB(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public void testAnnotatedMDB(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue11);
 
         TextMessage msg = context.createTextMessage("testAnnotatedMDB");
         context.createProducer().send(jmsQueue11, msg);
+
+        System.out.println("Sent message: " + msg.getText());
+
     }
 
-    // defect 175486
-    public void testTopicSendMDB(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
+//  For defect 175486
+    public void testTopicSendMDB(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
+        System.out.println("Topic Conection factory" + jmsTopicCF);
         JMSContext context = jmsTopicCF.createContext();
 
         JMSConsumer jmsConsumer = context.createSharedConsumer(jmsTopic1, "DURATEST1");
         JMSProducer jmsProducer = context.createProducer();
 
         TextMessage msg = context.createTextMessage("testTopicSendMDB");
+
         jmsProducer.send(jmsTopic1, msg);
 
         context.close();
+
     }
 
-    public void testTopicAnnotatedMDB(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public void testTopicAnnotatedMDB(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
 
         JMSContext context = jmsTopicCF.createContext();
 
@@ -434,20 +344,91 @@ public class JMSRedelivery_120846Servlet extends HttpServlet {
         JMSProducer jmsProducer = context.createProducer();
 
         TextMessage msg = context.createTextMessage("testTopicAnnotatedMDB");
+
         jmsProducer.send(jmsTopic2, msg);
 
         context.close();
+
     }
 
-    public void testTargetChain_B(
-        HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
+    public void testTargetChain_B(HttpServletRequest request, HttpServletResponse response) throws Throwable
+    {
+        exceptionFlag = false;
         JMSContext context = jmsQCFTCP.createContext();
         JMSProducer jmsProducer = context.createProducer();
 
         TextMessage msg = context.createTextMessage("testin_TargetTransportChain");
+
         jmsProducer.send(jmsQueue1, msg);
 
         context.close();
+
     }
+
+    public static QueueConnectionFactory getQCFBindings() throws NamingException {
+
+        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
+                        .lookup("java:comp/env/jndi_JMS_BASE_QCF");
+
+        return cf1;
+
+    }
+
+    public QueueConnectionFactory getQCFTCP() throws NamingException {
+
+        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
+                        .lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+
+        return cf1;
+
+    }
+
+    public Queue getQueue(String name) throws NamingException {
+
+        Queue queue = (Queue) new InitialContext()
+                        .lookup("java:comp/env/" + name);
+
+        return queue;
+    }
+
+    public class WrongException extends Exception {
+        String str;
+
+        public WrongException(String str) {
+            this.str = str;
+            System.out.println(" <ERROR> " + str + " </ERROR>");
+        }
+    }
+
+    public void emptyQueue(QueueConnectionFactory qcf, Queue q)
+                    throws Exception {
+
+        JMSContext context = qcf.createContext();
+        QueueBrowser qb = context.createBrowser(q);
+        Enumeration e = qb.getEnumeration();
+        JMSConsumer consumer = context.createConsumer(q);
+        int numMsgs = 0;
+        // count number of messages
+        while (e.hasMoreElements()) {
+            Message message = (Message) e.nextElement();
+            numMsgs++;
+        }
+
+        for (int i = 0; i < numMsgs; i++) {
+            Message msg = consumer.receive();
+        }
+
+        context.close();
+    }
+
+    public static TopicConnectionFactory getTCF()
+                    throws NamingException {
+
+        TopicConnectionFactory tcf1 = (TopicConnectionFactory) new InitialContext()
+                        .lookup("java:comp/env/eis/tcf");
+
+        return tcf1;
+
+    }
+
 }

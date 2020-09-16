@@ -12,19 +12,11 @@ package com.ibm.ws.messaging.JMS20.fat;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.fail;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -77,25 +69,7 @@ public class TestUtils {
         String host, int port,
         String contextRoot, String test) throws IOException {
 
-        return runInServlet(host, port, contextRoot, test, null);
-    }
-
-    public static boolean runInServlet(
-        String host, int port,
-        String contextRoot, String test, String localAddress) throws IOException {
-
-        String urlText = "http://" + host + ":" + port + "/" + contextRoot + "?test=" + test;
-        if ( localAddress != null ) {
-            String encodedLocalAddress = URLEncoder.encode(localAddress, "UTF-8");
-            // String decodedLocalAddress = URLDecoder.decode(encodedLocalAddress, "UTF-8");
-            urlText += "&localAddress=" + encodedLocalAddress;
-            // System.out.println("Local address [ " + localAddress + " ]");
-            // System.out.println("Local address (encoded) [ " + encodedLocalAddress + " ]");
-            // System.out.println("Local address (decoded) [ " + decodedLocalAddress + " ]");
-        }
-        // System.out.println("Test URL text [ " + urlText + " ]");
-
-        URL servletUrl = new URL(urlText);
+        URL servletUrl = new URL("http://" + host + ":" + port + "/" + contextRoot + "?test=" + test);
         System.out.println("Test URL [ " + servletUrl + " ]");
 
         HttpURLConnection con = (HttpURLConnection) servletUrl.openConnection();
@@ -121,10 +95,7 @@ public class TestUtils {
             String successMessage = "COMPLETED SUCCESSFULLY";
             boolean result;
             if ( lines.indexOf(successMessage) < 0 ) {
-                fail( "Test [ " + test + " ] failed;\n" +
-                      " message [ " + successMessage + " ] not found;" +
-                      " output:\n" +
-                      lines );
+                org.junit.Assert.fail("Missing success message [ " + successMessage + " ] in output [ " + lines + " ]");
                 result = false;
             } else {
                 result = true;
@@ -134,69 +105,5 @@ public class TestUtils {
         } finally {
             con.disconnect();
         }
-    }
-
-    //
-
-    public static int occurrencesInLog(
-        LibertyServer server, String logName, String text) throws Exception {
-
-        String logFile = server.getLogsRoot() + logName;
-
-        FileReader reader;
-        try {
-            reader = new FileReader(logFile);
-        } catch ( FileNotFoundException ex ) {
-            ex.printStackTrace();
-            return 0;
-        } catch ( IOException ex ) {
-            ex.printStackTrace();
-            return 0;
-        }
-
-        int count = 0;
-
-        try {
-            BufferedReader br = new BufferedReader(reader);
-
-            String nextLine;
-            while ( (nextLine = br.readLine()) != null ) {
-                if ( nextLine.contains(text) ) {
-                    count++;
-                }
-            }
-
-        } catch ( IOException ex ) {
-            ex.printStackTrace();
-
-        } finally {
-            try {
-                reader.close();
-            } catch ( IOException ex ) {
-                ex.printStackTrace();
-            }
-        }
-
-        return count;
-    }
-
-    public static List<String> readLines(LibertyServer server, String relLogName) throws FileNotFoundException, IOException {
-        List<String> lines = new ArrayList<String>();
-
-        String logFile = server.getLogsRoot() + '/' + relLogName;
-        FileReader reader = new FileReader(logFile); // throws FileNotFoundException, IOException
-        try {
-            BufferedReader br = new BufferedReader(reader);
-
-            String nextLine;
-            while ( (nextLine = br.readLine()) != null ) { // throws IOException
-                lines.add(nextLine);
-            }
-
-        } finally {
-            reader.close(); // throws IOException
-        }
-
-        return lines;
     }
 }
