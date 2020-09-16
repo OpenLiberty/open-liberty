@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
 
+    <logging traceSpecification="com.ibm.logs.TraceServlet=fine" />
+
     <!-- Enable features -->
     <featureManager>
         <feature>jsp-2.2</feature>
@@ -12,7 +14,7 @@
     <httpEndpoint id="defaultHttpEndpoint"
         httpPort="${bvt.prop.HTTP_default}"
         httpsPort="${bvt.prop.HTTP_default.secure}">
-        <accessLogging enabled="true"
+        <accessLogging enabled="false"
             filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log"
             logFormat="%h %u %t &quot;%r&quot; %s %b %D %{User-agent}i" />
     </httpEndpoint>
@@ -22,9 +24,8 @@
 
 
     <logstashCollector port="${LOGSTASH_PORT}" hostName="${LOGSTASH_HOST}">
-        <source>message</source>
         <source>trace</source>
-        <source>accessLog</source>
+        <source>message</source>
     </logstashCollector>
 
     <keyStore id="defaultKeyStore" password="{xor}Lz4sLChvLTs=" />
