@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -383,4 +383,34 @@ public class TextMessageImpl implements TextMessage {
     public void clearBody() throws JMSException {
     }
 
+    /**
+     * @see javax.jms.Message#getBody(Class)
+     */
+    @Override
+    public <T> T getBody(Class<T> arg0) throws JMSException {
+        return null;
+    }
+
+    /**
+     * @see javax.jms.Message#getJMSDeliveryTime()
+     */
+    @Override
+    public long getJMSDeliveryTime() throws JMSException {
+        return 0;
+    }
+
+    /**
+     * @see javax.jms.Message#isBodyAssignableTo(Class)
+     */
+    @Override
+    public boolean isBodyAssignableTo(Class arg0) throws JMSException {
+        return false;
+    }
+
+    /**
+     * @see javax.jms.Message#setJMSDeliveryMode(long)
+     */
+    @Override
+    public void setJMSDeliveryTime(long arg0) throws JMSException {
+    }
 }

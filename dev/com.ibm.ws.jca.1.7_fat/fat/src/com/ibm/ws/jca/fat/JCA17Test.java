@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,22 @@ package com.ibm.ws.jca.fat;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -28,10 +36,12 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 public class JCA17Test extends FATServletClient {
     @Server("com.ibm.ws.jca.fat")
     public static LibertyServer server;
+
+    private static final String WEB_NAME = "fvtweb";
+    private static final String APP_NAME = "fvtapp";
 
     private static final String SERVLET_AOD = "aod";
     private static final String SERVLET_AODS = "aods";
@@ -41,7 +51,37 @@ public class JCA17Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation("fvtapp");
+        // Build jars that will be in the RAR
+        JavaArchive adapter_jar = ShrinkWrap.create(JavaArchive.class, "ResourceAdapter.jar");
+        adapter_jar.addPackage("com.ibm.adapter");
+        adapter_jar.addPackage("com.ibm.adapter.message");
+        adapter_jar.addPackage("com.ibm.ejs.ras");
+        adapter_jar.addPackage("com.ibm.inout.adapter");
+        adapter_jar.addManifest();
+
+        // Build the resource adapter
+        ResourceAdapterArchive adpater_resource = ShrinkWrap.create(ResourceAdapterArchive.class, "adapter_administrator_object.rar");
+        adpater_resource.as(JavaArchive.class).addPackage("fat.jca.resourceadapter");
+        adpater_resource.addAsManifestResource(new File("test-resourceadapters/adapter/resources/META-INF/ra.xml"));
+        adpater_resource.addAsLibrary(adapter_jar);
+        adpater_resource.addManifest();
+        ShrinkHelper.exportToServer(server, "connectors", adpater_resource);
+
+        // Build the web module and application
+        WebArchive fvtweb_war = ShrinkWrap.create(WebArchive.class, WEB_NAME + ".war");
+        fvtweb_war.addPackage("web");
+        fvtweb_war.addPackage("ejb");
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ejb-jar.xml"));
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-ejb-jar-bnd.xml"));
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
+        fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
+
+        EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear");
+        fvtapp_ear.addAsModule(fvtweb_war);
+        fvtapp_ear.addAsModule(adpater_resource);
+        fvtapp_ear.addAsManifestResource(new File("test-applications/fvtapp/META-INF/application.xml"));
+        ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+
         server.startServer();
     }
 
@@ -56,7 +96,7 @@ public class JCA17Test extends FATServletClient {
     }
 
     private void runTest(String servlet) throws Exception {
-        FATServletClient.runTest(server, "fvtweb/" + servlet, testName);
+        FATServletClient.runTest(server, WEB_NAME + "/" + servlet, getTestMethodSimpleName());
     }
 
     @Test
