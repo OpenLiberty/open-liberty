@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
     id="WebApp_ID">
 
-  <display-name>JMSProducer</display-name>
+  <display-name>JCABVTWeb</display-name>
 
   <servlet id="Default">
     <servlet-name>JMSProducer FAT Servlet</servlet-name>
@@ -18,25 +18,6 @@
     <servlet-name>JMSProducer FAT Servlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
-
-
-  <resource-ref>
-    <res-ref-name>jndi_JMS_BASE_CF</res-ref-name>
-    <res-type>javax.jms.ConnectionFactory</res-type>
-    <lookup-name>jndi_JMS_BASE_CF</lookup-name>
-  </resource-ref> 
-
-  <resource-ref>
-    <res-ref-name>jndi_JMS_BASE_QCF</res-ref-name>
-    <res-type>javax.jms.QueueConnectionFactory</res-type>
-    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
-  </resource-ref>  
-
-  <resource-ref>
-    <res-ref-name>jndi_JMS_BASE_QCF1</res-ref-name>
-    <res-type>javax.jms.QueueConnectionFactory</res-type>
-    <lookup-name>jndi_JMS_BASE_QCF1</lookup-name>
-  </resource-ref> 
 
   <resource-ref>
     <res-ref-name>eis/cf1</res-ref-name>
@@ -63,6 +44,40 @@
     <lookup-name>eis/tcf1</lookup-name>
   </resource-ref>
 
+  <resource-ref>
+    <res-ref-name>eis/qcf</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>eis/qcf</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_QCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+  </resource-ref>  
+
+  <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_QCF1</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF1</lookup-name>
+  </resource-ref> 
+
+  <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_CF</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_CF</lookup-name>
+  </resource-ref> 
+
+  <resource-env-ref>
+    <resource-env-ref-name>eis/queue1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_INPUT_Q</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
+  
   <resource-env-ref>
     <resource-env-ref-name>jndi_INPUT_Q1</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
@@ -71,12 +86,17 @@
   <resource-env-ref>
     <resource-env-ref-name>jndi_INPUT_Q2</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
-  </resource-env-ref>  
+  </resource-env-ref> 
   
   <resource-env-ref>
     <resource-env-ref-name>jndi_INPUT_Q3</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
-  </resource-env-ref> 
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_EXCEPTION_Q</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
 
   <resource-env-ref>
     <resource-env-ref-name>eis/topic1</resource-env-ref-name>
@@ -85,6 +105,21 @@
   
   <resource-env-ref>
     <resource-env-ref-name>eis/topic2</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic3</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic4</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic5</resource-env-ref-name>
     <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
   </resource-env-ref>
 

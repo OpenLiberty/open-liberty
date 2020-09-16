@@ -28,104 +28,140 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
-// TODO: What is the relationship of this test and the similarly named
-//       "JMSProducerTest_118073"?
-
 @Mode(TestMode.FULL)
 public class JMSProducer_Test118073 {
-    private static final LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("JMSProducerClient");
-    private static final LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("JMSProducerEngine");
 
-    private static final int clientPort = clientServer.getHttpDefaultPort();
-    private static final String clientHostName = clientServer.getHostname();
+    private static LibertyServer server = LibertyServerFactory
+                    .getLibertyServer("TestServer");
 
-    private static final String producerAppName = "JMSProducer_118073";
-    private static final String producerContextRoot = "JMSProducer_118073";
-    private static final String[] producerPackages = new String[] { "jmsproducer_118073.web" };
+    private static LibertyServer server1 = LibertyServerFactory
+                    .getLibertyServer("TestServer1");
+
+    private static final int PORT = server.getHttpDefaultPort();
+    private static final String HOST = server.getHostname();
+    private static boolean testResult = false;
 
     private boolean runInServlet(String test) throws IOException {
-        return TestUtils.runInServlet(clientHostName, clientPort, producerContextRoot, test); // throws IOException
-    }
+        boolean result = false;
 
-    //
+        URL url = new URL("http://" + HOST + ":" + PORT + "/JMSProducer_118073?test="
+                          + test);
+        System.out.println("The Servlet URL is : " + url.toString());
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+            con.connect();
+
+            InputStream is = con.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String sep = System.lineSeparator();
+            StringBuilder lines = new StringBuilder();
+            for (String line = br.readLine(); line != null; line = br
+                            .readLine())
+                lines.append(line).append(sep);
+
+            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0) {
+                org.junit.Assert.fail("Missing success message in output. "
+                                      + lines);
+                result = false;
+            }
+
+            else
+                result = true;
+
+            return result;
+        } finally {
+            con.disconnect();
+        }
+    }
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("JMSProducerEngine.xml");
 
-        clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        clientServer.setServerConfigurationFile("JMSProducerClient.xml");
-        TestUtils.addDropinsWebApp(clientServer, producerAppName, producerPackages);
+        server.copyFileToLibertyInstallRoot("lib/features",
+                                            "features/testjmsinternals-1.0.mf");
 
-        engineServer.startServer("JMSProducerEngine_118073B.log");
-        clientServer.startServer("JMSProducerClient_118073B.log");
+        server1.setServerConfigurationFile("JMSContext_Server.xml");
+        server1.startServer();
+
+        server.setServerConfigurationFile("JMSContext_Client.xml");
+        server.startServer();
+
     }
 
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            clientServer.stopServer();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-        try {
-            engineServer.stopServer();
-        } catch ( Exception e ) {
+            System.out.println("Stopping server");
+            server.stopServer();
+            server1.stopServer();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    //
-
     @Mode(TestMode.FULL)
     @Test
     public void testSetGetJMSReplyTo_Topic_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testSetGetJMSReplyTo_Topic_B_SecOff");
+
+        testResult = runInServlet("testSetGetJMSReplyTo_Topic_B_SecOff");
+
         assertTrue("testSetGetJMSReplyTo_Topic_B_SecOff", testResult);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSetGetJMSReplyTo_Topic_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testSetGetJMSReplyTo_Topic_TCP_SecOff");
+
+        testResult = runInServlet("testSetGetJMSReplyTo_Topic_TCP_SecOff");
+
         assertTrue("testSetGetJMSReplyTo_Topic_TCP_SecOff", testResult);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testNullJMSReplyTo_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testNullJMSReplyTo_B_SecOff");
+        testResult = runInServlet("testNullJMSReplyTo_B_SecOff");
+
         assertTrue("testNullJMSReplyTo_B_SecOff", testResult);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testNullJMSReplyTo_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testNullJMSReplyTo_TCP_SecOff");
+
+        testResult = runInServlet("testNullJMSReplyTo_TCP_SecOff");
+
         assertTrue("testNullJMSReplyTo_TcpIp_SecOff: Expected output not found", testResult);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSetAsync_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testSetAsync_B_SecOff");
+
+        testResult = runInServlet("testSetAsync_B_SecOff");
+
         assertTrue("testSetAsync_B_SecOff failed", testResult);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSetAsync_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testSetAsync_TCP_SecOff");
+
+        testResult = runInServlet("testSetAsync_TCP_SecOff");
+
         assertTrue("testSetAsync_TCP_SecOff failed", testResult);
+
     }
+
 }

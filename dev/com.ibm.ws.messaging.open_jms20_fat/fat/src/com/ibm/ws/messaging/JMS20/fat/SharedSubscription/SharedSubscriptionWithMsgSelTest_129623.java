@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat.SharedSubscription;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,211 +32,228 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
 public class SharedSubscriptionWithMsgSelTest_129623 {
 
-    private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
+    private static LibertyServer server = LibertyServerFactory.getLibertyServer("TestServer"); //client
 
-    private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("SharedSubscriptionwithMsgSelClient");
+    private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("TestServer1"); //server
 
-    public int occurrencesInLog(String text) throws Exception {
-        return TestUtils.occurrencesInLog(clientServer, "trace.log", text);
-    }
+    private static final int PORT = server.getHttpDefaultPort();
+    private static final String HOST = server.getHostname();
 
-    private static final int clientPort = clientServer.getHttpDefaultPort();
-    private static final String clientHostName = clientServer.getHostname();
+    boolean val = false;
 
-    private static final String subscriptionAppName = "SharedSubscriptionWithMsgSel";
-    private static final String subscriptionContextRoot = "SharedSubscriptionWithMsgSel";
-    private static final String[] subscriptionPackages = new String[] {
-        "sharedsubscriptionwithmsgsel.web",
-        "sharedsubscriptionwithmsgsel.ejb" };
+    private boolean runInServlet(String test) throws IOException {
 
-    //
+        boolean result = false;
 
-    // Relative to the server 'logs' folder.
-    private static final String JMX_LOCAL_ADDRESS_REL_PATH = "state/com.ibm.ws.jmx.local.address";
+        URL url = new URL("http://" + HOST + ":" + PORT + "/SharedSubscriptionWithMsgSel?test="
+                          + test);
+        System.out.println("The Servlet URL is : " + url.toString());
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+            con.connect();
 
-    private static String readLocalAddress(LibertyServer libertyServer) throws FileNotFoundException, IOException {
-        List<String> localAddressLines = TestUtils.readLines(libertyServer, JMX_LOCAL_ADDRESS_REL_PATH);
-        // throws FileNotFoundException, IOException
+            InputStream is = con.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String sep = System.lineSeparator();
+            StringBuilder lines = new StringBuilder();
+            for (String line = br.readLine(); line != null; line = br.readLine())
+                lines.append(line).append(sep);
 
-        if ( localAddressLines.isEmpty() ) {
-            throw new IOException("Empty JMX local address file [ " + libertyServer.getLogsRoot() + " ] [ " + JMX_LOCAL_ADDRESS_REL_PATH + " ]");
+            if (lines.indexOf(test + " COMPLETED SUCCESSFULLY") < 0) {
+                org.junit.Assert.fail("Missing success message in output. "
+                                      + lines);
+                result = false;
+            } else
+                result = true;
+
+            return result;
+        } finally {
+            con.disconnect();
         }
-
-        return localAddressLines.get(0);
     }
-
-    private static String localAddress;
-
-    private static void setLocalAddress(String localAddress) {
-        System.out.println("Local address [ " + localAddress + " ]");
-        SharedSubscriptionWithMsgSelTest_129623.localAddress = localAddress;
-    }
-
-    private static String getLocalAddress() {
-        return localAddress;
-    }
-
-    private static boolean runInServlet(String test) throws IOException {
-        return TestUtils.runInServlet( clientHostName, clientPort, subscriptionContextRoot, test, getLocalAddress() );
-        // throws IOException
-    }
-
-    //
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("SharedSubscriptionEngine.xml");
 
-        clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
-        TestUtils.addDropinsWebApp(clientServer, subscriptionAppName, subscriptionPackages);
-        clientServer.setServerConfigurationFile("SharedSubscriptionDurClient.xml");
+        server.copyFileToLibertyInstallRoot("lib/features",
+                                            "features/testjmsinternals-1.0.mf");
 
-        engineServer.startServer("SharedSubscriptionWithMsgSel_129623_Engine.log");
-        setLocalAddress( readLocalAddress(engineServer) ); // 'readLocalAddress' throws IOException
+        server1.setServerConfigurationFile("JMSContext_Server.xml");
+        server1.startServer("SharedSubscriptionWithMsgSel_129623_Server.log");
+        String changedMessageFromLog = server1.waitForStringInLog(
+                                                                  "CWWKF0011I.*", server1.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the upload message in the new file",
+                      changedMessageFromLog);
 
-        clientServer.startServer("SharedSubscriptionWithMsgSel_129623_Client.log");
-    }
+        server.setServerConfigurationFile("JMSContext_Client.xml");
+        server.startServer("SharedSubscriptionWithMsgSel_129623_Client.log");
+        changedMessageFromLog = server.waitForStringInLog(
+                                                          "CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the server start info message in the new file",
+                      changedMessageFromLog);
 
-    private static void restartServers() throws Exception {
-        clientServer.stopServer();
-        engineServer.stopServer();
-
-        engineServer.startServer("SharedSubscriptionWithMsgSel_129623_Engine.log");
-        setLocalAddress( readLocalAddress(engineServer) ); // 'readLocalAddress' throws IOException
-
-        clientServer.startServer("SharedSubscriptionWithMsgSel_129623_Client.log");
     }
 
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            clientServer.stopServer();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-        try {
-            engineServer.stopServer();
-        } catch ( Exception e ) {
+            System.out.println("Stopping server");
+            server.stopServer();
+            server1.stopServer();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testSharedDurConsumerWithMsgSelector() throws Exception {
+    public void testSharedDurConsumerWithMsgSelector_B() throws Exception {
+
         boolean val1 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_create");
         boolean val2 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_create_Expiry");
-
-        // restartServers(); // throws Exception
-
+        server.stopServer();
+        server1.stopServer();
+        server1.startServer("SharedSubscriptionWithMsgSel_129623_Server.log");
+        server.startServer("SharedSubscriptionWithMsgSel_129623_Client.log");
         boolean val3 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_consume");
         boolean val4 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry");
 
-        assertTrue("testSharedDurConsumerWithMsgSelector failed", (val1 && val2 && val3 && val4));
+        if (val1 && val2 && val3 && val4)
+            val = true;
+        assertTrue("testSharedDurConsumerWithMsgSelector_B failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSharedDurConsumerWithMsgSelector_TcpIp() throws Exception {
+
         boolean val1 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_create_TCP");
         boolean val2 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_create_Expiry_TCP");
-
-        // restartServers(); // throws Exception
+        server1.stopServer();
+        server.stopServer();
+        Thread.sleep(500);
+        server1.startServer("SharedSubscriptionWithMsgSel_129623_Server.log");
+        server.startServer("SharedSubscriptionWithMsgSel_129623_Client.log");
 
         boolean val3 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry_TCP");
         boolean val4 = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_consume_TCP");
 
-        assertTrue("testSharedDurConsumerWithMsgSelector_TcpIp failed", (val1 && val2 && val3 && val4));
+        if (val1 && val2 && val3 && val4)
+            val = true;
+
+        assertTrue("testSharedDurConsumerWithMsgSelector_TcpIp failed", val);
+
     }
 
     @Test
-    public void testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_SecOff failed", testResult);
+    public void testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_B_SecOff() throws Exception {
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_B_SecOff failed", val);
 
     }
 
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP_SecOff failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP_SecOff failed", val);
+
     }
 
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2Subscribers() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers failed", val);
+
     }
 
-    // @Test
+//commented
+    //@Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP failed", val);
+
     }
 
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic failed", val);
+
     }
 
-    // @Test
+//commented
+    //@Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector failed", val);
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_SecOff failed", testResult);
+    public void testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_B_SecOff() throws Exception {
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_B_SecOff failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP_SecOff failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP_SecOff failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumerWithMsgSelector_Null_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_Null");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_Null_SecOff failed", testResult);
+    public void testCreateSharedDurableConsumerWithMsgSelector_Null_B_SecOff() throws Exception {
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_Null");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_Null_B_SecOff failed", val);
+
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_Null_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_Null_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_Null_TCP_SecOff failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_Null_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_Null_TCP_SecOff failed", val);
+
     }
 
     // 129623_1_9 If a shared durable subscription already exists with the same
@@ -247,22 +262,24 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
     // the durable subscription, then a JMSRuntimeException will be thrown.
 
     // Bindings and Security Off
-
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumerWithMsgSelector_JRException_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_JRException");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_JRException_SecOff failed", testResult);
+    public void testCreateSharedDurableConsumerWithMsgSelector_JRException_B_SecOff() throws Exception {
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_JRException");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_JRException_B_SecOff failed", val);
     }
 
     // TCP and Sec Off
 
     @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
-    // @Test
+//    @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP");
-        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP_SecOff failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP");
+        assertTrue("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP_SecOff failed", val);
+
     }
 
     // 129623_1_10 A shared durable subscription and an unshared durable
@@ -270,48 +287,118 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
     // If an unshared durable subscription already exists with the same name and
     // client identifier (if set) then a JMSRuntimeException is thrown.
     // Bindings and Security Off
-
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException");
-        assertTrue("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_SecOff failed", testResult);
+    public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_B_SecOff() throws Exception {
+
+        val = runInServlet("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException");
+        assertTrue("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_B_SecOff failed", val);
     }
 
     // TCP and Sec Off
-
     @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP");
-        assertTrue("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP_SecOff failed", testResult);
+
+        val = runInServlet("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP");
+        assertTrue("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP_SecOff failed", val);
+
     }
 
     @Mode(TestMode.FULL)
-    // @Test // MDBMDB
+    @Test
     public void testMultiSharedDurableConsumer_SecOff() throws Exception {
+
+        server.stopServer();
+        server1.stopServer();
+        server.setServerConfigurationFile("DurSharedMDB_Bindings.xml");
+        server1.startServer();
+        server.startServer();
+
+        String changedMessageFromLog = server.waitForStringInLog(
+                                                                 "CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
+        assertNotNull(
+                      "Could not find the server start info message in the new file",
+                      changedMessageFromLog);
+
         runInServlet("testBasicMDBTopic");
         Thread.sleep(1000);
-        int count1 = occurrencesInLog("Received in MDB1: testBasicMDBTopic:");
-        int count2 = occurrencesInLog("Received in MDB2: testBasicMDBTopic:");
+        int count1 = getCount("Received in MDB1: testBasicMDBTopic:");
+        int count2 = getCount("Received in MDB2: testBasicMDBTopic:");
 
-        boolean testFailed = false;
-        if ( !((count1 > 1) && (count2 > 1) && (count1 + count2 == 20)) ) {
-            testFailed = true;
+        System.out.println("Number of messages received on MDB1 is " + count1
+                           + " and number of messages received on MDB2 is " + count2);
+
+        boolean output = false;
+        if (count1 > 1 && count2 > 1 && (count1 + count2 == 20)) {
+            output = true;
         }
+
+        assertTrue("testBasicMDBTopicDurableShared: output value is false",
+                   output);
+
+        server1.stopServer();
+        server1.setServerConfigurationFile("JMSContext_Server.xml");
+        server1.startServer();
+
+        server.stopServer();
+        server.setServerConfigurationFile("DurSharedMDB_TCP.xml");
+        server.startServer();
 
         runInServlet("testBasicMDBTopic_TCP");
         Thread.sleep(1000);
-        int count3 = occurrencesInLog("Received in MDB1: testBasicMDBTopic_TCP:");
-        int count4 = occurrencesInLog("Received in MDB2: testBasicMDBTopic_TCP:");
+        count1 = getCount("Received in MDB1: testBasicMDBTopic:");
+        count2 = getCount("Received in MDB2: testBasicMDBTopic:");
 
-        boolean testFailed_TCP = true;
-        if ( !((count3 > 1) && (count4 > 1) && (count3 + count4 == 20)) ) {
-            testFailed_TCP = true;
+        System.out.println("Number of messages received on MDB1 is " + count1
+                           + " and number of messages received on MDB2 is " + count2);
+
+        output = false;
+        // if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
+        if (count1 > 1 && count2 > 1 && (count1 + count2 == 20)) {
+            output = true;
         }
 
-        assertFalse("testBasicMDBTopicDurableShared failed testBasicMDBTopic [ " + count1 + " ] [ " + count2 + " ]", testFailed);
-        assertFalse("testBasicMDBTopicDurableShared failed testBasicMDBTopic_TCP [ " + count3 + " ] [ " + count4 + " ]", testFailed_TCP);
+        assertTrue("testBasicMDBTopicDurableShared_TCP: output value is false",
+                   output);
+
+        server.stopServer();
+        server1.stopServer();
+        server.setServerConfigurationFile("JMSContext_Client.xml");
+        server1.setServerConfigurationFile("JMSContext_Server.xml");
+        server1.startServer();
+        server.startServer();
+
+    }
+
+    public int getCount(String str) throws Exception {
+
+        String file = server.getLogsRoot() + "trace.log";
+        System.out.println("FILE PATH IS : " + file);
+        int count1 = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file));) {
+
+            String sCurrentLine;
+
+            // read lines until reaching the end of the file
+            while ((sCurrentLine = br.readLine()) != null) {
+
+                if (sCurrentLine.length() != 0) {
+                    // extract the words from the current line in the file
+                    if (sCurrentLine.contains(str))
+                        count1++;
+                }
+            }
+        } catch (FileNotFoundException exception) {
+
+            exception.printStackTrace();
+        } catch (IOException exception) {
+
+            exception.printStackTrace();
+        }
+        return count1;
+
     }
 }

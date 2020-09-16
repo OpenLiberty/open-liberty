@@ -1,6 +1,8 @@
 <server>
 
   <featureManager>
+    <feature>osgiconsole-1.0</feature>
+
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
     <feature>ejbLite-3.2</feature>
@@ -8,73 +10,53 @@
 
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
-
-    <feature>timedexit-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
 
   <variable name="onError" value="FAIL"/>
 
-  <!--
-  <logging
-    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all:com.ibm.ws.sib.api.jms.impl.*=all:com.ibm.ws.jndi.*=all"
+  <logging 
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all:com.ibm.ws.sib.api.jms.impl.*=all"
     maxFileSize="200"/>
-   -->
 
-  <!-- Avoid MissingDoPrivDetectionSecurityManager warning CWWKE0921W potential violation warnings -->
-
-  <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
-
-  <!-- Point the connection factories to the JMS endpoint defined in the engine configuration. -->
-
-  <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr1">
+  <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr20">
     <properties.wasJms
-        remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-<!--        clientID="TestID"/>  -->
+        remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"
+        clientID="TestID"/> 
   </jmsConnectionFactory>
-  <connectionManager id="ConMgr1" maxPoolSize="2"/>
+  <connectionManager id="ConMgr20" maxPoolSize="2"/>
 
-  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr2">
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
     <properties.wasJms
-        remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-<!--        userName="CF1USER" password="junkpassword"/>  -->
+        remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"
+        userName="CF1USER" password="junkpassword"/> 
   </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr2" maxPoolSize="2"/>
-
-  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr3">
-    <properties.wasJms
-      remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-<!--      userName="CF1USER" password="junkpassword"/>  -->
-  </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr3" maxPoolSize="2"/>
-
-  <jmsQueueConnectionFactory jndiName="eis/qcf" connectionManagerRef="ConMgr4">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-  </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr4" maxPoolSize="2"/>
-
-  <jmsQueueConnectionFactory jndiName="eis/qcf1" connectionManagerRef="ConMgr5">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-  </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr5" maxPoolSize="2"/>
-
-  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr6">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
-  </jmsTopicConnectionFactory>
   <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
-  <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr7">
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
+    <properties.wasJms
+      remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"
+      userName="CF1USER" password="junkpassword"/> 
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr5" maxPoolSize="2"/>  
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr3">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr3" maxPoolSize="2"/>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr2">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
   </jmsTopicConnectionFactory>
-  <connectionManager id="ConMgr7" maxPoolSize="2"/>
+  <connectionManager id="ConMgr2" maxPoolSize="2"/>
 
-  <jmsQueue jndiName="jndi_INPUT_Q1">
-    <properties.wasJms queueName="QUEUE1"/>
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="newQueue"/>
   </jmsQueue>
 
-  <jmsQueue jndiName="jndi_INPUT_Q2">
-    <properties.wasJms queueName="QUEUE2"/>
+  <jmsQueue jndiName="eis/queue1">
+    <properties.wasJms queueName="QUEUE1"/>
   </jmsQueue>
 
   <jmsTopic jndiName="eis/topic1">

@@ -47,85 +47,61 @@ public class JMSProducer_118073Servlet extends HttpServlet {
     public static TopicConnectionFactory qcfTCP;
     public static TopicConnectionFactory tcfTCP;
 
+    public static Queue queue;
     public static Queue queue1;
-    public static Queue queue2;
 
+    public static Topic topic;
     public static Topic topic1;
-    public static Topic topic2;
 
     @Override
     public void init() throws ServletException {
-        System.out.println("JMSProducer_118073Servlet.init ENTRY");
-
         super.init();
 
         try {
             qcfBindings = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
-        }
-        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + qcfBindings);
-
-        try {
             tcfBindings = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
-        }
-        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + tcfBindings);
-
-        try {
             qcfTCP = (TopicConnectionFactory)
                 new InitialContext().lookup("java:comp/env/eis/tcf");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
-        }
-        System.out.println("Topic connection factory 'java:comp/env/eis/tcf':\n" + qcfTCP);
-
-        try {
             tcfTCP = (TopicConnectionFactory)
                 new InitialContext().lookup("java:comp/env/eis/tcf1");
+
+            queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+            queue1 = (Queue) new InitialContext().lookup("java:comp/env/eis/queue1");
+
+            topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
+            topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
+
         } catch ( NamingException ex ) {
             ex.printStackTrace();
         }
-        System.out.println("Topic connection factory 'java:comp/env/eis/tcf1':\n" + tcfTCP);
 
-        try {
-            queue1 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
+        if ( qcfBindings == null ) {
+            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'");
         }
-        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + queue1);
-
-        try {
-            queue2 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q2");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
+        if ( tcfBindings == null ) {
+            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'");
         }
-        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q2':\n" + queue2);
-
-        try {
-            topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
+        if ( qcfTCP == null ) {
+            System.out.println("Null topic connection factory 'java:comp/env/eis/tcf'");
         }
-        System.out.println("Topic 'java:comp/env/eis/topic1':\n" + topic1);
-
-        try {
-            topic2 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
-        } catch ( NamingException ex ) {
-            ex.printStackTrace();
+        if ( tcfTCP == null ) {
+            System.out.println("Null topic connection factory 'java:comp/env/eis/tcf1'");
         }
-        System.out.println("Topic 'java:comp/env/eis/topic2':\n" + topic2);
 
-        System.out.println("JMSProducer_118073Servlet.init RETURN");
+        if ( queue == null ) {
+            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q'");
+        }
+        if ( queue1 == null ) {
+            System.out.println("Null queue 'java:comp/env/eis/queue1'");
+        }
 
-        if ( (qcfBindings == null) || (tcfBindings == null) ||
-             (qcfTCP == null) || (tcfTCP == null) ||
-             (queue1 == null) || (queue2 == null) ||
-             (topic1 == null) || (topic2 == null) ) {
-            throw new ServletException("Failed JMS initialization");
+        if ( topic == null ) {
+            System.out.println("Null topic 'java:comp/env/eis/topic1'");
+        }
+        if ( topic1 == null ) {
+            System.out.println("Null topic 'java:comp/env/eis/topic2'");
         }
     }
 
@@ -189,13 +165,13 @@ public class JMSProducer_118073Servlet extends HttpServlet {
 
         JMSContext sendContext = qcfBindings.createContext();
         JMSProducer sendProducer = sendContext.createProducer();
-        sendProducer.setJMSReplyTo(queue2);
+        sendProducer.setJMSReplyTo(queue1);
 
         TextMessage sendMsg = sendContext.createTextMessage("testSetGetJMSReplyTo_B");
-        sendProducer.send(queue1, sendMsg);
+        sendProducer.send(queue, sendMsg);
 
         JMSContext receiveContext = qcfBindings.createContext();
-        JMSConsumer receiveQueue = receiveContext.createConsumer(queue1);
+        JMSConsumer receiveQueue = receiveContext.createConsumer(queue);
         TextMessage receiveMsg = (TextMessage) receiveQueue.receiveNoWait();
 
         Destination replyDestination = sendProducer.getJMSReplyTo();
@@ -204,7 +180,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         replyMsg.setJMSCorrelationID( receiveMsg.getJMSMessageID() );
         replyProducer.send(replyDestination, replyMsg);
 
-        JMSConsumer receiveReplyQueue = sendContext.createConsumer(queue2);
+        JMSConsumer receiveReplyQueue = sendContext.createConsumer(queue1);
         TextMessage receiveReplyMsg = (TextMessage) receiveReplyQueue.receiveNoWait();
         receiveReplyQueue.receiveNoWait();
         String receiveReplyID = new String( receiveReplyMsg.getJMSCorrelationID() );
@@ -227,12 +203,12 @@ public class JMSProducer_118073Servlet extends HttpServlet {
 
         JMSContext sendContext = qcfTCP.createContext();
         JMSProducer producer = sendContext.createProducer();
-        producer.setJMSReplyTo(queue2);
+        producer.setJMSReplyTo(queue1);
         TextMessage sendMsg = sendContext.createTextMessage("testSetGetJMSReplyTo_TCP");
-        producer.send(queue1, sendMsg);
+        producer.send(queue, sendMsg);
 
         JMSContext receiveContext = qcfTCP.createContext();
-        JMSConsumer receiveQueue = receiveContext.createConsumer(queue1);
+        JMSConsumer receiveQueue = receiveContext.createConsumer(queue);
         TextMessage receiveMsg = (TextMessage) receiveQueue.receiveNoWait();
 
         Destination replyDestination = producer.getJMSReplyTo();
@@ -241,7 +217,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         sendReplyMsg.setJMSCorrelationID( receiveMsg.getJMSMessageID() );
         replyProducer.send(replyDestination, sendReplyMsg);
 
-        JMSConsumer receiveReplyQueue = sendContext.createConsumer(queue2);
+        JMSConsumer receiveReplyQueue = sendContext.createConsumer(queue1);
         TextMessage receiveReplyMsg = (TextMessage) receiveReplyQueue.receiveNoWait();
         receiveReplyQueue.receiveNoWait();
         String receiveReplyID = new String( receiveReplyMsg.getJMSCorrelationID() );
@@ -267,7 +243,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         JMSProducer producer = jmsContext.createProducer();
         producer.setJMSReplyTo(topic1);
 
-        String expectedReplyTo = "topic://testTopic1?topicSpace=NewTopic1";
+        String expectedReplyTo = "topic://Default.Topic?topicSpace=NewTopic2";
         String actualReplyTo = producer.getJMSReplyTo().toString();
 
         boolean testFailed = false;
@@ -278,9 +254,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testSetGetJMSReplyTo_Topic_B_SecOff failed;" +
-                                " expected reply-to [ " + expectedReplyTo + " ];" +
-                                " actual reply-to [ " + actualReplyTo + " ]");
+            throw new Exception("testSetGetJMSReplyTo_Topic_B_SecOff failed");
         }
     }
 
@@ -292,7 +266,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         JMSProducer producer = jmsContext.createProducer();
         producer.setJMSReplyTo(topic1);
 
-        String expectedReplyTo = "topic://testTopic1?topicSpace=NewTopic1";
+        String expectedReplyTo = "topic://Default.Topic?topicSpace=NewTopic2";
         String actualReplyTo = producer.getJMSReplyTo().toString();
 
         boolean testFailed = false;
@@ -303,9 +277,7 @@ public class JMSProducer_118073Servlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testSetGetJMSReplyTo_Topic_TCP_SecOff failed;" +
-                                " expected reply-to [ " + expectedReplyTo + " ];" +
-                                " actual reply-to [ " + actualReplyTo + " ]");
+            throw new Exception("testSetGetJMSReplyTo_Topic_TCP_SecOff failed");
         }
     }
 
@@ -316,9 +288,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
 
         JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setJMSReplyTo(null);
-        jmsProducer.send(queue1, "testNullJMSReplyTo_B");
+        jmsProducer.send(queue, "testNullJMSReplyTo_B");
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue1);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
         TextMessage msg = (TextMessage) jmsConsumer.receiveNoWait();
         Object replyTo = msg.getJMSReplyTo();
 
@@ -341,9 +313,9 @@ public class JMSProducer_118073Servlet extends HttpServlet {
 
         JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setJMSReplyTo(null);
-        jmsProducer.send(queue1, "testNullJMSReplyTo_TCP");
+        jmsProducer.send(queue, "testNullJMSReplyTo_TCP");
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue1);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
         TextMessage msg = (TextMessage) jmsConsumer.receiveNoWait();
         Object replyTo = msg.getJMSReplyTo();
 
