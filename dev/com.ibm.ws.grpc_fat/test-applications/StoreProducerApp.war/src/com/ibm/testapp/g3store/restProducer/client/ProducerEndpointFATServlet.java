@@ -138,8 +138,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
         } catch (Exception e) {
-            e.getMessage();
-            e.printStackTrace();
+            LOG.info(m + " " + e.getMessage());
+            throw e;
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ----- invoking producer rest client to delete app: " + appName);
@@ -232,8 +232,9 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(entity.contains("Store has successfully added the app [myApp4]"));
 
         } catch (Exception e) {
-
+            LOG.info(m + " " + e.getMessage());
             e.printStackTrace();
+            throw e;
 
         } finally {
             LOG.info(m + " ------------------------------------------------------------");

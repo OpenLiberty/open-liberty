@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ServiceSupportTests.class, // always keep this on top
                 ClientConfigTests.class,
                 ClientHeaderPropagationTests.class,
                 HelloWorldCDITests.class,
@@ -23,14 +24,14 @@ import org.junit.runners.Suite.SuiteClasses;
                 HelloWorldTlsTest.class,
                 SecureHelloWorldTest.class,
                 GrpcMetricsTest.class,
-                ServiceSupportTests.class,
                 ServiceConfigTests.class,
                 ServiceInterceptorTests.class,
-                StoreServicesTests.class,
+                StoreServicesRESTClientTests.class,
                 StoreServicesSecurityTests.class,
                 // leave out for now, to avoid intermittent build breaks StreamingTests.class,
                 ClientInterceptorTests.class,
-
+                StoreProducerServletClientTests.class,
+                StoreConsumerServletClientTests.class
 })
 
 public class FATSuite {
