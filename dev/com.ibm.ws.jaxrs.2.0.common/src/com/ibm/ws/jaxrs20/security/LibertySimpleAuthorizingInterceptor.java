@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,14 +41,16 @@ public class LibertySimpleAuthorizingInterceptor extends
     public void handleMessage(Message message) throws Fault {
         SecurityContext cxfSecurityContext = message.get(SecurityContext.class);
         javax.ws.rs.core.SecurityContext jaxrsSecurityContext = message.get(javax.ws.rs.core.SecurityContext.class);
-        if (jaxrsSecurityContext != null && jaxrsSecurityContext instanceof javax.ws.rs.core.SecurityContext) {
+        if (jaxrsSecurityContext != null) {
+            SecurityContextProxy securityContextProxy = new SecurityContextProxy(jaxrsSecurityContext);
             Method method = getTargetMethod(message);
-            if (parseMethodSecurity(method, jaxrsSecurityContext)) {
+            if (parseMethodSecurity(method, securityContextProxy)) {
                 return;
             }
         } else if (cxfSecurityContext != null) {
+            SecurityContextProxy securityContextProxy = new SecurityContextProxy(cxfSecurityContext);
             Method method = getTargetMethod(message);
-            if (parseMethodSecurity(method, cxfSecurityContext)) {
+            if (parseMethodSecurity(method, securityContextProxy)) {
                 return;
             }
         }
@@ -57,14 +59,6 @@ public class LibertySimpleAuthorizingInterceptor extends
     }
 
     private boolean ensureAuthentication(SecurityContext sc) {
-        Principal p = sc.getUserPrincipal();
-        if (p == null || "UNAUTHENTICATED".equals(p.getName())) {
-            throw new AuthenticationException();
-        }
-        return true;
-    }
-    
-    private boolean ensureAuthentication(javax.ws.rs.core.SecurityContext sc) {
         Principal p = sc.getUserPrincipal();
         if (p == null || "UNAUTHENTICATED".equals(p.getName())) {
             throw new AuthenticationException();
@@ -123,57 +117,6 @@ public class LibertySimpleAuthorizingInterceptor extends
         }
     }
     
-    private boolean parseMethodSecurity(Method method, javax.ws.rs.core.SecurityContext sc) {
-
-        boolean denyAll = getDenyAll(method);
-        if (denyAll) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found DenyAll for method: {} " + method.getName()
-                             + ", Injection Processing for web service is ignored");
-            }
-            // throw new WebApplicationException(Response.Status.FORBIDDEN);
-            return false;
-
-        } else { // try RolesAllowed
-
-            RolesAllowed rolesAllowed = getRolesAllowed(method);
-            if (rolesAllowed != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(
-                             tc,
-                             "found RolesAllowed in method: {} "
-                                 + method.getName(),
-                             new Object[] { rolesAllowed.value() });
-                }
-                if (!ensureAuthentication(sc)) {
-                    return false;
-                }
-                String[] theseroles = rolesAllowed.value();
-
-                if (!isUserInRole(sc, Arrays.asList(theseroles), false)) {
-                    return false;
-                }
-                return true;
-
-            } else {
-                boolean permitAll = getPermitAll(method);
-                if (permitAll) {
-                    if (TraceComponent.isAnyTracingEnabled()
-                        && tc.isDebugEnabled()) {
-                        Tr.debug(
-                                 tc,
-                                 "Found PermitAll for method: {}"
-                                                 + method.getName());
-                    }
-                    return true;
-                } else { // try class level annotations
-                    Class<?> cls = method.getDeclaringClass();
-                    return parseClassSecurity(cls, sc);
-                }
-            }
-        }
-    }
-
     // parse security JSR250 annotations at the class level
     private boolean parseClassSecurity(Class<?> cls, SecurityContext sc) {
 
@@ -210,41 +153,6 @@ public class LibertySimpleAuthorizingInterceptor extends
         }
     }
     
-    private boolean parseClassSecurity(Class<?> cls, javax.ws.rs.core.SecurityContext sc) {
-
-        // try DenyAll
-        DenyAll denyAll = cls.getAnnotation(DenyAll.class);
-        if (denyAll != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found class level @DenyAll - authorization denied for " + cls.getName());
-            }
-            return false;
-        } else { // try RolesAllowed
-
-            RolesAllowed rolesAllowed = cls.getAnnotation(RolesAllowed.class);
-            if (rolesAllowed != null) {
-
-                String[] theseroles = rolesAllowed.value();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(
-                             tc,
-                             "found RolesAllowed in class level: {} "
-                                 + cls.getName(),
-                             new Object[] { theseroles });
-                }
-                if (!ensureAuthentication(sc)) {
-                    return false;
-                }
-                if (!isUserInRole(sc, Arrays.asList(theseroles), false)) {
-                    return false;
-                }
-                return true;
-            } else {
-                return true;
-            }
-        }
-    }
-
     private RolesAllowed getRolesAllowed(Method method) {
         return method.getAnnotation(RolesAllowed.class);
     }
@@ -261,21 +169,5 @@ public class LibertySimpleAuthorizingInterceptor extends
     protected List<String> getExpectedRoles(Method method) {
         // TODO Auto-generated method stub
         return null;
-    }
-    
-    private static final String ALL_ROLES = "*";
-    
-    protected boolean isUserInRole(javax.ws.rs.core.SecurityContext sc, List<String> roles, boolean deny) {
-        
-        if (roles.size() == 1 && ALL_ROLES.equals(roles.get(0))) {
-            return !deny;
-        }
-        
-        for (String role : roles) {
-            if (sc.isUserInRole(role)) {
-                return !deny;
-            }
-        }
-        return deny;
     }
 }

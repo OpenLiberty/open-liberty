@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat.securitycontext;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -41,6 +43,7 @@ public class CustomSecurityContextTest {
         // already started server
         try {
             server.startServer();
+            assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }
