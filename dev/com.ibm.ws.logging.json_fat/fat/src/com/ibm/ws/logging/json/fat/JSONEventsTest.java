@@ -101,7 +101,8 @@ public abstract class JSONEventsTest {
                                                                                       "ibm_sequence", "ibm_className", "ibm_exceptionName", "ibm_probeID",
                                                                                       "ibm_threadId", "ibm_stackTrace", "ibm_objectDetails"));
 
-        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>();
+        //JDK 15 has message as an additional field in ffdc events
+        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>(Arrays.asList("message"));
 
         getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "ffdc1");
