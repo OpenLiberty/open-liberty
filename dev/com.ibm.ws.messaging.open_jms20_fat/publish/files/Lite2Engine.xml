@@ -1,13 +1,21 @@
 <server>
 
   <featureManager>
-    <feature>servlet-3.1</feature>
     <feature>wasJmsServer-1.0</feature>
     <feature>testjmsinternals-1.0</feature>
+
     <feature>timedexit-1.0</feature>
   </featureManager>
-  
+
   <include location="../fatTestPorts.xml"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all:com.ibm.ws.sib.api.jms.impl.*=all:com.ibm.ws.jndi.*=all"
+    maxFileSize="200"/>
+   -->
 
   <!-- Deconflict the engine server default http endpoint port configuration from the client configuration. -->
   <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
@@ -16,28 +24,26 @@
   <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
   <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}"/> 
 
-  <variable name="onError" value="FAIL"/>
-
   <messagingEngine id="defaultME">
-    <queue id="newQueue" maxRedeliveryCount="2"/>
     <queue id="QUEUE1" maxRedeliveryCount="2"/>
+    <queue id="QUEUE2" maxRedeliveryCount="2"/>
     <topicSpace id="NewTopic1"/>
     <topicSpace id="NewTopic2"/>
   </messagingEngine>
 
 <!--
     JMSConsumer_118076Servlet:
+        "Connection factory 'java:comp/env/jndi_JMS_BASE_CF'"
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'"
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'"
-        "Queue 'java:comp/env/jndi_INPUT_Q'"
-        "Topic 'java:comp/env/eis/topic2'"
-        "Connection factory 'java:comp/env/jndi_JMS_BASE_CF'"
         "Topic connection factory 'java:comp/env/eis/tcf'"
+        "Queue 'java:comp/env/jndi_INPUT_Q1'"
+        "Topic 'java:comp/env/eis/topic2'"
 
     JMSConsumer_118077Servlet:
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'"
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'"
-        "Queue 'java:comp/env/jndi_INPUT_Q'"
+        "Queue 'java:comp/env/jndi_INPUT_Q1'"
         "User transaction 'java:comp/UserTransaction'"
 
     JMSProducer_118073Servlet:
@@ -45,16 +51,22 @@
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'"
         "Topic connection factory 'java:comp/env/eis/tcf'"
         "Topic connection factory 'java:comp/env/eis/tcf1'"
-        "Queue 'java:comp/env/jndi_INPUT_Q'"
-        "Queue 'java:comp/env/eis/queue1'"
+        "Queue 'java:comp/env/jndi_INPUT_Q1'"
+        "Queue 'java:comp/env/jndi_INPUT_Q2'"
         "Topic 'java:comp/env/eis/topic1'"
         "Topic 'java:comp/env/eis/topic2'"
 
     JMSContextInjectServlet:
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'"
         "Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'"
-        "Queue 'java:comp/env/jndi_INPUT_Q'"
-        "Topic 'Topic1'"
+        "Queue 'java:comp/env/jndi_INPUT_Q1'"
+        "Topic 'Topic1'" (created)
+
+        "Queue connection factory 'java:comp/env/eis/qcf'" (injected)
+        "Queue connection factory 'java:comp/env/eis/qcf1'" (injected)
+        "Topic connection factory 'java:comp/env/eis/tcf'" (injected)
+        "Topic connection factory 'java:comp/env/eis/tcf1'" (injected)
+
   -->
 
 </server>

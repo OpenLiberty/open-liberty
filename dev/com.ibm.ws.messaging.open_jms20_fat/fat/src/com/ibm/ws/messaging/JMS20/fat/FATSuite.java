@@ -15,17 +15,17 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.messaging.JMS20.fat.ContextInject.JMSContextInjectTest;
-import com.ibm.ws.messaging.JMS20.fat.DCFTest.JMSDefaultConnFactoryVariationTest;
-import com.ibm.ws.messaging.JMS20.fat.DCFTest.JMSDefaultConnectionFactoryTest;
 import com.ibm.ws.messaging.JMS20.fat.DurableUnshared.DurableUnsharedTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSConsumerTest.JMSConsumerTest_118076;
 import com.ibm.ws.messaging.JMS20.fat.JMSConsumerTest.JMSConsumerTest_118077;
 import com.ibm.ws.messaging.JMS20.fat.JMSContextTest.JMSEjbJarXmlMdbTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSContextTest.JMSRedeliveryTest_120846;
+import com.ibm.ws.messaging.JMS20.fat.JMSDCFTest.JMSDCFVarTest;
+import com.ibm.ws.messaging.JMS20.fat.JMSDCFTest.JMSDCFTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducerTest_118071;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducerTest_118073;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducer_Test118073;
-import com.ibm.ws.messaging.JMS20.fat.JmsMBeanTest.JmsMBeanTest;
+import com.ibm.ws.messaging.JMS20.fat.JMSMBeanTest.JMSMBeanTest;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionTest_129623;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionTest_129626;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithMsgSelTest_129623;
@@ -33,32 +33,32 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
         DummyTest.class,
         LiteBucketSet1Test.class,
         LiteBucketSet2Test.class,
-            // JmsMBeanTest.class,
+        JMSMBeanTest.class,
 
-            /*
-                JMSProducerTest_118071.class, //full
-                JMSProducerTest_118073.class, //full
-                SharedSubscriptionTest_129623.class,
+        JMSProducerTest_118071.class, //full
+        JMSProducerTest_118073.class, //full
+        SharedSubscriptionTest_129623.class,
 
-                JMSConsumerTest_118077.class, //full
-                JMSConsumerTest_118076.class, //full
-                JMSRedeliveryTest_120846.class,
+        JMSConsumerTest_118076.class, //full
+        JMSConsumerTest_118077.class, //full
+        JMSRedeliveryTest_120846.class,
 
-                SharedSubscriptionWithMsgSelTest_129623.class,
-                SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-                SharedSubscriptionTest_129626.class, //full 2nd
-                JMSProducer_Test118073.class, //full
+        SharedSubscriptionWithMsgSelTest_129623.class,
+        SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+        SharedSubscriptionTest_129626.class, //full 2nd
+        JMSProducer_Test118073.class, //full
 
-                DurableUnsharedTest.class,
-                JMSContextInjectTest.class, //full
+        DurableUnsharedTest.class,
+        JMSContextInjectTest.class, //full // JMSContextTest
 
-                JMSDefaultConnectionFactoryTest.class,
-                JMSEjbJarXmlMdbTest.class,
-                JMSDefaultConnFactoryVariationTest.class //full 2nd
-                    */
+// xx JMSDCFTest.class,
+        JMSDCFVarTest.class //full 2nd
+
+// xx JMSEjbJarXmlMdbTest.class, // MDBMDB
 })
 public class FATSuite {
     // EMPTY

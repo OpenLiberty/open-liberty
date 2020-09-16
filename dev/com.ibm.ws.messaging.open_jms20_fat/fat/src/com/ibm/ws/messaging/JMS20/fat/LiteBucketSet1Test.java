@@ -25,9 +25,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
 public class LiteBucketSet1Test {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet1Client");
@@ -72,7 +69,6 @@ public class LiteBucketSet1Test {
     @org.junit.AfterClass
     public static void tearDown() {
         // Stop the messaging client ...
-
         try {
             clientServer.stopServer();
         } catch (Exception e) {
