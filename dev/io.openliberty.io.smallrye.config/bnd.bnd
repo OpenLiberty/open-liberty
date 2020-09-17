@@ -37,7 +37,6 @@ Include-Resource: \
 
 Import-Package: \
   !sun.misc,\
-  javax.enterprise.*; version="[1.1,3)",\
   *
 
 Private-Package: \

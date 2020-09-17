@@ -51,6 +51,7 @@ public class MpJwtMessageConstants extends MessageConstants {
     public static final String CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED = "CWWKS6033E";
     public static final String CWWKS6041E_JWT_SIGNATURE_INVALID = "CWWKS6041E";
     public static final String CWWKS6045E_JTI_REUSED = "CWWKS6045E";
+    public static final String CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED = "CWWKS6055W";
 
     public static final String CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH = "CWWKW1001W";
 

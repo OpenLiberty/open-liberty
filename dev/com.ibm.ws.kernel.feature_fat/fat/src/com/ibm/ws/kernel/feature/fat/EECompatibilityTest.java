@@ -183,10 +183,10 @@ public class EECompatibilityTest {
         server.changeFeatures(Arrays.asList("jakartaee-9.0", "jakartaee-8.0"));
         server.startServer();
         // The server reports a singleton conflict and installs neither helper feature!
-        msg = server.waitForStringInLogUsingMark(CONFLICT, shortTimeOut);
+        msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report a singleton conflict for the incompatible jakartaee helper features, but it did not: msg="
-                   + msg, msg != null && msg.contains("jakartaee-9.0") && msg.contains("jakartaee-8.0"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
+                   + msg, msg != null && msg.contains("jakartaee-9.0") && msg.contains("Jakarta EE 9") && msg.contains("Java EE"));
+        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR + "|" + "CWWKG0059E.*" + "|" + "CWWKG0026E.*");
     }
 
     @Test

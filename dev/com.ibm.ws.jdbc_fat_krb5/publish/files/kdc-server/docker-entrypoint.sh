@@ -11,8 +11,13 @@ if [ -z ${KRB5_KDC} ]; then
 fi
 
 if [ -z ${KRB5_ADMINSERVER} ]; then
-    echo "KRB5_ADMINSERVER provided. Using ${KRB5_KDC} in place."
+    echo "No KRB5_ADMINSERVER provided. Using ${KRB5_KDC} in place."
     KRB5_ADMINSERVER=${KRB5_KDC}
+fi
+
+if [ -z ${EXTERNAL_HOSTNAME} ]; then
+    echo "No EXTERNAL_HOSTNAME provided. Using localhost in place."
+    EXTERNAL_HOSTNAME=localhost
 fi
 
 echo "Creating Krb5 Client Configuration"
@@ -110,6 +115,13 @@ EOT
 
     echo "Creating MSSQLSvc/sqlserver Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} MSSQLSvc/sqlserver:1433@${KRB5_REALM}"
+    
+    echo "Creating postgres/postgresql Account"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} postgres/postgresql@${KRB5_REALM}"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} postgres/${EXTERNAL_HOSTNAME}@${KRB5_REALM}"
+    
+    echo "Creating principal for PostgreSQL user"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} pguser@${KRB5_REALM}"
     
     echo "KERB SETUP COMPLETE"
 

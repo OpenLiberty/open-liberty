@@ -88,7 +88,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         // the server's default config contains an invalid value (on purpose),
         // tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
 
         // start server to run protected app - make sure we can use the JWT
         // Token that we produce

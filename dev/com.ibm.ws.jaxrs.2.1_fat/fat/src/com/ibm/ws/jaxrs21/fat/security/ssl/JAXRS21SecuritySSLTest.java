@@ -33,9 +33,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat("RESTEasy") // currently broken due to @Context constructor injection failing when using CDI
+@SkipForRepeat(JakartaEE9Action.ID) // currently broken due to @Context constructor injection failing when using CDI
 @RunWith(FATRunner.class)
 public class JAXRS21SecuritySSLTest {
 

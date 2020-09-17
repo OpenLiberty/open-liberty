@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -101,7 +102,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         issuer = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_ISSUER));
         sharedKey = JwtConfigUtil.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
         audiences = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_AUDIENCES));
-        sigAlg = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM));
+        sigAlg = JwtConfigUtil.getSignatureAlgorithm(getId(), props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
         trustStoreRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTSTORE_REF));
         trustedAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTED_ALIAS));
         clockSkewMilliSeconds = (Long) props.get(JwtUtils.CFG_KEY_CLOCK_SKEW);
@@ -206,10 +207,10 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
     }
-    
-	@Override
-	public List<String> getAMRClaim() {
-		return amrClaim;
-	}
+
+    @Override
+    public List<String> getAMRClaim() {
+        return amrClaim;
+    }
 
 }
