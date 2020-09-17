@@ -43,8 +43,11 @@ public class Constants {
     public static final String STRING_FORWARD_SLASH         = "/";
     public static final String STRING_BACK_SLASH            = "\\";
 
-    public static final String SCHEME_HTTP                  = "http://";
-    public static final String SCHEME_HTTPS                 = "https://";
+    public static final String PROTOCOL_HTTP                = "http";
+    public static final String PROTOCOL_HTTPS               = "https";
+
+    public static final String SCHEME_HTTP                  = PROTOCOL_HTTP + "://";
+    public static final String SCHEME_HTTPS                 = PROTOCOL_HTTPS + "://";
 
     // Archive Directory Constants
     public static final String DIR_META_INF                 = "META-INF";

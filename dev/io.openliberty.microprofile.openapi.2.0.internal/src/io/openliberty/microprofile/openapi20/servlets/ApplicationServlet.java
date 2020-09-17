@@ -11,6 +11,7 @@
 package io.openliberty.microprofile.openapi20.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,12 +20,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.servers.Server;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.ApplicationProcessor;
+import io.openliberty.microprofile.openapi20.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
+import io.openliberty.microprofile.openapi20.utils.OpenAPIUtils;
 import io.smallrye.openapi.runtime.io.Format;
 
 @WebServlet(name=Constants.SERVLET_NAME_APPLICATION, urlPatterns = {Constants.URL_PATTERN_ROOT}, loadOnStartup = 1)
@@ -32,7 +38,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
-    
+
     /** {@inheritDoc} */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,23 +51,60 @@ public class ApplicationServlet extends OpenAPIServletBase {
         final String requestURI = request.getRequestURI();
         if (Constants.REGEX_COMPONENT_REQUEST_URI.matcher(requestURI).matches()) {
 
-            // Make sure that we have a valid ApplicationProcessor
-            ApplicationProcessor applicationProcessor = ApplicationProcessor.getInstance();
-            if (applicationProcessor != null) {
-                // Generate the Open API document in the requested format
-                final String document = applicationProcessor.getOpenAPIDocument(request, responseFormat);
-                
-                // Build the response
-                if (document != null) {
-                    writeResponse(response, document, Status.OK, contentType);
-                } else {
+            /*
+             * Retrieve the current provider and get the OpenAPI model for it. If there is no current provider then
+             * generate a default (empty) OpenAPI model.
+             */
+            final OpenAPIProvider currentProvider = ApplicationRegistry.getInstance().getCurrentOpenAPIProvider();
+            final String document;
+            if (currentProvider != null) {
+                /*
+                 * If the model that has been generated already contains server definitions, we trust that the user
+                 * knows what they are doing and we do not modify the model in any way when the OpenAPI document is
+                 * requested. If the model that has been been generated does not contain server definitions, we add them
+                 * to the model before generating the OpenAPI document.  We need to synchronize access to the model
+                 * while we are updating it.
+                 */
+                if (currentProvider.getServersDefined()) {
+                    /*
+                     * No need to modify the model. Retrieve the cached version of the OpenAPI document from the
+                     * currentProvider in the specified format.
+                     */
+                    document = currentProvider.getOpenAPIDocument(responseFormat);
                     if (LoggingUtils.isEventEnabled(tc)) {
-                        Tr.event(this, tc, "Null document (json). Return 500.");
+                        Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
                     }
-                    writeResponse(response, null, Status.INTERNAL_SERVER_ERROR, contentType);
+                } else {
+                    /*
+                     * The OpenAPI model that was generated does not contain any server definitions. We need to generate
+                     * the server definitions, add them to the model and then generate the OpenAPI document in the
+                     * specified format.
+                     */
+                    List<Server> servers = getOpenAPIModelServers(request, currentProvider.getApplicationPath());
+                    document = currentProvider.getOpenAPIDocument(servers, responseFormat);
                 }
             } else {
-                writeResponse(response, "Failed to find OpenAPI application processor", Status.NOT_FOUND, MediaType.TEXT_PLAIN);
+                /*
+                 * No JAX-RS applications are currently running inside this OL instance. Create a default OpenAPI model,
+                 * add some server definitions to it and then generate the OpenAPI document in the specified format.
+                 */
+                OpenAPI defaultOpenAPIModel = OpenAPIUtils.createBaseOpenAPIDocument();
+                defaultOpenAPIModel.setServers(getOpenAPIModelServers(request));
+                document = OpenAPIUtils.getOpenAPIDocument(defaultOpenAPIModel, responseFormat);
+            }
+
+            // Check to see if we have a valid OpenAPI document to return
+            if (document != null) {
+                writeResponse(response, document, Status.OK, contentType);
+            } else {
+                /*
+                 * Something went wrong when attempting to serialize the OpenAPI model to a String in the
+                 * specified format. Return 500 Internal Server Error.
+                 */
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Null document. Return 500.");
+                }
+                writeResponse(response, null, Status.INTERNAL_SERVER_ERROR, contentType);
             }
         } else {
             /*

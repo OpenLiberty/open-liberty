@@ -45,7 +45,6 @@ public class SchemaValidatorTest {
 
         SchemaImpl schema = new SchemaImpl();
 
-        schema.setName("ErrorModel");
         schema.setType(SchemaType.OBJECT);
 
         List<String> required = new ArrayList<String>();

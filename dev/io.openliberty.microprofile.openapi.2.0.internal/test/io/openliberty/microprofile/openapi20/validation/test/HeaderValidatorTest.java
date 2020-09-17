@@ -63,7 +63,6 @@ public class HeaderValidatorTest {
         examples.put(key, example);
         exampleAndExamplesNotNull.setExamples(examples);
         SchemaImpl schema = new SchemaImpl();
-        schema.setName("testSchema");
         exampleAndExamplesNotNull.setSchema(schema);
 
         TestValidationHelper vh = new TestValidationHelper();
@@ -95,7 +94,6 @@ public class HeaderValidatorTest {
         HeaderImpl schemaAndContentNotNull = new HeaderImpl();
 
         SchemaImpl schema = new SchemaImpl();
-        schema.setName("testSchema");
         schemaAndContentNotNull.setSchema(schema);
 
         ContentImpl content = new ContentImpl();
@@ -140,7 +138,6 @@ public class HeaderValidatorTest {
         Style style = Header.Style.SIMPLE;
 
         SchemaImpl schema = new SchemaImpl();
-        schema.setName("testSchema");
         correctHeader.setSchema(schema);
 
         correctHeader.setStyle(style);

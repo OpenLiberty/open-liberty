@@ -107,7 +107,6 @@ public class ConfigProcessor implements Closeable {
 
         builder.append(OpenApiConstants.SCAN_DEPENDENCIES_DISABLE).append("=").append(smallryeConfig.scanDependenciesDisable()).append("\n");
         builder.append(OpenApiConstants.SCAN_DEPENDENCIES_JARS).append("=").append(smallryeConfig.scanDependenciesJars()).append("\n");
-        builder.append(OpenApiConstants.SCHEMA_REFERENCES_ENABLE).append("=").append(smallryeConfig.schemaReferencesEnable()).append("\n");
         builder.append(OpenApiConstants.CUSTOM_SCHEMA_REGISTRY_CLASS).append("=").append(smallryeConfig.customSchemaRegistryClass()).append("\n");
         builder.append(OpenApiConstants.APP_PATH_DISABLE).append("=").append(smallryeConfig.applicationPathDisable()).append("\n");
         
