@@ -418,7 +418,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgRS256_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasPS";
@@ -500,7 +500,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgRS384_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasPS";
@@ -580,7 +580,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgRS512_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasPS";
@@ -659,7 +659,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgES256_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasPS";
@@ -738,7 +738,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgES384_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasPS";
@@ -817,7 +817,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      *
      * @throws Exception
      */
-    @Test
+    //TODO - enable when PS is added @Test
     public void JwtConsumerApiConfigTests_SigAlgES512_trustAliasMisMatchPS() throws Exception {
 
         String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasPS";
