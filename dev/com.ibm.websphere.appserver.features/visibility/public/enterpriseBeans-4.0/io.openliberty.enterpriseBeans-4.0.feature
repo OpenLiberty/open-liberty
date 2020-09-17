@@ -4,6 +4,7 @@ visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: enterpriseBeans-4.0
+IBM-AlsoKnownAs: ejb-4.0
 Subsystem-Name: Jakarta Enterprise Beans 4.0
 Subsystem-Category: JakartaEE9Application
 -features= \

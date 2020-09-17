@@ -5,6 +5,7 @@ singleton=true
 IBM-API-Package: jakarta.jms; version="3.0"; type="spec", \
  com.ibm.websphere.sib.api.jms; type="internal"
 IBM-ShortName: messagingClient-3.0
+IBM-AlsoKnownAs: wasJmsClient-3.0
 Subsystem-Name: Jakarta Messaging 3.0 Client for Message Server
 -features=io.openliberty.messaging-3.0.internal, \
  com.ibm.websphere.appserver.channelfw-1.0, \
