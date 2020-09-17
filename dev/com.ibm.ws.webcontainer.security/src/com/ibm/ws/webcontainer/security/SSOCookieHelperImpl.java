@@ -414,7 +414,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                     Tr.debug(tc, "URL host is an IP or locahost, no SSO domain will be set.");
                 return null;
             }
-            String domain = host.substring(host.indexOf("."));
+            String domain = (host.indexOf(".") < host.lastIndexOf(".")) ? host.substring(host.indexOf(".")) : "" + host;
             if (ssoDomainList != null && !ssoDomainList.isEmpty()) {
                 for (Iterator<String> itr = ssoDomainList.iterator(); itr.hasNext();) {
                     String dm = itr.next();
