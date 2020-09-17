@@ -556,7 +556,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     /**
      * Send the headers for the outgoing response synchronously.
      *
-     * @throws IOException -- if a socket exception occurs
+     * @throws IOException          -- if a socket exception occurs
      * @throws MessageSentException -- if a finishMessage API was already used
      */
     @Override
@@ -667,9 +667,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @param body
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void sendResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -728,7 +728,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -773,9 +773,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @param body
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void sendRawResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -806,7 +806,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendRawResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -890,11 +890,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * the zero-length chunk is automatically appended.
      *
      * @param body
-     *            (last set of buffers to send, null if no body data)
+     *                 (last set of buffers to send, null if no body data)
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void finishResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -968,12 +968,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * be null and the callback always used.
      *
      * @param body
-     *            (last set of body data, null if no body information)
+     *                     (last set of body data, null if no body information)
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishResponseMessage(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1048,11 +1048,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * been sent yet, then they will be prepended to the input data.
      *
      * @param body
-     *            -- null if there is no body data
+     *                 -- null if there is no body data
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void finishRawResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1081,12 +1081,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * such that the callback is always used.
      *
      * @param body
-     *            -- null if there is no more body data
+     *                   -- null if there is no more body data
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishRawResponseMessage(WsByteBuffer[] body, InterChannelCallback cb, boolean bForce) throws MessageSentException {
@@ -1271,7 +1271,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * now that we're ready to read the next inbound request.
      *
      * @param callClose
-     *            (should this method call the close API itself)
+     *                      (should this method call the close API itself)
      */
     public void purgeBodyBuffers(boolean callClose) {
 
@@ -1301,11 +1301,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
 
     @Override
@@ -1382,7 +1382,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRequestBodyBuffers(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -1472,11 +1472,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     @Override
     public WsByteBuffer getRequestBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -1549,7 +1549,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRequestBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -1658,11 +1658,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     @Override
     public WsByteBuffer getRawRequestBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -1689,11 +1689,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if a malformed request body is
-     *             present such that the server should send an HTTP 400 Bad Request
-     *             back to the client.
+     *                                      -- if a malformed request body is
+     *                                      present such that the server should send an HTTP 400 Bad Request
+     *                                      back to the client.
      */
     @Override
     public WsByteBuffer[] getRawRequestBodyBuffers() throws IOException, IllegalHttpBodyException {
@@ -1726,7 +1726,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawRequestBodyBuffer(InterChannelCallback cb, boolean bForce) throws BodyCompleteException {
@@ -1759,7 +1759,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawRequestBodyBuffers(InterChannelCallback cb, boolean bForce) throws BodyCompleteException {
