@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.CDI;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -99,11 +101,18 @@ public class LraFilterComponent implements JaxRsProviderRegister {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Registering serverside side filters");
             }
+
+            System.err.println("About to get a bean");
+            System.err.flush();
+            ServerLRAFilter beanInstance = CDI.current().select(ServerLRAFilter.class).get();
+            System.err.println("CDI worked?");
+            System.err.flush();
+
             try {
                 // Rather unhelpfully, the ServerLRAFilter constructor throws 'Exception'. There isn't much we can do with
                 // that. Re-throwing should prevent the servlet being initialized, which is probably better than swallowing
                 // the exception
-                providers.add(new ServerLRAFilter());
+                providers.add(beanInstance);
             } catch (Exception e) {
                 throw new LraRuntimeException(Tr.formatMessage(tc, "LRA_CANT_REGISTER_FILTERS.CWMRX5001E", e), e);
             }
