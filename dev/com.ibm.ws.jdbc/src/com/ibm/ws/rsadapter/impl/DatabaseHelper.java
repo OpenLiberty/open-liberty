@@ -940,7 +940,7 @@ public class DatabaseHelper {
             Tr.entry(this, tc, "getPooledConnection",
                      AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase", cri, useKerberos, gssCredential);
 
-        // if kerberose is set then issue a warning that no special APIs are used instead, 
+        // if Kerberos is set then issue a warning that no special APIs are used instead,
         // a getConnection() without username/password will be used to get a connection.
         if (useKerberos == KerbUsage.USE_CREDENTIAL) { 
             Tr.warning(tc, "KERBEROS_NOT_SUPPORTED_WARNING");

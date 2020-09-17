@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
@@ -83,7 +82,7 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = jsfApp.addAsLibraries(badApiJar);
-        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, jsfApp);
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");
@@ -116,7 +115,7 @@ public class ErrorPathsTest extends FATServletClient {
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
 
-        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, jsfApp);
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");

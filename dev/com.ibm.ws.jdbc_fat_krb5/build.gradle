@@ -12,6 +12,7 @@
 configurations {
   db2
   oracle
+  postgres
 }
 
 dependencies {
@@ -19,6 +20,7 @@ dependencies {
                'org.testcontainers:database-commons:1.14.0',
                'org.testcontainers:db2:1.14.0',
                'org.testcontainers:oracle-xe:1.14.0',
+               'org.testcontainers:postgresql:1.14.0',
                'org.testcontainers:jdbc:1.14.0',
                'org.apache.commons:commons-compress:1.19',
                'org.rnorth.duct-tape:duct-tape:1.0.7',
@@ -29,6 +31,7 @@ dependencies {
                'org.slf4j:slf4j-jdk14:1.7.7'
   db2 'com.ibm.db2:jcc:11.1.4.4'
   oracle 'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
+  postgres 'org.postgresql:postgresql:42.2.5'
 }
 
 task copyDB2(type: Copy) {
@@ -45,7 +48,15 @@ task copyOracle(type: Copy) {
   rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
 }
 
+task copyPostgresql(type: Copy) {
+  shouldRunAfter jar
+  from configurations.postgres
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.krb5.postgresql/postgresql')
+  rename 'postgresql-.*.jar', 'postgresql.jar'
+}
+
 addRequiredLibraries {
   dependsOn copyDB2
   dependsOn copyOracle
+  dependsOn copyPostgresql
 }

@@ -27,5 +27,5 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-60001=Input JSON document is invalid or doesn''t match target object graph.
+60001=Das eingegebene JSON-Dokument ist ung\u00fcltig oder stimmt nicht mit dem Zielobjektdiagramm \u00fcberein.
 

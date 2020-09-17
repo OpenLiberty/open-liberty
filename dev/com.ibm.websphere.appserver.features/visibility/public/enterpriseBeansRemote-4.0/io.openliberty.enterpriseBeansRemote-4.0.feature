@@ -11,5 +11,5 @@ Subsystem-Name: Jakarta Enterprise Beans Remote 4.0
  com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.ejbcontainer.remote.jakarta
 -files=clients/ejbRemotePortable.jakarta.jar
-kind=noship
-edition=full
+kind=beta
+edition=base

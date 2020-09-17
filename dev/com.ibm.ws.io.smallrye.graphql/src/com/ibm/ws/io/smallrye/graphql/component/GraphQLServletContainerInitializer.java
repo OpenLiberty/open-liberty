@@ -155,6 +155,15 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                     return false;
                 }
             }
+
+        	@SuppressWarnings("unchecked")
+			@Override
+        	public <T> T getConfigValue(String key, Class<T> type, T defaultValue) {
+        		if ("smallrye.graphql.metrics.enabled".equals(key)) {
+        			return (T) Boolean.TRUE;
+        		}
+        		return super.getConfigValue(key, type, defaultValue);
+        	}
         };
         diagBag.config = config;
         
@@ -172,7 +181,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 return;
             }
             diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config);
+            graphQLSchema = Bootstrap.bootstrap(schema, config).getGraphQLSchema();
         } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
             throw new ServletException(t);

@@ -18,6 +18,8 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -53,8 +55,9 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 public class ApplicationStateHealthCheckTest {
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
-    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E", "CWWKZ0002E" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
+    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E",
+                                                                       "CWWKZ0002E", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String MULTIPLE_APP_NAME = "MultipleHealthCheckApp";
     public static final String DIFFERENT_APP_NAME = "DifferentApplicationNameHealthCheckApp";
@@ -114,7 +117,7 @@ public class ApplicationStateHealthCheckTest {
         if (server2.isStarted()) {
             server2.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
         }
-        
+
     }
 
     /**
@@ -197,8 +200,16 @@ public class ApplicationStateHealthCheckTest {
 
             // Repeatedly hit the readiness endpoint until an UP response is received
             while (!app_ready) {
-                conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                responseCode = conReady.getResponseCode();
+                try {
+                    conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+                    responseCode = conReady.getResponseCode();
+                } catch (SocketTimeoutException ste) {
+                    log("testDynamicallyLoadedApplicationsHealthCheckTest", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                    continue;
+                } catch (SocketException se) {
+                    log("testDynamicallyLoadedApplicationsHealthCheckTest", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                    continue;
+                }
 
                 // We need to ensure we get a connection refused in the case of the server not finished starting up
                 // We expect a connection refused as the ports are not open until server is fully started

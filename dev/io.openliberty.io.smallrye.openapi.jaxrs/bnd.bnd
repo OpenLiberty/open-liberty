@@ -12,14 +12,9 @@
 
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-
 Bundle-SymbolicName: io.openliberty.io.smallrye.openapi.jaxrs; singleton:=true
 
 WS-TraceGroup: MPOPENAPI
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 

@@ -25,7 +25,7 @@ src: \
   test-applications/subResourceApp/src
 
 fat.project: true
-tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, jaxrsclient-2.2, jaxrs-2.2
+tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, restfulWSClient-3.0, restfulWS-3.0, jsonb-2.0, jsonbcontainer-2.0
 
 
 -buildpath: \
@@ -35,4 +35,5 @@ tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, jaxrsclie
   com.ibm.websphere.javaee.jsonb.1.0,\
   com.ibm.websphere.javaee.jsonp.1.1,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-  com.ibm.ws.cdi.interfaces;version=latest
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  fattest.simplicity

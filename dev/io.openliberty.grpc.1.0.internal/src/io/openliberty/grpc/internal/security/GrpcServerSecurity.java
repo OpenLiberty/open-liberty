@@ -11,14 +11,12 @@
 
 package io.openliberty.grpc.internal.security;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -72,34 +70,17 @@ public class GrpcServerSecurity {
 	@FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, UnauthorizedException.class })
 	public static boolean doServletAuth(HttpServletRequest req, HttpServletResponse res, String requestPath) {
 		try {
-			handleMessage(req, requestPath);
+			handleSecurity(req, requestPath);
 			return true;
-		} catch (UnauthenticatedException ex) {
-			
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service authentication failed "+ ex.getMessage());
-			}
-	
+		} catch (UnauthenticatedException ex) {			
+			Tr.error(tc, "authentication.error", new Object[] {requestPath , ex.getMessage()});	
 		} catch (UnauthorizedException e) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service authorization failed "+ e.getMessage());
-			}
-			Tr.warning(GrpcServerSecurity.tc, "invalid.serverinterceptor", e.getMessage());
+			Tr.error(tc, "authorization.error", new Object[] {requestPath , e.getMessage()});	
 		}
 		return false;
 	}
 
-	// not used
-	private static boolean authenticate(HttpServletRequest req, HttpServletResponse res) {
-		try {
-			return req.authenticate(res);
-		} catch (IOException | ServletException e) {
-			// AutoFFDC
-		}
-		return false;
-	}
-
-	private static void handleMessage(HttpServletRequest req, String path)
+	private static void handleSecurity(HttpServletRequest req, String path)
 			throws UnauthenticatedException, UnauthorizedException {
 
 		Method method = GrpcServletUtils.getTargetMethod(path);

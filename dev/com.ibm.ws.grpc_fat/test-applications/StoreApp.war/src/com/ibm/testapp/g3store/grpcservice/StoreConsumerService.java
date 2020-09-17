@@ -48,7 +48,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
-     * The Auth header is sent via grpcTarget
+     * The Auth header is sent via grpcClient
      * This is secured with JWT token, openidconnectclient will auth the user
      */
     @Override
@@ -63,7 +63,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
-     * The Cookie header is sent via grpcTarget
+     * The Cookie header is sent via grpcClient
      * This is secured with JWT token, Cookie will auth the user
      */
     @Override
@@ -76,7 +76,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
-     * The Cookie header is sent via grpcTarget
+     * The Cookie header is sent via grpcClient
      * This is secured with JWT token, Cookie will auth the user
      * But bad role is set
      */
@@ -90,7 +90,7 @@ public class StoreConsumerService extends AppConsumerServiceGrpc.AppConsumerServ
     /**
      * runtime exception as Status.NOTFOUND
      *
-     * The Auth header is sent via grpcTarget
+     * The Auth header is sent via grpcClient
      * This is secured with JWT token, openidconnectclient will auth the user and should
      * fail as students2 is not right group in token.
      */

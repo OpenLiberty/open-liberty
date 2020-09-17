@@ -96,7 +96,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a valid Basic Authorization header created in ConsumerServiceRestClient
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppInfo with Auth header , delete data.
      * The test passes when correct "appName" is asserted in response.
@@ -112,7 +112,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a Bad Basic Authorization header created in ConsumerServiceRestClient
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppInfo with Bad Auth header , delete data.
      * The test passes when "Expected auth failure" is asserted in response.
@@ -128,7 +128,7 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
     /**
      * This test will send a valid JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with JWT token Auth header , delete data.
      * The test passes when correct "appName" is asserted in response.
@@ -138,13 +138,13 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_JWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_Auth_GrpcTarget(req, resp);
+    public void testGetAppName_JWTAuth_GrpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_Auth_grpcClient(req, resp);
     }
 
     /**
      * This test will send a null JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with null JWT token Auth header , delete data.
      *
@@ -155,13 +155,13 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_NullJWTAuth_GrpcTarget(req, resp);
+    public void testGetAppName_NullJWTAuth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_NullJWTAuth_grpcClient(req, resp);
     }
 
     /**
      * This test will send a good JWT token in Authorization header added via ClientRequestFilter
-     * The Authorization header will be propagated using GrpcTarget.
+     * The Authorization header will be propagated using grpcClient.
      *
      * This test will sent grpc requests to create data, getAppName with good JWT token Auth header
      * But the server side will have bad RolesAllowed set,
@@ -173,8 +173,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testGetAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        this.getAppName_BadServerRoles_GrpcTarget(req, resp);
+    public void testGetAppName_BadServerRoles_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        this.getAppName_BadServerRoles_grpcClient(req, resp);
     }
 
     /**
@@ -278,9 +278,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_NullJWTAuth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_NullJWTAuth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "getAppName_NullJWTAuth_GrpcTarget";
+        final String m = "getAppName_NullJWTAuth_grpcClient";
 
         // create
         // query name
@@ -333,9 +333,9 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param resp
      * @throws Exception
      */
-    private void getAppName_Auth_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void getAppName_Auth_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final String m = "testGetAppName_Auth_GrpcTarget";
+        final String m = "testGetAppName_Auth_grpcClient";
 
         // create
         // query name
@@ -394,8 +394,8 @@ public class ConsumerEndpointFATServlet extends FATServlet {
      * @param req
      * @param resp
      */
-    private void getAppName_BadServerRoles_GrpcTarget(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testGetAppName_BadServerRoles_GrpcTarget";
+    private void getAppName_BadServerRoles_grpcClient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testGetAppName_BadServerRoles_grpcClient";
 
         // create
         // get app name
@@ -626,6 +626,15 @@ public class ConsumerEndpointFATServlet extends FATServlet {
     private void assertDeleteMultipleAppData(String m, ProducerServiceRestClient service, String app1, String app2, String app3, String app4) throws Exception {
 
         _log.info(m + " ----- invoking Producer Rest client to delete apps to test grpc server streaming ----- ");
+
+        if (service == null) {
+            try {
+                service = builderProducer.build(ProducerServiceRestClient.class);
+            } catch (Exception e) {
+                _log.severe(m + " , Error creating ProducerServiceRestClient proxy");
+                throw e;
+            }
+        }
         // call Remote REST service to delete
         Response r2 = service.deleteAllApps();
 
@@ -934,10 +943,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumerMultiAppPrices1";
+        String app2 = "myAppConsumerMultiAppPrices2";
+        String app3 = "myAppConsumerMultiAppPrices3";
+        String app4 = "myAppConsumerMultiAppPrices4";
 
         try {
 
@@ -1003,10 +1012,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
         ConsumerServiceRestClient client = null;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumerMultiAppNames1";
+        String app2 = "myAppConsumerMultiAppNames2";
+        String app3 = "myAppConsumerMultiAppNames3";
+        String app4 = "myAppConsumerMultiAppNames4";
 
         try {
 
@@ -1045,7 +1054,6 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         } finally {
 
             _log.info(m + " ------------------------------------------------------------");
-
             this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
             _log.info(m + " ----------------testGetMultiAppNames--FINISH--------------");
@@ -1072,10 +1080,10 @@ public class ConsumerEndpointFATServlet extends FATServlet {
         ConsumerServiceRestClient client = null;
         boolean isValidResponse = false;
 
-        String app1 = "myAppConsumer1";
-        String app2 = "myAppConsumer2";
-        String app3 = "myAppConsumer3";
-        String app4 = "myAppConsumer4";
+        String app1 = "myAppConsumer_MultiAppsInfo1";
+        String app2 = "myAppConsumer_MultiAppsInfo2";
+        String app3 = "myAppConsumer_MultiAppsInfo3";
+        String app4 = "myAppConsumer_MultiAppsInfo4";
 
         try {
 

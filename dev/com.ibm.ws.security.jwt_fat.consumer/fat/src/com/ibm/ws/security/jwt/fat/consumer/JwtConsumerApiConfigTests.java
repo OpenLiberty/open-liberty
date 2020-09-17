@@ -75,7 +75,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerServer.startServerUsingExpandedConfiguration("server_configTests.xml");
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         // one of the JWT Consumer configs has an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
-        consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm"));
+        consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm", JwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
 
         // set the default signing key for this test class (individual test cases can override if needed)
         consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
@@ -1714,7 +1714,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         validationUtils.validateResult(response, currentAction, expectations);
 
     }
-    
+
     /**
      * server.xml has a config that has authenticationMethodsReferences set to
      * "OTP iris, pwd kba". For multiple values (array) in server.xml, the

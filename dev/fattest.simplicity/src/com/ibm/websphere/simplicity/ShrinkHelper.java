@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,10 +50,6 @@ public class ShrinkHelper {
     }
 
     public static enum DeployOptions {
-        /**
-         * Don't validate app startup
-         */
-        DISABLE_VALIDATION,
         /**
          * Overwrite the file if it already exists
          */
@@ -121,11 +117,6 @@ public class ShrinkHelper {
         return Arrays.asList(options).contains(DeployOptions.SERVER_ONLY);
     }
 
-    private static boolean shouldValidate(DeployOptions[] options) {
-        return ! Arrays.asList(options).contains(DeployOptions.DISABLE_VALIDATION);
-    }
-
-
     /**
      * Writes an application to a a file in the 'publish/servers/<server_name>/apps/' directory
      * with the file name returned by a.getName(), which should include the
@@ -137,13 +128,6 @@ public class ShrinkHelper {
      */
     public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
         exportToServer(server, "apps", a, options);
-
-        String appName = a.getName();
-        if (shouldValidate(options)) {
-            String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))
-                        ? appName.substring(0, appName.length() - 4) : appName;
-            server.addInstalledAppForValidation(installedAppName);
-        }
     }
 
     /**
@@ -177,11 +161,9 @@ public class ShrinkHelper {
         exportToServer(server, "dropins", a, options);
 
         String appName = a.getName();
-        if (shouldValidate(options)) {
-            String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
                         ? appName.substring(0, appName.length() - 4) : appName;
-            server.addInstalledAppForValidation(installedAppName);
-        }
+        server.addInstalledAppForValidation(installedAppName);
     }
 
     /**
@@ -360,26 +342,15 @@ public class ShrinkHelper {
      * and then exports the resulting application to a Liberty server under the "apps" directory
      *
      * @param server   The server to export the application to
-     * @param appName  The name of the application
-     * @param deployOptions options to configure how the application is deployed
-     * @param packages A list of java packages to add to the application.
-     */
-    public static WebArchive defaultApp(LibertyServer server, String appName, DeployOptions[] deployOptions, String... packages) throws Exception {
-        WebArchive app = buildDefaultApp(appName, packages);
-        exportAppToServer(server, app, deployOptions);
-        return app;
-    }
-
-    /**
-     * Invokes {@link #buildDefaultApp(String, String...)}
-     * and then exports the resulting application to a Liberty server under the "apps" directory
-     *
-     * @param server   The server to export the application to
-     * @param appName  The name of the application
+     * @param appname  The name of the application
      * @param packages A list of java packages to add to the application.
      */
     public static WebArchive defaultApp(LibertyServer server, String appName, String... packages) throws Exception {
-        WebArchive app = defaultApp(server, appName, new DeployOptions[0], packages);
+        WebArchive app = buildDefaultApp(appName, packages);
+        exportAppToServer(server, app);
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
+                        ? appName.substring(0, appName.length() - 4) : appName;
+        server.addInstalledAppForValidation(installedAppName);
         return app;
     }
 

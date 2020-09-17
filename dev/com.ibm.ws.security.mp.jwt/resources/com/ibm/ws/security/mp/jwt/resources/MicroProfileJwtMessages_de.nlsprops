@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -115,7 +115,7 @@ FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.useraction=Sehen Sie sich die Benutzeraktion 
 
 # 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
 PRINCIPAL_MAPPING_MISSING_ATTR=CWWKS5519E: Die Informationen zum authentifizierten Benutzer enthalten nicht den Anspruch [{0}], der \u00fcber das Attribut [{1}] in der MicroProfile-JWT-Konfiguration angegeben wurde.
-PRINCIPAL_MAPPING_MISSING_ATTR.explanation=Es wird erwartet, dass der angegebene Anspruch in den Informationen zum authentifizierten Benutzer gefunden wird. Der Anspruch wurde jedoch nicht gefunden. Die Benutzerinformationen fehlen m\u00f6glicherweise oder sind fehlerhaft, das angegebene Konfigurationsattribut fehlt m\u00f6glicherweise oder ist leer, oder der angegebene Anspruch ist in den Benutzerinformationen nicht vorhanden.
+PRINCIPAL_MAPPING_MISSING_ATTR.explanation=Es wird erwartet, dass der angegebene Anspruch in den Informationen zum authentifizierten Benutzer gefunden wird. Der Anspruch wurde jedoch nicht gefunden. Die Benutzerinformationen fehlen m\u00f6glicherweise oder sie sind fehlerhaft, das angegebene Konfigurationsattribut fehlt m\u00f6glicherweise oder es ist leer oder der angegebene Anspruch ist in den Benutzerinformationen nicht vorhanden.
 PRINCIPAL_MAPPING_MISSING_ATTR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Geben Sie einen anderen Anspruch als Wert f\u00fcr das angegebene Attribut in der MicroProfile-JWT-Konfiguration an. 2) Vergewissern Sie sich, dass der Provider die Informationen zum authentifizierten Benutzer mit dem angegebenen Anspruch ausgibt.
 
 # 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
@@ -144,7 +144,7 @@ ERROR_CREATING_JWT.explanation=Entweder konnte ein JWT-Konsument nicht erstellt 
 ERROR_CREATING_JWT.useraction=Vergewissern Sie sich, dass die angegebene MicroProfile-JWT-Konfiguration in der Serverkonfiguration vorhanden ist. Vergewissern Sie sich au\u00dferdem, dass die angegebene Tokenzeichenfolge ordnungsgem\u00e4\u00df formatiert ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
 
 MP_JWT_FRONT_END_ERROR=CWWKS5525E: Bei der Authentifizierung eines Benutzers mithilfe des MicroProfile-JWT (JSON Web Token) ist ein Fehler aufgetreten.
-MP_JWT_FRONT_END_ERROR.explanation=Bei der Authentifizierung eines Benutzers ist ein Problem aufgetreten. M\u00f6glicherweise liegt ein Verbindungsproblem zwischen der Anwendung und dem Service-Provider eines anderen Anbieters vor, oder es liegt ein Fehler mit den Authentifizierungsdaten vor.
+MP_JWT_FRONT_END_ERROR.explanation=Bei der Authentifizierung eines Benutzers ist ein Problem aufgetreten. M\u00f6glicherweise liegt ein Verbindungsproblem zwischen der Anwendung und dem Service-Provider eines anderen Anbieters vor oder es liegt ein Fehler mit den Authentifizierungsdaten vor.
 MP_JWT_FRONT_END_ERROR.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
 
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Das Feature MicroProfile JWT kann die Authentifizierung nicht durchf\u00fchren, weil es den Authentifizierungstyp [{0}] in der Anwendung erwartet, aber [{1}] gefunden hat. Das Attribut [{2}] ist auf [{3}] gesetzt.  
@@ -155,3 +155,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Stellen Sie sicher, dass die Server- o
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Das MicroProfile-JWT-Feature kann die Authentifizierung nicht durchf\u00fchren, da das in der Anforderung angegebene JWT zuvor abgemeldet wurde.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=Ein vorheriger Aufruf von HttpServletRequest.logout() wurde f\u00fcr ein Subjekt abgesetzt, das mit diesem JWT authenitifziert wurde. 
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=\u00dcbergeben Sie die Anforderung mit einem anderen JWT erneut.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: Der MicroProfile-Config-Wert [{0}] {1} wird nicht unterst\u00fctzt. Die einzigen unterst\u00fctzten Werten sind: {2}. Der Wert {3} wird standardm\u00e4\u00dfig verwendet.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=Die MicroProfile-Config-Eigenschaft, die in der Nachricht angegeben ist, hat einen vordefinierten Satz von Werten, die unterst\u00fctzt werden. Andere Werte werden ignoriert und der Standardwert wird stattdessen verwendet.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Geben Sie einen der unterst\u00fctzten Werte f\u00fcr die Eigenschaft an, die in der Nachricht angegeben ist.

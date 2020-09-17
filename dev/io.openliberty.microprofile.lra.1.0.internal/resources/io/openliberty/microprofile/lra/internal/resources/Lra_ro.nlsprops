@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: URI-ul coordonator LRA nu este valid.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=Participan\u0163ii LRA trebuie s\u0103 fie capabili s\u0103 contacteze coordonatorul.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Corecta\u0163i configura\u0163ia coordonatorului LRA \u00een fi\u015fierul server.xml.
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: A ap\u0103rut o eroare \u00een timpul ini\u0163ializ\u0103rii caracteristicii mpLRA-1.0. Eroarea este {0}.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=A ap\u0103rut o eroare LRA, ceea ce \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a identifica problema.

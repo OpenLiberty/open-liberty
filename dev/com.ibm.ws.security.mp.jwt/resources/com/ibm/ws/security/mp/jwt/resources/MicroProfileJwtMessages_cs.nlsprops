@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,8 +43,8 @@ TOO_MANY_JWT_PRINCIPALS.useraction=Zkontrolujte, \u017ee aplikace nevkl\u00e1d\u
 # Do not translate "mpjwt_login_hint"
 # 0=mpJwt configuration ID
 MPJWT_NO_SUCH_PROVIDER=CWWKS5505E: Konfigurace JWT mikroprofilu [{0}] uveden\u00e1 v po\u017eadavku chyb\u00ed nebo nen\u00ed nakonfigurov\u00e1na pro obsluhu tohoto po\u017eadavku.
-MPJWT_NO_SUCH_PROVIDER.explanation=Po\u017eadavek obsahuje parametr nebo z\u00e1hlav\u00ed s n\u00e1zvem mpjwt_login_hint, kter\u00e9 uv\u00e1d\u00ed ID konfigurace JWT mikroprofilu, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro tento po\u017eadavek. Nicm\u00e9n\u011b konfigurace JWT mikroprofilu, kter\u00e1 odpov\u00edd\u00e1 ID, chyb\u00ed nebo nen\u00ed nakonfigurov\u00e1na ke zpracov\u00e1n\u00ed \u017e\u00e1dosti.
-MPJWT_NO_SUCH_PROVIDER.useraction=Ov\u011b\u0159te, \u017ee je slu\u017eba JWT mikroprofilu s ozna\u010den\u00fdm ID nakonfigurov\u00e1na.
+MPJWT_NO_SUCH_PROVIDER.explanation=Po\u017eadavek obsahuje parametr nebo z\u00e1hlav\u00ed s n\u00e1zvem mpjwt_login_hint, kter\u00e9 uv\u00e1d\u00ed ID konfigurace MicroProfile JWT, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro tento po\u017eadavek. Nicm\u00e9n\u011b konfigurace MicroProfile JWT, kter\u00e1 odpov\u00edd\u00e1 ID, chyb\u00ed nebo nen\u00ed nakonfigurov\u00e1na ke zpracov\u00e1n\u00ed \u017e\u00e1dosti.
+MPJWT_NO_SUCH_PROVIDER.useraction=Ov\u011b\u0159te, \u017ee je slu\u017eba MicroProfile JWT s ozna\u010den\u00fdm ID nakonfigurov\u00e1na.
 
 USERNAME_NOT_FOUND=CWWKS5506E: Jm\u00e9no u\u017eivatele nelze extrahovat z tokenu.
 USERNAME_NOT_FOUND.explanation=Token neobsahuje n\u00e1rok, kter\u00fd odpov\u00edd\u00e1 hodnot\u011b atributu konfigurace userNameAttribute, nebo je hodnota ur\u010den\u00e1 atributem konfigurace userNameAttribute chybn\u00e1.
@@ -68,22 +68,22 @@ CLAIM_MALFORMED.useraction=Ov\u011b\u0159te, \u017ee uveden\u00fd n\u00e1rok exi
 # 0=mpJwt element ID, 1=Error message
 FAILED_TO_GET_SSL_CONTEXT=CWWKS5510E: Kontext SSL pro konfiguraci JWT mikroprofilu [{0}] nelze na\u010d\u00edst. {1}
 FAILED_TO_GET_SSL_CONTEXT.explanation=Konfigurace SSL pou\u017eit\u00e1 pro uvedenou konfiguraci m\u016f\u017ee chyb\u011bt, nebo nen\u00ed spr\u00e1vn\u00e1.
-FAILED_TO_GET_SSL_CONTEXT.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee informace o SSL jsou pro uvedenou konfiguraci p\u0159esn\u00e9. Je-li v konfiguraci JWT mikroprofilu uveden atribut konfigurace sslRef, zkontrolujte, zda je p\u0159\u00edslu\u0161n\u00e1 konfigurace SSL spr\u00e1vn\u00e1. Jinak ov\u011b\u0159te, \u017ee je v\u00fdchoz\u00ed konfigurace SSL serveru spr\u00e1vn\u011b nakonfigurovan\u00e1.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee informace o SSL jsou pro uvedenou konfiguraci p\u0159esn\u00e9. Je-li v konfiguraci MicroProfile JWT uveden atribut konfigurace sslRef, zkontrolujte, zda je p\u0159\u00edslu\u0161n\u00e1 konfigurace SSL spr\u00e1vn\u00e1. Jinak ov\u011b\u0159te, \u017ee je v\u00fdchoz\u00ed konfigurace SSL serveru spr\u00e1vn\u011b nakonfigurovan\u00e1.
 
 # Do not translate "JSON", "JSON Web Token", or "JWT"
 # 0=mpJwt element ID
 SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5511E: Funk\u010dnost odb\u011bratele tokenu JSON Web Token (JWT) pravd\u011bpodobn\u011b nen\u00ed pro konfiguraci JWT mikroprofilu [{0}] dostupn\u00e1, proto\u017ee slu\u017eba pro uvedenou konfiguraci nebyla nalezena.
-SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Uveden\u00e1 konfigurace JWT mikroprofilu nen\u00ed pravd\u011bpodobn\u011b dosud dostupn\u00e1, nebo byla slu\u017eba pro tuto konfiguraci zastavena.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Uveden\u00e1 konfigurace MicroProfile JWT nen\u00ed pravd\u011bpodobn\u011b dosud dostupn\u00e1, nebo byla slu\u017eba pro tuto konfiguraci zastavena.
 SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00e1 konfigurace nakonfigurovan\u00e1 a dostupn\u00e1.
 
 # 0=Exception message
 ERROR_LOADING_SSL_PROPS=CWWKS5512E: Referen\u010dn\u00ed informace SSL pro funkci JWT mikroprofilu nelze na\u010d\u00edst, proto\u017ee p\u0159i na\u010d\u00edt\u00e1n\u00ed vlastnost\u00ed SSL do\u0161lo k chyb\u011b. {0}
-ERROR_LOADING_SSL_PROPS.explanation=Konfigurace SSL pou\u017eit\u00e1 konfigurac\u00ed JWT mikroprofilu nen\u00ed dostupn\u00e1, nebo p\u0159i na\u010d\u00edt\u00e1n\u00ed vlastnost\u00ed konfigurace SSL do\u0161lo k chyb\u011b.
-ERROR_LOADING_SSL_PROPS.useraction=Ov\u011b\u0159te, \u017ee konfigurace SSL, pou\u017eit\u00e1 slu\u017ebou JWT mikroprofilu, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+ERROR_LOADING_SSL_PROPS.explanation=Konfigurace SSL pou\u017eit\u00e1 konfigurac\u00ed MicroProfile JWT nen\u00ed dostupn\u00e1, nebo p\u0159i na\u010d\u00edt\u00e1n\u00ed vlastnost\u00ed konfigurace SSL do\u0161lo k chyb\u011b.
+ERROR_LOADING_SSL_PROPS.useraction=Ov\u011b\u0159te, \u017ee konfigurace SSL, pou\u017eit\u00e1 slu\u017ebou MicroProfile JWT, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
 
 KEYSTORE_SERVICE_NOT_FOUND=CWWKS5513E: Slu\u017ebu \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nelze nal\u00e9zt.
 KEYSTORE_SERVICE_NOT_FOUND.explanation=Slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro funkci MicroProfile JWT nen\u00ed dostupn\u00e1.
-KEYSTORE_SERVICE_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, pou\u017e\u00edvan\u00e1 slu\u017ebou JWT mikroprofilu, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, pou\u017e\u00edvan\u00e1 slu\u017ebou MicroProfile JWT, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
 
 # 0=Trust store name, 1=Exception message
 FAILED_TO_LOAD_PUBLIC_KEYS=CWWKS5514E: Ve\u0159ejn\u00e9 kl\u00ed\u010de nelze na\u010d\u00edst z uveden\u00e9ho \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{0}]. {1}
@@ -99,7 +99,7 @@ FAILED_TO_LOAD_PUBLIC_KEY.useraction=Projd\u011bte si akce u\u017eivatele pro ch
 # 0=Trust store name, 1=Exception message
 ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5516E: Funkce MicroProfile JWT zjistila probl\u00e9m p\u0159i na\u010d\u00edt\u00e1n\u00ed certifik\u00e1t\u016f z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{0}]. {1}
 ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Ur\u010den\u00e9 \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nemus\u00ed existovat nebo do\u0161lo k chyb\u011b p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti.
-ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00e9 \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti existuje v konfiguraci serveru. Ov\u011b\u0159te, \u017ee slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, pou\u017e\u00edvan\u00e1 slu\u017ebou JWT mikroprofilu, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00e9 \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti existuje v konfiguraci serveru. Ov\u011b\u0159te, \u017ee slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, pou\u017e\u00edvan\u00e1 slu\u017ebou MicroProfile JWT, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
 
 # Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS or FAILED_TO_LOAD_PUBLIC_KEY
 # 0=Certificate alias name, 1=Trust store name, 2=Exception message
@@ -155,3 +155,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Ujist\u011bte se, \u017ee je server ne
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Funkce MicroProfile JWT nem\u016f\u017ee prov\u00e9st ov\u011b\u0159en\u00ed, proto\u017ee do\u0161lo k odhl\u00e1\u0161en\u00ed tokenu JWT v po\u017eadavku.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=P\u0159edchoz\u00ed vol\u00e1n\u00ed HttpServletRequest.logout() bylo provedeno s p\u0159edm\u011btem, kter\u00fd byl ov\u011b\u0159en t\u00edmto tokenem JWT. 
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Ode\u0161lete po\u017eadavek znovu s jin\u00fdm tokenem JWT.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: Hodnota MicroProfile Config [{0}] {1} nen\u00ed podporov\u00e1na. Podporovan\u00e9 hodnoty jsou pouze {2}. Standardn\u011b se pou\u017eije hodnota {3}.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=Vlastnost MicroProfile Config, kter\u00e1 je ur\u010dena ve zpr\u00e1v\u011b, m\u00e1 p\u0159eddefinovanou sadu podporovan\u00fdch hodnot. Dal\u0161\u00ed hodnoty jsou ignorov\u00e1ny a m\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed hodnota.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Zadejte jednu z podporovan\u00fdch hodnot pro vlastnost, kter\u00e1 je uvedena ve zpr\u00e1v\u011b.

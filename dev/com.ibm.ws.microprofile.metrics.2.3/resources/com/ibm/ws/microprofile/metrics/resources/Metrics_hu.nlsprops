@@ -128,6 +128,17 @@ session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma
 session.invalidated.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
 session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkeztetett munkamenetek sz\u00e1ma.
 
+grpc.server.rpcStarted.total.description=A kiszolg\u00e1l\u00f3n elind\u00edtott \u00f6sszes t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1s (RPC).
+grpc.server.rpcCompleted.total.description=A kiszolg\u00e1l\u00f3n v\u00e9grehajtott \u00f6sszes t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1s (RPC), a sikerre vagy sikertelens\u00e9gre val\u00f3 tekintet n\u00e9lk\u00fcl.
+grpc.server.sentMessages.total.description=A kiszolg\u00e1l\u00f3 \u00e1ltal k\u00fcld\u00f6tt \u00f6sszes adatfolyam \u00fczenet.
+grpc.server.receivedMessages.total.description=Az \u00fcgyf\u00e9lr\u0151l fogadott \u00f6sszes adatfolyam \u00fczenet.
+grpc.server.responseTime.total.description=A befejezett t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1sok (RPC) teljes v\u00e1laszideje.
+
+grpc.client.rpcStarted.total.description=Az \u00fcgyf\u00e9len elind\u00edtott \u00f6sszes t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1s (RPC).
+grpc.client.rpcCompleted.total.description=Az \u00fcgyf\u00e9len v\u00e9grehajtott \u00f6sszes t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1s (RPC), a sikerre vagy sikertelens\u00e9gre val\u00f3 tekintet n\u00e9lk\u00fcl.
+grpc.client.sentMessages.total.description=Az \u00fcgyf\u00e9l \u00e1ltal k\u00fcld\u00f6tt \u00f6sszes adatfolyam \u00fczenet.
+grpc.client.receivedMessages.total.description=A kiszolg\u00e1l\u00f3r\u00f3l fogadott \u00f6sszes adatfolyam \u00fczenet.
+grpc.client.responseTime.total.description=A befejezett t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1sok (RPC) teljes v\u00e1laszideje.
 
 REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
 #-----------------------------------------------------------------------------------------------------------------------------

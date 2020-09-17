@@ -14,9 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-
 @RunWith(Suite.class)
 @SuiteClasses({
                 DualServerDynamicPostgreSQLTest.class,

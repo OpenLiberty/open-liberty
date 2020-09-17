@@ -48,7 +48,7 @@ generate.replacement: true
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.jms.3.0;version=latest,\
+	io.openliberty.jakarta.messaging.3.0;version=latest,\
 	io.openliberty.jakarta.interceptor.2.0;version=latest,\
 	io.openliberty.jakarta.ejb.4.0;version=latest,\
 	com.ibm.ws.ejbcontainer.core; version=latest, \

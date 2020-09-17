@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -66,7 +65,7 @@ public class WSConfigurationHelperTest extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
         WebArchive configHelperApp = ShrinkHelper.buildDefaultApp("confighelper", "test.config.helper");
-        ShrinkHelper.exportAppToServer(server, configHelperApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, configHelperApp);
 
         server.startServer("helperTest.log");
         //make sure the URL is available

@@ -159,7 +159,7 @@ public class StoreServicesTests extends FATServletClient {
             //Connect client configuration.]
 
             if (storeServer != null)
-                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E", "CWWKS1737E");
+                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E", "CWWKS1737E", "CWWKT0204E", "CWWKT0205E");
         } catch (Exception e) {
             excep = e;
             Log.error(c, "store tearDown", e);

@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+   <enterprise-beans>
+       <message-driven id="MessageDriven_1060639020080">
+            <ejb-name>ConcurBMTNonJMS</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurBMTNonJMS</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639020081">
+            <ejb-name>ConcurCMTNonJMSRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurCMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurCMTNonJMSRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639020082">
+            <ejb-name>ConcurCMTNonJMSNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurCMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurCMTNonJMSNotSupported</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024453">
+            <ejb-name>EndpointBMTJMS</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTJMS</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTJMS</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+
+        <message-driven id="MessageDriven_1060639024420">
+            <ejb-name>EndpointBMTJMSAutoStartFalse</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTJMS</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTJMSAutoStartFalse</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+   
+        <message-driven id="MessageDriven_1060639024454">
+            <ejb-name>EndpointCMTJMSRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTJMS</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>CMTJMSRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024469">
+            <ejb-name>EndpointCMTJMSNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTJMS</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>CMTJMSNotSupported</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024470">
+            <ejb-name>EndpointBMTNonJMS</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTNonJMS</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+
+        <message-driven id="MessageDriven_10606390244830">
+            <ejb-name>EndpointBMTNonJMSFalseResume</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTNonJMSFalseResume</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_10606390244831">
+            <ejb-name>EndpointBMTNonJMSNeverStarted</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTNonJMSNeverStarted</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_10606390244832">
+            <ejb-name>EndpointBMTNonJMSAutoStartFalse</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTNonJMSAutoStartFalse</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_10606390244833">
+            <ejb-name>EndpointBMTNonJMSAutoStartFalseDup</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>BMTNonJMSAutoStartFalse</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_10606390244834">
+            <ejb-name>EndpointBMTNonJMSNoActSpec</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>EndpointBMTNonJMSNoActSpec</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024471">
+            <ejb-name>EndpointCMTNonJMSRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>CMTNonJMSRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024472">
+            <ejb-name>EndpointCMTNonJMSNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTNonJMS</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>CMTNonJMSNotSupported</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024473">
+            <ejb-name>MDBBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.MDBBean</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>MDBBean</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024474">
+            <ejb-name>MDBTimedCMTBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.MDBTimedCMTBean</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>MDBTimedCMTBean</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024475">
+            <ejb-name>MDBTimedBMTBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.MDBTimedBMTBean</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>MDBTimedBMTBean</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024476">
+            <ejb-name>MDBTimedCMTFailBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.MDBTimedCMTFailBean</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>MDBTimedCMTFailBean</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639024477">
+            <ejb-name>MDBTimedBMTFailBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.MDBTimedBMTFailBean</ejb-class>
+            <messaging-type>javax.jms.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>MDBTimedBMTFailBean</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639030080">
+            <ejb-name>ConcurBMTException</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurBMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurBMTException</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639030081">
+            <ejb-name>ConcurCMTExceptionRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurCMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurCMTExceptionRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639030082">
+            <ejb-name>ConcurCMTExceptionNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.ConcurCMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>ConcurCMTExceptionNotSupported</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639040080">
+            <ejb-name>EndpointBMTException</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointBMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Bean</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>EndpointBMTException</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639040081">
+            <ejb-name>EndpointCMTExceptionRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>EndpointCMTExceptionRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639040082">
+            <ejb-name>EndpointCMTExceptionNotSupported</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.EndpointCMTException</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>EndpointCMTExceptionNotSupported</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <message-driven id="MessageDriven_1060639050080">
+            <ejb-name>EndpointCMTRollbackRequired</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.CMTRollback</ejb-class>
+            <messaging-type>com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener</messaging-type>
+            <transaction-type>Container</transaction-type>
+            <activation-config>
+                <activation-config-property>
+                    <activation-config-property-name>name</activation-config-property-name>
+                    <activation-config-property-value>CMTRollbackRequired</activation-config-property-value>
+                </activation-config-property>
+            </activation-config>
+        </message-driven>
+        
+        <session id="Session_3">
+            <ejb-name>StatelessTimedLocal</ejb-name>
+            <business-local>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.StatelessTimedLocalObject</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.ejb.StatelessTimedBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+    </enterprise-beans>
+    <assembly-descriptor id="AssemblyDescriptor_ID">
+        <container-transaction>
+            <method>
+                <ejb-name>ConcurCMTNonJMSNotSupported</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+    
+        <container-transaction>
+            <method>
+                <ejb-name>ConcurCMTNonJMSRequired</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+    
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTJMSRequired</ejb-name>
+                <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTJMSNotSupported</ejb-name>
+                <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTNonJMSRequired</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTNonJMSNotSupported</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>MDBBean</ejb-name>
+                <method-name>onMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>MDBTimedCMTBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>MDBTimedBMTBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>MDBTimedCMTFailBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>MDBTimedBMTFailBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>ConcurCMTExceptionRequired</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>ConcurCMTExceptionNotSupported</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTExceptionRequired</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTExceptionNotSupported</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+        </container-transaction>
+        
+        <container-transaction>
+            <method>
+                <ejb-name>EndpointCMTRollbackRequired</ejb-name>
+                <method-name>onStringMessage</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+    </assembly-descriptor>
+</ejb-jar>

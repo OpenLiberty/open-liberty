@@ -313,3 +313,14 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een confi
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Punctul final specificat necesit\u0103 HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS sau modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t HTTPS s\u0103 nu fie necesar.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algoritmul de semn\u0103tur\u0103 [{0}] care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este suportat. Va fi folosit algoritmul de semn\u0103tur\u0103 [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Doar un anumit set de algoritmi RSA, Elliptical Curve \u015fi HMAC sunt suporta\u0163i. Algoritmul de semn\u0103tur\u0103 care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este unul dintre algoritmii de semn\u0103tur\u0103 suporta\u0163i.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii de semn\u0103tur\u0103 suporta\u0163i includ ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 \u015fi HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: AMR-ul [{0}] al jetonului web JSON (JWT) furnizat nu este listat ca un AMR de \u00eencredere \u00een configura\u0163ia JWT [{1}]. AMR-urile de \u00eencredere sunt [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=Configura\u0163ia serverului specific\u0103 ce AMR este de \u00eencredere c\u00e2nd se valideaz\u0103 JWT-uri. Jetonul furnizat nu este destinat pentru un AMR de \u00eencredere, a\u015fa c\u0103 jetonul nu poate fi validat.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Ob\u0163ine\u0163i un jeton nou pentru unul din AMR-urile de \u00eencredere specificate \u00een configura\u0163ia dumneavoastr\u0103 JWT sau ad\u0103uga\u0163i AMR-ul specificat \u00een mesaj ca un AMR de \u00eencredere \u00een configura\u0163ia JWT.

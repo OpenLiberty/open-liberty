@@ -36,13 +36,15 @@ public class DB2KerberosContainer extends Db2Container {
 
     private static final Class<?> c = DB2KerberosContainer.class;
     private static final Path reuseCache = Paths.get("..", "..", "cache", "db2.properties");
+    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
+    private static final String IMAGE = "aguibert/krb5-db2:1.0";
 
     private boolean reused = false;
     private String reused_hostname;
     private int reused_port;
 
     public DB2KerberosContainer(Network network) {
-        super("aguibert/krb5-db2:1.0");
+        super(IMAGE);
         withNetwork(network);
     }
 

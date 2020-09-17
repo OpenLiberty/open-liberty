@@ -1,0 +1,53 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>servlet-4.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>jca-1.7</feature>
+  </featureManager>
+    
+  <include location="../fatTestPorts.xml"/>
+
+  <library id="pglib">
+    <fileset dir="${server.config.dir}/postgresql"/>
+  </library>
+  
+  <kerberos configFile="${KRB5_CONF}"/>
+  
+  <dataSource jndiName="jdbc/krb/basic">
+    <jdbcDriver libraryRef="pglib"/>
+    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
+    <jdbcDriver libraryRef="pglib" />
+    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="pglib" />
+    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+  </dataSource>
+  
+  <!-- Mis-configured datasource: bogus name for krb5Principal -->
+  <dataSource jndiName="jdbc/krb/invalidPrincipal">
+    <jdbcDriver libraryRef="pglib"/>
+    <properties.postgresql user="bogus" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="bogus" password="bogus"/>
+  </dataSource>
+  
+  <!-- Mis-configured datasource: backend DB requires Kerb but only basic user/pass configured -->
+  <dataSource jndiName="jdbc/nokrb5">
+    <jdbcDriver libraryRef="pglib"/>
+    <properties.postgresql databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData user="${PG_USER}"  password="${PG_PASS}"/>
+  </dataSource>
+    
+  <javaPermission codebase="${server.config.dir}postgresql/postgresql.jar" className="java.security.AllPermission"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
+  <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

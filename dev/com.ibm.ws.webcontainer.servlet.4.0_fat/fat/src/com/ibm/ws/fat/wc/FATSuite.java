@@ -57,7 +57,6 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Shared Servers
-                WCServerTest.class,
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
@@ -72,8 +71,9 @@ import componenttest.rules.repeater.RepeatTests;
                 WCAddJspFileTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
-                WC5JakartaServletTest.class,
                 // @Server Annotations
+                WCServerTest.class,
+                WC5JakartaServletTest.class,
                 WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
                 WCSameSiteCookieAttributeTests.class,
