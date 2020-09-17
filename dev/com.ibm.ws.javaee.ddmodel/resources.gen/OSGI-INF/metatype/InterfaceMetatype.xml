@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- NOTE: This is a generated file. Do not edit it directly. -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+localization="OSGI-INF/l10n/metatype">
+
+<OCD id="com.ibm.ws.javaee.dd.ejbbnd.Interface" name="%interface.name" description="%interface.desc" >
+    <AD id="binding-name" description="%InterfaceMetatype.binding-name.desc" name="%InterfaceMetatype.binding-name.name" type="String" required="false" cardinality="0"/>
+    <AD id="class" description="%InterfaceMetatype.class.desc" name="%InterfaceMetatype.class.name" type="String" required="false" cardinality="0"/>
+   </OCD>
+
+<Designate factoryPid="com.ibm.ws.javaee.dd.ejbbnd.Interface">
+     <Object ocdref="com.ibm.ws.javaee.dd.ejbbnd.Interface"/>
+</Designate>
+
+</metatype:MetaData>
