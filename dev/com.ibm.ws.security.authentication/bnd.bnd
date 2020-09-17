@@ -23,12 +23,13 @@ Export-Package: \
   com.ibm.ws.security.authentication, \
   com.ibm.ws.security.authentication.cache, \
   com.ibm.ws.security.authentication.collective, \
-  com.ibm.ws.security.delegation, \
+  com.ibm.ws.security.delegation;provide:=true, \
   com.ibm.ws.security.util
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.javaee.dd;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -40,3 +41,4 @@ Export-Package: \
 	cglib:cglib-nodep;version=3.3.0, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.kernel.boot;version=latest
+	

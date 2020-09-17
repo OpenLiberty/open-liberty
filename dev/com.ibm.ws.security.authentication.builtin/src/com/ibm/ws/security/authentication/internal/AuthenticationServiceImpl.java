@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal;
 
+import java.security.cert.X509Certificate;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -51,7 +52,6 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
-import java.security.cert.X509Certificate;
 
 @TraceOptions(messageBundle = "com.ibm.ws.security.authentication.internal.resources.AuthenticationMessages")
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
-    static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
+//    static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
@@ -70,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
     private final AtomicServiceReference<DelegationProvider> delegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DELEGATION_PROVIDER);
-    private final AtomicServiceReference<DelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
+//    private final AtomicServiceReference<DelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
     private final AtomicServiceReference<CredentialsService> credentialsServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
     private JAASService jaasService;
     private ComponentContext cc;
@@ -118,13 +118,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.unsetReference(reference);
     }
 
-    protected void setDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
-        defaultDelegationProviderRef.setReference(reference);
-    }
-
-    protected void unsetDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
-        defaultDelegationProviderRef.unsetReference(reference);
-    }
+//    protected void setDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
+//        delegationProviderRef.setReference(reference);
+//    }
+//
+//    protected void unsetDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
+//        defaultDelegationProviderRef.unsetReference(reference);
+//    }
 
     protected void setCredentialsService(ServiceReference<CredentialsService> reference) {
         credentialsServiceRef.setReference(reference);
@@ -169,7 +169,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authCacheServiceRef.activate(cc);
         userRegistryServiceRef.activate(cc);
         delegationProviderRef.activate(cc);
-        defaultDelegationProviderRef.activate(cc);
+//        defaultDelegationProviderRef.activate(cc);
         credentialsServiceRef.activate(cc);
         updateCacheState(props);
     }
@@ -182,7 +182,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authCacheServiceRef.deactivate(cc);
         userRegistryServiceRef.deactivate(cc);
         delegationProviderRef.deactivate(cc);
-        defaultDelegationProviderRef.deactivate(cc);
+//        defaultDelegationProviderRef.deactivate(cc);
         credentialsServiceRef.deactivate(cc);
         JAASServiceImpl.unsetAuthenticationService(this);
         cc = null;
@@ -332,7 +332,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 if (ssoTokenBytes != null) {
                     subject = findSubjectByTokenContents(authCacheService, null, ssoTokenBytes, authenticationData);
                 } else {
-                    X509Certificate[] certChain = (X509Certificate[])authenticationData.get(AuthenticationData.CERTCHAIN);
+                    X509Certificate[] certChain = (X509Certificate[]) authenticationData.get(AuthenticationData.CERTCHAIN);
                     if (certChain != null) {
                         subject = findSubjectByX509Cert(authCacheService, certChain);
                     } else {
@@ -355,7 +355,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authCacheService.getSubject(certHash);
     }
 
-    
     /**
      * @param authCacheService An authentication cache service
      * @param token The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
@@ -493,12 +492,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (jaasService != null) {
             try {
                 return jaasService.performLogin(jaasEntryName, authenticationData, subject);
-            }
-            catch (LoginException e) {
-                if(e instanceof PasswordExpiredException) {
+            } catch (LoginException e) {
+                if (e instanceof PasswordExpiredException) {
                     throw new PasswordExpiredException(e.getLocalizedMessage());
-                }
-                else if(e instanceof UserRevokedException) {
+                } else if (e instanceof UserRevokedException) {
                     throw new UserRevokedException(e.getLocalizedMessage());
                 }
                 throw new AuthenticationException(e.getLocalizedMessage());
@@ -521,7 +518,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 authCacheService.insert(authenticatedSubject, userid, password);
             } else {
                 if (authenticationData.get(authenticationData.CERTCHAIN) != null) {
-                    authCacheService.insert(authenticatedSubject, (X509Certificate[])authenticationData.get(AuthenticationData.CERTCHAIN));
+                    authCacheService.insert(authenticatedSubject, (X509Certificate[]) authenticationData.get(AuthenticationData.CERTCHAIN));
                 } else {
                     authCacheService.insert(authenticatedSubject);
                 }
@@ -567,7 +564,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         try {
             if (delegationProvider == null) {
-                delegationProvider = defaultDelegationProviderRef.getService();
+//                delegationProvider = defaultDelegationProviderRef.getService();
             }
             if (delegationProvider != null) {
                 runAsSubject = delegationProvider.getRunAsSubject(roleName, appName);

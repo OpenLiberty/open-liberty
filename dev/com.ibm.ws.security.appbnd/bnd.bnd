@@ -23,11 +23,12 @@ Import-Package: \
   !org.osgi.service.cm, \
   ${defaultPackageImport}
 
-Private-Package: \
-  com.ibm.ws.security.appbnd.internal.*
+#Private-Package: \
+#  com.ibm.ws.security.appbnd.internal.*
 
 -dsannotations: \
-  com.ibm.ws.security.appbnd.internal.authorization.AppBndAuthorizationTableService
+  com.ibm.ws.security.appbnd.internal.authorization.AppBndAuthorizationTableService, \
+  com.ibm.ws.security.appbnd.internal.delegation.DefaultDelegationProvider
 
 -dsannotations-inherit: true
 

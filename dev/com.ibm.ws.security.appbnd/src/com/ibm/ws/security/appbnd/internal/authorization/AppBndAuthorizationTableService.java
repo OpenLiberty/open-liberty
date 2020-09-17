@@ -11,18 +11,14 @@
 package com.ibm.ws.security.appbnd.internal.authorization;
 
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -45,7 +41,7 @@ import com.ibm.ws.javaee.dd.appbnd.User;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.SecurityService;
-import com.ibm.ws.security.appbnd.internal.delegation.DefaultDelegationProvider;
+import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
@@ -77,11 +73,15 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     private static final TraceComponent tc = Tr.register(AppBndAuthorizationTableService.class);
 
     static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
+    static final String KEY_AUTHENTICATION_SERVICE = "authenticationService";
+    static final String KEY_DELEGATION_PROVIDER_SERVICE = "delegationProviderService";
     private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
-
-
-    private volatile DefaultDelegationProvider defaultDelegationProvider = null;
-    private ServiceRegistration<DelegationProvider> defaultDelegationProviderReg;
+    private final AtomicServiceReference<AuthenticationService> authenticationServiceRef = new AtomicServiceReference<AuthenticationService>(KEY_AUTHENTICATION_SERVICE);
+    private final AtomicServiceReference<DelegationProvider> delegationProviderServiceRef = new AtomicServiceReference<DelegationProvider>(KEY_DELEGATION_PROVIDER_SERVICE);
+//    private volatile DefaultDelegationProvider defaultDelegationProvider = null;
+//    private ServiceRegistration<DelegationProvider> defaultDelegationProviderReg;
+    private final AuthenticationService authenticationService = null;
+    DelegationProvider defaultDelegationProvider = null;
 
     /**
      * Invalid access ID used to indicate an attempt was made to compute the
@@ -111,6 +111,26 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
 
     protected void unsetIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
         identityStoreHandlerServiceRef.unsetReference(reference);
+    }
+
+    @Reference(service = DelegationProvider.class, name = KEY_DELEGATION_PROVIDER_SERVICE,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
+    public void setDelegationProvider(ServiceReference<DelegationProvider> ref) {
+        delegationProviderServiceRef.setReference(ref);
+    }
+
+    public void unsetDelegationProvider(ServiceReference<DelegationProvider> ref) {
+        delegationProviderServiceRef.unsetReference(ref);
+    }
+
+    @Reference(name = KEY_AUTHENTICATION_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setAuthenticationService(ServiceReference<AuthenticationService> ref) {
+        authenticationServiceRef.setReference(ref);
+    }
+
+    protected void unsetAuthenticationService(ServiceReference<AuthenticationService> ref) {
+        authenticationServiceRef.unsetReference(ref);
     }
 
     private static final class AuthzInfo {
@@ -162,32 +182,37 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      *
      * @param cc
      */
-    private void registerDefaultDelegationProvider(ComponentContext cc) {
-        defaultDelegationProvider = new DefaultDelegationProvider();
-        defaultDelegationProvider.setSecurityService(securityServiceRef.getService());
-        defaultDelegationProvider.setIdentityStoreHandlerService(identityStoreHandlerServiceRef);
-        BundleContext bc = cc.getBundleContext();
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("type", "defaultProvider");
-        defaultDelegationProviderReg = bc.registerService(DelegationProvider.class,
-                                                          defaultDelegationProvider,
-                                                          props);
-    }
+//    private void registerDefaultDelegationProvider(ComponentContext cc) {
+//        defaultDelegationProvider = new DefaultDelegationProvider();
+//        defaultDelegationProvider.setSecurityService(securityServiceRef.getService());
+//        defaultDelegationProvider.setIdentityStoreHandlerService(identityStoreHandlerServiceRef);
+//        BundleContext bc = cc.getBundleContext();
+//        Dictionary<String, Object> props = new Hashtable<String, Object>();
+//        props.put("type", "defaultProvider");
+//        defaultDelegationProviderReg = bc.registerService(DelegationProvider.class,
+//                                                          defaultDelegationProvider,
+//                                                          props);
+//    }
 
     @Override
     protected void activate(ComponentContext cc) {
         super.activate(cc);
         identityStoreHandlerServiceRef.activate(cc);
-        registerDefaultDelegationProvider(cc);
+        authenticationServiceRef.activate(cc);
+        delegationProviderServiceRef.activate(cc);
+
+//        registerDefaultDelegationProvider(cc);
     }
 
     @Override
     protected void deactivate(ComponentContext cc) {
         super.deactivate(cc);
         identityStoreHandlerServiceRef.deactivate(cc);
-        if (defaultDelegationProviderReg != null) {
-            defaultDelegationProviderReg.unregister();
-        }
+        authenticationServiceRef.deactivate(cc);
+        delegationProviderServiceRef.deactivate(cc);
+//        if (defaultDelegationProviderReg != null) {
+//            defaultDelegationProviderReg.unregister();
+//        }
     }
 
     /**
@@ -232,7 +257,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                                                                          new Object[] { appName },
                                                                          "CWWKS9110E: Multiple applications have the name {0}. Security authorization policies requires that names be unique."));
             }
-
+            defaultDelegationProvider = delegationProviderServiceRef.getService();
             defaultDelegationProvider.createAppToSecurityRolesMapping(appName, securityRoles);
         } catch (UnableToAdaptException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -246,6 +271,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
         String appName = event.getMetaData().getJ2EEName().getApplication();
         removeTable(appName);
+        defaultDelegationProvider = delegationProviderServiceRef.getService();
         defaultDelegationProvider.removeRoleToRunAsMapping(appName);
     }
 

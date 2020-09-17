@@ -61,10 +61,9 @@ Service-Component: \
     jaasService=com.ibm.ws.security.authentication.internal.JAASService; \
     authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
     userRegistryService=com.ibm.ws.security.registry.UserRegistryService; \
-    delegationProvider='com.ibm.ws.security.delegation.DelegationProvider(!(type=defaultProvider))'; \
-    defaultDelegationProvider='com.ibm.ws.security.delegation.DelegationProvider(type=defaultProvider)'; \
+    delegationProvider=com.ibm.ws.security.delegation.DelegationProvider; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
-    optional:='delegationProvider,defaultDelegationProvider,credentialsService'; \
+    optional:='delegationProvider,credentialsService'; \
     greedy:='delegationProvider'; \
     dynamic:='delegationProvider'; \
     properties:="service.vendor=IBM", \

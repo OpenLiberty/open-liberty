@@ -17,16 +17,27 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.Subject;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.appbnd.RunAs;
 import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
-import com.ibm.ws.security.SecurityService;
+//import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.appbnd.internal.TraceConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
+import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.helper.AuthenticateUserHelper;
@@ -38,21 +49,48 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * This class defines the interface for creating
  * the run-as subject during delegation
  */
+@Component(service = { DelegationProvider.class },
+           name = "com.ibm.ws.security.appbnd.internal.DelegationProvider",
+           immediate = true,
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = { "service.vendor=IBM", "type=defaultProvider" })
 public class DefaultDelegationProvider implements DelegationProvider {
     private static final TraceComponent tc = Tr.register(DefaultDelegationProvider.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
+    static final String KEY_AUTHENTICATION_SERVICE = "authenticationService";
+
+    private final AtomicServiceReference<AuthenticationService> authenticationServiceRef = new AtomicServiceReference<AuthenticationService>(KEY_AUTHENTICATION_SERVICE);
     private final ConcurrentHashMap<String, Collection<SecurityRole>> appToSecurityRolesMap = new ConcurrentHashMap<String, Collection<SecurityRole>>();
     private final Map<String, Map<String, RunAs>> roleToRunAsMappingPerApp = new HashMap<String, Map<String, RunAs>>();
     private final Map<String, Map<String, Boolean>> roleToWarningMappingPerApp = new HashMap<String, Map<String, Boolean>>();
-    private SecurityService securityService;
-    private AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = null;
+//    private SecurityService securityService;
+//    private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = null;
+    private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
     public String delegationUser = "";
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
+//    public void setSecurityService(SecurityService securityService) {
+//        this.securityService = securityService;
+//    }
+
+    @Reference(service = IdentityStoreHandlerService.class, name = KEY_IDENTITY_STORE_HANDLER_SERVICE,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
+    public void setIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> ref) {
+        identityStoreHandlerServiceRef.setReference(ref);
     }
 
-    public void setIdentityStoreHandlerService(AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef) {
-        this.identityStoreHandlerServiceRef = identityStoreHandlerServiceRef;
+    public void unsetIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> ref) {
+        identityStoreHandlerServiceRef.unsetReference(ref);
+    }
+
+    @Reference(name = KEY_AUTHENTICATION_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setAuthenticationService(ServiceReference<AuthenticationService> ref) {
+        authenticationServiceRef.setReference(ref);
+    }
+
+    protected void unsetAuthenticationService(ServiceReference<AuthenticationService> ref) {
+        authenticationServiceRef.unsetReference(ref);
     }
 
     @Override
@@ -132,6 +170,7 @@ public class DefaultDelegationProvider implements DelegationProvider {
         delegationUser = runAs.getUserid();
     }
 
+    @Override
     public String getDelegationUser() {
         return delegationUser;
     }
@@ -172,19 +211,24 @@ public class DefaultDelegationProvider implements DelegationProvider {
         if (identityStoreHandlerService != null && identityStoreHandlerService.isIdentityStoreAvailable()) {
             Subject inSubject;
             if (password != null) {
-                inSubject= identityStoreHandlerService.createHashtableInSubject(username, password);
+                inSubject = identityStoreHandlerService.createHashtableInSubject(username, password);
             } else {
-                inSubject= identityStoreHandlerService.createHashtableInSubject(username);
+                inSubject = identityStoreHandlerService.createHashtableInSubject(username);
             }
-            return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, inSubject);
-        }
-        else if (password != null) {
+            return getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, inSubject);
+        } else if (password != null) {
             AuthenticationData authenticationData = createAuthenticationData(username, password);
-            return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
+            return getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
         } else {
             AuthenticateUserHelper authHelper = new AuthenticateUserHelper();
-            return authHelper.authenticateUser(securityService.getAuthenticationService(), username, JaasLoginConfigConstants.SYSTEM_WEB_INBOUND);
+            return authHelper.authenticateUser(getAuthenticationService(), username, JaasLoginConfigConstants.SYSTEM_WEB_INBOUND);
         }
+    }
+
+    private AuthenticationService getAuthenticationService() {
+        AuthenticationService authService = authenticationServiceRef.getService();
+        return authService;
+
     }
 
     /**
@@ -193,6 +237,7 @@ public class DefaultDelegationProvider implements DelegationProvider {
      * @param appName the name of the application for which the mappings belong to.
      * @param securityRoles the security roles of the application.
      */
+    @Override
     public void createAppToSecurityRolesMapping(String appName, Collection<SecurityRole> securityRoles) {
         //only add it if we don't have a cached copy
         appToSecurityRolesMap.putIfAbsent(appName, securityRoles);
@@ -203,6 +248,7 @@ public class DefaultDelegationProvider implements DelegationProvider {
      *
      * @param appName the name of the application for which the mappings belong to.
      */
+    @Override
     public void removeRoleToRunAsMapping(String appName) {
         Map<String, RunAs> roleToRunAsMap = roleToRunAsMappingPerApp.get(appName);
         if (roleToRunAsMap != null) {
@@ -241,9 +287,21 @@ public class DefaultDelegationProvider implements DelegationProvider {
     }
 
     private IdentityStoreHandlerService getIdentityStoreHandlerService() {
-        if (identityStoreHandlerServiceRef != null) {
-            return identityStoreHandlerServiceRef.getService();
-        }
-        return null;
+//       if (identityStoreHandlerServiceRef != null) {
+        return identityStoreHandlerServiceRef.getService();
+//        }
+//        return null;
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        authenticationServiceRef.activate(cc);
+        identityStoreHandlerServiceRef.activate(cc);
+    }
+
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+        authenticationServiceRef.deactivate(cc);
+        identityStoreHandlerServiceRef.deactivate(cc);
     }
 }

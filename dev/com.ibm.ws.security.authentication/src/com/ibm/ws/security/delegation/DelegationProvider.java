@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.delegation;
 
+import java.util.Collection;
+
 import javax.security.auth.Subject;
 
+import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
 import com.ibm.ws.security.authentication.AuthenticationException;
 
 /**
@@ -33,5 +36,9 @@ public interface DelegationProvider {
      * @return
      */
     String getDelegationUser();
+
+    void createAppToSecurityRolesMapping(String appName, Collection<SecurityRole> securityRoles);
+
+    void removeRoleToRunAsMapping(String appName);
 
 }
