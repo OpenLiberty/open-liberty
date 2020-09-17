@@ -47,7 +47,7 @@ Export-Package: \
   io.openliberty.grpc.internal.GrpcManagedObjectProvider
 
 Include-Resource: \
-  @${repo;io.grpc:grpc-core;${grpcVersion};EXACT}!/META-INF/**, \
+  @${repo;io.grpc:grpc-core;${grpcVersion};EXACT}!/META-INF/**
 
 instrument.disabled: true
 
