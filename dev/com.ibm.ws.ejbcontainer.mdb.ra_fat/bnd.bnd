@@ -21,7 +21,10 @@ fat.project: true
 
 tested.features: \
 	appSecurity-3.0, \
+	appSecurity-4.0, \
+	connectors-2.0, \
 	enterpriseBeansLite-4.0, \
+	messaging-3.0, \
 	mdb-4.0, \
 	servlet-4.0, \
 	servlet-5.0
@@ -36,4 +39,5 @@ tested.features: \
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\
 	com.ibm.ws.jdbc;version=latest,\
-	com.ibm.ws.ejbcontainer.fat_tools;version=latest
+	com.ibm.ws.ejbcontainer.fat_tools;version=latest,\
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
