@@ -30,8 +30,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import com.ibm.websphere.crypto.PasswordUtil;
-import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -76,6 +74,7 @@ interface QuickStartSecurityConfig {
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            configurationPid = { "com.ibm.ws.security.quickStartSecurity" },
+           immediate = true,
            property = "service.vendor=IBM")
 @DSExt.ConfigureWithInterfaces
 public class QuickStartSecurity {
