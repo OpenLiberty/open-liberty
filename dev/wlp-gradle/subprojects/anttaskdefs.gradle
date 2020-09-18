@@ -36,11 +36,6 @@ rootProject.ext.generateChecksums = { ant ->
                 classpath: bnd('repo.generateChecksums.path'))
 }
 
-rootProject.ext.generateZipChecksums = { ant ->
-    ant.taskdef(name: 'calcZipChecksums', classname: 'com.ibm.ws.wlp.cs.GenerateZipChecksums',
-                classpath: bnd('repo.generateChecksums.path'))
-}
-
 rootProject.ext.nlsTaskdef = { ant ->
     ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml',
                 classpath: bnd('repo.nlsTasks.path'))
