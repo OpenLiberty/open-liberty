@@ -3,7 +3,7 @@ IBM-Test-Feature: true
 IBM-ShortName: httpservice-2.2
 Subsystem-SymbolicName: com.ibm.websphere.appserver.httpservice-2.2;visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature",
+Subsystem-Content: com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature",
  com.ibm.ws.httpservice; version="[1,1.0.100)", 
  com.ibm.websphere.appserver.httptransport-1.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature

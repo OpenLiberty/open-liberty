@@ -43,7 +43,7 @@ Subsystem-Category: JavaEE7Application
  com.ibm.websphere.appserver.anno-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.1, \
  com.ibm.websphere.appserver.httptransport-1.0, \
- io.openliberty.servlet.api-3.1, \
+ com.ibm.websphere.appserver.javax.servlet-3.1, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:=7.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
