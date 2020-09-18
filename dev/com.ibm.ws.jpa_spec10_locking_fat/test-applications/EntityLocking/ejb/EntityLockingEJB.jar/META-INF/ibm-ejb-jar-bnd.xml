@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar-bnd
+xmlns="http://websphere.ibm.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+version="1.0">
+	<session name="StatefulMessengerClient">
+	  <!-- JMS Connection Factories -->                     
+	  <resource-ref name="jms/JPA_QCF"     binding-name="jms/JPA_QCF" />
+	  <resource-ref name="jms/JPA_TCF"     binding-name="jms/JPA_TCF" />
+	        
+	  <!-- JMS Resources for MDB Invocation/Reply Reception -->
+	  <resource-ref name="jms/JPAFVT_Topic"      binding-name="jms/JPAFVT_Topic" />
+	  <resource-ref name="jms/JPAFVT_ReplyQueue" binding-name="jms/JPAFVT_ReplyQueue" />
+	  
+	  <!-- JMS Resources for Client A and Client B Communication -->
+	  <resource-ref name="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue"  binding-name="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue" />
+	  <resource-ref name="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue"  binding-name="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue" />
+	  
+	  <!-- JDBC Resources -->
+	  <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
+	  <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+	</session>
+	    
+	<message-driven name="EntityLocking20MDB">
+	  <jca-adapter     activation-spec-binding-name="JPAFVT_TopicDriven_ActivationSpec" 
+	                   destination-binding-name="jms/JPAFVT_Topic"/>
+	  
+	  <!-- JMS Connection Factories -->                     
+	  <resource-ref name="jms/JPA_QCF"     binding-name="jms/JPA_QCF" />
+	  <resource-ref name="jms/JPA_TCF"     binding-name="jms/JPA_TCF" />
+	        
+	  <!-- JMS Resources for MDB Invocation/Reply Reception -->
+	  <resource-ref name="jms/JPAFVT_Topic"      binding-name="jms/JPAFVT_Topic" />
+	  <resource-ref name="jms/JPAFVT_ReplyQueue" binding-name="jms/JPAFVT_ReplyQueue" />
+	  
+	  <!-- JMS Resources for Client A and Client B Communication -->
+	  <resource-ref name="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue"  binding-name="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue" />
+	  <resource-ref name="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue"  binding-name="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue" />
+	
+	  <!-- JDBC Resources -->
+	  <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
+	  <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS"/>
+	</message-driven>
+</ejb-jar-bnd>
