@@ -22,16 +22,16 @@ Bundle-ManifestVersion: 2
 Specification-Version: 3.0.0
 
 Export-Package: \
-            org.eclipse.persistence.javax.persistence.osgi;version="3.0.0", \
-            org.eclipse.persistence.jpa.config;version="3.0.0", \
-            org.eclipse.persistence.sessions.serializers.kryo;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.config.*;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.metadata.graphs;version="3.0.0", \
-            org.eclipse.persistence.internal.jpa.metadata.sop;version="3.0.0", \
-            org.eclipse.persistence.internal.libraries.asm*;version="3.0.0", \
-            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="3.0.0", \
-            org.eclipse.persistence.jpa.jpql*;version="3.0.0", \
-            org.eclipse.persistence.*;version="3.0.0"
+            org.eclipse.persistence.javax.persistence.osgi;version="1.0.0", \
+            org.eclipse.persistence.jpa.config;version="1.0.0", \
+            org.eclipse.persistence.sessions.serializers.kryo;version="1.0.0", \
+            org.eclipse.persistence.internal.jpa.config.*;version="1.0.0", \
+            org.eclipse.persistence.internal.jpa.metadata.graphs;version="1.0.0", \
+            org.eclipse.persistence.internal.jpa.metadata.sop;version="1.0.0", \
+            org.eclipse.persistence.internal.libraries.asm*;version="1.0.0", \
+            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="1.0.0", \
+            org.eclipse.persistence.jpa.jpql*;version="1.0.0", \
+            org.eclipse.persistence.*;version="1.0.0"
 
 Import-Package: \
             com.ibm.tx.jta;resolution:=optional, \
