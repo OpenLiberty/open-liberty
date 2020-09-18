@@ -42,7 +42,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
 
     private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("SharedSubscriptionwithMsgSelClient");
+        LibertyServerFactory.getLibertyServer("SharedSubscriptionWithMsgSelClient");
 
     public int occurrencesInLog(String text) throws Exception {
         return TestUtils.occurrencesInLog(clientServer, "trace.log", text);

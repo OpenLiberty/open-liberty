@@ -1,19 +1,3 @@
-// SharedSubscriptionTest_129623.java
-    // . testCreateSharedDurableConsumer_2Subscribers_B_SecOff
-    // . testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff
-
-// SharedSubscriptionTest_129626.java
-    // . testCreateSharedNonDurableConsumer_2Subscribers_B_SecOff
-
-// SharedSubscriptionWithMsgSelTest_129623.java
-    // . testCreateSharedDurableConsumerWithMsgSelector_2Subscribers
-    // . testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic
-    // . testMultiSharedDurableConsumer_SecOff
-
-// SharedSubscriptionWithMsgSelTest_129626.java
-    // . testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_B_SecOff
-    // . testMultiSharedNonDurableConsumer_SecOff
-
 /*******************************************************************************
  * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
