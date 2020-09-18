@@ -54,7 +54,7 @@ import com.ibm.ws.sib.utils.DataSlice;
  * Test expiry of Items in the MessageStore.
  */
 public class ExpiryTest extends MessageStoreTestCase {
-    final long addItems = 100;
+    final long addItems = 1000;
     final long expiryMilliseconds = 10;
     final long streamMaximumOccupancy = 10000;
 
@@ -98,7 +98,7 @@ public class ExpiryTest extends MessageStoreTestCase {
      * @throws Exception
      */
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBefore() throws Exception {
         // Configure tracing.
         SharedOutputManager outputMgr = SharedOutputManager.getInstance();
         //outputMgr.trace("com.ibm.ws.sib.*=all:com.ibm.ejs.util.am.*=all");
@@ -113,7 +113,7 @@ public class ExpiryTest extends MessageStoreTestCase {
      * @throws Exception
      */
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfter() throws Exception {
         SharedOutputManager outputMgr = SharedOutputManager.getInstance();
         // Make stdout and stderr "normal"
         outputMgr.restoreStreams();
@@ -153,11 +153,11 @@ public class ExpiryTest extends MessageStoreTestCase {
 
         print("---------- "+this.getClass().getSimpleName()+" starting --------");
 
-        // Note that the Alarm Manager only uses one thread.
+        // Provide an executor for theExpirers alarmManager to use, note that the Alarm Manager only uses one thread.
         AlarmManager alarmManager = new TestAlarmManager(Executors.newScheduledThreadPool(10));
 
         // Create as many threads as needed to run this test without queueing.
-        ExecutorService executor = new ForkJoinPool();
+        ExecutorService executor = new ForkJoinPool(putTasks+getTasks);
 
         MessageStore messageStore = null;
         try {
@@ -184,7 +184,7 @@ public class ExpiryTest extends MessageStoreTestCase {
             try {
                 if (!expiryStarted) {
                    expiryStartedCondition.await(10, TimeUnit.SECONDS);
-                   assertTrue("Expiry not started itemsAdded=" + itemsAdded + "itemsExpired=" + itemsExpired, expiryStarted);          
+                   assertTrue("Expiry not started itemsAdded=" + itemsAdded + " itemsExpired=" + itemsExpired, expiryStarted);          
                 }
                 
             } finally {
@@ -262,7 +262,7 @@ public class ExpiryTest extends MessageStoreTestCase {
         Exception taskException = null;
         for(Future<String> future : activeTaskList) {
             try {
-                print(new Date()+ ": "+future.get(10, TimeUnit.SECONDS));
+                print(new Date()+ ": "+future.get(100, TimeUnit.SECONDS));
             } catch (InterruptedException | ExecutionException | TimeoutException exception) {
                 StringWriter stringWriter =  new StringWriter();
                 exception.printStackTrace(new PrintWriter(stringWriter));
