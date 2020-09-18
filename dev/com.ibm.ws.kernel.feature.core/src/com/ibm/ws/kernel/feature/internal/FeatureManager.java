@@ -151,6 +151,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     private final static String CFG_KEY_ACTIVE_FEATURES = "feature";
 
+    public static final String EE_COMPATIBLE_NAME = "eeCompatible";
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
     final static String FEATURE_FIX_CACHE_FILE = "feature.fix.cache";
@@ -1852,7 +1853,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private boolean isEeCompatible(String symbolicName) {
-        return symbolicName != null && symbolicName.lastIndexOf("eeCompatible") >= 0;
+        return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
     private static char getEeCompatibleVersion(String symbolicName) {
