@@ -110,7 +110,7 @@ class ServerXMLConfiguration {
      */
 
     @FFDCIgnore(ConfigParserTolerableException.class)
-    public void loadInitialConfiguration(ConfigVariableRegistry variableRegistry) throws ConfigValidationException, ConfigParserTolerableException {
+    public void loadInitialConfiguration(ConfigVariableRegistry variableRegistry) throws ConfigValidationException, ConfigParserException {
         if (configRoot != null && configRoot.exists()) {
 
             try {
@@ -128,6 +128,8 @@ class ServerXMLConfiguration {
             } catch (ConfigParserException ex) {
                 Tr.error(tc, "error.config.update.init", ex.getMessage());
                 serverConfiguration = new ServerConfiguration();
+                if (ErrorHandler.INSTANCE.fail())
+                    throw ex;
             }
 
             serverConfiguration.setDefaultConfiguration(new BaseConfiguration());

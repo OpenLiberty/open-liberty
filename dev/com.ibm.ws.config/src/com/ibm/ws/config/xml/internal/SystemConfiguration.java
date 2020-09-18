@@ -21,6 +21,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.config.WSConfigurationHelper;
@@ -127,7 +128,7 @@ class SystemConfiguration {
         bc.registerService(name, serviceInstance, properties);
     }
 
-    void start() throws ConfigUpdateException, ConfigValidationException, ConfigParserTolerableException {
+    void start() throws ConfigUpdateException, ConfigValidationException, ConfigParserException {
         if (serverXMLConfig.hasConfigRoot()) {
             configRefresher.start();
             serverXMLConfig.loadInitialConfiguration(variableRegistry);
