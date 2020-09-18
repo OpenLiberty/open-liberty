@@ -60,5 +60,5 @@ public interface JwtConfig {
 
 	PublicKey getPublicKey();
 
-	long getElapsedNbfTime();
+	long getNbfOffsetTime();
 }

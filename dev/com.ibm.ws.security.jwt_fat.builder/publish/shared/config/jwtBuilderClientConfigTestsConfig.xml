@@ -30,7 +30,7 @@
 		issuer="someSpecificIssuer" />
 		
 	<jwtBuilder
-		id="specificElapsedNBF"
+		id="specificNbfOffset"
 		elapsedNBF="1800s"
 	/>
 

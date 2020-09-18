@@ -215,8 +215,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     
     /**
      * Test Purpose:
-     * <LI>Invoke the JWT Builder using a config that does define elapsedNBF.
-     * <LI>What this means is that the token we create will use the "elapsedNBF" to calculate the time passed since token issued and set that as the NBF claim.
+     * <LI>Invoke the JWT Builder using a config that does define nbfOffset.
+     * <LI>What this means is that the token we create will use the "nbfOffset" to calculate the time passed since token issued and set that as the NBF claim.
      *
      * </UL>
      * <P>
@@ -227,9 +227,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void JwtBuilderAPIConfigTests_specificElapsedNotBefore() throws Exception {
+    public void JwtBuilderAPIConfigTests_specificNotBeforeOffset() throws Exception {
 
-        String builderId = "specificElapsedNBF";
+        String builderId = "specificNbfOffset";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // override the default expiration time
         expectationSettings.put(PayloadConstants.NOT_BEFORE, BuilderHelpers.setNowLong() + (1800));
