@@ -58,6 +58,7 @@ Include-Resource: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.injection.core;version=latest,\
+  com.ibm.ws.channelfw;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
