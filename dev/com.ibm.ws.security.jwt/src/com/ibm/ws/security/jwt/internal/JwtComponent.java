@@ -38,7 +38,6 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.config.JwtConfigUtil;
@@ -79,6 +78,8 @@ public class JwtComponent implements JwtConfig {
 	private DynamicMBean httpendpointInfoMBean;
 
 	private ServerInfoMBean serverInfoMBean;
+
+	private List<String> amrAttributes;
 
 	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
@@ -163,6 +164,7 @@ public class JwtComponent implements JwtConfig {
 		jwkRotationTime = jwkRotationTime * 60 * 1000;
 		jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
 		nbfOffsetTime = ((Long) props.get(JwtUtils.CFG_KEY_NBF_OFFSET)).longValue();
+		amrAttributes = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_ATTR));
 
 		if ("RS256".equals(sigAlg)) {
 			initializeJwkProvider(this);
@@ -396,10 +398,10 @@ public class JwtComponent implements JwtConfig {
 			return null;
 		}
 	}
-  
-    @Override
-    public List<String> getAMRAttributes() {
-        return amrAttributes;
-    }
+
+	@Override
+	public List<String> getAMRAttributes() {
+		return amrAttributes;
+	}
 
 }
