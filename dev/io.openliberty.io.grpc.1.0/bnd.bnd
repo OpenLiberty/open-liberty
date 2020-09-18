@@ -6,25 +6,24 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#     IBM Corporation - initial API and implementation
+#    IBM Corporation 
+# This wraps the external JAR.
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.0
+bVersion=1.0
+grpcVersion=1.31.1
 
-Bundle-Name: Open Liberty gRPC API
-Bundle-Description: Open Liberty gRPC API, version ${bVersion}
-Bundle-SymbolicName: io.openliberty.grpc.1.0
+Bundle-SymbolicName: io.openliberty.io.grpc.1.0; singleton:=true
 
 Import-Package: \
-  io.grpc, \
-  io.openliberty.grpc.annotation
+  *
 
 Export-Package: \
-  io.openliberty.grpc.annotation
+  io.grpc; version=${grpcVersion}
 
--includeresource: {META-INF/maven/io.openliberty.api/io.openliberty.grpc/pom.xml=io.openliberty.grpc.pom}
+instrument.disabled: true
 
-publish.wlp.jar.suffix: dev/api/ibm
+publish.wlp.jar.suffix: dev/api/stable
 
--buildpath: \
-    io.openliberty.grpc.1.0.internal.common;version=latest
+Include-Resource: \
+  @${repo;io.grpc:grpc-api;${grpcVersion};EXACT}

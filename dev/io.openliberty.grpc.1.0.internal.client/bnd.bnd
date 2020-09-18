@@ -10,19 +10,17 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+nettyVersion=4.1.51
 
 Bundle-Name: gRPC Client
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
 Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+  !com.google.protobuf.nano,\
   !com.google.code.gson,\
   !org.checkerframework,\
   !com.ibm.websphere.monitor.jmx,\
-  !com.google.protobuf.nano,\
   !com.jcraft.jzlib,\
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
@@ -48,9 +46,9 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  io.openliberty.grpc.internal.monitor
  
 Export-Package: \
-  io.openliberty.grpc.internal.client.* ,\
-  io.grpc.netty, \
-  io.netty.*
+  !io.netty.handler.ssl,\
+  io.openliberty.grpc.internal.client.*,\
+  io.netty.*;version=${nettyVersion}
 
 -dsannotations: \
   io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl,\
@@ -61,7 +59,6 @@ Include-Resource: \
   META-INF=@src/META-INF, \
   OSGI-INF=resources/OSGI-INF, \
   OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
-
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
@@ -95,18 +92,19 @@ instrument.disabled: true
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
-  io.grpc:grpc-netty;version=1.31.1,\
-  io.netty:netty-buffer;version=4.1.51.Final,\
-  io.netty:netty-codec;version=4.1.51.Final,\
-  io.netty:netty-codec-http;version=4.1.51.Final,\
-  io.netty:netty-codec-http2;version=4.1.51.Final,\
-  io.netty:netty-codec-socks;version=4.1.51.Final,\
-  io.netty:netty-common;version=4.1.51.Final,\
-  io.netty:netty-handler;version=4.1.51.Final,\
-  io.netty:netty-handler-proxy;version=4.1.51.Final,\
-  io.netty:netty-resolver;version=4.1.51.Final,\
-  io.netty:netty-transport;version=4.1.51.Final,\
+  io.netty:netty-buffer;version=${nettyVersion},\
+  io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-http;version=${nettyVersion},\
+  io.netty:netty-codec-http2;version=${nettyVersion},\
+  io.netty:netty-codec-socks;version=${nettyVersion},\
+  io.netty:netty-common;version=${nettyVersion},\
+  io.netty:netty-handler;version=${nettyVersion},\
+  io.netty:netty-handler-proxy;version=${nettyVersion},\
+  io.netty:netty-resolver;version=${nettyVersion},\
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.openliberty.grpc.client.1.0.thirdparty;version=latest,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
