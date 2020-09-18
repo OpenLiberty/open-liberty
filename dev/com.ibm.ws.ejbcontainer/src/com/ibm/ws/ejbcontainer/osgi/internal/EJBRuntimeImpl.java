@@ -394,7 +394,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
 
-        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
+        // TODO: #13338 remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
         boolean isBeta = false;
         try {
             final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();

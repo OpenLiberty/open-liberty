@@ -30,10 +30,10 @@ Service-Component: \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
-    properties:="resources=META-INF/services/io.smallrye.graphql.spi.MetricsService"
+    properties:="resources=META-INF/services/io.smallrye.graphql.spi.EventingService"
 
 -buildpath: \
-  io.smallrye:smallrye-graphql;strategy=exact;version=1.0.5,\
+  com.ibm.ws.io.smallrye.graphql;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.metrics.2.3;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.microprofile.metrics.cdi.2.3,\

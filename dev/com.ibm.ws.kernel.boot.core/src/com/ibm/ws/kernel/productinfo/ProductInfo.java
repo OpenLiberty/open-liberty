@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -218,7 +217,7 @@ public class ProductInfo {
     }
 
     public boolean isReplacedProductLogged() {
-        return "true".equalsIgnoreCase(properties.getProperty("com.ibm.websphere.logReplacedProduct"));
+        return "true".equalsIgnoreCase(properties.getProperty(COM_IBM_WEBSPHERE_LOG_REPLACED_PRODUCT));
     }
 
     public String getProperty(String key) {

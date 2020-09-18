@@ -16,6 +16,7 @@ import io.grpc.ServerCall.Listener;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
+import io.openliberty.grpc.internal.security.GrpcServerSecurity;
 
 /**
  * Interceptor used to perform Liberty-specific authorization. If the backing
@@ -32,8 +33,8 @@ public class LibertyAuthorizationInterceptor implements ServerInterceptor {
 	@Override
 	public <ReqT, RespT> Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
 			ServerCallHandler<ReqT, RespT> next) {
-		String key = headers.get(GrpcServletUtils.LIBERTY_AUTH_KEY);
-		if (!GrpcServletUtils.isAuthorized(key)) {
+		String key = headers.get(GrpcServerSecurity.LIBERTY_AUTH_KEY);
+		if (!GrpcServerSecurity.isAuthorized(key)) {
 			call.close(Status.UNAUTHENTICATED.withDescription("Unauthorized"), headers);
 			// return no-op listener
 			return new ServerCall.Listener<ReqT>() {

@@ -18,6 +18,11 @@ src: \
 
 fat.project: true
 
+tested.features: \
+	servlet-5.0,\
+	jsp-3.0,\
+	el-4.0
+
 -buildpath: \
 	com.ibm.ws.request.timing;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest

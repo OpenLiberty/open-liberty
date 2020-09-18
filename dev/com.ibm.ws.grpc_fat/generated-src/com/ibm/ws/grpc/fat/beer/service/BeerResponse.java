@@ -10,7 +10,7 @@ package com.ibm.ws.grpc.fat.beer.service;
  *
  * Protobuf type {@code beer.BeerResponse}
  */
-public  final class BeerResponse extends
+public final class BeerResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:beer.BeerResponse)
     BeerResponseOrBuilder {
@@ -95,6 +95,7 @@ private static final long serialVersionUID = 0L;
    * <code>bool done = 1;</code>
    * @return The done.
    */
+  @java.lang.Override
   public boolean getDone() {
     return done_;
   }
@@ -411,6 +412,7 @@ private static final long serialVersionUID = 0L;
      * <code>bool done = 1;</code>
      * @return The done.
      */
+    @java.lang.Override
     public boolean getDone() {
       return done_;
     }

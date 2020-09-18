@@ -41,4 +41,6 @@
 		trustStoreRef="configServerDefault"
 		clientAuthenticationSupported="true" />
 
+<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+
 </server>        

@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: gRPC Client security
+Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client.security
+Bundle-Description: Liberty gRPC Client security, version ${bVersion}
+
+Import-Package: *
+ 
+Export-Package: \
+  io.openliberty.grpc.internal.client.security.ssl
+
+-dsannotations: \
+  io.openliberty.grpc.internal.client.security.ssl.LibertyGrpcClientSSLSupport
+
+-buildpath: \
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.ssl;version=latest,\
+  com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.websphere.security;version=latest,\
+  org.osgi.service.component.annotations;version=latest,\
+  io.grpc:grpc-netty;version=1.31.1,\
+  io.netty:netty-handler;version=4.1.51.Final,\
+  io.openliberty.grpc.1.0.internal.client;version=latest

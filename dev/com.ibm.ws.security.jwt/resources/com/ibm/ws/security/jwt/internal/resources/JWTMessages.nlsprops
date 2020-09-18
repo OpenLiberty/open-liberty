@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Ensure that the JWT configuration that is sp
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: HTTP scheme is used at the specified endpoint: {0}, HTTPS is required.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=The specified endpoint requires HTTPS, but HTTP was used in the request URL.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Check the request URL and make sure it uses HTTPS, or change configuration so HTTPS is not required.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: The [{0}] signature algorithm that is specified by the MicroProfile Config properties is not supported. The [{1}] signature algorithm will be used.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Only a certain set of RSA, Elliptical Curve, and HMAC signature algorithms are supported. The signature algorithm that is specified by the MicroProfile Config properties is not one of the supported signature algorithms.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specify a supported signature algorithm in the MicroProfile Config properties. Supported signature algorithms include ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384, and HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: The AMR [{0}] of the provided JSON web token (JWT) is not listed as a trusted AMR in the [{1}] JWT configuration. The trusted AMR are [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=The server configuration specifies which AMR are trusted when validating JWTs. The provided token is not intended for a trusted AMR, so the token cannot be validated.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR specified in your JWT configuration, or add the AMR specified in the message as a trusted AMR in your JWT configuration.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the {1} signature algorithm, but that algorithm is only available in the beta edition. The {2} signature algorithm is used instead.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can be used only in the beta edition.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.

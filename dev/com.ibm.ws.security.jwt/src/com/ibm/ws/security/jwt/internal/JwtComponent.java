@@ -38,8 +38,10 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.jwt.config.JwtConfig;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
@@ -394,5 +396,10 @@ public class JwtComponent implements JwtConfig {
 			return null;
 		}
 	}
+  
+    @Override
+    public List<String> getAMRAttributes() {
+        return amrAttributes;
+    }
 
 }

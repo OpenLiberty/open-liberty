@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,11 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Priorities;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor;
@@ -29,6 +31,7 @@ import org.apache.cxf.security.SecurityContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+@Priority(Priorities.AUTHORIZATION)
 public class LibertySimpleAuthorizingInterceptor extends
                 AbstractAuthorizingInInterceptor {
     private static final TraceComponent tc = Tr
@@ -36,10 +39,18 @@ public class LibertySimpleAuthorizingInterceptor extends
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        SecurityContext sc = message.get(SecurityContext.class);
-        if (sc != null) {
+        SecurityContext cxfSecurityContext = message.get(SecurityContext.class);
+        javax.ws.rs.core.SecurityContext jaxrsSecurityContext = message.get(javax.ws.rs.core.SecurityContext.class);
+        if (jaxrsSecurityContext != null) {
+            SecurityContextProxy securityContextProxy = new SecurityContextProxy(jaxrsSecurityContext);
             Method method = getTargetMethod(message);
-            if (parseMethodSecurity(method, sc)) {
+            if (parseMethodSecurity(method, securityContextProxy)) {
+                return;
+            }
+        } else if (cxfSecurityContext != null) {
+            SecurityContextProxy securityContextProxy = new SecurityContextProxy(cxfSecurityContext);
+            Method method = getTargetMethod(message);
+            if (parseMethodSecurity(method, securityContextProxy)) {
                 return;
             }
         }
@@ -104,9 +115,8 @@ public class LibertySimpleAuthorizingInterceptor extends
                 }
             }
         }
-
-    } // end parseMethodSecurity
-
+    }
+    
     // parse security JSR250 annotations at the class level
     private boolean parseClassSecurity(Class<?> cls, SecurityContext sc) {
 
@@ -137,15 +147,12 @@ public class LibertySimpleAuthorizingInterceptor extends
                     return false;
                 }
                 return true;
-            } else { // try PermitAll
-//				PermitAll permitAll = cls.getAnnotation(PermitAll.class);
+            } else {
                 return true;
             }
-
         }
-
-    } // end parseClassSecurity
-
+    }
+    
     private RolesAllowed getRolesAllowed(Method method) {
         return method.getAnnotation(RolesAllowed.class);
     }
@@ -163,5 +170,4 @@ public class LibertySimpleAuthorizingInterceptor extends
         // TODO Auto-generated method stub
         return null;
     }
-
 }

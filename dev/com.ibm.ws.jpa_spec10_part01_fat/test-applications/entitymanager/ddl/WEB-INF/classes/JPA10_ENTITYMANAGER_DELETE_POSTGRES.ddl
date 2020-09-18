@@ -1,4 +1,4 @@
-DELETE FROM ${schemaname}.JPA10EntityManagerEntityA;
-DELETE FROM ${schemaname}.JPA10EntityManagerEntityA_JPA10EntityManagerEntityB;
-DELETE FROM ${schemaname}.JPA10EntityManagerEntityB;
-DELETE FROM ${schemaname}.JPA10EntityManagerEntityC;
+DELETE FROM JPA10EntityManagerEntityA;
+DELETE FROM JPA10EntityManagerEntityA_JPA10EntityManagerEntityB;
+DELETE FROM JPA10EntityManagerEntityB;
+DELETE FROM JPA10EntityManagerEntityC;

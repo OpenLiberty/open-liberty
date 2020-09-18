@@ -59,6 +59,8 @@ public interface JwtConfig {
 	PrivateKey getPrivateKey();
 
 	PublicKey getPublicKey();
+	
+	List<String> getAMRAttributes();
 
 	long getNbfOffsetTime();
 }

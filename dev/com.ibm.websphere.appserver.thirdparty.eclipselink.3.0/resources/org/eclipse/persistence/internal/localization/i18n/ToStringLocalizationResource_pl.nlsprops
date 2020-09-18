@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=Pocz\u0105tek profilu
+
+class=klasa
+
+commit_depth=(g\u0142\u0119boko\u015b\u0107 zatwierdzania = {0})
+
+connected=po\u0142\u0105czono
+
+connector=konektor
+
+context=Kontekst:    
+
+database_name=nazwa bazy danych
+
+datasource=\u017ar\u00f3d\u0142o danych
+
+datasource_URL=adres URL \u017ar\u00f3d\u0142a danych
+
+datasource_name=nazwa \u017ar\u00f3d\u0142a danych
+
+depth_reset_key=(g\u0142\u0119boko\u015b\u0107 = {0}, klucz resetu = {1}, wersja resetu = {2})
+
+disconnected=roz\u0142\u0105czono
+
+empty_commit_order_dependency_node=Pusty w\u0119ze\u0142 CommitOrderDependencyNode
+
+end_profile=Koniec profilu
+
+error_printing_expression=B\u0142\u0105d podczas drukowania wyra\u017cenia
+
+lazy=op\u00f3\u017anione
+
+local_time=czas miejscowy
+
+login=logowanie
+
+longestTime=najd\u0142u\u017cszy czas
+
+min_max=(minimalna liczba po\u0142\u0105cze\u0144 = {0}, maksymalna liczba po\u0142\u0105cze\u0144 = {1})
+
+mulitple_files=wiele plik\u00f3w
+
+multiple_readers=wiele program\u00f3w czytaj\u0105cych
+
+name=Nazwa: 
+
+nest_level=(poziom zagnie\u017cd\u017cenia = {0})
+
+no_files=brak plik\u00f3w
+
+no_streams=brak strumieni
+
+node=W\u0119ze\u0142 ({0})
+
+non_lazy=nieop\u00f3\u017anione
+
+not_instantiated=nie utworzono instancji
+
+number_of_objects=liczba obiekt\u00f3w
+
+objects_second=obiekty/sekund\u0119
+
+platform=platforma
+
+pooled=w puli
+
+profile=Profil
+
+profiling_time=czas profilowania
+
+reader=program czytaj\u0105cy
+
+schema=Schemat: 
+
+sdo_classgenerator_usage_help_1of8={0} Sk\u0142adnia: org.eclipse.persistence.sdo.helper.{0} [-opcje]
+
+sdo_classgenerator_usage_help_2of8=Opcje:
+
+sdo_classgenerator_usage_help_3of8=    -help                        Wy\u015bwietla tekst komunikatu pomocy
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <nazwa_pliku> Wej\u015bciowy plik schematu (wymagany)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Katalog, w kt\u00f3rym zostanie wygenerowane \u017ar\u00f3d\u0142o Java (opcjonalny)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <poziom>  Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces                Nie generuj klas interfejsu
+
+sdo_classgenerator_usage_help_8of8=    -noImpls                     Nie generuj klas implementacji
+
+sdo_classgenerator_usage_missing_sourcefile={0} Parametr -sourceFile nie zosta\u0142 podany, a jest wymagany.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} Nie podano warto\u015bci parametru -sourceFile.
+
+sdo_classgenerator_usage_missing_targetdir={0} Nie podano warto\u015bci parametru -targetDirectory.
+
+server_name=nazwa serwera
+
+shortestTime=najkr\u00f3tszy czas
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           Okre\u015bl plik rejestrowania.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           Podaj liczb\u0119 ca\u0142kowit\u0105 okre\u015blaj\u0105c\u0105 poziom rejestrowania (8=WY\u0141., 7=POWA\u017bNY, 6=OSTRZE\u017bENIE, 5=INFORMACJA, 4=KONFIGURACJA, 3=DOK\u0141ADNY, 2=DOK\u0141ADNIEJ (domy\u015blny), 1=NAJDOK\u0141ADNIEJ, 0=WSZYSTKO).
+
+staticweave_commandline_help_message_14of19=    \u015acie\u017cka klas musi zawiera\u0107 wszystkie klasy wymagane do \u0142adowania klas w \u017ar\u00f3dle.
+
+staticweave_commandline_help_message_15of19=    Je\u015bli \u017ar\u00f3d\u0142o i cel wskazuj\u0105 na to samo po\u0142o\u017cenie, manipulowanie kodem bajtowym zostanie przeprowadzone na miejscu.  Manipulowanie kodem bajtowym na miejscu ma zastosowanie TYLKO dla \u017ar\u00f3de\u0142 opartych na katalogach.
+
+staticweave_commandline_help_message_16of19=  Przyk\u0142ad:
+
+staticweave_commandline_help_message_17of19=    Aby manipulowa\u0107 kodem bajtowym wszystkich jednostek zawartych w pliku C:\\foo-source.jar z u\u017cyciem pliku persistence.xml zawartego w pliku C:\\foo-containing-persistence-xml.jar,
+
+staticweave_commandline_help_message_18of19=    a dane wyj\u015bciowe zapisa\u0107 w pliku C:\\foo-target.jar:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  Sk\u0142adnia: StaticWeave [opcje] \u017ar\u00f3d\u0142o cel
+
+staticweave_commandline_help_message_2of19=  Opcje:
+
+staticweave_commandline_help_message_3of19=    -classpath \u015bcie\u017cka klas
+
+staticweave_commandline_help_message_4of19=           Ustaw \u015bcie\u017ck\u0119 klas u\u017cytkownika.  U\u017cyj \u015brednika (;) jako separatora w systemie Windows, a dwukropka (:) w systemie Unix.
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           Okre\u015bl jawnie miejsce przechowywania pliku META-INF/persistence.xml.  Musi to by\u0107 katalog g\u0142\u00f3wny dla pliku META-INF/persistence.xml.
+
+staticweave_commandline_help_message_7of19=           Ta opcja jest zazwyczaj u\u017cywana do okre\u015blania g\u0142\u00f3wnego archiwum jar podczas manipulowania kodem bajtowym plik\u00f3w przywo\u0142ywanych przez warto\u015b\u0107 parametru <jar-file> w pliku persistence.xml.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           Okre\u015bl po\u0142o\u017cenie pliku persistence.xml wzgl\u0119dem katalogu g\u0142\u00f3wnego jednostki trwa\u0142o\u015bci, je\u015bli ten plik nie znajduje si\u0119 w \u015bcie\u017cce META-INF/persistence.xml
+
+staticweave_processor_dir_not_created=Nie mo\u017cna utworzy\u0107 katalogu {0}.
+
+staticweave_processor_file_not_created=Nie mo\u017cna utworzy\u0107 pliku {0}.
+
+staticweave_processor_unknown_outcome=Manipulowanie kodem bajtowym klas przechowywanych w katalogu i wyprowadzanie ich do pliku JAR cz\u0119sto prowadzi do nieoczekiwanych wynik\u00f3w.
+
+time_object=czas/obiekt
+
+total_time=\u0142\u0105czny czas
+
+unknown=nieznany
+
+user_name=nazwa u\u017cytkownika
+
+writer=program pisz\u0105cy
+

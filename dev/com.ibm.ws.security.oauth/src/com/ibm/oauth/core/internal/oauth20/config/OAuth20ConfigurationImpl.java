@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,7 @@ public class OAuth20ConfigurationImpl extends OAuthConfigurationImpl implements 
     protected int _accessTokenLength;
     protected boolean _issueRefreshToken;
     protected int _refreshTokenLength;
+    protected long _refreshedAccessTokenLimit = 100;
     protected OAuth20TokenTypeHandler _tokenTypeHandler;
     protected OAuth20TokenTypeHandler _idTokenTypeHandler; // oidc10
     protected OAuth20GrantTypeHandlerFactory _grantTypeHandlerFactory; // oidc10
@@ -341,6 +342,11 @@ public class OAuth20ConfigurationImpl extends OAuthConfigurationImpl implements 
     @Override
     public int getRefreshTokenLength() {
         return _refreshTokenLength;
+    }
+
+    @Override
+    public long getRefreshedAccessTokenLimit() {
+        return _refreshedAccessTokenLimit;
     }
 
     @Override

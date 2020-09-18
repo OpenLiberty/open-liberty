@@ -42,13 +42,7 @@ Import-Package: \
     com.ibm.ws.ras.instrument.annotation, \
     com.ibm.websphere.logging.hpel, \
     com.ibm.ws.ffdc, \
-    com.ibm.ws.security.common.random, \
-    com.ibm.ws.security.common.structures, \
-    com.ibm.ws.security.common.time, \
-    com.ibm.ws.security.common.token.propagation, \
-    com.ibm.ws.security.common.web, \
-    com.ibm.ws.security.common.jwk.impl, \
-    com.ibm.ws.security.common.jwk.interfaces, \
+    com.ibm.ws.security.common.*, \
     com.ibm.ws.webcontainer.security.jwk, \
     com.ibm.json.java.*, \
     org.osgi.service.component.*, \
@@ -73,7 +67,8 @@ Import-Package: \
     com.ibm.websphere.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.security.wim;version="[1.0.0, 2.0)";resolution:=optional, \
-    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional
+    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional, \
+    com.ibm.ws.kernel.productinfo
 
 Private-Package: \
     com.ibm.ws.security.jwt.internal.*, \
@@ -126,7 +121,8 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     org.apache.httpcomponents:httpcore;version=4.4.9, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.json4j;version=latest
+    com.ibm.json4j;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -139,4 +135,5 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
-    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
+    com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

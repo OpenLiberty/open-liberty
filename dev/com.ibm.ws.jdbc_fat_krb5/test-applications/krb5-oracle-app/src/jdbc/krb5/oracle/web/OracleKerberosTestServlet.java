@@ -49,6 +49,9 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/invalidPrincipal")
     DataSource invalidPrincipalDs;
 
+    @Resource(lookup = "jdbc/krb/DataSource")
+    DataSource krb5RegularDs;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -70,6 +73,9 @@ public class OracleKerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection from a javax.sql.ConnectionPoolDataSource
+     */
     @Test
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = krb5DataSource.getConnection()) {
@@ -77,9 +83,22 @@ public class OracleKerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection from a javax.sql.XADataSource
+     */
     @Test
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = krb5XADataSource.getConnection()) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+    }
+
+    /**
+     * Get a connection from a javax.sql.DataSource
+     */
+    @Test
+    public void testKerberosRegularConnection() throws Exception {
+        try (Connection con = krb5RegularDs.getConnection()) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -102,6 +121,11 @@ public class OracleKerberosTestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get two connection handles from the same datasource.
+     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * to prove that Subject reuse is working
+     */
     @Test
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
@@ -119,7 +143,6 @@ public class OracleKerberosTestServlet extends FATServlet {
 
         assertEquals("Expected two connections from the same datasource to share the same underlying managed connection",
                      managedConn1, managedConn2);
-
     }
 
     /**

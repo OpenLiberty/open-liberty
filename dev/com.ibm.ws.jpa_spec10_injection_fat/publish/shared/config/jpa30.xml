@@ -1,6 +1,6 @@
 <server>
     <featureManager>
-        <feature>ejblite-4.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
         <feature>servlet-5.0</feature>
         <feature>jpa-3.0</feature>
         <feature>componenttest-2.0</feature>

@@ -33,6 +33,7 @@ import java.sql.PreparedStatement;
 import javax.naming.Context; 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
@@ -912,6 +913,10 @@ public class DatabaseHelper {
         Tr.info(tc, "UNSUPPORTED_METHOD", "isInDatabaseUnitOfWork");
         throw new SQLException("method not supported for this backend database");
     }
+    
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        return ds.getConnection();
+    }
 
     /**
      * Get a Pooled or XA Connection from the specified DataSource.
@@ -935,7 +940,7 @@ public class DatabaseHelper {
             Tr.entry(this, tc, "getPooledConnection",
                      AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase", cri, useKerberos, gssCredential);
 
-        // if kerberose is set then issue a warning that no special APIs are used instead, 
+        // if Kerberos is set then issue a warning that no special APIs are used instead,
         // a getConnection() without username/password will be used to get a connection.
         if (useKerberos == KerbUsage.USE_CREDENTIAL) { 
             Tr.warning(tc, "KERBEROS_NOT_SUPPORTED_WARNING");

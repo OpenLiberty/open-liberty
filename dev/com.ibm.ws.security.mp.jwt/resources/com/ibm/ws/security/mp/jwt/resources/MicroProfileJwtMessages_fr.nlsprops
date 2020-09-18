@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -43,8 +43,8 @@ TOO_MANY_JWT_PRINCIPALS.useraction=V\u00e9rifiez que l'application n'injecte pas
 # Do not translate "mpjwt_login_hint"
 # 0=mpJwt configuration ID
 MPJWT_NO_SUCH_PROVIDER=CWWKS5505E: La configuration du JWT MicroProfile [{0}] sp\u00e9cifi\u00e9e dans la demande est manquante ou n''est pas configur\u00e9e pour traiter cette demande.
-MPJWT_NO_SUCH_PROVIDER.explanation=La demande inclut un param\u00e8tre ou un en-t\u00eate appel\u00e9 mpjwt_login_hint qui sp\u00e9cifie un ID de configuration du JWT MicroProfile \u00e0 utiliser pour cette demande. Cependant, une configuration du JWT MicroProfile correspondant \u00e0 l'ID est manquante ou n'est pas configur\u00e9e pour traiter cette demande.
-MPJWT_NO_SUCH_PROVIDER.useraction=V\u00e9rifiez qu'un service de JWT MicroProfile est configur\u00e9 avec l'ID indiqu\u00e9.
+MPJWT_NO_SUCH_PROVIDER.explanation=La demande inclut un param\u00e8tre ou un en-t\u00eate appel\u00e9 mpjwt_login_hint qui sp\u00e9cifie un ID de configuration de MicroProfile JWT \u00e0 utiliser pour cette demande. Cependant, une configuration de MicroProfile JWT correspondant \u00e0 l'ID est manquante ou n'est pas configur\u00e9e pour traiter cette demande.
+MPJWT_NO_SUCH_PROVIDER.useraction=V\u00e9rifiez qu'un service MicroProfile JWT est configur\u00e9 avec l'ID indiqu\u00e9.
 
 USERNAME_NOT_FOUND=CWWKS5506E: Le nom d'utilisateur ne peut pas \u00eatre extrait du jeton.
 USERNAME_NOT_FOUND.explanation=Le jeton ne contient pas de revendication correspondant \u00e0 la valeur de l'attribut de configuration userNameAttribute ou la valeur sp\u00e9cifi\u00e9e par l'attribut de configuration userNameAttribute est incorrecte.
@@ -68,22 +68,22 @@ CLAIM_MALFORMED.useraction=V\u00e9rifiez que la revendication indiqu\u00e9e exis
 # 0=mpJwt element ID, 1=Error message
 FAILED_TO_GET_SSL_CONTEXT=CWWKS5510E: Le contexte SSL de la configuration du JWT MicroProfile [{0}] ne peut pas \u00eatre charg\u00e9. {1}
 FAILED_TO_GET_SSL_CONTEXT.explanation=La configuration SSL utilis\u00e9e par la configuration sp\u00e9cifi\u00e9e est peut-\u00eatre manquante ou incorrecte.
-FAILED_TO_GET_SSL_CONTEXT.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que les informations SSL pour la configuration sp\u00e9cifi\u00e9e sont exactes. Si l'attribut de configuration sslRef est sp\u00e9cifi\u00e9 dans la configuration du JWT MicroProfile, v\u00e9rifiez que la configuration SSL correspondante est correcte. Sinon, v\u00e9rifiez que la configuration SSL par d\u00e9faut pour le serveur est correctement configur\u00e9e.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que les informations SSL pour la configuration sp\u00e9cifi\u00e9e sont exactes. Si l'attribut de configuration sslRef est sp\u00e9cifi\u00e9 dans la configuration de MicroProfile JWT, v\u00e9rifiez que la configuration SSL correspondante est correcte. Sinon, v\u00e9rifiez que la configuration SSL par d\u00e9faut pour le serveur est correctement configur\u00e9e.
 
 # Do not translate "JSON", "JSON Web Token", or "JWT"
 # 0=mpJwt element ID
 SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5511E: La fonctionnalit\u00e9 de consommateur JWT (JSON Web Token) n''est peut-\u00eatre pas disponible pour la configuration du JWT MicroProfile [{0}] car le service de la configuration sp\u00e9cifi\u00e9e est introuvable.
-SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=La configuration du JWT MicroProfile sp\u00e9cifi\u00e9e n'est peut-\u00eatre pas encore disponible ou le service de la configuration a \u00e9t\u00e9 arr\u00eat\u00e9.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=La configuration de MicroProfile JWT sp\u00e9cifi\u00e9e n'est peut-\u00eatre pas encore disponible ou le service de la configuration a \u00e9t\u00e9 arr\u00eat\u00e9.
 SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=V\u00e9rifiez que la configuration sp\u00e9cifi\u00e9e est configur\u00e9e et disponible.
 
 # 0=Exception message
 ERROR_LOADING_SSL_PROPS=CWWKS5512E: Les informations de r\u00e9f\u00e9rence SSL de la fonction du JWT MicroProfile ne peuvent pas \u00eatre charg\u00e9es car une erreur s''est produite lors du chargement des propri\u00e9t\u00e9s SSL. {0}
-ERROR_LOADING_SSL_PROPS.explanation=La configuration SSL utilis\u00e9e par la configuration du JWT MicroProfile n'est pas disponible ou une erreur s'est produite lors du chargement des propri\u00e9t\u00e9s pour la configuration SSL.
-ERROR_LOADING_SSL_PROPS.useraction=V\u00e9rifiez que la configuration SSL utilis\u00e9e par le service du JWT MicroProfile est configur\u00e9e correctement et qu'elle a d\u00e9marr\u00e9 correctement.
+ERROR_LOADING_SSL_PROPS.explanation=La configuration SSL utilis\u00e9e par la configuration de MicroProfile JWT n'est pas disponible ou une erreur s'est produite lors du chargement des propri\u00e9t\u00e9s pour la configuration SSL.
+ERROR_LOADING_SSL_PROPS.useraction=V\u00e9rifiez que la configuration SSL utilis\u00e9e par le service MicroProfile JWT est configur\u00e9e correctement et qu'elle a d\u00e9marr\u00e9 correctement.
 
 KEYSTORE_SERVICE_NOT_FOUND=CWWKS5513E: Le service de magasin de cl\u00e9s est introuvable.
-KEYSTORE_SERVICE_NOT_FOUND.explanation=Le service de magasin de cl\u00e9s de la fonction du JWT MicroProfile n'est pas disponible.
-KEYSTORE_SERVICE_NOT_FOUND.useraction=V\u00e9rifiez que le service de magasin de cl\u00e9s utilis\u00e9 par le service du JWT MicroProfile est configur\u00e9 correctement et qu'il a d\u00e9marr\u00e9 correctement.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Le service de magasin de cl\u00e9s de la fonction MicroProfile JWT n'est pas disponible.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=V\u00e9rifiez que le service de magasin de cl\u00e9s utilis\u00e9 par le service MicroProfile JWT est configur\u00e9 correctement et qu'il a d\u00e9marr\u00e9 correctement.
 
 # 0=Trust store name, 1=Exception message
 FAILED_TO_LOAD_PUBLIC_KEYS=CWWKS5514E: Les cl\u00e9s publiques ne peuvent pas \u00eatre charg\u00e9es \u00e0 partir du magasin de cl\u00e9s sp\u00e9cifi\u00e9 [{0}]. {1}
@@ -99,7 +99,7 @@ FAILED_TO_LOAD_PUBLIC_KEY.useraction=Consultez l'action utilisateur \u00e0 engag
 # 0=Trust store name, 1=Exception message
 ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5516E: La fonction du JWT MicroProfile a rencontr\u00e9 un probl\u00e8me lors du chargement des certificats depuis le magasin de cl\u00e9s [{0}]. {1}
 ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Il est possible que le magasin de cl\u00e9 sp\u00e9cifi\u00e9 n'existe pas ou qu'une erreur se soit produite lors de l'obtention des certificats de confiance du magasin de cl\u00e9s.
-ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=V\u00e9rifiez que le magasin de cl\u00e9s sp\u00e9cifi\u00e9 existe dans la configuration du serveur. V\u00e9rifiez que le service de magasin de cl\u00e9s utilis\u00e9 par le service du JWT MicroProfile est configur\u00e9 correctement et qu'il a d\u00e9marr\u00e9 correctement.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=V\u00e9rifiez que le magasin de cl\u00e9s sp\u00e9cifi\u00e9 existe dans la configuration du serveur. V\u00e9rifiez que le service de magasin de cl\u00e9s utilis\u00e9 par le service MicroProfile JWT est configur\u00e9 correctement et qu'il a d\u00e9marr\u00e9 correctement.
 
 # Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS or FAILED_TO_LOAD_PUBLIC_KEY
 # 0=Certificate alias name, 1=Trust store name, 2=Exception message
@@ -116,42 +116,47 @@ FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.useraction=Consultez l'action utilisateur \u0
 # 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
 PRINCIPAL_MAPPING_MISSING_ATTR=CWWKS5519E: Les informations sur l''utilisateur authentifi\u00e9 ne contiennent pas la revendication [{0}] sp\u00e9cifi\u00e9e par l''attribut [{1}] dans la configuration du JWT MicroProfile.
 PRINCIPAL_MAPPING_MISSING_ATTR.explanation=La revendication sp\u00e9cifi\u00e9e doit normalement se trouver dans les informations sur l'utilisateur authentifi\u00e9, mais elle n'a pas \u00e9t\u00e9 trouv\u00e9e. Les informations sur l'utilisateur peuvent \u00eatre manquantes ou mal form\u00e9es, l'attribut de configuration sp\u00e9cifi\u00e9 peut \u00eatre manquant ou vide, ou la revendication sp\u00e9cifi\u00e9e n'est pas pr\u00e9sente dans les informations sur l'utilisateur.
-PRINCIPAL_MAPPING_MISSING_ATTR.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) Sp\u00e9cifiez une revendication diff\u00e9rente comme valeur pour l'attribut sp\u00e9cifi\u00e9 dans la configuration du JWT MicroProfile. 2) V\u00e9rifiez que le fournisseur \u00e9met les informations sur l'utilisateur authentifi\u00e9 avec la revendication sp\u00e9cifi\u00e9e.
+PRINCIPAL_MAPPING_MISSING_ATTR.useraction=Effectuez l'une des op\u00e9rations suivantes. 1) Sp\u00e9cifiez une revendication diff\u00e9rente comme valeur pour l'attribut sp\u00e9cifi\u00e9 dans la configuration de MicroProfile JWT. 2) V\u00e9rifiez que le fournisseur \u00e9met les informations sur l'utilisateur authentifi\u00e9 avec la revendication sp\u00e9cifi\u00e9e.
 
 # 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
 PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS5520E: Le type de donn\u00e9es de la revendication [{0}] figurant dans les informations sur l''utilisateur authentifi\u00e9 n''est pas valide. La revendication sp\u00e9cifi\u00e9e est associ\u00e9e \u00e0 l''attribut [{1}] dans la configuration du JWT MicroProfile.
 PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.explanation=La revendication sp\u00e9cifi\u00e9e figurant dans les informations sur l'utilisateur authentifi\u00e9 ne correspond pas au type de donn\u00e9es attendu, par cons\u00e9quent la valeur de la revendication ne peut pas \u00eatre utilis\u00e9e pour le mappage du principal.
-PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.useraction=V\u00e9rifiez que la configuration du JWT MicroProfile sp\u00e9cifie le nom de revendication correct pour l'attribut de configuration sp\u00e9cifi\u00e9.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.useraction=V\u00e9rifiez que la configuration de MicroProfile JWT sp\u00e9cifie le nom de revendication correct pour l'attribut de configuration sp\u00e9cifi\u00e9.
 
 # 0=List of configuration IDs
 TOO_MANY_MP_JWT_PROVIDERS=CWWKS5521E: Trop de services de JWT MicroProfile [{0}] sont qualifi\u00e9s pour traiter la demande.
-TOO_MANY_MP_JWT_PROVIDERS.explanation=La fonction du JWT MicroProfile ne peut pas s\u00e9lectionner un service de JWT MicroProfile pour traiter la demande lorsque plusieurs services sont qualifi\u00e9s pour traiter la demande.
-TOO_MANY_MP_JWT_PROVIDERS.useraction=V\u00e9rifiez qu'un seul service de JWT MicroProfile est configur\u00e9 dans la configuration du serveur pour traiter la demande.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=La fonction MicroProfile JWT ne peut pas s\u00e9lectionner un service MicroProfile JWT pour traiter la demande lorsque plusieurs services sont qualifi\u00e9s pour traiter la demande.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Assurez-vous qu'un seul service MicroProfile JWT est configur\u00e9 dans la configuration du serveur pour traiter la demande.
 
 # Do not translate "Authorization", "Bearer", or "POST"
 JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: La fonction du JWT MicroProfile ne peut pas r\u00e9aliser l'authentification car aucun JWT MicroProfile n'a pu \u00eatre trouv\u00e9 dans la demande.
-JWT_NOT_FOUND_IN_REQUEST.explanation=Pour effectuer l'authentification, un JWT MicroProfile doit \u00eatre inclus dans l'en-t\u00eate Authorization \u00e0 l'aide du sch\u00e9ma d'autorisation Bearer ou en tant que param\u00e8tre POST. L'en-t\u00eate Authorization est manquante, le sch\u00e9ma d'autorisation de l'en-t\u00eate Authorization n'est pas d\u00e9fini sur Bearer, la demande n'est pas une demande POST ou aucun JWT MicroProfile n'est inclus en tant que param\u00e8tre.
-JWT_NOT_FOUND_IN_REQUEST.useraction=V\u00e9rifiez qu'un JWT MicroProfile est inclus dans l'en-t\u00eate Authorization ou en tant que param\u00e8tre POST de la demande.
+JWT_NOT_FOUND_IN_REQUEST.explanation=Pour effectuer l'authentification, un jeton Web JSON MicroProfile doit \u00eatre inclus dans l'en-t\u00eate Authorization \u00e0 l'aide du sch\u00e9ma d'autorisation Bearer ou en tant que param\u00e8tre POST. L'en-t\u00eate Authorization est manquante, le sch\u00e9ma d'autorisation de l'en-t\u00eate Authorization n'est pas d\u00e9fini sur Bearer, la demande n'est pas une demande POST ou aucun jeton Web JSON MicroProfile n'est inclus en tant que param\u00e8tre.
+JWT_NOT_FOUND_IN_REQUEST.useraction=V\u00e9rifiez qu'un jeton Web JSON MicroProfile est inclus dans l'en-t\u00eate Authorization ou en tant que param\u00e8tre POST de la demande.
 
 # 0=Exception message                       
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La fonction MicroProfile JWT ne peut pas authentifier la demande car le jeton qui est inclus dans la demande ne peut pas \u00eatre valid\u00e9. {0}
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La fonction du JWT MicroProfile a rencontr\u00e9 une erreur lors de la cr\u00e9ation d'un JWT \u00e0 partir de la cha\u00eene de jeton fournie. Un consommateur JWT ne peut pas \u00eatre cr\u00e9\u00e9 ou le consommateur JWT a rencontr\u00e9 une erreur lors de l'analyse et de la validation de la cha\u00eene de jeton.
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La fonction MicroProfile JWT a rencontr\u00e9 une erreur lors de la cr\u00e9ation d'un JWT \u00e0 partir de la cha\u00eene de jeton fournie. Un consommateur JWT ne peut pas \u00eatre cr\u00e9\u00e9 ou le consommateur JWT a rencontr\u00e9 une erreur lors de l'analyse et de la validation de la cha\u00eene de jeton.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Consultez l'action utilisateur \u00e0 engager pour l'erreur affich\u00e9e dans le message. Recherchez dans les journaux du serveur d'\u00e9ventuels messages d'erreur suppl\u00e9mentaires.
 
 # 0=Configuration ID, 1=Exception message
 ERROR_CREATING_JWT=CWWKS5524E: La fonction du JWT MicroProfile a rencontr\u00e9 une erreur lors de la cr\u00e9ation d''un JWT \u00e0 l''aide de la configuration [{0}] et du jeton inclus dans la demande. {1}
 ERROR_CREATING_JWT.explanation=Un consommateur JWT ne peut pas \u00eatre cr\u00e9\u00e9 ou le consommateur JWT a rencontr\u00e9 une erreur lors de l'analyse et de la validation de la cha\u00eene de jeton.
-ERROR_CREATING_JWT.useraction=V\u00e9rifiez que la configuration du JWT MicroProfile est pr\u00e9sente dans la configuration du serveur. V\u00e9rifiez que la cha\u00eene de jeton fournie est format\u00e9e correctement. Consultez l'action utilisateur \u00e0 engager pour l'erreur affich\u00e9e dans le message. Recherchez dans les journaux du serveur d'\u00e9ventuels messages d'erreur suppl\u00e9mentaires.
+ERROR_CREATING_JWT.useraction=V\u00e9rifiez que la configuration de MicroProfile JWT est pr\u00e9sente dans la configuration du serveur. V\u00e9rifiez que la cha\u00eene de jeton fournie est format\u00e9e correctement. Consultez l'action utilisateur \u00e0 engager pour l'erreur affich\u00e9e dans le message. Recherchez dans les journaux du serveur d'\u00e9ventuels messages d'erreur suppl\u00e9mentaires.
 
 MP_JWT_FRONT_END_ERROR=CWWKS5525E: Une erreur s'est produite lors de l'authentification d'un utilisateur \u00e0 l'aide du jeton Web JSON (JWT) MicroProfile.
 MP_JWT_FRONT_END_ERROR.explanation=Un incident s'est produit lors de l'authentification d'un utilisateur. Une erreur de connexion a pu se produire entre l'application et un fournisseur de service tiers, ou un probl\u00e8me est survenu au niveau des donn\u00e9es d'authentification.
 MP_JWT_FRONT_END_ERROR.useraction=Contactez l'administrateur syst\u00e8me afin de r\u00e9soudre le probl\u00e8me.
 
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: La fonction JWT MicroProfile ne peut pas effectuer l''authentification car elle attend le type d''authentification [{0}] dans l''application, mais a rencontr\u00e9 le type [{1}]. L''attribut [{2}] a \u00e9t\u00e9 d\u00e9fini \u00e0 [{3}]. 
-MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Pour que l'authentification aboutisse, effectuez l'une des op\u00e9rations suivante. a) V\u00e9rifiez que l'attribut ignoreApplicationAuthMethod est d\u00e9fini sur "true" b) que l'annotation loginConfig est d\u00e9finie sur MP-JWT dans l'application.
+MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Pour que l'authentification aboutisse, effectuez l'une des op\u00e9rations suivante. a) V\u00e9rifiez que l'attribut ignoreApplicationAuthMethod a pour valeur "true" b) que l'annotation loginConfig a pour valeur MP-JWT dans l'application.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=V\u00e9rifiez que la configuration du serveur ou de l'application est \u00e0 jour.
 
 # do not translate HttpServletRequest.logout
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: La fonction du JWT MicroProfile ne peut pas r\u00e9aliser l'authentification car le JWT de la demande a \u00e9t\u00e9 pr\u00e9c\u00e9demment d\u00e9connect\u00e9.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=Un pr\u00e9c\u00e9dent appel HttpServletRequest.logout() a \u00e9t\u00e9 effectu\u00e9 pour un sujet authentifi\u00e9 avec ce JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Soumettez \u00e0 nouveau la demande avec un autre JWT.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: La valeur [{0}] de la propri\u00e9t\u00e9 MicroProfile Config {1} n''est pas prise en charge. Les seules valeurs prises en charge sont {2}. La valeur {3} est utilis\u00e9e par d\u00e9faut.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=La propri\u00e9t\u00e9 MicroProfile Config qui est sp\u00e9cifi\u00e9e dans le message pr\u00e9sente un ensemble pr\u00e9d\u00e9fini de valeurs qui sont prises en charge. Les autres valeurs sont ignor\u00e9es et la valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Sp\u00e9cifiez l'une des valeurs prises en charge pour la propri\u00e9t\u00e9 qui est indiqu\u00e9e dans le message.

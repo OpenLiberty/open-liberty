@@ -37,7 +37,6 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.acme.internal.AcmeConfigService;
 import com.ibm.ws.security.acme.internal.AcmeProviderImpl;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 
 /**
@@ -62,12 +61,19 @@ public class HttpConnector {
 		StringBuilder agent = new StringBuilder("acme4j");
 
 		try (InputStream in = HttpConnector.class.getResourceAsStream("/org/shredzone/acme4j/version.properties")) {
-			Properties prop = new Properties();
-			prop.load(in);
-			agent.append('/').append(prop.getProperty("version"));
+			if (in == null) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc,
+							"Could not read /org/shredzone/acme4j/version.properties, ignore and skip library version.");
+				}
+			} else {
+				Properties prop = new Properties();
+				prop.load(in);
+				agent.append('/').append(prop.getProperty("version"));
+			}
 		} catch (Exception ex) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Could not read library version", ex);
+				Tr.debug(tc, "Could not read library version, ignore and skip adding it.", ex);
 			}
 		}
 
@@ -119,6 +125,10 @@ public class HttpConnector {
 		} else {
 			connectTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPConnectTimeout();
 			readTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPReadTimeout();
+		}
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Setting http timeouts for ACME calls, connectTimeout: " + connectTimeout
+					+ " and readTimeout: " + readTimeout);
 		}
 		conn.setConnectTimeout(connectTimeout);
 		conn.setReadTimeout(readTimeout);

@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import javax.net.SocketFactory;
 
@@ -41,6 +42,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ExternalTestServiceDockerClientStrategy extends DockerClientProviderStrategy {
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
+
+    public static Predicate<ExternalTestService> serviceFilter = null;
 
     /**
      * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
@@ -93,6 +96,11 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                 return false;
             }
 
+            if (serviceFilter != null && !serviceFilter.test(dockerService)) {
+                Log.info(c, m, "Will not select " + dockerHostURL + " because custom service filter returned 'false'");
+                return false;
+            }
+
             System.setProperty("DOCKER_HOST", dockerHostURL);
             File certDir = new File("docker-certificates");
             certDir.mkdirs();
@@ -113,10 +121,10 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
             // Provide information on how to manually connect to the machine if running locally
             if (FATRunner.FAT_TEST_LOCALRUN) {
-                Log.info(c, m, "If you need to connect to any currently running docker containers manaully, export the following environment variables in your terminal:");
-                Log.info(c, m, "export DOCKER_HOST=" + dockerHostURL);
-                Log.info(c, m, "export DOCKER_TLS_VERIFY=1");
-                Log.info(c, m, "export DOCKER_CERT_PATH=" + certDir.getAbsolutePath());
+                Log.info(c, m, "If you need to connect to any currently running docker containers manaully, export the following environment variables in your terminal:\n" +
+                               "export DOCKER_HOST=" + dockerHostURL + "\n" +
+                               "export DOCKER_TLS_VERIFY=1\n" +
+                               "export DOCKER_CERT_PATH=" + certDir.getAbsolutePath());
             }
             return true;
         }

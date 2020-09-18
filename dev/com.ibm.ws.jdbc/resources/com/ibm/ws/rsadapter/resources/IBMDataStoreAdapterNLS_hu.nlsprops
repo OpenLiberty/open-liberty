@@ -502,7 +502,7 @@ DEFAULT_MATCH_ORIGINAL.useraction=Ellen\u0151rizze, hogy az adatforr\u00e1s egy\
 
 # 8780 deleted
 
-DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: A beginRequest \u00e9s endRequest met\u00f3dusokat csak kapcsolatkezel\u0151k haszn\u00e1lhatj\u00e1k.  A JDBC specifik\u00e1ci\u00f3 nem sz\u00e1mol egy kapcsolatot kezel\u0151 t\u00f6bb kapcsolatkezel\u0151vel. Ha a kapcsolatkezel\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3 v\u00e9gzi, akkor a beginRequest \u00e9s endRequest m\u00e1s kapcsolatkezel\u0151k \u00e1ltali haszn\u00e1lata elnyom\u00e1sra ker\u00fcl. Az al\u00e1bbi verem a beginRequest vagy endRequest m\u0171velet felh\u00edv\u00e1s\u00e1nak k\u00f3d\u00fatvonal\u00e1t adja meg: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: A beginRequest \u00e9s endRequest met\u00f3dusokat csak kapcsolatkezel\u0151k haszn\u00e1lhatj\u00e1k. A JDBC specifik\u00e1ci\u00f3 nem sz\u00e1mol egy kapcsolatot kezel\u0151 t\u00f6bb kapcsolatkezel\u0151vel. Ha a kapcsolatkezel\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3 v\u00e9gzi, akkor a beginRequest \u00e9s endRequest m\u00e1s kapcsolatkezel\u0151k \u00e1ltali haszn\u00e1lata elnyom\u00e1sra ker\u00fcl. Az al\u00e1bbi verem a beginRequest vagy endRequest m\u0171velet felh\u00edv\u00e1s\u00e1nak k\u00f3d\u00fatvonal\u00e1t adja meg: {0}.
 DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=A beginRequest \u00e9s endRequest \u00fatmutat\u00e1sok elnyom\u00e1sra ker\u00fclnek a kapcsolatkezel\u0151t zavar\u00f3 mell\u00e9khat\u00e1sok elker\u00fcl\u00e9se \u00e9rdek\u00e9ben.
 DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=A figyelmeztet\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben t\u00e1vol\u00edtsa el a beginRequest \u00e9s endRequest esem\u00e9nyeket felh\u00edv\u00f3 k\u00f3dot, a jelzett verem azonos\u00edt\u00e1sa alapj\u00e1n.
 
@@ -648,5 +648,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Kapcsolja ki a Kerberos hiteles\u00ed
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6z\u00f6kben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-k haszn\u00e1lat\u00e1val t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6z\u00f6kben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-k haszn\u00e1lat\u00e1val t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Tiltsa le az Oracle adatforr\u00e1s Kerberos hiteles\u00edt\u00e9s\u00e9t, illetve v\u00e1ltson \u00e1t m\u00e1sik Java SDK k\u00e9szletre az IBM Java 8 SDK mellett. 
 # 9600-9603 deleted 
 # 9900 deleted

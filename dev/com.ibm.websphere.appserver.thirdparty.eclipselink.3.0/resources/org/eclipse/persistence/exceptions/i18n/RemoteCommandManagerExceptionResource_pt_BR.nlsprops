@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=N\u00e3o foi poss\u00edvel obter contexto JNDI; verifique se suas propriedades est\u00e3o configuradas corretamente.
+
+22102=N\u00e3o foi poss\u00edvel postar conex\u00e3o no servi\u00e7o de nomenclatura local sob o nome {0}
+
+22103=N\u00e3o foi poss\u00edvel consultar a conex\u00e3o remota sob o nome {0} com a URL {1}
+
+22104=n\u00e3o foi poss\u00edvel consultar o nome do host
+
+22105=N\u00e3o foi poss\u00edvel propagar o comando para {0}
+
+22106=N\u00e3o foi poss\u00edvel criar a conex\u00e3o JMS externa com o T\u00f3pico {0} e o Factory de t\u00f3pico {1}. Al\u00e9m disso, verifique se as propriedades de contexto est\u00e3o configuradas corretamente.
+
+22107=N\u00e3o foi poss\u00edvel remover conex\u00e3o local no servi\u00e7o de nomenclatura local sob o nome {0}
+
+22108=N\u00e3o foi poss\u00edvel serializar ou desserializar o comando
+
+22109=Falha ao receber mensagem JMS do provedor JMS
+
+22110=Falha ao descobrir endere\u00e7o IP do host local.
+
+22111=Falha ao obter ServerPlatform. O ServerPlatform deve ser configurado na Sess\u00e3o ou em RemoteCommandManager.
+
+22112=N\u00e3o foi poss\u00edvel criar a conex\u00e3o JMS local com o t\u00f3pico {0} e o factory de t\u00f3pico {1}. Al\u00e9m disso, verifique se as propriedades de contexto est\u00e3o configuradas corretamente.
+
+22113=N\u00e3o foi poss\u00edvel criar o ID de servi\u00e7o Oc4jJGroupsRemoteConnection {0}, t\u00f3pico {1}, usando o factory {2}. Al\u00e9m disso, verifique se as propriedades de contexto est\u00e3o configuradas corretamente.
+
+22114={0}: falha ao desserializar mensagem recuperada {1}.
+
+22115={0}: falha ao processar o comando remoto recuperado da mensagem {1}, de {2}, tipo de comando {3}
+
+22116=A mensagem JMS recebida \u00e9 nula. Tratando-a como um JMSException
+
+22117=O RemoteCommandManager da sess\u00e3o est\u00e1 fechado ou n\u00e3o foi inicializado ao processar mensagens recebidas
+
+22118=Falha ao criar a conex\u00e3o JGroups usando o arquivo de configura\u00e7\u00e3o: {0}
+

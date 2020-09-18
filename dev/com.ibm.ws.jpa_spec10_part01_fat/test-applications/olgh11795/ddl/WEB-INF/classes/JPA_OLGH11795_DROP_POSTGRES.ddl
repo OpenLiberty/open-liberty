@@ -1,2 +1,2 @@
-DROP TABLE ${schemaname}.SimpleParentEntityOLGH11795;
-DROP TABLE ${schemaname}.SimpleChildEntityOLGH11795;
+DROP TABLE SimpleParentEntityOLGH11795;
+DROP TABLE SimpleChildEntityOLGH11795;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class CommonSecurityFat {
     public final TestName testName = new TestName();
 
     protected static ServerTracker serverTracker = new ServerTracker();
+    protected static ServerTracker skipRestoreServerTracker = new ServerTracker();
 
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
@@ -46,6 +47,7 @@ public class CommonSecurityFat {
     public static void commonBeforeClass() throws Exception {
         Log.info(thisClass, "commonBeforeClass", "Starting Class");
         serverTracker = new ServerTracker();
+        skipRestoreServerTracker = new ServerTracker();
     }
 
     @Before
@@ -94,12 +96,31 @@ public class CommonSecurityFat {
         logTestCaseInServerLogs("ReStoringConfig");
         for (LibertyServer server : serverTracker.getServers()) {
             try {
-                Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
-                server.restoreServerConfiguration();
-                server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+                if (skipRestoreServerTracker.trackerContains(server)) {
+                    Log.info(thisClass, "restoreTestServers", "Restore of server: " + server.getServerName() + " has been skipped");
+                } else {
+                    Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
+                    server.restoreServerConfiguration();
+                    server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+                }
             } catch (Exception e) {
                 e.printStackTrace(System.out);
                 Log.info(thisClass, "restoreTestServers", "**********************FAILED to restore original server configuration**********************");
+            }
+        }
+    }
+
+    public void logTestCaseMarkerInServerLogs(String actionToLog, String infoToLog) {
+        Set<LibertyServer> testServers = serverTracker.getServers();
+        for (LibertyServer server : testServers) {
+            if (server != null && !server.isStarted()) {
+                continue;
+            }
+            loggingUtils.logTestCaseInServerLog(server, _testName + ": " + infoToLog, actionToLog);
+            try {
+                server.setMarkToEndOfLog(server.getDefaultLogFile());
+            } catch (Exception e) {
+                Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
             }
         }
     }

@@ -1,0 +1,96 @@
+<server>
+
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>jmsMdb-3.2</feature>
+    <feature>jsp-2.3</feature>   
+    <feature>testjmsinternals-1.0</feature>
+    <feature>cdi-1.2</feature>   
+    <feature>ejbLite-3.2</feature>
+  </featureManager>
+  
+  <include optional="true" location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+  
+  <logging 
+    traceSpecification="*=info:EJBContainer=all:SIBJmsRa=all:SIBMessageTrace=all:SIBRa=all:WAS.j2c=all"
+    traceFileName="trace.log"
+    maxFileSize="100"
+    maxFiles="2"/> 
+  
+  <messagingEngine id="defaultME">
+    <queue id="Queue10" maxRedeliveryCount="2"/>
+    <queue id="Queue11" maxRedeliveryCount="2"/>
+    <topicSpace id="NewTopic1"/>
+    <topicSpace id="NewTopic2"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
+  </messagingEngine>
+  
+  <jmsQueue id="queue/test" jndiName="queue/test">
+    <properties.wasJms queueName="Queue10"/>
+  </jmsQueue>
+  
+  <jmsQueue id="Queue11/test" jndiName="Queue11/test">
+    <properties.wasJms queueName="Queue11"/>
+  </jmsQueue>
+  
+  <jmsQueue id="eis/queue1" jndiName="eis/queue1">
+    <properties.wasJms queueName="Queue1"/>
+  </jmsQueue>
+  
+  <jmsQueue id="eis/queue2" jndiName="eis/queue2">
+    <properties.wasJms queueName="Queue2"/>
+  </jmsQueue>
+  
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
+    <properties.wasJms queueName="newQueue"/>
+  </jmsQueue>
+  
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms userName="CF1USER" password="junkpassword"/> 
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr6" maxPoolSize="5"/>
+  
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr5">
+    <properties.wasJms userName="CF1USER" password="junkpassword"/> 
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr5" maxPoolSize="5"/>
+  
+  <jmsActivationSpec id="mdbapp/TestQueue"> 
+    <properties.wasJms/> 
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="mdbapp1/MDBQueue"> 
+    <properties.wasJms/> 
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="mdbapp/TestTopic"> 
+    <properties.wasJms clientId="client1"/> 
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="mdbapp1/MDBTopic"> 
+    <properties.wasJms clientId="client2"/> 
+  </jmsActivationSpec>
+  
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr9">
+    <properties.wasJms clientID=""/> 
+  </jmsTopicConnectionFactory>
+
+  <connectionManager id="ConMgr9" maxPoolSize="2"/>
+  
+  <jmsTopic id="eis/topic1" jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1" topicName="testTopic1"/>
+  </jmsTopic>
+  
+  <jmsTopic id="eis/topic2" jndiName="eis/topic2">
+    <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2"/>
+  </jmsTopic>
+  
+</server>

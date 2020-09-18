@@ -18,7 +18,7 @@
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito
 JWT_BUILDER_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi processada com \u00eaxito.
-JWT_BUILDER_CONFIG_PROCESSED.useraction=Nenhuma
+JWT_BUILDER_CONFIG_PROCESSED.useraction=Nenhum
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Mudan\u00e7a na configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito.
 JWT_BUILDER_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi modificada com \u00eaxito.
@@ -26,8 +26,8 @@ JWT_BUILDER_CONFIG_MODIFIED.useraction=Nenhum.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: O trabalho de terminal JSON Web Token (JWT) est\u00e1 dispon\u00edvel.
-JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Esta mensagem tem apenas prop\u00f3sitos informacionais.
-JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Essa mensagem \u00e9 apenas informativa.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 # Do not translate "JSON Web Token", "JWT", "jwt-1.0"
 JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Ocorreu um erro de configura\u00e7\u00e3o. O trabalho de terminal JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel. Certifique-se de ter o recurso jwt-1.0 configurado.
@@ -78,7 +78,7 @@ JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Certifique-se de passar um mapa de so
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: O servi\u00e7o do consumidor JSON Web Token (JWT) est\u00e1 dispon\u00edvel.
-JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Esta mensagem tem apenas prop\u00f3sitos informacionais.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Essa mensagem \u00e9 apenas informativa.
 JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -313,3 +313,13 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Assegure-se de que a configura\u00e7\u00e3o 
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: O esquema HTTP \u00e9 usado no terminal especificado: {0}, HTTPS \u00e9 necess\u00e1rio.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=O terminal especificado requer HTTPS, mas HTTP foi usado na URL de solicita\u00e7\u00e3o.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifique a URL de solicita\u00e7\u00e3o e certifique-se de que ela use HTTPS ou mude a configura\u00e7\u00e3o para que HTTPS n\u00e3o seja necess\u00e1rio.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: O algoritmo de assinatura [{0}] que \u00e9 especificado pelas propriedades de configura\u00e7\u00e3o do MicroProfile n\u00e3o \u00e9 suportado. O algoritmo de assinatura [{1}] ser\u00e1 usado.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Apenas um determinado conjunto de algoritmos de assinatura RSA, Eliptical Curve e HMAC s\u00e3o suportados. O algoritmo de assinatura que \u00e9 especificado pelas propriedades de configura\u00e7\u00e3o do MicroPerfil n\u00e3o \u00e9 um dos algoritmos de assinatura suportados.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Especifique um algoritmo de assinatura suportado nas propriedades de configura\u00e7\u00e3o do MicroProfile. Os algoritmos de assinatura suportados incluem ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 e HS512.
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: O AMR [{0}] do token da web JSON (JWT) fornecido n\u00e3o \u00e9 listado como um AMR confi\u00e1vel na configura\u00e7\u00e3o do [{1}] JWT. Os AMR confi\u00e1veis s\u00e3o [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=A configura\u00e7\u00e3o do servidor especifica qual AMR \u00e9 confi\u00e1vel ao validar JWTs. O token fornecido n\u00e3o \u00e9 destinado a um AMR confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenha um novo token para um dos AMR confi\u00e1veis especificados em sua configura\u00e7\u00e3o JWT ou inclua o AMR especificado na mensagem como um AMR confi\u00e1vel em sua configura\u00e7\u00e3o de JWT.

@@ -69,7 +69,7 @@ public final class AppConsumerProto {
       "unts\"@\n\013GenreCounts\022\035\n\tgenreType\030\001 \001(\0162\n" +
       ".GenreType\022\022\n\ntotalCount\030\002 \001(\005\"5\n\rPriceR" +
       "esponse\022\014\n\004name\030\001 \001(\t\022\026\n\006prices\030\002 \003(\0132\006." +
-      "Price2\271\003\n\022AppConsumerService\022K\n\016getAllAp" +
+      "Price2\223\007\n\022AppConsumerService\022K\n\016getAllAp" +
       "pNames\022\026.google.protobuf.Empty\032\037.test.g3" +
       "store.grpc.NameResponse\"\000\022W\n\ngetAppInfo\022" +
       "!.test.g3store.grpc.AppNameRequest\032$.tes" +
@@ -80,8 +80,20 @@ public final class AppConsumerProto {
       "ameRequest\032 .test.g3store.grpc.PriceResp" +
       "onse\"\000(\0010\001\022M\n\021purchaseRetailApp\022\020.Purcha" +
       "seRequest\032$.test.g3store.grpc.RetailAppR" +
-      "esponse\"\000B/\n\031com.ibm.test.g3store.grpcB\020" +
-      "AppConsumerProtoP\001b\006proto3"
+      "esponse\"\000\022c\n&getAllAppNames_AuthHeader_V" +
+      "ia_CallCred\022\026.google.protobuf.Empty\032\037.te" +
+      "st.g3store.grpc.NameResponse\"\000\022l\n/getAll" +
+      "AppNames_AuthHeader_Via_ClientIntercepto" +
+      "r\022\026.google.protobuf.Empty\032\037.test.g3store" +
+      ".grpc.NameResponse\"\000\022R\n\025getAppNameSetBad" +
+      "Roles\022\026.google.protobuf.Empty\032\037.test.g3s" +
+      "tore.grpc.NameResponse\"\000\022S\n\026getNameCooki" +
+      "eJWTHeader\022\026.google.protobuf.Empty\032\037.tes" +
+      "t.g3store.grpc.NameResponse\"\000\022\\\n\037getAppS" +
+      "etBadRoleCookieJWTHeader\022\026.google.protob" +
+      "uf.Empty\032\037.test.g3store.grpc.NameRespons" +
+      "e\"\000B/\n\031com.ibm.test.g3store.grpcB\020AppCon" +
+      "sumerProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

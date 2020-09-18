@@ -10,6 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+grpcVersion=1.31.1
 
 Bundle-Name: gRPC Common Components
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.common
@@ -24,20 +25,29 @@ Import-Package: !sun.*,\
   !com.google.*,\
   javax.annotation;version=!,\
   *
-	
+
 Export-Package: \
-	io.openliberty.grpc.internal,\
-	io.grpc.*,\
-	google.*,\
-	com.google.*,\
-	io.perfmark,\
-	io.opencensus.*,\
-	org.checkerframework.framework.qual,\
-	org.checkerframework.checker.nullness.qual,\
-	org.checkerframework.checker.nullness.compatqual
+    io.openliberty.grpc.annotation,\
+    io.openliberty.grpc.internal,\
+    io.grpc,\
+    io.grpc.census.*,\
+    io.grpc.internal.*,\
+    io.grpc.protobuf.*,\
+    io.grpc.stub.*,\
+    io.grpc.util.*,\
+    google.*,\
+    com.google.*,\
+    io.perfmark,\
+    io.opencensus.*,\
+    org.checkerframework.framework.qual,\
+    org.checkerframework.checker.nullness.qual,\
+    org.checkerframework.checker.nullness.compatqual
+
+-dsannotations: \
+  io.openliberty.grpc.internal.GrpcManagedObjectProvider
 
 Include-Resource: \
-  @${repo;io.grpc:grpc-core;1.27.0;EXACT}!/META-INF/**, \
+  @${repo;io.grpc:grpc-core;${grpcVersion};EXACT}!/META-INF/**
 
 instrument.disabled: true
 
@@ -46,24 +56,27 @@ instrument.disabled: true
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-  com.google.api.grpc:proto-google-common-protos;version=1.17.0, \
+  com.google.api.grpc:proto-google-common-protos;version=1.18.1, \
   com.google.code.findbugs:jsr305;version=3.0.2,\
   com.google.guava:failureaccess;version=1.0.1,\
   com.google.guava:guava;version=27.0.1, \
   com.google.j2objc:j2objc-annotations;version=1.1, \
-  com.google.protobuf:protobuf-java;version=3.11.1, \
-  io.grpc:grpc-api;version=1.27.0, \
-  io.grpc:grpc-census;version=1.27.0, \
-  io.grpc:grpc-context;version=1.27.0, \
-  io.grpc:grpc-core;version=1.27.0, \
-  io.grpc:grpc-protobuf;version=1.27.0, \
-  io.grpc:grpc-protobuf-lite;version=1.27.0, \
-  io.grpc:grpc-stub;version=1.27.0, \
-  io.opencensus:opencensus-api;version=0.21.0, \
-  io.opencensus:opencensus-contrib-grpc-metrics;version=0.21.0, \
-  io.perfmark:perfmark-api;version=0.20.1, \
+  com.google.protobuf:protobuf-java;version=3.13.0, \
+  io.grpc:grpc-census;version=${grpcVersion}, \
+  io.grpc:grpc-context;version=${grpcVersion}, \
+  io.grpc:grpc-core;version=${grpcVersion}, \
+  io.grpc:grpc-protobuf;version=${grpcVersion}, \
+  io.grpc:grpc-protobuf-lite;version=${grpcVersion}, \
+  io.grpc:grpc-stub;version=${grpcVersion}, \
+  io.opencensus:opencensus-api;version=0.27.0, \
+  io.opencensus:opencensus-contrib-grpc-metrics;version=0.27.0, \
+  io.openliberty.io.grpc.1.0;version=latest,\
+  io.perfmark:perfmark-api;version=0.22.0, \
   org.checkerframework:checker-compat-qual;version=2.5.2,\
   org.osgi.service.component.annotations;version=latest
-  
+
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

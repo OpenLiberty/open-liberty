@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=A java:comp/env n\u00e9ven v\u00e9gze
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=M\u00f3dos\u00edtsa \u00fagy az alkalmaz\u00e1st, hogy a JNDI m\u0171velet egy Java EE alkalmaz\u00e1shoz tartoz\u00f3 sz\u00e1lon jelenjen meg.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: A @ValidateOnExecution nem enged\u00e9lyezett olyan met\u00f3dusok eset\u00e9ben, amelyek sz\u00fcl\u0151oszt\u00e1ly met\u00f3dust \u00edrnak fel\u00fcl vagy fel\u00fcletet val\u00f3s\u00edtanak meg. Keresse meg a konfigur\u00e1ci\u00f3ban a k\u00f6vetkez\u0151t: {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= A @ValidateOnExecution nem enged\u00e9lyezett olyan met\u00f3dusok eset\u00e9ben, amelyek sz\u00fcl\u0151oszt\u00e1ly met\u00f3dust \u00edrnak fel\u00fcl vagy fel\u00fcletet val\u00f3s\u00edtanak meg. Az a met\u00f3dus, amely fel\u00fcl\u00edrja a sz\u00fcl\u0151oszt\u00e1ly met\u00f3dust vagy fel\u00fcletmet\u00f3dust val\u00f3s\u00edt meg, \u00f6r\u00f6kli a fel\u00fcl\u00edrt vagy megval\u00f3s\u00edtott met\u00f3dus viselked\u00e9s\u00e9t.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= T\u00e1vol\u00edtsa el a @ValidateOnExecution feljegyz\u00e9st a megadott met\u00f3dusb\u00f3l.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Az IMPLICIT t\u00edpus kever\u00e9se m\u00e1s v\u00e9grehajthat\u00f3 t\u00edpusokkal nem enged\u00e9lyezett. Tekintse meg a k\u00f6vetkez\u0151re be\u00e1ll\u00edtott v\u00e9grehajt\u00e1si t\u00edpusokat: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=A komponens\u00e9rv\u00e9nyes\u00edt\u00e9si specifik\u00e1ci\u00f3 szerint az IMPLICIT t\u00edpus kever\u00e9se m\u00e1s v\u00e9grehajthat\u00f3 t\u00edpusokkal nem enged\u00e9lyezett.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Friss\u00edtse a v\u00e9grehajthat\u00f3 t\u00edpusok met\u00f3dus\u00e1t, oszt\u00e1ly\u00e1t vagy glob\u00e1lis XML be\u00e1ll\u00edt\u00e1sait, hogy megakad\u00e1lyozza az IMPLICIT t\u00edpus kevered\u00e9s\u00e9t m\u00e1s v\u00e9grehajthat\u00f3 t\u00edpusokkal.
+
+# -----------------------------------------------------------------------

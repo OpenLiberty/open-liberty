@@ -650,7 +650,7 @@ public class AcmeClient {
 				account = accountBuilder.create(session);
 			} catch (AcmeException e) {
 				throw handleAcmeException(e,
-						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), e.getMessage()));
+						Tr.formatMessage(tc, "CWPKI2018E", acmeConfig.getDirectoryURI(), getRootCauseMessage(e)));
 			}
 		}
 
@@ -1117,7 +1117,8 @@ public class AcmeClient {
 				cause = e;
 			}
 
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI()), cause);
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI(), cause.getMessage()), cause);
 		}
 	}
 

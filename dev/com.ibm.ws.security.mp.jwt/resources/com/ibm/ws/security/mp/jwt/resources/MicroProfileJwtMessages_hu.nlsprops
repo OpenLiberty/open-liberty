@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,15 +19,15 @@
 
 MPJWT_CONFIG_PROCESSED=CWWKS5500I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
 MPJWT_CONFIG_PROCESSED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
-MPJWT_CONFIG_PROCESSED.useraction=Semmit sem kell tennie.
+MPJWT_CONFIG_PROCESSED.useraction=Nincs teend\u0151.
 
 MPJWT_CONFIG_MODIFIED=CWWKS5501I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
 MPJWT_CONFIG_MODIFIED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
-MPJWT_CONFIG_MODIFIED.useraction=Semmit sem kell tennie.
+MPJWT_CONFIG_MODIFIED.useraction=Nincs teend\u0151.
 
 MPJWT_CONFIG_DEACTIVATED=CWWKS5502I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen deaktiv\u00e1l\u00e1sra ker\u00fclt.
 MPJWT_CONFIG_DEACTIVATED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen deaktiv\u00e1l\u00e1sra ker\u00fclt.
-MPJWT_CONFIG_DEACTIVATED.useraction=Semmit sem kell tennie.
+MPJWT_CONFIG_DEACTIVATED.useraction=Nincs teend\u0151.
 
 # 0=Exception message
 ERROR_GETTING_CLAIMS_FROM_JWT_STRING=CWWKS5503E: A MicroProfile JWT szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt az ig\u00e9nyek lek\u00e9rdez\u00e9se k\u00f6zben a biztos\u00edtott JWT karaktersorozatb\u00f3l. {0}
@@ -153,5 +153,10 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la
 
 # do not translate HttpServletRequest.logout
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudja elv\u00e9gezni a hiteles\u00edt\u00e9st, mert a k\u00e9r\u00e9sben tal\u00e1lhat\u00f3 JWT kor\u00e1bban m\u00e1r kijelentkezett.
-JWT_PREVIOUSLY_LOGGED_OUT.explanation=Az adott JWT jelsorral hiteles\u00edtett alanyra vonatkoz\u00f3an kor\u00e1bbi HttpServletRequest.logout() h\u00edv\u00e1s t\u00f6rt\u00e9nt. 
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=Az adott JWT jelsorral hiteles\u00edtett alanyra vonatkoz\u00f3an kor\u00e1bbi HttpServletRequest.logout() h\u00edv\u00e1s t\u00f6rt\u00e9nt.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=K\u00fcldje le \u00fajra a k\u00e9r\u00e9st m\u00e1sik JWT jelsorral.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: A(z) [{0}] {1} MicroProfile Config \u00e9rt\u00e9k nem t\u00e1mogatott. Csak a k\u00f6vetkez\u0151 \u00e9rt\u00e9kek t\u00e1mogatottak: {2}. Alap\u00e9rtelmez\u00e9sben a(z) {3} \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=Az \u00fczenetben megadott MicroProfile Config tulajdons\u00e1g el\u0151re meghat\u00e1rozott t\u00e1mogatott \u00e9rt\u00e9kk\u00e9szlettel rendelkezik. M\u00e1s \u00e9rt\u00e9kek figyelmen k\u00edv\u00fcl maradnak, helyett\u00fck az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Az \u00fczenetben jelzett tulajdons\u00e1gra vonatkoz\u00f3an adjon meg egy t\u00e1mogatott \u00e9rt\u00e9ket.

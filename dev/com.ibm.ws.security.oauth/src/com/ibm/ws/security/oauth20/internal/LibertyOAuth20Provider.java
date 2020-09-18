@@ -193,6 +193,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     protected static final String KEY_REVOKE_ACCESSTOK_W_REFRESHTOK = "revokeAccessTokensWithRefreshTokens";
     public static final String KEY_TRACK_OAUTH_CLIENTS = "trackOAuthClients";
     public static final String KEY_OAUTH_ENDPOINT = "oauthEndpoint";
+    public static final String KEY_REFRESHED_ACCESS_TOKEN_LIMIT = "refreshedAccessTokenLimit";
 
     // TODO: Rational Jazz props. Determine if these can be move to OIDC config.
     protected static final String KEY_COVERAGE_MAP_SESSION_MAX_AGE = "coverageMapSessionMaxAge";
@@ -313,6 +314,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     @Sensitive
     private String internalClientSecret;
     private String clientSecretEncoding;
+    private long refreshedAccessTokenLimit = 100;
 
     // Store and custom related fields
     private boolean isCustomStore;
@@ -476,6 +478,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
         trackOAuthClients = (Boolean) properties.get(KEY_TRACK_OAUTH_CLIENTS);
         oauthEndpointSettings = populateOAuthEndpointSettings(properties, KEY_OAUTH_ENDPOINT);
+        refreshedAccessTokenLimit = configUtils.getLongConfigAttribute(properties, KEY_REFRESHED_ACCESS_TOKEN_LIMIT, refreshedAccessTokenLimit);
 
         setUpInternalClient();
         // tolerate old jwtAccessToken attrib but if tokenFormat attrib is specified,
@@ -1711,6 +1714,16 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         readLock.lock();
         try {
             return refreshTokenLength;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    @Override
+    public long getRefreshedAccessTokenLimit() {
+        readLock.lock();
+        try {
+            return refreshedAccessTokenLimit;
         } finally {
             readLock.unlock();
         }

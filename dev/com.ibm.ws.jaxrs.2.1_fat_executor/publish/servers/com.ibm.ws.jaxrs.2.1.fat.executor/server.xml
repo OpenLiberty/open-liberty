@@ -21,4 +21,5 @@
     </managedScheduledExecutorService>
 
     <variable name="onError" value="FAIL"/>
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
 </server>

@@ -179,10 +179,9 @@ CWPKI2035E=CWPKI2035E: Us\u0142uga ACME nie mog\u0142a zapisa\u0107 podpisanego 
 CWPKI2035E.explanation=Certyfikat zosta\u0142 pomy\u015blnie pobrany z o\u015brodka certyfikacji, ale tego certyfikatu nie mo\u017cna zapisa\u0107 lokalnie.
 CWPKI2035E.useraction=Zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie, aby uzyska\u0107 informacje o szczeg\u00f3\u0142ach niepowodzenia. Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku magazynu kluczy jest prawid\u0142owe, a serwer ma uprawnienia do zapisu w pliku.
 
-CWPKI2036E=CWPKI2036E: W us\u0142udze ACME up\u0142yn\u0105\u0142 limit czasu oczekiwania na uruchomienie aplikacji autoryzacji WWW. Aplikacja ta jest wymagana do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME. Us\u0142uga czeka\u0142a przez {0} min.
-CWPKI2036E.explanation=Aplikacja s\u0142u\u017c\u0105ca do obs\u0142ugi \u017c\u0105dania certyfikatu nie zosta\u0142a uruchomiona w oczekiwanym czasie. Nie mo\u017cna za\u017c\u0105da\u0107 podpisanego certyfikatu.
-CWPKI2036E.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w.
-
+CWPKI2036W=CWPKI2036W: W us\u0142udze ACME up\u0142yn\u0105\u0142 limit czasu oczekiwania na uruchomienie aplikacji autoryzacji WWW. Aplikacja ta jest wymagana do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME. Podejmowana jest pr\u00f3ba realizacji \u017c\u0105dania certyfikatu. Us\u0142uga oczekuje przez {0}.
+CWPKI2036W.explanation=Aplikacja s\u0142u\u017c\u0105ca do obs\u0142ugi \u017c\u0105dania certyfikatu nie zosta\u0142a uruchomiona w oczekiwanym czasie. Je\u015bli aplikacja uruchomi si\u0119, \u017c\u0105danie jest realizowane. Je\u015bli aplikacja nie uruchomi si\u0119, \u017c\u0105danie certyfikatu ko\u0144czy si\u0119 niepowodzeniem.
+CWPKI2036W.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w. Przejrzyj dziennik w poszukiwaniu komunikatu CWWKT0016I, kt\u00f3ry wskazuje na aplikacj\u0119 WWW z adresem URL 'acme-challenge'. Sygnalizuje on, \u017ce wewn\u0119trzna aplikacja zosta\u0142a uruchomiona.
 CWPKI2037E=CWPKI2037E: Domeny dla us\u0142ugi ACME by\u0142y r\u00f3wne null lub puste.
 CWPKI2037E.explanation=Domeny by\u0142y r\u00f3wne null lub puste i nie mo\u017cna ich u\u017cywa\u0107.
 CWPKI2037E.useraction=W konfiguracji podaj co najmniej jedn\u0105 domen\u0119 r\u00f3\u017cn\u0105 od null i niepust\u0105.
@@ -330,3 +329,7 @@ CWPKI2072W.useraction=Upewnij si\u0119, \u017ce masz uprawnienia do odczytu i za
 CWPKI2073W=CWPKI2073W: Nie podano osoby kontaktowej w sprawie konta. Zaleca si\u0119 ustawienie tej w\u0142a\u015bciwo\u015bci w konfiguracji serwera. Je\u015bli dojdzie do utraty klucza lub naruszenia konta, dost\u0119p do niego zostanie utracony.
 CWPKI2073W.explanation=W konfiguracji serwera nie podano warto\u015bci w\u0142a\u015bciwo\u015bci accountContact.
 CWPKI2073W.useraction=Ustaw w\u0142a\u015bciwo\u015b\u0107 accountContact w konfiguracji serwera.
+
+CWPKI2074W=CWPKI2074W: Up\u0142yn\u0105\u0142 limit czasu us\u0142ugi ACME w oczekiwaniu na sygna\u0142 o otwarciu portu HTTP. Do uko\u0144czenia obs\u0142ugi \u017c\u0105dania certyfikatu w o\u015brodku certyfikacji ACME jest wymagany dost\u0119pny port HTTP. Podejmowana jest pr\u00f3ba realizacji \u017c\u0105dania certyfikatu. Us\u0142uga oczekuje przez {0}.
+CWPKI2074W.explanation=Us\u0142uga pr\u00f3buje zrealizowa\u0107 \u017c\u0105danie certyfikatu. Je\u015bli port HTTP zostanie otwarty, \u017c\u0105danie jest realizowane. Je\u015bli port HTTP nie zostanie otwarty, \u017c\u0105danie certyfikatu ko\u0144czy si\u0119 niepowodzeniem.
+CWPKI2074W.useraction=Przejrzyj zawarto\u015b\u0107 dziennika w poszukiwaniu wcze\u015bniejszych komunikat\u00f3w lub b\u0142\u0119d\u00f3w. Przejrzyj dziennik w poszukiwaniu komunikat\u00f3w CWWKO0219I, w kt\u00f3rych podane s\u0105 dost\u0119pne punkty ko\u0144cowe i porty. 

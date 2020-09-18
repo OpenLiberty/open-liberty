@@ -1261,16 +1261,18 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             break;
                         }
                         if (_handler.get() == null) {
-                            if (!_asmHelper.appTypeSupported()) {
-                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
-                            }
                             CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
                             if (cl != null) {
                                 cl.cancel();
                             }
+                            // wait for the app handler to arrive, note this is done even if we know the type is not supported.
                             addAppHandlerFuture();
-                            for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
-                                failedDependency(startingFuture, null);
+                            if (!_asmHelper.appTypeSupported()) {
+                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
+                                // we only fail here if the app type is not supported; otherwise we assume the handler is coming
+                                for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
+                                    failedDependency(startingFuture, null);
+                                }
                             }
                             break;
                         }

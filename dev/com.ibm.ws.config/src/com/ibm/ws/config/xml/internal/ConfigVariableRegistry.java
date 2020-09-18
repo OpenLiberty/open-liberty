@@ -30,6 +30,7 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
@@ -131,7 +132,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     /*
      * Override system variables.
      */
-    public void updateSystemVariables(Map<String, ConfigVariable> newVariables) {
+    public void updateSystemVariables(@Sensitive Map<String, ConfigVariable> newVariables) {
         for (String variableName : configVariables.keySet()) {
             if (!newVariables.containsKey(variableName)) {
                 registry.removeVariable(variableName);
@@ -266,6 +267,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      * @param variableName
      * @return The resolved value or null if the variable doesn't exist
      */
+    @Sensitive
     public String lookupVariable(String variableName) {
 
         String varReference = XMLConfigConstants.VAR_OPEN + variableName + XMLConfigConstants.VAR_CLOSE;
@@ -374,6 +376,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      * @see com.ibm.ws.config.xml.Variables#getUserDefinedVariables()
      */
     @Override
+    @Sensitive
     public Map<String, String> getUserDefinedVariables() {
         HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
         for (Map.Entry<String, ConfigVariable> entry : configVariables.entrySet()) {

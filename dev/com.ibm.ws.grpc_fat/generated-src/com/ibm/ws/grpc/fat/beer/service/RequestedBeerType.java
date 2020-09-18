@@ -10,7 +10,7 @@ package com.ibm.ws.grpc.fat.beer.service;
  *
  * Protobuf type {@code beer.RequestedBeerType}
  */
-public  final class RequestedBeerType extends
+public final class RequestedBeerType extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:beer.RequestedBeerType)
     RequestedBeerTypeOrBuilder {
@@ -97,14 +97,14 @@ private static final long serialVersionUID = 0L;
    * <code>.beer.BeerType beerType = 1;</code>
    * @return The enum numeric value on the wire for beerType.
    */
-  public int getBeerTypeValue() {
+  @java.lang.Override public int getBeerTypeValue() {
     return beerType_;
   }
   /**
    * <code>.beer.BeerType beerType = 1;</code>
    * @return The beerType.
    */
-  public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
+  @java.lang.Override public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
     @SuppressWarnings("deprecation")
     com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);
     return result == null ? com.ibm.ws.grpc.fat.beer.service.BeerType.UNRECOGNIZED : result;
@@ -420,7 +420,7 @@ private static final long serialVersionUID = 0L;
      * <code>.beer.BeerType beerType = 1;</code>
      * @return The enum numeric value on the wire for beerType.
      */
-    public int getBeerTypeValue() {
+    @java.lang.Override public int getBeerTypeValue() {
       return beerType_;
     }
     /**
@@ -429,6 +429,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setBeerTypeValue(int value) {
+      
       beerType_ = value;
       onChanged();
       return this;
@@ -437,6 +438,7 @@ private static final long serialVersionUID = 0L;
      * <code>.beer.BeerType beerType = 1;</code>
      * @return The beerType.
      */
+    @java.lang.Override
     public com.ibm.ws.grpc.fat.beer.service.BeerType getBeerType() {
       @SuppressWarnings("deprecation")
       com.ibm.ws.grpc.fat.beer.service.BeerType result = com.ibm.ws.grpc.fat.beer.service.BeerType.valueOf(beerType_);

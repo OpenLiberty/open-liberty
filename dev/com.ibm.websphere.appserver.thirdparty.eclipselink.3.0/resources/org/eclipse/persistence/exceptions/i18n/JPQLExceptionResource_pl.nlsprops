@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problem z rozpoznawaniem sk\u0142adni podczas analizowania zapytania [{0}]. Analizator sk\u0142adni zwr\u00f3ci\u0142 nast\u0119puj\u0105ce informacje [{1}].
+
+8002=Problem og\u00f3lny podczas analizowania zapytania [{0}]. Analizator sk\u0142adni zwr\u00f3ci\u0142 nast\u0119puj\u0105ce informacje [{1}].
+
+8003=Nie znaleziono klasy [{0}]. Analizator sk\u0142adni zwr\u00f3ci\u0142 nast\u0119puj\u0105ce informacje [{1}].
+
+8004=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: nieznana zmienna identyfikacji [{3}]. Klauzula FROM zapytania nie deklaruje zmiennej identyfikacyjnej [{3}].
+
+8005=B\u0142\u0105d podczas kompilowania zapytania [{0}]. Napotkano problem podczas rozstrzygania nazwy klasy - klasa [{1}] nie zosta\u0142a znaleziona.
+
+8006=B\u0142\u0105d podczas kompilowania zapytania [{0}]. Napotkano problem podczas rozstrzygania nazwy klasy - deskryptor klasy [{1}] nie zosta\u0142 znaleziony.
+
+8007=B\u0142\u0105d podczas kompilowania zapytania [{0}]. Napotkano problem podczas rozstrzygania nazwy klasy - odwzorowanie klasy [{1}] nie zosta\u0142o znalezione.
+
+8008=B\u0142\u0105d podczas kompilowania zapytania [{0}]. Napotkano problem podczas budowania wyra\u017cenia zapytania - klasa expressionBuilder dla [{1}] nie zosta\u0142a znaleziona.
+
+8009=Problem podczas kompilowania zapytania [{0}]. Wyra\u017cenie [{1}] nie jest obecnie obs\u0142ugiwane.
+
+8010=Problem og\u00f3lny podczas analizowania zapytania [{0}].
+
+8011=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawna deklaracja elementu kolekcji [{3}], oczekiwano pola powi\u0105zania, kt\u00f3rego warto\u015bci\u0105 jest kolekcja.
+
+8012=Problem podczas kompilowania zapytania [{0}]. Jeszcze nie zaimplementowano: {1}.
+
+8013=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: nie znaleziono konstruktora klasy [{3}].
+
+8014=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny argument SIZE [{3}], oczekiwano pola powi\u0105zania, kt\u00f3rego warto\u015bci\u0105 jest kolekcja.
+
+8015=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny litera\u0142 wyliczenia, typ wyliczeniowy {3} nie ma litera\u0142u wyliczenia {4}.
+
+8016=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie SELECT [{3}] dla zapytania z grupowaniem [{4}]. Tylko agregaty, elementy GROUP BY lub wyra\u017cenia konstruktora tych element\u00f3w s\u0105 dozwolone w klauzuli SELECT zapytania GROUP BY.
+
+8017=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie HAVING [{3}] dla zapytania z grupowaniem [{4}]. Klauzula HAVING musi okre\u015bla\u0107 warunki wyszukiwania dotycz\u0105ce element\u00f3w grupowania lub funkcje agreguj\u0105ce, kt\u00f3re maj\u0105 zastosowanie do element\u00f3w grupowania.
+
+8018=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wielokrotne u\u017cycie parametru [{3}], przyjmuje si\u0119 r\u00f3\u017cne typy parametr\u00f3w [{4}] i [{5}].
+
+8019=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: wiele deklaracji zmiennej identyfikacji [{3}], wcze\u015bniej zadeklarowana jako [{4} {3}].
+
+8020=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny argument funkcji {3} [{4}], oczekiwano argumentu typu [{5}].
+
+8021=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny element ORDER BY [{3}] typu [{4}], oczekiwano wyra\u017cenia o typie, kt\u00f3ry umo\u017cliwia uporz\u0105dkowanie.
+
+8022=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny argument wyra\u017cenia {3} [{4}], oczekiwano argumentu typu [{5}].
+
+8023=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}].
+
+8024=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}], wiersz {1}, kolumna {2}: b\u0142\u0105d sk\u0142adniowy w [{3}].
+
+8025=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}], wiersz {1}, kolumna {2}: nieoczekiwany znacznik [{3}].
+
+8026=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}], wiersz {1}, kolumna {2}: nieoczekiwany znak [{3}].
+
+8027=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}], wiersz {1}, kolumna {2}: oczekiwano znaku [{3}], znaleziono [{4}].
+
+8028=B\u0142\u0105d sk\u0142adniowy podczas analizowania zapytania [{0}], wiersz {1}, kolumna {2}: nieoczekiwany koniec zapytania.
+
+8029=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie nawigacji [{3}], nie mo\u017cna przej\u015b\u0107 do wyra\u017cenia [{4}] typu [{5}] w zapytaniu.
+
+8030=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: nieznane pole stanu lub powi\u0105zania [{3}] klasy [{4}].
+
+8031=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: element {3} osadzonej encji {4} nie jest obs\u0142ugiwany.
+
+8032=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawny dost\u0119p do atrybutu [{3}] w elemencie docelowym klauzuli SET [{4}], tylko pola stanu i jednowarto\u015bciowe pola powi\u0105zania mo\u017cna aktualizowa\u0107 w klauzuli SET.
+
+8033=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie nawigacji [{3}], nie mo\u017cna przej\u015b\u0107 do pola powi\u0105zania [{4}] w elemencie docelowym klauzuli SET.
+
+8034=B\u0142\u0105d podczas kompilowania zapytania [{0}]. Nieznany typ encji [{1}].
+
+8035=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie wyliczeniowe r\u00f3wno\u015bci, nie mo\u017cna por\u00f3wna\u0107 warto\u015bci wyliczeniowej typu [{3}} z warto\u015bci\u0105 niewyliczeniow\u0105 typu [{4}].
+
+8036=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie nawigacji [{3}], nie mo\u017cna przej\u015b\u0107 do pola powi\u0105zania, kt\u00f3rego warto\u015bci\u0105 jest kolekcja [{4}].
+
+8037=B\u0142\u0105d podczas kompilowania zapytania [{0}] , wiersz {1}, kolumna {2}: nieznany typ encji [{3}].
+
+8038=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: napotkano problem podczas rozstrzygania nazwy klasy - klasa [{3}] nie zosta\u0142a znaleziona.
+
+8039=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: zmienna {3} nie jest map\u0105, a \u017c\u0105da si\u0119 od niej klucza odwzorowania.
+
+8040=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: alias {3} jest u\u017cywany w klauzuli ORDER BY, ale nie zosta\u0142 zdefiniowany w zapytaniu.
+
+8041=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: indeksu mo\u017cna u\u017cywa\u0107 tylko do zmiennej, a jest wywo\u0142ywany w odniesieniu do elementu innego ni\u017c zmienna {3}.
+

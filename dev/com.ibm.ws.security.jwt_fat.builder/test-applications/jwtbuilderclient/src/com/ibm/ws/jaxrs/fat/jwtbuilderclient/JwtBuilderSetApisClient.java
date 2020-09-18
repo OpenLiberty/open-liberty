@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,10 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.security.auth.Subject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.json.java.JSON;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
@@ -96,6 +101,8 @@ public class JwtBuilderSetApisClient extends HttpServlet {
 
             String configId = request.getParameter(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID);
             appUtils.logIt(pw, JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID + ": " + configId);
+            // Setting amr in the subject if it is in params
+            setAMRInSubject(pw, request);
             // create a builder
             if (configId != null) {
                 myJwtBuilder = JwtBuilder.create(configId);
@@ -234,9 +241,9 @@ public class JwtBuilderSetApisClient extends HttpServlet {
                 // generate one of the type requested.
                 if (!attrs.containsKey(JWTBuilderConstants.SHARED_KEY)) {
                     if (JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE.equals(keyType)) {
-                        key = generatePrivateKey();
+                        key = generatePrivateKey(alg);
                     } else {
-                        key = generatePublicKey();
+                        key = generatePublicKey(alg);
                     }
                 }
                 myJwtBuilder.signWith(alg, (Key) key);
@@ -244,15 +251,16 @@ public class JwtBuilderSetApisClient extends HttpServlet {
         }
     }
 
-    private Key generatePrivateKey() throws Exception {
+    private Key generatePrivateKey(String alg) throws Exception {
 
         int DEFAULT_KEY_SIZE = 2048;
-
-        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE);
-
-        RSAPrivateKey priKey = (RSAPrivateKey) keypair.getPrivate();
-
-        return priKey;
+        PrivateKey privKey = null;
+        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE, alg);
+        if (keypair != null) {
+            System.out.println("generatePrivateKey - have keypair");
+            privKey = keypair.getPrivate();
+        }
+        return privKey;
     }
 
     /**
@@ -262,28 +270,47 @@ public class JwtBuilderSetApisClient extends HttpServlet {
      * @return - a public key
      * @throws Exception
      */
-    private Key generatePublicKey() throws Exception {
+    private Key generatePublicKey(String alg) throws Exception {
 
         int DEFAULT_KEY_SIZE = 2048;
+        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE, alg);
 
-        KeyPair keypair = generateKeyPair(DEFAULT_KEY_SIZE);
-
-        RSAPublicKey pubKey = (RSAPublicKey) keypair.getPublic();
-
-        return pubKey;
+        if (keypair != null) {
+            System.out.println("generatePublicKey - have keypair");
+            PublicKey pubKey = keypair.getPublic();
+            return pubKey;
+        } else {
+            return null;
+        }
     }
 
-    private KeyPair generateKeyPair(int size) throws Exception {
+    private KeyPair generateKeyPair(int size, String alg) throws Exception {
 
         KeyPairGenerator keyGenerator = null;
+
         try {
-            keyGenerator = KeyPairGenerator.getInstance("RSA");
+            if (alg == null) {
+                return null;
+            }
+            if (alg.startsWith("ES")) {
+                keyGenerator = KeyPairGenerator.getInstance("EC");
+                String spec = "secp256r1";
+
+                if (alg.contains("384")) {
+                    spec = "secp384r1";
+                }
+                if (alg.contains("512")) {
+                    spec = "secp521r1";
+                }
+                keyGenerator.initialize(new ECGenParameterSpec(spec), new SecureRandom());
+            } else {
+                keyGenerator = KeyPairGenerator.getInstance("RSA");
+                keyGenerator.initialize(size);
+            }
         } catch (NoSuchAlgorithmException e) {
-            // This should not happen, since we hardcoded as "RSA"
             return null;
         }
 
-        keyGenerator.initialize(size);
         KeyPair keypair = keyGenerator.generateKeyPair();
 
         return keypair;
@@ -348,6 +375,37 @@ public class JwtBuilderSetApisClient extends HttpServlet {
                 myJwtBuilder.fetch((String) claimsToFetch.get(i));
             }
         }
+    }
+
+    protected void setAMRInSubject(PrintWriter pw, HttpServletRequest request) throws Exception {
+
+        String attrsString = request.getParameter("attrs");
+        if (attrsString == null) {
+            return;
+        }
+        JSONObject attrs = (JSONObject) JSON.parse(attrsString);
+        if (attrs.containsKey(PayloadConstants.METHODS_REFERENCE)) {
+            String amrAttr = (String) attrs.get(PayloadConstants.METHODS_REFERENCE);
+            Subject callerSubject = WSSubject.getCallerSubject();
+            WSCredential callerCredential = getWSCredential(callerSubject);
+            if (callerCredential != null) {
+                callerCredential.set(amrAttr, "amrTestValue");
+                appUtils.logIt(pw, amrAttr + " is set in WSCredential");
+            }
+        }
+
+    }
+
+    protected WSCredential getWSCredential(Subject subject) {
+        WSCredential wsCredential = null;
+        if (subject != null) {
+            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+            if (wsCredentialsIterator.hasNext()) {
+                wsCredential = wsCredentialsIterator.next();
+            }
+        }
+        return wsCredential;
     }
 
     protected void runClaimFrom(PrintWriter pw, JSONObject attrs) throws Exception {

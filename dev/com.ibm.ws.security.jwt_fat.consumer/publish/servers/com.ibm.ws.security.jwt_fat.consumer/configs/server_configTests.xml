@@ -10,6 +10,7 @@
 	<include location="${shared.config.dir}/fatTestPorts.xml" />
 
 	<include location="${shared.config.dir}/jwtConsumerClientApplication.xml" />
+	<include location="${shared.config.dir}/jwtBuilderApplication.xml" />
 
 	<jwtConsumer
 		id="defaultJwtConsumer"
@@ -236,5 +237,434 @@
 		audiences="http://localhost:${bvt.prop.security_1_HTTP_default}/jwtconsumerclient/JwtConsumerClient, https://localhost:${bvt.prop.security_1_HTTP_default.secure}/jwtconsumerclient/JwtConsumerClient"
 	>
 	</jwtConsumer>
+	
+	<jwtConsumer
+		id="RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>
 
+	<jwtConsumer
+		id="RS256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>
+	
+	<jwtConsumer
+		id="RS384"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>
+
+	<jwtConsumer
+		id="RS384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>
+	
+	<jwtConsumer
+		id="RS512"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="RS512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+	<jwtConsumer
+		id="RS512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+	<jwtConsumer
+		id="RS512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="ES512"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="ES512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="PS256"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS256_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS256_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES256"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS256_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES384"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS384_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="PS512"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasRS"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="RS512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasES"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="ES512"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="PS512_trustedAliasPS"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		trustStoreRef="trust_allSigAlg"
+		trustedAlias="PS256"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="someKeyvalue"
+	>
+	</jwtConsumer>		
+
+	<jwtConsumer
+		id="HS384"
+		issuer="client01"
+		signatureAlgorithm="HS384"
+		sharedKey="someKeyvalue"
+	>
+	</jwtConsumer>		
+	
+	<jwtConsumer
+		id="HS512"
+		issuer="client01"
+		signatureAlgorithm="HS512"
+		sharedKey="someKeyvalue"
+	>
+	</jwtConsumer>		
+		
+<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+
+	<jwtBuilder
+		id="sigAlg_HS256"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="someKeyvalue" />
+		
+	<jwtBuilder
+		id="sigAlg_HS384"
+		issuer="client01"
+		signatureAlgorithm="HS384"
+		sharedKey="someKeyvalue" />
+
+	<jwtBuilder
+		id="sigAlg_HS512"
+		issuer="client01"
+		signatureAlgorithm="HS512"
+		sharedKey="someKeyvalue" />
+
+	<jwtBuilder
+		id="sigAlg_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256" />
+		
+	<jwtBuilder
+		id="sigAlg_RS384"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs384" />
+
+	<jwtBuilder
+		id="sigAlg_RS512"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs512" />
+
+	<jwtBuilder
+		id="sigAlg_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es256" />
+		
+	<jwtBuilder
+		id="sigAlg_ES384"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es384" />
+
+	<jwtBuilder
+		id="sigAlg_ES512"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="es512" />
+
+	<jwtBuilder
+		id="sigAlg_PS256"
+		issuer="client01"
+		signatureAlgorithm="PS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps256" />
+		
+	<jwtBuilder
+		id="sigAlg_PS384"
+		issuer="client01"
+		signatureAlgorithm="PS384"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps384" />
+
+	<jwtBuilder
+		id="sigAlg_PS512"
+		issuer="client01"
+		signatureAlgorithm="PS512"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="ps512" />
+		
 </server>

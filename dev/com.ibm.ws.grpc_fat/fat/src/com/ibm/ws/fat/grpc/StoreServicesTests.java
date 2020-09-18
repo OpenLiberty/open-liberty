@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -62,44 +63,45 @@ public class StoreServicesTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
-                                "com.ibm.testapp.g3store.cache",
-                                "com.ibm.testapp.g3store.exception",
-                                "com.ibm.testapp.g3store.interceptor",
-                                "com.ibm.testapp.g3store.grpcservice",
-                                "com.ibm.testapp.g3store.servletStore",
-                                "com.ibm.testapp.g3store.utilsStore",
-                                "com.ibm.test.g3store.grpc"); // add generated src
+        WebArchive store_war = ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
+                                                       "com.ibm.testapp.g3store.cache",
+                                                       "com.ibm.testapp.g3store.exception",
+                                                       "com.ibm.testapp.g3store.interceptor",
+                                                       "com.ibm.testapp.g3store.grpcservice",
+                                                       "com.ibm.testapp.g3store.servletStore",
+                                                       "com.ibm.testapp.g3store.utilsStore",
+                                                       "com.ibm.test.g3store.grpc"); // add generated src
 
-        ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
-                                      "com.ibm.testapp.g3store.grpcProducer.api",
-                                      "com.ibm.testapp.g3store.exception",
-                                      "com.ibm.testapp.g3store.restProducer",
-                                      "com.ibm.testapp.g3store.restProducer.api",
-                                      "com.ibm.testapp.g3store.restProducer.model",
-                                      "com.ibm.testapp.g3store.restProducer.client",
-                                      "com.ibm.testapp.g3store.servletProducer",
-                                      "com.ibm.test.g3store.grpc"); // add generated src
+        WebArchive producer_war = ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
+                                                                "com.ibm.testapp.g3store.grpcProducer.api",
+                                                                "com.ibm.testapp.g3store.exception",
+                                                                "com.ibm.testapp.g3store.restProducer",
+                                                                "com.ibm.testapp.g3store.restProducer.api",
+                                                                "com.ibm.testapp.g3store.restProducer.model",
+                                                                "com.ibm.testapp.g3store.restProducer.client",
+                                                                "com.ibm.testapp.g3store.servletProducer",
+                                                                "com.ibm.ws.fat.grpc.monitoring",
+                                                                "com.ibm.test.g3store.grpc"); // add generated src
 
         // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
         // The consumer tests needs to create data also , we will need to add producer files also
-        ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
-                                "com.ibm.testapp.g3store.grpcConsumer.api",
-                                "com.ibm.testapp.g3store.grpcConsumer.security",
-                                "com.ibm.testapp.g3store.exception",
-                                "com.ibm.testapp.g3store.restConsumer",
-                                "com.ibm.testapp.g3store.restConsumer.api",
-                                "com.ibm.testapp.g3store.restConsumer.model",
-                                "com.ibm.testapp.g3store.servletConsumer",
-                                "com.ibm.testapp.g3store.utilsConsumer",
-                                "com.ibm.testapp.g3store.restConsumer.client",
-                                "com.ibm.testapp.g3store.grpcProducer.api",
-                                "com.ibm.testapp.g3store.restProducer",
-                                "com.ibm.testapp.g3store.restProducer.api",
-                                "com.ibm.testapp.g3store.restProducer.model",
-                                "com.ibm.testapp.g3store.servletProducer",
-                                "com.ibm.test.g3store.grpc", // add generated src
-                                "com.ibm.testapp.g3store.restProducer.client");
+        WebArchive consumer_war = ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
+                                                          "com.ibm.testapp.g3store.grpcConsumer.api",
+                                                          "com.ibm.testapp.g3store.grpcConsumer.security",
+                                                          "com.ibm.testapp.g3store.exception",
+                                                          "com.ibm.testapp.g3store.restConsumer",
+                                                          "com.ibm.testapp.g3store.restConsumer.api",
+                                                          "com.ibm.testapp.g3store.restConsumer.model",
+                                                          "com.ibm.testapp.g3store.servletConsumer",
+                                                          "com.ibm.testapp.g3store.utilsConsumer",
+                                                          "com.ibm.testapp.g3store.restConsumer.client",
+                                                          "com.ibm.testapp.g3store.grpcProducer.api",
+                                                          "com.ibm.testapp.g3store.restProducer",
+                                                          "com.ibm.testapp.g3store.restProducer.api",
+                                                          "com.ibm.testapp.g3store.restProducer.model",
+                                                          "com.ibm.testapp.g3store.servletProducer",
+                                                          "com.ibm.test.g3store.grpc", // add generated src
+                                                          "com.ibm.testapp.g3store.restProducer.client");
 
         storeServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
@@ -118,18 +120,71 @@ public class StoreServicesTests extends FATServletClient {
         consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
+        // To export the assembled services application archive files, uncomment the following
+        // run it locally , keep them commented when merging
+
+//        ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreServer/");
+//        ShrinkHelper.exportArtifact(producer_war, "publish/savedApps/ProducerServer/");
+//        ShrinkHelper.exportArtifact(consumer_war, "publish/savedApps/ConsumerServer/");
+//
+
+        //once this war file is installed on external Server
+        // send the request e.g.
+        // URL=http://localhost:8030/StoreProducerApp/ProducerEndpointFATServlet?testMethod=testClientStreaming
+
     }
 
-    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:361 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
-    //[07/31/2020 14:42:29:356 EDT] 001 LibertyServer                  checkLogsForErrorsAndWarnings  I Error/warning found in log ORIGINALLY: [7/31/20, 14:41:34:449 EDT] 00000038 m.ibm.ws.container.service.app.deploy.ManifestClassPathUtils W SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
+    //Similar to these are added in logs and we can ignore
+    //SRVE9967W: The manifest class path xml-apis.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/serializer-2.7.2.jar or its parent.
+    //SRVE9967W: The manifest class path xercesImpl.jar can not be found in jar file wsjar:file:/.../open-liberty/dev/build.image/wlp/usr/servers/StoreServer/apps/StoreApp.war!/WEB-INF/lib/xalan-2.7.2.jar or its parent.
     @AfterClass
     public static void tearDown() throws Exception {
-        if (storeServer != null)
-            storeServer.stopServer("SRVE9967W");
-        if (producerServer != null)
-            producerServer.stopServer();
-        if (consumerServer != null)
-            consumerServer.stopServer("SRVE9967W");
+        Exception excep = null;
+
+        try {
+            //Expected failures
+
+            //CWIML4537E: The login operation could not be completed.
+            //The specified principal name dev2 is not found in the back-end repository.
+
+            //CWWKS1725E: The resource server failed to validate the access token
+            //because the validationEndpointUrl [null] was either not a valid URL
+            // or could not perform the validation.
+
+            //CWWKS1737E: The OpenID Connect client [null] failed to validate the JSON Web Token.
+            //The cause of the error was: [CWWKS1781E: Validation failed for the token requested
+            //by the client [null] because the (iss) issuer [testIssuer] that is specified in
+            //the token does not match any of the trusted issuers [testIssuerBad]
+            //that are specified by the [issuerIdentifier] attribute of the OpenID
+            //Connect client configuration.]
+
+            if (storeServer != null)
+                storeServer.stopServer("SRVE9967W", "CWIML4537E", "CWWKS1725E", "CWWKS1737E", "CWWKT0204E", "CWWKT0205E");
+        } catch (Exception e) {
+            excep = e;
+            Log.error(c, "store tearDown", e);
+        }
+
+        try {
+            if (consumerServer != null)
+                consumerServer.stopServer("SRVE9967W");
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "consumer tearDown", e);
+        }
+
+        try {
+            if (producerServer != null)
+                producerServer.stopServer();
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "producer tearDown", e);
+        }
+
+        if (excep != null)
+            throw excep;
     }
 
     @Test

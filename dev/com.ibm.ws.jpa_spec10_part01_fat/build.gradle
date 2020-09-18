@@ -10,7 +10,8 @@
  *******************************************************************************/
 
 addRequiredLibraries {
-  dependsOn addDerby
+  dependsOn copyJdbcDrivers
+  dependsOn copyDatabaseRotationDrivers
+  dependsOn copyFattestDatabases
   dependsOn addJakartaTransformer
 }
-

@@ -63,3 +63,5 @@ addRequiredLibraries.dependsOn copyCore
 addRequiredLibraries.dependsOn copyClient
 addRequiredLibraries.dependsOn copyFrontend
 addRequiredLibraries.dependsOn copyTransport
+
+addRequiredLibraries.dependsOn addJakartaTransformer

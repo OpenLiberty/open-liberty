@@ -416,4 +416,9 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public List<String> getAMRAttributes() {
+		return null;
+	}
 }

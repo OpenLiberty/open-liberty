@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+				
+	<jwtBuilder id="HS256" 
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				/>		
+								
+	<jwtBuilder id="HS384" 
+				signatureAlgorithm="HS384"
+				sharedKey="someKeyValue"
+				/>		
+						
+	<jwtBuilder id="HS512" 
+				signatureAlgorithm="HS512"
+				sharedKey="someKeyValue"
+				/>		
+														
+	<jwtBuilder id="ES256" 
+				signatureAlgorithm="ES256"
+				/>		
+
+	<jwtBuilder id="short_ES256" 
+				signatureAlgorithm="ES256"
+				/>		
+
+	<jwtBuilder id="ES384" 
+				signatureAlgorithm="ES384"
+				/>		
+
+	<jwtBuilder id="short_ES384" 
+				signatureAlgorithm="ES384"
+				/>		
+
+	<jwtBuilder id="ES512" 
+				signatureAlgorithm="ES512"
+				/>	
+					
+	<jwtBuilder id="short_ES512" 
+				signatureAlgorithm="ES512"
+				/>		
+
+	<jwtBuilder id="RS256" 
+				signatureAlgorithm="RS256"
+				/>	
+					
+	<jwtBuilder id="short_RS256" 
+				signatureAlgorithm="RS256"
+				/>		
+
+	<jwtBuilder id="RS384" 
+				signatureAlgorithm="RS384"
+				/>		
+
+	<jwtBuilder id="short_RS384" 
+				signatureAlgorithm="RS384"
+				/>		
+
+	<jwtBuilder id="RS512" 
+				signatureAlgorithm="RS512"
+				/>		
+				
+	<jwtBuilder id="short_RS512" 
+				signatureAlgorithm="RS512"
+				/>		
+<!--
+	<jwtBuilder id="PS256" 
+				signatureAlgorithm="PS256"
+				/>		
+
+	<jwtBuilder id="short_PS256" 
+				signatureAlgorithm="PS256"
+				/>		
+
+	<jwtBuilder id="PS384" 
+				signatureAlgorithm="PS384"
+				/>		
+
+	<jwtBuilder id="short_PS384" 
+				signatureAlgorithm="PS384"
+				/>		
+
+	<jwtBuilder id="PS512" 
+				signatureAlgorithm="PS512"
+				/>		
+				
+	<jwtBuilder id="short_PS512" 
+				signatureAlgorithm="PS512"
+				/>						
+-->
+</server>
+			
+			

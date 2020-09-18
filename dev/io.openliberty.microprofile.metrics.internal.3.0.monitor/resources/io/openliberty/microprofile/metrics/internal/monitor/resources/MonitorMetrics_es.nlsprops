@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring MicroProfile Metrics API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by MonitorMetrics Impl -  range is 2000-2199
+#-----------------------------------------------------------------------------------------------------------------------------
+FEATURE_REGISTERED=CWPMI2003I: No se pueden recuperar m\u00e9tricas de supervisi\u00f3n mediante mpMetrics.
+FEATURE_REGISTERED.explanation=Se han habilitado la caracter\u00edstica Performance Monitoring y una caracter\u00edstica de MicroProfile Metrics. Las m\u00e9tricas de supervisi\u00f3n pueden recuperarse a trav\u00e9s de MicroProfile Metrics.
+FEATURE_REGISTERED.useraction=No se requiere ninguna acci\u00f3n del usuario.
+
+FEATURE_UNREGISTERED=CWPMI2004I: Se ha anulado el registro de todas las m\u00e9tricas de supervisi\u00f3n de mpMetrics.
+FEATURE_UNREGISTERED.explanation=La caracter\u00edstica Performance Monitoring, la caracter\u00edstica MicroProfile, o ambas caracter\u00edsticas, se han eliminado del servidor. Se ha anulado el registro de todas las m\u00e9tricas de supervisi\u00f3n de MicroProfile Metrics.
+FEATURE_UNREGISTERED.useraction=No se requiere ninguna acci\u00f3n del usuario.

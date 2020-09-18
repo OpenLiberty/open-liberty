@@ -86,6 +86,11 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
         return null;
     }
 
+    @Override
+    public Set<String> getSupportedConfigPropertyNames() {
+        return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES;
+    }
+
     protected boolean isAcceptableMpConfigProperty(String propertyName) {
         return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.contains(propertyName);
     }

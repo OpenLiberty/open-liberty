@@ -10,34 +10,27 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.servlet;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.http2.GrpcServletServices.ServiceInformation;
-import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
-import com.ibm.ws.security.authorization.util.UnauthenticatedException;
+import com.ibm.ws.managedobject.ManagedObjectException;
 
 import io.grpc.BindableService;
-import io.grpc.Metadata;
 import io.grpc.ServerInterceptor;
 import io.grpc.ServerInterceptors;
 import io.grpc.servlet.ServletServerBuilder;
+import io.openliberty.grpc.annotation.GrpcService;
+import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
 
@@ -45,29 +38,7 @@ public class GrpcServletUtils {
 
 	private static final TraceComponent tc = Tr.register(GrpcServletUtils.class, GrpcMessages.GRPC_TRACE_NAME, GrpcMessages.GRPC_BUNDLE);
 
-	public final static String LIBERTY_AUTH_KEY_STRING = "libertyAuthCheck";
-	private final static Map<String, Boolean> authMap = new ConcurrentHashMap<String, Boolean>();
-	public static final Metadata.Key<String> LIBERTY_AUTH_KEY = Metadata.Key.of(LIBERTY_AUTH_KEY_STRING,
-			Metadata.ASCII_STRING_MARSHALLER);
-
 	private static final LibertyAuthorizationInterceptor authInterceptor = new LibertyAuthorizationInterceptor();
-
-	/**
-	 * Helper method to add the "authorized" flag to the byte arrays that will get
-	 * built into Metadata
-	 * 
-	 * @param byteArrays
-	 * @param req
-	 * @param authorized
-	 */
-	public static void addLibertyAuthHeader(List<byte[]> byteArrays, HttpServletRequest req, boolean authorized) {
-		byteArrays.add(GrpcServletUtils.LIBERTY_AUTH_KEY.name().getBytes(StandardCharsets.US_ASCII));
-		byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
-		authMap.put(String.valueOf(req.hashCode()), authorized);
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "adding {0} to authMap with value {1}", req.hashCode(), authorized);
-		}
-	}
 
 	/**
 	 * Removes the application context root from the front gRPC request path. For
@@ -96,7 +67,6 @@ public class GrpcServletUtils {
 	 * @return Method invoked by the request
 	 */
 	public static Method getTargetMethod(String requestPath) {
-
 		int index = requestPath.indexOf('/');
 		String service = requestPath.substring(0, index);
 
@@ -108,9 +78,9 @@ public class GrpcServletUtils {
 				if (clazz != null) {
 					index = requestPath.indexOf('/');
 					String methodName = requestPath.substring(index + 1);
-					char c[] = methodName.toCharArray();
-					c[0] = Character.toLowerCase(c[0]);
-					methodName = new String(c);
+					if (methodName.contains("_")) {
+						methodName = convertToCamelCase(methodName);
+					}
 					Method[] methods = clazz.getMethods();
 					for (Method m : methods) {
 						if (m.getName().equals(methodName)) {
@@ -125,104 +95,87 @@ public class GrpcServletUtils {
 	}
 
 	/**
-	 * Checks if a given request is authorized to access the requested method, by
-	 * scanning the requested method for @DenyAll, @RolesAllowed, or @AllowAll and
-	 * validating the request's Subject
-	 * 
-	 * @param req
-	 * @param res
-	 * @param requestPath
-	 * @return
+	 * @param interceptorClassNames
+	 * @param interceptors
 	 */
-	@FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, AccessDeniedException.class })
-	public static boolean doServletAuth(HttpServletRequest req, HttpServletResponse res, String requestPath) {
-		try {
-			handleMessage(req, requestPath);
-			return true;
-		} catch (UnauthenticatedException ex) {
+	private static void getServerXmlInterceptors(List<String> interceptorClassNames, List<ServerInterceptor> interceptors) {
+		for (String className : interceptorClassNames) {
 			try {
-				if (authenticate(req, res)) {
-					// try again with authenticated user
-					handleMessage(req, requestPath);
-					return true;
+				ServerInterceptor interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+				if (interceptor != null) {
+					interceptors.add(interceptor);
 				}
-			} catch (UnauthenticatedException | AccessDeniedException ex2) {
-				// TODO: catch other exceptions
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+					| SecurityException | ManagedObjectException e) {
+				Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
 			}
-
-		} catch (AccessDeniedException e) {
-			// TODO: catch other exceptions
 		}
-		return false;
-	}
-
-	private static boolean authenticate(HttpServletRequest req, HttpServletResponse res) {
-		try {
-			return req.authenticate(res);
-		} catch (IOException | ServletException e) {
-			// AutoFFDC
-		}
-		return false;
-	}
-
-	private static void handleMessage(HttpServletRequest req, String path)
-			throws UnauthenticatedException, AccessDeniedException {
-
-		Method method = GrpcServletUtils.getTargetMethod(path);
-		if (method == null) {
-			// the requested service doesn't exist - we'll handle this further up
-			return;
-		}
-		if (RoleMethodAuthUtil.parseMethodSecurity(method, req.getUserPrincipal(), s -> req.isUserInRole(s))) {
-			return;
-		}
-		throw new AccessDeniedException("Unauthorized");
 	}
 
 	/**
+	 * @param annotationInterceptors
+	 * @param interceptors
+	 */
+	private static void getAnnotationInterceptors(Class<? extends ServerInterceptor>[] annotationInterceptors, List<ServerInterceptor> interceptors) {
+		for (Class<? extends ServerInterceptor> interceptorClass : annotationInterceptors) {
+			ServerInterceptor interceptor;
+			try {
+				interceptor = (ServerInterceptor) GrpcManagedObjectProvider.createObjectFromClass(interceptorClass);
+				interceptors.add(interceptor);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException
+					| ManagedObjectException e) {
+				Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * @param String service name
+	 * @param BindableService service instance
 	 * 
-	 * @param key the LIBERTY_AUTH_KEY to check
-	 * @return the authorization value for the key in GrpcServletUtils.authMap, or
-	 *         false if the key is null
+	 * @return the (merged) list of server interceptors registered in server.xml and via @GrpcService
 	 */
-	public static boolean isAuthorized(String key) {
-		if (key == null) {
-			return false;
-		}
-		else return Boolean.TRUE.equals(authMap.remove(key));
-	}
+	private static List<ServerInterceptor> getUserInterceptors(String serviceName, BindableService service) {
 
-	/**
-	 * @param service name
-	 * @return the list of server interceptors registered for a given service, or an
-	 *         empty list if none are registered
-	 */
-	public static List<ServerInterceptor> getUserInterceptors(String service) {
 		List<ServerInterceptor> interceptors = new LinkedList<ServerInterceptor>();
-		String interceptorListString = GrpcServiceConfigHolder.getServiceInterceptors(service);
+
+		// get the string containing any class names of server interceptors defined in server.xml via <gprc serviceInterceptors="..."/>
+		String interceptorListString = GrpcServiceConfigHolder.getServiceInterceptors(serviceName);
+
+		// get the set of classes registered to this class via @GrpcService(interceptors="...")
+		Class<? extends ServerInterceptor>[] annotationInterceptors = null;
+		if (service.getClass().getAnnotation(GrpcService.class) != null) {
+			annotationInterceptors = service.getClass().getAnnotation(GrpcService.class).interceptors();
+		}
 
 		if (interceptorListString != null) {
-			// TODO: wildcard support
-			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
-			if (!items.isEmpty()) {
-				for (String className : items) {
-					try {
-						// use the app classloader to load the interceptor
-						ClassLoader cl = Thread.currentThread().getContextClassLoader();
-						Class<?> clazz = Class.forName(className, true, cl);
-						ServerInterceptor interceptor = (ServerInterceptor) clazz.getDeclaredConstructor()
-								.newInstance();
-						interceptors.add(interceptor);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-							| SecurityException e) {
-						Tr.warning(tc, "invalid.serverinterceptor", e.getMessage());
+			List<String> items = new ArrayList<String>(Arrays.asList(interceptorListString.split("\\s*,\\s*")));
+			if (items != null && !items.isEmpty()) {
+				// filter out interceptors that are also defined via @GrpcService
+				if (annotationInterceptors != null) {
+					for (Class<? extends ServerInterceptor> clazz : annotationInterceptors) {
+						String className = clazz.getName();
+						if (items.contains(className)) {
+							items.remove(className);
+						}
 					}
 				}
+				getServerXmlInterceptors(items, interceptors);
 			}
 		}
+		if (annotationInterceptors != null && annotationInterceptors.length > 0) {
+			getAnnotationInterceptors(annotationInterceptors, interceptors);
+		}
+		// flip the interceptor list so that @GrpcService interceptors will run after <grpc/> interceptors
+		if (!interceptors.isEmpty()) {
+			Collections.reverse(interceptors);
+		}
 		return interceptors;
+
 	}
+
 
 	/**
 	 * Register grpc services with a ServletServerBuilder and apply liberty-specific
@@ -232,24 +185,81 @@ public class GrpcServletUtils {
 	 * @param serverBuilder
 	 */
 	public static void addServices(List<? extends BindableService> bindableServices,
-			ServletServerBuilder serverBuilder) {
+			ServletServerBuilder serverBuilder, String appName) {
 		for (BindableService service : bindableServices) {
-			String name = service.bindService().getServiceDescriptor().getName();
+			String serviceName = service.bindService().getServiceDescriptor().getName();
 
 			// set any user-defined server interceptors and add the service
-			List<ServerInterceptor> interceptors = GrpcServletUtils.getUserInterceptors(name);
+			List<ServerInterceptor> interceptors = getUserInterceptors(serviceName, service);
+
 			// add Liberty auth interceptor to every service
 			interceptors.add(authInterceptor);
+			// add monitoring interceptor to every service
+			ServerInterceptor monitoringInterceptor = createMonitoringServerInterceptor(serviceName, appName);
+			if (monitoringInterceptor != null) {
+				interceptors.add(monitoringInterceptor);
+			}
 			serverBuilder.addService(ServerInterceptors.intercept(service, interceptors));
 
 			// set the max inbound msg size, if it's configured
-			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(name);
+			int maxInboundMsgSize = GrpcServiceConfigHolder.getMaxInboundMessageSize(serviceName);
 			if (maxInboundMsgSize != -1) {
 				serverBuilder.maxInboundMessageSize(maxInboundMsgSize);
 			}
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "gRPC service {0} has been registered", name);
+				Tr.debug(tc, "gRPC service {0} has been registered", serviceName);
 			}
 		}
+	}
+	
+	
+	private static ServerInterceptor createMonitoringServerInterceptor(String serviceName, String appName) {
+		// create the monitoring interceptor only if the monitor feature is enabled 
+		if (!GrpcServerComponent.isMonitoringEnabled()) {
+			return null;
+		}
+		ServerInterceptor interceptor = null;
+		// monitoring interceptor 
+		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor";
+		try {
+			Class<?> clazz = Class.forName(className);
+			interceptor = (ServerInterceptor) clazz.getDeclaredConstructor(String.class, String.class)
+					.newInstance(serviceName, appName);
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "monitoring interceptor has been added to service {0}", serviceName);
+			}
+		} catch (Exception e) {
+			// an exception can happen if the monitoring package is not loaded 
+		}
+
+		return interceptor;
+	}
+
+	/**
+	 * Given a String, remove any underscores and convert to camel case
+	 * Examples:
+	 *    "some_method_name" -> "someMethodName",
+	 *    "some_MeTHod_NAME" -> "someMethodName"
+	 *
+	 * @param String name
+	 * @return String
+	 */
+	private static String convertToCamelCase(String name) {
+	    final StringBuilder builder = new StringBuilder(name.length());
+	    boolean firstSection = true;
+	    for (String section : name.split("_")) {
+	        if (!section.isEmpty()) {
+	        	if (firstSection) {
+		            firstSection = false;
+		            builder.append(Character.toLowerCase(section.charAt(0)));
+	        	} else {
+		            builder.append(Character.toUpperCase(section.charAt(0)));
+	        	}
+	            if (section.length() > 1) {
+		            builder.append(section.substring(1));
+	            }
+	        }
+	    }
+	    return builder.toString();
 	}
 }

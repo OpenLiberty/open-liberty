@@ -554,7 +554,7 @@ warning.zOS.java.security.permdenied1.useraction=Ov\u011b\u0159te, zda je operac
 
 warning.zOS.java.security.permdenied2=CWWKE0915W: Aktu\u00e1ln\u00ed z\u00e1sada zabezpe\u010den\u00ed Java 2 ohl\u00e1sila potenci\u00e1ln\u00ed naru\u0161en\u00ed opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku: {0} 
 warning.zOS.java.security.permdenied2.explanation=Metoda checkPermission() spr\u00e1vce zabezpe\u010den\u00ed Java zp\u016fsobila v\u00fdjimku SecurityException. Volaj\u00edc\u00ed z\u00e1sobn\u00edku vol\u00e1n\u00ed nem\u00e1 po\u017eadovan\u00e1 opr\u00e1vn\u011bn\u00ed.
-warning.zOS.java.security.permdenied2.useraction=Ov\u011b\u0159te, zda je operace, o jej\u00ed\u017e proveden\u00ed se pokou\u0161\u00edte, povolena, a to prozkoum\u00e1n\u00edm v\u0161ech aplika\u010dn\u00edch k\u00f3d\u016f a soubor\u016f z\u00e1sad zabezpe\u010den\u00ed Java 2. Je mo\u017en\u00e9, \u017ee budou nutn\u00e1 dal\u0161\u00ed opr\u00e1vn\u011bn\u00ed.  
+warning.zOS.java.security.permdenied2.useraction=Ov\u011b\u0159te, zda je operace, o jej\u00ed\u017e proveden\u00ed se pokou\u0161\u00edte, povolena, a to prozkoum\u00e1n\u00edm v\u0161ech aplika\u010dn\u00edch k\u00f3d\u016f a soubor\u016f z\u00e1sad zabezpe\u010den\u00ed Java 2. Je mo\u017en\u00e9, \u017ee budou nutn\u00e1 dal\u0161\u00ed opr\u00e1vn\u011bn\u00ed. 
 
 error.client.runner.missing=CWWKE0916E: CWWKE0916E: Funkce klienta nebyla povolena. Zkontrolujte chybov\u00e9 zpr\u00e1vy.
 error.client.runner.missing.explanation=Funkce klienta nebyla povolena nebo p\u0159i na\u010d\u00edt\u00e1n\u00ed funkce do\u0161lo k chyb\u011b.
@@ -708,6 +708,10 @@ error.package.usr.jar.useraction=Zadejte n\u00e1zev souboru pro --archive s p\u0
 error.missing.version.files=CWWKE0952E: Informace o verzi nelze \u010d\u00edst z adres\u00e1\u0159e {0}.
 error.missing.version.files.explanation=Adres\u00e1\u0159, kter\u00fd obsahuje soubory s informacemi o verzi bu\u010f neexistuje, nebo jej nem\u016f\u017ee p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel.
 error.missing.version.files.useraction=Zkontrolujte, zda adres\u00e1\u0159 existuje a m\u016f\u017ee jej p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel. 
+
+warning.earlyRelease=CWWKE0953W: Tato verze {0} je nepodporovanou p\u0159ednostn\u011b vyd\u00e1vanou verz\u00ed.
+warning.earlyRelease.explanation=V p\u0159ednostn\u00edch vyd\u00e1n\u00edch jsou k dispozici nov\u00e9 funkce, kter\u00e9 nejsou pln\u011b testov\u00e1ny, aby se z\u00edskala zp\u011btn\u00e1 vazba p\u0159ed t\u00edm, ne\u017e jsou zahrnuty do podporovan\u00e9ho vyd\u00e1n\u00ed.
+warning.earlyRelease.useraction=P\u0159ednostn\u011b vyd\u00e1van\u00e9 verze nepou\u017e\u00edvejte v produk\u010dn\u00edch syst\u00e9mech, proto\u017ee pro takov\u00e9 verze nen\u00ed poskytov\u00e1na podpora.
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

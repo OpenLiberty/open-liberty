@@ -63,7 +63,7 @@ import test.server.transport.http2.Utils;
 public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
-    protected final long defaultTimeoutToSendFrame = 10000L;
+    protected final long defaultTimeoutToSendFrame = 29000L;
     private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
@@ -2627,7 +2627,6 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-        addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
         FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });

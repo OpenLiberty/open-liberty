@@ -1,6 +1,6 @@
-DROP TABLE ${schemaname}.CALLBACKENTITY;  
-DROP TABLE ${schemaname}.OOIRootEntity;
-DROP TABLE ${schemaname}.CallbkEntNSptDefCbk;
-DROP TABLE ${schemaname}.CallbkEntSptDefCbk;
-DROP TABLE ${schemaname}.XMLCallbkEntNSptDefCbk;
-DROP TABLE ${schemaname}.XMLCallbkEntSptDefCbk; 
+DROP TABLE CALLBACKENTITY;  
+DROP TABLE OOIRootEntity;
+DROP TABLE CallbkEntNSptDefCbk;
+DROP TABLE CallbkEntSptDefCbk;
+DROP TABLE XMLCallbkEntNSptDefCbk;
+DROP TABLE XMLCallbkEntSptDefCbk; 

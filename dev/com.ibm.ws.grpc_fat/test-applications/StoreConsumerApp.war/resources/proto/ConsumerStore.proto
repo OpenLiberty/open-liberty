@@ -40,6 +40,20 @@ service AppConsumerService {
     
     // TODO
     rpc purchaseRetailApp(PurchaseRequest) returns (RetailAppResponse) {};
+    
+    // List of all App names available on server 
+  	rpc getAllAppNames_AuthHeader_Via_CallCred(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	 // List of all App names available on server 
+  	rpc getAllAppNames_AuthHeader_Via_ClientInterceptor(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	rpc getAppNameSetBadRoles(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	// List all app names where JWT token is propagated as Cookie header
+  	rpc getNameCookieJWTHeader(google.protobuf.Empty) returns (NameResponse) {};
+  	
+  	// List all app names where JWT token is propagated as Cookie header but bad role
+  	rpc getAppSetBadRoleCookieJWTHeader(google.protobuf.Empty) returns (NameResponse) {};
 
   
 }

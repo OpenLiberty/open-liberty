@@ -54,7 +54,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
         //All methods are denied
         //Test with multiple setServletSecurity() methods
         try {
-            registration = sc.addServlet("DynamicAnnotationPure1", "web.DynamicAnnotationPure1");
+            registration = sc.addServlet("DynamicAnnotationPure1", "web.dynamicannotationpure.DynamicAnnotationPure1");
             registration.addMapping("/DynamicAnnotationPure1");
             //create constraint that will NOT be applied
             HttpConstraintElement constraint1a = new HttpConstraintElement(EmptyRoleSemantic.PERMIT);
@@ -71,7 +71,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
 
         //All methods are unprotected, but requires SSL
         try {
-            registration = sc.addServlet("DynamicAnnotationPure2", "web.DynamicAnnotationPure2");
+            registration = sc.addServlet("DynamicAnnotationPure2", "web.dynamicannotationpure.DynamicAnnotationPure2");
             registration.addMapping("/DynamicAnnotationPure2");
             HttpConstraintElement constraint2 = new HttpConstraintElement(TransportGuarantee.CONFIDENTIAL);
             ServletSecurityElement servletSecurity2 = new ServletSecurityElement(constraint2);
@@ -84,7 +84,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
         //All methods (eg. CUSTOM) are denied access, except GET requires Manager (user2), POST requires Employee (user1) and SSL, runas Manager (user99)
         //@RunAs("Manager") predefined in servlet
         try {
-            registration = sc.addServlet("DynamicAnnotationPure3", "web.DynamicAnnotationPure3");
+            registration = sc.addServlet("DynamicAnnotationPure3", "web.dynamicannotationpure.DynamicAnnotationPure3");
             registration.addMapping("/DynamicAnnotationPure3b");
             registration.setRunAsRole("Manager");
             HttpConstraintElement constraint3 = new HttpConstraintElement(EmptyRoleSemantic.DENY);
@@ -101,7 +101,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
         //All methods (eg. CUSTOM) are unprotected, except GET requires DeclaredManagerDyn (user8), POST is denied
         //@DeclareRoles("DeclaredManagerDyn") predefined in servlet
         try {
-            registration = sc.addServlet("DynamicAnnotationPure4", "web.DynamicAnnotationPure4");
+            registration = sc.addServlet("DynamicAnnotationPure4", "web.dynamicannotationpure.DynamicAnnotationPure4");
             registration.addMapping("/DynamicAnnotationPure4b");
             HttpConstraintElement constraint4 = new HttpConstraintElement(EmptyRoleSemantic.PERMIT);
             List<HttpMethodConstraintElement> methodConstraints4 = new ArrayList<HttpMethodConstraintElement>();
@@ -119,7 +119,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
         //RunAs("Manager') predefined in web.xml
         //DeclaredManager predefined in web.xml
         try {
-            registration = sc.addServlet("DynamicAnnotationPure5", "web.DynamicAnnotationPure5");
+            registration = sc.addServlet("DynamicAnnotationPure5", "web.dynamicannotationpure.DynamicAnnotationPure5");
             registration.addMapping("/dynamicAnnotation/DynamicAnnotationPure5", "/DynamicAnnotationPure5");
             registration.setRunAsRole("Manager");
             HttpConstraintElement constraint5 = new HttpConstraintElement(TransportGuarantee.NONE, new String[] { "DeclaredManager" });
@@ -138,7 +138,7 @@ public class ServletRegistrationContextListenerPure implements ServletContextLis
         //RunAs("Manager') predefined in web.xml
         //RunAs("Manager") predefined in servlet
         try {
-            registration = sc.addServlet("DynamicAnnotationPure6", "web.DynamicAnnotationPure6");
+            registration = sc.addServlet("DynamicAnnotationPure6", "web.dynamicannotationpure.DynamicAnnotationPure6");
             //1st URL has conflict, follows web.xml constraints (all methods unprotected)
             registration.addMapping("/DynamicAnnotationPure6");
             //2nd URL is unique and follows constraint defined here

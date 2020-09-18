@@ -29,6 +29,7 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 @SuiteClasses({
                 AlwaysPassesTest.class, // needed because kerberos is only supported on certain OSes
                 DB2KerberosTest.class,
+                PostgresKerberosTest.class,
                 OracleKerberosTest.class
 })
 public class FATSuite {
@@ -47,6 +48,11 @@ public class FATSuite {
 
         // Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+        // Filter out any external docker servers in the 'libhpike' cluster
+        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+            return !svc.getAddress().contains("libhpike-dockerengine");
+        };
 
         network = Network.newNetwork();
         krb5 = new KerberosContainer(network);

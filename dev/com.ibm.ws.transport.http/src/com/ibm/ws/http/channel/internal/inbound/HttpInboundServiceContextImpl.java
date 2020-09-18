@@ -85,6 +85,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
+    private boolean suppress0ByteChunk = false;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -168,6 +169,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.forwardedProto = null;
         this.forwardedRemoteAddress = null;
         this.forwardedRemotePort = -1;
+        this.suppress0ByteChunk = false;
 
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
@@ -2110,5 +2112,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
         }
         return isHTTP2Enabled;
+    }
+
+    /**
+     * @param suppress0ByteChunk
+     */
+    public void setSuppress0ByteChunk(boolean suppress0ByteChunk) {
+        this.suppress0ByteChunk = suppress0ByteChunk;
+    }
+
+    public boolean getSuppress0ByteChunk() {
+        return this.suppress0ByteChunk;
     }
 }

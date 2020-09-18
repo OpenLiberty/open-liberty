@@ -1,0 +1,960 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled false }
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** com.ibm.ws.security.registry.test.servlet.client.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task packageClient_JAR(type: Jar, dependsOn: classes) {
+  destinationDir file(buildDir)
+  archiveName "com.ibm.ws.security.registry.test.servlet.client.jar"
+  
+  from ('build/classes/java/main') {
+    include 'com/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejb.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejb_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "securityejb.war"
+  classpath = classpath.filter{ false }
+  manifest { from ('test-applications/securityejb/resources/META-INF/MANIFEST.MF') }
+  
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/**', 'META-INF/permissions.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**' 
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJB.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJB_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJB.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJB') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBX01.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBX01_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX01.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX01*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBX01') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBX02.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBX02_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX02.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX02*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBX02') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBX03.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBX03_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBX03.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX03*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBX03') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM01.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM01_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM01.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM01*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM01') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM02.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM02_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM02.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM02*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM02') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM03.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM03_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM03.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM03*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM03') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM04.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM04_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM04.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM04*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM04') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM05.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM05_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM05.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM05*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM05') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBMC06.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBMC06_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBMC06.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBMC06') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM07.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM07_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM07.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM07*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM07') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM08.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM08_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM08.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM08*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM08') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM09.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM09_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM09.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM09*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM09') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBM10.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBM10_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBM10.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM10*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM10') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJB.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJB_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJB.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJB') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBX01.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBX01_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBX01.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX01*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBX01') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBX02.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBX02_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBX02.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX02*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBX02') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBM01.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBM01_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM01.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM01*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM01') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBM02.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBM02_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM02.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM02*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM02') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBMC06.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBMC06_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBMC06.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBMC06') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBM07.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBM07_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM07.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM07*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM07') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecuritySAEJBM08.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecuritySAEJBM08_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecuritySAEJBM08.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBM08*', '**/*EJBRunAs*', '**/*BeanBase*'
+    exclude 'web'
+  }
+  from ('publish/files/SecurityEJBM08') {
+    include 'META-INF/**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityIntf.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityIntf_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file(appBuildDir)
+  archiveName "SecurityIntf.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*Interface*'
+    exclude 'web'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBinWAR.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBinWAR_JAR(type: Jar, dependsOn: classes) { 
+  description 'Build SecurityEJBinWAR.jar file for pure annotation tests packaging in EAR.'
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBinWAR.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBJarInWAR.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBJarInWAR_JAR(type: Jar, dependsOn: classes) {
+  description 'Build SecurityEJBJarInWAR.jar file for ejb-jar.xml tests for packaging in EAR.'
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBJarInWAR.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBX0*', '**/*EJBM0*', '**/*EJBM1*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SecurityEJBJarMCInWAR.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SecurityEJBJarMCInWAR_JAR(type: Jar, dependsOn: classes) {
+  description 'Build SecurityEJBJarMCInWAR.jar files for ejb-jar.xml tests for packaging in EAR.'
+  destinationDir file(appBuildDir)
+  archiveName "SecurityEJBJarMCInWAR.jar"
+   
+  from ('build/classes/java/main') { 
+    include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*', '**/*Interface*'
+    exclude 'web'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinwarservlet.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinwarservlet_WAR(type: War, dependsOn: SecurityEJBinWAR_JAR) {
+  description 'WAR to be used for Pure Annotations tests'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservlet.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from (appBuildDir) { 
+    include 'SecurityEJBinWAR.jar'
+    into 'WEB-INF/lib'
+  }
+  from ('publish/files/SecurityEJB/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinwarservletX01.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
+  description 'WAR to be used for ejb-jar X01 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletX01.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**' 
+    into 'WEB-INF/classes'
+  }
+  from (appBuildDir) { 
+    include 'SecurityEJBJarInWAR.jar'
+    into 'WEB-INF/lib'
+  }
+  from ('publish/files/SecurityEJBX01/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinwarservletM01.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinwarservletM01_WAR(type: War, dependsOn: classes) {
+  description 'WAR to be used for ejb-jar M01 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletM01.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**' 
+    into 'WEB-INF/classes'
+  }
+  from (appBuildDir) { 
+    include 'SecurityEJBJarInWAR.jar'
+    into 'WEB-INF/lib'
+  }
+  from ('publish/files/SecurityEJBM01/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinwarservletMC06.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
+  description 'WAR to be used for ejb-jar MC06 metadata-complete test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletMC06.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**' 
+    into 'WEB-INF/classes'
+  }
+  from (appBuildDir) { 
+    include 'SecurityEJBJarMCInWAR.jar'
+    into 'WEB-INF/lib'
+  }
+  from ('publish/files/SecurityEJBMC06/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinwarservletM07.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinwarservletM07_WAR(type: War, dependsOn: classes) {
+  description 'WAR to be used for ejb-jar M07 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinwarservletM07.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include 'web/**' 
+    into 'WEB-INF/classes'
+  }
+  from (appBuildDir) { 
+    include 'SecurityEJBJarInWAR.jar'
+    into 'WEB-INF/lib'
+  }
+  from ('publish/files/SecurityEJBM07/META-INF') {
+    include '**/*.xml'
+    into 'WEB-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbinstandalone.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbinstandalone_WAR(type: War, dependsOn: classes) {
+  description 'Build  WAR for EJB in WAR pure annotations tests'
+  destinationDir file(appBuildDir)
+  archiveName "ejbinstandalone.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include '**/*EJBA0*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*', 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from ('publish/files/SecurityEJB/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+  from ('publish/files/SecurityEJB/META-INF') {
+    include 'permissions.xml'
+    into 'META-INF'
+  }
+}
+
+	    
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbjarinstandaloneX02.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbjarinstandaloneX02_WAR(type: War, dependsOn: classes) {
+  description 'Build  WAR for EJB in WAR ejb-jar X02 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneX02.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include '**/*EJBX0*', '**/*EJBM0*', '**/*EJBM1*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*', 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from ('publish/files/SecurityEJBX02/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+  from ('publish/files/SecurityEJBX02/META-INF') {
+    include 'permissions.xml'
+    into 'META-INF'
+  }
+}
+
+	    
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbjarinstandaloneM02.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbjarinstandaloneM02_WAR(type: War, dependsOn: classes) {
+  description 'Build  WAR for EJB in WAR ejb-jar M02 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneM02.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include '**/*EJBX0*', '**/*EJBM0*', '**/*EJBM1*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*', 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from ('publish/files/SecurityEJBM02/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+  from ('publish/files/SecurityEJBM02/META-INF') {
+    include 'permissions.xml'
+    into 'META-INF'
+  }
+}
+	    
+	    
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbjarinstandaloneMC06.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbjarinstandaloneMC06_WAR(type: War, dependsOn: classes) {
+  description 'Build  WAR for EJB in WAR ejb-jar MC06 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneMC06.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include '**/*EJBMC06*', '**/*EJBMCRunAs*', '**/*BeanBase*', '**/*Interface*', 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from ('publish/files/SecurityEJBMC06/META-INF') {
+    include 'ejb-jar.xml'
+    into 'WEB-INF'
+  }
+  from ('publish/files/SecurityEJBMC06/META-INF') {
+    include 'permissions.xml'
+    into 'META-INF'
+  }
+}
+
+	    
+/******************************************************************
+ ******************************************************************
+ **
+ ** ejbjarinstandaloneM08.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task ejbjarinstandaloneM08_WAR(type: War, dependsOn: classes) {
+  description 'Build  WAR for EJB in WAR ejb-jar M08 test'
+  destinationDir file(appBuildDir)
+  archiveName "ejbjarinstandaloneM08.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/securityejb/resources') {
+    include 'WEB-INF/web.xml'
+  }
+  from ('build/classes/java/main') {
+    include '**/*EJBX0*', '**/*EJBM0*', '**/*EJBM1*', '**/*EJBRunAs*', '**/*BeanBase*', '**/*Interface*', 'web/**'
+    into 'WEB-INF/classes'
+  }
+  from ('publish/files/SecurityEJBM08/META-INF') {
+    include 'ibm-ejb-jar-ext.xml'
+    into 'WEB-INF'
+  }
+  from ('publish/files/SecurityEJBM08/META-INF') {
+    include 'permissions.xml'
+    into 'META-INF'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble {
+
+  dependsOn \
+    packageClient_JAR,
+    securityejb_WAR,
+    SecurityEJB_JAR,
+    SecurityEJBX01_JAR,
+    SecurityEJBX02_JAR,
+    SecurityEJBX03_JAR,
+    SecurityEJBM01_JAR,
+    SecurityEJBM02_JAR,
+    SecurityEJBM03_JAR,
+    SecurityEJBM04_JAR,
+    SecurityEJBM05_JAR,
+    SecurityEJBMC06_JAR,
+    SecurityEJBM07_JAR,
+    SecurityEJBM08_JAR,
+    SecurityEJBM09_JAR,
+    SecurityEJBM10_JAR,
+    SecuritySAEJB_JAR,
+    SecuritySAEJBX01_JAR,
+    SecuritySAEJBX02_JAR,
+    SecuritySAEJBM01_JAR,
+    SecuritySAEJBM02_JAR,
+    SecuritySAEJBMC06_JAR,
+    SecuritySAEJBM07_JAR,
+    SecuritySAEJBM08_JAR,
+    SecurityIntf_JAR,
+    SecurityEJBinWAR_JAR,
+    SecurityEJBJarInWAR_JAR,
+    SecurityEJBJarMCInWAR_JAR,
+    ejbinwarservlet_WAR,
+    ejbinwarservletX01_WAR,
+    ejbinwarservletM01_WAR,
+    ejbinwarservletMC06_WAR,
+    ejbinwarservletM07_WAR,
+    ejbinstandalone_WAR,
+    ejbjarinstandaloneX02_WAR,
+    ejbjarinstandaloneM02_WAR,
+    ejbjarinstandaloneMC06_WAR,
+    ejbjarinstandaloneM08_WAR
+    
+}

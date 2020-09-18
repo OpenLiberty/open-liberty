@@ -75,6 +75,11 @@ kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: No se puede crear un conector
 kafka.create.incoming.retry.CWMRX1009W.explanation=Se ha producido un error al configurar el conector de Kafka para un canal de mensajer\u00eda reactiva entrante. Esto puede deberse a un problema con la configuraci\u00f3n de conector o a un problema al resolver el nombre de host de intermediario de Kafka.
 kafka.create.incoming.retry.CWMRX1009W.useraction=Revise el mensaje de error, el archivo messages.log del servidor y los registros FFDC para identificar si el problema era transitorio y se ha resuelto volviendo a intentar la configuraci\u00f3n de conector.
 
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: No se puede crear un conector saliente de Kafka para el canal {0} pero se est\u00e1 reintentado esta operaci\u00f3n. El error es {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Se ha producido un error al configurar el conector de Kafka para un canal de mensajer\u00eda reactiva saliente. Esto puede deberse a un problema con la configuraci\u00f3n de conector o a un problema al resolver el nombre de host de intermediario de Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Revise el mensaje de error, el archivo messages.log del servidor y los registros FFDC para identificar si el problema era transitorio y se ha resuelto volviendo a intentar la configuraci\u00f3n de conector.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

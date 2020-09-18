@@ -15,30 +15,37 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.Properties;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.install.internal.ChecksumsManager;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
+import test.common.SharedOutputManager;
+
 public class ChecksumsManagerTest {
 
     private static File imageDir;
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         imageDir = new File("build/unittest/wlpDirs/developers/wlp").getAbsoluteFile();
         System.out.println("setUpBeforeClass() imageDir set to " + imageDir);
         if (imageDir == null || !imageDir.exists())
             throw new IllegalArgumentException("Test requires an existing root directory, but it could not be found: " + imageDir.getAbsolutePath());
 
         Utils.setInstallDir(imageDir);
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
     }
 
     @Test

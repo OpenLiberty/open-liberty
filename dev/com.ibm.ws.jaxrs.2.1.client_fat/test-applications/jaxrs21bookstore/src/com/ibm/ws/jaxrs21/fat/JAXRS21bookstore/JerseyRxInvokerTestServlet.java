@@ -53,8 +53,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
     private static final long serialVersionUID = 2880606295862546001L;
     private static final long TIMEOUT = 5000;
     private static final long SLEEP = 20000;
-    private static final int basicTimeout = 20;
-    private static final int complexTimeout = 25;
+    private static final int basicTimeout = 30;
+    private static final int complexTimeout = 35;
     private static final int messageTimeout = 70;
     private static final int zTimeout = 70;
 
@@ -147,8 +147,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         });
 
         try {
-            if (!(countDownLatch.await(basicTimeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testRxObservableInvoker_get1: Response took too long. Waited " + basicTimeout);
+            if (!(countDownLatch.await(complexTimeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testRxObservableInvoker_get1: Response took too long. Waited " + complexTimeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();

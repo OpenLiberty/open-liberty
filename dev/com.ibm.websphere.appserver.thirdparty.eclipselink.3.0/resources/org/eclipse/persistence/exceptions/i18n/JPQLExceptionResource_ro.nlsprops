@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problema de recunoa\u015ftere sintax\u0103 parseaz\u0103 interogarea [{0}]. Parser a returnat urm\u0103torul [{1}].
+
+8002=Problem\u0103 general\u0103 la parsarea interog\u0103rii [{0}]. Parser a returnat urm\u0103torul [{1}].
+
+8003=Clasa [{0}] nu a fost g\u0103sit\u0103. Parser a returnat urm\u0103torul [{1}].
+
+8004=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: variabil\u0103 de identificare necunoscut\u0103 [{3}]. Clauza FROM a interog\u0103rii nu declar\u0103 o variabil\u0103 de identificare [{3}].
+
+8005=Eroare la compilarea interog\u0103rii [{0}]. A fost \u00eent\u00e2lnit\u0103 o eroare la rezolvarea numelui clasei - Clasa [{1}] nu a fost g\u0103sit\u0103.
+
+8006=Eroare la compilarea interog\u0103rii [{0}]. A fost \u00eent\u00e2lnit\u0103 o eroare la rezolvarea numelui clasei - Descriptorul pentru [{1}] nu a fost g\u0103sit.
+
+8007=Eroare la compilarea interog\u0103rii [{0}]. A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la rezolvarea numelui clasei - Maparea pentru [{1}] nu a fost g\u0103sit\u0103.
+
+8008=Eroare la compilarea interog\u0103rii [{0}]. A fost \u00eent\u00e2lnit\u0103 o problem\u0103 la construirea expresiei de interogare - ExpressionBuilder pentru [{1}] nu a fost g\u0103sit.
+
+8009=Problem\u0103 la compilarea interog\u0103rii [{0}]. Expresia [{1}] nu este suportat\u0103 momentan.
+
+8010=Problem\u0103 general\u0103 la parsarea interog\u0103rii [{0}].
+
+8011=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: declarare invalid\u0103 a membrului de colec\u0163ie [{3}], a e\u015fuat asocierea a\u015fteptat\u0103 a valorii de colec\u0163ie.
+
+8012=Problem\u0103 la compilarea interog\u0103rii [{0}]. Nu este \u00eenc\u0103 implementat\u0103: {1}.
+
+8013=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: clasa de constructor [{3}] nu a fost g\u0103sit\u0103.
+
+8014=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: argument SIZE invalid [{3}], a e\u015fuat asocierea a\u015fteptat\u0103 a valorii de colec\u0163ie.
+
+8015=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: literal enum invalid, tipul enum {3} nu are un literal enum {4}.
+
+8016=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie SELECT invalid\u0103 [{3}] pentru interogare cu grupare [{4}]. Sunt permise numai agregate, articole Grupare dup\u0103 sau expresii constructor \u00een clauza SELECT a unei interog\u0103ri Grupare dup\u0103.
+
+8017=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie HAVING invalid\u0103 [{3}] pentru interogare cu grupare [{4}]. Clauza HAVING trebuie s\u0103 specifice condi\u0163iile de c\u0103utare peste articolele de grupare sau func\u0163iile agregat ce se aplic\u0103 grup\u0103rii articolelor.
+
+8018=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: utilizare multipl\u0103 invalid\u0103 a parametrului [{3}] prin asumarea diferitelor tipuri de parametrii [{4}] \u015fi [{5}].
+
+8019=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: declarare multipl\u0103 a variabilei de identificare [{3}], declarat\u0103 anterior ca \u015fi [{4} {3}].
+
+8020=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: invalid {3} argument de func\u0163ie [{4}], argument a\u015fteptat de tip [{5}].
+
+8021=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: articol Ordonare dup\u0103 invalid [{3}] de tip [{4}], expresie a\u015fteptat\u0103 a unui tip ce poate fi comandat.
+
+8022=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: invalid {3} argument expresie [{4}], argument a\u015fteptat de tip [{5}].
+
+8023=Eroare de sintax\u0103 la pararea interog\u0103rii [{0}].
+
+8024=Eroare de sintax\u0103 la parsarea interog\u0103rii [{0}], linia {1}, coloana {2}: eroare de sintax\u0103 la [{3}].
+
+8025=Eroare de sintax\u0103 la parsarea interog\u0103rii [{0}], linia {1}, coloana {2}: token nea\u015fteptat [{3}].
+
+8026=Eroare de sintax\u0103 la parsarea interog\u0103rii [{0}], linia {1}, coloana {2}: caracter nea\u015fteptat [{3}].
+
+8027=Eroare de sintax\u0103 la parsarea interog\u0103rii [{0}], linia {1}, coloana {2}: caracter a\u015fteptat [{3}], g\u0103sit [{4}].
+
+8028=Eroare de sintax\u0103 la parsarea interog\u0103rii [{0}], linia {1}, coloana {2}: sf\u00e2r\u015fit de interogare nea\u015fteptat.
+
+8029=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie de navigare invalid\u0103 [{3}], nu se poate naviga expresia [{4}] de tip [{5}] \u00eentr-o interogare.
+
+8030=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: stare sau c\u00e2mp de asociere necunoscute [{3}] de clas\u0103 [{4}].
+
+8031=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: {3} al intr\u0103rii \u00eenglobate {4} nu este suportat.
+
+8032=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: acces invalid de atribut [{3}] \u00een \u0163inta clauzei SET [{4}], numai c\u00e2mpurile de stare \u015fi c\u00e2mpurile de asociere evaluate singulare pot fi actualizate \u00eentr-o clauz\u0103 SET.
+
+8033=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie de navigare invalid\u0103 [{3}], nu poate naviga c\u00e2mpul de asociere [{4}] \u00een \u0163inta clauz\u0103 SET.
+
+8034=Eroare la compilarea interog\u0103rii [{0}]. Tip de entitate necunoscut [{1}].
+
+8035=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie egal enum invalid\u0103, nu se poate compara valoarea enum de tip [{3}} cu o valoare non enum de tip [{4}].
+
+8036=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: expresie de navigare invalid\u0103 [{3}], nu se poate naviga c\u00e2mpul de asociere evaluat de colec\u0163ie [{4}].
+
+8037=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}:  Tip de entitate necunoscut [{3}].
+
+8038=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: o problem\u0103 a fost \u00eent\u00e2lnit\u0103 la rezolvarea numelui clasei - Clasa [{3}] nu a fost g\u0103sit\u0103.
+
+8039=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: Variabila {3} un nu, o hart\u0103 \u015fi o cheie de hart\u0103 sunt cerute de la aceasta.
+
+8040=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: Alias {3} este utilizat \u00een clauza Ordonare dup\u0103, dar nu este definit\u0103 \u00een interogare.
+
+8041=Eroare la compilarea interog\u0103rii [{0}], linia {1}, coloana {2}: Indexul poate fi utilizat numai pentru o variabil\u0103 \u015fi este apelat \u00eentr-o non-variabil\u0103 {3}.
+

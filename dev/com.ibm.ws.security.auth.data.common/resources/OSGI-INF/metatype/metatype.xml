@@ -15,14 +15,12 @@
 
     <OCD id="com.ibm.ws.security.jca.internal.authdata.config" name="%authdata.config" description="%authdata.config.desc"
          ibm:alias="authData">
-        <AD id="user" name="%userName" description="%userName.desc"
-            required="false" type="String" />
-        <AD id="password" name="%userPassword" description="%userPassword.desc"
-            required="false" type="String" ibm:type="password" />
+        <AD id="user"     name="%userName"     description="%userName.desc"     required="false" type="String" />
+        <AD id="password" name="%userPassword" description="%userPassword.desc" required="false" type="String" ibm:type="password" />
             
         <!-- Kerberos settings -->
-        <AD id="krb5Principal" name="%krb5Principal" description="%krb5Principal.desc"
-            required="false" type="String" ibm:beta="true"/>
+        <AD ibm:beta="true" id="krb5Principal"   name="%krb5Principal"   description="%krb5Principal.desc"   required="false" type="String"/>
+        <AD ibm:beta="true" id="krb5TicketCache" name="%krb5TicketCache" description="%krb5TicketCache.desc" required="false" type="String" ibm:type="location(file)"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jca.internal.authdata.config">

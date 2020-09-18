@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,11 +46,11 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     protected static Class<?> thisClass = MPJwtBasicTests.class;
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
-    // disable repeat for simple testing
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(AuthHeaderPrefixRepeatActions.asBearerType());
-//                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
-//                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
+    public static RepeatTests r = RepeatTests
+                    .with(AuthHeaderPrefixRepeatActions.asBearerType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer resourceServer;
@@ -82,7 +82,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
+        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH, MpJwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
     }
 
     /***************************************************** Tests ****************************************************/

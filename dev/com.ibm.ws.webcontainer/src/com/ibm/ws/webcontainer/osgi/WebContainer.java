@@ -972,18 +972,21 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                         @Override
                         public void run() {
                             try {
-                                if (!startWebApplication(dMod)) {
-                                    throw new Exception("startWebApplication async");
+                                if (startWebApplication(dMod)) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "startWebApplication async [" + webModule.getName() + "]: success.");
+                                    }
+                                } else {
+                                    throw new Exception("startWebApplication async [" + webModule.getName() + "]: failed.");
                                 }
                             } catch (Throwable e) {
-                                if (dMod!= null && dMod instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                                if (dMod != null && dMod instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
                                     ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) dMod).initTaskFailed();
                                 }
-                                FFDCWrapper.processException(e, getClass().getName(), "startModule async", new Object[] { webModule, this });
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                                    Tr.event(tc, "startModule async: " + webModule.getName() + "; " + e);
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "startModule async [" + webModule.getContextRoot() + "]; " + e);
                                 }
-                                stopModule(moduleInfo);                             
+                                stopModule(moduleInfo);
                             }
                         }
                     });
@@ -1567,8 +1570,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     @Reference(service=ServletVersion.class, cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
     protected synchronized void setVersion(ServiceReference<ServletVersion> reference) {
+        String methodName = "setVersion";
         versionRef = reference;
         WebContainer.loadedContainerSpecLevel = (Integer) reference.getProperty("version");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
+        }
     }
 
     protected synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
@@ -1588,6 +1595,8 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;
     
     public static int getServletContainerSpecLevel() {
+        String methodName = "getServletContainerSpecLevel";
+
         if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
             CountDownLatch currentLatch = selfInit;
             // wait for activation
@@ -1600,11 +1609,15 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             currentLatch.countDown(); // don't wait again
 
             if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-                logger.logp(Level.WARNING, CLASS_NAME, "getServletContainerSpecLevel", "servlet.feature.not.loaded.correctly");
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "servlet.feature.not.loaded.correctly");
                 return WebContainer.DEFAULT_SPEC_LEVEL;
             }
         }
-        
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "loadedContainerSpecLevel [ " + WebContainer.loadedContainerSpecLevel + " ]");
+        }
+
         return WebContainer.loadedContainerSpecLevel;
     }
     

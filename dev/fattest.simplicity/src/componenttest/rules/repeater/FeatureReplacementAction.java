@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,22 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     static {
         Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        featureNameMapping.put("ejb", "enterpriseBeans");
+        featureNameMapping.put("ejbHome", "enterpriseBeansHome");
+        featureNameMapping.put("ejbLite", "enterpriseBeansLite");
+        featureNameMapping.put("ejbPersistentTimer", "enterpriseBeansPersistentTimer");
+        featureNameMapping.put("ejbRemote", "enterpriseBeansRemote");
+        featureNameMapping.put("ejbTest", "enterpriseBeansTest");
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featureNameMapping.put("jaxrs", "restfulWS");
+        featureNameMapping.put("jaxrsClient", "restfulWSClient");
+        featureNameMapping.put("jca", "connectors");
+        featureNameMapping.put("jmsMdb", "mdb");
+        featureNameMapping.put("jms", "messaging");
+        featureNameMapping.put("wasJmsClient", "messagingClient");
+        featureNameMapping.put("wasJmsServer", "messagingServer");
+        featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -172,7 +186,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature the feature to be added
      */
     public FeatureReplacementAction addFeature(String addFeature) {
-        this.addFeatures.add(addFeature.toLowerCase());
+        this.addFeatures.add(addFeature);
         return this;
     }
 
@@ -289,8 +303,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         servers.add(f.getName());
         }
-        for (String serverName : servers)
-            serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
+        for (String serverName : servers) {
+            serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+        }
 
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
@@ -304,8 +319,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     if (f.isDirectory())
                         clients.add(f.getName());
         }
-        for (String clientName : clients)
-            clientConfigs.add(new File(pathToAutoFVTTestClients + clientName + "/client.xml"));
+        for (String clientName : clients) {
+            clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
+        }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
@@ -428,9 +444,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
             throw new IllegalArgumentException("Remove feature [ " + originalFeature + " ]: No '-' was found.");
         // "servlet-3.1" ==> "servlet"
         String baseFeature = originalFeature.substring(0, dashOffset + 1);
-        // "servlet-4.0".contains("servlet-")
+        // "servlet-4.0".startsWith("servlet-")
         for (String replacementFeature : replacementFeatures) {
-            if (replacementFeature.toLowerCase().contains(baseFeature.toLowerCase())) {
+            if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
                 Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
                 return replacementFeature;
             }

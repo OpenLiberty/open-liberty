@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2001I: Indicii de m\u0103surare ai monitoriz\u0103rii pot fi extra\u015fi cu mpMetrics.
-FEATURE_REGISTERED.explanation=Caracteristicile monitor-1.0 \u015fi mpMetrics-1.1 sunt activate \u015fi indicii de m\u0103surare ai monitoriz\u0103rii pot fi extra\u015fi cu mpMetrics.
+FEATURE_REGISTERED.explanation=Caracteristica Performance Monitoring \u015fi o caracteristic\u0103 MicroProfile Metrics sunt activate. Indicii de m\u0103surare de monitorizare pot fi extra\u015fi prin MicroProfile Metrics.
 FEATURE_REGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
 
 FEATURE_UNREGISTERED=CWPMI2002I: To\u0163i indicii de m\u0103surare ai monitoriz\u0103rii au fost de-\u00eenregistra\u0163i de la mpMetrics.
-FEATURE_UNREGISTERED.explanation=Carcateristica monitor-1.0, caracteristica mpMetrics-1.1 sau am\u00e2ndou\u0103 caracteristicile au fost \u00eenl\u0103turate de pe server a\u0163i to\u0163i indicii de m\u0103surare ai monitoriz\u0103rii au fost de-\u00eenregistra\u0163i de la mpMetrics.
+FEATURE_UNREGISTERED.explanation=Caracteristica Performance Monitoring, caracteristica MicroProfile Metrics sau ambele caracteristici au fost \u00eenl\u0103turate de pe server. Tuturor indicilor de m\u0103surare de monitorizare li s-a anulat \u00eenregistrarea de la MicroProfile Metrics.
 FEATURE_UNREGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.

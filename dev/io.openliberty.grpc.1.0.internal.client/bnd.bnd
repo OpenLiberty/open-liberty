@@ -10,21 +10,21 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+nettyVersion=4.1.51
 
 Bundle-Name: gRPC Client
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
 Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
-Import-Package: !sun.*,\
+Import-Package: \
+  !com.google.protobuf.nano,\
   !com.google.code.gson,\
   !org.checkerframework,\
-  !com.google.protobuf.nano,\
+  !com.ibm.websphere.monitor.jmx,\
   !com.jcraft.jzlib,\
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
   !lzma.*,\
   !net.jpountz.*,\
   !org.apache.log4j.*,\
@@ -33,21 +33,32 @@ Import-Package: !sun.*,\
   !org.conscrypt,\
   !org.eclipse.jetty.*,\
   !org.jboss.*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
   javax.annotation;version=!,\
   *
 
+# Use dynamic import of monitor packages to support indepndent/dynamic enablement of monitor feature
+DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
+ com.ibm.websphere.monitor.jmx;version="1.0.0", \
+ com.ibm.wsspi.request.probe.bci, \
+ com.ibm.wsspi.probeExtension, \
+ io.openliberty.grpc.internal.monitor
+ 
 Export-Package: \
-  io.openliberty.grpc.internal.client.* ,\
-  io.grpc.netty.shaded.io.*
+  !io.netty.handler.ssl,\
+  io.openliberty.grpc.internal.client.*,\
+  io.netty.*;version=${nettyVersion}
 
--dsannotations: io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl
+-dsannotations: \
+  io.openliberty.grpc.internal.client.config.GrpcClientConfigImpl,\
+  io.openliberty.grpc.internal.client.GrpcClientComponent
 
 # include the service providers and metatype
 Include-Resource: \
   META-INF=@src/META-INF, \
   OSGI-INF=resources/OSGI-INF, \
   OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
-
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
@@ -56,26 +67,44 @@ Service-Component: \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
     properties:="resources=${app-resources}"
-    
+
 app-resources= \
   META-INF/services/io.grpc.ManagedChannelProvider
-    
+
 Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
-  
+
 instrument.disabled: true
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.security;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.monitor;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-  org.osgi.service.component.annotations;version=latest,\
-  io.grpc:grpc-netty-shaded;version=1.27.0,\
+  com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.kernel.feature;version=latest,\
+  io.netty:netty-buffer;version=${nettyVersion},\
+  io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-http;version=${nettyVersion},\
+  io.netty:netty-codec-http2;version=${nettyVersion},\
+  io.netty:netty-codec-socks;version=${nettyVersion},\
+  io.netty:netty-common;version=${nettyVersion},\
+  io.netty:netty-handler;version=${nettyVersion},\
+  io.netty:netty-handler-proxy;version=${nettyVersion},\
+  io.netty:netty-resolver;version=${nettyVersion},\
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.openliberty.grpc.client.1.0.thirdparty;version=latest,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \
@@ -90,5 +119,3 @@ instrument.disabled: true
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest
-  
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

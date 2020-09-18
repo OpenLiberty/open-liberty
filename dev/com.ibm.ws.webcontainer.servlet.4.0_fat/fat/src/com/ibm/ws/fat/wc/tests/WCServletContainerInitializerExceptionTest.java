@@ -51,7 +51,7 @@ public class WCServletContainerInitializerExceptionTest {
     @Rule
     public TestName name = new TestName();
 
-    @Server("servlet40_wcServer")
+    @Server("servlet40_SCIException")
     public static LibertyServer wcServer;
 
     @BeforeClass

@@ -18,6 +18,8 @@ src: \
 
 fat.project: true
 
+tested.features: connectors-2.0, el-4.0, servlet-5.0, beanvalidation-3.0, mdb-4.0
+
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \

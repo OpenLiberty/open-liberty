@@ -14,7 +14,7 @@ dependencies {
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.custom'),
     project(':com.ibm.ws.security.registry_test.servlet'),
-    'com.unboundid:unboundid-ldapsdk:4.0.14',
+    'com.unboundid:unboundid-ldapsdk:5.1.0',
     project(':com.ibm.ws.com.unboundid')
 }
 

@@ -21,7 +21,7 @@ Bundle-SymbolicName: ${symbolic.name}; singleton:=true
 app-resources= \
   META-INF/services/com.sun.tools.xjc.Plugin |\
   META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
-  META-INF/services/jakarata.xml.bind.JAXBContext | \
+  META-INF/services/jakarta.xml.bind.JAXBContext | \
   META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
 
 Import-Package: \

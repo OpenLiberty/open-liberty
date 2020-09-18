@@ -51,7 +51,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.JwtConfig;
-import com.ibm.ws.security.jwt.internal.JwtConfigUtil;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.registry.RegistryClaims;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -86,6 +86,8 @@ public class JwtUtils {
 	public static final String CFG_KEY_EXPIRES_IN_SECONDS = "expiresInSeconds";
 	public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
 	public static final String CFG_KEY_NBF_OFFSET = "nbfOffset";
+	public static final String CFG_AMR_CLAIM = "amrValues";
+	public static final String CFG_AMR_ATTR = "amrInclude";
 
 	public static final String JCEPROVIDER_IBM = "IBMJCE";
 	public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";

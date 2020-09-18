@@ -29,7 +29,7 @@ fat.project: true
 	org.apache.johnzon:johnzon-core;version=1.1.0,\
 	org.apache.johnzon:johnzon-jsonb;version=1.1.0,\
 	org.apache.johnzon:johnzon-mapper;version=1.1.0,\
-	org.eclipse:yasson;version=1.0.7,\
+	org.eclipse:yasson;version=1.0.8,\
 	org.glassfish:javax.json;version=1.1
 
 

@@ -1,0 +1,61 @@
+<server>
+    <transaction
+      dataSourceRef="tranlogDataSource"
+      recoverOnStartup="true"
+      waitForRecovery="false"
+      heuristicRetryInterval="10"
+      recoveryIdentity="cloud001"
+      recoveryGroup="defaultGroup"
+      leaseLength="20"
+      leaseCheckInterval="25"
+    />
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>transportSecurity-1.0</feature>
+        <feature>txtest-1.0</feature>
+    </featureManager>
+
+    <application location="transaction.war">
+        <classloader commonLibraryRef="PostgresLib"/>
+    </application>
+    
+    <library id="PostgresLib">
+        <file name="${shared.resource.dir}/postgres/postgresql.jar"/>
+    </library>
+
+    <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+    </dataSource>
+
+    <dataSource id="jdbc/derby" jndiName="jdbc/derby" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+    </dataSource>
+    
+    <sslDefault outboundSSLRef="outboundConfig"/>
+    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore"/>
+    <keyStore id="outboundKeyStore" location="resources/security/outboundKeys.p12" password="liberty"/>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggered by many different 
+         code paths in the Liberty code and it's not feasible to doPriv all of those paths or worth eagerly loading the PgStatement class -->
+    <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+    
+    <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>
+
+    <javaPermission codebase="${server.config.dir}/apps/sslRecovery.war" className="java.security.AllPermission"/>
+    <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+
+</server>

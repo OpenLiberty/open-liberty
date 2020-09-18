@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -155,3 +155,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Aseg\u00farese de que la configuraci\u
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: La caracter\u00edstica MicroProfile JWT no puede realizar la autenticaci\u00f3n porque la JWT de la solicitud hab\u00eda finalizado la sesi\u00f3n con anterioridad.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=Se hab\u00eda realizado una llamada HttpServletRequest.logout() anterior para un sujeto que se hab\u00eda autenticado con esta JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Vuelva a enviar la solicitud con una JWT distinta.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: El valor de configuraci\u00f3n [{0}] {1} de MicroProfile no est\u00e1 soportado. Los \u00fanicos valores soportados son {2}. El valor {3} se utiliza de forma predeterminada.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=La propiedad de configuraci\u00f3n de MicroProfile especificada en el mensaje admite un conjunto de valores predefinidos. Si hay otros valores, se omiten y se utiliza el valor predeterminado en su lugar.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Especifique uno de los valores soportados para la propiedad que se indica en el mensaje.

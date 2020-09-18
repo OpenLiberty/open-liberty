@@ -10,19 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * These are tests for the Servlet 4.0 HttpServletRequest.getMapping()
@@ -34,38 +40,32 @@ import componenttest.custom.junit.runner.FATRunner;
  *
  */
 @RunWith(FATRunner.class)
-public class WCGetMappingSlashStarTest extends LoggingTest {
+public class WCGetMappingSlashStarTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
+    private static final String APP_NAME = "TestGetMappingSlashStar";
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet40_wcServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestGetMappingSlashStar to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestGetMappingSlashStar.war", false,
-                                                  "testgetmappingslashstar.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "testgetmappingslashstar.war.servlets");
 
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestGetMappingSlashStar", WCGetMappingTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCGetMappingSlashStarTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
-    public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+    public static void tearDown() throws Exception {
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     /**
@@ -79,8 +79,21 @@ public class WCGetMappingSlashStarTest extends LoggingTest {
      */
     @Test
     public void test_HttpServletRequestGetMapping_SlashStarMapping() throws Exception {
-        SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/TestGetMappingSlashStar/firstTestPath/secondTestPath",
-                                     "ServletMapping values: mappingMatch: PATH matchValue: firstTestPath/secondTestPath pattern: /* servletName: GetMappingTestServletSlashStar");
+        String expectedResponse = "ServletMapping values: mappingMatch: PATH matchValue: firstTestPath/secondTestPath pattern: /* servletName: GetMappingTestServletSlashStar";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/firstTestPath/secondTestPath";
+        LOG.info("url: " + url);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+            }
+        }
     }
 
 }

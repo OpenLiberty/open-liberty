@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.security.jwt.fat.builder.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -22,6 +24,7 @@ import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.JWTBuilderConstants;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.meterware.httpunit.Base64;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -109,6 +112,35 @@ public class JwtBuilderActions extends TestActions {
         Page appResponse = invokeUrlWithBearerTokenUsingPost(testcase, app, jwtToken);
 
         return appResponse;
+    }
+    
+    public Page invokeProtectedJwtBuilder(String testName, LibertyServer server, String builderId, JSONObject attrs,
+            String user, String pw) throws Exception {
+
+        String jwtBuilderUrl = SecurityFatHttpUtils.getServerUrlBase(server)
+                + JWTBuilderConstants.JWT_BUILDER_PROTECTED_SETAPIS_ENDPOINT;
+
+        // Create request params
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("attrs", attrs.toString()));
+        List<NameValuePair> requestParams = setRequestParms(builderId, parms);
+
+        // Create request headers with basic auth
+        Map<String, String> requestHeaders = new HashMap<>();
+        String encodedIdPw = Base64.encode(user + ":" + pw);
+        requestHeaders.put("Authorization", "Basic " + encodedIdPw);
+
+        WebClient webClient = new WebClient();
+        Page response = null;
+        try {
+            response = invokeUrlWithParametersAndHeaders(testName, webClient, jwtBuilderUrl, requestParams,
+                    requestHeaders);
+            return response;
+        } catch (Exception e) {
+            Log.info(thisClass, "invokeJwtBuilder", e.getMessage());
+            throw e;
+        }
+
     }
 
 }

@@ -75,6 +75,11 @@ kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: P\u0159\u00edchoz\u00ed konek
 kafka.create.incoming.retry.CWMRX1009W.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro p\u0159\u00edchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
 kafka.create.incoming.retry.CWMRX1009W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
 
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Odchoz\u00ed konektor Kafka pro kan\u00e1l {0} nelze vytvo\u0159it, tato operace se opakuje. Chyba je {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 se vyskytla, kdy\u017e byl konektor Kafka nastaven pro odchoz\u00ed reaktivn\u00ed kan\u00e1l syst\u00e9mu zpr\u00e1v. M\u016f\u017ee to b\u00fdt zp\u016fsobeno probl\u00e9mem s konfigurac\u00ed konektoru nebo probl\u00e9mem s \u0159e\u0161en\u00edm n\u00e1zvu hostitele zprost\u0159edkovatele Kafka.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

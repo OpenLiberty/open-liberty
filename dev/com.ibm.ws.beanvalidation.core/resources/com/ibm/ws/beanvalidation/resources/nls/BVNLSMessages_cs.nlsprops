@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Operace rozhran\u00ed JNDI pro n\u00e
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Zm\u011b\u0148te aplikaci tak, aby se operace rozhran\u00ed JNDI vyskytovala v podprocesu p\u0159idru\u017een\u00e9m k aplika\u010dn\u00ed komponent\u011b Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: Anotace @ValidateOnExecution nen\u00ed povolena u metod, kter\u00e1 potla\u010duje metodu supert\u0159\u00eddy nebo implementuje rozhran\u00ed. Zkontrolujte konfiguraci pro {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= Anotace @ValidateOnExecution nen\u00ed povolena u metod, kter\u00e1 potla\u010duje metodu supert\u0159\u00eddy nebo implementuje rozhran\u00ed. Metoda, kter\u00e1 potla\u010duje metodu supert\u0159\u00eddy nebo implementuje metodu rozhran\u00ed, d\u011bd\u00ed chov\u00e1n\u00ed metody, kterou potla\u010duje nebo implementuje.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Odeberte anotaci @ValidateOnExecution z ur\u010den\u00e9 metody.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Mixov\u00e1n\u00ed typu IMPLICIT s jin\u00fdmi typy spustiteln\u00fdch soubor\u016f nen\u00ed povoleno. Zkontrolujte typy spustiteln\u00fdch soubor\u016f nastaven\u00fdch pro: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Podle specifikace ov\u011b\u0159en\u00ed objekt\u016f typu bean nen\u00ed povoleno mixov\u00e1n\u00ed typu IMPLICIT s jin\u00fdmi typy spustiteln\u00fdch soubor\u016f pro anotaci @ValidateOnExecution .
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Aktualizujte metodu, t\u0159\u00eddu nebo glob\u00e1ln\u00ed nastaven\u00ed XML pro typy spustiteln\u00fdch soubor\u016f, abyste zabr\u00e1nili mixov\u00e1n\u00ed typu IMPLICIT s jin\u00fdmi typy spustiteln\u00fdch soubor\u016f.
+
+# -----------------------------------------------------------------------

@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.tds.attrMappingVar3");
     private static final Class<?> c = URAPIs_TDSLDAPTest_URAttrMappingVar3.class;
