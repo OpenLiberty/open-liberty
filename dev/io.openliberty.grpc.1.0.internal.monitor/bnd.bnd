@@ -19,26 +19,29 @@ Bundle-Description: gRPC Monitor, version ${bVersion}
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
-  !*.internal.*,*
+  !*.internal.*, \
+  com.ibm.websphere.monitor.meters;version="1.0.0", \
+  com.ibm.websphere.monitor.annotation;version="1.0.0", \
+  com.ibm.websphere.monitor.jmx;version="1.0.0", \
+  com.ibm.ws.pmi.server;version="[1.1,2)", \
+  com.ibm.ws.pmi.stat;version="[1.1,2)", \
+  com.ibm.websphere.pmi;version="[1.1,2)", \
+  com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
+  com.ibm.wsspi.pmi.stat;version="[1.1,2)", \
+  *
 	
 Export-Package: \
-	io.openliberty.grpc.monitor,\
-	io.openliberty.grpc.internal.monitor
-  
-
-DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
- com.ibm.websphere.monitor.annotation;version="1.0.0", \
- com.ibm.websphere.monitor.jmx;version="1.0.0", \
- com.ibm.ws.pmi.server;version="[1.1,2)", \
- com.ibm.ws.pmi.stat;version="[1.1,2)", \
- com.ibm.websphere.pmi;version="[1.1,2)", \
- com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
- com.ibm.wsspi.pmi.stat;version="[1.1,2)"
+  io.openliberty.grpc.monitor,\
+  io.openliberty.grpc.internal.monitor
 
 Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcServerMonitor, \
-    io.openliberty.grpc.internal.monitor.GrpcClientMonitor
+  io.openliberty.grpc.internal.monitor.GrpcClientMonitor
 
 instrument.disabled: true
+
+-dsannotations: \
+  io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptorServiceImpl,\
+  io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptorServiceImpl
 
 -buildpath: \
 	com.ibm.ws.logging.core,\
@@ -55,4 +58,6 @@ instrument.disabled: true
     com.google.protobuf:protobuf-java;version=3.11.1, \
     org.checkerframework:checker-compat-qual;version=2.5.2,\
     io.openliberty.grpc.1.0.internal.common;version=latest,\
+    io.openliberty.grpc.1.0.internal.client;version=latest,\
+    io.openliberty.grpc.1.0.internal;version=latest,\
     org.osgi.service.component.annotations;version=latest
