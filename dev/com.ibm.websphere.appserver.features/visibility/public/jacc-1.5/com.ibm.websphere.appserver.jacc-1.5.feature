@@ -8,7 +8,7 @@ IBM-API-Package: javax.security.jacc; type="spec", \
 IBM-ShortName: jacc-1.5
 Subsystem-Name: Java Authorization Contract for Containers 1.5
 IBM-Install-Policy: when-satisfied
--features=io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1, 4.0", \
+-features=com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0", \
  com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
