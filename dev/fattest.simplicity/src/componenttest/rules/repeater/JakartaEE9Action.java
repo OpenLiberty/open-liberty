@@ -64,6 +64,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
+                                                 "connectorsInboundSecurity-2.0",
                                                  "el-4.0",
                                                  "enterpriseBeans-4.0",
                                                  "enterpriseBeansHome-4.0",
@@ -207,7 +208,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
-     * @param appPath    The application path of file to be transformed to Jakarta
+     * @param appPath The application path of file to be transformed to Jakarta
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {

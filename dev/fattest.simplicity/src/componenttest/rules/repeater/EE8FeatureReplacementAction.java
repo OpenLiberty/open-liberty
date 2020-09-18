@@ -27,6 +27,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "javaMail-1.6",
                                                  "cdi-2.0",
                                                  "jca-1.7",
+                                                 "jcaInboundSecurity-1.0",
                                                  "jpa-2.2",
                                                  "beanValidation-2.0",
                                                  "jaxrs-2.1",

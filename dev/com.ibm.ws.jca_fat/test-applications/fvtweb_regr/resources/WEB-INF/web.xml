@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JCAFVTWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS & MAPPINGS -->
+  <servlet id="Default">
+    <servlet-name>JCA FAT REGR Servlet</servlet-name>
+    <display-name>JCA FAT REGR Servlet</display-name>
+    <servlet-class>web.regr.CheckSetupTestServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="InboundSec">
+    <servlet-name>InboundSecurityTestServlet</servlet-name>
+    <display-name>InboundSecurityTestServlet</display-name>
+    <servlet-class>web.regr.inboundsec.InboundSecurityTestServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet id="TranLvl">
+    <servlet-name>TranLvlTestServlet</servlet-name>
+    <display-name>TranLvlTestServlet</display-name>
+    <servlet-class>web.regr.TranLvlTestServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>  
+  
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>JCA FAT REGR Servlet</servlet-name>
+    <url-pattern>/CheckSetupTestServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_InboundSec">
+    <servlet-name>InboundSecurityTestServlet</servlet-name>
+    <url-pattern>/InboundSecurityTestServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_TranLvl">
+    <servlet-name>TranLvlTestServlet</servlet-name>
+    <url-pattern>/TranLvlTestServlet</url-pattern>
+  </servlet-mapping>
+  
+  <ejb-local-ref>
+        <ejb-ref-name>ejb/SampleSessionBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.inboundsec.SampleSessionLocal</local>
+        <ejb-link>SampleSessionImpl</ejb-link>
+   </ejb-local-ref>
+  <!--  END SERVLET DEFINITIONS & MAPPINGS -->
+
+</web-app>
