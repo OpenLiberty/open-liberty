@@ -13,6 +13,7 @@ package web.jaxrstest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -149,9 +150,10 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test456", results[0]);
 
         String executionThreadName = (String) results[1];
-        // On JDK 8, it will use the ForkJoin pool now
+        // On JDK 8, it will not use the Liberty executor now.  Depending on ForkJoin pool
+        // parallelism settings it could be the ForkJoin pool or it could spawn a Thread.
         if (System.getProperty("java.specification.version").startsWith("1.")) {
-            assertTrue(resultString, executionThreadName.startsWith("ForkJoin"));
+            assertFalse(resultString, executionThreadName.startsWith("Default Executor-thread-"));
         } else {
             assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
         }
