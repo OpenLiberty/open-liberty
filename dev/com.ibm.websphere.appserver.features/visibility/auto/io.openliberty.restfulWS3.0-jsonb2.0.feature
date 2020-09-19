@@ -8,6 +8,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jsonb-2.0))"
 -bundles=io.openliberty.restfulWS30.jsonb20provider.jakarta
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=base
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
