@@ -14,7 +14,7 @@
 xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
 localization="OSGI-INF/l10n/metatype">
 
-<OCD id="com.ibm.ws.javaee.dd.ejbbnd.Interface" name="%interface.name" description="%interface.desc" >
+<OCD id="com.ibm.ws.javaee.dd.ejbbnd.Interface" name="%SessionMetatype.interface.name" description="%SessionMetatype.interface.desc" >
     <AD id="binding-name" description="%InterfaceMetatype.binding-name.desc" name="%InterfaceMetatype.binding-name.name" type="String" required="false" cardinality="0"/>
     <AD id="class" description="%InterfaceMetatype.class.desc" name="%InterfaceMetatype.class.name" type="String" required="false" cardinality="0"/>
    </OCD>
