@@ -5,3 +5,4 @@
 -Dmp.jwt.token.cookie=xxx_cookie_xxx
 -Dmp.jwt.verify.audiences=xxx_audience_xxx
 -Dmp.jwt.verify.publickey.algorithm=xxx_algorithm_xxx
+-Dcom.ibm.ws.beta.edition=true
