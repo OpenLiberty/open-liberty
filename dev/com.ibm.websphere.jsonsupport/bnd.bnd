@@ -21,14 +21,14 @@ Private-Package: com.ibm.ws.jsonsupport.internal
 Export-Package: \
 	com.ibm.websphere.jsonsupport
 Include-Resource: \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2;EXACT}, \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2;EXACT}
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2.1;EXACT}, \
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2.1;EXACT}
 
 instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2,\
+	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2.1,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

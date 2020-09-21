@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: Jackson JSON processor 1.6.2
-Bundle-SymbolicName:  com.ibm.ws.org.codehaus.jackson.1.6.2
+Bundle-SymbolicName:  com.ibm.ws.org.codehaus.jackson.1.6.2.1
 Bundle-Description: Provides Jackson Processor as a bundle; version=${bVersion}
 
 Export-Package: \
@@ -26,7 +26,7 @@ publish.wlp.jar.disabled: true
 -pedantic: false
 
 -buildpath: \
-	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2
+	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2.1
