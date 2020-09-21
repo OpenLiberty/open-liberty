@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JMSDCFTest</display-name>
+
+  <servlet id="Default">
+    <servlet-name>JMSDCF FAT Servlet</servlet-name>
+    <display-name>JMSDCF FAT Servlet</display-name>
+    <servlet-class>jmsdcf.web.JMSDCFServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>JMSDCF FAT Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <resource-ref>
+    <res-ref-name>DefaultJMSConnectionFactory</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>DefaultJMSConnectionFactory</lookup-name>
+  </resource-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_INPUT_Q1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

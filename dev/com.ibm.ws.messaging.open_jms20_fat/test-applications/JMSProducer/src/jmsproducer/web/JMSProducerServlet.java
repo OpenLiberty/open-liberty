@@ -71,62 +71,89 @@ public class JMSProducerServlet extends HttpServlet {
     public static Queue queue3;
 
     public static Topic topic1;
-    public static Topic topic5;
+    public static Topic topic2;
 
     @Override
     public void init() throws ServletException {
+        System.out.println("JMSProducerServlet.init ENTRY");
+
         super.init();
 
         try {
-            qcfBindings = getQCFBindings();
-            tcfBindings = getTCFBindings();
-
-            qcfTCP = getQCFTCP();
-            tcfTCP = getTCFTCP();
-
-            queue1 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
-            queue2 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q2");
-            queue3 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q3");
-
-            topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
-            topic5 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic5");
-
+            qcfBindings = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + qcfBindings);
 
-        if ( queue1 == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q1'");
+        try {
+            tcfBindings = (TopicConnectionFactory)
+                new InitialContext().lookup("java:comp/env/eis/tcf");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( queue2 == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q2'");
+        System.out.println("Topic connection factory 'java:comp/env/eis/tcf':\n" + tcfBindings);
+
+        try {
+            qcfTCP = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( queue3 == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q3'");
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + qcfTCP);
+
+        try {
+            tcfTCP = (TopicConnectionFactory)
+                new InitialContext().lookup("java:comp/env/eis/tcf1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
+        System.out.println("Topic connection factory 'java:comp/env/eis/tcf1':\n" + tcfTCP);
 
-        if ( topic1 == null ) {
-            System.out.println("Null topic 'java:comp/env/eis/topic1'");
+        try {
+            queue1 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( topic5 == null ) {
-            System.out.println("Null topic 'java:comp/env/eis/topic5'");
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + queue1);
+
+        try {
+            queue2 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q2");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-    }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q2':\n" + queue2);
 
-    public static QueueConnectionFactory getQCFBindings() throws NamingException {
-        return (QueueConnectionFactory) new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-    }
+        try {
+            queue3 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q3");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q3':\n" + queue3);
 
-    public static QueueConnectionFactory getQCFTCP() throws NamingException {
-        return (QueueConnectionFactory) new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-    }
+        try {
+            topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic 'java:comp/env/eis/topic1':\n" + topic1);
 
-    public static TopicConnectionFactory getTCFBindings() throws NamingException {
-        return (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/eis/tcf");
-    }
+        try {
+            topic2 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic 'java:comp/env/eis/topic2':\n" + topic2);
 
-    public static TopicConnectionFactory getTCFTCP() throws NamingException {
-        return (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/eis/tcf1");
+        System.out.println("JMSProducerServlet.init RETURN");
+
+        if ( (qcfBindings == null) || (tcfBindings == null) ||
+             (qcfTCP == null) || (tcfTCP == null) ||
+             (queue1 == null) || (queue2 == null) || (queue3 == null) ||
+             (topic1 == null) || (topic2 == null) ) {
+            throw new ServletException("Failed JMS initialization");
+        }
     }
 
     public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
@@ -309,7 +336,7 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             Queue queue = null;
-            producer.send(queue1, msg);
+            producer.send(queue, msg);
             testFailed = true;
         } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
@@ -333,7 +360,7 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             Queue queue = null;
-            producer.send(queue1, msg);
+            producer.send(queue, msg);
             testFailed = true;
         } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
@@ -915,7 +942,7 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             Queue queue = null;
-            producer.send(queue1, "This is the messageBody");
+            producer.send(queue, "This is the messageBody");
             testFailed = true;
         } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
@@ -937,7 +964,7 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             Queue queue = null;
-            producer.send(queue1, "This is the messageBody");
+            producer.send(queue, "This is the messageBody");
             testFailed = true;
         } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
@@ -2164,7 +2191,7 @@ public class JMSProducerServlet extends HttpServlet {
         jmsConsumer.close();
         jmsContextTCFBindings.close();
 
-        if ( !testFailed ) {
+        if ( testFailed ) {
             throw new Exception("testJMSProducerSendByteMessage_Null_Topic_B_SecOff failed");
         }
     }
@@ -2548,13 +2575,13 @@ public class JMSProducerServlet extends HttpServlet {
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
         JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic5);
+        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic2);
         JMSProducer producer = jmsContextTCFTCP.createProducer();
 
         Object objBody = null;
         producer.setJMSCorrelationID("TestCorrelID")
             .setJMSType("NewTestType")
-            .send(topic5, (Serializable) objBody);
+            .send(topic2, (Serializable) objBody);
 
         boolean testFailed = false;
         try {
@@ -3702,52 +3729,85 @@ public class JMSProducerServlet extends HttpServlet {
         }
     }
 
+    private void displayProducer(JMSProducer jmsProducer, String tag) {
+        System.out.println(tag + ": JMSProducer [ " + jmsProducer + " ]");
+    }
+
+    private void displayMessage(Message message, String tag) throws JMSException {
+        System.out.println(tag + ": Message [ " + message + " ]");
+    }
+
     public void testSetTimeToLive_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        String methodName = "testSetTimeToLive_TCP_SecOff";
 
         JMSContext jmsContextQCFTCP = qcfTCP.createContext();
         emptyQueue(qcfTCP, queue1);
         JMSConsumer jmsConsumer = jmsContextQCFTCP.createConsumer(queue1);
         JMSProducer jmsProducer = jmsContextQCFTCP.createProducer();
 
-        TextMessage msgOut = jmsContextQCFTCP.createTextMessage();
+        // jmsProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT); // Doesn't change the test result.
 
-        long defaultTimeToLive = jmsProducer.getTimeToLive();
-        System.out.println("Default time to live [ " + defaultTimeToLive + " ]");
+        TextMessage msgOut = jmsContextQCFTCP.createTextMessage();
+        displayMessage(msgOut, methodName + " Ougoing Message");
 
         boolean testFailed = false;
 
-        int shortTTL = 500;
+        long defaultTimeToLive = jmsProducer.getTimeToLive();
+        System.out.println(methodName + ": Default time to live [ " + defaultTimeToLive + " ]");
+        if ( defaultTimeToLive != 0 ) {
+            testFailed = true;
+        }
+
+        long shortTTL = 500;
         jmsProducer.setTimeToLive(shortTTL);
+        long setShortTTL = jmsProducer.getTimeToLive();
+        if ( setShortTTL != shortTTL ) {
+            System.out.println(methodName + ": Short TTL [ " + shortTTL + " ] set as [ " + setShortTTL + " ]");
+            testFailed = true;
+        }
+
         jmsProducer.send(queue1, msgOut);
+
         try {
             Thread.sleep(shortTTL + 10000);
         } catch ( InterruptedException e ) {
-            // Ignore
+            System.out.println(methodName + ": Interrupted wait [ " + (shortTTL + 10000) + " ] for time-to-live set to [ " + shortTTL + " ]");
+            testFailed = true;
         }
 
-        Message msgIn1 = jmsConsumer.receive(30000);
+        Message msgIn1 = jmsConsumer.receive(30000); // This message is being received; it should time out.
         if ( msgIn1 != null ) {
-            System.out.println("Message did not expire within [ " + shortTTL + " ]");
+            displayMessage(msgIn1, methodName + " Incoming Message [ TTL " + shortTTL + " ]");
+            System.out.println(methodName + ": Message unexpectedly did not expire within [ " + shortTTL + " ]");
             testFailed = true;
         } else {
-            System.out.println("Message expired within [ " + shortTTL + " ]");
+            System.out.println(methodName + ": Message expectedly expired within [ " + shortTTL + " ]");
         }
 
-        jmsProducer.setTimeToLive(0);
+        jmsProducer.setTimeToLive(0L);
+        long setZeroTTL = jmsProducer.getTimeToLive();
+        if ( setZeroTTL != 0 ) {
+            System.out.println(methodName + ": TTL [ 0 ] set as [ " + setZeroTTL + " ]");
+            testFailed = true;
+        }
+
         jmsProducer.send(queue1, msgOut);
         try {
             Thread.sleep(10000);
         } catch ( InterruptedException e ) {
-            // Ignore
+            System.out.println(methodName + ": Interrupted wait [ " + 10000 + " ] for time-to-live set to [ 0 ]");
+            testFailed = true;
         }
 
         Message msgIn2 = jmsConsumer.receive(30000);
         if ( msgIn2 != null ) {
-            System.out.println("Message did not expire within [ " + 0 + " ]");
-            testFailed = true;
+            displayMessage(msgIn1, methodName + " Incoming Message [ TTL 0 ]");
+            System.out.println(methodName + ": Message expectedly did not expire with time-to-live set to [ 0 ]");
         } else {
-            System.out.println("Message expired within [ " + 0 + " ]");
+            System.out.println(methodName + ": Message unexpectedly expired with time-to-live set to [ 0 ]");
+            testFailed = true;
         }
 
         jmsConsumer.close();
@@ -6015,14 +6075,14 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             propertyNames.remove("Bill");
+            testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
-            testFailed = true;
         }
 
         jmsContextQCFBindings.close();
 
-        if ( !testFailed ) {
+        if ( testFailed ) {
             throw new Exception("testGetPropertyNames_Exception_B_SecOff failed");
         }
     }
@@ -6041,14 +6101,14 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             propertyNames.remove("Bill");
+            testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
-            testFailed = true;
         }
 
         jmsContextQCFTCP.close();
 
-        if ( !testFailed ) {
+        if ( testFailed ) {
             throw new Exception("testGetPropertyNames_Exception_TCP_SecOff failed");
         }
     }
@@ -6448,6 +6508,8 @@ public class JMSProducerServlet extends HttpServlet {
     public void testMessageProducerWithValidDestination(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
+        String methodName = "testMessageProducerWithValidDestination";
+
         ConnectionFactory cf1 = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_CF");
         Connection con = cf1.createConnection();
         con.start();
@@ -6458,60 +6520,72 @@ public class JMSProducerServlet extends HttpServlet {
         boolean testFailed = false;
         try {
             producer.send(null, tmsg);
+            System.out.println(methodName + ": Unexpected send to null destination.");
             testFailed = true;
         } catch ( InvalidDestinationException ex ) {
             ex.printStackTrace();
         } catch ( JMSException ex ) {
             ex.printStackTrace();
+            System.out.println(methodName + ": Unexpected exception on send to null destination.");
             testFailed = true;
         }
 
         try {
             producer.send(session.createQueue("INVALID_QUEUE"), tmsg);
+            System.out.println(methodName + ": Unexpected send to invalid queue.");
             testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on send to invalid queue.");
             ex.printStackTrace();
             testFailed = true;
         }
 
         try {
             producer.send(queue1, tmsg);
+            System.out.println(methodName + ": Unexpected send to disallowed desination");
+            testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
-            testFailed = true;
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on send to disallowed desination");
             ex.printStackTrace();
             testFailed = true;
         }
 
         try {
             producer.send(null, tmsg, tmsg.DEFAULT_DELIVERY_MODE, 0, 50000);
+            System.out.println(methodName + ": Unexpected send to null destination (2).");
             testFailed = true;
         } catch ( InvalidDestinationException ex ) {
             ex.printStackTrace();
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on send to null destination (2).");
             ex.printStackTrace();
             testFailed = true;
         }
 
         try {
             producer.send(session.createQueue("INVALID_QUEUE"), tmsg, tmsg.DEFAULT_DELIVERY_MODE, 0, 50000);
+            System.out.println(methodName + ": Unexpected send to invalid queue (2).");
             testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on send to invalid queue (2).");
             ex.printStackTrace();
             testFailed = true;
         }
 
         try {
             producer.send(queue1, tmsg, tmsg.DEFAULT_DELIVERY_MODE, 0, 50000);
+            System.out.println(methodName + ": Unexpected send to valid queue (2).");            
             testFailed = true;
         } catch ( UnsupportedOperationException ex ) {
             ex.printStackTrace();
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on send to valid queue (2).");
             ex.printStackTrace();
             testFailed = true;
         }
@@ -6519,6 +6593,7 @@ public class JMSProducerServlet extends HttpServlet {
         try {
             producer.send(tmsg);
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on valid send (2).");
             ex.printStackTrace();
             testFailed = true;
         }
@@ -6526,6 +6601,7 @@ public class JMSProducerServlet extends HttpServlet {
         try {
             producer.send(tmsg, tmsg.DEFAULT_DELIVERY_MODE, 0, 50000);
         } catch ( JMSException ex ) {
+            System.out.println(methodName + ": Unexpected exception on valid send (3).");
             ex.printStackTrace();
             testFailed = true;
         }
@@ -6533,7 +6609,7 @@ public class JMSProducerServlet extends HttpServlet {
         con.close();
 
         if ( testFailed ) {
-            throw new Exception("testMessageProducerWithNullDestination failed");
+            throw new Exception("testMessageProducerWithValidDestination failed");
         }
     }
 
