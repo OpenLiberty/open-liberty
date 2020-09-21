@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.openapi20.utils.ValidationMessageConstants;
+import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
 import io.openliberty.microprofile.openapi20.validation.OASValidationResult.ValidationEvent;
 
@@ -62,7 +63,7 @@ public class SecurityRequirementValidator extends TypeValidator<SecurityRequirem
                             final String message = Tr.formatMessage(tc, ValidationMessageConstants.SECURITY_REQ_SCOPE_NAMES_REQUIRED, name);
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
-                    } else if ("apiKey".equals(type) || "http".equals(type)) {
+                    } else if ("apiKey".equals(type) || Constants.PROTOCOL_HTTP.equals(type)) {
                         if (value != null && !value.isEmpty()) {
                             final String message = Tr.formatMessage(tc, ValidationMessageConstants.SECURITY_REQ_FIELD_NOT_EMPTY, name, value);
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));

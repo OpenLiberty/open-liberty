@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
+import static com.ibm.ws.kernel.feature.internal.FeatureManager.EE_COMPATIBLE_NAME;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,6 +74,7 @@ public class FeatureDefinitionUtils {
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     public static final String IBM_PROCESS_TYPES = "IBM-Process-Types";
     public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
+    public static final String IBM_ALT_NAMES = "IBM-AlsoKnownAs";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
@@ -104,6 +107,7 @@ public class FeatureDefinitionUtils {
         final String featureName;
         final String symbolicName;
         final String shortName;
+        final Collection<String> alternateNames;
         final int featureVersion;
         final Visibility visibility;
         final AppForceRestart appRestart;
@@ -122,6 +126,7 @@ public class FeatureDefinitionUtils {
         ImmutableAttributes(String repoType,
                             String symbolicName,
                             String shortName,
+                            Collection<String> alternateNames,
                             int featureVersion,
                             Visibility visibility,
                             AppForceRestart appRestart,
@@ -140,6 +145,7 @@ public class FeatureDefinitionUtils {
             this.bundleRepositoryType = repoType;
             this.symbolicName = symbolicName;
             this.shortName = shortName;
+            this.alternateNames = alternateNames;
             this.featureName = buildFeatureName(repoType, symbolicName, shortName);
             this.featureVersion = featureVersion;
             this.visibility = visibility;
@@ -318,6 +324,7 @@ public class FeatureDefinitionUtils {
         ImmutableAttributes iAttr = new ImmutableAttributes(repoType,
                                                             symbolicName,
                                                             nullIfEmpty(shortName),
+                                                            details.getAltNames(),
                                                             featureVersion,
                                                             visibility,
                                                             appRestart,
@@ -373,12 +380,13 @@ public class FeatureDefinitionUtils {
         private boolean supersededChecked = false;
         private String supersededBy = null;
 
-        private Collection<FeatureResource> subsystemContent = null;
+        private List<FeatureResource> subsystemContent = null;
         private Collection<Filter> featureCapabilityFilters = null;
         private Map<String, Collection<HeaderElementDefinition>> headerElements = null;
 
         private String symbolicName = null;
         private Map<String, String> symNameAttributes = null;
+        private List<String> alternateNames = null;
 
         /**
          * The Manifest is required so we can build ImmutableAttributes from
@@ -389,6 +397,36 @@ public class FeatureDefinitionUtils {
          */
         ProvisioningDetails(File mfFile, InputStream inStream) throws IOException {
             manifest = loadManifest(mfFile, inStream);
+        }
+
+        /**
+         * Get alternate names of the feature if any.
+         *
+         * @return A (possibly empty) set of alternate names.
+         */
+        List<String> getAltNames() {
+
+            if (alternateNames == null) {
+                List<String> result;
+                String ibmAltNames;
+                try {
+                    ibmAltNames = getMainAttributeValue(IBM_ALT_NAMES);
+                } catch (IOException e) {
+                    return Collections.<String> emptyList();
+                }
+
+                if (ibmAltNames == null) {
+                    result = Collections.<String> emptyList();
+                } else {
+                    Map<String, Map<String, String>> data = ManifestHeaderProcessor.parseImportString(ibmAltNames);
+                    result = new ArrayList<String>(data.keySet().size());
+                    for (String name : data.keySet()) {
+                        result.add(FeatureRepository.lowerFeature(name));
+                    }
+                }
+                alternateNames = Collections.<String> unmodifiableList(result);
+            }
+            return alternateNames;
         }
 
         /**
@@ -523,7 +561,7 @@ public class FeatureDefinitionUtils {
                                                    message);
             }
 
-            // If the Subsystem-Type header is null, or doesn't match the feature type...
+            // check if the Subsystem-Version header is null
             String version = getMainAttributeValue(VERSION);
             if (version == null) {
                 // TODO: Replace with proper NLS message!
@@ -627,7 +665,7 @@ public class FeatureDefinitionUtils {
 
         Collection<FeatureResource> getConstituents(SubsystemContentType type) {
             // Check to see if we've already figured out our content...
-            Collection<FeatureResource> result = subsystemContent;
+            List<FeatureResource> result = subsystemContent;
 
             if (result == null) {
                 String contents = null;
@@ -642,7 +680,12 @@ public class FeatureDefinitionUtils {
 
                 result = new ArrayList<FeatureResource>(data.size());
                 for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                    FeatureResourceImpl resource = new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType);
+                    if (entry.getKey().lastIndexOf(EE_COMPATIBLE_NAME) >= 0) {
+                        result.add(0, resource);
+                    } else {
+                        result.add(resource);
+                    }
                 }
 
                 subsystemContent = result;

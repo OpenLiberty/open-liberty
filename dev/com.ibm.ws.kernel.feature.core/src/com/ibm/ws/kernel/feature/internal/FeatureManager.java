@@ -151,6 +151,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     private final static String CFG_KEY_ACTIVE_FEATURES = "feature";
 
+    public static final String EE_COMPATIBLE_NAME = "eeCompatible";
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
     final static String FEATURE_FIX_CACHE_FILE = "feature.fix.cache";
@@ -494,7 +495,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param locationService
      *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -526,7 +528,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -541,7 +544,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -563,7 +567,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
@@ -582,7 +587,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param executorService
      *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -599,7 +605,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -745,10 +752,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, null);
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, null);
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
-                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {}, null);
+                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
+                    }, null);
 
                     break;
                 default:
@@ -1642,16 +1651,23 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         for (String missing : result.getMissing()) {
             reportedErrors = true;
+            boolean isRootFeature = rootFeatures.contains(missing);
+            boolean isExtension = missing.indexOf(":") > -1;
+            String altName = featureRepository.matchesAlternate(missing);
             //Check if using Open Liberty before suggesting install util for missing features
             if (!getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
-                if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+                if (isRootFeature && !isExtension) {
                     // Only report this message for core features included as root features in the server.xml
                     Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
                 } else {
                     Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
                 }
             } else {
+                // Not on Open Liberty
                 Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+            }
+            if (altName != null && isRootFeature && !isExtension) {
+                Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
             }
             installStatus.addMissingFeature(missing);
         }
@@ -1837,7 +1853,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private boolean isEeCompatible(String symbolicName) {
-        return symbolicName != null && symbolicName.lastIndexOf("eeCompatible") >= 0;
+        return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
     private static char getEeCompatibleVersion(String symbolicName) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2016 IBM Corporation and others.
+ * Copyright (c) 1998, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -357,7 +357,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * Initialize the timeout for this bean.
      *
      * @param elt the timeout element to use if the bean was passivated, or null
-     *            if the bean was newly created
+     *                if the bean was newly created
      */
     // F61004.5
     public void initializeTimeout(TimeoutElement elt) {
@@ -619,8 +619,8 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * Set enterprise bean associate with this <code>BeanO</code>. <p>
      *
      * @param sb the enterprise bean instance that represents this
-     *            stateful session bean. Not required to implement
-     *            SessionBean starting with EJB 3.0.
+     *               stateful session bean. Not required to implement
+     *               SessionBean starting with EJB 3.0.
      */
     public void setEnterpriseBean(Object sb, ManagedObjectContext ejbContext) {
         setEnterpriseBean(sb);
@@ -723,13 +723,13 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * <code>BeanO</code>. <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // d142250
 
@@ -747,12 +747,12 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * enterprise bean. <p>
      *
      * @param id the <code>BeanId</code> to use when activating this
-     *            <code>SessionBeanO</code> <p>
+     *               <code>SessionBeanO</code> <p>
      * @param tx the current <code>ContainerTx</code> when this instance is being
-     *            activated.
+     *               activated.
      *
      * @exception RemoteException thrown if
-     *                this <code>BeanO</code> instance cannot be activated <p>
+     *                                this <code>BeanO</code> instance cannot be activated <p>
      */
     @Override
     public final synchronized void activate(BeanId id, ContainerTx tx) // d139352-2
@@ -850,7 +850,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * associated enterprise bean. <p>
      *
      * @exception RemoteException thrown if
-     *                this <code>BeanO</code> instance cannot be activated <p>
+     *                                this <code>BeanO</code> instance cannot be activated <p>
      */
     @Override
     public final synchronized void passivate() throws RemoteException {
@@ -962,8 +962,8 @@ public abstract class StatefulBeanO extends SessionBeanO {
      *
      * This method is called with thread contexts established. <p>
      *
-     * @param tx the <code>ContainerTx</code> this instance is being
-     *            enlisted in.
+     * @param tx       the <code>ContainerTx</code> this instance is being
+     *                     enlisted in.
      * @param txEnlist true if {@link ContainerTx#enlist} should be called.
      *
      * @return true if a reference must be taken on the BeanO, otherwise false.
@@ -979,10 +979,10 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * that a method is about to be invoked on its associated enterprise
      * bean. <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance passed to
-     *            both pre and postInvoke <p>
+     * @param s  the <code>EJSDeployedSupport</code> instance passed to
+     *               both pre and postInvoke <p>
      * @param tx the <code>ContainerTx</code> for the transaction which
-     *            this method is being invoked in.
+     *               this method is being invoked in.
      *
      * @return the Enterprise Bean instance the method will be invoke on.
      */
@@ -1031,10 +1031,10 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * invocation has completed on its associated enterprise bean. <p>
      *
      * @param id an <code>int</code> indicating which method is being
-     *            invoked on this <code>BeanO</code> <p>
+     *               invoked on this <code>BeanO</code> <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance passed to
-     *            both pre and postInvoke <p>
+     * @param s  the <code>EJSDeployedSupport</code> instance passed to
+     *               both pre and postInvoke <p>
      */
     @Override
     public synchronized void postInvoke(int id, EJSDeployedSupport s) //LIDB2018-1
@@ -1356,7 +1356,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * getTimerServcie() must provide its own checking. <p>
      *
      * @exception IllegalStateException If this instance is in a state that does
-     *                not allow timer service method operations.
+     *                                      not allow timer service method operations.
      **/
     // LI2281.07
     @Override
@@ -1407,9 +1407,9 @@ public abstract class StatefulBeanO extends SessionBeanO {
     /**
      * Begin contexts for a lifecycle callback.
      *
-     * @param methodId a method from {@link LifecycleInterceptorWrapper}
+     * @param methodId      a method from {@link LifecycleInterceptorWrapper}
      * @param contextHelper the context helper
-     * @param pushContexts the contexts to push
+     * @param pushContexts  the contexts to push
      */
     protected void beginLifecycleCallback(int methodId,
                                           CallbackContextHelper contextHelper,
@@ -1506,7 +1506,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * method invocation was made. <p>
      *
      * @throws IllegalStateException - Thrown if this method is called and
-     *             the bean has not been invoked through a business interface.
+     *                                   the bean has not been invoked through a business interface.
      **/
     // d367572.1 added entire method.
 
@@ -1582,8 +1582,8 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * @return The EJB Timer Service.
      *
      * @exception IllegalStateException The Container throws the exception
-     *                if the instance is not allowed to use this method (e.g. if the bean
-     *                is a stateful session bean)
+     *                                      if the instance is not allowed to use this method (e.g. if the bean
+     *                                      is a stateful session bean)
      **/
     // LI2281.07
     @Override
@@ -1611,8 +1611,8 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * @return The MessageContext for this web service invocation.
      *
      * @exception IllegalStateException Thrown if this method is invoked
-     *                while the instance is in a state that does not allow access
-     *                to this method.
+     *                                      while the instance is in a state that does not allow access
+     *                                      to this method.
      **/
     // LI2281.07
     @Override
@@ -1626,45 +1626,6 @@ public abstract class StatefulBeanO extends SessionBeanO {
             Tr.debug(tc, "getMessageContext: " + ise);
 
         throw ise;
-    }
-
-    // --------------------------------------------------------------------------
-    //
-    // Methods from EJBContextExtension interface
-    //
-    // --------------------------------------------------------------------------
-
-    /**
-     * Flush the persistent state of all entity EJB instances that have
-     * been modified in the current transaction. <p>
-     *
-     * See EJBContextExtension.flushCache() for details. <p>
-     *
-     * Overridden to insure proper bean state. <p>
-     */
-    // LI3492-2
-    @Override
-    public void flushCache() {
-        // Calling flushCache is not allowed from several states.
-        if ((state == PRE_CREATE) || // prevent in setSessionContext
-            (state == CREATING) ||
-            (state == REMOVING) ||
-            (state == ACTIVATING) ||
-            (state == PASSIVATING) ||
-            (state == DESTROYED) ||
-            (state == AFTER_COMPLETION)) {
-            IllegalStateException ise;
-
-            ise = new IllegalStateException("StatefulBean: flushCache not " +
-                                            "allowed from state = " +
-                                            getStateName(state));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "flushCache: " + ise);
-
-            throw ise;
-        }
-
-        super.flushCache();
     }
 
     // --------------------------------------------------------------------------
@@ -1712,7 +1673,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * Update failover entry for this SFSB with the replicated data for this SFSB
      * and indicate SFSB status is passivated.
      *
-     * @param beanData is the replicated data for this SFSB.
+     * @param beanData       is the replicated data for this SFSB.
      * @param lastAccessTime is the last access time for this SFSB.
      */
     public void updateFailoverEntry(byte[] beanData, long lastAccessTime) throws RemoteException //LIDB2018
@@ -1784,7 +1745,7 @@ public abstract class StatefulBeanO extends SessionBeanO {
      * will be notified of the bean availability. <p>
      *
      * @param methodContext EJB method context for the currently executing thread
-     * @param tx the transaction in which the bean will be enlisted.
+     * @param tx            the transaction in which the bean will be enlisted.
      * @return true if the bean has been successfully locked for use
      *         on the current thread, even if the bean has already
      *         been locked for the current thread; otherwise, false.

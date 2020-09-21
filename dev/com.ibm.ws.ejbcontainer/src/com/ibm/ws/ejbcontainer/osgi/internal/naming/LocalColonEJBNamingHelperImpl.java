@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,10 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
             readLock.unlock();
         }
 
+        if (binding != null && binding.isAmbiguousReference) {
+            throwAmbiguousEJBReferenceException(binding, name);
+        }
+
         return initializeEJB(binding, "local:" + name);
     }
 
@@ -70,25 +74,42 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
     }
 
     @Override
-    public synchronized void bind(EJBBinding binding, String name) {
+    public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        boolean notAmbiguous = true;
+        EJBBinding newBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
+
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "bind: " + name);
+        }
+
+        EJBBinding previousBinding = localColonEJBBindings.get(name);
+
+        // There won't be a previous binding for an ambiguous simple binding name
+        if (isSimpleName) {
+            newBinding.setAmbiguousReference();
+            notAmbiguous = false;
+        }
+
+        if (previousBinding != null) {
+            newBinding.setAmbiguousReference();
+            newBinding.addJ2EENames(previousBinding.getJ2EENames());
+            notAmbiguous = false;
         }
 
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
         try {
-
-            //TODO: If LocalColonEJBBindings already contains name, bind ambiguous reference exception
-            localColonEJBBindings.put(name, binding);
+            localColonEJBBindings.put(name, newBinding);
         } finally {
             writeLock.unlock();
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "bind");
+            Tr.exit(tc, "bind: notAmbiguous = " + notAmbiguous);
         }
+
+        return notAmbiguous;
     }
 
     public void unbind(String name) {

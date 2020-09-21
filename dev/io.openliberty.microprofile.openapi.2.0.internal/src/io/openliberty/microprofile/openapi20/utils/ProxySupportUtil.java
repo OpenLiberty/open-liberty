@@ -34,7 +34,7 @@ public class ProxySupportUtil {
         serverInfo.setHost(url.getHost());
         Integer port = url.getPort() == -1 ? url.getDefaultPort() : url.getPort();
         if (port != serverInfo.getHttpPort() && port != serverInfo.getHttpsPort()) {
-            if ("https".equalsIgnoreCase(url.getProtocol())) {
+            if (Constants.PROTOCOL_HTTPS.equalsIgnoreCase(url.getProtocol())) {
                 serverInfo.setHttpPort(-1);
                 serverInfo.setHttpsPort(port);
             } else {

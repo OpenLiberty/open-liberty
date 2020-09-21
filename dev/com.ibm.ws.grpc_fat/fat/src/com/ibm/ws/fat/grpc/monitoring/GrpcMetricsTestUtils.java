@@ -17,10 +17,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import componenttest.topology.impl.LibertyServer;
 
 public class GrpcMetricsTestUtils {
+
+    static Logger LOG = Logger.getLogger(GrpcMetricsTestUtils.class.getName());
+
     /**
      * Verifies the given metric by comparing the actual value with the given value
      *
@@ -74,6 +78,10 @@ public class GrpcMetricsTestUtils {
      * @return the value of the specified metric
      */
     public static String getMetric(String hostname, int port, String metricName) {
+        String m = "getMetric";
+        LOG.info(m + " ----------------------------------------------------------------");
+        LOG.info(m + " ---------hostname=" + hostname + "----port=" + port + "------metricName=" + metricName);
+
         String metricValue = null;
         HttpURLConnection con = null;
         try {
@@ -113,7 +121,7 @@ public class GrpcMetricsTestUtils {
                 con.disconnect();
             }
         }
-        System.out.println(String.format("Metric [%s] value [%s].", metricName, metricValue));
+        LOG.info(m + " -------- " + String.format("Metric [%s] value [%s].", metricName, metricValue));
         return metricValue;
     }
 }

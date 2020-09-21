@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.utils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.servers.Server;
@@ -17,11 +21,18 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.microprofile.openapi20.validation.OASValidationResult;
+import io.openliberty.microprofile.openapi20.validation.OASValidationResult.ValidationEvent.Severity;
+import io.openliberty.microprofile.openapi20.validation.OASValidator;
+import io.openliberty.microprofile.openapi20.validation.ValidatorUtils;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.PathsImpl;
 import io.smallrye.openapi.api.models.info.InfoImpl;
+import io.smallrye.openapi.runtime.io.Format;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
@@ -49,6 +60,71 @@ public class OpenAPIUtils {
     }
 
     /**
+     * The getSerializedJsonDocument method is generates an OpenAPI document from the specified model in the specified
+     * format.  
+     * 
+     * @param openapi
+     *          The OpenAPI model
+     * @param format
+     *          The format of the generated document 
+     * @return String
+     *          The generated OpenAPI document in JSON format
+     */
+    @Trivial
+    @FFDCIgnore(IOException.class)
+    public static String getOpenAPIDocument(final OpenAPI openAPIModel, final Format format) {
+        // Create the variable to return
+        String oasResult = null;
+        
+        // Make sure that we have a valid document
+        if (openAPIModel != null) {
+            try {
+                oasResult = OpenApiSerializer.serialize(openAPIModel, format);
+            } catch (IOException e) {
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to serialize OpenAPI document: " + e.getMessage());
+                }
+            }
+        }
+
+        return oasResult;
+    }
+
+    /**
+     * The validateDocument method validates the generated OpenAPI model and logs any warnings/errors.
+     * 
+     * @param document
+     *            The OpenAPI document (model) to validate
+     */
+    @Trivial
+    public static void validateDocument(OpenAPI document) {
+        final OASValidator validator = new OASValidator();
+        final OASValidationResult result = validator.validate(document);
+        final StringBuilder sbError = new StringBuilder();
+        final StringBuilder sbWarnings = new StringBuilder();
+        if (result.hasEvents()) {
+            result.getEvents().stream().forEach(v -> {
+                final String message = ValidatorUtils.formatMessage(ValidationMessageConstants.VALIDATION_MESSAGE, v.message, v.location);
+                if (v.severity == Severity.ERROR) {
+                    sbError.append("\n - " + message);
+                } else if (v.severity == Severity.WARNING) {
+                    sbWarnings.append("\n - " + message);
+                }
+            });
+
+            String errors = sbError.toString();
+            if (!errors.isEmpty()) {
+                Tr.error(tc, MessageConstants.OPENAPI_DOCUMENT_VALIDATION_ERROR, errors + "\n");
+            }
+
+            String warnings = sbWarnings.toString();
+            if (!warnings.isEmpty()) {
+                Tr.warning(tc, MessageConstants.OPENAPI_DOCUMENT_VALIDATION_WARNING, warnings + "\n");
+            }
+        }
+    }
+
+    /**
      * The containsServersDefinition method checks whether the specified OpenAPI model defines any servers.
      * 
      * @param openAPI
@@ -70,50 +146,53 @@ public class OpenAPIUtils {
     }
     
     /**
-     * The addServersToOpenAPIModel method creates new server defintions based on the specified ServerInfo object and
-     * adds them to the specified OpenAPI model.  The OpenAPI model is not modified if already contains at least one
-     * server definition. 
+     * The getOpenAPIModelServers method creates a list of server defintions based on the specified ServerInfo object
+     * and application path.
      * 
-     * @param openAPIModel
-     *          The OpenAPI model to update
      * @param serverInfo
      *          The ServerInfo object to use when creating the new servers model
+     * @param contextRoot
+     *          The contextRoot for the application that is being processed
+     * @return List<Server>
+     *          The list of Server objects
      */
-    public static void addServersToOpenAPIModel(final OpenAPI openAPIModel, final ServerInfo serverInfo) {
-
-        // Only update the model if it does not contain any server definitions
-        if (!containsServersDefinition(openAPIModel)) {
-            
-            // Remove any servers from the model... should only be an empty servers object at this point
-            openAPIModel.setServers(null);
-
-            final int httpPort  = serverInfo.getHttpPort();
-            final int httpsPort = serverInfo.getHttpsPort();
-            final String host   = serverInfo.getHost();
-            final String applicationPath = serverInfo.getApplicationPath();
-            
-            if (httpPort > 0) {
-                String port = httpPort == 80 ? Constants.STRING_EMPTY : (Constants.STRING_COLON + httpPort);
-                String url = Constants.SCHEME_HTTP + host + port;
-                if (applicationPath != null) {
-                    url += applicationPath;
-                }
-                Server server = OASFactory.createServer();
-                server.setUrl(url);
-                openAPIModel.addServer(server);
+    public static List<Server> getOpenAPIModelServers(final ServerInfo serverInfo, final String applicationPath) {
+        // Create the variable to return
+        List<Server> servers = new ArrayList<>();
+        
+        final int httpPort  = serverInfo.getHttpPort();
+        final int httpsPort = serverInfo.getHttpsPort();
+        final String host   = serverInfo.getHost();
+        
+        if (httpPort > 0) {
+            String port = httpPort == 80 ? Constants.STRING_EMPTY : (Constants.STRING_COLON + httpPort);
+            String url = Constants.SCHEME_HTTP + host + port;
+            if (applicationPath != null) {
+                url += applicationPath;
             }
-            
-            if (httpsPort > 0) {
-                String port = httpsPort == 443 ? Constants.STRING_EMPTY : (Constants.STRING_COLON + httpsPort);
-                String secureUrl = Constants.SCHEME_HTTPS + host + port;
-                if (applicationPath != null) {
-                    secureUrl += applicationPath;
-                }
-                Server secureServer = OASFactory.createServer();
-                secureServer.setUrl(secureUrl);
-                openAPIModel.addServer(secureServer);
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Adding OpenAPI model server: " + url);
             }
+            Server server = OASFactory.createServer();
+            server.setUrl(url);
+            servers.add(server);
         }
+        
+        if (httpsPort > 0) {
+            String port = httpsPort == 443 ? Constants.STRING_EMPTY : (Constants.STRING_COLON + httpsPort);
+            String secureUrl = Constants.SCHEME_HTTPS + host + port;
+            if (applicationPath != null) {
+                secureUrl += applicationPath;
+            }
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Adding OpenAPI model server: " + secureUrl);
+            }
+            Server secureServer = OASFactory.createServer();
+            secureServer.setUrl(secureUrl);
+            servers.add(secureServer);
+        }
+        
+        return servers;
     }
     
     /**

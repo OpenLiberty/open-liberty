@@ -41,9 +41,9 @@ Include-Resource: \
 
 -dsannotations-inherit: true
 -dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\
-    io.openliberty.microprofile.openapi20.ApplicationProcessor,\
     io.openliberty.microprofile.openapi20.OLOASFactoryResolverImpl,\
-    io.openliberty.microprofile.openapi20.css.CustomCSSProcessor
+    io.openliberty.microprofile.openapi20.css.CustomCSSProcessor,\
+    io.openliberty.microprofile.openapi20.DefaultHostListener
 
 WS-TraceGroup: MPOPENAPI
 

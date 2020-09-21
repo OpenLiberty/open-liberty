@@ -67,6 +67,7 @@ public class FeatureDefinitionUtilsTest {
         // Subsystem-Version: 1.0.0
         // Subsystem-Type: osgi.subsystem.feature
         // Subsystem-Content: notexistA;location:="lib/notexistA"
+        // AlsoKnownAs: Superseded-2.0, SS-2.0, Replaced-2.0
         // IBM-Feature-Version: 2
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

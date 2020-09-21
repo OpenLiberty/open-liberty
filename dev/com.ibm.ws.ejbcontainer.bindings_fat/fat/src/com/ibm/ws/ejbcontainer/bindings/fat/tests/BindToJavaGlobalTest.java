@@ -71,6 +71,9 @@ public class BindToJavaGlobalTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         apps.add("ConfigTestsTestApp");
 
         // Use ShrinkHelper to build the ears

@@ -75,6 +75,9 @@ public class DisableShortBndTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         apps.add("ConfigTestsTestApp");
         apps.add("ConfigTestsOtherTestApp");
 

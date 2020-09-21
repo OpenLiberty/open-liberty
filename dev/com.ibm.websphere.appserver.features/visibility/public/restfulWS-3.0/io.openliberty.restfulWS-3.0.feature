@@ -6,6 +6,7 @@ IBM-API-Package: com.ibm.websphere.jaxrs.server; type="ibm-api", \
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: restfulWS-3.0
+IBM-AlsoKnownAs: jaxrs-3.0
 Subsystem-Name: Java RESTful Web Services 3.0
 -features=\
  io.openliberty.restfulWSClient-3.0, \

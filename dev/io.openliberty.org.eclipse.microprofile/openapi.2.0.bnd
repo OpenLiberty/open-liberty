@@ -18,6 +18,6 @@ Export-Package: \
   org.eclipse.microprofile.openapi.*
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.openapi:microprofile-openapi-api;2.0.0.RC2;EXACT}
+  @${repo;org.eclipse.microprofile.openapi:microprofile-openapi-api;2.0.0.RC3;EXACT}
 
 WS-TraceGroup: MPOPENAPI

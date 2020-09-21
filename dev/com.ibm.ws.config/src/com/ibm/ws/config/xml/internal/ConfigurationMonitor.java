@@ -52,6 +52,8 @@ class ConfigurationMonitor implements ManagedService {
 
     private ServiceRegistration<ManagedService> managedServiceRegistration;
 
+    private boolean isFirstUpdate = true;
+
     /** Configuration file monitor */
     private ConfigFileMonitor fileMonitor;
 
@@ -75,7 +77,7 @@ class ConfigurationMonitor implements ManagedService {
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-        // The monitor interval can only be null when the element has not been metatype processed. 
+        // The monitor interval can only be null when the element has not been metatype processed.
         // update() should only run with the processed properties
         if ((properties == null) || (properties.get(MONITOR_INTERVAL) == null))
             return;
@@ -116,13 +118,14 @@ class ConfigurationMonitor implements ManagedService {
         }
 
         resetConfigurationMonitoring(monitorConfiguration, monitorInterval, fileMonitorType);
+        isFirstUpdate = false;
     }
 
     synchronized void resetConfigurationMonitoring(boolean monitorConfiguration, Long monitorInterval, String fileMonitorType) {
         if (fileMonitor == null) {
             if (monitorConfiguration) {
                 // check if configuration was changed when monitoring was disabled
-                boolean modified = serverXMLConfig.isModified();
+                boolean modified = isFirstUpdate ? false : serverXMLConfig.isModified();
                 Collection<String> filesToMonitor = serverXMLConfig.getFilesToMonitor();
                 Collection<String> directoriesToMonitor = serverXMLConfig.getDirectoriesToMonitor();
                 fileMonitor = new ConfigFileMonitor(bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
