@@ -62,12 +62,11 @@ public interface JwtConfig {
 
     List<String> getAMRAttributes();
 
-    long getElapsedNbfTime();
-
     String getKeyManagementKeyAlgorithm();
 
     String getKeyManagementKeyAlias();
 
     String getContentEncryptionAlgorithm();
 
+	long getNbfOffsetTime();
 }
