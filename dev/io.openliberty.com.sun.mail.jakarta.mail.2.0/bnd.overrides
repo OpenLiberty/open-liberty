@@ -3,7 +3,7 @@
 bVersion=1.0
 Bundle-Name: JakartaMail 2.0 Implementation
 Bundle-SymbolicName: io.openliberty.com.sun.mail.jakarta.mail.2.0
-Bundle-Description: Private JavaMail bundle
+Bundle-Description: Private Jakarta Mail bundle
   
 Include-Resource: \
      @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/mailcap, \

@@ -64,7 +64,6 @@ com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.istack:istack-commons-runtime:4.0.0-M3
 com.sun.istack:istack-commons-tools:4.0.0-M3
-com.sun.mail:jakarta.mail:2.0.0
 com.sun.mail:jakarta.mail:2.0.0-RC5
 com.sun.mail:javax.mail:1.5.6
 com.sun.mail:javax.mail:1.6.2
