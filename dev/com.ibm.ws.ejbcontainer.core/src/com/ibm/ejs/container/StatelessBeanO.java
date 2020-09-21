@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2015 IBM Corporation and others.
+ * Copyright (c) 1998, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public class StatelessBeanO extends SessionBeanO {
      *
      * @param c is the EJSContainer instance for this bean.
      * @param h is the home for this bean when the SLSB itself is not a home.
-     *            When the SLSB is a home, then null must be passed for this parameter.
+     *              When the SLSB is a home, then null must be passed for this parameter.
      */
     public StatelessBeanO(EJSContainer c, EJSHome h) // d367572
     {
@@ -473,7 +473,7 @@ public class StatelessBeanO extends SessionBeanO {
      * method invocation was made. <p>
      *
      * @throws IllegalStateException - Thrown if this method is called and
-     *             the bean has not been invoked through a business interface.
+     *                                   the bean has not been invoked through a business interface.
      **/
     // d367572.1 added entire method.
     @Override
@@ -503,11 +503,11 @@ public class StatelessBeanO extends SessionBeanO {
      * <code>BeanO</code>. <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
-     *            Stateless session beanos do not implement this method because they
-     *            are created on-demand by the container. <p>
+     *                                        Stateless session beanos do not implement this method because they
+     *                                        are created on-demand by the container. <p>
      */
     // d142250
     @Override
@@ -521,12 +521,12 @@ public class StatelessBeanO extends SessionBeanO {
      * enterprise bean. <p>
      *
      * @param id the <code>BeanId</code> to use when activating this
-     *            <code>SessionBeanO</code>.
+     *               <code>SessionBeanO</code>.
      * @param tx the current <code>ContainerTx</code> when this instance is being
-     *            activated.
+     *               activated.
      *
      * @exception BeanOActivationFailureException thrown if
-     *                this <code>BeanO</code> instance cannot be activated <p>
+     *                                                this <code>BeanO</code> instance cannot be activated <p>
      */
     @Override
     public final void activate(BeanId id, ContainerTx tx) // d114677 d139352-2
@@ -541,7 +541,7 @@ public class StatelessBeanO extends SessionBeanO {
      * given transaction. <p>
      *
      * @param tx the <code>ContainerTx</code> this instance is being
-     *            enlisted in <p>
+     *               enlisted in <p>
      */
 
     @Override
@@ -564,10 +564,10 @@ public class StatelessBeanO extends SessionBeanO {
      * that a method is about to be invoked on its associated enterprise
      * bean. <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance passed to
-     *            both pre and postInvoke <p>
+     * @param s  the <code>EJSDeployedSupport</code> instance passed to
+     *               both pre and postInvoke <p>
      * @param tx the <code>ContainerTx</code> for the transaction which
-     *            this method is being invoked in.
+     *               this method is being invoked in.
      *
      * @return the Enterprise Bean instance the method will be invoke on.
      */
@@ -604,7 +604,7 @@ public class StatelessBeanO extends SessionBeanO {
      * invocation has completed on its associated enterprise bean. <p>
      *
      * @param s the <code>EJSDeployedSupport</code> instance passed to
-     *            both pre and postInvoke <p>
+     *              both pre and postInvoke <p>
      */
     @Override
     public void postInvoke(int id, EJSDeployedSupport s) // d170394
@@ -824,7 +824,7 @@ public class StatelessBeanO extends SessionBeanO {
      * getTimerServcie() must provide its own checking. <p>
      *
      * @exception IllegalStateException If this instance is in a state that does
-     *                not allow timer service method operations.
+     *                                      not allow timer service method operations.
      **/
     // LI2281.07
     @Override
@@ -922,8 +922,8 @@ public class StatelessBeanO extends SessionBeanO {
      * @return The EJB Timer Service.
      *
      * @exception IllegalStateException The Container throws the exception
-     *                if the instance is not allowed to use this method (e.g. if the bean
-     *                is a stateful session bean)
+     *                                      if the instance is not allowed to use this method (e.g. if the bean
+     *                                      is a stateful session bean)
      **/
     // LI2281.07
     @Override
@@ -943,40 +943,6 @@ public class StatelessBeanO extends SessionBeanO {
         }
 
         return super.getTimerService();
-    }
-
-    // --------------------------------------------------------------------------
-    //
-    // Methods from EJBContextExtension interface
-    //
-    // --------------------------------------------------------------------------
-
-    /**
-     * Flush the persistent state of all entity EJB instances that have
-     * been modified in the current transaction. <p>
-     *
-     * See EJBContextExtension.flushCache() for details. <p>
-     *
-     * Overridden to insure proper bean state. <p>
-     */
-    // LI3492-2
-    @Override
-    public void flushCache() {
-        // Calling flushCache is not allowed from setSessionContext.
-        if ((state == PRE_CREATE || state == CREATING)) // d367572.1 prevent in setSessionContext
-        {
-            IllegalStateException ise;
-
-            ise = new IllegalStateException("StatelessBean: flushCache not " +
-                                            "allowed from state = " +
-                                            getStateName(state));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "flushCache: " + ise);
-
-            throw ise;
-        }
-
-        super.flushCache();
     }
 
     // --------------------------------------------------------------------------

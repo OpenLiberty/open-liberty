@@ -20,7 +20,7 @@ IBM-Process-Types: server, \
  com.ibm.ws.javaee.version, \
  com.ibm.ws.serialization
 -jars=com.ibm.websphere.appserver.spi.containerServices; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_3.1-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_4.0-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
