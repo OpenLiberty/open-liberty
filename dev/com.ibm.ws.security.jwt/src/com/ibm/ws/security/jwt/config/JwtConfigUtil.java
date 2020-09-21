@@ -75,7 +75,7 @@ public class JwtConfigUtil {
             }
             signatureAlgorithm = defaultSignatureAlgorithm;
         }
-        if (signatureAlgorithm == null) {
+        if (signatureAlgorithm == null && !isBetaEnabled) {
             signatureAlgorithm = defaultSignatureAlgorithm;
         }
         return signatureAlgorithm;
