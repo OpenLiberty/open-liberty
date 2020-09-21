@@ -402,19 +402,30 @@ public class LogServiceTest {
         checkForTraceMessage("Event:org.osgi.framework.ServiceEvent", expectedBundles.length * 2);
     }
 
+    /** Checks if the logs appear in trace **/
     private void assertFrameworkEvents(boolean expected) throws Exception {
         flushLog("finalFrameworkEventsMsg");
 
         int num = expected ? 1 : 0;
-        checkForTraceMessage("FrameworkEvent PACKAGES REFRESHED", num);
-        checkForTraceMessage("LoggerName:Events.Framework", num);
-        checkForTraceMessage("Event:org.osgi.framework.FrameworkEvent", num);
+        checkForTrace("FrameworkEvent PACKAGES REFRESHED", num);
+        checkForTrace("LoggerName:Events.Framework", num);
+        checkForTrace("Event:org.osgi.framework.FrameworkEvent", num);
 
     }
 
     private void checkForTraceMessage(String msg, int expectedNum) throws Exception {
         // make sure it is not in console log
         assertTrue("Found unexpected message in console log: " + msg, server.findStringsInLogsUsingMark(msg, server.getConsoleLogFile()).isEmpty());
+        List<String> found = server.findStringsInLogsAndTraceUsingMark(msg);
+        assertEquals("Did not find the expected number of messages: " + msg, expectedNum, found.size());
+    }
+
+    private void checkForTrace(String msg, int expectedNum) throws Exception {
+        // make sure it is not in console log
+        assertTrue("Found unexpected message in console log: " + msg, server.findStringsInLogsUsingMark(msg, server.getConsoleLogFile()).isEmpty());
+        if (expectedNum > 0) {
+            server.waitForStringInTraceUsingMark(msg); //wait for string in trace log
+        }
         List<String> found = server.findStringsInLogsAndTraceUsingMark(msg);
         assertEquals("Did not find the expected number of messages: " + msg, expectedNum, found.size());
     }
