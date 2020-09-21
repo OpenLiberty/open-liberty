@@ -16,3 +16,5 @@ IBM-API-Package: \
          com.ibm.ws.org.jboss.logging
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
+

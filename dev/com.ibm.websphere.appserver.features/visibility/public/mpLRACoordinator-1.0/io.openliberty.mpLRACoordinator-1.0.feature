@@ -18,4 +18,5 @@ IBM-API-Package: \
     lib/mpLRACoordinator_5.10.6.jar
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
 
