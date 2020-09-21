@@ -33,6 +33,7 @@ import io.openliberty.grpc.annotation.GrpcService;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.config.GrpcServiceConfigHolder;
+import io.openliberty.grpc.server.monitor.GrpcMonitoringServerInterceptorService;
 
 public class GrpcServletUtils {
 
@@ -215,23 +216,12 @@ public class GrpcServletUtils {
 	
 	private static ServerInterceptor createMonitoringServerInterceptor(String serviceName, String appName) {
 		// create the monitoring interceptor only if the monitor feature is enabled 
-		if (!GrpcServerComponent.isMonitoringEnabled()) {
-			return null;
-		}
-		ServerInterceptor interceptor = null;
-		// monitoring interceptor 
-		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringServerInterceptor";
-		try {
-			Class<?> clazz = Class.forName(className);
-			interceptor = (ServerInterceptor) clazz.getDeclaredConstructor(String.class, String.class)
-					.newInstance(serviceName, appName);
+		ServerInterceptor interceptor = GrpcServerComponent.getMonitoringServerInterceptor(serviceName, appName);
+		if (interceptor != null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "monitoring interceptor has been added to service {0}", serviceName);
 			}
-		} catch (Exception e) {
-			// an exception can happen if the monitoring package is not loaded 
 		}
-
 		return interceptor;
 	}
 

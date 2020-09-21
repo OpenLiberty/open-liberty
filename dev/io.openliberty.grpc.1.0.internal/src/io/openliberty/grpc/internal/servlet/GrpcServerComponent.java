@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -48,9 +50,11 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
+import io.grpc.ServerInterceptor;
 import io.grpc.servlet.GrpcServlet;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
+import io.openliberty.grpc.server.monitor.GrpcMonitoringServerInterceptorService;
 
 @Component(service = { ApplicationStateListener.class,
 		ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
@@ -63,13 +67,15 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	};
 
 	private static boolean useSecurity = false;
-	/** Indicates whether the monitor feature is enabled */
-	private static boolean monitoringEnabled = false;
 
 	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
+	private final String GRPC_MONITOR_NAME = "GrpcMonitoringServerInterceptorService";
 
 	private final AtomicServiceReference<FeatureProvisioner> _featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
 			FEATUREPROVISIONER_REFERENCE_NAME);
+
+	private static GrpcMonitoringServerInterceptorService monitorService = null;
+
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -88,6 +94,26 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
 	protected void unsetFeatureProvisioner(FeatureProvisioner featureProvisioner) {
 	}
+
+	@Reference(name = "GRPC_MONITOR_NAME", service = GrpcMonitoringServerInterceptorService.class,
+	        cardinality = ReferenceCardinality.OPTIONAL,
+	        policy = ReferencePolicy.DYNAMIC,
+	        policyOption = ReferencePolicyOption.GREEDY)
+	 protected void setMonitoringService(GrpcMonitoringServerInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "setMonitoringService");
+	     }
+	     monitorService = service;
+	 }
+
+	 protected void unsetMonitoringService(GrpcMonitoringServerInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "unsetMonitoringService");
+	     }
+	     if (monitorService == service) {
+	         monitorService = null;
+	     }
+	 }
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
@@ -230,7 +256,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
 		setSecurityEnabled();
-		setMonitoringEnabled();
 		initGrpcServices(appInfo);
 	}
 
@@ -273,18 +298,14 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	}
 
 	/**
-	 * Set the indication whether the monitor feature is enabled 
+	 * @param appName 
+	 * @param serviceName 
+	 * @return a GrpcMonitoringServerInterceptorService if monitoring is enabled
 	 */
-	private void setMonitoringEnabled() {
-		Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
-		monitoringEnabled = currentFeatureSet.contains("monitor-1.0");
-	}
-	
-	/**
-	 * @return <code>true</code> if the monitor feature is enabled,
-	 * 	<code>false</code> otherwise
-	 */
-	public static boolean isMonitoringEnabled() {
-		return monitoringEnabled;
+	public static ServerInterceptor getMonitoringServerInterceptor(String serviceName, String appName) {
+		if (monitorService != null) {
+			return monitorService.createInterceptor(serviceName, appName);
+		}
+		return null;
 	}
 }
