@@ -14,6 +14,11 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -35,12 +41,16 @@ import componenttest.topology.impl.LibertyServer;
 public class SecureHelloWorldTest extends HelloWorldBasicTest {
 
     protected static final Class<?> c = SecureHelloWorldTest.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     @Rule
     public TestName name = new TestName();
 
     @Server("SecureHelloWorldServer")
     public static LibertyServer secureHelloWorldServer;
+
+    private static final Set<String> clientAppName = Collections.singleton("HelloWorldClient");
+    private static final String SECURITY_PLAIN_TEXT = "grpc.client.security.plaintext.xml";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -100,6 +110,12 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
     @AllowedFFDC("io.grpc.StatusRuntimeException")
     public void testSecureHelloWorldWOTls() throws Exception {
         Exception clientException = null;
+
+        // make a backup of the original configuration so we can restore it later
+        RemoteFile backup = new RemoteFile(secureHelloWorldServer.getMachine(), new File(secureHelloWorldServer.getServerRoot(), "server-backup.xml").getPath());
+        backup.copyFromSource(secureHelloWorldServer.getServerConfigurationFile());
+
+        GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, null, SECURITY_PLAIN_TEXT, clientAppName, LOG);
         try {
             runHelloWorldTest();
         } catch (Exception e) {
@@ -107,5 +123,8 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
             Log.info(c, name.getMethodName(), "exception caught: " + e);
         }
         assertTrue("An error is expected for this case", clientException != null);
+
+        // restore the original configuration
+        GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, backup, clientAppName, LOG);
     }
 }
