@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.com.fasterxml.jackson</name>
+	<name>io.openliberty.com.fasterxml.jackson</name>
 	<comment></comment>
 	<projects>
 	</projects>
