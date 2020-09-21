@@ -392,6 +392,8 @@ task libertyReleaseVersions {
   inputs.file('resources/bnd/liberty-release.props')
   outputs.file('build/liberty-versions.props')
   doLast {
+    def releaseVersion = bnd('libertyRelease') + '-' + rootProject.userProps.getProperty('version.qualifier')
+    println 'releaseVersion = ' + releaseVersion
     def libertyVersionsProps = new Properties()
     libertyVersionsProps.setProperty('libertyBaseVersion', bnd('libertyBaseVersion'))
     libertyVersionsProps.setProperty('libertyFixpackVersion', bnd('libertyFixpackVersion'))
@@ -400,6 +402,7 @@ task libertyReleaseVersions {
     libertyVersionsProps.setProperty('libertyRelease', bnd('libertyRelease'))
     libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd('libertyBundleMicroVersion'))
     libertyVersionsProps.setProperty('buildID', bnd('buildID'))
+    libertyVersionsProps.setProperty('releaseVersion', releaseVersion)
     File libertyVersionsPropsFile = file('build/liberty-versions.props')
     libertyVersionsProps.store(libertyVersionsPropsFile.newWriter(), null)
   }
