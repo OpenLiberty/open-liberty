@@ -9,5 +9,6 @@
         IBM Corporation - initial implementation
  -->
 <server>
-    <application context-root="/lrac" type="war" id="lra-c" location="${wlp.install.dir}/lib/mpLRACoordinator_5.10.6.jar"/>
+    <variable name="lraCoordinatorContextRoot" defaultValue="/lrac" />
+    <application context-root="${lraCoordinatorContextRoot}" type="war" id="lra-c" location="${wlp.install.dir}/lib/mpLRACoordinator_5.10.6.jar"/>
 </server>
