@@ -46,7 +46,7 @@
             <Option label="%jwkSigningKeySize.2048" value="2048"/>
             <Option label="%jwkSigningKeySize.4096" value="4096"/>
          </AD>
-         <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String" default="-1" ibm:type="duration(s)" ibm:beta="true"/>
+         <AD id="nbfOffset" name="%nbfOffset" description="%nbfOffset.desc" required="false" type="String" default="-1" ibm:type="duration(s)" ibm:beta="true"/>
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
     </OCD>
 

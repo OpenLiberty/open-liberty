@@ -62,5 +62,5 @@ public interface JwtConfig {
 	
 	List<String> getAMRAttributes();
 
-	long getElapsedNbfTime();
+	long getNbfOffsetTime();
 }

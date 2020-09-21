@@ -124,9 +124,9 @@ public class JwtCreator {
                 }
                 
                 // Sets nbf claim to elapsedNbf since token issued
-                long elapsedNbfInSeconds = jwtData.getConfig().getElapsedNbfTime();
-                if (elapsedNbfInSeconds >= 0) {
-                    claims.setNotBefore(NumericDate.fromSeconds(claims.getIssuedAt().getValue() + elapsedNbfInSeconds));
+                long nbfOffsetInSeconds = jwtData.getConfig().getNbfOffsetTime();
+                if (nbfOffsetInSeconds >= 0) {
+                    claims.setNotBefore(NumericDate.fromSeconds(claims.getIssuedAt().getValue() + nbfOffsetInSeconds));
                 }
             }
 

@@ -85,7 +85,7 @@ public class JwtUtils {
 	public static final String CFG_KEY_SSL_REF = "sslRef";
 	public static final String CFG_KEY_EXPIRES_IN_SECONDS = "expiresInSeconds";
 	public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
-	public static final String CFG_KEY_ELAPSED_NBF = "elapsedNBF";
+	public static final String CFG_KEY_NBF_OFFSET = "nbfOffset";
 	public static final String CFG_AMR_CLAIM = "amrValues";
 	public static final String CFG_AMR_ATTR = "amrInclude";
 

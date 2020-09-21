@@ -412,7 +412,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	}
 
 	@Override
-	public long getElapsedNbfTime() {
+	public long getNbfOffsetTime() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

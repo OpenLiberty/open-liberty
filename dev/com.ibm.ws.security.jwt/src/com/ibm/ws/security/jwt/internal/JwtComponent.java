@@ -67,7 +67,7 @@ public class JwtComponent implements JwtConfig {
     private String trustedAlias;
     private long jwkRotationTime;
     private int jwkSigningKeySize;
-    private long elapsedNbfTime;
+    private long nbfOffsetTime;
 
     private PublicKey publicKey = null;
     private PrivateKey privateKey = null;
@@ -166,7 +166,7 @@ public class JwtComponent implements JwtConfig {
         // Rotation time is in minutes, so convert value to milliseconds
         jwkRotationTime = jwkRotationTime * 60 * 1000;
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
-        elapsedNbfTime = ((Long) props.get(JwtUtils.CFG_KEY_ELAPSED_NBF)).longValue();
+        nbfOffsetTime = ((Long) props.get(JwtUtils.CFG_KEY_NBF_OFFSET)).longValue();
         amrAttributes = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_ATTR));
 
         if (isJwkCapableSigAlgorithm()) {
@@ -358,11 +358,6 @@ public class JwtComponent implements JwtConfig {
         return null;
     }
 
-    @Override
-    public long getElapsedNbfTime() {
-        return elapsedNbfTime;
-    }
-
     /**
      * If the given host is "*", try to resolve this to a hostname or ip address
      * by first checking the configured ${defaultHostName}. If
@@ -413,5 +408,10 @@ public class JwtComponent implements JwtConfig {
     public List<String> getAMRAttributes() {
         return amrAttributes;
     }
+
+	@Override
+	public long getNbfOffsetTime() {
+		return nbfOffsetTime;
+	}
 
 }
