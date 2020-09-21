@@ -8,15 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: com.ibm.ws.jakartaee.persistence.api.3.0
-Require-Bundle: com.ibm.ws.jakartaee.persistence.3.0
--exportcontents: \
- jakarta.persistence; \
- jakarta.persistence.criteria; \
- jakarta.persistence.metamodel; \
- jakarta.persistence.spi; \
-   jpa="3.0"; version="3.0.0"
+publish.wlp.jar.disabled: true
 
+instrument.disabled: true
+
+Private-Package: \
+	io.openliberty.jakarta.persistence.internal
+
+-buildpath: \
+	jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.kernel.service;version=latest

@@ -14,6 +14,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.3.0
 Bundle-Description: EclipseLink JPA
 Bundle-Distributor: IBM
+Bundle-Activator: io.openliberty.persistence.internal.helper.EclipselinkPersistenceActivator
 Bundle-Name: EclipseLink JPA
 Premain-Class: org.eclipse.persistence.internal.jpa.deployment.JavaSECMPInitializerAgent
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -98,7 +99,7 @@ DynamicImport-Package: \
  javax.xml.bind.helpers, \
  javax.xml.bind.util
 
-Private-Package: com.ibm.ws.eclipselink.osgi
+Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
   @${repo;org.eclipse.persistence.asm;3.0.0}!/!META-INF/maven/*,\
@@ -117,4 +118,5 @@ instrument.classesExcludes: \
 -buildpath: \
     org.eclipse.persistence.core;version=3.0.0,\
     org.eclipse.persistence.jpa;version=3.0.0,\
-    jakarta.persistence:jakarta.persistence-api;version=3.0.0
+    jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
+    com.ibm.websphere.org.osgi.core
