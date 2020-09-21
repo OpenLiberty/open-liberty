@@ -39,9 +39,9 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
-public class StoreServicesTests extends FATServletClient {
+public class StoreServicesRESTClientTests extends FATServletClient {
 
-    protected static final Class<?> c = StoreServicesTests.class;
+    protected static final Class<?> c = StoreServicesRESTClientTests.class;
 
     @Rule
     public TestName name = new TestName();
@@ -80,6 +80,7 @@ public class StoreServicesTests extends FATServletClient {
                                                                 "com.ibm.testapp.g3store.restProducer.model",
                                                                 "com.ibm.testapp.g3store.restProducer.client",
                                                                 "com.ibm.testapp.g3store.servletProducer",
+                                                                "com.ibm.testapp.g3store.utilsProducer",
                                                                 "com.ibm.ws.fat.grpc.monitoring",
                                                                 "com.ibm.test.g3store.grpc"); // add generated src
 
@@ -100,24 +101,25 @@ public class StoreServicesTests extends FATServletClient {
                                                           "com.ibm.testapp.g3store.restProducer.api",
                                                           "com.ibm.testapp.g3store.restProducer.model",
                                                           "com.ibm.testapp.g3store.servletProducer",
+                                                          "com.ibm.testapp.g3store.utilsProducer",
                                                           "com.ibm.test.g3store.grpc", // add generated src
                                                           "com.ibm.testapp.g3store.restProducer.client");
 
-        storeServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        storeServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
-        producerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        producerServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
         int securePort = Integer.parseInt(getSysProp("member_1.https"));
 
-        Log.info(StoreServicesTests.class, "setUp", "here is the secure port " + securePort);
+        Log.info(StoreServicesRESTClientTests.class, "setUp", "here is the secure port " + securePort);
 
         consumerServer.setHttpDefaultSecurePort(securePort);
-        consumerServer.startServer(StoreServicesTests.class.getSimpleName() + ".log");
+        consumerServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // To export the assembled services application archive files, uncomment the following

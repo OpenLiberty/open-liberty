@@ -208,7 +208,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         AppNameRequest appReq = AppNameRequest.newBuilder().setName(appName).build();
 
         if (log.isLoggable(Level.FINE)) {
-            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " send grpc request.");
+            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " , testName = " + testName + " send grpc request.");
         }
         // get results from rpc call
         // This is a Unary call
@@ -230,7 +230,11 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new InvalidArgException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
-                if (testName.equalsIgnoreCase("getAppInfo_BadAuth")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.finest("Consumer: getAppInfo: testName = " + testName + " failed with UNAUTHENTICATED");
+                }
+                if (testName.equalsIgnoreCase("getAppInfo_BadAuth") ||
+                    (testName.equalsIgnoreCase("getAppInfo_Bad_BasicAuth_SC"))) {
                     String message = "Expected auth failure.";
                     log.info("Consumer: getAppInfo: " + message);
                     e.printStackTrace();
