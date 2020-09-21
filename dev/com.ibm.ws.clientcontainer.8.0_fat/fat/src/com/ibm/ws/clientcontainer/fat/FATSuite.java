@@ -26,7 +26,4 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction("javaeeClient-8.0", "jakartaeeClient-9.0")
-                                    .forceAddFeatures(true)
-                                    .withID("JAKARTAEECLIENT-9.0"))
                     .andWith(new JakartaEE9Action());}
