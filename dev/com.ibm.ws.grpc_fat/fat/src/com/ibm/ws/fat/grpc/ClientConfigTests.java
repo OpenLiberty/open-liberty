@@ -462,8 +462,7 @@ public class ClientConfigTests extends FATServletClient {
      *
      * @throws Exception
      */
-    // This test currently fails due to issue 13586
-    //@Test
+    @Test
     public void testClientTargetSpecificMatch() throws Exception {
         LOG.info("ServiceConfigTests : testClientTargetSpecificMatch() : validate a specific match.");
 
