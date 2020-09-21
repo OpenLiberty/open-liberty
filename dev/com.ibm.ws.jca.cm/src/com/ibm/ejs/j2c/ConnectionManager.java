@@ -112,6 +112,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean isJDBC;
     private transient int commitPriority = 0;
     private boolean localTranSupportSet = false;
+    private boolean issuedSpnegoRecoveryWarning = false;
 
     /**
      * The following is a variable which will tell us whether or not
@@ -1675,6 +1676,17 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "Found SPNEGO Subject passed in as the caller subject, using it for authentication");
                         subj = callerSubject;
+
+                        // User is attempting to use an XADataSource with SPNEGO authentication and no alternative recoveryAuthData configured
+                        // Warn the user that this configuration is not fully XA-capable since XA recovery with SPNEGO auth is not possible
+                        if (tc.isWarningEnabled() &&
+                            !issuedSpnegoRecoveryWarning &&
+                            connectionFactorySvc.getTransactionSupport() == TransactionSupportLevel.XATransaction &&
+                            connectionFactorySvc.getRecoveryAuthDataID() == null) {
+                            issuedSpnegoRecoveryWarning = true;
+                            String jndiName = connectionFactorySvc.getJNDIName();
+                            Tr.warning(tc, "SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W", jndiName != null ? jndiName : connectionFactorySvc.getID());
+                        }
                     }
                 }
             }
