@@ -164,10 +164,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 	org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.18,\
 	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.18,\
 	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version=3.1.18,\
-	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2.1, \
-	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2.1, \
-	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2.1, \
-	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2.1, \
+	com.ibm.ws.org.codehaus.jackson.1.6.2;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\

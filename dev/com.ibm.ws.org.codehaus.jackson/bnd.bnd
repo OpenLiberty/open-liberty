@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: Jackson JSON processor 1.6.2
-Bundle-SymbolicName:  com.ibm.ws.org.codehaus.jackson.1.6.2.1
+Bundle-SymbolicName:  com.ibm.ws.org.codehaus.jackson.1.6.2
 Bundle-Description: Provides Jackson Processor as a bundle; version=${bVersion}
 
 Export-Package: \
