@@ -776,7 +776,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         server.reconfigureServerUsingExpandedConfiguration(_testName, "server_amrValues.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*amrbuilder");
         
         WebClient webClient = new WebClient();
-        Cookie cookie = actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
+        Cookie cookie = actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword, "https?://" + "[^/]+/jwt/" + "amrBuilder");
 
         Page response = buildNewJwtAfterAddingSecurityAttribute(cookie);
         String responseStr = response.getWebResponse().getContentAsString();
@@ -795,7 +795,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         String jwtBuilderUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/amrbuilder/AmrServlet";
 
         List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
-        requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, "defaultJwtSso"));
+        requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, "amrBuilder"));
         
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Cookie", cookie.getName() + "=" + cookie.getValue());
