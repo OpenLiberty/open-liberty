@@ -88,6 +88,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private boolean suppress0ByteChunk = false;
 
     private final Object syncBodyBufferAccess = new Object() {};
+    private int syncBodyBufferAccessCount = 0;
+    private final int SYNC_BODY_BUFFER_WAIT_MSEC = 3000;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -1556,7 +1558,32 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.entry(tc, "getRequestBodyBuffer(async)");
         }
 
-        synchronized (syncBodyBufferAccess) {
+        try {
+            // GRPC testing showed two threads in this method at the same time, which is wrong, so safe-guaading
+            // against that while not synchronizing the whole method and risking a deadlock by calling into other
+            // code while holding onto a lock.
+            synchronized (syncBodyBufferAccess) {
+                if (syncBodyBufferAccessCount > 0) {
+                    try {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "dual thread entry into getRequestBodyBuffer, this thread is going to wait");
+                        }
+
+                        // should get notified right away, unless the other thread is delayed, at which point we can't
+                        // deadlock so will have to go on.
+                        syncBodyBufferAccess.wait(SYNC_BODY_BUFFER_WAIT_MSEC);
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "wait is over");
+                        }
+                    } catch (InterruptedException x) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "wait is over - interruptedException");
+                        }
+                    }
+                }
+                syncBodyBufferAccessCount++;
+            }
 
             if (!headersParsed()) {
                 // request message must have the headers parsed prior to attempting
@@ -1628,7 +1655,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 Tr.exit(tc, "getRequestBodyBuffer(async): null");
             }
             return null;
-
+        } finally {
+            synchronized (syncBodyBufferAccess) {
+                syncBodyBufferAccessCount--;
+                syncBodyBufferAccess.notify();
+            }
         }
     }
 
