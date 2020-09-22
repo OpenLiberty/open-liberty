@@ -64,10 +64,6 @@ com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.istack:istack-commons-runtime:4.0.0-M3
 com.sun.istack:istack-commons-tools:4.0.0-M3
-com.sun.mail:jakarta.mail:2.0.0
-com.sun.mail:jakarta.mail:2.0.0-RC5
-com.sun.mail:javax.mail:1.5.6
-com.sun.mail:javax.mail:1.6.2
 com.sun.xml.bind.external:relaxng-datatype:3.0.0-M4
 com.sun.xml.bind.external:rngom:3.0.0-M3
 com.sun.xml.bind:jaxb-core:2.2.10
@@ -166,7 +162,6 @@ jakarta.jms:jakarta.jms-api:3.0.0-RC1
 jakarta.json.bind:jakarta.json.bind-api:2.0.0-RC2
 jakarta.json:jakarta.json-api:2.0.0-RC3
 jakarta.jws:jakarta.jws-api:3.0.0-RC2
-jakarta.mail:jakarta.mail-api:2.0.0-RC5
 jakarta.persistence:jakarta.persistence-api:3.0.0-RC1
 jakarta.resource:jakarta.resource-api:2.0.0-RC2
 jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1
