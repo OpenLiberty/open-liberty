@@ -23,6 +23,7 @@ Subsystem-Name: Jakarta EE Web Profile 9.0
   io.openliberty.jpa-3.0,\
   io.openliberty.jsp-3.0,\
   io.openliberty.managedBeans-2.0,\
+  io.openliberty.restfulWS-3.0,\
   io.openliberty.websocket-2.0
 kind=beta
 edition=core
