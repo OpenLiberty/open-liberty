@@ -170,6 +170,8 @@ Include-Resource:\
 	org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version=4.5.2.Final,\
 	org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version=4.5.2.Final,\
 	org.jboss.resteasy:resteasy-tracing-api;strategy=exact;version=1.0.0.Final,\
+	com.ibm.ws.org.apache.commons.io,\
+	com.ibm.ws.org.apache.httpcomponents,\
 	com.ibm.websphere.javaee.annotation.1.3,\
 	com.ibm.websphere.javaee.cdi.2.0,\
 	com.ibm.websphere.javaee.interceptor.1.2,\

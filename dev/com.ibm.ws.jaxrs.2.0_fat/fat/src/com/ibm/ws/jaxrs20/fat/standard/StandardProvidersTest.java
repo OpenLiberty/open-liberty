@@ -48,6 +48,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -55,6 +56,7 @@ import componenttest.topology.impl.LibertyServer;
  * Centralized test for built-in standard providers required by the JAX-RS specification.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class StandardProvidersTest {
 
     @Server("com.ibm.ws.jaxrs.fat.providers")

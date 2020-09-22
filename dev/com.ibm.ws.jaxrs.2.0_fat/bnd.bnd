@@ -63,6 +63,7 @@ fat.project: true
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
+  restfulWS-3.0,\
   appsecurity-3.0
 
 -buildpath: \
