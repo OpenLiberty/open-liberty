@@ -19,6 +19,9 @@ localization="OSGI-INF/l10n/metatype">
     <AD id="component-id" description="%SessionMetatype.component-id.desc" name="%SessionMetatype.component-id.name" type="String" required="false" cardinality="0"/>
     <AD id="remote-home-binding-name" description="%SessionMetatype.remote-home-binding-name.desc" name="%SessionMetatype.remote-home-binding-name.name" type="String" required="false" cardinality="0"/>
     <AD id="local-home-binding-name" description="%SessionMetatype.local-home-binding-name.desc" name="%SessionMetatype.local-home-binding-name.name" type="String" required="false" cardinality="0"/>
+    <AD id="interface" description="%SessionMetatype.interface.desc" name="%SessionMetatype.interface.name" type="String" required="false" cardinality="2147483647" ibm:type="pid" ibm:reference="com.ibm.ws.javaee.dd.ejbbnd.Interface"/>
+    <AD id="interface.target" default="${servicePidOrFilter(interface)}" description="internal" name="internal" type="String" required="true" cardinality="0"/>
+
 </OCD>
 
 <Designate factoryPid="com.ibm.ws.javaee.dd.ejbbnd.Session">

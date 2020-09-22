@@ -125,6 +125,7 @@ Include-Resource: OSGI-INF/metatype=resources.gen/OSGI-INF/metatype,OSGI-INF=res
     com.ibm.ws.javaee.ddmodel.ejbbnd.InterfaceComponentImpl,\
     com.ibm.ws.javaee.ddmodel.ejbbnd.JCAAdapterComponentImpl,\
     com.ibm.ws.javaee.ddmodel.ejbbnd.MessageDrivenComponentImpl,\
+    com.ibm.ws.javaee.ddmodel.ejbbbnd.InterfaceComponentImpl,\
     com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndComponentImpl,\
     com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanComponentImpl,\
     com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupComponentImpl,\
