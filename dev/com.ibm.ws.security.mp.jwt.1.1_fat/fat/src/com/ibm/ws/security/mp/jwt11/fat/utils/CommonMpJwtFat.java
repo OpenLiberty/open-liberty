@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +25,7 @@ import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.actions.MpJwtFatActions;
@@ -37,7 +37,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
     protected final MpJwtFatActions actions = new MpJwtFatActions();
     protected final static MpJwtAppSetupUtils setupUtils = new MpJwtAppSetupUtils();
-    protected final static List<String> commonStartMsgs = Arrays.asList(MpJwtMessageConstants.CWWKS0008I_SECURITY_SERVICE_READY);
+    protected final static List<String> commonStartMsgs = CommonWaitForAppChecks.getSecurityReadyMsgs();
 
     public static enum ExpectedResult {
         GOOD, BAD
