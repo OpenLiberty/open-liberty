@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.common
 
+src: src, resources
+
 app-resources= \
   META-INF/services/javax.ws.rs.client.ClientBuilder | \
   META-INF/services/javax.ws.rs.sse.SseEventSource\$Builder | \
@@ -193,5 +195,13 @@ Include-Resource:\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	javax.activation:activation;version=1.1,\
 	com.ibm.websphere.org.osgi.core;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.websphere.javaee.mail.1.6,\
+	com.ibm.ws.org.apache.commons.io,\
+	com.ibm.ws.org.apache.commons.logging.1.0.3,\
+	com.ibm.ws.org.apache.httpcomponents,\
+	com.ibm.ws.org.glassfish.json.1.1
 
 jakartaeeMe: true
