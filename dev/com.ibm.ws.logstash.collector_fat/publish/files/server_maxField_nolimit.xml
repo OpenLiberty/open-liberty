@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
 
+    <logging traceSpecification="com.ibm.logs.TraceServlet=fine" />
+
     <!-- Enable features -->
     <featureManager>
         <feature>jsp-2.2</feature>
@@ -20,11 +22,10 @@
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true" />
 
-
-    <logstashCollector port="${LOGSTASH_PORT}" hostName="${LOGSTASH_HOST}">
+    <logstashCollector hostName="${LOGSTASH_HOST}" port="${LOGSTASH_PORT}" maxFieldLength="0" >
         <source>message</source>
         <source>trace</source>
-        <source>accessLog</source>
+        <source>ffdc</source>
     </logstashCollector>
 
     <keyStore id="defaultKeyStore" password="{xor}Lz4sLChvLTs=" />
