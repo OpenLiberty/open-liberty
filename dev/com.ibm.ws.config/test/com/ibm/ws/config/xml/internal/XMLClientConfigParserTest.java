@@ -48,7 +48,7 @@ public class XMLClientConfigParserTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
+
     }
 
     @AfterClass
@@ -74,6 +74,7 @@ public class XMLClientConfigParserTest {
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {

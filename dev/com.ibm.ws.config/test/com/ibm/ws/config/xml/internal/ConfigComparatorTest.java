@@ -46,7 +46,7 @@ public class ConfigComparatorTest {
     static WsLocationAdmin libertyLocation;
     static XMLConfigParser configParser;
     static SharedOutputManager outputMgr;
-    static ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, libertyLocation);
+    static ConfigVariableRegistry variableRegistry;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -82,6 +82,7 @@ public class ConfigComparatorTest {
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(libertyLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, libertyLocation);
     }
 
     private ServerConfiguration parseServerConfiguration(String xml) throws ConfigParserException, ConfigValidationException {

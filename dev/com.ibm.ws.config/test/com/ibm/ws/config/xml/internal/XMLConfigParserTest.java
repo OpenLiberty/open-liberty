@@ -60,7 +60,6 @@ public class XMLConfigParserTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     @AfterClass
@@ -89,6 +88,7 @@ public class XMLConfigParserTest {
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {

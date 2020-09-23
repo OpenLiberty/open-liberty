@@ -51,8 +51,6 @@ public class ChildAliasTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
-
     }
 
     @AfterClass
@@ -81,6 +79,7 @@ public class ChildAliasTest {
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     @Test
