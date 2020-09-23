@@ -68,6 +68,8 @@ public class ClientHeaderPropagationTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        GrpcServer.deleteAllDropinApplications();
+        GrpcServer.removeAllInstalledAppsForValidation();
         LOG.info("ClientHeaderPropagationTests : setUp() : add HelloWorldClient and HelloWorldService apps to the server");
         ShrinkHelper.defaultDropinApp(GrpcServer, "HelloWorldClient.war",
                                       "com.ibm.ws.grpc.fat.helloworld.client",

@@ -141,7 +141,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("testSingleWarWithGrpcService() : dropped the app in dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -201,7 +201,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -216,7 +216,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "io.grpc.examples.helloworld");
 
         // Make sure the helloworld service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application HelloWorldService started", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*HelloWorldService|CWWKZ0003I.*HelloWorldService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "HelloWorldService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -273,7 +273,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -296,7 +296,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I: The application FavoriteBeerService updated", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to update within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -399,7 +399,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
