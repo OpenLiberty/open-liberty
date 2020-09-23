@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
