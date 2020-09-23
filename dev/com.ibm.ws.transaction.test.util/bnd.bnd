@@ -18,6 +18,7 @@ Bundle-Description: Transactions Test Tools; version=${bVersion}
 Web-ContextPath: inflow
 
 test.project: true
+generate.replacement: true
 
 Export-Package:  com.ibm.tx.jta.ut.util;provide:=true
 
