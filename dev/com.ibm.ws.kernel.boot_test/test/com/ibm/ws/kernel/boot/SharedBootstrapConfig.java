@@ -55,7 +55,7 @@ public class SharedBootstrapConfig extends BootstrapConfig {
 
         BootstrapLocations locations = new BootstrapLocations();
         locations.setProcessName(serverName);
-        locations.setServerDir(rootDirStr);
+        locations.setUserDir(rootDirStr);
         this.findLocations(locations);
         this.configure(map);
     }
