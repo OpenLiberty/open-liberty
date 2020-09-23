@@ -1707,6 +1707,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         sortedConflicts.sort(new ConflictComparator()); // order by importance
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
 
+        boolean disableAllOnConflict = disableAllOnConflict(result);
         for (Entry<String, Collection<Chain>> conflict : sortedConflicts) {
             reportedErrors = true;
             // Attempt to gather two distinct features that are in conflict, here we assume we
@@ -1768,7 +1769,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                         Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR", getPreferredEePlatform(eeConflict1),
                                  getPreferredEePlatform(eeConflict2), getFeatureName(eeConflict1), getFeatureName(eeConflict2), getFeatureName(configured1),
                                  getFeatureName(configured2));
-
                         // Remove the conflicting features (not necessarily the configured features)
                         result.getResolvedFeatures().remove(getFeatureName(eeConflict1));
                         result.getResolvedFeatures().remove(getFeatureName(eeConflict2));
@@ -1786,10 +1786,55 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             for (Chain chain : conflict.getValue()) {
                 installStatus.addConflictFeature(chain.getFeatureRequirement());
             }
+        }
 
+        if (disableAllOnConflict) {
+            // Remove all features on conflicts
+            Set<String> resolved = result.getResolvedFeatures();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Conflicts found in feature set, no features will be enabled:" + String.valueOf(sortedConflicts));
+            }
+            resolved.clear();
+            Tr.warning(tc, "UPDATE_DISABLED_FEATURES_ON_CONFLICT");
         }
         return reportedErrors;
 
+    }
+
+    private boolean disableAllOnConflict(Result result) {
+        Map<String, Collection<Chain>> conflicts = result.getConflicts();
+        if (conflicts.isEmpty()) {
+            return false;
+        }
+        // First check if any features in the resolved feature set want to disable on conflict.
+        // This includes features not involved in the conflict as well as the features in the
+        // chain leading up to the conflict
+        for (String featureName : result.getResolvedFeatures()) {
+            if (shouldDisableOnConflict(featureName)) {
+                return true;
+            }
+        }
+
+        // Once we get here we know that all the features in the resolution set
+        // do not have disable on conflict set to true.
+        // But the feature conflicting feature may want to disable all features on conflict.
+        // In this case we only will disable all if all candidates want to disable for a specific chain
+        // NOTE - This is a bit of a degenerate case.  If a requiring feature only tolerates versions
+        // of a feature that disable on conflict then that feature likely should be disable on conflict also.
+        // In that case the above loop over the resolved features would have returned true already
+        for (Entry<String, Collection<Chain>> conflict : conflicts.entrySet()) {
+            for (Chain chain : conflict.getValue()) {
+                // NOTE - reverse logic here because there is no isEmpty on Optional in Java 8!
+                if (!!!chain.getCandidates().stream().filter((f) -> !!!shouldDisableOnConflict(f)).findFirst().isPresent()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldDisableOnConflict(String featureName) {
+        return featureRepository.disableAllFeaturesOnConflict(featureName);
     }
 
     private String getFeatureName(String symbolicName) {

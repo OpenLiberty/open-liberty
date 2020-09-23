@@ -35,7 +35,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 RegionProvisioningTest.class,
                 RemoteServerInclude.class,
                 EECompatibilityTest.class,
-                AlternateFeatureNamesTest.class
+                AlternateFeatureNamesTest.class,
+                DisableAllFeaturesOnConflictTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
