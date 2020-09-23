@@ -152,7 +152,7 @@ io.smallrye:smallrye-graphql-servlet:1.0.9
 io.smallrye:smallrye-graphql:1.0.9
 jakarta.activation:jakarta.activation-api:2.0.0-RC3
 jakarta.annotation:jakarta.annotation-api:2.0.0-RC1
-jakarta.authorization:jakarta.authorization-api:2.0.0-RC1
+jakarta.authorization:jakarta.authorization-api:2.0.0
 jakarta.ejb:jakarta.ejb-api:4.0.0-RC2
 jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api:2.0.0-RC2
 jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0-M4
