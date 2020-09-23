@@ -10,5 +10,9 @@
   <application location="snoop.war" />
     
   <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="simple test prereq"/>
+  
+  <widget id="foo" />
+
+  <test.app.prereq.WidgetEnabler />
 </server>
 

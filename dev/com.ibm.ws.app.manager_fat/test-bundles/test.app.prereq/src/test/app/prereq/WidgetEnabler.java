@@ -16,11 +16,18 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
 @Component(service = WidgetEnabler.class, configurationPolicy = REQUIRE)
 public class WidgetEnabler {
     @Activate
     public WidgetEnabler(Map<String, Object> props) {
-        System.out.println("### Creating widget enabler");
+        System.out.println("### created WidgetEnabler");
     }
+
+    @Deactivate
+    public void deactivate() {
+        System.out.println("### deactivated WidgetEnabler");
+    }
+
 }
