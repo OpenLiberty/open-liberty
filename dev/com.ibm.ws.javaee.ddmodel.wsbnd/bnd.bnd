@@ -40,17 +40,17 @@ Include-Resource: \
   schemas=resources/schemas
   
 -buildpath: \
-	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.adaptable.module;version=latest,\
-	com.ibm.ws.artifact;version=latest,\
-	com.ibm.ws.artifact.overlay;version=latest,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.ws.javaee.dd.common;version=latest,\
-	com.ibm.ws.javaee.ddmodel;version=latest,\
-	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest, \
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.config;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.ws.javaee.dd.common;version=latest,\
+    com.ibm.ws.javaee.dd;version=latest,\
+    com.ibm.ws.javaee.ddmodel;version=latest,\
+    com.ibm.websphere.appserver.spi.logging;version=latest,\
+    com.ibm.ws.artifact;version=latest,\
+    com.ibm.ws.artifact.overlay;version=latest,\
+    com.ibm.ws.adaptable.module;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.config;version=latest

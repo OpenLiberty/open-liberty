@@ -14,7 +14,7 @@ bVersion=1.0
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	com.ibm.ws.javaee.ddmodel;version=latest,\
-	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.ws.javaee.ddmetadata.annotation;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+    com.ibm.ws.javaee.ddmetadata.annotation;version=latest,\
+    com.ibm.ws.javaee.dd;version=latest,\
+    com.ibm.ws.javaee.ddmodel;version=latest,\
+    com.ibm.ws.kernel.service;version=latest
