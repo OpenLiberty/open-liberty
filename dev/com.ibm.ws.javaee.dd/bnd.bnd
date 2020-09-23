@@ -43,8 +43,8 @@ Export-Package: \
     com.ibm.ws.javaee.dd.web.common, \
     com.ibm.ws.javaee.dd.webbnd, \
     com.ibm.ws.javaee.dd.webext
-    
+
 -buildpath: \
-	com.ibm.ws.javaee.ddmetadata.annotation;version=latest,\
-	com.ibm.ws.javaee.dd.common;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.ws.javaee.ddmetadata.annotation;version=latest, \
+    com.ibm.ws.javaee.dd.common;version=latest

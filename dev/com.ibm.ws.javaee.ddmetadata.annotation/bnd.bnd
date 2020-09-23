@@ -12,6 +12,3 @@
 bVersion=1.0
 
 publish.wlp.jar.disabled: true
-
--buildpath: \
-	com.ibm.ws.logging.core
