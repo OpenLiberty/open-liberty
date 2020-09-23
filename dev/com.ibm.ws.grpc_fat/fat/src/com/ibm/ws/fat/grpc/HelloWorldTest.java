@@ -58,7 +58,9 @@ public class HelloWorldTest extends HelloWorldBasicTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        helloWorldServer.stopServer();
+        if (helloWorldServer != null && helloWorldServer.isStarted()) {
+            helloWorldServer.stopServer();
+        }
     }
 
     @Before

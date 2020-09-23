@@ -99,18 +99,33 @@ public class ClientConfigTests extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // Stop the servers
-        if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
-            /*
-             * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
-             * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
-             * SRVE0777E: "Exception thrown by application class..." expected with invalid config settings
-             */
-            GrpcClientOnly.stopServer("CWWKG0083W", "CWWKG0076W", "SRVE0777E");
+        Exception excep = null;
+
+        try {
+            if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
+                /*
+                 * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
+                 * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
+                 * SRVE0777E: "Exception thrown by application class..." expected with invalid config settings
+                 */
+                GrpcClientOnly.stopServer("CWWKG0083W", "CWWKG0076W", "SRVE0777E");
+            }
+        } catch (Exception e) {
+            excep = e;
+            Log.error(c, "GrpcClientOnly tearDown", e);
         }
-        if (GrpcServerOnly != null && GrpcServerOnly.isStarted()) {
-            GrpcServerOnly.stopServer();
+
+        try {
+            if (GrpcServerOnly != null && GrpcServerOnly.isStarted())
+                GrpcServerOnly.stopServer();
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "GrpcServerOnly tearDown", e);
         }
+
+        if (excep != null)
+            throw excep;
     }
 
     /**
