@@ -16,5 +16,5 @@ Subsystem-Category: JakartaEE9Application
 -bundles=com.ibm.ws.ejbcontainer.mdb.jakarta, \
  io.openliberty.ejbcontainer.v40.internal
 Subsystem-Name: Message-Driven Beans 4.0
-kind=noship
-edition=full
+kind=beta
+edition=base
