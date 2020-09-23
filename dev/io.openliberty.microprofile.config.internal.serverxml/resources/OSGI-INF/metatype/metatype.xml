@@ -20,7 +20,7 @@
 </Designate>
 
 <OCD id="com.ibm.ws.appconfig.appProperties" ibm:childAlias="appProperties"  ibm:parentPid="com.ibm.ws.app.manager" ibm:supportHiddenExtensions="true" name="%appProperties" description="%appProperties.desc" >
-    <AD id="property" name="%property" ibm:type="pid" ibm:reference="com.ibm.ws.appconfig.appProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%property.desc"/>
+    <AD id="property" name="%property" ibm:type="pid" ibm:flat="true" ibm:reference="com.ibm.ws.appconfig.appProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%property.desc"/>
     <AD id="id" type="String" default="appProperties" ibm:final="true" name="internal" description="internal use only"/>
 </OCD>
 

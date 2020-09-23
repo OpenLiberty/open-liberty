@@ -12,20 +12,14 @@ package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
-import java.util.SortedSet;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 
@@ -56,53 +50,31 @@ import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 public class AppPropertyConfigSource extends InternalConfigSource implements ConfigSource { //extends InternalConfigSource implements DynamicConfigSource {
 
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
+    private final PrivilegedAction<String> getApplicationPidAction = new GetApplicationPidAction();
     private BundleContext bundleContext;
     private String applicationName;
-    private final ConfigAction configAction;
-    private ConfigurationAdmin configurationAdmin;
     private String applicationPID;
 
     public AppPropertyConfigSource() {
         super(ServerXMLConstants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
-        this.configAction = new ConfigAction();
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getProperties() {
-        Map<String, String> props = new HashMap<String, String>();
 
-        SortedSet<Configuration> osgiConfigs = null;
-
+        String appPid;
         if (System.getSecurityManager() == null) {
-            osgiConfigs = getOSGiConfigurations();
+            appPid = getApplicationPID();
         } else {
-            osgiConfigs = AccessController.doPrivileged(this.configAction);
+            appPid = AccessController.doPrivileged(getApplicationPidAction);
         }
 
-        if (osgiConfigs != null) {//osgiConfigs could be null if not inside an OSGi framework, e.g. unit test
-            for (Configuration osgiConfig : osgiConfigs) {
-                // Locate name/value pairs in the config objects and place them in the map.
-                Dictionary<String, Object> dict = osgiConfig.getProperties();
-                Enumeration<String> keys = dict.keys();
-
-                Object myKey = null;
-                Object myValue = null;
-                while (keys.hasMoreElements()) {
-                    String key = keys.nextElement();
-
-                    if (key.equals("name"))
-                        myKey = dict.get(key);
-                    if (key.equals("value"))
-                        myValue = dict.get(key);
-                    if (myKey != null && myValue != null) {
-                        props.put(myKey.toString(), myValue.toString());
-                    }
-                }
-            }
+        if (appPid != null) {
+            return AppPropertiesTrackingComponent.getAppProperties(appPid);
+        } else {
+            return Collections.emptyMap();
         }
-
-        return props;
     }
 
     private BundleContext getBundleContext() {
@@ -110,21 +82,6 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Con
             this.bundleContext = OSGiConfigUtils.getBundleContext(getClass());
         }
         return this.bundleContext;
-    }
-
-    @FFDCIgnore(InvalidFrameworkStateException.class)
-    protected ConfigurationAdmin getConfigurationAdmin() {
-        if (this.configurationAdmin == null) {
-            BundleContext bundleContext = getBundleContext();
-            if (bundleContext != null) {
-                try {
-                    this.configurationAdmin = OSGiConfigUtils.getConfigurationAdmin(bundleContext);
-                } catch (InvalidFrameworkStateException e) {
-                    //OSGi framework is shutting down, ignore and return null;
-                }
-            }
-        }
-        return this.configurationAdmin;
     }
 
     private String getApplicationName() {
@@ -141,43 +98,17 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Con
         if (this.applicationPID == null) {
             BundleContext bundleContext = getBundleContext();
             if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                this.applicationPID = OSGiConfigUtils.getApplicationPID(bundleContext, applicationName);
+                this.applicationPID = OSGiConfigUtils.getApplicationPID(bundleContext, getApplicationName());
             }
         }
         return this.applicationPID;
     }
 
-    private class ConfigAction implements PrivilegedAction<SortedSet<Configuration>> {
-
-        /** {@inheritDoc} */
+    private class GetApplicationPidAction implements PrivilegedAction<String> {
         @Override
-        public SortedSet<Configuration> run() {
-            return getOSGiConfigurations();
+        public String run() {
+            return getApplicationPID();
         }
-
-    }
-
-    private SortedSet<Configuration> getOSGiConfigurations() {
-        SortedSet<Configuration> osgiConfigs = null;
-        BundleContext bundleContext = getBundleContext();
-        if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-
-            ConfigurationAdmin configurationAdmin = getConfigurationAdmin();
-            if (configurationAdmin != null) {
-
-                String applicationName = getApplicationName();
-
-                //if the Config is being obtained outside the context of an application then the applicationName may be null
-                //in which case there are no applicable application configuration elements to return
-                if (applicationName != null) {
-                    String applicationPID = getApplicationPID();
-                    if (applicationPID != null) {
-                        osgiConfigs = OSGiConfigUtils.getConfigurations(configurationAdmin, applicationPID);
-                    }
-                }
-            }
-        }
-        return osgiConfigs;
     }
 
 }
