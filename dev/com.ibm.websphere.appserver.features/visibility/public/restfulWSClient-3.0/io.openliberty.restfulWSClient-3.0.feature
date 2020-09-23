@@ -24,6 +24,6 @@ Subsystem-Name: Java RESTful Services Client 3.0
   com.ibm.ws.org.apache.commons.codec.1.3, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 #  io.openliberty.org.jboss.resteasy.common, \ # will need to use the transformed version
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

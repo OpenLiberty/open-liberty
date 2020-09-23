@@ -23,6 +23,6 @@ Subsystem-Name: Internal Java RESTful Services 3.0
 -bundles=\
  io.openliberty.org.jboss.resteasy.common.jakarta, \ 
  com.ibm.ws.org.jboss.logging
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

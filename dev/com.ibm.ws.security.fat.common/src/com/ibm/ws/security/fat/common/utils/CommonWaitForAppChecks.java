@@ -27,7 +27,7 @@ public class CommonWaitForAppChecks {
         return waitForMessages;
     }
 
-    public static List<String> getBasicSecurityReadyMsgs() throws Exception {
+    public static List<String> getBasicSecurityReadyMsgs() {
         List<String> waitForMessages = new ArrayList<String>();
         return getBasicSecurityReadyMsgs(waitForMessages);
     }

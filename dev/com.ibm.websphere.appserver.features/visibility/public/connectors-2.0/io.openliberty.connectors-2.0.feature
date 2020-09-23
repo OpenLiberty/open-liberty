@@ -13,5 +13,5 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.app.manager.rar, \
  com.ibm.ws.jca.1.7.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=base

@@ -1,5 +1,4 @@
 com.googlecode.jsontoken:jsontoken:1.1.0-ibm-s20140416-2113
-com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4
 com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws.internal.prereq.java:java.ibmjgssprovider:1.8.0
 com.ibm.ws.internal.prereq.java:java.rtSunKrb5:1.8.0
@@ -58,13 +57,13 @@ com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.266b699c58
 com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.266b699c58
 com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.266b699c58
 com.ibm.ws.org.apache:xalan:2.7.2
-com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.9.13
 com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2

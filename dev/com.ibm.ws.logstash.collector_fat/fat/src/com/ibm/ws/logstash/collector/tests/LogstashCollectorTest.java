@@ -12,8 +12,22 @@ package com.ibm.ws.logstash.collector.tests;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.ClassRule;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -45,10 +59,15 @@ public abstract class LogstashCollectorTest {
     public static final String KEY_STACKTRACE = "stackTrace";
     public static final String ENTRY = "Entry";
     public static final String EXIT = "Exit";
+    public static final String MESSAGE_PREFIX = "Test Logstash Message";
+    public static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
+    public static final int DEFAULT_TIMEOUT = 30 * 1000; // 30 seconds
 
     protected abstract LibertyServer getServer();
 
     private static String APP_URL = null;
+
+    private static CopyOnWriteArrayList<String> logstashOutput = new CopyOnWriteArrayList<String>();
 
     protected void setConfig(String conf) throws Exception {
         Log.info(c, "setConfig entry", conf);
@@ -57,6 +76,7 @@ public abstract class LogstashCollectorTest {
         assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 10000));
         String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 10000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
+        waitForStringInContainerOutput("CWWKG0017I|CWWKG0018I");
         Log.info(c, "setConfig exit", conf);
     }
 
@@ -144,4 +164,102 @@ public abstract class LogstashCollectorTest {
         return APP_URL;
     }
 
+    // Can be added to the FATSuite to make the resource lifecycle bound to the entire
+    // FAT bucket. Or, you can add this to any JUnit test class and the container will
+    // be started just before the @BeforeClass and stopped after the @AfterClass
+    @ClassRule
+    public static GenericContainer<?> logstashContainer = new GenericContainer<>(new ImageFromDockerfile() //
+                    .withDockerfileFromBuilder(builder -> builder.from("docker.elastic.co/logstash/logstash:7.2.0") //
+                                    .copy("/usr/share/logstash/pipeline/logstash.conf", "/usr/share/logstash/pipeline/logstash.conf") //
+                                    .copy("/usr/share/logstash/config/logstash.yml", "/usr/share/logstash/config/logstash.yml") //
+                                    .copy("/usr/share/logstash/config/logstash.key", "/usr/share/logstash/config/logstash.key") //
+                                    .copy("/usr/share/logstash/config/logstash.crt", "/usr/share/logstash/config/logstash.crt") //
+                                    .build()) //
+                    .withFileFromFile("/usr/share/logstash/pipeline/logstash.conf", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.conf"), 644) //
+                    .withFileFromFile("/usr/share/logstash/config/logstash.yml", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.yml"), 644) //
+                    .withFileFromFile("/usr/share/logstash/config/logstash.key", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.key"), 644) //
+                    .withFileFromFile("/usr/share/logstash/config/logstash.crt", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.crt"), 644)) //
+                                    .withExposedPorts(5043) //
+                                    .withLogConsumer(LogstashCollectorTest::log); //
+
+    // This helper method is passed into `withLogConsumer()` of the container
+    // It will consume all of the logs (System.out) of the container, which we will
+    // use to pipe container output to our standard FAT output logs (output.txt)
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        logstashOutput.add(msg);
+        Log.info(c, "logstashContainer", msg);
+    }
+
+    protected static void clearContainerOutput() {
+        logstashOutput.clear();
+        Log.info(c, "clearContainerOutput", "cleared logstashOutput");
+    }
+
+    protected static int getContainerOutputSize() {
+        return logstashOutput.size();
+    }
+
+    protected static int waitForContainerOutputSize(int size) {
+        int timeout = DEFAULT_TIMEOUT;
+        while (timeout > 0) {
+            if (getContainerOutputSize() >= size) {
+                return size;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            timeout -= 1000;
+        }
+        return getContainerOutputSize();
+    }
+
+    protected static String waitForStringInContainerOutput(String regex) {
+        Log.info(c, "waitForStringInOutput", "looking for " + regex);
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher;
+        int timeout = DEFAULT_TIMEOUT;
+
+        while (timeout > 0) {
+            Iterator<String> it = logstashOutput.iterator();
+            while (it.hasNext()) {
+                String line = it.next();
+                matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    return line;
+                }
+            }
+            timeout -= 1000;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+        }
+        return null; // timed out and not found
+    }
+
+    protected static String findStringInContainerOutput(String str) {
+        Iterator<String> it = logstashOutput.iterator();
+        while (it.hasNext()) {
+            String line = it.next();
+            if (line.contains(str)) {
+                return line;
+            }
+        }
+        return null; // not found
+    }
+
+    protected static List<JSONObject> parseJsonInContainerOutput() throws JSONException {
+        ArrayList<JSONObject> list = new ArrayList<JSONObject>();
+        Iterator<String> it = logstashOutput.iterator();
+        while (it.hasNext()) {
+            String line = it.next();
+            JSONObject jobj = new JSONObject(line);
+            list.add(jobj);
+        }
+        return list;
+    }
 }

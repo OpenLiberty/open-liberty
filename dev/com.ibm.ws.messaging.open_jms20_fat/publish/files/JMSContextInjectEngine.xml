@@ -1,0 +1,26 @@
+<server>
+
+  <featureManager>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+
+    <feature>timedexit-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!-- Deconflict the engine server default http endpoint port configuration from the client configuration. -->
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
+
+  <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
+  <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}"/> 
+
+  <variable name="onError" value="FAIL"/>
+
+  <messagingEngine id="defaultME">
+    <queue id="QUEUE1" maxRedeliveryCount="2"/>
+    <topicSpace id="NewTopic1"/>
+  </messagingEngine>
+
+</server>

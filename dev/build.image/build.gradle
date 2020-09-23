@@ -619,7 +619,19 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJakartaee9Beta
 
+    // Generate checksums
+    task genZipChecksums() {
+        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile3, zipOpenLibertyMicroProfile4, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
+        doLast {
+          generateZipChecksums(ant)
+          ant.calcZipChecksums(installRoot:"${distsDir}") {}
+        }
+    }   
+    publish.dependsOn genZipChecksums
+
 }
+
+
 
 clean.doLast {
     file('wlp').deleteDir()

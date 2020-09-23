@@ -22,13 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/*")
 public class LogstashServlet extends HttpServlet {
 
-    /*
-     * @Override
-     * public void init(ServletConfig config) throws ServletException
-     * {
-     * ServletContext sc = getServletContext();
-     * }
-     */
+    private static final long serialVersionUID = 1L;
     String loggerName = "com.ibm.logs.LogstashServlet";
     String logMessage = "Test Logstash Message";
     String isFFDC = "false";
