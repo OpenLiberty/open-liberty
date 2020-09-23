@@ -52,9 +52,13 @@ Import-Package: \
 
 instrument.disabled: true
 
+# The coordinator jar is added via includeresource, as it means that non-class files get
+# pulled in, specifically the the jbossts properties file
+-includeresource: \
+  @${repo;org.jboss.narayana.rts:lra-coordinator-jar;5.10.6.Final;EXACT}!/!(META-INF/*)
+
 -buildpath: \
   org.jboss.logging:jboss-logging;version=3.4.1.Final, \
-  org.jboss.narayana.rts:lra-coordinator-jar;version=${narayanaVersion}.Final, \
   org.jboss.narayana.arjunacore:arjuna;version=${narayanaVersion}.Final, \
   org.jboss.narayana:common;version=${narayanaVersion}.Final, \
   org.jboss.narayana.rts:lra-service-base;version=${narayanaVersion}.Final, \
