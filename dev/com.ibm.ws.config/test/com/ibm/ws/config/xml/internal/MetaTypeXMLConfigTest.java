@@ -31,6 +31,7 @@ import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.metatype.MetaTypeFactory;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -56,7 +57,7 @@ public class MetaTypeXMLConfigTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     @AfterClass

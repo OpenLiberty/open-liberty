@@ -34,6 +34,7 @@ import org.junit.Test;
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.SymbolRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -59,7 +60,7 @@ public class XMLConfigParserTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     @AfterClass

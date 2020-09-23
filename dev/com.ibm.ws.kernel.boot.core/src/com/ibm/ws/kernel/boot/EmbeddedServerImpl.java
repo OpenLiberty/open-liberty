@@ -207,7 +207,14 @@ public class EmbeddedServerImpl implements Server {
         // Find location will throw standard exceptions w/ translated messages
         // for bad serverName or bad directories.  Workareas for a server and
         // embedded server instances launched by admin utilities must be separate.
-        bootProps.findLocations(serverName, userDirPath, outputDirPath, logDirPath, null, workareaDirStr);
+        BootstrapLocations locations = new BootstrapLocations();
+        locations.setProcessName(serverName);
+        locations.setUserDir(userDirPath);
+        locations.setUserDir(outputDirPath);
+        locations.setLogDir(logDirPath);
+        locations.setWorkAreaDir(workareaDirStr);
+
+        bootProps.findLocations(locations);
 
         // PI20344 - 2014/06/16:  Setting a couple of java properties that are needed by the
         // com.ibm.ws.kernel.boot.cmdline.Utils class, which expects to have been launched from the

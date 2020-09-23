@@ -12,6 +12,7 @@ package com.ibm.ws.config.xml.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -25,6 +26,8 @@ import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.ConfigComparator.ComparatorResult;
+import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -34,7 +37,7 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 /**
  *
  */
-class ConfigRefresher {
+public class ConfigRefresher {
 
     static final TraceComponent tc = Tr.register(ConfigRefresher.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
@@ -51,11 +54,11 @@ class ConfigRefresher {
     private Collection<Future<?>> futuresForChanges = null;
 
     ConfigRefresher(BundleContext bundleContext,
-                    ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig) {
+                    ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig, ConfigVariableRegistry variableRegistry) {
         this.changeHandler = changeHandler;
         this.serverXMLConfig = serverXMLConfig;
 
-        this.configurationMonitor = new ConfigurationMonitor(bundleContext, serverXMLConfig, this);
+        this.configurationMonitor = new ConfigurationMonitor(bundleContext, serverXMLConfig, this, variableRegistry);
 
         runtimeUpdateManagerTracker = new ServiceTracker<RuntimeUpdateManager, RuntimeUpdateManager>(bundleContext, RuntimeUpdateManager.class.getName(), null);
         runtimeUpdateManagerTracker.open();
@@ -76,7 +79,11 @@ class ConfigRefresher {
         runtimeUpdateManagerTracker.close();
     }
 
-    synchronized void refreshConfiguration() {
+    public void refreshConfiguration() {
+        doRefresh(null);
+    }
+
+    private synchronized void doRefresh(Map<String, DeltaType> variableDelta) {
         if (FrameworkState.isStopping()) {
             // if the framework is stopping, just ignore incoming events
             return;
@@ -96,7 +103,7 @@ class ConfigRefresher {
                 return;
             }
 
-            ComparatorResult result = compareConfigurations(serverXMLConfig.getConfiguration(), newConfiguration);
+            ComparatorResult result = compareConfigurations(serverXMLConfig.getConfiguration(), newConfiguration, variableDelta);
 
             // Error condition -- A result with no changes will have result.hasDelta() == false
             if (result == null) {
@@ -131,8 +138,8 @@ class ConfigRefresher {
         }
     }
 
-    private ComparatorResult compareConfigurations(ServerConfiguration serverConfiguration, ServerConfiguration newConfiguration) {
-        ConfigComparator comparator = new ConfigComparator(serverConfiguration, newConfiguration, metatypeTracker.getService());
+    private ComparatorResult compareConfigurations(ServerConfiguration serverConfiguration, ServerConfiguration newConfiguration, Map<String, DeltaType> variableDelta) {
+        ConfigComparator comparator = new ConfigComparator(serverConfiguration, newConfiguration, metatypeTracker.getService(), variableDelta);
 
         ComparatorResult result;
         try {
@@ -249,5 +256,11 @@ class ConfigRefresher {
             timeoutNanos -= (endTime - startTime);
         }
         return true;
+    }
+
+    // Entry point for refreshing configuration because of changes in file system variables
+    public void variableRefresh(Map<String, DeltaType> deltaMap) {
+        doRefresh(deltaMap);
+
     }
 }
