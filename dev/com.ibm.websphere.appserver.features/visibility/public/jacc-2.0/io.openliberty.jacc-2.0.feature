@@ -13,7 +13,7 @@ IBM-Install-Policy: when-satisfied
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=io.openliberty.jakarta.jacc.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authorization:jakarta.authorization-api:2.0.0-RC1", \
+-bundles=io.openliberty.jakarta.jacc.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authorization:jakarta.authorization-api:2.0.0", \
  io.openliberty.security.authorization.internal.jacc, \
  com.ibm.ws.security.audit.utils
 kind=beta

@@ -21,4 +21,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.authorization:jakarta.authorization-api;version=2.0.0.RC1
+	jakarta.authorization:jakarta.authorization-api;version=2.0.0
