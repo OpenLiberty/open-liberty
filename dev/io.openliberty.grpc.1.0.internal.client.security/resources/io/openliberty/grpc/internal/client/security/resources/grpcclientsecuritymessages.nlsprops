@@ -16,10 +16,10 @@
 #NLS_ENCODING=UNICODE
 # NLS_MESSAGEFORMAT_VAR
 
-invalid.ssl.protocol=CWWKT0305W: The SSL protocol {0} configured in {1} is not valid for gRPC. TLSv1.2 or stronger must be used.
+invalid.ssl.protocol=CWWKT0305W: The SSL protocol {0} configured in {1} is not valid for gRPC. TLSv1.2 or later must be used.
 invalid.ssl.protocol.explanation=The configured SSL protocol is not valid for gRPC.
-invalid.ssl.protocol.useraction=Configure a SSL protocol value of TLSv1.2 or stronger.
+invalid.ssl.protocol.useraction=Configure a SSL protocol value of TLSv1.2 or later.
 
-client.ssl.failed=CWWKT0306W: Could not create a gRPC client SSL connection with SSL reference {0} due to {1}.
+client.ssl.failed=CWWKT0306W: A gRPC client SSL connection wasn't created with the {0} SSL reference because of {1}.
 client.ssl.failed.explanation=The gRPC client SSL context creation failed.
 client.ssl.failed.useraction=Configure valid SSL properties for gRPC.
