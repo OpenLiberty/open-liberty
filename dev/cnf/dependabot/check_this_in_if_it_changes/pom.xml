@@ -18,32 +18,12 @@
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd.gradle</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.transform</artifactId>
       <version>5.1.1</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bndlib</artifactId>
-      <version>4.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.repository</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.resolve</artifactId>
       <version>4.3.0</version>
     </dependency>
     <dependency>
@@ -207,11 +187,6 @@
       <version>3.13.0</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.java-diff-utils</groupId>
-      <artifactId>diffutils</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-    <dependency>
       <groupId>com.graphql-java</groupId>
       <artifactId>graphql-java</artifactId>
       <version>14.0</version>
@@ -282,24 +257,9 @@
       <version>8.2.1.jre8</version>
     </dependency>
     <dependency>
-      <groupId>com.netflix.archaius</groupId>
-      <artifactId>archaius2-api</artifactId>
-      <version>2.1.10</version>
-    </dependency>
-    <dependency>
-      <groupId>com.netflix.archaius</groupId>
-      <artifactId>archaius2-core</artifactId>
-      <version>2.1.10</version>
-    </dependency>
-    <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
       <version>4.23</version>
-    </dependency>
-    <dependency>
-      <groupId>com.openpojo</groupId>
-      <artifactId>openpojo</artifactId>
-      <version>0.8.4</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.ojdbc</groupId>
@@ -435,11 +395,6 @@
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>policy</artifactId>
       <version>2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.unboundid</groupId>
-      <artifactId>unboundid-ldapsdk</artifactId>
-      <version>4.0.14</version>
     </dependency>
     <dependency>
       <groupId>com.unboundid</groupId>
@@ -1065,11 +1020,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>logstash</groupId>
-      <artifactId>logstash</artifactId>
-      <version>5.5.0</version>
     </dependency>
     <dependency>
       <groupId>net.minidev</groupId>
