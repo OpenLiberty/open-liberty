@@ -8,19 +8,19 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="FAT configuration for gRPC Server with no grpc elements">
+<server description="FAT configuration for gRPC client with keepAliveWithoutCalls true">
     <featureManager>
         <feature>grpcClient-1.0</feature>
-     </featureManager>
-
+    </featureManager>
+	 
 	<httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
-    
+                  
     <include location="../fatTestCommon.xml"/>
     
-    <grpcClient host="*" maxInboundMessageSize="12" keepAliveTime="120" keepAliveTimeout="360" />
+    <grpcClient host="*" keepAliveWithoutCalls="true" keepAliveTime="120" keepAliveTimeout="360" />
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>
