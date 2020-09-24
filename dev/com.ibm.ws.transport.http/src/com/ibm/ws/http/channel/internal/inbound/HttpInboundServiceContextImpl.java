@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,7 +89,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private boolean suppress0ByteChunk = false;
 
     private final Object syncBodyBufferAccess = new Object() {};
-    private int syncBodyBufferAccessCount = 0;
+    private final int syncBodyBufferAccessCount = 0;
     private final int SYNC_BODY_BUFFER_WAIT_MSEC = 3000;
 
     /**
@@ -1528,6 +1529,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return buffer;
     }
 
+    ReentrantLock gateKeeper = new ReentrantLock();
+
     /**
      * This gets the next body buffer asynchronously. If the body is encoded
      * or compressed, then the encoding is removed and the "next" buffer
@@ -1555,36 +1558,31 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     @Override
     public VirtualConnection getRequestBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getRequestBodyBuffer(async)");
+            Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
+        }
+
+        // we don't want different thread using this method at the same time, but the same thread may be
+        // re-entering this method.  We also can't deadlock by synchronizing the whole method.
+        if (!gateKeeper.tryLock()) {
+            // another thread has the lock, wait to be notify, but go on after the wait time so as not to deadlock
+            synchronized (syncBodyBufferAccess) {
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "dual thread entry into getRequestBodyBuffer, this thread is going to wait");
+                    }
+                    syncBodyBufferAccess.wait(SYNC_BODY_BUFFER_WAIT_MSEC);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "wait is over");
+                    }
+                } catch (InterruptedException x) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "wait is over - interruptedException");
+                    }
+                }
+            }
         }
 
         try {
-            // GRPC testing showed two threads in this method at the same time, which is wrong, so safe-guaading
-            // against that while not synchronizing the whole method and risking a deadlock by calling into other
-            // code while holding onto a lock.
-            synchronized (syncBodyBufferAccess) {
-                if (syncBodyBufferAccessCount > 0) {
-                    try {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "dual thread entry into getRequestBodyBuffer, this thread is going to wait");
-                        }
-
-                        // should get notified right away, unless the other thread is delayed, at which point we can't
-                        // deadlock so will have to go on.
-                        syncBodyBufferAccess.wait(SYNC_BODY_BUFFER_WAIT_MSEC);
-
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "wait is over");
-                        }
-                    } catch (InterruptedException x) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "wait is over - interruptedException");
-                        }
-                    }
-                }
-                syncBodyBufferAccessCount++;
-            }
-
             if (!headersParsed()) {
                 // request message must have the headers parsed prior to attempting
                 // to read a body (this is a completely invalid state in the channel
@@ -1656,9 +1654,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
             return null;
         } finally {
+            gateKeeper.unlock();
             synchronized (syncBodyBufferAccess) {
-                syncBodyBufferAccessCount--;
                 syncBodyBufferAccess.notify();
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestBodyBuffer(async) exit finally. hc: " + this.hashCode());
             }
         }
     }
