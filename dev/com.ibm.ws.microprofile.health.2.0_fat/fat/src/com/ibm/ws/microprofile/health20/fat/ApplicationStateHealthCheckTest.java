@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -281,7 +282,8 @@ public class ApplicationStateHealthCheckTest {
             for (File file : libsDir.listFiles()) {
                 server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
             }
-            ShrinkHelper.exportAppToServer(server, app);
+            //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
+            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
         } else {
             ShrinkHelper.exportDropinAppToServer(server, app);
         }

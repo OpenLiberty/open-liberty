@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -73,7 +74,7 @@ public class DelayedVariableTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.config.variables.jar");
 
         WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
-        ShrinkHelper.exportAppToServer(server, varmergeApp);
+        ShrinkHelper.exportAppToServer(server, varmergeApp, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer("delayedVariables.log");
         //make sure the URL is available

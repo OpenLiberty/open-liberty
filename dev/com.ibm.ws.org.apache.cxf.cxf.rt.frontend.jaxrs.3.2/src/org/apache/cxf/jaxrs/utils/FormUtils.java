@@ -49,9 +49,9 @@ import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.jaxrs.impl.MetadataMap;
 import org.apache.cxf.jaxrs.provider.FormEncodingProvider;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -161,9 +161,7 @@ public final class FormUtils {
                                              String postBody,
                                              String enc,
                                              boolean decode) {
-        //Liberty code change start
-        HttpServletRequest request = (HttpServletRequest)((MessageImpl) m).getHttpRequest();
-        //Liberty code change end
+        HttpServletRequest request = (HttpServletRequest)m.get(AbstractHTTPDestination.HTTP_REQUEST);
         populateMapFromString(params, m, postBody, enc, decode, request);
         
     }
@@ -296,7 +294,7 @@ public final class FormUtils {
         // Liberty Change Start
         String contentType = (String) m.get(Message.CONTENT_TYPE);
         return (contentType != null && contentType.toLowerCase().startsWith(MediaType.APPLICATION_FORM_URLENCODED))
-            && HttpMethod.POST.equals(((MessageImpl) m).getHttpRequestMethod());
+            && HttpMethod.POST.equals(m.get(Message.HTTP_REQUEST_METHOD));
         // Liberty Change End
     }
 }

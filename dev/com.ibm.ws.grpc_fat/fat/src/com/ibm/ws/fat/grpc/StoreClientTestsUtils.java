@@ -16,23 +16,168 @@ import static org.junit.Assert.fail;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
 /**
- *
+ * this class is utils class for Store producer and consumer Servlet client tests
  */
 public class StoreClientTestsUtils {
 
     protected static final Class<?> c = StoreClientTestsUtils.class;
 
+    /**
+     * @param server
+     * @param archive
+     * @throws Exception
+     */
+    public static void addStoreApp(LibertyServer server, boolean archive) throws Exception {
+
+        WebArchive store_war = null;
+
+        try {
+            // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
+            store_war = ShrinkHelper.defaultApp(server, "StoreApp.war",
+                                                "com.ibm.testapp.g3store.cache",
+                                                "com.ibm.testapp.g3store.exception",
+                                                "com.ibm.testapp.g3store.interceptor",
+                                                "com.ibm.testapp.g3store.grpcservice",
+                                                "com.ibm.testapp.g3store.servletStore",
+                                                "com.ibm.testapp.g3store.utilsStore",
+                                                "com.ibm.test.g3store.grpc"); // add generated src
+        } catch (Exception e) {
+
+            Log.info(c, "addStoreApp", "Unable to add the StoreApp.");
+            throw e;
+        }
+
+        if (archive)
+            ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreServer/");
+
+    }
+
+    /**
+     * @param server
+     * @param archive
+     * @throws Exception
+     */
+    public static void addProducerApp(LibertyServer server, boolean archive) throws Exception {
+
+        WebArchive producer_war = null;
+
+        try {
+            producer_war = ShrinkHelper.defaultDropinApp(server, "StoreProducerApp.war",
+                                                         "com.ibm.testapp.g3store.grpcProducer.api",
+                                                         "com.ibm.testapp.g3store.exception",
+                                                         "com.ibm.testapp.g3store.restProducer",
+                                                         "com.ibm.testapp.g3store.restProducer.api",
+                                                         "com.ibm.testapp.g3store.restProducer.model",
+                                                         "com.ibm.testapp.g3store.restProducer.client",
+                                                         "com.ibm.testapp.g3store.servletProducer",
+                                                         "com.ibm.testapp.g3store.utilsProducer",
+                                                         "com.ibm.ws.fat.grpc.monitoring",
+                                                         "com.ibm.test.g3store.grpc"); // add generated src
+        } catch (Exception e) {
+
+            Log.info(c, "addProducerApp", "Unable to add the ProducerApp.");
+            throw e;
+        }
+        if (archive)
+            ShrinkHelper.exportArtifact(producer_war, "publish/savedApps/ProducerServer/");
+
+    }
+
+    /**
+     * @param server
+     * @param archive
+     * @throws Exception
+     */
+    public static void addConsumerApp_RestClient(LibertyServer server, boolean archive) throws Exception {
+
+        WebArchive consumer_restclient_war = null;
+
+        try {
+            // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
+            // The consumer tests needs to create data also , we will need to add producer files also
+
+            // the consumer_war in servlet client is different than one created in REST client
+            consumer_restclient_war = ShrinkHelper.defaultApp(server, "StoreConsumerApp.war",
+                                                              "com.ibm.testapp.g3store.grpcConsumer.api",
+                                                              "com.ibm.testapp.g3store.grpcConsumer.security",
+                                                              "com.ibm.testapp.g3store.exception",
+                                                              "com.ibm.testapp.g3store.restConsumer",
+                                                              "com.ibm.testapp.g3store.restConsumer.api",
+                                                              "com.ibm.testapp.g3store.restConsumer.model",
+                                                              "com.ibm.testapp.g3store.servletConsumer",
+                                                              "com.ibm.testapp.g3store.utilsConsumer",
+                                                              "com.ibm.testapp.g3store.restConsumer.client",
+                                                              "com.ibm.testapp.g3store.grpcProducer.api",
+                                                              "com.ibm.testapp.g3store.restProducer",
+                                                              "com.ibm.testapp.g3store.restProducer.api",
+                                                              "com.ibm.testapp.g3store.restProducer.model",
+                                                              "com.ibm.testapp.g3store.servletProducer",
+                                                              "com.ibm.test.g3store.grpc", // add generated src
+                                                              "com.ibm.testapp.g3store.restProducer.client");
+        } catch (Exception e) {
+
+            Log.info(c, "addConsumerApp_RestClient", "Unable to add the ConsumerApp.");
+            throw e;
+        }
+        if (archive)
+            ShrinkHelper.exportArtifact(consumer_restclient_war, "publish/savedApps/ConsumerServer/");
+
+    }
+
+    /**
+     * @param server
+     * @param archive
+     * @throws Exception
+     */
+    public static void addConsumerApp(LibertyServer server, boolean archive) throws Exception {
+
+        WebArchive consumer_war = null;
+
+        try {
+            // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
+            // The consumer tests needs to create data also , we will need to add producer files also
+
+            // the consumer_war in servlet client is different than one created in REST client
+            consumer_war = ShrinkHelper.defaultApp(server, "StoreConsumerApp.war",
+                                                   "com.ibm.testapp.g3store.grpcConsumer.api",
+                                                   "com.ibm.testapp.g3store.grpcConsumer.security",
+                                                   "com.ibm.testapp.g3store.exception",
+                                                   "com.ibm.testapp.g3store.restConsumer",
+                                                   "com.ibm.testapp.g3store.restConsumer.api",
+                                                   "com.ibm.testapp.g3store.restConsumer.model",
+                                                   "com.ibm.testapp.g3store.servletConsumer",
+                                                   "com.ibm.testapp.g3store.utilsConsumer",
+                                                   "com.ibm.testapp.g3store.restConsumer.client",
+                                                   "com.ibm.testapp.g3store.restProducer.model",
+                                                   "com.ibm.testapp.g3store.restProducer.client",
+                                                   "com.ibm.test.g3store.grpc");// add generated src
+        } catch (Exception e) {
+            Log.info(c, "addConsumerApp", "Unable to add the ConsumerApp.");
+            throw e;
+        }
+        if (archive)
+            ShrinkHelper.exportArtifact(consumer_war, "publish/savedApps/ConsumerServer/");
+
+    }
+
+    /**
+     * @param values
+     * @return
+     */
     public static Object[] readAppNames(Object... values) {
         Object[] arr = new Object[values.length];
         int i = 0;
@@ -42,6 +187,18 @@ public class StoreClientTestsUtils {
         return arr;
     }
 
+    /**
+     * This will assert the connection to the producer server.
+     * This will submit the test request to the servlet client
+     * com.ibm.testapp.g3store.servletProducer.ProducerServlet
+     * to run the grpc request
+     *
+     * @param webClient
+     * @param inputTestName
+     * @param server
+     * @return
+     * @throws Exception
+     */
     public static HtmlPage getProducerResultPage(WebClient webClient, String inputTestName, LibertyServer server) throws Exception {
 
         HtmlForm form = assertConnectProducerServer(server, webClient, inputTestName);
@@ -60,6 +217,19 @@ public class StoreClientTestsUtils {
 
     }
 
+    /**
+     * This will assert the connection to the producer server.
+     * This will submit the test request to the servlet client
+     * com.ibm.testapp.g3store.servletProducer.ProducerServlet
+     * to run the grpc request
+     *
+     * @param webClient
+     * @param inputTestName
+     * @param inputAppName
+     * @param server
+     * @return
+     * @throws Exception
+     */
     public static HtmlPage getProducerResultPage(WebClient webClient, String inputTestName, String inputAppName, LibertyServer server) throws Exception {
 
         HtmlForm form = assertConnectProducerServer(server, webClient, inputTestName);
@@ -81,6 +251,18 @@ public class StoreClientTestsUtils {
         }
     }
 
+    /**
+     * This will assert the connection to the consumer server.
+     * This will submit the test request to the servlet client
+     * com.ibm.testapp.g3store.servletConsumer.ConsumerServlet
+     * to run the grpc request
+     *
+     * @param webClient
+     * @param inputTestName
+     * @param server
+     * @return
+     * @throws Exception
+     */
     public static HtmlPage getConsumerResultPage(WebClient webClient, String inputTestName, LibertyServer server) throws Exception {
 
         HtmlForm form = assertConnectConsumerServer(server, webClient, false, inputTestName);
@@ -99,6 +281,20 @@ public class StoreClientTestsUtils {
 
     }
 
+    /**
+     * This will assert the connection to the consumer server.
+     * This will submit the test request to the servlet client
+     * com.ibm.testapp.g3store.servletConsumer.ConsumerServlet
+     * to run the grpc request
+     *
+     * @param webClient
+     * @param inputTestName
+     * @param inputAppName
+     * @param addAuthHeader
+     * @param server
+     * @return
+     * @throws Exception
+     */
     public static HtmlPage getConsumerResultPage(WebClient webClient, String inputTestName, String inputAppName, boolean addAuthHeader, LibertyServer server) throws Exception {
 
         HtmlForm form = assertConnectConsumerServer(server, webClient, addAuthHeader, inputTestName);
@@ -119,6 +315,15 @@ public class StoreClientTestsUtils {
         }
     }
 
+    /**
+     * This will assert the connection to the producer server.
+     *
+     * @param server
+     * @param webClient
+     * @param inputTestName
+     * @return
+     * @throws Exception
+     */
     public static HtmlForm assertConnectProducerServer(LibertyServer server, WebClient webClient, String inputTestName) throws Exception {
 
         Log.info(c, inputTestName, inputTestName);
@@ -137,6 +342,16 @@ public class StoreClientTestsUtils {
         return page.getFormByName("form1");
     }
 
+    /**
+     * This will assert the connection to the consumer server.
+     *
+     * @param server
+     * @param webClient
+     * @param addAuthHeader
+     * @param inputTestName
+     * @return
+     * @throws Exception
+     */
     public static HtmlForm assertConnectConsumerServer(LibertyServer server, WebClient webClient, boolean addAuthHeader, String inputTestName) throws Exception {
 
         Log.info(c, inputTestName, inputTestName);
@@ -159,11 +374,21 @@ public class StoreClientTestsUtils {
         return page.getFormByName("form1");
     }
 
+    /**
+     * @param inputTestName
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     public static String getAuthValue(String inputTestName) throws UnsupportedEncodingException {
         Log.info(c, inputTestName, ConsumerUtils.createBasicAuthHeaderValue("dev", "hello"));
         return ConsumerUtils.createBasicAuthHeaderValue("dev", "hello");
     }
 
+    /**
+     * @param testname
+     * @param server
+     * @throws Exception
+     */
     public static void createAssertMultiApps(String testname, LibertyServer server) throws Exception {
 
         WebClient webClient = new WebClient();
@@ -207,6 +432,11 @@ public class StoreClientTestsUtils {
         }
     }
 
+    /**
+     * @param testname
+     * @param server
+     * @throws Exception
+     */
     public static void deleteAssertMultiApps(String testname, LibertyServer server) throws Exception {
 
         WebClient webClient = new WebClient();
@@ -249,6 +479,12 @@ public class StoreClientTestsUtils {
 
     }
 
+    /**
+     * @param appName
+     * @param testname
+     * @param server
+     * @throws Exception
+     */
     public static void createAssertMyApp(String appName, String testname, LibertyServer server) throws Exception {
 
         WebClient webClient = new WebClient();
@@ -283,6 +519,12 @@ public class StoreClientTestsUtils {
         }
     }
 
+    /**
+     * @param appName
+     * @param testname
+     * @param server
+     * @throws Exception
+     */
     public static void deleteAssertMyApp(String appName, String testname, LibertyServer server) throws Exception {
 
         WebClient webClient = new WebClient();

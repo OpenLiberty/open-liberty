@@ -133,7 +133,7 @@ public class FrameWindowUpdate extends Frame {
     public boolean equals(Object object) {
         if (!(object instanceof FrameWindowUpdate)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "equals: object is not a FrameSettings");
+                Tr.debug(tc, "equals: object is not a FrameWindowUpdate, it is a " + object.getClass());
             }
             return false;
         }

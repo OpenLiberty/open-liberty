@@ -88,12 +88,12 @@ instrument.classesExcludes: \
 	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
-	com.fasterxml.jackson.core.jackson-core;version=2.9.1,\
-	com.fasterxml.jackson.core.jackson-annotations;version=2.9.1,\
-	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
-	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
+	com.fasterxml.jackson.core.jackson-core;version=2.11.2,\
+	com.fasterxml.jackson.core.jackson-annotations;version=2.11.2,\
+	com.fasterxml.jackson.core:jackson-databind;version=2.11.2,\
+	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.11.2,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	org.yaml.snakeyaml;version=1.18,\
+	org.yaml.snakeyaml;version=1.27,\
 	com.ibm.ws.microprofile.openapi.model;version=latest
 
 -testpath: \
