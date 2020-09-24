@@ -65,7 +65,6 @@ import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -378,9 +377,7 @@ public final class ResponseImpl extends Response {
     // Liberty Change
     private Link makeAbsoluteLink(Link link) {
         if (!link.getUri().isAbsolute()) {
-            //Liberty code change start
-            URI requestURI = URI.create((String)((MessageImpl) outMessage).getRequestUri());
-            //Liberty code change end
+            URI requestURI = URI.create((String)outMessage.get(Message.REQUEST_URI));
             link = Link.fromLink(link).baseUri(requestURI).build();
         }
         return link;

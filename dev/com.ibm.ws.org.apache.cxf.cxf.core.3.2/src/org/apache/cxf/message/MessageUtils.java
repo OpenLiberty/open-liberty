@@ -101,9 +101,7 @@ public final class MessageUtils {
      */
     public static boolean isRequestor(Message message) {
         if (message != null) {
-            //Liberty code change start
-            Boolean requestor = (Boolean)((MessageImpl) message).getRequestorRole();
-            //Liberty code change end
+            Boolean requestor = (Boolean) message.get(Message.REQUESTOR_ROLE);
             return requestor != null && requestor;
         }
         return false;
@@ -116,9 +114,7 @@ public final class MessageUtils {
      * @return true if the current messags is a partial response
      */
     public static boolean isPartialResponse(Message message) {
-        //Liberty code change start
-        return message != null && Boolean.TRUE.equals(((MessageImpl) message).getPartialResponse());
-        //Liberty code change end
+        return message != null && Boolean.TRUE.equals(message.get(Message.PARTIAL_RESPONSE_MESSAGE));
     }
 
     /**
@@ -129,9 +125,7 @@ public final class MessageUtils {
      * @return true if the current messags is a partial empty response
      */
     public static boolean isEmptyPartialResponse(Message message) {
-        //Liberty code change start
-        return message != null && Boolean.TRUE.equals(((MessageImpl) message).getEmptyPartialResponse());
-        //Liberty code change end
+        return message != null && Boolean.TRUE.equals(message.get(Message.EMPTY_PARTIAL_RESPONSE_MESSAGE));
     }
 
     /**
@@ -190,6 +184,14 @@ public final class MessageUtils {
      */
     public static boolean isDOMPresent(Message m) {
         return m != null && m.getContent(Node.class) != null;
+        /*
+        for (Class c : m.getContentFormats()) {
+            if (c.equals(Node.class) || "javax.xml.soap.SOAPMessage".equals(c.getName())) {
+                return true;
+            }
+        }
+        return false;
+        */
     }
 
     public static Method getTargetMethod(Message m, Supplier<RuntimeException> exceptionSupplier) {
@@ -198,7 +200,7 @@ public final class MessageUtils {
             MethodDispatcher md = (MethodDispatcher) m.getExchange().getService().get(MethodDispatcher.class.getName());
             return md.getMethod(bop);
         }
-        Method method = (Method) ((MessageImpl) m).getResourceMethod();
+        Method method = (Method) m.get("org.apache.cxf.resource.method");
         if (method != null || exceptionSupplier == null) {
             return method;
         }
