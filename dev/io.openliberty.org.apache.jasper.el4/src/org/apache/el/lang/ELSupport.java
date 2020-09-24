@@ -227,6 +227,12 @@ public class ELSupport {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
+    public static final Enum<?> coerceToEnum(final Object obj,
+            @SuppressWarnings("rawtypes") Class type) {
+        return coerceToEnum(null, obj, type);
+    }
+
     /**
      * Convert an object to Boolean.
      * Null and empty string are false.
@@ -272,6 +278,17 @@ public class ELSupport {
                 obj, obj.getClass(), Boolean.class));
     }
 
+    /**
+     * Convert an object to Boolean.
+     * Null and empty string are false.
+     * @param obj the object to convert
+     * @return the Boolean value of the object
+     * @throws ELException if object is not Boolean or String
+     */
+    public static final Boolean coerceToBoolean(final Object obj) {
+        return coerceToBoolean(null, obj, true);
+    }
+
     private static final Character coerceToCharacter(final ELContext ctx, final Object obj)
             throws ELException {
 
@@ -303,6 +320,11 @@ public class ELSupport {
 
         throw new ELException(MessageFactory.get("error.convert",
                 obj, objType, Character.class));
+    }
+
+    public static final Character coerceToCharacter(final Object obj)
+            throws ELException {
+        return coerceToCharacter(null, obj);
     }
 
     protected static final Number coerceToNumber(final Number number,
@@ -389,6 +411,11 @@ public class ELSupport {
 
         throw new ELException(MessageFactory.get("error.convert",
                 obj, obj.getClass(), type));
+    }
+
+    public static final Number coerceToNumber(final Object obj,
+            final Class<?> type) throws ELException {
+        return coerceToNumber(null, obj, type);
     }
 
     protected static final Number coerceToNumber(final String val,
@@ -491,6 +518,15 @@ public class ELSupport {
         } else {
             return obj.toString();
         }
+    }
+
+    /**
+     * Coerce an object to a string.
+     * @param obj the object to convert
+     * @return the String value of the object
+     */
+    public static final String coerceToString(final Object obj) {
+        return coerceToString(null, obj);
     }
 
     public static final Object coerceToType(final ELContext ctx, final Object obj,
