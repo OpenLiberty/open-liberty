@@ -8,7 +8,6 @@ import static org.junit.Assert.assertNotNull;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -17,7 +16,6 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointJWTCookieFATServlet;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -51,34 +49,12 @@ public class StoreServicesSecurityTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive store_war = ShrinkHelper.defaultApp(storeJWTSSoServer, "StoreApp.war",
-                                                       "com.ibm.testapp.g3store.cache",
-                                                       "com.ibm.testapp.g3store.exception",
-                                                       "com.ibm.testapp.g3store.interceptor",
-                                                       "com.ibm.testapp.g3store.grpcservice",
-                                                       "com.ibm.testapp.g3store.servletStore",
-                                                       "com.ibm.testapp.g3store.utilsStore",
-                                                       "com.ibm.test.g3store.grpc"); // add generated src
+        boolean isArchive = false;
+        // To export the assembled services application archive files, set isArchive to true
+        // run it locally , keep this false when merging
+        StoreClientTestsUtils.addStoreApp(storeJWTSSoServer, isArchive);
 
-        // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
-        // The consumer tests needs to create data also , we will need to add producer files also
-        WebArchive consumer_war = ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
-                                                          "com.ibm.testapp.g3store.grpcConsumer.api",
-                                                          "com.ibm.testapp.g3store.grpcConsumer.security",
-                                                          "com.ibm.testapp.g3store.exception",
-                                                          "com.ibm.testapp.g3store.restConsumer",
-                                                          "com.ibm.testapp.g3store.restConsumer.api",
-                                                          "com.ibm.testapp.g3store.restConsumer.model",
-                                                          "com.ibm.testapp.g3store.servletConsumer",
-                                                          "com.ibm.testapp.g3store.utilsConsumer",
-                                                          "com.ibm.testapp.g3store.restConsumer.client",
-                                                          "com.ibm.testapp.g3store.grpcProducer.api",
-                                                          "com.ibm.testapp.g3store.restProducer",
-                                                          "com.ibm.testapp.g3store.restProducer.api",
-                                                          "com.ibm.testapp.g3store.restProducer.model",
-                                                          "com.ibm.testapp.g3store.servletProducer",
-                                                          "com.ibm.test.g3store.grpc", // add generated src
-                                                          "com.ibm.testapp.g3store.restProducer.client");
+        StoreClientTestsUtils.addConsumerApp_RestClient(consumerServer, isArchive);
 
         storeJWTSSoServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", storeJWTSSoServer.waitForStringInLog("CWWKO0219I.*ssl"));
@@ -92,17 +68,6 @@ public class StoreServicesSecurityTests extends FATServletClient {
         consumerServer.setHttpDefaultSecurePort(securePort);
         consumerServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
-
-        // To export the assembled services application archive files, uncomment the following
-        // run it locally , keep them commented when merging
-
-//        ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreJWTSSoServer/");
-//        ShrinkHelper.exportArtifact(consumer_war, "publish/savedApps/ConsumerServer/");
-//
-
-        //once this war file is installed on external Server
-        // send the request e.g.
-        // URL=http://localhost:8030/StoreProducerApp/ProducerEndpointFATServlet?testMethod=testClientStreaming
 
     }
 
