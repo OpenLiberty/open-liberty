@@ -93,6 +93,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     public void testLogstashDefaultConfig() throws Exception {
         testName = "testLogstashDefaultConfig";
         setConfig("server_default_conf.xml");
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
+
         clearContainerOutput();
 
         int numOfMsg = 10;
@@ -102,8 +104,6 @@ public class LogstashSSLTest extends LogstashCollectorTest {
             createMessageEvent(testName + " " + i);
             checkSet.add(MESSAGE_PREFIX + " " + testName + " " + i);
         }
-
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
 
         assertEquals(numOfMsg, waitForContainerOutputSize(numOfMsg));
         assertNotNull("Cannot find message " + testName + " from Logstash output", waitForStringInContainerOutput(testName));
