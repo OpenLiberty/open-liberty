@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -62,7 +63,7 @@ public class CommandLineVarTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
         WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
-        ShrinkHelper.exportAppToServer(server, varmergeApp);
+        ShrinkHelper.exportAppToServer(server, varmergeApp, DeployOptions.DISABLE_VALIDATION);
 
         server.setConsoleLogName("clv.log");
         ArrayList<String> args = new ArrayList<String>();
