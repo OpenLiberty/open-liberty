@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2169,7 +2169,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     /**
      * Check the to see if the current remote host is allowed to send a private header
-     * 
+     *
      * @see HttpDispatcher.usePrivateHeaders()
      *
      * @param key WAS private header
