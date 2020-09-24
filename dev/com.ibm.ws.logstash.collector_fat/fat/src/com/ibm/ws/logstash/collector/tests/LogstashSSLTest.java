@@ -145,6 +145,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         assertNotNull(LIBERTY_FFDC + " not found", waitForStringInContainerOutput(LIBERTY_FFDC));
         assertNotNull(LIBERTY_ACCESSLOG + " not found", waitForStringInContainerOutput(LIBERTY_ACCESSLOG));
         if (!checkGcSpecialCase()) {
+            createGCEvent();
             assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
         }
     }
@@ -186,6 +187,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         for (int i = 1; i <= 10; i++) {
             createMessageEvent(testName + " " + i);
         }
+        createGCEvent();
         assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
     }
 
