@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,39 +39,54 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        final Set<Bundle> tracked = Collections.synchronizedSet(new HashSet<Bundle>());
+        new Thread(() -> testOriginBundle(context), "Origin Bundle Test").start();
+    }
 
-        Set<Bundle> origins = new HashSet<>();
-        for (int i = 0; i < 10; i++) {
-            origins.add(installOrigin(i, tracked, context));
-        }
-        final CountDownLatch allTrackedRemoved = new CountDownLatch(tracked.size());
-        // Sleeping to make sure the system has had time to successfully track
-        // the origin bundles and the bundles the origin bundles have installed.
-        // The bundle events are asynchronous so we need to make sure enough time
-        // has passed to allow the system to process the events.
-        Thread.sleep(5000);
-        context.addBundleListener(new BundleListener() {
-            @Override
-            public void bundleChanged(BundleEvent event) {
-                if (BundleEvent.UNINSTALLED == event.getType()) {
-                    if (tracked.remove(event.getBundle())) {
-                        System.out.println("Uninstalled tracked bundle: " + event.getBundle().getSymbolicName());
-                        allTrackedRemoved.countDown();
+    private void testOriginBundle(BundleContext context) {
+        try {
+            final Set<Bundle> tracked = Collections.synchronizedSet(new HashSet<Bundle>());
+
+            Set<Bundle> origins = new HashSet<>();
+            for (int i = 0; i < 10; i++) {
+                origins.add(installOrigin(i, tracked, context));
+            }
+            final CountDownLatch allTrackedRemoved = new CountDownLatch(tracked.size());
+            // Sleeping to make sure the system has had time to successfully track
+            // the origin bundles and the bundles the origin bundles have installed.
+            // The bundle events are asynchronous so we need to make sure enough time
+            // has passed to allow the system to process the events.
+            Thread.sleep(5000);
+            context.addBundleListener(new BundleListener() {
+                @Override
+                public void bundleChanged(BundleEvent event) {
+                    if (BundleEvent.UNINSTALLED == event.getType()) {
+                        if (tracked.remove(event.getBundle())) {
+                            System.out.println("Uninstalled tracked bundle: " + event.getBundle().getSymbolicName());
+                            allTrackedRemoved.countDown();
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        for (Bundle bundle : origins) {
-            bundle.uninstall();
+            for (Bundle bundle : origins) {
+                bundle.uninstall();
+            }
+            allTrackedRemoved.await(30, TimeUnit.SECONDS);
+            if (tracked.isEmpty()) {
+                System.out.println("BundleInstallOriginTest: PASSED");
+            } else {
+                threadDump(context);
+                System.out.println("BundleInstallOriginTest: FAILED");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        allTrackedRemoved.await(5, TimeUnit.SECONDS);
-        if (tracked.isEmpty()) {
-            System.out.println("BundleInstallOriginTest: PASSED");
-        } else {
-            System.out.println("BundleInstallOriginTest: FAILED");
-        }
+    }
+
+    private void threadDump(BundleContext context) throws Exception {
+        Class<?> threadInfoReportClass = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).loadClass("org.eclipse.osgi.framework.util.ThreadInfoReport");
+        Exception e = (Exception) threadInfoReportClass.getConstructor(String.class).newInstance(new Object[] { null });
+        e.printStackTrace();
     }
 
     private Bundle installOrigin(int originId, Set<Bundle> tracked, BundleContext context) throws BundleException, IOException {
