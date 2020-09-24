@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
+import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.lang.JoseException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -78,6 +80,11 @@ public class BuilderImpl implements Builder {
     private Key privateKey;
     private String configId;
 
+    // JWE fields
+    private String keyManagementAlg;
+    private Key keyManagementKey;
+    private String contentEncryptionAlg;
+
     private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     private final static String DEFAULT_ID = "defaultJWT";
@@ -124,33 +131,33 @@ public class BuilderImpl implements Builder {
         // getClaims().put(Claims.ISSUER, issuer);
         String issuer = IssuerUtils.getIssuerUrl(jwtConfig);// jwtConfig.getIssuerUrl();
         if (issuer != null) {
-            getClaims().put(Claims.ISSUER, issuer);
+            claims.put(Claims.ISSUER, issuer);
         }
         // token type
-        getClaims().put(Claims.TOKEN_TYPE, "Bearer");
+        claims.put(Claims.TOKEN_TYPE, "Bearer");
 
         // long valid = jwtConfig.getValidTime();//
         // getProperty(JwtUtils.CFG_KEY_VALID);
         // long exp = JwtUtils.calculate(valid);
         long exp = -2;
-        getClaims().put(Claims.EXPIRATION, Long.valueOf(exp));
+        claims.put(Claims.EXPIRATION, Long.valueOf(exp));
 
         long iat = -2;
-        getClaims().put(Claims.ISSUED_AT, Long.valueOf(iat));
+        claims.put(Claims.ISSUED_AT, Long.valueOf(iat));
 
         boolean isJti = jwtConfig.getJti();// getProperty(JwtUtils.CFG_KEY_JTI);
         if (isJti) {
             String jti = JwtUtils.getRandom(16);
-            getClaims().put(Claims.ID, jti);
+            claims.put(Claims.ID, jti);
         }
         List<String> aud = jwtConfig.getAudiences();// getProperty(AUDIENCE);
 
         if (aud != null) {
-            getClaims().put(Claims.AUDIENCE, aud);
+            claims.put(Claims.AUDIENCE, aud);
         }
         String scope = jwtConfig.getScope();
         if (scope != null) {
-            getClaims().put(JwtUtils.SCOPE, scope);
+            claims.put(JwtUtils.SCOPE, scope);
         }
         // if (jwtConfig.getClaims() != null) {
         // Iterator<String> claimsIt = jwtConfig.getClaims().iterator();
@@ -166,7 +173,7 @@ public class BuilderImpl implements Builder {
         if (jwtConfig.getSharedKey() != null) {
             sharedKey = jwtConfig.getSharedKey();
         }
-        
+
         List<String> amrAttr = jwtConfig.getAMRAttributes();// getProperty(amrAttributes);
         if (amrAttr != null) {
             try {
@@ -499,6 +506,58 @@ public class BuilderImpl implements Builder {
                 Constants.SIGNATURE_ALG_HS512;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.websphere.security.jwt.Builder#encryptWith(java.lang.String, java.security.Key, java.lang.String)
+     */
+    @Override
+    public Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException {
+        if (!isSupportedKeyManagementAlg(keyManagementAlg)) {
+            String err = Tr.formatMessage(tc, "UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM", new Object[] { keyManagementAlg, getSupportedKeyManagementAlgorithms() });
+            throw new KeyException(err);
+        }
+        if (!isSupportedContentEncryptionAlgorithm(contentEncryptionAlg)) {
+            String err = Tr.formatMessage(tc, "UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM", new Object[] { contentEncryptionAlg, getSupportedContentEncryptionAlgorithms() });
+            throw new KeyException(err);
+        }
+        if (keyManagementKey == null) {
+            String err = Tr.formatMessage(tc, "KEY_MANAGEMENT_KEY_MISSING", new Object[] { configId });
+            throw new KeyException(err);
+        }
+
+        this.keyManagementAlg = keyManagementAlg;
+        this.keyManagementKey = keyManagementKey;
+        this.contentEncryptionAlg = contentEncryptionAlg;
+        return this;
+    }
+
+    boolean isSupportedKeyManagementAlg(String keyManagementAlg) {
+        if (keyManagementAlg == null) {
+            return false;
+        }
+        return getSupportedKeyManagementAlgorithms().contains(keyManagementAlg);
+    }
+
+    List<String> getSupportedKeyManagementAlgorithms() {
+        List<String> supportedAlgs = new ArrayList<String>();
+        supportedAlgs.add(KeyManagementAlgorithmIdentifiers.RSA_OAEP);
+        return supportedAlgs;
+    }
+
+    boolean isSupportedContentEncryptionAlgorithm(String contentEncryptionAlg) {
+        if (contentEncryptionAlg == null) {
+            return false;
+        }
+        return getSupportedContentEncryptionAlgorithms().contains(contentEncryptionAlg);
+    }
+
+    List<String> getSupportedContentEncryptionAlgorithms() {
+        List<String> supportedAlgs = new ArrayList<String>();
+        supportedAlgs.add(ContentEncryptionAlgorithmIdentifiers.AES_256_GCM);
+        return supportedAlgs;
+    }
+
     // add claims with the given name and value
     /*
      * (non-Javadoc)
@@ -809,6 +868,18 @@ public class BuilderImpl implements Builder {
         return alg;
     }
 
+    public String getKeyManagementAlg() {
+        return keyManagementAlg;
+    }
+
+    public Key getKeyManagementKey() {
+        return keyManagementKey;
+    }
+
+    public String getContentEncryptionAlg() {
+        return contentEncryptionAlg;
+    }
+
     private boolean isValidClaim(String key, Object value) throws InvalidClaimException {
         String err = null;
         if (JwtUtils.isNullEmpty(key)) {
@@ -856,14 +927,14 @@ public class BuilderImpl implements Builder {
         }
         return this;
     }
-    
-	/**
-	 * Checks the attributes provided exists in the subject, if so add it to the
-	 * claims as "amr" values
-	 *
-	 * @param amrAttr
-	 * @throws Exception
-	 */
+
+    /**
+     * Checks the attributes provided exists in the subject, if so add it to the
+     * claims as "amr" values
+     *
+     * @param amrAttr
+     * @throws Exception
+     */
     private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
         Subject subj = WSSubject.getRunAsSubject();
         List<Object> amrValues = new ArrayList<Object>();
@@ -880,7 +951,7 @@ public class BuilderImpl implements Builder {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
             }
-            getClaims().put("amr", amrValues);
+            claims.put("amr", amrValues);
         }
     }
 
