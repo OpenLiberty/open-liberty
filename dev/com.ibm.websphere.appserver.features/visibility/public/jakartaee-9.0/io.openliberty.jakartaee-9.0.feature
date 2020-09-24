@@ -16,6 +16,7 @@ Subsystem-Name: Jakarta EE Platform 9.0
  io.openliberty.enterpriseBeansHome-4.0,\
  io.openliberty.enterpriseBeansRemote-4.0,\
  io.openliberty.appClientSupport-2.0,\
+ io.openliberty.connectors-2.0,\
  io.openliberty.jacc-2.0,\
  io.openliberty.jaxb-3.0
 kind=beta
