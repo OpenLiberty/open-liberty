@@ -86,10 +86,11 @@ public class UploadServiceImpl {
                 OutputStream out = new FileOutputStream(new File("./" + getFileName(map)));
                 StringBuilder stringBuilder = new StringBuilder();
                 Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                char[] buffer = new char[1024];
+                char[] chars = new char[1024];
                 int charsRead;
-                while((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
-                    stringBuilder.append(buffer, 0, charsRead);
+                while((charsRead = in.read(chars, 0, chars.length)) > 0) {
+                    stringBuilder.append(chars, 0, charsRead);
+                    out.write(new String(chars).getBytes("UTF-8"), 0, charsRead);
                 }
                 System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
                 stream.close();
