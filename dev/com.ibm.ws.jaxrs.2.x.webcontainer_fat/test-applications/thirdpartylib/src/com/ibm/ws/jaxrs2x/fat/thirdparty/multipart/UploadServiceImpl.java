@@ -14,7 +14,10 @@ package com.ibm.ws.jaxrs2x.fat.thirdparty.multipart;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -51,7 +54,7 @@ public class UploadServiceImpl {
             try {
                 InputStream stream = handler.getInputStream();
                 MultivaluedMap<String, String> map = attachment.getHeaders();
-                System.out.println("fileName Here" + getFileName(map));
+                System.out.println("fileName Here " + getFileName(map));
                 OutputStream out = new FileOutputStream(new File("./" + getFileName(map)));
 
                 int read = 0;
@@ -59,6 +62,36 @@ public class UploadServiceImpl {
                 while ((read = stream.read(bytes)) != -1) {
                     out.write(bytes, 0, read);
                 }
+                stream.close();
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return Response.ok("file uploaded").build();
+    }
+
+    @POST
+    @Path("/uploadFile2")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFile2(List<IAttachment> attachments, @Context HttpServletRequest request) {
+        for (IAttachment attachment : attachments) {
+            DataHandler handler = attachment.getDataHandler();
+            try {
+                InputStream stream = handler.getInputStream();
+                MultivaluedMap<String, String> map = attachment.getHeaders();
+                System.out.println("fileName2 Here " + getFileName(map));
+                OutputStream out = new FileOutputStream(new File("./" + getFileName(map)));
+                StringBuilder stringBuilder = new StringBuilder();
+                Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                char[] buffer = new char[1024];
+                int charsRead;
+                while((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
+                    stringBuilder.append(buffer, 0, charsRead);
+                }
+                System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
                 stream.close();
                 out.flush();
                 out.close();
