@@ -77,32 +77,43 @@ public class UploadServiceImpl {
     @Path("/uploadFile2")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile2(List<IAttachment> attachments, @Context HttpServletRequest request) {
-        for (IAttachment attachment : attachments) {
-            DataHandler handler = attachment.getDataHandler();
-            try {
-                InputStream stream = handler.getInputStream();
-                MultivaluedMap<String, String> map = attachment.getHeaders();
-                System.out.println("fileName2 Here " + getFileName(map));
-                OutputStream out = new FileOutputStream(new File("./" + getFileName(map)));
-                StringBuilder stringBuilder = new StringBuilder();
-                Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
-                char[] chars = new char[1024];
-                int charsRead;
-                while((charsRead = in.read(chars, 0, chars.length)) > 0) {
-                    stringBuilder.append(chars, 0, charsRead);
-                    out.write(new String(chars).getBytes("UTF-8"), 0, charsRead);
+        try {
+            for (IAttachment attachment : attachments) {
+                DataHandler handler = attachment.getDataHandler();
+                InputStream stream = null;
+                OutputStream out = null;
+                try {
+                    stream = handler.getInputStream();
+                    MultivaluedMap<String, String> map = attachment.getHeaders();
+                    System.out.println("fileName2 Here " + getFileName(map));
+                    out = new FileOutputStream(new File("./" + getFileName(map)));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                    char[] chars = new char[1024];
+                    int charsRead;
+                    while((charsRead = in.read(chars, 0, chars.length)) > 0) {
+                        stringBuilder.append(chars, 0, charsRead);
+                        out.write(new String(chars).getBytes("UTF-8"), 0, charsRead);
+                    }
+                    System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
+                } finally {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                    if (out != null) {
+                        out.flush();
+                        out.close();
+                    }
                 }
-                System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
-                stream.close();
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            return Response.ok("file uploaded").build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("caught exception: " + e).build();
         }
-
-        return Response.ok("file uploaded").build();
     }
+
+
 
     private String getFileName(MultivaluedMap<String, String> header) {
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
