@@ -32,7 +32,6 @@ import com.ibm.ws.security.audit.fat.common.tooling.RecentAuditFileStream;
 import com.ibm.ws.security.jaspic11.fat.JASPIFatUtils;
 import com.ibm.ws.security.jaspic11.fat.JASPITestBase;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -71,7 +70,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO audit-1.0 has not been transformed for EE9
 public class JASPIFormLoginJACCAuthorizationAuditTest extends JASPITestBase {
 
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.jaspic11.fat.jacc.audit");
