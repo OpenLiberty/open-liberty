@@ -13,11 +13,11 @@
 bVersion=1.0
 
 src: \
-    fat/src
+	fat/src
 
 fat.project: true
 
 
 -buildpath: \
-    io.openliberty.com.fasterxml.jackson;version=latest,\
+    com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest,\
     com.ibm.ws.security.wim.scim.2.0;version=latest
