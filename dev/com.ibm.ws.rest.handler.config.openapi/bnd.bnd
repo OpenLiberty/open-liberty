@@ -45,5 +45,5 @@ Private-Package:\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.microprofile.openapi;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest,\
-  com.fasterxml.jackson.core:jackson-databind;version=2.11.2,\
+  com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
   com.ibm.ws.logging;version=latest

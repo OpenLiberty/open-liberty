@@ -44,7 +44,7 @@ IBM-SPI-Package: \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.model,\
- io.openliberty.com.fasterxml.jackson
+ com.ibm.ws.com.fasterxml.jackson.2.9.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -40,5 +40,5 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.microprofile.openapi,\
-	com.fasterxml.jackson.core:jackson-databind;version=2.11.2,\
+	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
 	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0
