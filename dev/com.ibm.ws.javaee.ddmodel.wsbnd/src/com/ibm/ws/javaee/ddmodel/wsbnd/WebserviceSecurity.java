@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -17,26 +17,11 @@ import com.ibm.ws.javaee.dd.web.common.LoginConfig;
 import com.ibm.ws.javaee.dd.web.common.SecurityConstraint;
 
 public interface WebserviceSecurity {
+    String SECURITY_CONSTRAINT_ELEMENT_NAME = "security-constraint";
+    String SECURITY_ROLE_ELEMENT_NAME = "security-role";
+    String LOGIN_CONFIG_ELEMENT_NAME = "login-config";
 
-    public static String SECURITY_CONSTRAINT_ELEMENT_NAME = "security-constraint";
-
-    public static String SECURITY_ROLE_ELEMENT_NAME = "security-role";
-
-    public static String LOGIN_CONFIG_ELEMENT_NAME = "login-config";
-
-    /**
-     * @return &lt;security-constraint> as a list
-     */
-    public List<SecurityConstraint> getSecurityConstraints();
-
-    /**
-     * @return &lt;security-role> as a list
-     */
-    public List<SecurityRole> getSecurityRoles();
-
-    /**
-     * @return &lt;login-config>, or null if unspecified
-     */
-    public LoginConfig getLoginConfig();
-
+    List<SecurityConstraint> getSecurityConstraints();
+    List<SecurityRole> getSecurityRoles();
+    LoginConfig getLoginConfig();
 }

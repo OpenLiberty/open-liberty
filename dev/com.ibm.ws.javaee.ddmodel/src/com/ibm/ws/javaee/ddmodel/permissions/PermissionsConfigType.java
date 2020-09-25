@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,6 @@ import com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.TokenType;
 
-/**
- *
- */
 /*
  * <xsd:element name="permissions">
  * <xsd:complexType>
@@ -99,15 +96,14 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
 
     }
 
-/*
- * (non-Javadoc)
- * 
- * @see com.ibm.ws.javaee.dd.permissions.PermissionsConfig#getPermissions()
- */
-    @SuppressWarnings("unchecked")
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.javaee.dd.permissions.PermissionsConfig#getPermissions()
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public List getPermissions() {
-        // TODO Auto-generated method stub
         if (this.permissions != null) {
             return this.permissions.getList();
         } else

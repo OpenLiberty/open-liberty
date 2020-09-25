@@ -21,6 +21,14 @@ public class ProtectedStringType extends StringType {
 
     private ProtectedString value;
 
+    /**
+     * Wrap a string value as a protected value.
+     * 
+     * @param lexical The raw text of the string.
+     *
+     * @throws ParseException Thrown in case of a parse exception.  Not thrown
+     *     by this implementation.  Declared for possible future use.  
+     */
     protected ProtectedStringType(@Sensitive String lexical) throws ParseException {
         super(Whitespace.preserve);
         value = new ProtectedString(lexical.toCharArray());
