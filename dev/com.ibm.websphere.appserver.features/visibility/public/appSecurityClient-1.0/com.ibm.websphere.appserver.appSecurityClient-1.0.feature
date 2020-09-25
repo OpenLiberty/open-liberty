@@ -6,7 +6,7 @@ IBM-API-Package: com.ibm.wsspi.security.auth.callback; type="ibm-api", \
  com.ibm.websphere.security; type="ibm-api"
 IBM-ShortName: appSecurityClient-1.0
 Subsystem-Name: Application Security for Client 1.0
--features=io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
+-features=com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
  com.ibm.websphere.appserver.ssl-1.0, \
  com.ibm.websphere.appserver.csiv2Client-1.0
 -bundles=com.ibm.ws.security.authentication, \

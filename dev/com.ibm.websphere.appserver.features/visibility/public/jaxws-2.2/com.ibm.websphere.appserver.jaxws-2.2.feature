@@ -37,7 +37,7 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.internal.optional.jaxws-2.2, \
  com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:=1.6, \
- io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
+ com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
  com.ibm.websphere.appserver.jaxb-2.2
 -bundles=\
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \

@@ -18,7 +18,7 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:="2.0"; apiJar=false, \
  com.ibm.websphere.appserver.jta-1.2, \
  com.ibm.websphere.appserver.injection-1.0, \
- io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
+ com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \

@@ -8,7 +8,7 @@ IBM-API-Package: jakarta.security.jacc; type="spec", \
 IBM-ShortName: jacc-2.0
 Subsystem-Name: Jakarta Authorization Contract for Containers 2.0
 IBM-Install-Policy: when-satisfied
--features=io.openliberty.servlet.api-5.0, \
+-features=io.openliberty.jakarta.servlet-5.0, \
  io.openliberty.appSecurity-4.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \

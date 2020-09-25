@@ -206,7 +206,7 @@ public class ProductFeatureTest {
         // check for missing feature message for internal feature that we don't have access to
         output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
         assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
-        assertTrue("wrong missing feature found: " + output, output.contains("io.openliberty.servlet.api-3.1"));
+        assertTrue("wrong missing feature found: " + output, output.contains("com.ibm.websphere.appserver.javax.servlet-3.1"));
 
         // Finally check that removing the product feature from server.xml will uninstall it.
         TestUtils.makeConfigUpdateSetMark(server, "server_no_features.xml");
