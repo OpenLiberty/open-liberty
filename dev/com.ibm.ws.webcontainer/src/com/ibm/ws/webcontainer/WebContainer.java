@@ -225,8 +225,9 @@ public abstract class WebContainer extends BaseContainer {
         _initialized = true;
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-            logger.logp(Level.FINE, CLASS_NAME, "initialize", "Web Container invocationCache -->" + invocationCacheSize);
+            logger.logp(Level.FINE, CLASS_NAME, "initialize", "Web Container invocationCache --> [" + invocationCacheSize+ "]");
 
+        webConProperties = new Properties();
     }
 
     /**
