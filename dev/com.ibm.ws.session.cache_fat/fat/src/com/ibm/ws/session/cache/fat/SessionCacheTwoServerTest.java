@@ -35,7 +35,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-//@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class SessionCacheTwoServerTest extends FATServletClient {
 
     @Server("sessionCacheServerA")

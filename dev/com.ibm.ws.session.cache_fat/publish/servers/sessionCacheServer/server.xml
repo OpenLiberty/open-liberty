@@ -62,9 +62,4 @@
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="registerMBean,queryNames" name="*"/>
-	<permission>
-        <class-name>java.security.AllPermission</class-name>
-        <name>*</name>
-        <actions>*</actions>
-    </permission>
 </server>

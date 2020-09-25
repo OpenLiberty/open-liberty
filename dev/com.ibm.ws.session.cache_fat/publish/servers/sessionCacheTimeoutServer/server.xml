@@ -4,14 +4,11 @@
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jndi-1.0</feature>
+        <feature>sessionCache-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <!-- Use this config for sessionCache --> 
-    <featureManager>
-        <feature>sessionCache-1.0</feature>
-    </featureManager>   
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
     <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
         <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>

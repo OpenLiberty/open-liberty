@@ -27,6 +27,7 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,16 +43,21 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
-//                SessionCacheTwoServerTest.class,
-//                SessionCacheTimeoutTest.class,
-//                SessionCacheTwoServerTimeoutTest.class
+                SessionCacheTwoServerTest.class,
+                SessionCacheTimeoutTest.class,
+                SessionCacheTwoServerTimeoutTest.class
 })
 
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run all tests as-is (e.g. EE8 features)
-                    .andWith(new JakartaEE9Action()); // run all tests again with EE9 features+packages
+    public static RepeatTests repeat = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
 
     // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
     static {
@@ -65,6 +71,12 @@ public class FATSuite {
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
+
+        if (JakartaEE9Action.isActive()) {
+            LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
+            RemoteFile jakartaResourceDir = LibertyFileManager.createRemoteFile(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
+            jakartaResourceDir.mkdirs();
+        }
     }
 
     /**

@@ -33,7 +33,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-//@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class SessionCacheOneServerTest extends FATServletClient {
 
     @Server("sessionCacheServer")
@@ -41,10 +40,11 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static SessionCacheApp app = null;
 
-    public static final ExecutorService executor = Executors.newFixedThreadPool(12);
+    public static ExecutorService executor;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        executor = Executors.newFixedThreadPool(12);
         app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
 
         //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
