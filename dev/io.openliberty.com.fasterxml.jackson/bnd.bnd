@@ -16,14 +16,14 @@ Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson
 Bundle-Description: Provides Jackson Processor as a bundle
 
 -includeresource: \
-  @${repo;com.fasterxml.jackson.core:jackson-core;2.11.2},\
-  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.11.2},\
-  @${repo;com.fasterxml.jackson.core:jackson-databind;2.11.2},\
-  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.11.2},\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.11.2},\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.11.2},\
-  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.11.2},\
-  @${repo;org.yaml:snakeyaml;1.27}
+  @${repo;com.fasterxml.jackson.core:jackson-core;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.core:jackson-databind;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.11.2;EXACT},\
+  @${repo;org.yaml:snakeyaml;1.27;EXACT}
   
 Export-Package: \
   com.fasterxml.jackson.*;version=2.11.2,\
