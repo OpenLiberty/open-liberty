@@ -46,7 +46,7 @@ IBM-SPI-Package: \
     io.openliberty.io.smallrye.openapi.jaxrs, \
     io.openliberty.microprofile.openapi.2.0.internal, \
     com.ibm.ws.microprofile.openapi.ui, \
-    com.ibm.ws.com.fasterxml.jackson.2.9.1, \
+    io.openliberty.com.fasterxml.jackson, \
     com.ibm.ws.org.jboss.logging
 kind=beta
 edition=core
