@@ -23,10 +23,14 @@
          <AD id="canonicalHostName" name="%canonicalHostName" description="%canonicalHostName.desc"
             required="false" type="Boolean" default="true" />
         
-        <AD id="krb5Config" name="%krb5Config" description="%krb5Config.desc"
+        <!-- This is a valid config attribute, but has been superseded by the <kerberos> config element now
+             it is marked internal to allow existing configs to keep working, but steer users towards the new config -->
+        <AD id="krb5Config" name="internal" description="internal use only"
             required="false" type="String" />
             
-         <AD id="krb5Keytab" name="%krb5Keytab" description="%krb5Keytab.desc"
+        <!-- This is a valid config attribute, but has been superseded by the <kerberos> config element now
+             it is marked internal to allow existing configs to keep working, but steer users towards the new config -->
+        <AD id="krb5Keytab" name="internal" description="internal use only"
             required="false" type="String" />
 
         <AD id="servicePrincipalNames" name="%servicePrincipalNames" description="%servicePrincipalNames.desc"
