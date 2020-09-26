@@ -133,11 +133,19 @@ public class AuthDataProvider {
     private static void validateAuthDataConfig(String authDataAlias, AuthData authDataConfig) throws LoginException {
         validateAuthDataExists(authDataAlias, authDataConfig);
 
+        String user = authDataConfig.getUserName();
         String krb5Principal = authDataConfig.getKrb5Principal();
+
+        // The 'user' and 'krb5Principal' attributes are mutually exclusive
+        if (user != null && krb5Principal != null) {
+            Tr.error(tc, "AUTH_DATA_EXCLUSIVE_ATTRS", CFG_KEY_USER, CFG_KEY_KRB5_PRINCIPAL, authDataAlias);
+            throw new LoginException(Tr.formatMessage(tc, "AUTH_DATA_EXCLUSIVE_ATTRS", CFG_KEY_USER, CFG_KEY_KRB5_PRINCIPAL, authDataAlias));
+        }
+
         if (krb5Principal != null) {
             validateAuthDataAttribute(CFG_KEY_KRB5_PRINCIPAL, krb5Principal);
         } else {
-            validateAuthDataAttribute(CFG_KEY_USER, authDataConfig.getUserName());
+            validateAuthDataAttribute(CFG_KEY_USER, user);
             validateAuthDataAttribute(CFG_KEY_PASSWORD, authDataConfig.getPassword());
         }
     }
