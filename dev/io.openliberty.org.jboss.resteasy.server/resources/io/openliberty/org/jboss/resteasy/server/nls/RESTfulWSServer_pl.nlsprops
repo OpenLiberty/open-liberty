@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: Dla modu\u0142u WWW {0} zdefiniowano wi\u0119cej ni\u017c jeden serwlet REST. Na jeden modu\u0142 WWW mo\u017ce przypada\u0107 tylko zero serwlet\u00f3w lub jeden serwlet REST.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=Na jeden modu\u0142 WWW mo\u017ce przypada\u0107 tylko jeden zdefiniowany serwlet REST. Serwlet REST to dowolny serwlet korzystaj\u0105cy z jednej z nast\u0119puj\u0105cych nazw klas: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher lub org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Ten komunikat oznacza, \u017ce w pliku web.xml okre\u015blono wi\u0119cej ni\u017c jeden serwlet lub \u017ce dynamicznie skonfigurowano wi\u0119cej ni\u017c jeden serwlet. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=Odszukaj te serwlety w pliku web.xml i usu\u0144 wszystkie z wyj\u0105tkiem jednego.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: Dla modu\u0142u WWW {0} zdefiniowano wi\u0119cej ni\u017c jedno odwzorowanie serwletu REST. Serwlet REST mo\u017ce by\u0107 skojarzony tylko z jednym odwzorowaniem \u015bcie\u017cki.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=Serwlet REST mo\u017cna skonfigurowa\u0107 tylko z jednym odwzorowaniem \u015bcie\u017cki lub w og\u00f3le bez takiego odwzorowania. Serwlet REST to dowolny serwlet korzystaj\u0105cy z jednej z nast\u0119puj\u0105cych nazw klas: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher lub org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. Ten komunikat oznacza, \u017ce z serwletem REST w pliku web.xml jest skojarzone wi\u0119cej ni\u017c jedno odwzorowanie. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=Przejrzyj plik web.xml w poszukiwaniu odwzorowa\u0144 skojarzonych z serwletem REST i usu\u0144 wszystkie z wyj\u0105tkiem jednego.
+
+

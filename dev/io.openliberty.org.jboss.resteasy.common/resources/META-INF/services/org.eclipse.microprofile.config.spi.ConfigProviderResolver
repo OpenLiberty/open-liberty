@@ -1,2 +1,2 @@
 # Intended only for Java SE environments - should NOT be exposed by the ResourceProvider in the bnd file
-io.openliberty.restfulWS.client.ConfigProviderResolverImpl
+io.openliberty.restfulWS.config.ConfigProviderResolverImpl

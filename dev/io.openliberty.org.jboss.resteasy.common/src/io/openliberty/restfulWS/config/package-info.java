@@ -8,9 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "RESTfulWS", messageBundle="io.openliberty.org.jboss.resteasy.common.nls.RESTfulWSServer")
-package com.ibm.websphere.jaxrs.server;
+package io.openliberty.restfulWS.config;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
