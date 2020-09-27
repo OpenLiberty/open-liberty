@@ -131,8 +131,8 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (.ear, .war, .jar, .rar, etc)
      *
-     * @param server  The server to publish the application to
-     * @param a       The archive to export as a file
+     * @param server The server to publish the application to
+     * @param a The archive to export as a file
      * @param options The deployment options
      */
     public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
@@ -151,8 +151,8 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (.ear, .war, .jar, .rar, etc)
      *
-     * @param client  The client to publish the application to
-     * @param a       The archive to export as a file
+     * @param client The client to publish the application to
+     * @param a The archive to export as a file
      * @param options The deployment options
      */
     public static void exportAppToClient(LibertyClient client, Archive<?> a, DeployOptions... options) throws Exception {
@@ -168,9 +168,9 @@ public class ShrinkHelper {
      * method will wait for the application to be started.
      *
      *
-     * @param  server    The server to publish the application to
-     * @param  a         The archive to export as a file
-     * @param  options   The deployment options
+     * @param server The server to publish the application to
+     * @param a The archive to export as a file
+     * @param options The deployment options
      * @throws Exception
      */
     public static void exportDropinAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
@@ -189,7 +189,7 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc)
      *
-     * @param a    The archive to export as a file
+     * @param a The archive to export as a file
      * @param dest The target folder to export the archive to (i.e. publish/files/apps)
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest) {
@@ -201,8 +201,8 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc).
      *
-     * @param a                    The archive to export as a file
-     * @param dest                 The target folder to export the archive to (i.e. publish/files/apps)
+     * @param a The archive to export as a file
+     * @param dest The target folder to export the archive to (i.e. publish/files/apps)
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
@@ -214,10 +214,10 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc).
      *
-     * @param a                    The archive to export as a file
-     * @param dest                 The target folder to export the archive to (i.e. publish/files/apps)
+     * @param a The archive to export as a file
+     * @param dest The target folder to export the archive to (i.e. publish/files/apps)
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
-     * @param overWrite            Wheather or not to overwrite an existing artifact
+     * @param overWrite Wheather or not to overwrite an existing artifact
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
         return exportArtifact(a, dest, printArchiveContents, overWrite, false);
@@ -228,11 +228,11 @@ public class ShrinkHelper {
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc).
      *
-     * @param a                    The archive to export as a file
-     * @param dest                 The target folder to export the archive to (i.e. publish/files/apps)
+     * @param a The archive to export as a file
+     * @param dest The target folder to export the archive to (i.e. publish/files/apps)
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
-     * @param overWrite            Whether or not to overwrite an existing artifact
-     * @param expand               Whether or not to explode the archive at the destination
+     * @param overWrite Whether or not to overwrite an existing artifact
+     * @param expand Whether or not to explode the archive at the destination
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite, boolean expand) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
@@ -262,7 +262,7 @@ public class ShrinkHelper {
     /**
      * Recursively adds a folder and all of its contents to an archive.
      *
-     * @param a   The archive to add the files to
+     * @param a The archive to add the files to
      * @param dir The directory which will be recursively added to the archive.
      */
     public static Archive<?> addDirectory(Archive<?> a, String dir) throws Exception {
@@ -272,8 +272,8 @@ public class ShrinkHelper {
     /**
      * Recursively adds a folder and all of its contents matching a filter to an archive.
      *
-     * @param a      The archive to add the files to
-     * @param dir    The directory which will be recursively added to the archive.
+     * @param a The archive to add the files to
+     * @param dir The directory which will be recursively added to the archive.
      * @param filter A filter indicating which files should be included in the archive
      */
     public static Archive<?> addDirectory(Archive<?> a, String dir, Filter<ArchivePath> filter) throws Exception {
@@ -285,9 +285,9 @@ public class ShrinkHelper {
      * Builds a WebArchive (WAR) with the default format, which assumes all resources are at:
      * 'test-applications/$appName/resources/`
      *
-     * @param  appName  The name of the application. The '.war' file extension is assumed
-     * @param  packages A list of java packages to add to the application.
-     * @return          a WebArchive representing the application created
+     * @param appName The name of the application. The '.war' file extension is assumed
+     * @param packages A list of java packages to add to the application.
+     * @return a WebArchive representing the application created
      */
     public static WebArchive buildDefaultApp(String appName, String... packages) throws Exception {
         return buildDefaultAppFromPath(appName, null, packages);
@@ -297,10 +297,10 @@ public class ShrinkHelper {
      * Builds a WebArchive (WAR) with the default format, which assumes all resources are at:
      * '$appPath/test-applications/$appName/resources/`
      *
-     * @param  appName  The name of the application. The '.war' file extension is assumed
-     * @param  appPath  Absolute path where the appropriate test-applications directory exists.
-     * @param  packages A list of java packages to add to the application.
-     * @return          a WebArchive representing the application created
+     * @param appName The name of the application. The '.war' file extension is assumed
+     * @param appPath Absolute path where the appropriate test-applications directory exists.
+     * @param packages A list of java packages to add to the application.
+     * @return a WebArchive representing the application created
      */
     public static WebArchive buildDefaultAppFromPath(String appName, String appPath, String... packages) throws Exception {
         String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
@@ -319,12 +319,32 @@ public class ShrinkHelper {
     }
 
     /**
+     * Builds a WebArchive (WAR) with the default format, does not add resources directory
+     *
+     * @param appName The name of the application. The '.war' file extension is assumed
+     * @param appPath Absolute path where the appropriate test-applications directory exists.
+     * @param packages A list of java packages to add to the application.
+     * @return a WebArchive representing the application created
+     */
+    public static WebArchive buildDefaultAppFromPathNoResources(String appName, String appPath, String... packages) throws Exception {
+        String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
+        WebArchive app = ShrinkWrap.create(WebArchive.class, appArchiveName);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
+        return app;
+    }
+
+    /**
      * Builds a JavaArchive (JAR) with the default format, which assumes all resources are at:
      * 'test-applications/$appName/resources/`
      *
-     * @param  name     The name of the jar. The '.jar' file extension is assumed
-     * @param  packages A list of java packages to add to the application.
-     * @return          a JavaArchive representing the JAR created
+     * @param name The name of the jar. The '.jar' file extension is assumed
+     * @param packages A list of java packages to add to the application.
+     * @return a JavaArchive representing the JAR created
      */
     public static JavaArchive buildJavaArchive(String name, String... packages) throws Exception {
         String archiveName = name.endsWith(".jar") ? name : name + ".jar";
@@ -341,11 +361,30 @@ public class ShrinkHelper {
     }
 
     /**
+     * Builds a JavaArchive (JAR) with the default format, does not add resources directory
+     *
+     * @param name The name of the jar. The '.jar' file extension is assumed
+     * @param packages A list of java packages to add to the application.
+     * @return a JavaArchive representing the JAR created
+     */
+    public static JavaArchive buildJavaArchiveNoResources(String name, String... packages) throws Exception {
+        String archiveName = name.endsWith(".jar") ? name : name + ".jar";
+        JavaArchive app = ShrinkWrap.create(JavaArchive.class, archiveName);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
+        return app;
+    }
+
+    /**
      * Invokes {@link #buildDefaultApp(String, String...)}
      * and then exports the resulting application to a Liberty server under the "dropins" directory
      *
-     * @param server   The server to export the application to
-     * @param appname  The name of the application
+     * @param server The server to export the application to
+     * @param appname The name of the application
      * @param packages A list of java packages to add to the application.
      */
     public static WebArchive defaultDropinApp(LibertyServer server, String appName, String... packages) throws Exception {
@@ -359,7 +398,7 @@ public class ShrinkHelper {
      * Invokes {@link #buildDefaultApp(String, String...)}
      * and then exports the resulting application to a Liberty server under the "apps" directory
      *
-     * @param server   The server to export the application to
+     * @param server The server to export the application to
      * @param appName  The name of the application
      * @param deployOptions options to configure how the application is deployed
      * @param packages A list of java packages to add to the application.
