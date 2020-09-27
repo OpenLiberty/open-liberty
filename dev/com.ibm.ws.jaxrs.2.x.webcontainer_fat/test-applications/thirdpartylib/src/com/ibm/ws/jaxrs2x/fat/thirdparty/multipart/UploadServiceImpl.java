@@ -96,6 +96,9 @@ public class UploadServiceImpl {
                         out.write(new String(chars).getBytes("UTF-8"), 0, charsRead);
                     }
                     System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
+                    if (!(stringBuilder.toString().contains("0123456789"))) {
+                        throw new RuntimeException("uploadFile2: missing uploaded data");
+                    }
                 } finally {
                     if (stream != null) {
                         stream.close();
