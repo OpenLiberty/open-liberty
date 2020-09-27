@@ -50,6 +50,7 @@ public class MultipartTest {
 
     private static String MULTIPART_URI = null;
     private static String MULTIPARTBODY_URI = null;
+    private static String MULTIPART_URI2 = null;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -72,6 +73,7 @@ public class MultipartTest {
 
         MULTIPART_URI = getBaseTestUri(thirdpartylibwar, "multipart", "resource/uploadFile");
         MULTIPARTBODY_URI = getBaseTestUri(thirdpartylibwar, "multipart", "resource2/multipartbody");
+        MULTIPART_URI2 = getBaseTestUri(thirdpartylibwar, "multipart", "resource/uploadFile2");
     }
 
     @AfterClass
@@ -139,4 +141,17 @@ public class MultipartTest {
         String returned = EntityUtils.toString(response.getEntity());
         assertEquals(expected, returned);
     }
+
+    @Test
+    public void testUploadMultipart2() throws IOException {
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        String srcPath = server.getServerRoot() + "/testInput.csv";
+        builder.addPart("my_file", new FileBody(new File(srcPath)));
+        HttpPost request = new HttpPost(MULTIPART_URI2);
+        request.setEntity(builder.build());
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse response = client.execute(request);
+        assertEquals(200, response.getStatusLine().getStatusCode());
+    }
+
 }
