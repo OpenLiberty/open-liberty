@@ -12,7 +12,7 @@
     <url>https://github.ibm.com/</url>
 
     <properties>
-        <microprofile.openapi.version>2.0-RC2</microprofile.openapi.version>
+        <microprofile.openapi.version>2.0-RC3</microprofile.openapi.version>
 
 <!--         
         <surefire.version>2.17</surefire.version> Any changes to the surefire version must be tested against ZOS

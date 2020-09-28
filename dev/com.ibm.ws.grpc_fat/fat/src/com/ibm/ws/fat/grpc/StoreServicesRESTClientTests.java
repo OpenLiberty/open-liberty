@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -25,7 +24,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointFATServlet;
 import com.ibm.testapp.g3store.restProducer.client.ProducerEndpointFATServlet;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -63,53 +61,22 @@ public class StoreServicesRESTClientTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive store_war = ShrinkHelper.defaultApp(storeServer, "StoreApp.war",
-                                                       "com.ibm.testapp.g3store.cache",
-                                                       "com.ibm.testapp.g3store.exception",
-                                                       "com.ibm.testapp.g3store.interceptor",
-                                                       "com.ibm.testapp.g3store.grpcservice",
-                                                       "com.ibm.testapp.g3store.servletStore",
-                                                       "com.ibm.testapp.g3store.utilsStore",
-                                                       "com.ibm.test.g3store.grpc"); // add generated src
 
-        WebArchive producer_war = ShrinkHelper.defaultDropinApp(producerServer, "StoreProducerApp.war",
-                                                                "com.ibm.testapp.g3store.grpcProducer.api",
-                                                                "com.ibm.testapp.g3store.exception",
-                                                                "com.ibm.testapp.g3store.restProducer",
-                                                                "com.ibm.testapp.g3store.restProducer.api",
-                                                                "com.ibm.testapp.g3store.restProducer.model",
-                                                                "com.ibm.testapp.g3store.restProducer.client",
-                                                                "com.ibm.testapp.g3store.servletProducer",
-                                                                "com.ibm.testapp.g3store.utilsProducer",
-                                                                "com.ibm.ws.fat.grpc.monitoring",
-                                                                "com.ibm.test.g3store.grpc"); // add generated src
+        boolean isArchive = false;
+        // To export the assembled services application archive files, set isArchive to true
+        // run it locally , keep this false when merging
 
-        // Use defaultApp the <application> element is used in server.xml for security, cannot use dropin
-        // The consumer tests needs to create data also , we will need to add producer files also
-        WebArchive consumer_war = ShrinkHelper.defaultApp(consumerServer, "StoreConsumerApp.war",
-                                                          "com.ibm.testapp.g3store.grpcConsumer.api",
-                                                          "com.ibm.testapp.g3store.grpcConsumer.security",
-                                                          "com.ibm.testapp.g3store.exception",
-                                                          "com.ibm.testapp.g3store.restConsumer",
-                                                          "com.ibm.testapp.g3store.restConsumer.api",
-                                                          "com.ibm.testapp.g3store.restConsumer.model",
-                                                          "com.ibm.testapp.g3store.servletConsumer",
-                                                          "com.ibm.testapp.g3store.utilsConsumer",
-                                                          "com.ibm.testapp.g3store.restConsumer.client",
-                                                          "com.ibm.testapp.g3store.grpcProducer.api",
-                                                          "com.ibm.testapp.g3store.restProducer",
-                                                          "com.ibm.testapp.g3store.restProducer.api",
-                                                          "com.ibm.testapp.g3store.restProducer.model",
-                                                          "com.ibm.testapp.g3store.servletProducer",
-                                                          "com.ibm.testapp.g3store.utilsProducer",
-                                                          "com.ibm.test.g3store.grpc", // add generated src
-                                                          "com.ibm.testapp.g3store.restProducer.client");
+        StoreClientTestsUtils.addStoreApp(storeServer, isArchive);
 
-        storeServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
+        StoreClientTestsUtils.addProducerApp(producerServer, isArchive);
+
+        StoreClientTestsUtils.addConsumerApp_RestClient(consumerServer, isArchive);
+
+        storeServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
-        producerServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
+        producerServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
@@ -119,16 +86,8 @@ public class StoreServicesRESTClientTests extends FATServletClient {
         Log.info(StoreServicesRESTClientTests.class, "setUp", "here is the secure port " + securePort);
 
         consumerServer.setHttpDefaultSecurePort(securePort);
-        consumerServer.startServer(StoreServicesRESTClientTests.class.getSimpleName() + ".log");
+        consumerServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not recieved", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
-
-        // To export the assembled services application archive files, uncomment the following
-        // run it locally , keep them commented when merging
-
-//        ShrinkHelper.exportArtifact(store_war, "publish/savedApps/StoreServer/");
-//        ShrinkHelper.exportArtifact(producer_war, "publish/savedApps/ProducerServer/");
-//        ShrinkHelper.exportArtifact(consumer_war, "publish/savedApps/ConsumerServer/");
-//
 
         //once this war file is installed on external Server
         // send the request e.g.
@@ -197,15 +156,15 @@ public class StoreServicesRESTClientTests extends FATServletClient {
     }
 
     @Test
-    public void testProducerWarStartWithGrpcService() throws Exception {
-        Log.info(getClass(), "testProducerWarStartWithGrpcService", "Check if Prodcuer.war started");
+    public void testProducerWarStartWithGrpcClient() throws Exception {
+        Log.info(getClass(), "testProducerWarStartWithGrpcClient", "Check if Prodcuer.war started");
         assertNotNull(producerServer.waitForStringInLog("CWWKZ0001I: Application StoreProducerApp started"));
 
     }
 
     @Test
-    public void testConsumerWarStartWithGrpcService() throws Exception {
-        Log.info(getClass(), "testConsumerWarStartWithGrpcService", "Check if Consumer.war started");
+    public void testConsumerWarStartWithGrpcClient() throws Exception {
+        Log.info(getClass(), "testConsumerWarStartWithGrpcClient", "Check if Consumer.war started");
         assertNotNull(consumerServer.waitForStringInLog("CWWKZ0001I: Application StoreConsumerApp started"));
 
     }

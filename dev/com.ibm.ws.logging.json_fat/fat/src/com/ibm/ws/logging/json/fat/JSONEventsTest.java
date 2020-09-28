@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -94,12 +96,43 @@ public abstract class JSONEventsTest {
 
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
+    @MaximumJavaLevel(javaLevel = 14)
     public void checkFfdc() throws Exception {
         final String method = "checkFfdc";
 
         ArrayList<String> ffdcKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                       "ibm_sequence", "ibm_className", "ibm_exceptionName", "ibm_probeID",
                                                                                       "ibm_threadId", "ibm_stackTrace", "ibm_objectDetails"));
+
+        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>();
+
+        getServer().addInstalledAppForValidation(APP_NAME);
+        TestUtils.runApp(getServer(), "ffdc1");
+
+        String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_ffdc\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"type\":\"liberty_ffdc\" from messages.log", line);
+
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+
+        if (!checkJsonMessage(jsonObj, ffdcKeysMandatoryList, ffdcKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail("Test failed with one or more errors");
+        }
+
+    }
+
+    @Test
+    @ExpectedFFDC({ "java.lang.NullPointerException" })
+    @MinimumJavaLevel(javaLevel = 15)
+    public void checkFfdcJava15() throws Exception {
+        final String method = "checkFfdc";
+
+        //JDK 15 has message as an additional field in ffdc events
+        ArrayList<String> ffdcKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                      "ibm_sequence", "ibm_className", "ibm_exceptionName", "ibm_probeID",
+                                                                                      "ibm_threadId", "ibm_stackTrace", "ibm_objectDetails", "message"));
 
         ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>();
 

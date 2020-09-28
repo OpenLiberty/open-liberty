@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.osgi.framework.ServiceReference;
@@ -51,7 +50,7 @@ import io.openliberty.grpc.internal.client.GrpcSSLService;
 @Component(service = {GrpcSSLService.class}, property = { "service.vendor=IBM" })
 public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 
-	private static final TraceComponent tc = Tr.register(LibertyGrpcClientSSLSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
+	private static final TraceComponent tc = Tr.register(LibertyGrpcClientSSLSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_CLIENT_SECURITY_BUNDLE);
 
     static final String KEY_KEYSTORE_SERVICE_REF = "keyStoreService";
     private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE_REF);
@@ -111,8 +110,7 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 				String sslProtocol = getSSLProtocol(props);
 				if (sslProtocol != null) {
 					if (!!!(sslProtocol.equals("TLSv1.2") || sslProtocol.equals("TLSv1.3"))) {
-						// TODO: message saying that ssl protocols less than TLSv1.2 are not supported by Netty for HTTP/2 
-						Tr.warning(tc, "invalid.ssl.prop", new Object[] { sslRef, sslProtocol } );
+						Tr.warning(tc, "invalid.ssl.protocol", new Object[] { sslProtocol, getSSLAlias(props) } );
 					}
 					builder.protocols(sslProtocol);
 				}
@@ -124,10 +122,8 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 				
 				builder.clientAuth(ClientAuth.OPTIONAL);
 				context = builder.build();
-			} catch (SSLException e) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					Tr.debug(tc, "getOutboundClientSSLContext failed to create SslContext due to: {0}", e);
-				}
+			} catch (Exception e) {
+				Tr.warning(tc, "client.ssl.failed", new Object[] { getSSLAlias(props), e } );
 			}
 		}		
 		return context;
@@ -166,11 +162,15 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 		}
         return sslProps;
     }
-    
-    protected static String getSSLProtocol(Properties props) {
-    	return props.getProperty(Constants.SSLPROP_PROTOCOL);
+
+    protected static String getSSLAlias(Properties props) {
+        return props.getProperty(Constants.SSLPROP_ALIAS);
     }
     
+    protected static String getSSLProtocol(Properties props) {
+        return props.getProperty(Constants.SSLPROP_PROTOCOL);
+    }
+
     protected static List<String> getCiphers(Properties props) {
         String enabledCipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
         if (enabledCipherString != null) {

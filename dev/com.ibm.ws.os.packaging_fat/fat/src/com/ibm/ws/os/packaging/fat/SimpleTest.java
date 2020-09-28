@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,7 +28,7 @@ import org.junit.Test;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 
-public class SimpleTest extends InstallUtilityToolTest{
+public class SimpleTest extends InstallUtilityToolTest {
 
     @Test
     public void DummyTest() throws Exception {

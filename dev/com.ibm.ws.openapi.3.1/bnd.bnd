@@ -49,7 +49,7 @@ Export-Package: \
 	com.ibm.ws.app.manager.wab;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
-	com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.kernel.filemonitor;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

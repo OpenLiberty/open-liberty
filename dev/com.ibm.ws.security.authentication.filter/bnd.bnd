@@ -15,6 +15,17 @@ Bundle-Name: Security Authentication filter
 Bundle-SymbolicName: com.ibm.ws.security.authentication.filter
 Bundle-Description: Security Authentication filter, version=${bVersion}
 
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.authentication.internal.filter.jar
+#JakartaEE-Bundle-Name: Security Authentication filter
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authentication.internal.filter
+#JakartaEE-Bundle-Description: Security Authentication filter
+#JakartaEE-Bundle-Version: 2.0
+
+
 WS-TraceGroup: Filter
 
 Export-Package: com.ibm.ws.security.authentication.filter;provider:=true

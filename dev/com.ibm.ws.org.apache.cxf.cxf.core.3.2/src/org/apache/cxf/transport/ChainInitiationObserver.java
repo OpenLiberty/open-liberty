@@ -36,7 +36,6 @@ import org.apache.cxf.interceptor.InterceptorProvider;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.PhaseChainCache;
 import org.apache.cxf.phase.PhaseManager;
 import org.apache.cxf.service.Service;
@@ -65,6 +64,7 @@ public class ChainInitiationObserver implements MessageObserver {
     @Override
     public void onMessage(Message m) {
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
+
         try {
             //no need reset TCClassloader as already set to bus
 //            if (loader != null) {
@@ -136,18 +136,16 @@ public class ChainInitiationObserver implements MessageObserver {
     }
 
     private void addToChain(InterceptorChain chain, Message m) {
-        //Liberty code change start
-        Collection<InterceptorProvider> providers = CastUtils.cast((Collection<?>) ((MessageImpl) m).getInterceptorProviders());
+        Collection<InterceptorProvider> providers = CastUtils.cast((Collection<?>) m.get(Message.INTERCEPTOR_PROVIDERS));
         if (providers != null) {
             for (InterceptorProvider p : providers) {
                 chain.add(p.getInInterceptors());
             }
         }
-        Collection<Interceptor<? extends Message>> is = CastUtils.cast((Collection<?>) ((MessageImpl) m).getInInterceptors());
+        Collection<Interceptor<? extends Message>> is = CastUtils.cast((Collection<?>) m.get(Message.IN_INTERCEPTORS));
         if (is != null) {
             //this helps to detect if need add CertConstraintsInterceptor to chain
-            String rqURL = (String) ((MessageImpl) m).getRequestUrl();
-            //Liberty code change end
+            String rqURL = (String) m.get(Message.REQUEST_URL);
             boolean isHttps = (rqURL != null && rqURL.indexOf("https:") > -1) ? true : false;
             for (Interceptor<? extends Message> i : is) {
                 if (i instanceof CertConstraintsInterceptor && isHttps == false) {

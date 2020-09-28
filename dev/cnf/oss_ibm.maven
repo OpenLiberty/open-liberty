@@ -46,7 +46,6 @@ com.ibm.ws.org.apache.cxf:cxf-rt-ws-policy:2.6.2.ibm-s20190515-1254
 com.ibm.ws.org.apache.cxf:cxf-tools-common:3.2.0.20170814-175354-499
 com.ibm.ws.org.apache.cxf:cxf-tools-wadlto-jaxrs:3.2.0.20170814-175516-496
 com.ibm.ws.org.apache.el:jasper-el:2.2
-com.ibm.ws.org.apache.felix:org.apache.felix.scr:2.1.21.ibm20200819-1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0.1
 com.ibm.ws.org.apache.geronimo.specs:geronimo-interceptor_1.1_spec:1.0
 com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.1
@@ -57,13 +56,13 @@ com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.266b699c58
 com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.266b699c58
 com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.266b699c58
 com.ibm.ws.org.apache:xalan:2.7.2
-com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.9.13
-com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.9.13
 com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2

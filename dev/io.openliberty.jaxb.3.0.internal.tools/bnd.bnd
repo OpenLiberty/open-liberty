@@ -45,6 +45,7 @@ Import-Package: \
   javax.xml.namespace.*, \
   javax.xml.datatype.*, \
   javax.xml.validation.*, \
+  javax.xml.xpath.*, \
   org.xml.sax.*, \
   !com.sun.xml.internal.bind.v2, \
   !com.sun.xml.bind.v2, \

@@ -29,6 +29,8 @@ import componenttest.topology.utils.FATServletClient;
  */
 public class TestUtils {
 
+    public static final int LOG_SEARCH_TIMEOUT = 300000;
+
     public static void recoveryTest(LibertyServer server, String servletName, String id) throws Exception {
         recoveryTest(server, server, servletName, id);
     }

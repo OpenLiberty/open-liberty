@@ -25,4 +25,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.transaction:jakarta.transaction-api;version=2.0.0.RC1
+	jakarta.transaction:jakarta.transaction-api;version=2.0.0.RC3
