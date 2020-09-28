@@ -329,3 +329,14 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the {1} signature algorithm, but that algorithm is only available in the beta edition. The {2} signature algorithm is used instead.
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can be used only in the beta edition.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.
+
+# 0=Key management algorithm, 1=List of supported key management algorithms
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM=CWWKS6056E: The [{0}] key management algorithm is not valid. The set of valid key management algorithms is [{1}].
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM.explanation=The provided key management algorithm is either null, empty, or does not match a supported key management algorithm that is specified in the message.
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM.useraction=Verify that the provided key management algorithm matches one of the supported algorithms.
+
+# 0=Content encryption algorithm, 1=List of supported content encryption algorithms
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM=CWWKS6057E: The [{0}] content encryption algorithm is not valid. The set of valid content encryption algorithms is [{1}].
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM.explanation=The provided content encryption algorithm is either null, empty, or does not match a supported content encryption algorithm that is specified in the message.
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM.useraction=Verify that the provided content encryption algorithm matches one of the supported algorithms.
+
