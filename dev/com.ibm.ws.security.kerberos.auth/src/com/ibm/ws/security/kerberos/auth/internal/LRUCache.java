@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth.internal;
 
-import java.net.InetAddress;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
+import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
@@ -80,62 +80,58 @@ public class LRUCache {
                         Tr.debug(tc, "no match because remaining lifetime is: " + remainingLifetime);
                     return null;
                 }
+                break;
             }
 
             // Ensure the KerberosTicket is current and attempt to renew if not
             Set<KerberosTicket> kerbTickets = sub.getPrivateCredentials(KerberosTicket.class);
-            KerberosTicket renewedTicket = null;
-            KerberosTicket oldTicket = null;
             for (KerberosTicket kerbTicket : kerbTickets) {
-                if (!kerbTicket.isCurrent()) {
-                    if (kerbTicket.isRenewable()) {
-                        // If the ticket is not current but is renewable, try to renew the ticket if
-                        // there is at least 10m remaining on the renewTill time
-                        long renewTillMs = kerbTicket.getRenewTill().getTime();
-                        long timeLeft = renewTillMs - System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(10);
-                        if (timeLeft < 0) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(tc, "no match because is renewable but past the renewTill time. timeLeft=" + timeLeft);
-                            return null;
-                        } else {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(tc, "found match for non-current ticket, but ticket is renewable. Attempting to renew now");
-                            oldTicket = kerbTicket;
-                            renewedTicket = cloneTicket(kerbTicket);
-                            break;
-                        }
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "no match because ticket is not current and not renewable");
-                        return null;
-                    }
+                if (kerbTicket.isDestroyed()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Found destroyed kerberos ticket. Removing from cache");
+                    return null;
                 }
-            }
-            if (oldTicket != null && renewedTicket != null) {
-                kerbTickets.remove(oldTicket);
-                kerbTickets.add(renewedTicket);
+
+                // a ticket should be refreshed if it is renewable and there is <10m left on its usable time
+                Instant now = Instant.now();
+                Instant endTime = kerbTicket.getEndTime().toInstant();
+                boolean shouldRefresh = kerbTicket.isRenewable() &&
+                                        now.isAfter(endTime.minus(10, ChronoUnit.MINUTES));
+                if (kerbTicket.isCurrent() && !shouldRefresh) {
+                    // we have a valid ticket with >10m of lifetime on it
+                    break;
+                }
+
+                if (!kerbTicket.isRenewable()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "no match because ticket is not current and not renewable");
+                    return null;
+                }
+
+                if (!shouldRefresh) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "no match because ticket is renewable but past the renewTill time");
+                    return null;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "found match for non-current ticket, but ticket is renewable. Attempting to renew now");
+                try {
+                    kerbTicket.refresh();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Successfully renewed ticket");
+                    break;
+                } catch (RefreshFailedException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "unable to refresh kerberos ticket due to: " + e);
+                    return null;
+                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Found cached subject for principal: " + principal);
             return sub;
         });
-    }
-
-    private static KerberosTicket cloneTicket(KerberosTicket kt) {
-        byte[] asn1Encoding = kt.getEncoded();
-        KerberosPrincipal client = kt.getClient();
-        KerberosPrincipal server = kt.getServer();
-        byte[] sessionKey = kt.getSessionKey().getEncoded();
-        int keyType = kt.getSessionKeyType();
-        boolean[] flags = kt.getFlags();
-        Date authTime = kt.getAuthTime();
-        Date startTime = kt.getStartTime();
-        Date endTime = kt.getEndTime();
-        Date renewTill = kt.getRenewTill();
-        InetAddress[] clientAddresses = kt.getClientAddresses();
-
-        return new KerberosTicket(asn1Encoding, client, server, sessionKey, keyType, flags, authTime, startTime, endTime, renewTill, clientAddresses);
     }
 
 }
