@@ -4,6 +4,6 @@
 symbolicName=io.openliberty.facesProvider-3.0.0.MyFaces
 singleton=true
 visibility=private
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
