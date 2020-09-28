@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,12 @@ repositories {
 
 configurations {
   ejbTools
+  enterpriseBeansTools
 }
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  enterpriseBeansTools 'test:io.openliberty.ejbcontainer.jakarta.fat_tools:1.+'
 }
 
 task addEJBTools {
@@ -47,7 +49,30 @@ task addEJBTools {
   }
 }
 
+task addEnterpriseBeansTools {
+  dependsOn ':io.openliberty.ejbcontainer.jakarta.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.persistent.fat.NoDatasourceServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+  }
+}
+
 addRequiredLibraries {
   dependsOn addEJBTools
+  dependsOn addEnterpriseBeansTools
+  dependsOn addJakartaTransformer
   dependsOn addDerby
 }
