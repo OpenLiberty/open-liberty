@@ -74,8 +74,11 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // SRVE0777E for testHelloWorldWithTlsInvalidClientTrustStore case
-        helloWorldTlsServer.stopServer("SRVE0777E");
+        // SRVE0777E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        // CWWKO0801E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        //     Unable to initialize SSL connection. Unauthorized access was denied or security settings have expired.
+        //     Exception is javax.net.ssl.SSLHandshakeException: Received fatal alert: certificate_unknown
+        helloWorldTlsServer.stopServer("SRVE0777E", "CWWKO0801E");
     }
 
     @Before
