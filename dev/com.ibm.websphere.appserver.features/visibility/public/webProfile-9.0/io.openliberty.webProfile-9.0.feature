@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.webProfile-9.0
+symbolicName=io.openliberty.webProfile-9.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
