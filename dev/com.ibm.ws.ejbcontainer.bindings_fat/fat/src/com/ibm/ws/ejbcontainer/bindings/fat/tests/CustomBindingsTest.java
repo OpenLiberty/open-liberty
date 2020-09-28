@@ -42,7 +42,9 @@ public class CustomBindingsTest extends FATServletClient {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                server.dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();

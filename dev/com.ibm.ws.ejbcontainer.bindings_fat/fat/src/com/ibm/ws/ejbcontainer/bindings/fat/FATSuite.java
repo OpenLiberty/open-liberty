@@ -26,6 +26,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.EJBinWARBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.HomeBindingNameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.JNDINameTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.NoInterfaceBindingsTest;
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.ServerXMLBindingTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.SimpleBindingNameTest;
 
 @RunWith(Suite.class)
@@ -42,6 +43,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.SimpleBindingNameTest;
                 HomeBindingNameTest.class,
                 JNDINameTest.class,
                 NoInterfaceBindingsTest.class,
+                ServerXMLBindingTest.class,
                 SimpleBindingNameTest.class
 
 })

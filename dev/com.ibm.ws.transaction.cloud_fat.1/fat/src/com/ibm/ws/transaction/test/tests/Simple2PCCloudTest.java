@@ -11,7 +11,6 @@
 package com.ibm.ws.transaction.test.tests;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,8 +33,9 @@ import componenttest.topology.utils.FATServletClient;
 public class Simple2PCCloudTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/Simple2PCCloudServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
+    private static final long LOG_SEARCH_TIMEOUT = 300000;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
@@ -59,10 +59,10 @@ public class Simple2PCCloudTest extends FATServletClient {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "com.ibm.ws.transaction.*");
-    }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        longLeaseLengthServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     @After

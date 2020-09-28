@@ -25,8 +25,8 @@ Bundle-Description: SCIM 2.0; version=${bVersion}
 
 
 Private-Package: \
-    com.ibm.websphere.security.wim.scim20.*;provide:=true,\
-    com.ibm.ws.security.wim.scim20.*;provide:=true
+	com.ibm.websphere.security.wim.scim20.*;provide:=true,\
+	com.ibm.ws.security.wim.scim20.*;provide:=true
 
 
 Include-Resource: \
@@ -35,17 +35,17 @@ Include-Resource: \
 
 -dsannotations: \
   com.ibm.ws.security.wim.scim20.rest.SCIMRESTHandler
-
+  
 
 -buildpath: \
-    com.ibm.websphere.org.osgi.core,\
-    com.ibm.websphere.org.osgi.service.component,\
-    com.ibm.websphere.rest.handler;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations,\
-    io.openliberty.com.fasterxml.jackson;version=latest,\
-    com.ibm.ws.management.security;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.ws.logging.core;version=latest
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
+	com.ibm.ws.management.security;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest
 
 -testpath: \
-    ../build.sharedResources/lib/junit/old/junit.jar;version=file
+        ../build.sharedResources/lib/junit/old/junit.jar;version=file

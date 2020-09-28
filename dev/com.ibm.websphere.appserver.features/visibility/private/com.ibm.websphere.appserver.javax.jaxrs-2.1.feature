@@ -6,7 +6,7 @@ IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Java RESTful Services API 2.1
 -features=\
-  io.openliberty.servlet.api-4.0, \
+  com.ibm.websphere.appserver.javax.servlet-4.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3; apiJar=false, \
   com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\

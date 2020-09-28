@@ -18,10 +18,12 @@ Bundle-Description: Liberty gRPC Client security, version ${bVersion}
 Import-Package: *
  
 Export-Package: \
-  io.openliberty.grpc.internal.client.security.ssl
+  io.openliberty.grpc.internal.client.security.*
 
 -dsannotations: \
   io.openliberty.grpc.internal.client.security.ssl.LibertyGrpcClientSSLSupport
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
   com.ibm.ws.kernel.service;version=latest,\

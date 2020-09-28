@@ -48,5 +48,17 @@ Export-Package:\
 publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
+  com.google.errorprone:error_prone_annotations;version=2.4.0,\
   io.grpc:grpc-netty;version=${grpcVersion},\
-  io.netty:netty-handler;version=${nettyVersion}
+  io.netty:netty-buffer;version=${nettyVersion},\
+  io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-http;version=${nettyVersion},\
+  io.netty:netty-codec-http2;version=${nettyVersion},\
+  io.netty:netty-codec-socks;version=${nettyVersion},\
+  io.netty:netty-common;version=${nettyVersion},\
+  io.netty:netty-handler;version=${nettyVersion},\
+  io.netty:netty-handler-proxy;version=${nettyVersion},\
+  io.netty:netty-resolver;version=${nettyVersion},\
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.openliberty.grpc.1.0.internal.common;version=latest
+

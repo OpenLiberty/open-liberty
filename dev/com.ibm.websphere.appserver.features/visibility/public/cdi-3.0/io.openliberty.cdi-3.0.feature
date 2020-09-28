@@ -49,7 +49,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
- io.openliberty.servlet.api-5.0, \
+ io.openliberty.jakarta.servlet-5.0, \
  io.openliberty.jakarta.jaxws-3.0, \
  io.openliberty.jakarta.jaxb-3.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \

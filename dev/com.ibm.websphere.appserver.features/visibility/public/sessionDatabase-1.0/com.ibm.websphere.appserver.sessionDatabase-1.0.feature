@@ -6,7 +6,7 @@ Manifest-Version: 1.0
 Subsystem-Name: Database Session Persistence 1.0
 -features=com.ibm.websphere.appserver.sessionStore-1.0.0.Database, \
  com.ibm.websphere.appserver.jndi-1.0, \
- io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
+ com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \
  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2, \
  com.ibm.websphere.appserver.jdbc-4.0; ibm.tolerates:="4.1, 4.2, 4.3"
 -bundles=com.ibm.websphere.security, \

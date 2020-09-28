@@ -1,0 +1,52 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+    
+    <ejbContainer bindToServerRoot="true"/>
+    
+    <application location="ServerXMLTestApp.ear">
+    
+   	    <ejb-jar-bnd moduleName="BindingNameEJB">
+            <session name="BindingName5">
+  	            <interface class="com.ibm.ejb3x.BindingName.ejb.BindingNameIntf" binding-name="ejblocal:ejb/ServerXMLBindingNameIntf5"/>
+  	            <interface class="com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf" binding-name="ejb/ServerXMLBindingNameIntf5"/>
+            </session>
+        </ejb-jar-bnd>
+    	
+        <ejb-jar-bnd moduleName="ComponentIDBndEJB">
+            <session name="ComponentIDBnd1" 
+                component-id="ejb/ServerXMLMyEJB1"/>
+        </ejb-jar-bnd>
+    
+        <ejb-jar-bnd moduleName="HomeBindingNameEJB">
+            <session name="HomeBindingName1" 
+                local-home-binding-name="ejblocal:com/ibm/ejb3x/HomeBindingName/ejb/ServerXMLHomeBindingNameHome1"/>
+            <session name="HomeBindingName3" 
+                remote-home-binding-name="com/ibm/ejb3x/HomeBindingName/ejb/ServerXMLHomeBindingNameHome3"/>
+        </ejb-jar-bnd>
+      	
+        <ejb-jar-bnd moduleName="SimpleBindingNameEJB">
+            <session name="SimpleBindingName1" 
+                simple-binding-name="com/ibm/ejb3x/SimpleBindingName/ejb/ServerXMLSimpleBindingNameHome1"/>
+        </ejb-jar-bnd>
+    
+        <ejb-jar-bnd moduleName="ServerXMLBindingsWeb">
+            <session name="WarTestBean" 
+                local-home-binding-name="ejblocal:com/ibm/ws/ejbcontainer/ServerXML/ejb/ServerXMLWarTestBeanLocal"
+                remote-home-binding-name="com/ibm/ws/ejbcontainer/ServerXML/ejb/ServerXMLWarTestBeanRemote"/>
+        </ejb-jar-bnd>
+        
+    </application>
+
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

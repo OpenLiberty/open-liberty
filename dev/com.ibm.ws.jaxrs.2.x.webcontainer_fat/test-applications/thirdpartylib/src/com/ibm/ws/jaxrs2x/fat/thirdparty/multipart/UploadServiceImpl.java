@@ -14,7 +14,10 @@ package com.ibm.ws.jaxrs2x.fat.thirdparty.multipart;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -51,7 +54,7 @@ public class UploadServiceImpl {
             try {
                 InputStream stream = handler.getInputStream();
                 MultivaluedMap<String, String> map = attachment.getHeaders();
-                System.out.println("fileName Here" + getFileName(map));
+                System.out.println("fileName Here " + getFileName(map));
                 OutputStream out = new FileOutputStream(new File("./" + getFileName(map)));
 
                 int read = 0;
@@ -69,6 +72,51 @@ public class UploadServiceImpl {
 
         return Response.ok("file uploaded").build();
     }
+
+    @POST
+    @Path("/uploadFile2")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFile2(List<IAttachment> attachments, @Context HttpServletRequest request) {
+        try {
+            for (IAttachment attachment : attachments) {
+                DataHandler handler = attachment.getDataHandler();
+                InputStream stream = null;
+                OutputStream out = null;
+                try {
+                    stream = handler.getInputStream();
+                    MultivaluedMap<String, String> map = attachment.getHeaders();
+                    System.out.println("fileName2 Here " + getFileName(map));
+                    out = new FileOutputStream(new File("./" + getFileName(map)));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    Reader in = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                    char[] chars = new char[1024];
+                    int charsRead;
+                    while((charsRead = in.read(chars, 0, chars.length)) > 0) {
+                        stringBuilder.append(chars, 0, charsRead);
+                        out.write(new String(chars).getBytes("UTF-8"), 0, charsRead);
+                    }
+                    System.out.println("uploadFile2 stringBuilder.toString(): " + stringBuilder.toString());
+                    if (!(stringBuilder.toString().contains("0123456789"))) {
+                        throw new RuntimeException("uploadFile2: missing uploaded data");
+                    }
+                } finally {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                    if (out != null) {
+                        out.flush();
+                        out.close();
+                    }
+                }
+            }
+            return Response.ok("file uploaded").build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("caught exception: " + e).build();
+        }
+    }
+
+
 
     private String getFileName(MultivaluedMap<String, String> header) {
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");

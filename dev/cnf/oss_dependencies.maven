@@ -29,11 +29,8 @@ com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.1
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.1
-com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.11.2
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1
-com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.11.2
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1
-com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.11.2
 com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1
@@ -179,7 +176,7 @@ jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
 jakarta.servlet:jakarta.servlet-api:5.0.0-M1
-jakarta.transaction:jakarta.transaction-api:2.0.0-RC1
+jakarta.transaction:jakarta.transaction-api:2.0.0-RC3
 jakarta.validation:jakarta.validation-api:3.0.0-M1
 jakarta.websocket:jakarta.websocket-api:2.0.0-RC1
 jakarta.ws.rs:jakarta.ws.rs-api:3.0.0-M1
@@ -317,8 +314,10 @@ org.apache.johnzon:johnzon-mapper:1.1.8
 org.apache.maven:maven-model:3.5.0
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.6
+org.apache.myfaces.core:myfaces-api:3.0.0-RC1
 org.apache.myfaces.core:myfaces-impl:2.2.12
 org.apache.myfaces.core:myfaces-impl:2.3.6
+org.apache.myfaces.core:myfaces-impl:3.0.0-RC1
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.thrift:libthrift:0.11.0
 org.apache.thrift:libthrift:0.13.0
@@ -600,6 +599,7 @@ org.testcontainers:oracle-xe:1.14.0
 org.testcontainers:postgresql:1.14.0
 org.testcontainers:testcontainers:1.14.0
 org.testng:testng:6.14.3
+org.yaml:snakeyaml:1.18
 org.yaml:snakeyaml:1.27
 rx:rx:1.3.8
 wsdl4j:wsdl4j:1.6.2

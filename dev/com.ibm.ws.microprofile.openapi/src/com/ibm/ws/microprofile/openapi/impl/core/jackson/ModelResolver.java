@@ -434,6 +434,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
 
             final AnnotatedMember member = propDef.getPrimaryMember();
             if (member != null && !ignore(member, xmlAccessorTypeAnnotation, propName, propertiesToIgnore)) {
+
                 JavaType propType = member.getType();
                 property = resolveAnnotatedType(propType, member, propName, context, model, (t, a) -> {
                     JsonUnwrapped uw = member.getAnnotation(JsonUnwrapped.class);

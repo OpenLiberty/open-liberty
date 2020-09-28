@@ -83,6 +83,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
         server.addEnvVar("POSTGRES_URL", jdbcURL);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     private static void log(OutputFrame frame) {
@@ -94,7 +95,6 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("NYTRACE: DualServerDynamicDBTest.setUp called");
         server1 = firstServer;
         server2 = secondServer;
         servletName = APP_NAME + "/Simple2PCCloudServlet";
@@ -114,20 +114,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         StringBuilder sb = null;
 
         // Start Server1
-        setUp(server1);
-        try {
-            ProgramOutput po = server1.startServer();
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception e = new Exception("Could not start " + server1.getServerName());
-                throw e;
-            }
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            fail(e.getMessage());
-        }
+        startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
@@ -142,21 +129,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
 
         // Now start server2
         server2.setHttpDefaultPort(Cloud2ServerPort);
-        setUp(server2);
-
-        try {
-            ProgramOutput po = secondServer.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception e = new Exception("Could not start server2");
-                throw e;
-            }
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            fail(e.getMessage());
-        }
+        startServers(server2);
 
         // wait for 2nd server to perform peer recovery
         assertNotNull(server2.getServerName() + " did not perform peer recovery",
@@ -176,20 +149,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
 
         // restart 1st server
         server1.resetStarted();
-        setUp(server1);
-        try {
-            ProgramOutput po = server1.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception e = new Exception("Could not start server1");
-                throw e;
-            }
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            fail(e.getMessage());
-        }
+        startServers(server1);
 
         assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
@@ -205,21 +165,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
 
         // Bounce first server to clear log
         server1.stopServer((String[]) null);
-        setUp(server1);
-
-        try {
-            ProgramOutput po = server1.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception e = new Exception("Could not start server1");
-                throw e;
-            }
-        } catch (Exception e) {
-            Log.error(this.getClass(), "dynamicTest", e);
-            fail(e.getMessage());
-        }
+        startServers(server1);
 
         // Check log was cleared
         assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
@@ -230,5 +176,28 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
     public void tearDown() throws Exception {
         tidyServerAfterTest(server1);
         tidyServerAfterTest(server2);
+    }
+
+    private void startServers(LibertyServer... servers) {
+        final String method = "startServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
+            try {
+                setUp(server);
+                po = server.startServerAndValidate(false, false, false);
+                if (po.getReturnCode() != 0) {
+                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
+                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                }
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            }
+        }
     }
 }
