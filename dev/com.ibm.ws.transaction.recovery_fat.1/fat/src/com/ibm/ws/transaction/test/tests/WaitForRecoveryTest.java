@@ -49,7 +49,7 @@ import componenttest.topology.utils.FATServletClient;
 public class WaitForRecoveryTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
-    public static final String SERVLET_NAME = "transaction/WaitForRecoveryServlet";
+    public static final String SERVLET_NAME = APP_NAME + "/WaitForRecoveryServlet";
 
     @Server("com.ibm.ws.transaction_waitForRecovery")
     @TestServlet(servlet = WaitForRecoveryServlet.class, contextRoot = APP_NAME)
@@ -63,6 +63,7 @@ public class WaitForRecoveryTest extends FATServletClient {
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
 
+        server1.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
         server1.startServer();
     }
 

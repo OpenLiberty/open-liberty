@@ -30,7 +30,7 @@ import componenttest.topology.utils.FATServletClient;
 @Mode
 public abstract class DualServerDynamicTestBase extends FATServletClient {
 
-    private static final int LOG_SEARCH_TIMEOUT = 300000;
+    protected static final int LOG_SEARCH_TIMEOUT = 300000;
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";

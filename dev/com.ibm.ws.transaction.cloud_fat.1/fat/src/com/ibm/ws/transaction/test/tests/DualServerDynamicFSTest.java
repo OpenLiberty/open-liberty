@@ -39,7 +39,7 @@ public class DualServerDynamicFSTest extends DualServerDynamicCoreTest {
         System.out.println("NYTRACE: DualServerDynamicTestBase.setUp called");
         server1 = firstServer;
         server2 = secondServer;
-        servletName = "transaction/SimpleFS2PCCloudServlet";
+        servletName = APP_NAME + "/SimpleFS2PCCloudServlet";
         cloud1RecoveryIdentity = "FScloud001";
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
         // Include the 'app1.web' package and all of it's java classes and sub-packages
@@ -48,6 +48,8 @@ public class DualServerDynamicFSTest extends DualServerDynamicCoreTest {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
 
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     @AfterClass
