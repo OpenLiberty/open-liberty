@@ -93,6 +93,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     public void testLogstashDefaultConfig() throws Exception {
         testName = "testLogstashDefaultConfig";
         setConfig("server_default_conf.xml");
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
+
         clearContainerOutput();
 
         int numOfMsg = 10;
@@ -102,8 +104,6 @@ public class LogstashSSLTest extends LogstashCollectorTest {
             createMessageEvent(testName + " " + i);
             checkSet.add(MESSAGE_PREFIX + " " + testName + " " + i);
         }
-
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
 
         assertEquals(numOfMsg, waitForContainerOutputSize(numOfMsg));
         assertNotNull("Cannot find message " + testName + " from Logstash output", waitForStringInContainerOutput(testName));
@@ -145,6 +145,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         assertNotNull(LIBERTY_FFDC + " not found", waitForStringInContainerOutput(LIBERTY_FFDC));
         assertNotNull(LIBERTY_ACCESSLOG + " not found", waitForStringInContainerOutput(LIBERTY_ACCESSLOG));
         if (!checkGcSpecialCase()) {
+            createGCEvent();
             assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
         }
     }
@@ -186,6 +187,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         for (int i = 1; i <= 10; i++) {
             createMessageEvent(testName + " " + i);
         }
+        createGCEvent();
         assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
     }
 

@@ -147,6 +147,11 @@ public abstract class LogstashCollectorTest {
         runApp(url);
     }
 
+    protected void createGCEvent() {
+        String url = getAppUrl() + "?gc=true";
+        runApp(url);
+    }
+
     private static void runApp(String url) {
         String method = "runApp";
         Log.info(c, method, "---> Running the application with url : " + url);
