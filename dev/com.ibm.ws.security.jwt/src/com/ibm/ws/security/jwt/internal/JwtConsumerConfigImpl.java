@@ -139,6 +139,11 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     }
 
     @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
+    @Override
     public String getSignatureAlgorithm() {
         return sigAlg;
     }

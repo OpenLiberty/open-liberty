@@ -26,6 +26,8 @@ public interface JwtConsumerConfig {
 
     List<String> getAudiences();
 
+    boolean ignoreAudClaimIfNotConfigured();
+
     String getSignatureAlgorithm();
 
     String getTrustStoreRef();
@@ -51,6 +53,6 @@ public interface JwtConsumerConfig {
     boolean getTokenReuse();
 
     boolean getUseSystemPropertiesForHttpClientConnections();
-    
-	List<String> getAMRClaim();
+
+    List<String> getAMRClaim();
 }
