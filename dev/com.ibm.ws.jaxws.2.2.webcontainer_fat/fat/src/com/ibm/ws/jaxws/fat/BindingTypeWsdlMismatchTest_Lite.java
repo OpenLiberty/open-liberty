@@ -20,11 +20,13 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test the binding type is align with the wsdl file if specified.
  */
+@SkipForRepeat("jaxws-2.3")
 public class BindingTypeWsdlMismatchTest_Lite {
 
     @Server("BindingTypeWsdlMismatchTestServer")
