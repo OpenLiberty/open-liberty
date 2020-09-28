@@ -476,9 +476,9 @@ error.root.must.be.server=CWWKG0105E: The {0} configuration document must begin 
 error.root.must.be.server.explanation=The configuration must be contained in either a server element or a client element. 
 error.root.must.be.server.useraction=Add a server or client element as the root of the configuration file. 
 
-error.bad.variable.file=CWWKG0106E: The file {0} can not be read. 
+error.bad.variable.file=CWWKG0106E: The {0} file can not be read. 
 error.bad.variable.file.explanation=The file can not be loaded as a variable because it can not be read. 
-error.bad.variable.file.useraction=Verify that the file contains text content and check operating system permissions on the file. 
+error.bad.variable.file.useraction=Verify that the file contains text content and check the operating system permissions for the file.
 
 
 # Non-TR message
