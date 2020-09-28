@@ -136,11 +136,13 @@ io.perfmark:perfmark-api:0.22.0
 io.projectreactor:reactor-core:3.1.8.RELEASE
 io.reactivex.rxjava2:rxjava:2.2.19
 io.reactivex:rxjava:1.3.8
-io.smallrye.common:smallrye-common-annotation:1.3.0
-io.smallrye.common:smallrye-common-classloader:1.3.0
-io.smallrye.common:smallrye-common-constraint:1.3.0
-io.smallrye.common:smallrye-common-expression:1.3.0
-io.smallrye.common:smallrye-common-function:1.3.0
+io.smallrye.common:smallrye-common-annotation:1.4.0
+io.smallrye.common:smallrye-common-classloader:1.4.0
+io.smallrye.common:smallrye-common-constraint:1.4.0
+io.smallrye.common:smallrye-common-expression:1.4.0
+io.smallrye.common:smallrye-common-function:1.4.0
+io.smallrye.config:smallrye-config-common:2.0.0-ibm20200923
+io.smallrye.config:smallrye-config:2.0.0-ibm20200923
 io.smallrye:smallrye-graphql-api:1.0.9
 io.smallrye:smallrye-graphql-cdi:1.0.9
 io.smallrye:smallrye-graphql-client-api:1.0.9
@@ -350,6 +352,8 @@ org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
 org.eclipse.microprofile.config:microprofile-config-api:1.3
 org.eclipse.microprofile.config:microprofile-config-api:1.4
+org.eclipse.microprofile.config:microprofile-config-api:2.0-ibm20200923
+org.eclipse.microprofile.config:microprofile-config-tck:2.0-ibm20200923
 org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1

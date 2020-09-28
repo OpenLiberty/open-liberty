@@ -11,7 +11,10 @@
 <suite name="microprofile-config-2.0-tck" verbose="2"
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config20.tck">
-        <method-selectors>
+        <!-- <classes>
+            <class name="org.eclipse.microprofile.config.tck.PropertyExpressionsTest"/>
+        </classes>-->
+        <!--<method-selectors>
             <method-selector>
                 <script language="beanshell">
                      <![CDATA[
@@ -58,9 +61,9 @@
                      !method.getName().equals("testGetCharacterConverter")
                      !method.getName().equals("testBoolean")
                 ]]>
-                </script>
+                </script>    
             </method-selector>
-        </method-selectors>
+        </method-selectors>-->
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
