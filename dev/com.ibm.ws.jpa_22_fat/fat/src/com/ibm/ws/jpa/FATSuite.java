@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+import com.ibm.ws.jpa.jpa22.OLGH14192Test;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -29,6 +30,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JPA22FATSuite.class,
                 JPAAppClientTest.class,
                 EJBPassivationTest.class,
+                OLGH14192Test.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
