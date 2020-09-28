@@ -1,0 +1,90 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JSF Liberty Integration
+Bundle-SymbolicName: io.openliberty.faces.internal
+Implementation-Version: 2.3.6
+
+jakartaeeMe: true
+
+app-resources= \
+  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
+  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
+  META-INF/services/org.apache.myfaces.spi.AnnotationProvider | \
+  META-INF/services/org.apache.myfaces.spi.InjectionProvider | \
+  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
+  META-INF/services/javax.faces.application.ApplicationFactory
+
+Include-Resource: \
+  META-INF=@src/META-INF
+
+# Use javax classse here and transform the files files later
+# Otherwise, if we use jakarta classes here then the
+# transformation will causes double imports
+Service-Component: \
+  com.ibm.ws.jsf_3_0; \
+    implementation:=com.ibm.ws.jsf.extprocessor.JSFExtensionFactory; \
+    provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
+    serializationService=com.ibm.ws.serialization.SerializationService; \
+    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
+    cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
+    greedy:="cdiJSFInitializerService"; \
+    optional:="cdiJSFInitializerService"; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.myfaces.initializer; \
+    implementation:=com.ibm.ws.jsf.ee.WASMyFacesContainerInitializer; \
+    provide:=javax.servlet.ServletContainerInitializer; \
+    properties:="service.vendor=IBM,service.ranking:Integer=101", \
+  com.ibm.ws.jsf_3_0.injection.class.list.collaborator; \
+    implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
+    provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.org.apache.myfaces_3_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"
+
+Import-Package: \
+  javax.faces.webapp, \
+  *
+
+Export-Package: \
+  com.ibm.ws.jsf.cdi, \
+  com.ibm.ws.jsf.config.*;thread-context=true, \
+  com.ibm.ws.jsf.ee;version=1.0.44, \
+  com.ibm.ws.jsf.spi.impl, \
+  com.ibm.ws.jsf.extprocessor
+
+-buildpath: \
+  org.apache.myfaces.core.impl;strategy=exact;version=${Implementation-Version},\
+  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+  com.ibm.ws.jsf.shared;version=latest,\
+  com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+  com.ibm.ws.classloading;version=latest,\
+  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.ws.serialization;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.adaptable.module;version=latest,\
+  com.ibm.ws.anno;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
+  com.ibm.ws.jsp;version=latest,\
+  com.ibm.websphere.javaee.el.3.0;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.websphere.appserver.spi.kernel.service,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest

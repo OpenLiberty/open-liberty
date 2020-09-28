@@ -1593,6 +1593,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-api</artifactId>
+      <version>3.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
       <version>2.2.12</version>
     </dependency>
@@ -1600,6 +1605,11 @@
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
       <version>2.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-impl</artifactId>
+      <version>3.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
