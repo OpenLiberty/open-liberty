@@ -158,7 +158,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         createMessageEvent(testName);
 
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
         assertNotNull("Did not find " + LIBERTY_MESSAGE, waitForStringInContainerOutput(LIBERTY_MESSAGE));
     }
 
@@ -170,7 +170,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         createAccessLogEvent(testName);
 
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
         assertNotNull("Did not find " + LIBERTY_ACCESSLOG, waitForStringInContainerOutput(testName));
     }
 
@@ -207,7 +207,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         createFFDCEvent(3);
         Log.info(c, testName, "------> finished ffdc3(ArrayIndexOutOfBoundsException)");
         exceptions.add("ArrayIndexOutOfBoundsException");
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
 
         assertNotNull(LIBERTY_FFDC + " not found", waitForStringInContainerOutput(LIBERTY_FFDC));
         assertNotNull("ArithmeticException not found", waitForStringInContainerOutput("ArithmeticException"));
@@ -429,8 +429,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
             }
             Log.info(c, testName, " jar file for health center under path " + JAVA_HOME + "/lib/ext/healthcenter.jar exist:"
                                   + new File(JAVA_HOME + "/lib/ext/healthcenter.jar").exists());
-        } else if (JAVA_HOME.endsWith("bin")) {
-            healthCenterInstalled = findHealthCenterDirecotry(JAVA_HOME.substring(0, JAVA_HOME.indexOf("bin") + 1));
+        } else if ((JAVA_HOME.endsWith("/bin")) || (JAVA_HOME.endsWith("\\bin"))) {
+            healthCenterInstalled = findHealthCenterDirecotry(JAVA_HOME.substring(0, JAVA_HOME.length() - 4));
             if (!healthCenterInstalled) {
                 Log.info(c, testName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
             }
@@ -449,19 +449,24 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
     private boolean findHealthCenterDirecotry(String directoryPath) {
         boolean jarFileExist = false;
-        File[] files = new File(directoryPath).listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                jarFileExist = findHealthCenterDirecotry(file.getAbsolutePath());
-                if (jarFileExist == true) {
-                    return true;
-                }
-            } else {
-                if (file.getAbsolutePath().contains("healthcenter.jar")) {
-                    Log.info(c, testName, " healthcetner.jar is found under path " + file.getAbsolutePath());
-                    return true;
+        File dirFile = new File(directoryPath);
+        if (dirFile.exists()) {
+            File[] files = dirFile.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    jarFileExist = findHealthCenterDirecotry(file.getAbsolutePath());
+                    if (jarFileExist == true) {
+                        return true;
+                    }
+                } else {
+                    if (file.getAbsolutePath().contains("healthcenter.jar")) {
+                        Log.info(c, testName, " healthcetner.jar is found under path " + file.getAbsolutePath());
+                        return true;
+                    }
                 }
             }
+        } else {
+            Log.info(c, "findHealthCenterDirecotry", "directoryPath " + directoryPath + " does not exist");
         }
         return jarFileExist;
     }
