@@ -221,15 +221,15 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     }
 
     boolean isRuntimeVersionAtLeast(Version minimumVersionRequired) {
-        MpJwtRuntimeVersion runtimeVersion = getMpJwtRuntimeVersion();
-        if (runtimeVersion == null) {
+        MpJwtRuntimeVersion mpJwtRuntimeVersion = getMpJwtRuntimeVersion();
+        if (mpJwtRuntimeVersion == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to find runtime version");
             }
             return false;
         }
-        Version version = runtimeVersion.getVersion();
-        return (version.compareTo(minimumVersionRequired) < 0);
+        Version runtimeVersion = mpJwtRuntimeVersion.getVersion();
+        return (runtimeVersion.compareTo(minimumVersionRequired) >= 0);
     }
 
     MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
