@@ -158,7 +158,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         createMessageEvent(testName);
 
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
         assertNotNull("Did not find " + LIBERTY_MESSAGE, waitForStringInContainerOutput(LIBERTY_MESSAGE));
     }
 
@@ -170,7 +170,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         createAccessLogEvent(testName);
 
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
         assertNotNull("Did not find " + LIBERTY_ACCESSLOG, waitForStringInContainerOutput(testName));
     }
 
@@ -207,7 +207,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         createFFDCEvent(3);
         Log.info(c, testName, "------> finished ffdc3(ArrayIndexOutOfBoundsException)");
         exceptions.add("ArrayIndexOutOfBoundsException");
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
 
         assertNotNull(LIBERTY_FFDC + " not found", waitForStringInContainerOutput(LIBERTY_FFDC));
         assertNotNull("ArithmeticException not found", waitForStringInContainerOutput("ArithmeticException"));
