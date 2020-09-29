@@ -21,7 +21,7 @@
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
     </dataSource>
     <library id="DerbyLib">
-        <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     
     <keyStore id="defaultKeyStore" password="openliberty"/>
