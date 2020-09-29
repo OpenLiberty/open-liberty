@@ -23,6 +23,7 @@ import com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask;
 import com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask;
 import com.ibm.ws.security.utility.tasks.EncodeTask;
 import com.ibm.ws.security.utility.tasks.HelpTask;
+import com.ibm.ws.security.utility.tasks.TLSProfilerTask;
 import com.ibm.ws.security.utility.utils.CommandUtils;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 import com.ibm.ws.security.utility.utils.FileUtility;
@@ -162,6 +163,7 @@ public class SecurityUtility extends UtilityTemplate {
         util.registerTask(new EncodeTask(SCRIPT_NAME));
         util.registerTask(new CreateSSLCertificateTask(certCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new CreateLTPAKeysTask(ltpaKeyFileCreator, fileUtil, SCRIPT_NAME));
+        util.registerTask(new TLSProfilerTask(SCRIPT_NAME));
 
         // Kick everything off
         int rc = util.runProgram(args).getReturnCode();
