@@ -73,8 +73,6 @@ org.jboss.classfilewriter:jboss-classfilewriter:1.2.4.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final
 org.jboss.logging:jboss-logging:3.3.2.Final
 org.jvnet.mimepull:mimepull:1.9.7
-org.opensaml:opensaml:2.6.6
-org.opensaml:openws:1.5.6
 org.osgi:org.osgi.core:4.2.0
 org.shredzone.acme4j:acme4j-client:2.7
 org.shredzone.acme4j:acme4j-utils:2.7
