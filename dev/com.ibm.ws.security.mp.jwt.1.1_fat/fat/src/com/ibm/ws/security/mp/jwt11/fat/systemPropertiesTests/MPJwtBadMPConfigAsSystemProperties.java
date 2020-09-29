@@ -68,7 +68,7 @@ public class MPJwtBadMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
     public void MPJwtBadMPConfigAsSystemProperties_GoodMpJwtConfigSpecifiedInServerXml() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_goodServerXmlConfig.xml");
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
@@ -85,7 +85,7 @@ public class MPJwtBadMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
     @Test
     public void MPJwtBadMPConfigAsSystemProperties_MpJwtConfigNotSpecifiedInServerXml() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP,
                          setBadIssuerExpectations(resourceServer));
 

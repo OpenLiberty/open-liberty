@@ -12,9 +12,12 @@ package com.ibm.ws.security.mp.jwt11.fat.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.simplicity.config.FeatureManager;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -92,6 +95,24 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     protected static void deployRSServerApiTestApps(LibertyServer server) throws Exception {
         setupUtils.deployMicroProfileApp(server);
 
+    }
+
+    public boolean isVersion12OrAbove(LibertyServer server) throws Exception {
+
+        ServerConfiguration serverconfig = server.getServerConfiguration();
+        FeatureManager fm = serverconfig.getFeatureManager();
+        Set<String> features = fm.getFeatures();
+        for (String feature : features) {
+            if (feature.contains("mpJwt-")) {
+                if (feature.contains("mpJwt-1.1")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        // somehow feature not installed
+        return false;
     }
 
     /*************************************/

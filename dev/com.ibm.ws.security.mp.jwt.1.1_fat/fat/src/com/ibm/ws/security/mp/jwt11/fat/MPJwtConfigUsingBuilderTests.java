@@ -81,7 +81,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
@@ -157,12 +156,12 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         if (expectations == null) {
             setGoodExpectations = true;
         }
-        for (List<String> app : getTestAppArray(resourceServer)) {
+        for (TestApps app : setTestAppArray(resourceServer)) {
             if (setGoodExpectations) {
-                expectations = goodTestExpectations(jwtTokenTools, app.get(0), app.get(1));
+                expectations = goodTestExpectations(jwtTokenTools, app.getUrl(), app.getClassName());
             }
 
-            Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.get(0), builtToken);
+            Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), builtToken);
             validationUtils.validateResult(response, expectations);
         }
 
@@ -356,6 +355,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server does not
      * specify the audiences config attribute. Expect a 401 and appropriate error messages in the server side log.
+     * With mpJwt-1.2, the audience in the token will be ignored if the mpJwt (config or mp props) does not specify it.
      *
      * @throws Exception
      */
@@ -366,12 +366,16 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
 
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
-
-        genericConfigTest(builtToken, expectations);
+        // mpJwt 1.2 allows audience to ignored if token has audience when configs do not specify audience
+        if (isVersion12OrAbove(resourceServer)) {
+            genericConfigTest(builtToken);
+        } else {
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+            expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+            expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
+            genericConfigTest(builtToken, expectations);
+        }
 
     }
 

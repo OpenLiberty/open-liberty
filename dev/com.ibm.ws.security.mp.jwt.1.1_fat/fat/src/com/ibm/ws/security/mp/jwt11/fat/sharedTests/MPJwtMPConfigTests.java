@@ -57,6 +57,33 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
         IN_APP, SYSTEM_PROP, ENV_VAR
     };
 
+    public class TestApps {
+
+        protected String url = null;
+        protected String className = null;
+
+        TestApps(String inUrl, String inClassName) {
+            url = inUrl;
+            className = inClassName;
+        }
+
+        public void setUrl(String inUrl) {
+            url = inUrl;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setClassName(String inClassName) {
+            url = inClassName;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+    }
+
     @SuppressWarnings("serial")
     List<String> reconfigMsgs = new ArrayList<String>() {
         {
@@ -167,15 +194,16 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      *
      * @throws Exception
      */
-    protected List<List<String>> getTestAppArray(LibertyServer server) throws Exception {
+    protected List<TestApps> setTestAppArray(LibertyServer server) throws Exception {
 
-        List<List<String>> testApps = new ArrayList<List<String>>();
-        testApps.add(Arrays.asList(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE));
-        testApps.add(Arrays.asList(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE));
-        testApps.add(Arrays.asList(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE));
+        List<TestApps> testApps = new ArrayList<TestApps>();
+
+        testApps.add(new TestApps(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET,
+                                              MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE), MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE));
+        testApps.add(new TestApps(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET,
+                                              MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE), MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE));
+        testApps.add(new TestApps(buildAppUrl(server, MpJwtFatConstants.MICROPROFILE_SERVLET,
+                                              MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE), MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE));
 
         return testApps;
 

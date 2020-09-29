@@ -61,7 +61,7 @@ public class Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests extends MPJ
     @Test
     public void Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests_HeaderCookie_test() throws Exception {
 
-        standardTestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, MpJwt12FatConstants.COOKIE,
                          "myJwtCookie", setMissingTokenExpectations(resourceServer));
     }
@@ -77,7 +77,7 @@ public class Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests extends MPJ
     @Test
     public void Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests_Audience_test() throws Exception {
 
-        standardTestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, MpJwt12FatConstants.AUTHORIZATION,
                          MpJwt12FatConstants.TOKEN_TYPE_BEARER, setBadAudiencesExpectations(resourceServer));
     }
@@ -95,7 +95,7 @@ public class Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests extends MPJ
     public void Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests_Algorithm_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_11ServerXmlConfig_withAudiences.xml");
-        standardTestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, MpJwt12FatConstants.AUTHORIZATION,
                          MpJwt12FatConstants.TOKEN_TYPE_BEARER, setBadCertExpectations(resourceServer, KeyMismatch));
     }
@@ -111,7 +111,7 @@ public class Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests extends MPJ
     public void Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests_overridAll_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_11ServerXmlConfig_withAudiencesAndSigAlg.xml");
-        standardTestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(MpJwt12FatConstants.SIGALG_ES256, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, MpJwt12FatConstants.AUTHORIZATION,
                          MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
     }

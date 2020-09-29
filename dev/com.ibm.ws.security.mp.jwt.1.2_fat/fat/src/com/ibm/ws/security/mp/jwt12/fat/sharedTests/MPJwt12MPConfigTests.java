@@ -11,7 +11,6 @@
 package com.ibm.ws.security.mp.jwt12.fat.sharedTests;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
@@ -403,10 +403,9 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         String thisMethod = "genericConfigTest";
         loggingUtils.printMethodName(thisMethod);
 
-        for (List<String> app : getTestAppArray(rs_server)) {
-            standardTestFlow(builder, app.get(0), app.get(1), location, name, expectations);
+        for (TestApps app : setTestAppArray(rs_server)) {
+            standard12TestFlow(builder, app.getUrl(), app.getClassName(), location, name, expectations);
         }
-
     }
 
     /**
@@ -429,50 +428,17 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
 
-    public void standardTestFlow(LibertyServer server, String rootContext,
-                                 String theApp, String className) throws Exception {
-        standardTestFlow(MpJwt12FatConstants.SIGALG_RS256, server, rootContext, theApp, className, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
-
+    public void standard12TestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, String location, String name) throws Exception {
+        standard12TestFlow(builder, server, rootContext, theApp, className, location, name, null);
     }
 
-    public void standardTestFlow(LibertyServer server, String rootContext,
-                                 String theApp, String className, Expectations expectations) throws Exception {
-        standardTestFlow(MpJwt12FatConstants.SIGALG_RS256, server, rootContext, theApp, className, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
-                         expectations);
-
-    }
-
-    public void standardTestFlow(LibertyServer server, String rootContext, String theApp, String className, String location, String name,
-                                 Expectations expectations) throws Exception {
-        standardTestFlow(MpJwt12FatConstants.SIGALG_RS256, server, rootContext, theApp, className, location, name, expectations);
-
-    }
-
-    public void standardTestFlow(String builder, LibertyServer server, String rootContext,
-                                 String theApp, String className) throws Exception {
-        standardTestFlow(builder, server, rootContext, theApp, className, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
-
-    }
-
-    public void standardTestFlow(LibertyServer server, String rootContext, String theApp, String className, String location, String name) throws Exception {
-        standardTestFlow(MpJwt12FatConstants.SIGALG_RS256, server, rootContext, theApp, className, location, name, null);
-    }
-
-    public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, String location, String name) throws Exception {
-        standardTestFlow(builder, server, rootContext, theApp, className, location, name, null);
-    }
-
-    public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, String location, String name,
-                                 Expectations expectations) throws Exception {
+    public void standard12TestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, String location, String name,
+                                   Expectations expectations) throws Exception {
         String testUrl = buildAppUrl(server, rootContext, theApp);
-        standardTestFlow(builder, testUrl, className, location, name, expectations);
+        standard12TestFlow(builder, testUrl, className, location, name, expectations);
     }
 
-    public void standardTestFlow(String builder, String testUrl, String className, String location, String name) throws Exception {
-        standardTestFlow(builder, testUrl, className, location, name, null);
-    }
-
-    public void standardTestFlow(String builder, String testUrl, String className, String location, String name, Expectations expectations) throws Exception {
+    public void standard12TestFlow(String builder, String testUrl, String className, String location, String name, Expectations expectations) throws Exception {
 
         if (builder == null || builder.equals("")) {
             builder = MpJwt12FatConstants.SIGALG_RS256;

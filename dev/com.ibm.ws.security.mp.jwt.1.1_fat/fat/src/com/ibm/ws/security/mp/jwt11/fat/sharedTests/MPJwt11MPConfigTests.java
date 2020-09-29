@@ -339,22 +339,22 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
      * @param expectations - null when running a good test, the expectations to check in the case of a bad/negative test
      * @throws Exception
      */
-    public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className) throws Exception {
-        standardTestFlow(builder, server, rootContext, theApp, className, null);
+    public void standard11TestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className) throws Exception {
+        standard11TestFlow(builder, server, rootContext, theApp, className, null);
 
     }
 
-    public void standardTestFlow(LibertyServer server, String rootContext, String theApp, String className) throws Exception {
-        standardTestFlow(server, rootContext, theApp, className, null);
+    public void standard11TestFlow(LibertyServer server, String rootContext, String theApp, String className) throws Exception {
+        standard11TestFlow(server, rootContext, theApp, className, null);
 
     }
 
-    public void standardTestFlow(LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
-        standardTestFlow("defaultJWT", server, rootContext, theApp, className, expectations);
+    public void standard11TestFlow(LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
+        standard11TestFlow("defaultJWT", server, rootContext, theApp, className, expectations);
 
     }
 
-    public void standardTestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
+    public void standard11TestFlow(String builder, LibertyServer server, String rootContext, String theApp, String className, Expectations expectations) throws Exception {
 
         Log.info(thisClass, "standardTestFlow", "builderId: " + builder);
         String builtToken = actions.getJwtFromTokenEndpoint(_testName, builder, SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer), defaultUser, defaultPassword);

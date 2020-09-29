@@ -71,7 +71,7 @@ public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt12MPConfigTests
 
         resourceServer.restoreServerConfigurationAndWaitForApps();
         // the builder we'll use has the same name as the signature algorithm
-        standardTestFlow(sigAlgorithm, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(sigAlgorithm, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, headerValue,
                          cookieName);
 
@@ -81,7 +81,7 @@ public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt12MPConfigTests
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, config);
         // the builder we'll use has the same name as the signature algorithm
-        standardTestFlow(sigAlgorithm, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard12TestFlow(sigAlgorithm, resourceServer, MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwt12FatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP, headerValue,
                          cookieName, expectations);
 

@@ -63,7 +63,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -79,7 +79,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -97,7 +97,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadIssuerInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -114,7 +114,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadIssuerInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -130,7 +130,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     // TODO - enable once supported - Issue 4783  @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodSimplePublicKeyInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -146,7 +146,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     // TODO - enable once supported - Issue 4783  @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodSimplePublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_SIMPLE_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -162,7 +162,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodComplexPublicKeyInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -178,7 +178,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodComplexPublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_COMPLEX_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -194,7 +194,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadPublicKeyInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -210,7 +210,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadPublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -226,7 +226,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodRelativePublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -242,7 +242,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodRelativePublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -258,7 +258,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodFilePublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -274,7 +274,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodFilePublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -290,7 +290,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodUrlPublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -306,7 +306,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodUrlPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_URL_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -322,7 +322,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodJwksUriPublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -338,7 +338,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodJwksUriPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_JWKSURI_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -354,7 +354,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     // TODO - enable once supported - Issue 4794  @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodRelativeComplexPublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_RELATIVE_COMPLEX_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -370,7 +370,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     // TODO - enable once supported - Issue 4794  @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_GoodFileComplexPublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_FILE_COMPLEX_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -386,7 +386,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadFilePublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -402,7 +402,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadUrlPublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 
@@ -418,7 +418,7 @@ public class MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests extends M
     @Test
     public void MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_BadRelativePublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                          MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
                          setBadCertExpectations(resourceServer, MpJwtFatConstants.JWK_CERT));
 

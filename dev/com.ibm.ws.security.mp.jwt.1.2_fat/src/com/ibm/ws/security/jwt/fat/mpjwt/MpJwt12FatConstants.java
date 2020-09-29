@@ -2,7 +2,7 @@ package com.ibm.ws.security.jwt.fat.mpjwt;
 
 public class MpJwt12FatConstants extends MpJwtFatConstants {
 
-    public static String COOKIE = "Cookie";
+    public static final String COOKIE = "Cookie";
 
     public static final String GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodHeaderAuthorizationInMP-ConfigInMETA-INF";
     public static final String GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodHeaderAuthorizationInMP-ConfigUnderWEB-INF";
