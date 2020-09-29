@@ -15,7 +15,7 @@
     <name>MicroProfile Opentracing TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.opentracing.version>2.0-RC1</microprofile.opentracing.version>
+        <microprofile.opentracing.version>2.0-RC2</microprofile.opentracing.version>
         <arquillian.version>1.1.14.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
