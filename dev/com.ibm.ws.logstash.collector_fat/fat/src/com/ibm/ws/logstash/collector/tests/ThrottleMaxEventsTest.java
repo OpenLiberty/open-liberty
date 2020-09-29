@@ -107,7 +107,6 @@ public class ThrottleMaxEventsTest extends LogstashCollectorTest {
             createTraceEvent(Integer.toString(t));
         }
         waitForContainerOutputSize(400);
-        //wait for the message events to process total of 400 events
         boolean throttled = waitForEventsToProcess(100, 100, 200, startTime, 120000);
 
         Log.info(c, testName, "Throttling test=" + throttled);
@@ -159,24 +158,38 @@ public class ThrottleMaxEventsTest extends LogstashCollectorTest {
         long traceEndTime = 0;
         long messageEndTime = 0;
         long accesslogEndTime = 0;
-        List<JSONObject> jobjs = parseJsonInContainerOutput();
-        for (JSONObject jobj : jobjs) {
-            String type = jobj.getString(KEY_TYPE);
-            String message = null;
-            if (!type.equals(LIBERTY_ACCESSLOG)) {
-                message = jobj.getString(KEY_MESSAGE);
+        while ((accessCount + traceCount + messageCount < numMsg + numTrace + numAccessLog) && (timeout > 0)) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            if (type.equals(LIBERTY_TRACE) && message.contains("TEST JUL TRACE")) {
-                traceCount++;
-                traceEndTime = System.currentTimeMillis();
-            } else if (type.equals(LIBERTY_MESSAGE) && message.contains("Test Logstash Message")) {
-                messageCount++;
-                messageEndTime = System.currentTimeMillis();
-            } else if (type.equals(LIBERTY_ACCESSLOG)) {
-                accessCount++;
-                accesslogEndTime = System.currentTimeMillis();
+            timeout -= 1000;
+
+            List<JSONObject> jobjs = parseJsonInContainerOutput();
+            messageCount = 0;
+            traceCount = 0;
+            accessCount = 0;
+
+            for (JSONObject jobj : jobjs) {
+                String type = jobj.getString(KEY_TYPE);
+                String message = null;
+                if (!type.equals(LIBERTY_ACCESSLOG)) {
+                    message = jobj.getString(KEY_MESSAGE);
+                }
+                if (type.equals(LIBERTY_TRACE) && message.contains("TEST JUL TRACE")) {
+                    traceCount++;
+                    traceEndTime = System.currentTimeMillis();
+                } else if (type.equals(LIBERTY_MESSAGE) && message.contains("Test Logstash Message")) {
+                    messageCount++;
+                    messageEndTime = System.currentTimeMillis();
+                } else if (type.equals(LIBERTY_ACCESSLOG)) {
+                    accessCount++;
+                    accesslogEndTime = System.currentTimeMillis();
+                }
             }
         }
+
         assertEquals("Number of liberty_message does not match", numMsg, messageCount);
         assertEquals("Number of liberty_trace does not match", numTrace, traceCount);
         assertEquals("Number of liberty_accesslog does not match", numAccessLog, accessCount);
