@@ -139,33 +139,33 @@ public class StoreProducerServletClientTests extends FATServletClient {
         this.createDeleteMultiApp();
     }
 
-    @Test
+    // @Test
     public void testClientStreaming_SC() throws Exception {
         this.clientStreaming();
     }
 
-    @Test
+    // @Test
     public void testClientStreamingMetrics_SC() throws Exception {
         this.clientStreamingMetrics();
     }
 
-    @Test
+    // @Test
     public void testServerStreaming_SC() throws Exception {
         this.serverStreaming();
     }
 
-    @Test
+    // @Test
     public void testServerStreamingMetrics_SC() throws Exception {
         this.serverStreamingMetrics();
     }
 
-    @Test
+    // @Test
     public void testTwoWayStreaming_SC() throws Exception {
         this.twoWayStreaming();
 
     }
 
-    @Test
+    // @Test
     public void testTwoWayStreamingAsyncThread_SC() throws Exception {
         this.twoWayStreamingAsyncThread();
     }
