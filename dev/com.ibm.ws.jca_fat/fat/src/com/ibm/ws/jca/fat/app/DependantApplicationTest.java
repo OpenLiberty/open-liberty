@@ -183,8 +183,8 @@ public class DependantApplicationTest {
                               "J2CA8802E", // TODO : The message endpoint activation failed for resource adapter FAT1 due to exception: javax.resource.spi.InvalidPropertyException: destination
                               "J2CA8806E", // TODO : The administered object with id or JNDI name topic2 could not be found in the server configuration
                               "J2CA0045E:.*jms/cf1", // EXPECTED
-                              "CWWKE0701E.*com.ibm.ws.jca.resourceAdapter.properties", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
-                              "CWWKE0700W.*com.ibm.ws.jca.resourceAdapter.properties", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
+                              "CWWKE0701E.*com.ibm.ws.jca", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
+                              "CWWKE0700W.*com.ibm.ws.jca", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
                               "CWWKG0007W"); // TODO : The system could not delete C:\Users\IBM_ADMIN\Documents\workspace\build.image\wlp/usr/servers\com.ibm.ws.jca.fat\workarea\org.eclipse.osgi\9\data\configs\com.ibm.ws.jca.jmsQueue.properties_99!-1806458000
         } finally {
             if (originalServerConfig != null)

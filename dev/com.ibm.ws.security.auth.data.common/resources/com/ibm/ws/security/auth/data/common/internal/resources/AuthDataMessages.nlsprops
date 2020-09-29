@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Specify a valid authentication d
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: A configuration error has occurred. The attribute {0} must be defined.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=The specified attribute must be defined.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Specify the value for the missing attribute.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: The {0} and {1} attributes were both configured on the {2} authData element. Only {0} or {1} may be configured, not both.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=The specified attributes are mutually exclusive with one another.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Specify only one of the two attributes.
+ 

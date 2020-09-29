@@ -150,12 +150,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         lock.writeLock().lock();
         try {
             appStateMap.put(appName, ApplicationState.STARTING);
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**
@@ -229,13 +229,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         try {
             if (appStateMap.containsKey(appName)) {
                 appStateMap.replace(appName, ApplicationState.STARTING, ApplicationState.STARTED);
-            }             
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
+            }
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**
@@ -342,14 +341,13 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             if (state.equals("STARTING")) {
                 appStateMap.replace(appName, ApplicationState.INSTALLED);
             } else {
-                appStateMap.remove(appName);   
-            }             
+                appStateMap.remove(appName);
+            }
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**

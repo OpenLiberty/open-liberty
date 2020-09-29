@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -304,27 +305,36 @@ public final class ServletAdapter {
     }
 
     final byte[] buffer = new byte[4 * 1024];
+    
+    ReentrantLock gateKeeper = new ReentrantLock();
 
     @Override
     public void onDataAvailable() throws IOException {
       logger.log(FINEST, "[{0}] onDataAvailable: ENTRY", logId);
 
-      while (input.isReady()) {
-        int length = input.read(buffer);
-        if (length == -1) {
-          logger.log(FINEST, "[{0}] inbound data: read end of stream", logId);
-          return;
-        } else {
-          if (logger.isLoggable(FINEST)) {
-            logger.log(
-                FINEST,
-                "[{0}] inbound data: length = {1}, bytes = {2}",
-                new Object[] {logId, length, ServletServerStream.toHexString(buffer, length)});
-          }
+      // if second thread is in onDataAvailable it needs to leave without calling read and likely throwing an exception
+      if (gateKeeper.tryLock()) {
+    	try {  
+          while (input.isReady()) {
+            int length = input.read(buffer);
+            if (length == -1) {
+              logger.log(FINEST, "[{0}] inbound data: read end of stream", logId);
+              return;
+            } else {
+              if (logger.isLoggable(FINEST)) {
+                logger.log(
+                    FINEST,
+                    "[{0}] inbound data: length = {1}, bytes = {2}",
+                    new Object[] {logId, length, ServletServerStream.toHexString(buffer, length)});
+              }
 
-          byte[] copy = Arrays.copyOf(buffer, length);
-          stream.transportState().runOnTransportThread(
-              () -> stream.transportState().inboundDataReceived(ReadableBuffers.wrap(copy), false));
+              byte[] copy = Arrays.copyOf(buffer, length);
+              stream.transportState().runOnTransportThread(
+                  () -> stream.transportState().inboundDataReceived(ReadableBuffers.wrap(copy), false));
+            }
+          }
+        } finally {
+      	  gateKeeper.unlock();
         }
       }
 

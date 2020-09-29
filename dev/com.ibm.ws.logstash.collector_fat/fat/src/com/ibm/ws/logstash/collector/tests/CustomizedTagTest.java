@@ -110,7 +110,10 @@ public class CustomizedTagTest extends LogstashCollectorTest {
 
         // Create FFDC and access log event
         createFFDCEvent(1);
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_MESSAGE));
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_TRACE));
         assertNotNull(waitForStringInContainerOutput(LIBERTY_FFDC));
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_ACCESSLOG));
 
         // Check results
         List<JSONObject> jObjList = parseJsonInContainerOutput();
