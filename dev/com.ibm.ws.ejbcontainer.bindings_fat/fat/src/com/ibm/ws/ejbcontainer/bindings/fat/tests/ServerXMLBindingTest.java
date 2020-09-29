@@ -81,7 +81,7 @@ public class ServerXMLBindingTest extends FATServletClient {
         server.removeAllInstalledAppsForValidation();
 
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
 
     }
@@ -104,7 +104,7 @@ public class ServerXMLBindingTest extends FATServletClient {
         server.removeAllInstalledAppsForValidation();
 
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
 
     }

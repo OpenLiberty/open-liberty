@@ -94,7 +94,7 @@ public class NoInterfaceBindingsTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0168W");
+            server.stopServer("CNTR0168W", "CNTR0338W");
         }
     }
 }

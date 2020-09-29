@@ -13,6 +13,8 @@ bVersion=1.0
 
 src: \
 	fat/src, \
+	test-applications/AmbiguousEJB.jar/src, \
+	test-applications/AmbiguousWeb.war/src, \
 	test-applications/BindingNameEJB.jar/src, \
 	test-applications/BindingNameWeb.war/src, \
 	test-applications/BndErrorEJB.jar/src, \

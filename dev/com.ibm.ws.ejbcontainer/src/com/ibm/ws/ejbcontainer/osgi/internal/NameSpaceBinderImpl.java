@@ -45,6 +45,7 @@ import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBRemoteReferenceBinding;
 import com.ibm.ws.ejbcontainer.runtime.NameSpaceBinder;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
  * Adds EJB names to the name space for java:global, java:app, and
@@ -155,7 +156,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param hr            the HomeRecord of the EJB
      */
     @Override
-    public void bindDefaultEJBLocal(EJBBinding bindingObject, HomeRecord hr) {
+    public void bindDefaultEJBLocal(EJBBinding bindingObject, HomeRecord hr) throws NamingException {
         HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
         BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
 
@@ -217,7 +218,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param hr            the HomeRecord of the EJB
      */
     @Override
-    public void bindDefaultEJBRemote(EJBBinding bindingObject, HomeRecord hr) {
+    public void bindDefaultEJBRemote(EJBBinding bindingObject, HomeRecord hr) throws NamingException {
         HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
 
         if (hrImpl.bindToContextRoot()) {
@@ -264,7 +265,8 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param isSimpleName  Flag used to force creation of an AmbiguousEJBReference if an
      *                          ambiguous simple name binding is detected
      */
-    private void bindLegacyRemoteBinding(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean isSimpleName) {
+    private void bindLegacyRemoteBinding(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean isSimpleName) throws NamingException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (remoteRuntime != null) {
             BindingsHelper bh = BindingsHelper.getRemoteHelper(hr);
@@ -288,6 +290,35 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
             }
 
             if (previousBinding != null) {
+
+                OnError onError = ContainerProperties.customBindingsOnErr;
+
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "found ambiguous binding and customBindingsOnErr=" + onError.toString());
+                }
+
+                BeanMetaData oldbmd = previousBinding.homeRecord.getBeanMetaData();
+                switch (onError) {
+                    case WARN:
+                        //NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
+                        Tr.warning(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                                   new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName,
+                                                  previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                        break;
+                    case FAIL:
+                        Tr.error(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                                 new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName,
+                                                previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                        throw new NamingException("The " + newBinding.interfaceName + " interface of the " + bmd.j2eeName.getComponent() + " bean in the "
+                                                  + bmd.j2eeName.getModule() + " module of the application cannot be bound to " + bindingName
+                                                  + ", a bean is already bound to that location.");
+                    case IGNORE:
+                        if (isTraceOn && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "customBindingsOnErr is IGNORE, not binding");
+                        }
+                        return;
+                }
+
                 newBinding.setAmbiguousReference();
                 newBinding.addJ2EENames(previousBinding.getJ2EENames());
                 removePreviousRemoteBinding(bindingName);
@@ -325,7 +356,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 sendBindingMessage(newBinding.interfaceName, bindingName, bmd);
             }
         } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Remote Runtime Service isn't enabled, not adding remote binding.");
             }
         }
@@ -336,7 +367,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      *
      * Caller should ensure the simpleBindingName exists
      *
-     * @param bindingObject                           - the EJBBinding
+     * @param bindingObject                            - the EJBBinding
      * @param hr                                      - the bean home record
      * @param local                                   - is local bean
      * @param generateDisambiguatedSimpleBindingNames - A boolean, which when true
@@ -345,7 +376,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      *                                                    of the binding name.
      */
     @Override
-    public void bindSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) {
+    public void bindSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) throws NamingException {
         BeanMetaData bmd = hr.getBeanMetaData();
 
         if (local) {
@@ -366,7 +397,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      *                                                    constructed to include "#<interfaceName>" at the end
      *                                                    of the binding name.
      */
-    private void bindLocalSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean generateDisambiguatedSimpleBindingNames) {
+    private void bindLocalSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean generateDisambiguatedSimpleBindingNames) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
@@ -436,7 +467,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      *                                                    constructed to include "#<interfaceName>" at the end
      *                                                    of the binding name.
      */
-    private void bindRemoteSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean generateDisambiguatedSimpleBindingNames) {
+    private void bindRemoteSimpleBindingName(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean generateDisambiguatedSimpleBindingNames) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (generateDisambiguatedSimpleBindingNames) {
@@ -459,7 +490,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param hr            - the bean home record
      */
     @Override
-    public void bindLocalHomeBindingName(EJBBinding bindingObject, HomeRecord hr) {
+    public void bindLocalHomeBindingName(EJBBinding bindingObject, HomeRecord hr) throws NamingException {
         BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
         BeanMetaData bmd = hr.getBeanMetaData();
         String bindingName = bmd.localHomeJndiBindingName;
@@ -476,7 +507,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param hr            - the bean home record
      */
     @Override
-    public void bindLocalBusinessInterface(EJBBinding bindingObject, HomeRecord hr) {
+    public void bindLocalBusinessInterface(EJBBinding bindingObject, HomeRecord hr) throws NamingException {
         BindingsHelper bh = BindingsHelper.getLocalHelper(hr);
         BeanMetaData bmd = hr.getBeanMetaData();
         String interfaceName = bindingObject.interfaceName;
@@ -504,7 +535,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                              int interfaceIndex,
                              String interfaceName,
                              boolean local,
-                             boolean deferred) {
+                             boolean deferred) throws NamingException {
         EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (!local && remoteRuntime != null) {
             HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
@@ -589,7 +620,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the java:app name space.
      *
      * @param names List of names to remove from the
-     *                  application name space.
+     *            application name space.
      */
     @Override
     public void unbindJavaApp(List<String> names) {
@@ -674,7 +705,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the ejblocal: name space.
      *
      * @param names List of names to remove from the
-     *                  application name space.
+     *            application name space.
      */
     @Override
     public void unbindEJBLocal(List<String> names) throws NamingException {
@@ -685,7 +716,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Undoes the bindings from local namespace.
      *
      * @param names List of names to remove from the
-     *                  application name space.
+     *            application name space.
      */
     @Override
     public void unbindLocalColonEJB(List<String> names) throws NamingException {
@@ -696,7 +727,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Undoes the root remote bindings.
      *
      * @param names List of names to remove from the
-     *                  application name space.
+     *            application name space.
      */
     @Override
     public void unbindRemote(List<String> names) {
