@@ -306,38 +306,27 @@ public final class ServletAdapter {
 
     final byte[] buffer = new byte[4 * 1024];
     
-    ReentrantLock gateKeeper = new ReentrantLock();
-
     @Override
     public void onDataAvailable() throws IOException {
       logger.log(FINEST, "[{0}] onDataAvailable: ENTRY", logId);
 
-      // if second thread is in onDataAvailable it needs to leave without calling read and likely throwing an exception
-      if (gateKeeper.tryLock()) {
-    	try {  
-          while (input.isReady()) {
-            int length = input.read(buffer);
-            if (length == -1) {
-              logger.log(FINEST, "[{0}] inbound data: read end of stream", logId);
-              return;
-            } else {
-              if (logger.isLoggable(FINEST)) {
-                logger.log(
-                    FINEST,
-                    "[{0}] inbound data: length = {1}, bytes = {2}",
-                    new Object[] {logId, length, ServletServerStream.toHexString(buffer, length)});
-              }
-
-              byte[] copy = Arrays.copyOf(buffer, length);
-              stream.transportState().runOnTransportThread(
-                  () -> stream.transportState().inboundDataReceived(ReadableBuffers.wrap(copy), false));
-            }
+      while (input.isReady()) {
+        int length = input.read(buffer);
+        if (length == -1) {
+          logger.log(FINEST, "[{0}] inbound data: read end of stream", logId);
+          return;
+        } else {
+          if (logger.isLoggable(FINEST)) {
+            logger.log(
+                FINEST,
+                "[{0}] inbound data: length = {1}, bytes = {2}",
+                new Object[] {logId, length, ServletServerStream.toHexString(buffer, length)});
           }
-        } finally {
-      	  gateKeeper.unlock();
+           byte[] copy = Arrays.copyOf(buffer, length);
+          stream.transportState().runOnTransportThread(
+              () -> stream.transportState().inboundDataReceived(ReadableBuffers.wrap(copy), false));
         }
       }
-
       logger.log(FINEST, "[{0}] onDataAvailable: EXIT", logId);
     }
 

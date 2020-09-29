@@ -88,10 +88,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedHost = null;
     private boolean suppress0ByteChunk = false;
 
-    private final Object syncBodyBufferAccess = new Object() {};
-    private final int syncBodyBufferAccessCount = 0;
-    private final int SYNC_BODY_BUFFER_WAIT_MSEC = 3000;
-
     /**
      * Constructor for an HTTP inbound service context object.
      *
@@ -1561,27 +1557,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
 
-        // we don't want different thread using this method at the same time, but the same thread may be
-        // re-entering this method.  We also can't deadlock by synchronizing the whole method.
-        if (!gateKeeper.tryLock()) {
-            // another thread has the lock, wait to be notify, but go on after the wait time so as not to deadlock
-            synchronized (syncBodyBufferAccess) {
-                try {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "dual thread entry into getRequestBodyBuffer, this thread is going to wait");
-                    }
-                    syncBodyBufferAccess.wait(SYNC_BODY_BUFFER_WAIT_MSEC);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "wait is over");
-                    }
-                } catch (InterruptedException x) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "wait is over - interruptedException");
-                    }
-                }
-            }
-        }
-
         try {
             if (!headersParsed()) {
                 // request message must have the headers parsed prior to attempting
@@ -1654,12 +1629,19 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
             return null;
         } finally {
-            gateKeeper.unlock();
-            synchronized (syncBodyBufferAccess) {
-                syncBodyBufferAccess.notify();
-            }
+            countDownFirstReadLatch();
+        }
+    }
+
+    public void countDownFirstReadLatch() {
+        if (this.myLink instanceof H2HttpInboundLinkWrap) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getRequestBodyBuffer(async) exit finally. hc: " + this.hashCode());
+                Tr.debug(tc, "countDownFirstReadLatch. count down. HISCI hc: " + this.hashCode());
+            }
+            ((H2HttpInboundLinkWrap) myLink).countDownFirstReadLatch();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, " can not count down countDownFirstReadLatch. HISCI hc: " + this.hashCode());
             }
         }
     }
