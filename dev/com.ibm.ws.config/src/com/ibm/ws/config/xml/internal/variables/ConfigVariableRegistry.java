@@ -442,28 +442,12 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
     @Override
     public String resolveString(String variableName) {
-        String value = registry.resolveString(variableName);
-//        if (value != null && value.equals(variableName)) {
-//            LibertyVariable var = serviceBindingVariables.get(variableName);
-//            if (var != null)
-//                return var.getValue();
-//        }
-
-        return value;
-
+        return registry.resolveString(variableName);
     }
 
     @Override
     public String resolveRawString(String variableName) {
-        String value = registry.resolveRawString(variableName);
-//        if (value != null && value.equals(variableName)) {
-//            LibertyVariable var = serviceBindingVariables.get(variableName);
-//            if (var != null)
-//                return var.getValue();
-//        }
-
-        return value;
-
+        return registry.resolveRawString(variableName);
     }
 
     @Override
