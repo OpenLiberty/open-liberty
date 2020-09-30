@@ -55,6 +55,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     H2ConnectionLinkProxy h2ConnectionProxy = null;
     VirtualConnection vc = null;
     boolean isPushPromise = false;
+    private boolean isGrpc = false;
 
     private HashMap<String, String> pseudoHeaders = null;
     private ArrayList<H2HeaderField> headers = null;
@@ -90,8 +91,8 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
-                    setIsGrpcInParentLink(true);
-                    routeGrpcServletRequest(servicePaths);
+                    isGrpc = routeGrpcServletRequest(servicePaths);
+                    setIsGrpcInParentLink(isGrpc);
                 }
             }
         }
@@ -104,9 +105,10 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * the correct application context root to the request. For this example, the URL will change from
      * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
      */
-    private void routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
-        String requestContentType = getContentType().toLowerCase();
+    private boolean routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
+        String requestContentType = getContentType();
         if (requestContentType != null && servicePaths != null) {
+            requestContentType = requestContentType.toLowerCase();
             if ("application/grpc".equalsIgnoreCase(requestContentType)) {
 
                 String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
@@ -123,12 +125,13 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         String newPath = contextRoot + currentURL;
                         this.pseudoHeaders.put(HpackConstants.PATH, newPath);
                         Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
-                        return;
                     }
+                    return true;
                 }
                 Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
             }
         }
+        return false;
     }
 
     /**
@@ -561,6 +564,10 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             }
             h2sp.countDownFirstReadLatch();
         }
+    }
+
+    public boolean getIsGrpc() {
+        return isGrpc;
     }
 
 }
