@@ -22,14 +22,14 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      #if: "false"
+      if: "false" # TEMP
       run: |
         cd dev
         chmod +x gradlew
         ./gradlew cnf:initialize
         ./gradlew assemble
     - name: Upload liberty image
-      #if: "false"
+      if: "false" # TEMP
       uses: actions/upload-artifact@v2
       with:
         name: liberty-image
@@ -38,7 +38,7 @@ jobs:
           dev/build.image/wlp/
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
-    needs: build
+    # needs: build ## TEMP
     runs-on: ubuntu-latest
     timeout-minutes: ${{matrix.timeout}}
     strategy:
@@ -76,7 +76,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Download liberty image
-      #if: "false"
+      if: "false" ## TEMP
       uses: actions/download-artifact@v2
       with:
         name: liberty-image
@@ -94,11 +94,14 @@ jobs:
         echo "Will be running buckets $FAT_BUCKETS"
         for FAT_BUCKET in $FAT_BUCKETS
         do
-          if [[ ! -f $FAT_BUCKET ]]; then
+          if [[ ! -f "$FAT_BUCKET" ]]; then
             echo "ERROR: Bucket $FAT_BUCKET does not exist.";
             exit 1;
           fi
         done
+        
+        echo "@AGG temporarily done";
+        exit 0;
           
         FAILURE=false
         ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
