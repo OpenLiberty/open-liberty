@@ -57,7 +57,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * Group search level.
      */
-    private short groupLevel = 1;
+    private short groupLevel = Service.PROP_LEVEL_IMMEDIATE; // TODO THIS WAS PROP_LEVEL_NESTED (0) IN TWAS
     public boolean returnRealmInfoInUniqueUserId = false; //PM50390.2
     private final String groupLevelLock = "GROUP_LEVEL_LOCK";
 

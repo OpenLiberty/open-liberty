@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
-                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
-                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
-                   localization="OSGI-INF/l10n/metatype">
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -13,6 +9,11 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
     <OCD id="com.ibm.ws.security.registry.ldap.config.metatype" name="%ldap.config" description="%ldap.config.desc"
          ibm:alias="ldapRegistry" ibm:objectClass="com.ibm.ws.security.wim.ConfiguredRepository">
         <AD id="realm" name="%realm" description="%realm.desc"
@@ -448,7 +449,11 @@
  <OCD id="com.ibm.ws.security.wim.adapter.ldap.memberAttribute" name="%ldapMemberAttributes" description="%ldapMemberAtttributes.desc">
 	<AD id="name" name="%memberName" type="String" description="%memberName.desc"/>
 	<AD id="objectClass" name="%memberAttributeObjectClass" type="String" description="%memberAttributeObjectClass.desc"/> 
-	<AD id="scope" name="%scope" type="String" description="%scope.desc"/>
+	<AD id="scope" name="%memberScope" type="String" description="%memberScope.desc">
+	   <Option label="%memberScope.direct" value="direct" />
+	   <Option label="%memberScope.nested" value="nested" />
+	   <Option label="%memberScope.all" value="all" />
+	</AD>
 	<AD id="dummyMember" name="%dummyMember" type="String" description="%dummyMember.desc" required="false" />
  </OCD>
  <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.memberAttribute">
@@ -458,7 +463,11 @@
 <!-- Changed plural membershipAttribute to membershipAttributes for consumability -->
  <OCD id="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute" name="%ldapMembershipAttribute" description="%ldapMemberAtttribute.desc">
 	<AD id="name" name="%membershipAttributeName" type="String" description="%membershipAttributeName.desc"/>
-	<AD id="scope" name="%membershipScope" type="String" description="%membershipScope.desc"/>
+	<AD id="scope" name="%membershipScope" type="String" description="%membershipScope.desc">
+	   <Option label="%membershipScope.direct" value="direct" />
+	   <Option label="%membershipScope.nested" value="nested" />
+	   <Option label="%membershipScope.all" value="all" />
+	</AD>
  </OCD>
  <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute">
    <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute"/>
