@@ -6,5 +6,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.beanValidation-3.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jsf.beanvalidation.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core
