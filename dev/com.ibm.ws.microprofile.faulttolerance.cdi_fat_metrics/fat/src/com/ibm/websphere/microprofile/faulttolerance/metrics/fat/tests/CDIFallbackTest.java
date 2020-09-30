@@ -13,60 +13,52 @@ package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.app.FallbackServlet;
 import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-public class CDIFallbackTest extends LoggingTest {
+public class CDIFallbackTest extends FATServletClient {
+
+    private static final String SERVER_NAME = "CDIFaultToleranceMetrics";
+
+    @Server(value = SERVER_NAME)
+    @TestServlet(servlet = FallbackServlet.class, contextRoot = "CDIFaultToleranceMetrics")
+    public static LibertyServer server;
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultToleranceMetrics");
-
-    @ClassRule
-    public static RepeatTests rep = RepeatFaultTolerance.repeatAll(SHARED_SERVER.getServerName())
-                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SHARED_SERVER.getServerName()));
-
-    @Test
-    public void testFallback() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/CDIFaultToleranceMetrics/fallback?testMethod=testFallback", "SUCCESS");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    public static RepeatTests rep = RepeatFaultTolerance.repeatAll(SERVER_NAME)
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().startServer();
+        if (!server.isStarted()) {
+            server.startServer();
         }
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+        if (server != null && server.isStarted()) {
             /*
              * Ignore following exception as those are expected:
              * CWWKC1101E: The task com.ibm.ws.microprofile.faulttolerance.cdi.FutureTimeoutMonitor@3f76c259, which was submitted to executor service
              * managedScheduledExecutorService[DefaultManagedScheduledExecutorService], failed with the following error:
              * org.eclipse.microprofile.faulttolerance.exceptions.FTTimeoutException: java.util.concurrent.TimeoutException
              */
-            SHARED_SERVER.getLibertyServer().stopServer("CWWKC1101E");
+            server.stopServer("CWWKC1101E");
         }
     }
 }

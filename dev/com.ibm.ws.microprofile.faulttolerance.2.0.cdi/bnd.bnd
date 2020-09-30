@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.2.0.cdi
 Bundle-Description: MicroProfile Fault Tolerance CDI 2.0 Integration, version ${bVersion}
 
 Import-Package: \
-	org.eclipse.microprofile.config.*;version="[1.0,2)",\
+	org.eclipse.microprofile.config.*;version="[1.0,3)",\
 	*
 
 Export-Package: 

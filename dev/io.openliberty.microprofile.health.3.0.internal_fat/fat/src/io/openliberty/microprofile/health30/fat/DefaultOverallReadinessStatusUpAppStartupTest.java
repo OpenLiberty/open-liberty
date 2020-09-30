@@ -67,7 +67,7 @@ public class DefaultOverallReadinessStatusUpAppStartupTest {
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server.isStarted())
-            server.startServer();
+            server.startServer(false, false);
 
         server.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
     }

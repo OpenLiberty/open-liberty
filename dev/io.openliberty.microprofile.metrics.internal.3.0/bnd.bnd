@@ -59,7 +59,7 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
 	io.openliberty.org.eclipse.microprofile.metrics.3.0;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.api.json;version=latest,\

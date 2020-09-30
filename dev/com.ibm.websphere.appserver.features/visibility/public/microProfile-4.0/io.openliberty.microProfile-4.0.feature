@@ -14,13 +14,12 @@ Subsystem-Name: MicroProfile 4.0
   com.ibm.websphere.appserver.jaxrsClient-2.1, \
   com.ibm.websphere.appserver.jsonb-1.0, \
   com.ibm.websphere.appserver.jsonp-1.1, \
-  com.ibm.websphere.appserver.mpConfig-1.4, \
+  io.openliberty.mpConfig-2.0, \
   io.openliberty.mpFaultTolerance-3.0, \
   io.openliberty.mpHealth-3.0, \
   io.openliberty.mpJwt-1.2, \
   io.openliberty.mpMetrics-3.0, \
-  com.ibm.websphere.appserver.mpOpenAPI-1.1, \
-  io.openliberty.mpOpenTracing-2.0, \
-  com.ibm.websphere.appserver.mpRestClient-1.4
-kind=noship
-edition=full
+  io.openliberty.mpOpenAPI-2.0, \
+  io.openliberty.mpOpenTracing-2.0
+kind=beta
+edition=core
