@@ -210,7 +210,7 @@ public class EmbeddedServerImpl implements Server {
         BootstrapLocations locations = new BootstrapLocations();
         locations.setProcessName(serverName);
         locations.setUserDir(userDirPath);
-        locations.setUserDir(outputDirPath);
+        locations.setServerDir(outputDirPath);
         locations.setLogDir(logDirPath);
         locations.setWorkAreaDir(workareaDirStr);
 
