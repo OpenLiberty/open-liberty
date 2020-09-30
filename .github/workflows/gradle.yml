@@ -24,15 +24,13 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x dev/gradlew
     - name: Build with Gradle
-      if: "false"
+      #if: "false"
       run: |
         cd dev
-        CURDIR=`pwd`
-        echo "@AGG we are in $CURDIR"
         ./gradlew cnf:initialize
         ./gradlew assemble
     - name: Upload liberty image
-      if: "false"
+      #if: "false"
       uses: actions/upload-artifact@v2
       with:
         name: liberty-image
@@ -41,7 +39,7 @@ jobs:
           dev/build.image/wlp/
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
-    #needs: build
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: ${{matrix.timeout}}
     strategy:
@@ -79,13 +77,13 @@ jobs:
       with:
         java-version: 1.8
     - name: Download liberty image
-      if: "false"
+      #if: "false"
       uses: actions/download-artifact@v2
       with:
         name: liberty-image
         path: dev/build.image/wlp/
     - name: Setup permissions
-      if: "false"
+      #if: "false"
       run: |
         chmod +x dev/gradlew
         chmod 777 dev/build.image/wlp/bin/*
@@ -100,7 +98,7 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### Running FAT bucket $FAT_BUCKET"
-          ./gradlew :$FAT_BUCKET:bogus || FAILURE=true
+          ./gradlew :$FAT_BUCKET:buildandrun || FAILURE=true
         done
         
         echo "Done running all FAT buckets. Checking for failures now."
