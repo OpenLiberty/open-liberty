@@ -91,7 +91,6 @@ jobs:
         chmod 777 dev/build.image/wlp/bin/*
     - name: Run FAT buckets
       shell: bash
-      continue-on-error: true
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
