@@ -48,7 +48,7 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                // Ported list of tests (some already renamed)
+                // Ported list of tests (some already renamed)
                 AlwaysRunAndPassTest.class,
                 // Basic Functional tests
                 // -- These tests will run 3 times - tests that pass the token in the Authorization header
@@ -93,9 +93,8 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
                 MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
                 MPJwtBadMPConfigAsEnvVars.class
 
-                // add test classes to try 1.2, ... function with only 1.1 function available
-                // show that we don't allow/support function that should not be availabe at this 1.1 feature level
-                // NOTE:  these tests should not be run from the projects that actually do support that functionality
+                // the mpJwt-1.2 project contains tests that validate the behavior of 1.2
+                // it will run these same tests, but enable the 1.2 feature instead of the 1.1 feature
 })
 
 public class FATSuite {

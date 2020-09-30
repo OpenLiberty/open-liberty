@@ -55,7 +55,7 @@ import componenttest.topology.impl.LibertyServer;
  * <LI>a token will be created using the builder app (passing the extra/unique claims if they exist - for inclusion
  * in the token)
  * <LI>if test has set up a negative condition, expectations specific to the test will be created
- * <LI>test will invoke genericConfigTest to:
+ * <LI>test will invoke genericReconfigTest to:
  * <OL>
  * <LI>initialize some jwt token processing tooling and log the contents of the JWT Token (in a human readable format)
  * <LI>if expectations were not passed in, generate expectations to validate output from the test apps

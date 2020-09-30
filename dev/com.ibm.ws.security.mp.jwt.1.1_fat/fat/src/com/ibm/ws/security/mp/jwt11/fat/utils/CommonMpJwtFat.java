@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.simplicity.config.FeatureManager;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -58,7 +62,8 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     }
 
     /**
-     * Startup a Liberty Server with the JWT Builder enabled
+     * Startup a Liberty Server with the JWT Builder enabled - assume that call won't be reconfiguring the builder
+     * and pass "true" for skipRestoreBetweenTests
      *
      * @param server - the server to startup
      * @param configFile - the config file to use when starting the serever
@@ -66,10 +71,19 @@ public class CommonMpJwtFat extends CommonSecurityFat {
      * @throws Exception
      */
     protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean jwtEnabled) throws Exception {
+        setUpAndStartBuilderServer(server, configFile, true, jwtEnabled);
+    }
+
+    protected static void setUpAndStartBuilderServer(LibertyServer server, String configFile, boolean skipRestoreBetweenTests, boolean jwtEnabled) throws Exception {
         bootstrapUtils.writeBootstrapProperty(server, "oidcJWKEnabled", String.valueOf(jwtEnabled));
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_2_PORT_NAME_ROOT);
+        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        if (skipRestoreBetweenTests) {
+            skipRestoreServerTracker.addServer(server);
+        }
+        Log.info(thisClass, "setUpAndStartBuilderServer", server.getServerName() + " is ready to rock and roll!!!!!!");
     }
 
     /**
@@ -83,20 +97,23 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 
     }
 
-//    @AfterClass
-//    public static void commonAfterClass() throws Exception {
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
-//        Date d = new Date(System.currentTimeMillis());
-//
-//        Set<LibertyServer> servers = serverTracker.getServers();
-//        for (LibertyServer server : servers) {
-//            String logDirectoryName = server.getPathToAutoFVTOutputServersFolder() + "/" + server.getServerName() + "-" + sdf.format(d);
-//            LocalFile logFolder = new LocalFile(logDirectoryName);
-//            RemoteFile serverFolder = new RemoteFile(server.getMachine(), server.getServerRoot());
-//            server.recursivelyCopyDirectory(serverFolder, logFolder, true);
-//        }
-//        CommonSecurityFat.commonAfterClass();
-//    }
+    public boolean isVersion12OrAbove(LibertyServer server) throws Exception {
+
+        ServerConfiguration serverconfig = server.getServerConfiguration();
+        FeatureManager fm = serverconfig.getFeatureManager();
+        Set<String> features = fm.getFeatures();
+        for (String feature : features) {
+            if (feature.contains("mpJwt-")) {
+                if (feature.contains("mpJwt-1.1")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        // somehow feature not installed
+        return false;
+    }
 
     /*************************************/
 

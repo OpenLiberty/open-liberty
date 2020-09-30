@@ -1,0 +1,19 @@
+
+<server>
+
+	<include location="${shared.config.dir}/jwtBuilderFeatures.xml" />
+
+	<include location="${shared.config.dir}/jwtBuilderSigAlgConfig.xml" />
+	<include location="${shared.config.dir}/jwt12BuilderClientBasicConfig.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/builder_fatTestPorts.xml" />
+	
+	<include location="${shared.config.dir}/jwtbuilderApp.xml" />
+
+	<include location="${shared.config.dir}/builderAppJava2Settings.xml"/>
+
+</server>
