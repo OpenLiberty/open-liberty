@@ -21,12 +21,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Grant execute permission for gradlew
-      run: chmod +x dev/gradlew
     - name: Build with Gradle
       #if: "false"
       run: |
         cd dev
+        chmod +x gradlew
         ./gradlew cnf:initialize
         ./gradlew assemble
     - name: Upload liberty image
@@ -68,7 +67,7 @@ jobs:
             fat-buckets: >
               com.ibm.ws.jaxrs.2.1_fat
               com.ibm.ws.jaxrs.2.1_fat_extended
-              com.ibm.ws.jaxrs.2.1.cdi.20_fat
+              com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
               com.ibm.ws.jaxrs.2.1.sse_fat
     steps:
     - uses: actions/checkout@v2
@@ -82,11 +81,6 @@ jobs:
       with:
         name: liberty-image
         path: dev/build.image/wlp/
-    - name: Setup permissions
-      #if: "false"
-      run: |
-        chmod +x dev/gradlew
-        chmod 777 dev/build.image/wlp/bin/*
     - name: Run FAT buckets
       shell: bash
       env:
@@ -94,7 +88,20 @@ jobs:
         CATEGORY: ${{matrix.category}}
       run: |
         cd dev
+        chmod +x gradlew
+        chmod 777 build.image/wlp/bin/*
+        
+        echo "Will be running buckets $FAT_BUCKETS"
+        for FAT_BUCKET in $FAT_BUCKETS
+        do
+          if [[ ! -f $FAT_BUCKET ]]; then
+            echo "ERROR: Bucket $FAT_BUCKET does not exist.";
+            exit 1;
+          fi
+        done
+          
         FAILURE=false
+        ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### Running FAT bucket $FAT_BUCKET"
@@ -104,13 +111,16 @@ jobs:
         echo "Done running all FAT buckets. Checking for failures now."
         rm -r failing_buckets &> /dev/null
         mkdir failing_buckets
+        echo "### Bucket results";
         for FAT_BUCKET in $FAT_BUCKETS
         do
           if [[ -f "$FAT_BUCKET/build/libs/autoFVT/output/fail.log" ]]; then
-            echo "Bucket $FAT_BUCKET has FAILED. Capturing logs...";
+            echo "  [ FAILED ] $FAT_BUCKET";
             pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
             zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
             popd &> /dev/null
+          else
+            echo "  [ PASSED ] $FAT_BUCKET";
           fi
         done
         
