@@ -94,7 +94,7 @@ jobs:
         echo "Will be running buckets $FAT_BUCKETS"
         for FAT_BUCKET in $FAT_BUCKETS
         do
-          if [[ ! -f "$FAT_BUCKET" ]]; then
+          if [[ ! -d "$FAT_BUCKET" ]]; then
             echo "ERROR: Bucket $FAT_BUCKET does not exist.";
             exit 1;
           fi
