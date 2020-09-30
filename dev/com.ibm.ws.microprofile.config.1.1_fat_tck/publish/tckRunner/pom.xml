@@ -19,7 +19,7 @@
     <name>MicroProfile Config TCK Runner</name>
 
     <properties>
-        <arquillian.version>1.3.0.Final</arquillian.version>
+        <arquillian.version>1.7.0.Alpha4</arquillian.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
