@@ -110,7 +110,6 @@ jobs:
         done
         
         echo "Done running all FAT buckets. Checking for failures now."
-        rm -r failing_buckets &> /dev/null
         mkdir failing_buckets
         echo "### Bucket results";
         for FAT_BUCKET in $FAT_BUCKETS
