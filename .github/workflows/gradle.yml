@@ -97,16 +97,16 @@ jobs:
         CATEGORY: ${{matrix.category}}
       run: |
         cd dev
+        FAILURE=false
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### Running FAT bucket $FAT_BUCKET"
-          ./gradlew :$FAT_BUCKET:bogus
+          ./gradlew :$FAT_BUCKET:bogus || FAILURE=true
         done
         
         echo "Done running all FAT buckets. Checking for failures now."
         rm -r failing_buckets &> /dev/null
         mkdir failing_buckets
-        FAILURE=false
         for FAT_BUCKET in $FAT_BUCKETS
         do
           if [[ -f "$FAT_BUCKET/build/libs/autoFVT/output/fail.log" ]]; then
@@ -114,7 +114,6 @@ jobs:
             pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
             zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
             popd &> /dev/null
-            FAILURE=true
           fi
         done
         
