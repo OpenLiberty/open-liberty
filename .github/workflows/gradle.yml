@@ -89,7 +89,7 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        chmod 777 build.image/wlp/bin/*
+        echo "run chmod 777 build.image/wlp/bin/*"
         
         echo "Will be running buckets $FAT_BUCKETS"
         for FAT_BUCKET in $FAT_BUCKETS
