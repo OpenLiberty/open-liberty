@@ -41,6 +41,8 @@ import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * @author anupag
@@ -427,7 +429,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info(m + " ----------------------------------------------------------------");
     }
 
-    @Test
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testClientStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testClientStreamingMetrics";

@@ -157,7 +157,8 @@ public class StoreProducerServletClientTests extends FATServletClient {
         this.clientStreaming();
     }
 
-    @Test
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testClientStreamingMetrics_SC() throws Exception {
         this.clientStreamingMetrics();
     }
