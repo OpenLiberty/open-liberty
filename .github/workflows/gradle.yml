@@ -48,7 +48,7 @@ jobs:
       fail-fast: false
       max-parallel: 12
       matrix:
-        category: [Basic, JDBC, JCA]
+        category: [Basic, JCA, JDBC, JAXRS]
         include:
           - category: Basic
             timeout: 45
@@ -65,6 +65,13 @@ jobs:
               com.ibm.ws.jca_fat_bval
               com.ibm.ws.jca_fat_classloading
               com.ibm.ws.jca_fat_example_anno
+          - category: JAXRS
+            timeout: 45
+            fat-buckets: >
+              com.ibm.ws.jaxrs.2.1_fat
+              com.ibm.ws.jaxrs.2.1_fat_extended
+              com.ibm.ws.jaxrs.2.1.cdi.20_fat
+              com.ibm.ws.jaxrs.2.1.sse_fat
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -83,6 +90,7 @@ jobs:
         chmod +x dev/gradlew
         chmod 777 dev/build.image/wlp/bin/*
     - name: Run FAT buckets
+      shell: bash
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
@@ -90,13 +98,33 @@ jobs:
         cd dev
         for FAT_BUCKET in $FAT_BUCKETS
         do
-          echo "@AGG inside iteration"
-          echo "  FAT_BUCKETS=$FAT_BUCKETS"
-          echo "  FAT_BUCKET=$FAT_BUCKETS"
-          echo "  Would run: ./gradlew :$FAT_BUCKET:buildandrun"
+          echo "### Running FAT bucket $FAT_BUCKET"
+          ./gradlew :$FAT_BUCKET:buildandrun
         done
+        
+        echo "Done running all FAT buckets. Checking for failures now."
+        rm -r failing_buckets &> /dev/null
+        mkdir failing_buckets
+        FAILURE=false
+        for FAT_BUCKET in $FAT_BUCKETS
+        do
+          if [[ -f "$FAT_BUCKET/build/libs/autoFVT/output/fail.log" ]]; then
+            echo "Bucket $FAT_BUCKET has FAILED. Capturing logs...";
+            pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
+            zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
+            popd &> /dev/null
+            FAILURE=true
+          fi
+        done
+        
+        if $FAILURE; then
+          echo "At least one bucket failed.";
+          exit 1;
+        fi
     - name: Upload FAT logs
       if: failure()
-      run: |
-        echo "@AGG something failed!"
+      uses: actions/upload-artifact@v2
+      with:
+        name: FAT logs for group {{matrix.category}}
+        path: dev/failing_buckets/
       
