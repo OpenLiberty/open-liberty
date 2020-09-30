@@ -91,6 +91,7 @@ jobs:
         chmod 777 dev/build.image/wlp/bin/*
     - name: Run FAT buckets
       shell: bash
+      continue-on-error: true
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
@@ -99,7 +100,7 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### Running FAT bucket $FAT_BUCKET"
-          ./gradlew :$FAT_BUCKET:buildandrun
+          ./gradlew :$FAT_BUCKET:bogus
         done
         
         echo "Done running all FAT buckets. Checking for failures now."
