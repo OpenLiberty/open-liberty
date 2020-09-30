@@ -40,11 +40,9 @@ public class BindToServerRootServlet extends FATServlet {
         }
     }
 
-    // bindToServerRoot not set (default will be true after beta)
+    // bindToServerRoot not set (default true)
     public void testNoBindToServerRootElement() throws Exception {
-        // TODO: This should switch to true when the element is switched to default true from beta
-        // TODO: #13338
-        testHelper(false);
+        testHelper(true);
     }
 
     // bindToJavaGlobal false
