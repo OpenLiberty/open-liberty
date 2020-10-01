@@ -57,7 +57,7 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew cnf:initialize test testResults
+        ./gradlew --continue cnf:initialize test testResults
     - name: Upload unit test logs
       if: failure()
       uses: actions/upload-artifact@v2
