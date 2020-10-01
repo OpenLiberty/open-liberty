@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SoftwareIdentity name="WebSphereLiberty"
+ tagId="ibm.com-0b0080b65fdf4b29aa4e63e47a893866-20.0.0"
+ version="20.0.0" 
+ versionScheme="multipartnumeric" 
+ xml:lang="en" 
+ xmlns="http://standards.iso.org/iso/19770/-2/2015/schema.xsd" 
+ xmlns:ds="http://www.w3.org/2000/09/xmldsig#" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://standards.iso.org/iso/19770/-2/2015-current/schema.xsd schema.xsd">
+    <Meta persistentId="0b0080b65fdf4b29aa4e63e47a893866"/>
+    <Meta generator="4-1-20200120"/>
+    <Entity name="IBM" regid="ibm.com" role="licensor tagCreator softwareCreator"/>
+</SoftwareIdentity>
