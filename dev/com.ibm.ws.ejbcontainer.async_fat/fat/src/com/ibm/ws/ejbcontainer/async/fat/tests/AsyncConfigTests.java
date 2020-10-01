@@ -99,7 +99,10 @@ public class AsyncConfigTests extends AbstractTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        // CWWKG0014E - intermittently caused by server.xml being momentarily missing during server reconfig
+        if (server != null && server.isStarted()) {
+            server.stopServer("CWWKG0014E");
+        }
     }
 
     /**
