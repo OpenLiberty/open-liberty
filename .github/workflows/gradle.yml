@@ -57,7 +57,7 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew --continue cnf:initialize test testResults
+        ./gradlew --continue cnf:initialize assemble testClasses testResults
     - name: Upload unit test logs
       if: failure()
       uses: actions/upload-artifact@v2
@@ -576,13 +576,12 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### BEGIN running FAT bucket $FAT_BUCKET"
-          BUCKET_PASSED=true
-          ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_PASSED=false
-          if [[ ! $BUCKET_PASSED ]]; then
+          BUCKET_FAILED=false
+          ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_FAILED=true
+          if $BUCKET_FAILED; then
             echo "::error::The bucket $FAT_BUCKET failed.";
             mkdir -p "$FAT_BUCKET/build/libs/autoFVT/output"
             touch "$FAT_BUCKET/build/libs/autoFVT/output/fail.log"
-            FAILURE=true
           fi
           echo "### END running FAT bucket $FAT_BUCKET"
         done
@@ -594,6 +593,7 @@ jobs:
         do
           if [[ -f "$FAT_BUCKET/build/libs/autoFVT/output/fail.log" ]]; then
             echo "  [!FAILED!] $FAT_BUCKET";
+            FAILURE=true
             pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
             zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
             popd &> /dev/null
