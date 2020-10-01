@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.iiopclient-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-Process-Types: server, \
  client
 -features=com.ibm.websphere.appserver.iiopcommon-1.0

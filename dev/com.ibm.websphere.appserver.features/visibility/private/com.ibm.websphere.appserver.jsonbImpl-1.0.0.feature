@@ -2,6 +2,7 @@
 # JSON-B 1.0 spec with the ability to choose the default provider via a bell.
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsonbImpl-1.0.0
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 visibility=private
 -features=com.ibm.websphere.appserver.bells-1.0, \

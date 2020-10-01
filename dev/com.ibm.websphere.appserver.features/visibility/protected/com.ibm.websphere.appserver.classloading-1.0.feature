@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.classloading-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-API-Package: \
   javax.activity; type=spec; require-java:=9

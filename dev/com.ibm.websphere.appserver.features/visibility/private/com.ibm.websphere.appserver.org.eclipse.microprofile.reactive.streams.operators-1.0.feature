@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 -features=\

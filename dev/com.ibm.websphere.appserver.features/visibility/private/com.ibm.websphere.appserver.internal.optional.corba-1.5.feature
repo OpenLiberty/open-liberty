@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.optional.corba-1.5
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.samlWeb-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: samlWeb-2.0
 Subsystem-Name: SAML Web Single Sign-On 2.0

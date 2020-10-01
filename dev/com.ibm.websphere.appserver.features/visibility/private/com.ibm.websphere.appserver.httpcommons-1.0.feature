@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.httpcommons-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install

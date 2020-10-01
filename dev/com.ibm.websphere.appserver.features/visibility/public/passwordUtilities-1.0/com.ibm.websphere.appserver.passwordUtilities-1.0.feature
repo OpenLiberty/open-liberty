@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.passwordUtilities-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: passwordUtilities-1.0
 IBM-API-Package: com.ibm.websphere.security.jca; type="ibm-api", \

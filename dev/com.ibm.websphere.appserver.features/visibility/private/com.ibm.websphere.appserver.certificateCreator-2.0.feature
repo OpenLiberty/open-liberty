@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.certificateCreator-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 Subsystem-Version: 2.0.0
