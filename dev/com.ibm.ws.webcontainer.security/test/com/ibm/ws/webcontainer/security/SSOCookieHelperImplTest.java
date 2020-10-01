@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 public class SSOCookieHelperImplTest {
 
     private static final String TEST_URL_STRING = "http://myhost.austin.ibm.com:9080/snoop";
+    private static final String TEST_NO_SUBDOMAIN_URL_STRING = "http://example.com:9080/snoop";
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -354,6 +355,19 @@ public class SSOCookieHelperImplTest {
         List<String> ssoDOmainList = new ArrayList<String>();
         ssoDOmainList.add("useURLDomain");
         assertEquals(".austin.ibm.com", ssoCookieHelper.getSSODomainName(req, ssoDOmainList, true));
+    }
+
+    @Test
+    public void testGetSSODomainName_useURLDomain_singleDotURL() {
+        mock.checking(new Expectations() {
+            {
+                one(req).getRequestURL();
+                will(returnValue(new StringBuffer(TEST_NO_SUBDOMAIN_URL_STRING)));
+            }
+        });
+        List<String> ssoDOmainList = new ArrayList<String>();
+        ssoDOmainList.add("useURLDomain");
+        assertEquals("example.com", ssoCookieHelper.getSSODomainName(req, ssoDOmainList, true));
     }
 
     @Test
