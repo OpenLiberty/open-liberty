@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>2.0-ibm20200923</version> <!--2.0-SNAPSHOT-->
+            <version>2.0-RC1</version> <!--2.0-SNAPSHOT-->
         </dependency>
 
         <dependency>
@@ -138,12 +138,18 @@
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                        <mp.tck.prop.dummy>dummy</mp.tck.prop.dummy>
+                        <customer.hobby>Tennis</customer.hobby>
+                        <config_ordinal>120</config_ordinal>
                     </systemPropertyVariables>
                     <environmentVariables>
+                        <MP_TCK_ENV_DUMMY>dummy</MP_TCK_ENV_DUMMY>
                         <my_int_property>45</my_int_property>
                         <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
                         <my_string_property>haha</my_string_property>
                         <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+                        <config_ordinal>45</config_ordinal>
+                        <customer_name>Bob</customer_name>
                     </environmentVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>

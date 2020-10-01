@@ -80,6 +80,8 @@ com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.15.200.v20200214-1600
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws:nekohtml:1.9.18
+io.smallrye.config:smallrye-config-common:2.0.0-ibm20200930
+io.smallrye.config:smallrye-config:2.0.0-ibm20200930
 io.smallrye:smallrye-open-api-core:2.1.0-SNAPSHOT-20200917
 io.smallrye:smallrye-open-api-jaxrs:2.1.0-SNAPSHOT-20200917
 net.sf.jtidy:jtidy:9.3.8
