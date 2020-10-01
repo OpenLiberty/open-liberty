@@ -22,7 +22,7 @@
               Also drives the documentation for them based on metatype.properties 
               and makes pretty panels in wdt. 
          -->
-        <AD id="host" name="%host" description="%host.desc" required="false" type="String" default="*" />
+        <AD id="host" name="%host" description="%host.desc" required="true" type="String" />
         <AD id="path" name="%path" description="%path.desc" required="false" type="String" default="*" />
         <AD id="headersToPropagate" name="%headersToPropagate" description="%headersToPropagate.desc" required="false" type="String" />
         <AD id="keepAliveTime" name="%keepAliveTime" description="%keepAliveTime.desc" required="false" type="String" ibm:type="duration(s)" min="1" />
