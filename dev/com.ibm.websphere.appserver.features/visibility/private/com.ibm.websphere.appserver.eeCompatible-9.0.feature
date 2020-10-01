@@ -7,3 +7,5 @@ Subsystem-Version: 9.0.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-DisableAllFeatures-OnConflict: true
+
