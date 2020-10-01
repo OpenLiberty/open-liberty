@@ -12,6 +12,8 @@ package com.ibm.ejb3x.ComponentIDBnd.web;
 
 import static org.junit.Assert.fail;
 
+import java.util.logging.Logger;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -24,6 +26,7 @@ import com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBnd;
 import com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndHome;
 import com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBnd;
 import com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome;
+import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 
 import componenttest.app.FATServlet;
 
@@ -40,6 +43,8 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/ComponentIDBndTestServlet")
 public class ComponentIDBndTestServlet extends FATServlet {
+    private static final String CLASS_NAME = ComponentIDBndTestServlet.class.getName();
+    private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
     /*
      * Tests that the ejblocal: default binding should not have been bound because we
@@ -58,20 +63,30 @@ public class ComponentIDBndTestServlet extends FATServlet {
     }
 
     /*
-     * Component ID shouldn't disable short default bindings, but we will eventually
-     * have AmbiguousEJB reference exception bound instead
-     * (AmbiguousEJB unrelated to test, it's because of how the EJB.jar set up it's beans)
+     * Tests that the short default bindings should not be disabled because we are using
+     * Component ID.
+     *
+     * Because of how the EJB.jar is set up, we expect AmbiguousEJBReferenceException
+     * when looking up the short default binding name.
      */
     @Test
     public void testEJBLocalShortDefaultNotDisabledForComponentID() {
         try {
             Object bean = new InitialContext().lookup("ejblocal:com.ibm.ejb3x.ComponentIDBnd.ejb.ComponentIDBndHome");
-            //TODO: expect AmbiguousEJBException instead
-            if (bean == null) {
-                fail("EJBLocal default short bindings lookup should have worked because we only have compoenent-id");
+            fail("EJBLocal default short bindings lookup should have resulted in AmbiguousEJBReferenceException");
+        } catch (NamingException nex) {
+            Throwable cause = nex.getCause();
+            if (cause instanceof AmbiguousEJBReferenceException) {
+                svLogger.info("lookup of short default failed as expected : " +
+                              cause.getClass().getName() + " : " +
+                              cause.getMessage());
+            } else {
+                svLogger.info(nex.getClass().getName() + " : " + nex.getMessage());
+                nex.printStackTrace();
+                fail("short default lookup failed in an " +
+                     "unexpected way : " + nex.getClass().getName() + " : " +
+                     nex.getMessage());
             }
-        } catch (NamingException e) {
-            fail("Got naming exception for local short default binding with component-id specified");
         }
     }
 
@@ -92,20 +107,30 @@ public class ComponentIDBndTestServlet extends FATServlet {
     }
 
     /*
-     * Component ID shouldn't disable short default bindings, but we will eventually
-     * have AmbiguousEJB reference exception bound instead
-     * (AmbiguousEJB unrelated to test, it's because of how the EJB.jar set up it's beans)
+     * Tests that the short default bindings should not be disabled because we are using
+     * Component ID.
+     *
+     * Because of how the EJB.jar is set up, we expect AmbiguousEJBReferenceException
+     * when looking up the short default binding name.
      */
     @Test
     public void testRemoteShortDefaultNotDisabledForComponentID() {
         try {
             Object bean = new InitialContext().lookup("com.ibm.ejb3x.ComponentIDBnd.ejb.RemoteComponentIDBndHome");
-            //TODO: expect AmbiguousEJBException instead
-            if (bean == null) {
-                fail("EJB remote default short bindings lookup should have worked because we only have component-id");
+            fail("EJB remote default short bindings lookup should have resulted in AmbiguousEJBReferenceException");
+        } catch (NamingException nex) {
+            Throwable cause = nex.getCause();
+            if (cause instanceof AmbiguousEJBReferenceException) {
+                svLogger.info("lookup of short default failed as expected : " +
+                              cause.getClass().getName() + " : " +
+                              cause.getMessage());
+            } else {
+                svLogger.info(nex.getClass().getName() + " : " + nex.getMessage());
+                nex.printStackTrace();
+                fail("short default lookup failed in an " +
+                     "unexpected way : " + nex.getClass().getName() + " : " +
+                     nex.getMessage());
             }
-        } catch (NamingException e) {
-            fail("Got naming exception for remote short default binding with component-id specified");
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,7 +136,15 @@ public class ELImplicitObjectBean implements Serializable {
 
             facesContext.addMessage(null, new FacesMessage("Application name from ApplicationMap: " + applicationMap.get("com.ibm.websphere.servlet.enterprise.application.name")));
 
-            facesContext.addMessage(null, new FacesMessage("Char set from SessionMap: " + sessionMap.get("javax.faces.request.charset")));
+            // handle jakarta/javax namespace switch
+            Object charset = sessionMap.get("javax.faces.request.charset");
+
+            // handle jakarta/javax namespace switch
+            if(charset == null){
+                charset = sessionMap.get("jakarta.faces.request.charset");
+            }
+
+            facesContext.addMessage(null, new FacesMessage("Char set from SessionMap: " +  charset ));
 
             facesContext.addMessage(null, new FacesMessage("ViewMap isEmpty: " + viewMap.isEmpty()));
 

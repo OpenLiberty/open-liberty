@@ -46,7 +46,6 @@ import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -1075,7 +1074,7 @@ public class H2StreamProcessor {
 
         if (direction == Constants.Direction.READ_IN) {
             if (frameType == FrameTypes.DATA) {
-                if (GrpcServletServices.grpcInUse == false) {
+                if (!h2HttpInboundLinkWrap.getIsGrpc()) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;

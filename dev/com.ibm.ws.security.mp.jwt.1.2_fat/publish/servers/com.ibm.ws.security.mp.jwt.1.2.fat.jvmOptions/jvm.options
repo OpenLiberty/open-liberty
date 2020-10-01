@@ -1,0 +1,8 @@
+-Dmp.jwt.verify.publickey=xxx_publicKeyName_xxx
+-Dmp.jwt.verify.publickey.location=xxx_publicKeyLoc_xxx
+-Dmp.jwt.verify.issuer=xxx_issuer_xxx
+-Dmp.jwt.token.header=xxx_header_xxx
+-Dmp.jwt.token.cookie=xxx_cookie_xxx
+-Dmp.jwt.verify.audiences=xxx_audience_xxx
+-Dmp.jwt.verify.publickey.algorithm=xxx_algorithm_xxx
+-Dcom.ibm.ws.beta.edition=true

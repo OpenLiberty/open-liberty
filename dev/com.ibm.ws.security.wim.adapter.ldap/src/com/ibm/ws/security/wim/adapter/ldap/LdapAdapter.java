@@ -1722,7 +1722,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     //grpEntry = iLdapConn.getEntityByIdentifier(grpDn, null, null, groupTypes, supportedProps,nested, false);
                                 } catch (EntityNotFoundException e) {
                                     if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ingored.");
+                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ignored.");
                                     }
                                     continue;
                                 }

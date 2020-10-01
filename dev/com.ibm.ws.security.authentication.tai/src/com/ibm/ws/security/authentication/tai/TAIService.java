@@ -25,4 +25,8 @@ public interface TAIService {
     public Map<String, TrustAssociationInterceptor> getTais(boolean invokeBeforeSSO);
 
     public boolean isDisableLtpaCookie(String taiId);
+
+    public void initializeTais();
+
+    public boolean isInitializeAtFirstRequest();
 }

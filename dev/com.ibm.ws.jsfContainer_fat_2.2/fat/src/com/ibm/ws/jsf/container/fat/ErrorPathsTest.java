@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.AllowedFFDC;
@@ -80,7 +81,7 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = jsfApp.addAsLibraries(badApiJar);
         jsfApp = jsfApp.addAsLibrary(new File(FATSuite.MOJARRA_IMPL));
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");
@@ -109,7 +110,7 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = jsfApp.addAsLibraries(badImplJar);
         jsfApp = jsfApp.addAsLibrary(new File(FATSuite.MOJARRA_API));
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_IMPL);
 
         server.startServer(testName.getMethodName() + ".log");

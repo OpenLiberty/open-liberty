@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,6 +127,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
     'com.ibm.ws.security.registry.ldap.fat.regression',
+    'com.ibm.ws.security.registry.ldap.fat.scope',
     'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout',
     'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm',
     'com.ibm.ws.security.wim.adapter.ldap.fat.return.to.primary',

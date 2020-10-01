@@ -11,6 +11,7 @@
 package com.ibm.ws.security.jwt.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class JwtConfigUtilTest extends CommonTestClass {
         Map<String, Object> props = new HashMap<String, Object>();
 
         String result = JwtConfigUtil.getSignatureAlgorithm(testName.getMethodName(), props, SIG_ALG_ATTR_NAME);
-        assertEquals("Did not get the default signature algorithm as expected.", DEFAULT_SIG_ALG, result);
+        assertNull("Should have gotten null as the signature algorithm, but got " + result + ".", result);
 
         verifyNoLogMessage(outputMgr, MSG_BASE);
     }

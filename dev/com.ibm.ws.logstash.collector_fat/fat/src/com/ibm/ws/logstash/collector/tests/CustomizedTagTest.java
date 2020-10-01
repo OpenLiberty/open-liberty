@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -27,31 +26,22 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MaximumJavaLevel;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.impl.Logstash;
-import componenttest.topology.utils.FileUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@MinimumJavaLevel(javaLevel = 8)
-@MaximumJavaLevel(javaLevel = 8)
 public class CustomizedTagTest extends LogstashCollectorTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("TagTestServer");
-    private static Logstash logstash = new Logstash(server.getMachine());
 
-    protected static Machine machine = null;
     static boolean msgType = false;
     static boolean ffdcType = false;
     static boolean gcType = false;
@@ -64,39 +54,27 @@ public class CustomizedTagTest extends LogstashCollectorTest {
 
     private final String testName = "";
     private static Class<?> c = CustomizedTagTest.class;
-    public static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     private static String os = "";
-    private static String JVMSecurity = System.getProperty("Djava.security.properties");
 
-    protected static boolean runTest;
+    protected static boolean runTest = true;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
         String os = System.getProperty("os.name").toLowerCase();
         Log.info(c, "setUp", "os.name = " + os);
-
-        runTest = logstash.isSupportedPlatform();
         Log.info(c, "setUp", "runTest = " + runTest);
 
         if (!runTest) {
             return;
         }
 
-        // Change the logstash config file so that the Tag tests create their own output file.
-        Logstash.CONFIG_FILENAME = "../logstash_tag.conf";
-        Logstash.OUTPUT_FILENAME = "logstash_tagoutput.txt";
+        String host = logstashContainer.getContainerIpAddress();
+        String port = String.valueOf(logstashContainer.getMappedPort(5043));
+        Log.info(c, "setUp", "Logstash container: host=" + host + "  port=" + port);
+        server.addEnvVar("LOGSTASH_HOST", host);
+        server.addEnvVar("LOGSTASH_PORT", port);
 
-        logstash.start();
-
-        Log.info(c, "setUp", "---> Setting logstash console to " + logstash.getConsoleFilename() + " and output file name to " + logstash.getLogFilename());
-        /**
-         * All tests within this file will use the same server configuration file
-         */
-        if (server.isStarted()) {
-            Log.info(c, "setUp", "---> Stopping server..");
-            server.stopServer();
-        }
         ShrinkHelper.defaultDropinApp(server, "LogstashApp", "com.ibm.logs");
         serverStart();
     }
@@ -121,7 +99,7 @@ public class CustomizedTagTest extends LogstashCollectorTest {
     public void testTags() throws Exception {
         String testName = "testTags";
 
-        logstash.setMarkToEndOfLog();
+        clearContainerOutput();
         String[] tagList = new String[] { "externalTag1", "externalTag2", "externalTag3", "singleTag", "correctTag", "_", ";", "1234?:" };
 
         // Create message and access log event
@@ -132,10 +110,13 @@ public class CustomizedTagTest extends LogstashCollectorTest {
 
         // Create FFDC and access log event
         createFFDCEvent(1);
-        logstash.waitForStringInLogUsingMark(LIBERTY_FFDC);
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_MESSAGE));
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_TRACE));
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_FFDC));
+        assertNotNull(waitForStringInContainerOutput(LIBERTY_ACCESSLOG));
 
         // Check results
-        List<JSONObject> jObjList = logstash.parseOutputFile();
+        List<JSONObject> jObjList = parseJsonInContainerOutput();
         boolean foundMessage = false;
         boolean foundGC = false;
         boolean foundFFDC = false;
@@ -218,46 +199,19 @@ public class CustomizedTagTest extends LogstashCollectorTest {
             return;
         }
 
-        logstash.stop();
-        String outputFileDirectory = logstash.getLogFilename();
-        if (new File(outputFileDirectory).exists()) {
-            Log.info(c, "competeTest", "copying logstash output file to server directory");
-            try {
-                String destPath = server.getConsoleLogFile().getAbsolutePath().substring(0, server.getConsoleLogFile().getAbsolutePath().lastIndexOf("/") + 1)
-                                  + "logstash_tagoutput.txt";
-                FileUtils.copyFile(new File(outputFileDirectory), new File(destPath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
         try {
             if (server.isStarted()) {
                 Log.info(c, "competeTest", "---> Stopping server..");
                 server.stopServer("TRAS4301W");
-                resetServerSecurity();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void resetServerSecurity() {
-        //Reset JVM security to its original value
-        System.setProperty("Djava.security.properties", JVMSecurity);
-    }
-
     private static void serverStart() throws Exception {
-        serverSecurityOverwrite();
         Log.info(c, "serverStart", "--->  Starting Server.. ");
         server.startServer();
-    }
-
-    private static void serverSecurityOverwrite() throws Exception {
-        //Logstash does not work with newest IBM JDK
-        //Overwrite JVM security setting to enable logstash Collector as a temporary fix
-        System.setProperty("Djava.security.properties", logstash.getJavaSecuritySettingFilePath());
-        System.setProperty("Djvm.options.properties", server.getServerRoot() + "/jvm.options");
     }
 
     private boolean isGCSupported() {

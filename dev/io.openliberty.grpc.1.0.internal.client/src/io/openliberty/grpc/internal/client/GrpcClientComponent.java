@@ -31,6 +31,9 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import io.grpc.ClientInterceptor;
+import io.openliberty.grpc.client.monitor.GrpcMonitoringClientInterceptorService;
+
 @Component(service = {
 		ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class GrpcClientComponent implements ApplicationStateListener {
@@ -38,15 +41,14 @@ public class GrpcClientComponent implements ApplicationStateListener {
 	private static final TraceComponent tc = Tr.register(GrpcClientComponent.class, GrpcClientMessages.GRPC_TRACE_NAME,
 			GrpcClientMessages.GRPC_BUNDLE);
 
-	/** Indicates whether the monitor feature is enabled */
-	private static boolean monitoringEnabled = false;
-
 	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
 	private final String GRPC_SSL_SERVICE_NAME = "GrpcSSLService";
+	private final String GRPC_MONITOR_NAME = "GrpcMonitoringClientInterceptorService";
 
 	private final AtomicServiceReference<FeatureProvisioner> featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
 			FEATUREPROVISIONER_REFERENCE_NAME);
-    private static GrpcSSLService sslService = null;
+	private static GrpcSSLService sslService = null;
+	private static GrpcMonitoringClientInterceptorService monitorService = null;
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -87,21 +89,25 @@ public class GrpcClientComponent implements ApplicationStateListener {
 	     }
 	 }
 
-	/**
-	 * Set the indication whether the monitor feature is enabled
-	 */
-	private void setMonitoringEnabled() {
-		Set<String> currentFeatureSet = featureProvisioner.getService().getInstalledFeatures();
-		monitoringEnabled = currentFeatureSet.contains("monitor-1.0");
-	}
+	@Reference(name = "GRPC_MONITOR_NAME", service = GrpcMonitoringClientInterceptorService.class,
+	        cardinality = ReferenceCardinality.OPTIONAL,
+	        policy = ReferencePolicy.DYNAMIC,
+	        policyOption = ReferencePolicyOption.GREEDY)
+	 protected void setMonitoringService(GrpcMonitoringClientInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "setMonitoringService");
+	     }
+	     monitorService = service;
+	 }
 
-	/**
-	 * @return <code>true</code> if the monitor feature is enabled,
-	 *         <code>false</code> otherwise
-	 */
-	public static boolean isMonitoringEnabled() {
-		return monitoringEnabled;
-	}
+	 protected void unsetMonitoringService(GrpcMonitoringClientInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "unsetMonitoringService");
+	     }
+	     if (monitorService == service) {
+	         monitorService = null;
+	     }
+	 }
 
 	/**
 	 * @return a GrpcSSLService if an SSL feature is enabled
@@ -110,9 +116,18 @@ public class GrpcClientComponent implements ApplicationStateListener {
 		return sslService;
 	}
 
+	/**
+	 * @return a ClientInterceptor if monitoring is enabled
+	 */
+	public static ClientInterceptor getMonitoringClientInterceptor() {
+		if (monitorService != null) {
+			return monitorService.createInterceptor();
+		}
+		return null;
+	}
+
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-		setMonitoringEnabled();
 	}
 
 	@Override

@@ -106,9 +106,29 @@ public class ClientInterceptorTests extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        Exception excep = null;
         worldChannel.shutdownNow();
-        grpcClient.stopServer("CWWKT0301W");
-        grpcServer.stopServer();
+
+        try {
+            if (grpcClient != null && grpcClient.isStarted()) {
+                grpcClient.stopServer("CWWKT0301W");
+            }
+        } catch (Exception e) {
+            excep = e;
+            Log.error(c, "grpcClient tearDown", e);
+        }
+
+        try {
+            if (grpcServer != null && grpcServer.isStarted())
+                grpcServer.stopServer();
+        } catch (Exception e) {
+            if (excep == null)
+                excep = e;
+            Log.error(c, "grpcServer tearDown", e);
+        }
+
+        if (excep != null)
+            throw excep;
     }
 
     /**
@@ -116,7 +136,7 @@ public class ClientInterceptorTests extends FATServletClient {
      */
     private static void setServerConfiguration(LibertyServer server,
                                                String serverXML) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        LOG.info("ClientInterceptorTests : setServerConfiguration Entered set server config with xml " + serverXML);
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             LOG.info("ClientInterceptorTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);

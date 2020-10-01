@@ -80,7 +80,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jsonb-2.0",
                                                  "jsonpContainer-2.0",
                                                  "jsonbContainer-2.0",
-                                                 "jsf-3.0",
+                                                 "faces-3.0",
                                                  "jsp-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",

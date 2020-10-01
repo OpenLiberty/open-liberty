@@ -15,6 +15,8 @@ Bundle-Name: Persistent Scheduled Executor
 Bundle-SymbolicName: com.ibm.ws.concurrent.persistent
 Bundle-Description: Persistent Scheduled Executor; version=${bVersion}
 
+jakartaeeMe: true
+
 WS-TraceGroup: persistentExecutor
     
 Export-Package:\

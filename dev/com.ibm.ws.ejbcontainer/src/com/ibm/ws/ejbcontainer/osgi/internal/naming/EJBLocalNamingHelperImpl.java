@@ -23,10 +23,13 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.ibm.ejs.container.BeanMetaData;
+import com.ibm.ejs.container.ContainerProperties;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
 import com.ibm.ws.ejbcontainer.osgi.EJBHomeRuntime;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
  * This {@link EJBLocalNamingHelper} implementation provides support for
@@ -36,7 +39,7 @@ import com.ibm.ws.ejbcontainer.osgi.EJBHomeRuntime;
 @Component(service = { EJBLocalNamingHelper.class, EJBLocalNamingHelperImpl.class })
 public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBLocalNamingHelper<EJBBinding> {
 
-    private static final TraceComponent tc = Tr.register(EJBLocalNamingHelperImpl.class);
+    private static final TraceComponent tc = Tr.register(EJBLocalNamingHelperImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
 
     private final HashMap<String, EJBBinding> EJBLocalBindings = new HashMap<String, EJBBinding>();
 
@@ -55,6 +58,10 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             readLock.unlock();
         }
 
+        if (binding != null && binding.isAmbiguousReference) {
+            throwAmbiguousEJBReferenceException(binding, name);
+        }
+
         return initializeEJB(binding, "ejblocal:" + name);
     }
 
@@ -70,8 +77,10 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     }
 
     @Override
-    public synchronized void bind(EJBBinding binding, String name) {
+    public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        boolean notAmbiguous = true;
+        EJBBinding newBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
 
         if (name.toLowerCase().startsWith("ejblocal:")) {
             name = name.substring(9);
@@ -81,18 +90,63 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             Tr.entry(tc, "bind: " + name);
         }
 
+        EJBBinding previousBinding = EJBLocalBindings.get(name);
+
+        // There won't be a previous binding for an ambiguous simple binding name
+        if (isSimpleName) {
+            newBinding.setAmbiguousReference();
+            notAmbiguous = false;
+        }
+
+        if (previousBinding != null) {
+
+            OnError onError = ContainerProperties.customBindingsOnErr;
+
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "found ambiguous binding and customBindingsOnErr=" + onError.toString());
+            }
+
+            BeanMetaData bmd = newBinding.homeRecord.getBeanMetaData();
+            BeanMetaData oldbmd = previousBinding.homeRecord.getBeanMetaData();
+            switch (onError) {
+                case WARN:
+                    //NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
+                    Tr.warning(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                               new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
+                                              previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                    break;
+                case FAIL:
+                    Tr.error(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                             new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
+                                            previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                    throw new NamingException("The " + newBinding.interfaceName + " interface of the " + bmd.j2eeName.getComponent() + " bean in the "
+                                              + bmd.j2eeName.getModule() + " module of the application cannot be bound to " + name
+                                              + ", a bean is already bound to that location.");
+                case IGNORE:
+                    if (isTraceOn && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "customBindingsOnErr is IGNORE, not binding");
+                    }
+                    return false;
+            }
+
+            newBinding.setAmbiguousReference();
+            newBinding.addJ2EENames(previousBinding.getJ2EENames());
+            notAmbiguous = false;
+        }
+
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
         try {
-            //TODO: If EJBLocalBindings already contains name, bind ambiguous reference exception
-            EJBLocalBindings.put(name, binding);
+            EJBLocalBindings.put(name, newBinding);
         } finally {
             writeLock.unlock();
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "bind");
+            Tr.exit(tc, "bind: notAmbiguous = " + notAmbiguous);
         }
+
+        return notAmbiguous;
     }
 
     public void unbind(String name) {

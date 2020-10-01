@@ -11,7 +11,7 @@
 package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
@@ -102,6 +102,7 @@ public class PostgreSQLTest extends FATServletClient {
         server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
         server.addEnvVar("POSTGRES_URL", jdbcURL);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     @Before
@@ -280,19 +281,20 @@ public class PostgreSQLTest extends FATServletClient {
 
         for (LibertyServer server : servers) {
             assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
             try {
                 setUp(server);
-                final ProgramOutput po = server.startServerAndValidate(false, false, true);
+                po = server.startServerAndValidate(false, false, false);
                 if (po.getReturnCode() != 0) {
                     Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
                     Log.info(getClass(), method, "Stdout: " + po.getStdout());
                     Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                    Exception ex = new Exception("Server start failed for " + server.getServerName());
-                    throw ex;
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
                 }
-            } catch (Exception e) {
-                Log.error(getClass(), method, e);
-                fail(e.getMessage());
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
             }
         }
     }

@@ -160,13 +160,19 @@ attributeTypes: ( 2.5.4.124
   EQUALITY caseIgnoreMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
   X-ORIGIN 'RFC 4519' )
+attributeTypes: ( 2.16.840.1.113730.3.1.198
+  NAME 'memberURL'
+  DESC 'Netscape defined attribute type'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+  X-ORIGIN 'Netscape Directory Server' )
 objectClasses: ( 1.3.6.1.4.1.4203.1.4.100
   NAME 'wimGroupOfNames'
   SUP groupOfNames
   STRUCTURAL
   MAY ( displayName $
         extendedProperty1 $
-        extendedProperty2 )
+        extendedProperty2 $
+        memberof )
   X-ORIGIN 'RFC 3112' )
 objectClasses: ( 1.3.6.1.4.1.4203.1.4.101
   NAME 'wimInetOrgPerson'
@@ -195,7 +201,8 @@ objectClasses: ( 1.3.6.1.4.1.4203.1.4.101
         active $
         ims $
         extendedProperty1 $
-        extendedProperty2 )
+        extendedProperty2 $
+        memberof )
   X-ORIGIN 'RFC 3112' )
 objectClasses: ( 1.3.6.1.4.1.4203.1.4.102
   NAME 'simulatedMicrosoftSecurityPrincipal'
@@ -234,3 +241,18 @@ objectClasses: ( 0.9.2342.19200300.100.4.13
         dc $
         associatedName )
   X-ORIGIN 'RFC 4524' )
+objectClasses: ( 2.16.840.1.113730.3.2.33
+  NAME 'groupOfURLs'
+  DESC 'Netscape defined objectclass'
+  SUP top
+  STRUCTURAL
+  MAY ( businessCategory $
+        description $
+        memberURL $
+        o $
+        ou $
+        owner $
+        seeAlso )
+  MUST ( cn )
+  X-ORIGIN 'Netscape Directory Server' )
+

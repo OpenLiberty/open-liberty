@@ -11,13 +11,16 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.0
 
-Bundle-Name: WebSphere gRPC API
-Bundle-Description: WebSphere gRPC API, version ${bVersion}
-Bundle-SymbolicName: io.openliberty.grpc
+Bundle-Name: Open Liberty gRPC API
+Bundle-Description: Open Liberty gRPC API, version ${bVersion}
+Bundle-SymbolicName: io.openliberty.grpc.1.0
 
-Import-Package: io.openliberty.grpc.annotation
+Import-Package: \
+  io.grpc, \
+  io.openliberty.grpc.annotation
 
-Export-Package: io.openliberty.grpc.annotation
+Export-Package: \
+  io.openliberty.grpc.annotation
 
 -includeresource: {META-INF/maven/io.openliberty.api/io.openliberty.grpc/pom.xml=io.openliberty.grpc.pom}
 
@@ -25,5 +28,3 @@ publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
     io.openliberty.grpc.1.0.internal.common;version=latest
-
--fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore

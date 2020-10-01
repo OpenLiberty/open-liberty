@@ -48,7 +48,7 @@ public class LPSTest {
 	private static String BASE_URL2;
 
 	private final static int REQUEST_TIMEOUT = 10;
-	private final static int START_TIMEOUT = 120000; // in ms
+	private final static int START_TIMEOUT = 300000; // in ms
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
@@ -70,6 +70,9 @@ public class LPSTest {
 		ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 		ShrinkHelper.defaultDropinApp(server2, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
 		ShrinkHelper.defaultDropinApp(server2, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+
+		server.setServerStartTimeout(START_TIMEOUT);
+		server2.setServerStartTimeout(START_TIMEOUT);
 	}
 	
 	@AfterClass
@@ -85,12 +88,10 @@ public class LPSTest {
 	@Before
 	public void beforeTest() throws Exception {
         if (server != null && !server.isStarted()){
-       	 	server.setServerStartTimeout(START_TIMEOUT);
             server.startServerAndValidate(false,false,true);
 		}
 		
 		if (server2 != null && !server2.isStarted()){
-			server2.setServerStartTimeout(START_TIMEOUT);
 			server2.startServerAndValidate(false,false,true);
 		}
 	}

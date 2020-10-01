@@ -16,7 +16,7 @@ Subsystem-Name: MicroProfile Health 3.0
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.servlet-4.0,\
- com.ibm.websphere.appserver.mpConfig-1.4; ibm.tolerates:=1.3,\
+ io.openliberty.mpConfig-2.0,\
  com.ibm.wsspi.appserver.webBundle-1.0 
 -bundles=com.ibm.websphere.jsonsupport, \
  com.ibm.ws.classloader.context, \

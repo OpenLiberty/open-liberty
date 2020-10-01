@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1647,16 +1647,14 @@ public class MPConcurrentTestServlet extends FATServlet {
         CompletableFuture<Object> cf2 = cf1.thenApplyAsync(lookUpResourceRef);
         CompletableFuture<String> cf3 = cf2.thenApplyAsync(getThreadName);
 
-        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        threadName = cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
-        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
 
         lookupResult = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(lookupResult.toString(), lookupResult instanceof NamingException); // no access to application's namespace
 
         threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
-        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
 
         // there should not be any context clearing without a managed executor service
         lookupResult = cf3.thenApply(lookUpResourceRef).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);

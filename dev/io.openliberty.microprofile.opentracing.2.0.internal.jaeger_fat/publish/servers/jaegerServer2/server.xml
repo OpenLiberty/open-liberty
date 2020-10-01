@@ -11,6 +11,6 @@
     </application>
 
     <javaPermission
-        codebase="${server.config.dir}/lib/slf4j-api-1.7.28.jar"
+        codebase="${server.config.dir}/lib/slf4j-api-1.7.30.jar"
         className="java.security.AllPermission" />
 </server>

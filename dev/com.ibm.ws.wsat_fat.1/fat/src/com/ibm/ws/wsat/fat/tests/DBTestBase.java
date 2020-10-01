@@ -63,6 +63,7 @@ public abstract class DBTestBase extends WSATTest {
 	public static String appNameServiceOptional;
 
 	public static void initWSATTest(LibertyServer s) throws Exception {
+		s.setServerStartTimeout(300000);
 		s.removeAllInstalledAppsForValidation();
 		s.deleteDirectoryFromLibertyServerRoot("dropins");
 	}

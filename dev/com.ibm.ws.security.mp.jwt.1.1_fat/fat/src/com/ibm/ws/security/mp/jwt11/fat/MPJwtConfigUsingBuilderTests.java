@@ -34,10 +34,9 @@ import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtTokenHeaderExpectation;
-import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
@@ -82,10 +81,9 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
+public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
     protected static Class<?> thisClass = MPJwtBasicTests.class;
 
@@ -126,74 +124,9 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml", false);
 
-        setUpAndStartRSServerForTests(resourceServer, "rs_server_orig_withAudience.xml", false);
+        setUpAndStartRSServerForApiTests(resourceServer, jwtBuilderServer, "rs_server_orig_withAudience.xml", false);
 
-    }
-
-    /**
-     * Don't restore between tests
-     * Almost all of the tests in this class will reconfigure the server (we're testing mpJwt config and
-     * only 1 may exist in a server at a time, so, we need to reconfigure for each test)
-     * A few tests do use the configuration that the server starts with - they're do a normal config restore.
-     * All other will skip the restore by overriding the restoreTestServers method
-     */
-    @Override
-    public void restoreTestServers() {
-        Log.info(thisClass, "restoreTestServersWithCheck", "* Skipping server restore **");
-        logTestCaseInServerLogs("** Skipping server restore **");
-    }
-
-    /**
-     * Gets the resource server up and running.
-     * Sets properties in bootstrap.properties that will affect server behavior
-     * Sets up and installs the test apps
-     * Adds the server to the serverTracker (used for server restore and test class shutdown)
-     * Starts the server using the provided configuration file
-     * Saves the port info for this server (allows tests with multiple servers to know what ports each server uses)
-     * Allow some failure messages that occur during startup (they're ok and doing this prevents the test framework from failing)
-     *
-     * @param server
-     *            - the server to process
-     * @param configFile
-     *            - the config file to start the server with
-     * @param jwkEnabled
-     *            - do we want jwk enabled (sets properties in bootstrap.properties that the configs will use)
-     * @throws Exception
-     */
-    protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile, boolean jwkEnabled) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
-        if (jwkEnabled) {
-            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "");
-            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "\"" + SecurityFatHttpUtils.getServerSecureUrlBase(jwtBuilderServer) + "jwt/ibm/api/defaultJWT/jwk\"");
-        } else {
-            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
-            bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
-        }
-        bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", MpJwtFatConstants.TOKEN_TYPE_BEARER + " ");
-        deployRSServerApiTestApps(server);
-        serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
-    }
-
-    /**
-     * Initialize the list of test application urls and their associated classNames
-     *
-     * @throws Exception
-     */
-    protected List<List<String>> getTestAppArray() throws Exception {
-
-        List<List<String>> testApps = new ArrayList<List<String>>();
-        testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE));
-        testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE));
-        testApps.add(Arrays.asList(buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE),
-                                   MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE));
-
-        return testApps;
+        skipRestoreServerTracker.addServer(resourceServer);
 
     }
 
@@ -223,12 +156,12 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
         if (expectations == null) {
             setGoodExpectations = true;
         }
-        for (List<String> app : getTestAppArray()) {
+        for (TestApps app : setTestAppArray(resourceServer)) {
             if (setGoodExpectations) {
-                expectations = goodTestExpectations(jwtTokenTools, app.get(0), app.get(1));
+                expectations = goodTestExpectations(jwtTokenTools, app.getUrl(), app.getClassName());
             }
 
-            Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.get(0), builtToken);
+            Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), builtToken);
             validationUtils.validateResult(response, expectations);
         }
 
@@ -317,7 +250,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     public void MPJwtConfigUsingBuilderTests_Issuer_Valid() throws Exception {
 
         // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
-        super.restoreTestServers();
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         genericConfigTest(builtToken);
@@ -336,7 +269,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     public void MPJwtConfigUsingBuilderTests_Issuer_Invalid() throws Exception {
 
         // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
-        super.restoreTestServers();
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "noUniqueIssuer");
         genericConfigTest(builtToken, setBadIssuerExpectations(resourceServer));
@@ -411,7 +344,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_Valid() throws Exception {
 
-        super.restoreTestServers();
+        // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
         genericConfigTest(builtToken);
@@ -421,6 +355,7 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     /**
      * Test that uses a builder that puts the aud claim in the JWT Token. The resource server does not
      * specify the audiences config attribute. Expect a 401 and appropriate error messages in the server side log.
+     * With mpJwt-1.2, the audience in the token will be ignored if the mpJwt (config or mp props) does not specify it.
      *
      * @throws Exception
      */
@@ -431,12 +366,16 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
 
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
-
-        genericConfigTest(builtToken, expectations);
+        // mpJwt 1.2 allows audience to ignored if token has audience when configs do not specify audience
+        if (isVersion12OrAbove(resourceServer)) {
+            genericConfigTest(builtToken);
+        } else {
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+            expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+            expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
+            genericConfigTest(builtToken, expectations);
+        }
 
     }
 
@@ -449,7 +388,9 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_NotSpecifiedInJwt() throws Exception {
-        super.restoreTestServers();
+
+        // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
 
@@ -473,7 +414,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException" })
     public void MPJwtConfigUsingBuilderTests_Audience_Mismatch() throws Exception {
 
-        super.restoreTestServers();
+        // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_mismatch");
 
@@ -495,7 +437,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_SuperSet() throws Exception {
 
-        super.restoreTestServers();
+        // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_superset");
         genericConfigTest(builtToken);
@@ -511,7 +454,8 @@ public class MPJwtConfigUsingBuilderTests extends CommonMpJwtFat {
     @Test
     public void MPJwtConfigUsingBuilderTests_Audience_Subset() throws Exception {
 
-        super.restoreTestServers();
+        // restore the server just in case a previous test changed the config (forcing a restore in tests that do NOT reconfig is quicker than having all tests restore when then finish)
+        resourceServer.restoreServerConfigurationAndWaitForApps();
 
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "audience_subset");
         genericConfigTest(builtToken);

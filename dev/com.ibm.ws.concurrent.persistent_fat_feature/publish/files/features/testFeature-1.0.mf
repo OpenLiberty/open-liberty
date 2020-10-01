@@ -3,7 +3,8 @@ IBM-ShortName: testFeature-1.0
 Subsystem-SymbolicName: test.concurrent.persistent.testFeature-1.0; visibility:=public
 Subsystem-Version: 1.0
 Subsystem-Content: test.concurrent.persistent.feature;  version="[1,1.0.100)",
- com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2, 4.1"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-2.0; type="osgi.subsystem.feature",
  test.concurrent.persistent.persistentExecutorTestFeature-1.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

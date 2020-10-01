@@ -30,7 +30,8 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 AlwaysPassesTest.class, // needed because kerberos is only supported on certain OSes
                 DB2KerberosTest.class,
                 PostgresKerberosTest.class,
-                OracleKerberosTest.class
+                OracleKerberosTest.class,
+                ErrorPathTest.class
 })
 public class FATSuite {
 

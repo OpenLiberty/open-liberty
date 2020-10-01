@@ -105,6 +105,38 @@ public class DB2KerberosTestServlet extends FATServlet {
         }
     }
 
+    public void testTicketCacheInvalid() throws Exception {
+        try (Connection con = krb5DataSource.getConnection()) {
+            fail("Should not be able to get a connection with invalid krb5TicketCache");
+        } catch (SQLException expected) {
+            Throwable cause1 = expected.getCause();
+            if (cause1.getClass().getCanonicalName().contains("ResourceException")) { // javax.resource.ResourceException is not on the cp
+                Throwable cause2 = cause1.getCause();
+                if (cause2 instanceof LoginException) {
+                    System.out.println("Caught expected SQLException with nested LoginException");
+                    return;
+                }
+            }
+            throw expected;
+        }
+    }
+
+    public void testPasswordInvalid() throws Exception {
+        try (Connection con = krb5DataSource.getConnection()) {
+            fail("Should not be able to get a connection with invalid krb5TicketCache");
+        } catch (SQLException expected) {
+            Throwable cause1 = expected.getCause();
+            if (cause1.getClass().getCanonicalName().contains("ResourceException")) { // javax.resource.ResourceException is not on the cp
+                Throwable cause2 = cause1.getCause();
+                if (cause2 instanceof LoginException) {
+                    System.out.println("Caught expected SQLException with nested LoginException");
+                    return;
+                }
+            }
+            throw expected;
+        }
+    }
+
     /**
      * Get a connection with a javax.sql.XADatasource
      */

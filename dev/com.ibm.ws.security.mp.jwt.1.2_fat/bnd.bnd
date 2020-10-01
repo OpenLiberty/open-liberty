@@ -1,0 +1,63 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    src, \
+    fat/src
+    
+
+test.project: true
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath	
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.mp.jwt;version=latest,\
+	com.ibm.ws.security.mp.jwt.1.1_fat;version=latest,\
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	javax.ws.rs:javax.ws.rs-api;version=2.0,\
+	net.sourceforge.htmlunit:htmlunit;version=2.27,\
+	javax.j2ee.jcdi;version=latest,\
+	org.eclipse.microprofile.jwt;version=latest,\
+	com.ibm.ws.common.encoder
+	

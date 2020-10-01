@@ -69,7 +69,7 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(invalidTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
 
         //Test 1: Check if TRAS0040I Message appears for invalid trace spec
         checkOnlyOneInvalidTraceSpecEntryExists();
@@ -86,7 +86,7 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(validTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
         checkNoInvalidTraceSpecEntryExists();
 
     }
@@ -116,7 +116,7 @@ public class InvalidTraceSpecificationTest {
         loggingObj.setTraceSpecification(existingTraceString + ":" + validTraceSpec1);
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
         checkOnlyOneInvalidTraceSpecEntryExists();
 
     }

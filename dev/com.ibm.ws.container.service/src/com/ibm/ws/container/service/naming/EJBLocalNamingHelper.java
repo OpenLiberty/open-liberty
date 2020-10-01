@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,9 @@ public interface EJBLocalNamingHelper<EJBBinding> {
      *            would be "<app>/<module>.jar/<bean>#<interface>"
      * @return the object instance to be returned on the lookup.
      * @throws NamingException
-     *             is thrown when an implementation knows about the the JNDI
-     *             resource, but encounters a problem obtaining an instance
-     *             to return.
+     *            is thrown when an implementation knows about the the JNDI
+     *            resource, but encounters a problem obtaining an instance
+     *            to return.
      */
     public Object getObjectInstance(String name) throws NamingException;
 
@@ -58,8 +58,14 @@ public interface EJBLocalNamingHelper<EJBBinding> {
      *            String form of the jndi name, excluding the namespace prefix
      *            e.g. for the resource "ejblocal:<app>/<module>.jar/<bean>#<interface>" this name
      *            would be "<app>/<module>.jar/<bean>#<interface>"
+     * @param isSimpleName
+     *            Flag used to force creation of an AmbiguousEJBReference if an
+     *            ambiguous simple name binding is detected
+     * @return false if the binding is an AmbiguousEJBReference
+     * @throws NamingException
+     *            is thrown if the binding is ambiguous and customBindingsOnErr is FAIL.
      */
-    void bind(EJBBinding binding, String name);
+    boolean bind(EJBBinding binding, String name, boolean isSimpleName) throws NamingException;
 
     /**
      * Unbind the names from the ejblocal: name space.

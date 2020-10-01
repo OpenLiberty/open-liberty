@@ -18,32 +18,12 @@
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd.gradle</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.transform</artifactId>
       <version>5.1.1</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bndlib</artifactId>
-      <version>4.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.repository</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.resolve</artifactId>
       <version>4.3.0</version>
     </dependency>
     <dependency>
@@ -79,6 +59,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+      <version>2.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
       <version>2.2.3</version>
     </dependency>
     <dependency>
@@ -94,6 +79,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
+      <version>2.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
       <version>2.2.3</version>
     </dependency>
     <dependency>
@@ -105,6 +95,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>2.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.11.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -124,12 +119,27 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>2.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
       <version>2.9.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
+      <version>2.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jdk8</artifactId>
       <version>2.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.11.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -150,6 +160,11 @@
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-parameter-names</artifactId>
+      <version>2.11.2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
@@ -205,11 +220,6 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>3.13.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.java-diff-utils</groupId>
-      <artifactId>diffutils</artifactId>
-      <version>1.2.1</version>
     </dependency>
     <dependency>
       <groupId>com.graphql-java</groupId>
@@ -282,24 +292,9 @@
       <version>8.2.1.jre8</version>
     </dependency>
     <dependency>
-      <groupId>com.netflix.archaius</groupId>
-      <artifactId>archaius2-api</artifactId>
-      <version>2.1.10</version>
-    </dependency>
-    <dependency>
-      <groupId>com.netflix.archaius</groupId>
-      <artifactId>archaius2-core</artifactId>
-      <version>2.1.10</version>
-    </dependency>
-    <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
       <version>4.23</version>
-    </dependency>
-    <dependency>
-      <groupId>com.openpojo</groupId>
-      <artifactId>openpojo</artifactId>
-      <version>0.8.4</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.ojdbc</groupId>
@@ -415,11 +410,6 @@
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>policy</artifactId>
       <version>2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.unboundid</groupId>
-      <artifactId>unboundid-ldapsdk</artifactId>
-      <version>4.0.14</version>
     </dependency>
     <dependency>
       <groupId>com.unboundid</groupId>
@@ -784,7 +774,7 @@
     <dependency>
       <groupId>jakarta.authorization</groupId>
       <artifactId>jakarta.authorization-api</artifactId>
-      <version>2.0.0-RC1</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.ejb</groupId>
@@ -869,7 +859,7 @@
     <dependency>
       <groupId>jakarta.transaction</groupId>
       <artifactId>jakarta.transaction-api</artifactId>
-      <version>2.0.0-RC1</version>
+      <version>2.0.0-RC3</version>
     </dependency>
     <dependency>
       <groupId>jakarta.validation</groupId>
@@ -1040,11 +1030,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>1.6.2</version>
-    </dependency>
-    <dependency>
-      <groupId>logstash</groupId>
-      <artifactId>logstash</artifactId>
-      <version>5.5.0</version>
     </dependency>
     <dependency>
       <groupId>net.minidev</groupId>
@@ -1413,6 +1398,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr</artifactId>
+      <version>2.1.24</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.service.obr</artifactId>
       <version>1.0.2</version>
     </dependency>
@@ -1558,6 +1548,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-api</artifactId>
+      <version>3.0.0-RC1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
       <version>2.2.12</version>
     </dependency>
@@ -1565,6 +1560,11 @@
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
       <version>2.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.core</groupId>
+      <artifactId>myfaces-impl</artifactId>
+      <version>3.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
@@ -1824,7 +1824,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
-      <version>3.0-RC3</version>
+      <version>3.0-RC4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
@@ -2985,6 +2985,11 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>1.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.27</version>
     </dependency>
     <dependency>
       <groupId>rx</groupId>

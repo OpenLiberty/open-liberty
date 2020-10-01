@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+	<jwtBuilder id="defaultJWT" 
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="rsa_key"
+        		keyAlias="rsacert"
+				signatureAlgorithm="RS256"
+				/>
+<!-- 				
+	<jwtBuilder id="HS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				/>		
+								
+	<jwtBuilder id="HS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS384"
+				sharedKey="someKeyValue"
+				/>		
+						
+	<jwtBuilder id="HS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS512"
+				sharedKey="someKeyValue"
+				/>		
+														
+	<jwtBuilder id="ES256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es256"
+				signatureAlgorithm="ES256"
+				/>		
+
+	<jwtBuilder id="ES384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es384"
+				signatureAlgorithm="ES384"
+				/>		
+
+	<jwtBuilder id="ES512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es512"
+				signatureAlgorithm="ES512"
+				/>		
+
+	<jwtBuilder id="RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				/>		
+
+	<jwtBuilder id="RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs384"
+				signatureAlgorithm="RS384"
+				/>		
+
+	<jwtBuilder id="RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs512"
+				signatureAlgorithm="RS512"
+				/>		
+
+	<jwtBuilder id="PS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps256"
+				signatureAlgorithm="PS256"
+				/>		
+
+	<jwtBuilder id="PS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps384"
+				signatureAlgorithm="PS384"
+				/>		
+
+	<jwtBuilder id="PS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps512"
+				signatureAlgorithm="PS512"
+				/>		
+-->
+
+<!-- Builders that encrypt -->
+	<jwtBuilder id="HS256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+								
+	<jwtBuilder id="HS384_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS384"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+						
+	<jwtBuilder id="HS512_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS512"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+														
+	<jwtBuilder id="ES256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es256"
+				signatureAlgorithm="ES256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES384_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es384"
+				signatureAlgorithm="ES384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES512_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es512"
+				signatureAlgorithm="ES512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS384_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs384"
+				signatureAlgorithm="RS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS512_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs512"
+				signatureAlgorithm="RS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps256"
+				signatureAlgorithm="PS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS384_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps384"
+				signatureAlgorithm="PS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS512_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps512"
+				signatureAlgorithm="PS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS256_short" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="short_RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+			
+
+
+	<jwtBuilder id="HS256_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+								
+	<jwtBuilder id="HS384_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS384"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+						
+	<jwtBuilder id="HS512_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS512"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+														
+	<jwtBuilder id="ES256_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es256"
+				signatureAlgorithm="ES256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES384_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es384"
+				signatureAlgorithm="ES384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES512_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es512"
+				signatureAlgorithm="ES512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS384_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs384"
+				signatureAlgorithm="RS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS512_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs512"
+				signatureAlgorithm="RS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS256_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps256"
+				signatureAlgorithm="PS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS384_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps384"
+				signatureAlgorithm="PS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS512_enc_RS384" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps512"
+				signatureAlgorithm="PS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS384_short" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="short_RS384"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+			
+
+
+	<jwtBuilder id="HS256_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS256"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+								
+	<jwtBuilder id="HS384_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS384"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+						
+	<jwtBuilder id="HS512_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="true"
+				signatureAlgorithm="HS512"
+				sharedKey="someKeyValue"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+														
+	<jwtBuilder id="ES256_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es256"
+				signatureAlgorithm="ES256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES384_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es384"
+				signatureAlgorithm="ES384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="ES512_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="es512"
+				signatureAlgorithm="ES512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS384_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs384"
+				signatureAlgorithm="RS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS512_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs512"
+				signatureAlgorithm="RS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS256_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps256"
+				signatureAlgorithm="PS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS384_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps384"
+				signatureAlgorithm="PS384"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="PS512_enc_RS512" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="ps512"
+				signatureAlgorithm="PS512"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="RS256_enc_RS512_short" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="short_RS512"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+			
+
+</server>
+			

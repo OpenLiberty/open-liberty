@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -50,14 +51,20 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
     
     private BundleContext getBundleContext() {
         if (isSecurityManagerPresent) {
-            return AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> 
-                FrameworkUtil.getBundle(getClass()).getBundleContext());
+            return AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> {
+                Bundle b = FrameworkUtil.getBundle(getClass());
+                return b == null ? null : b.getBundleContext(); 
+            });
         }
-        return FrameworkUtil.getBundle(getClass()).getBundleContext();
+        Bundle b = FrameworkUtil.getBundle(getClass());
+        return b == null ? null : b.getBundleContext();
     }
 
     @SuppressWarnings("unchecked")
     private Optional<ServiceReference<ClientBuilderListener>[]> getServiceRefs(BundleContext ctx) {
+        if (ctx == null) {
+            return Optional.empty();
+        }
         try {
             if (isSecurityManagerPresent) {
                 return Optional.ofNullable(AccessController.doPrivileged(

@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -81,7 +82,8 @@ public class DelayAppStartupHealthCheckTest {
         log("deployApplicatonIntoDropins", "Deploying the Delayed App into the dropins directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server1, app);
+        //This test expects to hit the server before the app is started so we disable validation to prevent the test framework waiting for the app to start.
+        ShrinkHelper.exportAppToServer(server1, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server1.isStarted())
             server1.startServer();

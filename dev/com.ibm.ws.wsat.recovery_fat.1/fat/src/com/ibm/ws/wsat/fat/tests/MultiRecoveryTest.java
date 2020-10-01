@@ -55,7 +55,7 @@ public class MultiRecoveryTest {
 	private static String BASE_URL2;
 
 	private final static int REQUEST_TIMEOUT = 10;
-	private final static int START_TIMEOUT = 120000; // in ms
+	private final static int START_TIMEOUT = 300000; // in ms
 	
 	private final static String recoveryClient = "recoveryClient";
 	private final static String recoveryServer = "recoveryServer";
@@ -70,6 +70,9 @@ public class MultiRecoveryTest {
 		ShrinkHelper.defaultDropinApp(server, recoveryServer, "com.ibm.ws.wsat.fat.server.*");
 		ShrinkHelper.defaultDropinApp(server2, recoveryClient, "com.ibm.ws.wsat.fat.client.recovery.*");
 		ShrinkHelper.defaultDropinApp(server2, recoveryServer, "com.ibm.ws.wsat.fat.server.*");
+
+		server.setServerStartTimeout(START_TIMEOUT);
+		server2.setServerStartTimeout(START_TIMEOUT);
 	}
 
 	@Before
@@ -83,7 +86,6 @@ public class MultiRecoveryTest {
 		for (LibertyServer server : servers) {
 			assertNotNull("Attempted to start a null server", server);
 			try {
-				server.setServerStartTimeout(START_TIMEOUT);
 				final ProgramOutput po = server.startServerAndValidate(false,false,true);
 				if (po.getReturnCode() != 0) {
 					Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
