@@ -16,3 +16,4 @@ Subsystem-Category: JakartaEE9Application
  io.openliberty.enterpriseBeansRemote-4.0
 kind=beta
 edition=base
+WLP-Activation-Type: parallel

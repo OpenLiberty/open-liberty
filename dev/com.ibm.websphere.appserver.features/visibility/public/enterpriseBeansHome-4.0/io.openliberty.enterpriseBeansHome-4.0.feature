@@ -11,3 +11,4 @@ Subsystem-Name: Jakarta Enterprise Beans Home Interfaces 4.0
 -bundles=com.ibm.ws.ejbcontainer.ejb2x
 kind=beta
 edition=base
+WLP-Activation-Type: parallel
