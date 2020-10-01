@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.ssoCommon-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-API-Package: com.ibm.websphere.security.saml2; type="ibm-api"
 IBM-SPI-Package: com.ibm.wsspi.security.saml2

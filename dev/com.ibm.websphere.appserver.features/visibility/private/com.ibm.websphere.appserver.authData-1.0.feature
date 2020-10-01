@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.authData-1.0
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 Subsystem-Version: 1.0.0
 -features=\

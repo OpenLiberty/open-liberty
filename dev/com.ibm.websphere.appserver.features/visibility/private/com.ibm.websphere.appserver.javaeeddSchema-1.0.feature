@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeddSchema-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 -files=dev/api/ibm/schema/ibm-application-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-application-bnd_1_1.xsd, \

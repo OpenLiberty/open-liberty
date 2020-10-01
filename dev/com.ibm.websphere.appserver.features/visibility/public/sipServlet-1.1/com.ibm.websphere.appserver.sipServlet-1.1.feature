@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.sipServlet-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall

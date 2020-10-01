@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jacc-1.5
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.wsSecurity-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: org.apache.ws.security;  type="third-party", \
  org.apache.ws.security.action;  type="third-party", \
