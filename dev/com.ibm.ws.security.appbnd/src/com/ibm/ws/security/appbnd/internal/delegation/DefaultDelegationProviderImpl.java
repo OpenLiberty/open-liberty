@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.appbnd.RunAs;
 import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
-//import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.appbnd.internal.TraceConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
@@ -42,20 +41,20 @@ import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.helper.AuthenticateUserHelper;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
-import com.ibm.ws.security.delegation.DelegationProvider;
+import com.ibm.ws.security.delegation.DefaultDelegationProvider;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * This class defines the interface for creating
  * the run-as subject during delegation
  */
-@Component(service = { DelegationProvider.class },
-           name = "com.ibm.ws.security.appbnd.internal.DelegationProvider",
+@Component(service = { DefaultDelegationProvider.class },
+           name = "com.ibm.ws.security.delegation.DefaultDelegationProvider",
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "type=defaultProvider" })
-public class DefaultDelegationProvider implements DelegationProvider {
-    private static final TraceComponent tc = Tr.register(DefaultDelegationProvider.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+public class DefaultDelegationProviderImpl implements DefaultDelegationProvider {
+    private static final TraceComponent tc = Tr.register(DefaultDelegationProviderImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
     static final String KEY_AUTHENTICATION_SERVICE = "authenticationService";
@@ -64,14 +63,8 @@ public class DefaultDelegationProvider implements DelegationProvider {
     private final ConcurrentHashMap<String, Collection<SecurityRole>> appToSecurityRolesMap = new ConcurrentHashMap<String, Collection<SecurityRole>>();
     private final Map<String, Map<String, RunAs>> roleToRunAsMappingPerApp = new HashMap<String, Map<String, RunAs>>();
     private final Map<String, Map<String, Boolean>> roleToWarningMappingPerApp = new HashMap<String, Map<String, Boolean>>();
-//    private SecurityService securityService;
-//    private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = null;
     private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
     public String delegationUser = "";
-
-//    public void setSecurityService(SecurityService securityService) {
-//        this.securityService = securityService;
-//    }
 
     @Reference(service = IdentityStoreHandlerService.class, name = KEY_IDENTITY_STORE_HANDLER_SERVICE,
                cardinality = ReferenceCardinality.OPTIONAL,
@@ -287,10 +280,10 @@ public class DefaultDelegationProvider implements DelegationProvider {
     }
 
     private IdentityStoreHandlerService getIdentityStoreHandlerService() {
-//       if (identityStoreHandlerServiceRef != null) {
-        return identityStoreHandlerServiceRef.getService();
-//        }
-//        return null;
+        if (identityStoreHandlerServiceRef != null) {
+            return identityStoreHandlerServiceRef.getService();
+        }
+        return null;
     }
 
     @Activate

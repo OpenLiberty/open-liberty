@@ -44,6 +44,7 @@ import com.ibm.ws.security.authentication.internal.jaas.JAASServiceImpl;
 import com.ibm.ws.security.authentication.jaas.modules.CertificateLoginModule;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
+import com.ibm.ws.security.delegation.DefaultDelegationProvider;
 import com.ibm.ws.security.delegation.DelegationProvider;
 import com.ibm.ws.security.jaas.common.callback.CallbackHandlerAuthenticationData;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
@@ -62,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
-//    static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
+    static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
@@ -70,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
     private final AtomicServiceReference<DelegationProvider> delegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DELEGATION_PROVIDER);
-//    private final AtomicServiceReference<DelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
+    private final AtomicServiceReference<DefaultDelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DefaultDelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
     private final AtomicServiceReference<CredentialsService> credentialsServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
     private JAASService jaasService;
     private ComponentContext cc;
@@ -118,13 +119,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.unsetReference(reference);
     }
 
-//    protected void setDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
-//        delegationProviderRef.setReference(reference);
-//    }
-//
-//    protected void unsetDefaultDelegationProvider(ServiceReference<DelegationProvider> reference) {
-//        defaultDelegationProviderRef.unsetReference(reference);
-//    }
+    protected void setDefaultDelegationProvider(ServiceReference<DefaultDelegationProvider> reference) {
+        defaultDelegationProviderRef.setReference(reference);
+    }
+
+    protected void unsetDefaultDelegationProvider(ServiceReference<DefaultDelegationProvider> reference) {
+        defaultDelegationProviderRef.unsetReference(reference);
+    }
 
     protected void setCredentialsService(ServiceReference<CredentialsService> reference) {
         credentialsServiceRef.setReference(reference);
@@ -169,7 +170,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authCacheServiceRef.activate(cc);
         userRegistryServiceRef.activate(cc);
         delegationProviderRef.activate(cc);
-//        defaultDelegationProviderRef.activate(cc);
+        defaultDelegationProviderRef.activate(cc);
         credentialsServiceRef.activate(cc);
         updateCacheState(props);
     }
@@ -182,7 +183,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authCacheServiceRef.deactivate(cc);
         userRegistryServiceRef.deactivate(cc);
         delegationProviderRef.deactivate(cc);
-//        defaultDelegationProviderRef.deactivate(cc);
+        defaultDelegationProviderRef.deactivate(cc);
         credentialsServiceRef.deactivate(cc);
         JAASServiceImpl.unsetAuthenticationService(this);
         cc = null;
@@ -560,18 +561,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @FFDCIgnore(AuthenticationException.class)
     private Subject getRunAsSubjectFromProvider(String roleName, String appName) {
         Subject runAsSubject = null;
-        DelegationProvider delegationProvider = delegationProviderRef.getService();
+        DefaultDelegationProvider defaultDelegationProvider = null;
 
+        DelegationProvider delegationProvider = delegationProviderRef.getService();
         try {
-            if (delegationProvider == null) {
-//                delegationProvider = defaultDelegationProviderRef.getService();
-            }
             if (delegationProvider != null) {
                 runAsSubject = delegationProvider.getRunAsSubject(roleName, appName);
+            } else {
+                defaultDelegationProvider = defaultDelegationProviderRef.getService();
+                runAsSubject = defaultDelegationProvider.getRunAsSubject(roleName, appName);
             }
 
         } catch (AuthenticationException e) {
-            setInvalidDelegationUser(delegationProvider.getDelegationUser());
+            if (delegationProvider != null)
+                setInvalidDelegationUser(delegationProvider.getDelegationUser());
+            else
+                setInvalidDelegationUser(defaultDelegationProvider.getDelegationUser());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught an authentication exception, so will run as the invocation subject.");
             }
