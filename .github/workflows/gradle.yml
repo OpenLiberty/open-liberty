@@ -42,9 +42,9 @@ jobs:
     timeout-minutes: ${{matrix.timeout}}
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 18
       matrix:
-        category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, LOGGING, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT, OPENTRACING, SECURITY_1, SECURITY_2, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER, WSAT]
+        category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT_1, CONCURRENT_2, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, LOGGING, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT, OPENTRACING, SECURITY_1, SECURITY_2, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER, WSAT]
         include:
           - category: GENERAL
             timeout: 90
@@ -117,7 +117,7 @@ jobs:
               com.ibm.ws.session.cache_fat_config_infinispan
               com.ibm.ws.session.cache_fat_infinispan
               com.ibm.ws.session.cache_fat_infinispan_container
-          - category: CONCURRENT
+          - category: CONCURRENT_1
             timeout: 90
             fat-buckets: >
               com.ibm.ws.concurrent.mp.1.1_fat_tck
@@ -133,6 +133,9 @@ jobs:
               com.ibm.ws.concurrent.persistent_fat_demo
               com.ibm.ws.concurrent.persistent_fat_demo_timers
               com.ibm.ws.concurrent.persistent_fat_errorpaths
+          - category: CONCURRENT_2
+            timeout: 90
+            fat-buckets: >
               com.ibm.ws.concurrent.persistent_fat_execdisabled
               com.ibm.ws.concurrent.persistent_fat_failover1serv
               com.ibm.ws.concurrent.persistent_fat_failovertimers
@@ -241,10 +244,7 @@ jobs:
               com.ibm.ws.jaxrs.2.1_fat_extended
               com.ibm.ws.jaxrs.2.x.webcontainer_fat
               com.ibm.ws.jaxrs.2.x_fat_clientProps
-              io.openliberty.jakarta.jaxrs.3.0.api_fat
               io.openliberty.jakarta.restfulWS.3.0.api_fat
-              io.openliberty.jaxrs.3.0.client_fat
-              io.openliberty.jaxrs.3.0_fat
               io.openliberty.restfulWS.3.0.client_fat
               io.openliberty.restfulWS.3.0_fat
           - category: JAXWS
@@ -319,7 +319,6 @@ jobs:
             fat-buckets: >
               com.ibm.ws.jta_fat
               com.ibm.ws.transaction.HADB_fat
-              com.ibm.ws.transaction.cloud_fat
               com.ibm.ws.transaction.cloud_fat.1
               com.ibm.ws.transaction.cloud_fat.2
               com.ibm.ws.transaction.cloud_fat.3
@@ -330,8 +329,6 @@ jobs:
           - category: TRANSACTION_2
             timeout: 90
             fat-buckets: >
-              com.ibm.ws.transaction.cloudsim_fat
-              com.ibm.ws.transaction.core_fat
               com.ibm.ws.transaction.core_fat.1
               com.ibm.ws.transaction.core_fat.2
               com.ibm.ws.transaction.core_fat.3
@@ -345,7 +342,6 @@ jobs:
             timeout: 90
             fat-buckets: >
               com.ibm.ws.transaction.db_fat
-              com.ibm.ws.transaction.recovery_fat
               com.ibm.ws.transaction.recovery_fat.1
               com.ibm.ws.transaction.recovery_fat.2
               com.ibm.ws.transaction.recovery_fat.3
@@ -384,7 +380,6 @@ jobs:
               com.ibm.ws.microprofile.faulttolerance.1.1_fat_tck
               com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck
               com.ibm.ws.microprofile.faulttolerance.2.1_fat_tck
-              com.ibm.ws.microprofile.faulttolerance.3.0_fat_tck
               com.ibm.ws.microprofile.faulttolerance.cdi_fat
               com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics
               com.ibm.ws.microprofile.faulttolerance_fat_tck
@@ -418,8 +413,6 @@ jobs:
             timeout: 90
             fat-buckets: >
               com.ibm.ws.microprofile.metrics.2.x.monitor_fat
-              com.ibm.ws.microprofile.metrics.3.0_fat_tck
-              com.ibm.ws.microprofile.metrics.3.x.monitor_fat
               com.ibm.ws.microprofile.metrics.monitor_fat
               com.ibm.ws.microprofile.metrics_fat
               com.ibm.ws.microprofile.metrics_fat_tck
@@ -472,9 +465,7 @@ jobs:
               com.ibm.ws.security.jwt_fat.consumer
               com.ibm.ws.security.jwtsso_fat
               com.ibm.ws.security.mp.jwt.1.1_fat
-              com.ibm.ws.security.mp.jwt_fat
               com.ibm.ws.security.mp.jwt_fat_tck
-              io.openliberty.microprofile.jwt.1.2.internal_fat_tck
           - category: SECURITY_1
             timeout: 90
             fat-buckets: >
@@ -502,17 +493,14 @@ jobs:
             fat-buckets: >
               com.ibm.ws.wsat.common_fat
               com.ibm.ws.wsat.concurrent_fat
-              com.ibm.ws.wsat.migration_fat
               com.ibm.ws.wsat.migration_fat.1
               com.ibm.ws.wsat.migration_fat.2
               com.ibm.ws.wsat.migration_fat.3
               com.ibm.ws.wsat.migration_fat.4
               com.ibm.ws.wsat.migration_fat.5
-              com.ibm.ws.wsat.recovery_fat
               com.ibm.ws.wsat.recovery_fat.1
               com.ibm.ws.wsat.recovery_fat.2
               com.ibm.ws.wsat.recovery_fat.3
-              com.ibm.ws.wsat_fat
               com.ibm.ws.wsat_fat.1
               com.ibm.ws.wsat_fat.2
               com.ibm.ws.wsat_fat.3
@@ -567,7 +555,7 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           if [[ -f "$FAT_BUCKET/build/libs/autoFVT/output/fail.log" ]]; then
-            echo "  [ FAILED ] $FAT_BUCKET";
+            echo "  [!FAILED!] $FAT_BUCKET";
             pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
             zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
             popd &> /dev/null
@@ -584,6 +572,6 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v2
       with:
-        name: FAT logs for group {{matrix.category}}
+        name: FAT logs for group ${{matrix.category}}
         path: dev/failing_buckets/
       
