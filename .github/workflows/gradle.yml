@@ -44,30 +44,482 @@ jobs:
       fail-fast: false
       max-parallel: 12
       matrix:
-        category: [Basic, JCA, JDBC, JAXRS]
+        category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, LOGGING, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT, OPENTRACING, SECURITY_1, SECURITY_2, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER, WSAT]
         include:
-          - category: Basic
-            timeout: 45
+          - category: GENERAL
+            timeout: 90
             fat-buckets: >
               build.example_fat
-          - category: JDBC
-            timeout: 45
+              com.ibm.ws.java11_fat
+              build.featureStart_fat
+          - category: MISC
+            timeout: 90
             fat-buckets: >
-              com.ibm.ws.jdbc_fat_derby
-              com.ibm.ws.jdbc_fat_v41
+              com.ibm.ws.cloudant_fat
+              com.ibm.ws.couchdb_fat
+              com.ibm.ws.mongo_fat
+              com.ibm.ws.jmx_fat
+              com.ibm.ws.springboot.support_fat
+          - category: KERNEL_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.anno_fat
+              com.ibm.ws.app.manager.wab.installer_fat
+              com.ibm.ws.app.manager_fat
+              com.ibm.ws.artifact_fat
+              com.ibm.ws.artifact_fat_bvt
+              com.ibm.ws.config_fat
+              com.ibm.ws.kernel.boot_fat
+              com.ibm.ws.kernel.feature_fat
+          - category: KERNEL_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.kernel.filemonitor_fat
+              com.ibm.ws.osgi.console_fat
+              com.ibm.ws.rest.handler.config_fat
+              com.ibm.ws.rest.handler.validator.cloudant_fat
+              com.ibm.ws.rest.handler.validator_fat
+              com.ibm.ws.runtime.update_fat
+              com.ibm.ws.threading_policy_fat
+          - category: CDI_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.cdi.2.0_fat
+              com.ibm.ws.cdi.annotations_fat
+              com.ibm.ws.cdi.api_fat
+              com.ibm.ws.cdi.beansxml.implicit_fat
+              com.ibm.ws.cdi.beansxml_fat
+              com.ibm.ws.cdi.ejb_fat
+          - category: CDI_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.cdi.extension_fat
+              com.ibm.ws.cdi.jee_fat
+              com.ibm.ws.cdi.jndi_fat
+              com.ibm.ws.cdi.lifecycle_fat
+              com.ibm.ws.cdi.noncontextual_fat
+              com.ibm.ws.cdi.third.party_fat
+              com.ibm.ws.cdi.visibility_fat
+          - category: APPCLIENT
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.clientcontainer.8.0_fat
+              com.ibm.ws.clientcontainer.beanvalidation_fat
+              com.ibm.ws.clientcontainer.cdi_fat
+              com.ibm.ws.clientcontainer.javamail_fat
+              com.ibm.ws.clientcontainer.json_fat
+          - category: SESSIONS
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jcache_fat
+              com.ibm.ws.session.cache_fat
+              com.ibm.ws.session.cache_fat_config
+              com.ibm.ws.session.cache_fat_config_infinispan
+              com.ibm.ws.session.cache_fat_infinispan
+              com.ibm.ws.session.cache_fat_infinispan_container
+          - category: CONCURRENT
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.concurrent.mp.1.1_fat_tck
+              com.ibm.ws.concurrent.mp_fat
+              com.ibm.ws.concurrent.mp_fat_tck
+              com.ibm.ws.concurrent.persistent_fat
+              com.ibm.ws.concurrent.persistent_fat_auto_pollinterval
+              com.ibm.ws.concurrent.persistent_fat_compat
+              com.ibm.ws.concurrent.persistent_fat_compatibility
+              com.ibm.ws.concurrent.persistent_fat_configupdate
+              com.ibm.ws.concurrent.persistent_fat_configupdate_databasetaskstore
+              com.ibm.ws.concurrent.persistent_fat_delayexec
+              com.ibm.ws.concurrent.persistent_fat_demo
+              com.ibm.ws.concurrent.persistent_fat_demo_timers
+              com.ibm.ws.concurrent.persistent_fat_errorpaths
+              com.ibm.ws.concurrent.persistent_fat_execdisabled
+              com.ibm.ws.concurrent.persistent_fat_failover1serv
+              com.ibm.ws.concurrent.persistent_fat_failovertimers
+              com.ibm.ws.concurrent.persistent_fat_feature
+              com.ibm.ws.concurrent.persistent_fat_initial_polling
+              com.ibm.ws.concurrent.persistent_fat_jca
+              com.ibm.ws.concurrent.persistent_fat_loadtest
+              com.ibm.ws.concurrent.persistent_fat_locking
+              com.ibm.ws.concurrent.persistent_fat_mbean
+              com.ibm.ws.concurrent.persistent_fat_multiple
+              com.ibm.ws.concurrent.persistent_fat_multiserver
+              com.ibm.ws.concurrent.persistent_fat_oneexec
+              com.ibm.ws.concurrent.persistent_fat_retry
+              com.ibm.ws.concurrent.persistent_fat_simctrl
+              com.ibm.ws.concurrent.persistent_fat_timers
+              com.ibm.ws.concurrent_fat
+              com.ibm.ws.concurrent_fat_cdi
+              com.ibm.ws.concurrent_fat_config
+              com.ibm.ws.concurrent_fat_db
+              com.ibm.ws.concurrent_fat_demo
+              com.ibm.ws.concurrent_fat_ejb
+              com.ibm.ws.concurrent_fat_policy
+              com.ibm.ws.context_fat
+              com.ibm.ws.context_fat_customproviders
+              com.ibm.ws.context_fat_serialization
+          - category: EJB_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.ejbcontainer.async_fat
+              com.ibm.ws.ejbcontainer.bindings_fat
+              com.ibm.ws.ejbcontainer.cdi_fat
+              com.ibm.ws.ejbcontainer.exception_fat
+              com.ibm.ws.ejbcontainer.injection_fat
+              com.ibm.ws.ejbcontainer.interceptor.v32_fat
+              com.ibm.ws.ejbcontainer.interceptor_fat
+              com.ibm.ws.ejbcontainer.legacy_fat
+              com.ibm.ws.ejbcontainer.mdb.ra_fat
+          - category: EJB_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.ejbcontainer.remote.client_fat
+              com.ibm.ws.ejbcontainer.remote_fat
+              com.ibm.ws.ejbcontainer.security.jacc_fat
+              com.ibm.ws.ejbcontainer.security.jacc_fat.2
+              com.ibm.ws.ejbcontainer.session.async_fat
+              com.ibm.ws.ejbcontainer.session.passivation_fat
+              com.ibm.ws.ejbcontainer.timer.persistent_fat
+              com.ibm.ws.ejbcontainer.tx_fat
+              com.ibm.ws.injection_fat
+              com.ibm.ws.managedbeans_fat
+          - category: JAVAEE
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.beanvalidation.v11_fat
+              com.ibm.ws.beanvalidation.v20_fat
+              com.ibm.ws.el.3.0_fat
+              com.ibm.ws.javaee.7.0_fat
+              com.ibm.ws.javaee.8.0_fat
+              com.ibm.ws.javamail.1.6_fat
+              com.ibm.ws.jaxb_fat
+          - category: LOGGING
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.event.logging_fat
+              com.ibm.ws.logging.hpel_fat
+              com.ibm.ws.logging.json_fat
+              com.ibm.ws.logging_fat
+              com.ibm.ws.logstash.collector_fat
+              com.ibm.ws.request.probe.jdbc_fat
+              com.ibm.ws.request.probe.servlet_fat
+              com.ibm.ws.request.probes_fat
+              com.ibm.ws.request.timing_fat
+          - category: WEBCONTAINER
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.grpc_fat
+              com.ibm.ws.transport.http.compression_fat
+              com.ibm.ws.transport.http.remoteip_fat
+              com.ibm.ws.transport.http2_fat
+              com.ibm.ws.transport.iiop.open_fat
+              com.ibm.ws.webcontainer.security.jacc.1.5_fat
+              com.ibm.ws.webcontainer.servlet.3.1_fat
+              com.ibm.ws.webcontainer.servlet.4.0_fat
+              com.ibm.ws.webserver.plugin.utility_fat
+              io.openliberty.wsoc.internal_fat
+          - category: INSTALL
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.install.featureUtility_fat
+              com.ibm.ws.install.packaging_fat
+              com.ibm.ws.os.packaging_fat
+              com.ibm.ws.repository_fat
+              com.ibm.ws.repository_fat_shared
+              wlp.lib.extract_fat
+          - category: JAXRS
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
+              com.ibm.ws.jaxrs.2.0.client_fat
+              com.ibm.ws.jaxrs.2.0_fat
+              com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
+              com.ibm.ws.jaxrs.2.1.client_fat
+              com.ibm.ws.jaxrs.2.1.sse_fat
+              com.ibm.ws.jaxrs.2.1_fat
+              com.ibm.ws.jaxrs.2.1_fat_executor
+              com.ibm.ws.jaxrs.2.1_fat_extended
+              com.ibm.ws.jaxrs.2.x.webcontainer_fat
+              com.ibm.ws.jaxrs.2.x_fat_clientProps
+              io.openliberty.jakarta.jaxrs.3.0.api_fat
+              io.openliberty.jakarta.restfulWS.3.0.api_fat
+              io.openliberty.jaxrs.3.0.client_fat
+              io.openliberty.jaxrs.3.0_fat
+              io.openliberty.restfulWS.3.0.client_fat
+              io.openliberty.restfulWS.3.0_fat
+          - category: JAXWS
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jaxws.2.2.webcontainer_fat
+              com.ibm.ws.jaxws.cdi_fat
+              com.ibm.ws.jaxws.clientcontainer_fat
+              com.ibm.ws.jaxws.ejb_fat
+              com.ibm.ws.jbatch.cdi_fat
+              com.ibm.ws.jbatch.misc_fat
           - category: JCA
-            timeout: 45
+            timeout: 90
             fat-buckets: >
+              com.ibm.ws.jca_fat
               com.ibm.ws.jca_fat_bval
               com.ibm.ws.jca_fat_classloading
+              com.ibm.ws.jca_fat_configprops
+              com.ibm.ws.jca_fat_derbyra
+              com.ibm.ws.jca_fat_duplicates
+              com.ibm.ws.jca_fat_dynamicConfig
+              com.ibm.ws.jca_fat_enterpriseApp
+              com.ibm.ws.jca_fat_errorpaths
               com.ibm.ws.jca_fat_example_anno
-          - category: JAXRS
-            timeout: 45
+          - category: JDBC
+            timeout: 90
             fat-buckets: >
-              com.ibm.ws.jaxrs.2.1_fat
-              com.ibm.ws.jaxrs.2.1_fat_extended
-              com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
-              com.ibm.ws.jaxrs.2.1.sse_fat
+              com.ibm.ws.jdbc_fat
+              com.ibm.ws.jdbc_fat_db2
+              com.ibm.ws.jdbc_fat_derby
+              com.ibm.ws.jdbc_fat_driver
+              com.ibm.ws.jdbc_fat_krb5
+              com.ibm.ws.jdbc_fat_loadfromapp
+              com.ibm.ws.jdbc_fat_oracle
+              com.ibm.ws.jdbc_fat_postgresql
+              com.ibm.ws.jdbc_fat_sqlserver
+              com.ibm.ws.jdbc_fat_v41
+              com.ibm.ws.jdbc_fat_v43
+          - category: JPA_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jpa.container.ormdiagnostics_fat
+              com.ibm.ws.jpa_22_fat
+              com.ibm.ws.jpa_eclipselink_fat
+              com.ibm.ws.jpa_ol_fat
+              com.ibm.ws.jpa_spec10_injection_fat
+              com.ibm.ws.jpa_spec10_part01_fat
+          - category: JPA_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jpa_spec10_part02_fat
+              com.ibm.ws.jpa_spec10_query_fat
+              com.ibm.ws.jpa_spec20_fat
+              com.ibm.ws.jpa_spec21_fat
+              com.ibm.ws.persistence_fat
+          - category: JSF_JSP
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jsf.2.2_fat
+              com.ibm.ws.jsf.2.3_fat
+              com.ibm.ws.jsfContainer_fat_2.2
+              com.ibm.ws.jsfContainer_fat_2.3
+              com.ibm.ws.jsp.2.3_fat
+          - category: JSON
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jsonb_fat
+              com.ibm.ws.jsonp.1.1_fat
+              com.ibm.ws.jsonp_fat
+          - category: TRANSACTION_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.jta_fat
+              com.ibm.ws.transaction.HADB_fat
+              com.ibm.ws.transaction.cloud_fat
+              com.ibm.ws.transaction.cloud_fat.1
+              com.ibm.ws.transaction.cloud_fat.2
+              com.ibm.ws.transaction.cloud_fat.3
+              com.ibm.ws.transaction.cloud_fat.4
+              com.ibm.ws.transaction.cloud_fat.5
+              com.ibm.ws.transaction.cloud_fat.6
+              com.ibm.ws.transaction.cloud_fat.7
+          - category: TRANSACTION_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.transaction.cloudsim_fat
+              com.ibm.ws.transaction.core_fat
+              com.ibm.ws.transaction.core_fat.1
+              com.ibm.ws.transaction.core_fat.2
+              com.ibm.ws.transaction.core_fat.3
+              com.ibm.ws.transaction.core_fat.4
+              com.ibm.ws.transaction.core_fat.5
+              com.ibm.ws.transaction.core_fat.6
+              com.ibm.ws.transaction.core_fat.7
+              com.ibm.ws.transaction.core_fat.8
+              com.ibm.ws.transaction.core_fat.9
+          - category: TRANSACTION_3
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.transaction.db_fat
+              com.ibm.ws.transaction.recovery_fat
+              com.ibm.ws.transaction.recovery_fat.1
+              com.ibm.ws.transaction.recovery_fat.2
+              com.ibm.ws.transaction.recovery_fat.3
+              com.ibm.ws.tx.jta_fat
+              com.ibm.ws.tx.jta_fat_hibernate
+          - category: MESSAGING
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.messaging.open_clientcontainer_fat
+              com.ibm.ws.messaging.open_comms_fat
+              com.ibm.ws.messaging.open_fat
+              com.ibm.ws.messaging.open_jms20_fat
+          - category: MP_MISC
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.1.0_fat
+              com.ibm.ws.microprofile.1.2_fat
+              io.openliberty.microprofile.lra.1.0.internal_fat_tck
+          - category: MP_CONFIG
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.config.1.1_fat
+              com.ibm.ws.microprofile.config.1.1_fat_tck
+              com.ibm.ws.microprofile.config.1.2_fat
+              com.ibm.ws.microprofile.config.1.2_fat_tck
+              com.ibm.ws.microprofile.config.1.3_fat
+              com.ibm.ws.microprofile.config.1.3_fat_tck
+              com.ibm.ws.microprofile.config.1.4_fat
+              com.ibm.ws.microprofile.config.1.4_fat_tck
+              com.ibm.ws.microprofile.config_git_fat_tck
+              io.openliberty.microprofile.config.2.0.internal_fat
+              io.openliberty.microprofile.config.2.0.internal_fat_tck
+          - category: MP_FAULT_TOLERANCE
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.faulttolerance.1.1_fat_tck
+              com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck
+              com.ibm.ws.microprofile.faulttolerance.2.1_fat_tck
+              com.ibm.ws.microprofile.faulttolerance.3.0_fat_tck
+              com.ibm.ws.microprofile.faulttolerance.cdi_fat
+              com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics
+              com.ibm.ws.microprofile.faulttolerance_fat_tck
+              com.ibm.ws.microprofile.faulttolerance_git_fat_tck
+              io.openliberty.microprofile.faulttolerance.3.0.internal_fat_tck
+          - category: MP_GRAPHQL
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.graphql.1.0_fat
+              com.ibm.ws.microprofile.graphql_fat_tck
+          - category: MP_HEALTH
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.health.1.0_fat_tck
+              com.ibm.ws.microprofile.health.2.0_fat
+              com.ibm.ws.microprofile.health.2.0_fat_tck
+              com.ibm.ws.microprofile.health.2.1_fat_tck
+              com.ibm.ws.microprofile.health.2.2_fat_tck
+              com.ibm.ws.microprofile.health_fat
+              io.openliberty.microprofile.health.3.0.internal_fat
+              io.openliberty.microprofile.health.3.0.internal_fat_tck
+          - category: MP_METRICS_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.metrics.1.1.noAuth_fat_tck
+              com.ibm.ws.microprofile.metrics.1.1_fat_tck
+              com.ibm.ws.microprofile.metrics.2.0_fat_tck
+              com.ibm.ws.microprofile.metrics.2.2_fat_tck
+              com.ibm.ws.microprofile.metrics.2.3_fat_tck
+          - category: MP_METRICS_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.metrics.2.x.monitor_fat
+              com.ibm.ws.microprofile.metrics.3.0_fat_tck
+              com.ibm.ws.microprofile.metrics.3.x.monitor_fat
+              com.ibm.ws.microprofile.metrics.monitor_fat
+              com.ibm.ws.microprofile.metrics_fat
+              com.ibm.ws.microprofile.metrics_fat_tck
+              com.ibm.ws.microprofile.mpjwt.1.1_fat_tck
+              io.openliberty.microprofile.metrics.internal.3.0_fat_tck
+              io.openliberty.microprofile.metrics.internal.3.x.monitor_fat
+          - category: MP_OPENAPI
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.openapi.1.1_fat_tck
+              com.ibm.ws.microprofile.openapi_fat
+              com.ibm.ws.microprofile.openapi_fat_tck
+              com.ibm.ws.microprofile.opentracing.1.1_fat_tck
+              com.ibm.ws.microprofile.opentracing.1.2_fat_tck
+              com.ibm.ws.microprofile.opentracing.1.3_fat_tck
+              com.ibm.ws.microprofile.opentracing.jaeger_fat
+              com.ibm.ws.microprofile.opentracing_fat_tck
+              io.openliberty.microprofile.openapi.2.0.internal_fat
+              io.openliberty.microprofile.openapi.2.0.internal_fat_tck
+          - category: OPENTRACING
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.opentracing.1.x_fat
+              com.ibm.ws.opentracing_fat
+              io.openliberty.microprofile.opentracing.2.0.internal.jaeger_fat
+              io.openliberty.microprofile.opentracing.2.0.internal_fat_tck
+              io.openliberty.opentracing.2.x_fat
+          - category: MP_REACTIVE
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.reactive.messaging_fat
+              com.ibm.ws.microprofile.reactive.messaging_fat_tck
+              com.ibm.ws.microprofile.reactive.messaging_git_fat_tck
+              com.ibm.ws.microprofile.reactive.streams.operators_fat
+              com.ibm.ws.microprofile.reactive.streams.operators_fat_tck
+          - category: MP_REST_CLIENT
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.microprofile.rest.client.FT_fat
+              com.ibm.ws.microprofile.rest.client11_fat_tck
+              com.ibm.ws.microprofile.rest.client12_fat_tck
+              com.ibm.ws.microprofile.rest.client13_fat_tck
+              com.ibm.ws.microprofile.rest.client14_fat_tck
+              com.ibm.ws.microprofile.rest.client_fat
+              com.ibm.ws.microprofile.rest.client_fat_tck
+          - category: MP_JWT
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.security.jwt_fat.builder
+              com.ibm.ws.security.jwt_fat.consumer
+              com.ibm.ws.security.jwtsso_fat
+              com.ibm.ws.security.mp.jwt.1.1_fat
+              com.ibm.ws.security.mp.jwt_fat
+              com.ibm.ws.security.mp.jwt_fat_tck
+              io.openliberty.microprofile.jwt.1.2.internal_fat_tck
+          - category: SECURITY_1
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.security.acme_fat
+              com.ibm.ws.security.audit_fat.common.tooling
+              com.ibm.ws.security.jaspic_fat
+              com.ibm.ws.security.javaeesec_fat
+              com.ibm.ws.security.javaeesec_fat.2
+              com.ibm.ws.security.javaeesec_fat.3
+          - category: SECURITY_2
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.security.registry.basic_fat
+              com.ibm.ws.security.social_fat
+              com.ibm.ws.security.social_fat.oidcCertification
+              com.ibm.ws.security.wim.adapter.file_fat
+              com.ibm.ws.security.wim.adapter.ldap_fat
+              com.ibm.ws.security.wim.core_fat
+              com.ibm.ws.security.wim.registry_fat
+              com.ibm.ws.security.wim.scim.2.0_fat
+              com.ibm.ws.ssl_fat_keystoreGen
+              com.ibm.ws.ssl_fat_pkcs12
+          - category: WSAT
+            timeout: 90
+            fat-buckets: >
+              com.ibm.ws.wsat.common_fat
+              com.ibm.ws.wsat.concurrent_fat
+              com.ibm.ws.wsat.migration_fat
+              com.ibm.ws.wsat.migration_fat.1
+              com.ibm.ws.wsat.migration_fat.2
+              com.ibm.ws.wsat.migration_fat.3
+              com.ibm.ws.wsat.migration_fat.4
+              com.ibm.ws.wsat.migration_fat.5
+              com.ibm.ws.wsat.recovery_fat
+              com.ibm.ws.wsat.recovery_fat.1
+              com.ibm.ws.wsat.recovery_fat.2
+              com.ibm.ws.wsat.recovery_fat.3
+              com.ibm.ws.wsat_fat
+              com.ibm.ws.wsat_fat.1
+              com.ibm.ws.wsat_fat.2
+              com.ibm.ws.wsat_fat.3
+              com.ibm.ws.wsat_fat.4
+              com.ibm.ws.wsat_fat.5
+              com.ibm.ws.wsat_fat.6
+              com.ibm.ws.wsat_fat.7
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
