@@ -20,6 +20,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -89,16 +90,28 @@ public class PersistentExecutorTest extends FATServletClient {
         }
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testCancelRunningTask() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testRemoveRunningTaskAutoPurge() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testRemoveRunningTask() throws Exception {
         runTest(server, APP_NAME, testName);

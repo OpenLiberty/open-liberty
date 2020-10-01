@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -128,66 +129,118 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         }
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterCancelByIdFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterCancelByIdFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterCancelByNameFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterCancelByNameFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterFindByIdFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterFindByIdFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterFindByNameFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterFindByNameFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterRemoveByIdFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterRemoveByIdFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterRemoveByNameFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterRemoveByNameFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockAfterScheduleFE() throws Exception {
         runTest(server, APP_NAME, "testBlockAfterScheduleFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockRunningTaskFE() throws Exception {
         runTest(server, APP_NAME, "testBlockRunningTaskFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockRunningTaskThatCancelsSelfFE() throws Exception {
         runTest(server, APP_NAME, "testBlockRunningTaskThatCancelsSelfFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testBlockRunningTaskThatRemovesSelfFE() throws Exception {
         runTest(server, APP_NAME, "testBlockRunningTaskThatRemovesSelfFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testCancelRunningTaskFE() throws Exception {
         runTest(server, APP_NAME, "testCancelRunningTaskFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testRemoveRunningTaskAutoPurgeFE() throws Exception {
         runTest(server, APP_NAME, "testRemoveRunningTaskAutoPurgeFE");
     }
 
+    @AllowedFFDC({
+        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+        })
     @Test
     public void testRemoveRunningTaskFE() throws Exception {
         runTest(server, APP_NAME, "testRemoveRunningTaskFE");
