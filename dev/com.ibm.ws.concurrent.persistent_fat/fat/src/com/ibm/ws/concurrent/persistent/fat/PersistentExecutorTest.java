@@ -33,6 +33,10 @@ import componenttest.topology.utils.FATServletClient;
 
 import web.SchedulerFATServlet;
 
+@AllowedFFDC({
+    "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+    "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+    })
 @RunWith(FATRunner.class)
 public class PersistentExecutorTest extends FATServletClient {
 
@@ -90,28 +94,16 @@ public class PersistentExecutorTest extends FATServletClient {
         }
     }
 
-    @AllowedFFDC({
-        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
-        })
     @Test
     public void testCancelRunningTask() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
-    @AllowedFFDC({
-        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
-        })
     @Test
     public void testRemoveRunningTaskAutoPurge() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
-    @AllowedFFDC({
-        "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-        "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
-        })
     @Test
     public void testRemoveRunningTask() throws Exception {
         runTest(server, APP_NAME, testName);
