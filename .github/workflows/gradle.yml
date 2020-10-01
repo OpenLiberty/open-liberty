@@ -1,50 +1,79 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-name: Java CI with Gradle
+name: OpenLiberty CI
 
 on:
   push:
     branches: 
-    - master
     - gh-actions
   pull_request:
     branches: 
-    - master
-    - gh-actions
+    - integration
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '.gitignore'
+      - '.dockerignore'
+      - '*.md'
+      - '*.adoc'
+      - '*.txt'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.dependabot/**'
+      - 'cla/**'
+      - 'images/**'
+      - 'logos/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
+    - name: Set up Java
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 11
     - name: Build with Gradle
-      #if: "false" # TEMP
       run: |
         cd dev
         chmod +x gradlew
         ./gradlew cnf:initialize assemble
     - name: Upload liberty image
-      #if: "false" # TEMP
       uses: actions/upload-artifact@v2
       with:
         name: liberty-image
         if-no-files-found: error
         path: |
           dev/build.image/wlp/
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Run unit tests
+      run: |
+        cd dev
+        chmod +x gradlew
+        ./gradlew cnf:initialize test testResults
+    - name: Upload unit test logs
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: Unit test logs
+        path: dev/cnf/generated/testReports/allUnitTests
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
-    needs: build ## TEMP
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: ${{matrix.timeout}}
     strategy:
       fail-fast: false
       max-parallel: 18
       matrix:
-        category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT_1, CONCURRENT_2, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, LOGGING, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT, OPENTRACING, SECURITY_1, SECURITY_2, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER, WSAT]
+        category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT_1, CONCURRENT_2, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS_1, JAXRS_2, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, LOGGING, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT, OPENTRACING, SECURITY_1, SECURITY_2, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER, WSAT]
         include:
           - category: GENERAL
             timeout: 90
@@ -230,7 +259,7 @@ jobs:
               com.ibm.ws.repository_fat
               com.ibm.ws.repository_fat_shared
               wlp.lib.extract_fat
-          - category: JAXRS
+          - category: JAXRS_1
             timeout: 90
             fat-buckets: >
               com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
@@ -241,6 +270,9 @@ jobs:
               com.ibm.ws.jaxrs.2.1.sse_fat
               com.ibm.ws.jaxrs.2.1_fat
               com.ibm.ws.jaxrs.2.1_fat_executor
+          - category: JAXRS_2
+            timeout: 90
+            fat-buckets: >
               com.ibm.ws.jaxrs.2.1_fat_extended
               com.ibm.ws.jaxrs.2.x.webcontainer_fat
               com.ibm.ws.jaxrs.2.x_fat_clientProps
@@ -510,12 +542,11 @@ jobs:
               com.ibm.ws.wsat_fat.7
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
+    - name: Set up Java
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 11
     - name: Download liberty image
-      #if: "false" ## TEMP
       uses: actions/download-artifact@v2
       with:
         name: liberty-image
@@ -535,7 +566,7 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           if [[ ! -d "$FAT_BUCKET" ]]; then
-            echo "ERROR: Bucket $FAT_BUCKET does not exist.";
+            echo "::error::Bucket $FAT_BUCKET does not exist.";
             exit 1;
           fi
         done
@@ -545,7 +576,14 @@ jobs:
         for FAT_BUCKET in $FAT_BUCKETS
         do
           echo "### BEGIN running FAT bucket $FAT_BUCKET"
-          ./gradlew :$FAT_BUCKET:buildandrun || FAILURE=true
+          BUCKET_PASSED=true
+          ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_PASSED=false
+          if [[ ! $BUCKET_PASSED ]]; then
+            echo "::error::The bucket $FAT_BUCKET failed.";
+            mkdir -p "$FAT_BUCKET/build/libs/autoFVT/output"
+            touch "$FAT_BUCKET/build/libs/autoFVT/output/fail.log"
+            FAILURE=true
+          fi
           echo "### END running FAT bucket $FAT_BUCKET"
         done
         
@@ -565,7 +603,7 @@ jobs:
         done
         
         if $FAILURE; then
-          echo "At least one bucket failed.";
+          echo "::error::At least one bucket failed.";
           exit 1;
         fi
     - name: Upload FAT logs
