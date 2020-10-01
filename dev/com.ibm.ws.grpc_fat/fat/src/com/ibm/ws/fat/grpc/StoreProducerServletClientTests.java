@@ -28,6 +28,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -139,33 +141,39 @@ public class StoreProducerServletClientTests extends FATServletClient {
         this.createDeleteMultiApp();
     }
 
-    // @Test
+    @Mode(TestMode.FULL)
+    @Test
     public void testClientStreaming_SC() throws Exception {
         this.clientStreaming();
     }
 
-    // @Test
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testClientStreamingMetrics_SC() throws Exception {
         this.clientStreamingMetrics();
     }
 
-    // @Test
+    @Mode(TestMode.FULL)
+    @Test
     public void testServerStreaming_SC() throws Exception {
         this.serverStreaming();
     }
 
-    // @Test
+    @Mode(TestMode.FULL)
+    @Test
     public void testServerStreamingMetrics_SC() throws Exception {
         this.serverStreamingMetrics();
     }
 
-    // @Test
+    @Mode(TestMode.FULL)
+    @Test
     public void testTwoWayStreaming_SC() throws Exception {
         this.twoWayStreaming();
 
     }
 
-    // @Test
+    @Mode(TestMode.FULL)
+    @Test
     public void testTwoWayStreamingAsyncThread_SC() throws Exception {
         this.twoWayStreamingAsyncThread();
     }
