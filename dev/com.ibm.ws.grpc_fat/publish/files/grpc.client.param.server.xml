@@ -23,7 +23,6 @@
     <grpcClient host="*" 
                 authntoken="oauth" 
                 maxInboundMessageSize="32000" 
-                enableKeepAlive="true" 
                 keepAliveTime="120" 
                 keepAliveTimeout="360" 
                 clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" />
