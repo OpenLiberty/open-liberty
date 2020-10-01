@@ -13,14 +13,19 @@ package com.ibm.ws.simple;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -47,6 +52,7 @@ public class FeaturesStartTest {
 
     private static final Class<?> c = FeaturesStartTest.class;
 
+    static final Map<String, Integer> featureJavaLevels = new TreeMap<>();
     static final List<String> features = new ArrayList<>();
     static final Map<String, Set<String>> acceptableErrors = new HashMap<>();
 
@@ -66,6 +72,15 @@ public class FeaturesStartTest {
         Log.info(c, "setup", "The java level being used by the server is: " + JAVA_LEVEL);
 
         initAcceptableErrors();
+
+        Properties featureProps = new Properties();
+        InputStream input = new FileInputStream("lib/LibertyFATTestFiles/feature-java-levels.properties");
+        featureProps.load(input);
+        for (Entry<Object, Object> featureProp : featureProps.entrySet()) {
+            String feature = ((String) featureProp.getKey()).toLowerCase();
+            Integer minJavaLevel = Integer.valueOf((String) featureProp.getValue());
+            featureJavaLevels.put(feature, minJavaLevel);
+        }
 
         File featureDir = new File(server.getInstallRoot() + "/lib/features/");
         // If there was a problem building projects before this test runs, "lib/features" won't exist
@@ -185,6 +200,17 @@ public class FeaturesStartTest {
     }
 
     private boolean skipFeature(String feature) throws Exception {
+
+        // Don't test this feature if environment is using Java level below minimum required
+        // specified in properties file. Not every feature has a mapping in that file.
+        if (featureJavaLevels.containsKey(feature)) {
+            Integer javaLevel = featureJavaLevels.get(feature);
+            if (JAVA_LEVEL < javaLevel) {
+                Log.info(c, testName.getMethodName(), "Skipping " + feature + " since it needs a minimum Java level of " + javaLevel.toString());
+                return true;
+            }
+        }
+
         // This feature is grandfathered in on not starting cleanly on its own. Fixing it could potentially break existing configurations
         if (feature.equalsIgnoreCase("wsSecurity-1.1"))
             return true;
