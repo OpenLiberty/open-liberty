@@ -84,7 +84,7 @@ public class ComponentIDTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
     }
 
