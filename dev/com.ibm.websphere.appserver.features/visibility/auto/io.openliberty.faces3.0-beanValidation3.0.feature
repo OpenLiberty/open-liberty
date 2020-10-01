@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.faces.beanValidation-2.3
+symbolicName=io.openliberty.faces3.0-beanValidation3.0
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.faces-3.0))", \
