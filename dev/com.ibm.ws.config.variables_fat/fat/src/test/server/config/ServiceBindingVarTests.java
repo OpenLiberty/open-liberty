@@ -38,7 +38,7 @@ public class ServiceBindingVarTests extends ServletRunner {
 
     @Override
     protected String getContextRoot() {
-        return "varmergedconfig";
+        return "varmerge";
     }
 
     @Override
@@ -58,7 +58,6 @@ public class ServiceBindingVarTests extends ServletRunner {
         //copy the bundle into the server lib location
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.config.variables.jar");
 
-        server.copyFileToLibertyServerRoot("platform", "varfiles/bindings");
         server.copyFileToLibertyServerRoot("varfiles/bindings");
 
         WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
@@ -73,6 +72,11 @@ public class ServiceBindingVarTests extends ServletRunner {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         server.stopServer("CWWKG0106E");
+
+        server.deleteFileFromLibertyInstallRoot("lib/test.config.variables.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("lib/delayedVariable-1.0.mf");
+
     }
 
     @Test

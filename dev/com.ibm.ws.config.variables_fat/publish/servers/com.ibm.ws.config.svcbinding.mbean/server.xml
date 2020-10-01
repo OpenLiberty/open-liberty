@@ -22,7 +22,7 @@
 		 <feature>restConnector-2.0</feature>
 	</featureManager>
 	
-		<application id="varmergedconfig" name="varmergedconfig"
+		<application id="varmergedconfig" name="varmerge"
 		type="war" location="varmerge.war" />
 	
 	<variable name="conflicts/var1" value="fromXML"/>
