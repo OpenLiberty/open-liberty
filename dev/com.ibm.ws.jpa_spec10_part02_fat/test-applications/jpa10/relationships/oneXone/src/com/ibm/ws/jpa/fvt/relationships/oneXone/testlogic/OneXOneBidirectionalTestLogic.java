@@ -53,7 +53,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 9 POINTS
      */
     public void testOneXOneUni001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni001(): Missing context and/or resources.  Cannot execute the test.");
@@ -198,11 +198,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni001(): End");
         }
@@ -224,7 +219,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * field used is marked with a column-name override in the JoinColumn annotation.
      */
     public void testOneXOneUni002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni002(): Missing context and/or resources.  Cannot execute the test.");
@@ -369,11 +364,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni002(): End");
         }
@@ -406,7 +396,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 3 POINTS
      */
     public void testOneXOneUni003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni003(): Missing context and/or resources.  Cannot execute the test.");
@@ -571,11 +561,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni003(): End");
         }
@@ -610,7 +595,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 9 POINTS
      */
     public void testOneXOneUni004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni004(): Missing context and/or resources.  Cannot execute the test.");
@@ -767,11 +752,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni004(): End");
         }
@@ -882,7 +862,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 29 POINTS
      */
     public void testOneXOneUni005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni005(): Missing context and/or resources.  Cannot execute the test.");
@@ -1478,11 +1458,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni005(): End");
         }
@@ -1553,7 +1528,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 32 POINTS
      */
     public void testOneXOneUni006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni006(): Missing context and/or resources.  Cannot execute the test.");
@@ -2078,11 +2053,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni006(): End");
         }
@@ -2113,7 +2083,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 6 POINTS
      */
     public void testOneXOneUni007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni007(): Missing context and/or resources.  Cannot execute the test.");
@@ -2254,11 +2224,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni007(): End");
         }
@@ -2283,7 +2248,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 4 POINTS
      */
     public void testOneXOneUni008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni008(): Missing context and/or resources.  Cannot execute the test.");
@@ -2442,11 +2407,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni008(): End");
         }
@@ -2474,7 +2434,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 12 POINTS
      */
     public void testOneXOneUni009(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni009(): Missing context and/or resources.  Cannot execute the test.");
@@ -2655,11 +2615,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni009(): End");
         }
@@ -2687,7 +2642,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 10 POINTS
      */
     public void testOneXOneUni010(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni010(): Missing context and/or resources.  Cannot execute the test.");
@@ -2857,11 +2812,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni010(): End");
         }
@@ -2880,7 +2830,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testCardinality001(): Missing context and/or resources.  Cannot execute the test.");
@@ -3000,11 +2950,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): End");
         }
@@ -3043,7 +2988,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 8 POINTS
      */
     public void testOneXOneBi001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi001(): Missing context and/or resources.  Cannot execute the test.");
@@ -3172,11 +3117,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi001(): End");
         }
@@ -3262,7 +3202,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testOneXOneBi002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi002(): Missing context and/or resources.  Cannot execute the test.");
@@ -3746,11 +3686,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi002(): End");
         }
@@ -3824,7 +3759,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testOneXOneBi003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         // Fetch JPA Resources
         JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
@@ -4329,11 +4264,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi003(): End");
         }
@@ -4363,7 +4293,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * the EntityA in BiEntityB_CP is an entity that is not managed and does not exist on the database.
      */
     public void testOneXOneBi004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi004(): Missing context and/or resources.  Cannot execute the test.");
@@ -4482,11 +4412,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi004(): End");
         }
@@ -4514,7 +4439,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testOneXOneBi005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi005(): Missing context and/or resources.  Cannot execute the test.");
@@ -4673,11 +4598,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi005(): End");
         }
@@ -4714,7 +4634,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testOneXOneBi006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi006(): Missing context and/or resources.  Cannot execute the test.");
@@ -4891,11 +4811,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi006(): End");
         }
@@ -4927,7 +4842,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testOneXOneBi007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi007(): Missing context and/or resources.  Cannot execute the test.");
@@ -5092,11 +5007,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi007(): End");
         }
@@ -5116,7 +5026,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "unchecked" })
     public void testBiCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                     Object managedComponentObject) {
+                                     Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testCardinality001(): Missing context and/or resources.  Cannot execute the test.");
@@ -5237,11 +5147,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): End");
         }
@@ -5273,7 +5178,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 5 POINTS
      */
     public void testOneXOneBi008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneBi008(): Missing context and/or resources.  Cannot execute the test.");
@@ -5384,11 +5289,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 //            jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneBi008(): End");
         }

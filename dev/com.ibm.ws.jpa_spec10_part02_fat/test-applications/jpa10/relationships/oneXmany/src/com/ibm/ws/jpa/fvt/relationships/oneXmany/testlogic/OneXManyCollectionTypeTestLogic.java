@@ -50,7 +50,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testCollectionType(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testCollectionType(): Missing context and/or resources.  Cannot execute the test.");
@@ -245,11 +245,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testCollectionType(): End");
         }
@@ -273,7 +268,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testSetType(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testSetType(): Missing context and/or resources.  Cannot execute the test.");
@@ -467,11 +462,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testSetType(): End");
         }
@@ -495,7 +485,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testListType(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testListType(): Missing context and/or resources.  Cannot execute the test.");
@@ -689,11 +679,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testListType(): End");
         }
@@ -720,7 +705,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testOrderedListType(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testOrderedListType(): Missing context and/or resources.  Cannot execute the test.");
@@ -925,11 +910,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testOrderedListType(): End");
         }
@@ -953,7 +933,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testMapType(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testMapType(): Missing context and/or resources.  Cannot execute the test.");
@@ -1149,11 +1129,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testMapType(): End");
         }
@@ -1177,7 +1152,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testMapWithKeyType(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testMapWithKeyType(): Missing context and/or resources.  Cannot execute the test.");
@@ -1372,11 +1347,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testMapWithKeyType(): End");
         }
@@ -1385,7 +1355,7 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXManyCollectionTypeTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
@@ -1427,11 +1397,6 @@ public class OneXManyCollectionTypeTestLogic extends AbstractTestLogic {
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXManyCollectionTypeTestLogic.testTemplate(): End");
         }

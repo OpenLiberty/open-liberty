@@ -41,5 +41,13 @@
       <name>http://localhost:*/DatabaseManagement/DMS</name>
       <actions>GET</actions>
    </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>newMBeanServer</name>
+   </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>createMBeanServer</name>
+   </permission>
 
 </permissions>
