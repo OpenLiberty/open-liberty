@@ -565,7 +565,7 @@ jobs:
           fi
           echo "### END running FAT bucket $FAT_BUCKET"
         done
-        echo "Done running all FAT buckets.
+        echo "Done running all FAT buckets."
     - name: Check for FAT failures
       shell: bash
       if: always()
