@@ -535,73 +535,14 @@ jobs:
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
-      run: |
-        set +e
-        cd dev
-        chmod +x gradlew
-        chmod 777 build.image/wlp/bin/*
-        echo "org.gradle.daemon=false" >> gradle.properties
-        
-        echo "Will be running buckets $FAT_BUCKETS"
-        for FAT_BUCKET in $FAT_BUCKETS
-        do
-          if [[ ! -d "$FAT_BUCKET" ]]; then
-            echo "::error::Bucket $FAT_BUCKET does not exist.";
-            exit 1;
-          fi
-        done
-          
-        ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
-        for FAT_BUCKET in $FAT_BUCKETS
-        do
-          echo "### BEGIN running FAT bucket $FAT_BUCKET"
-          BUCKET_PASSED=true
-          ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_PASSED=false
-          OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
-          mkdir -p $OUTPUT_DIR
-          if $BUCKET_PASSED; then
-            echo "The bucket $FAT_BUCKET passed.";
-            touch "$OUTPUT_DIR/passed.log";
-          else
-            echo "::error::The bucket $FAT_BUCKET failed.";
-            touch "$OUTPUT_DIR/fail.log";
-          fi
-          echo "### END running FAT bucket $FAT_BUCKET";
-        done
-        echo "Done running all FAT buckets."
+      run: .github/workflow-scripts/run-fat-build.sh
     - name: Check for FAT failures
       shell: bash
       if: always()
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
-      run: |
-        set +e
-        echo "Done running all FAT buckets. Checking for failures now."
-        cd dev
-        mkdir failing_buckets
-        FAILURE=false
-        echo "### Bucket results";
-        for FAT_BUCKET in $FAT_BUCKETS
-        do
-          if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
-            echo "  [!FAILED!] $FAT_BUCKET";
-            FAILURE=true
-            if [[ -d $FAT_BUCKET/build/libs/autoFVT ]]; then
-              pushd $FAT_BUCKET/build/libs/autoFVT &> /dev/null
-              zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
-              popd &> /dev/null
-            fi
-          else
-            echo "  [ PASSED ] $FAT_BUCKET";
-          fi
-        done
-        
-        set -e
-        if $FAILURE; then
-          echo "At least one bucket failed.";
-          exit 1;
-        fi
+      run: .github/workflow-scripts/check-fat-failures.sh
     - name: Upload FAT logs
       if: failure()
       uses: actions/upload-artifact@v2
