@@ -580,6 +580,7 @@ jobs:
       run: |
         set +e
         echo "Done running all FAT buckets. Checking for failures now."
+        cd dev
         mkdir failing_buckets
         FAILURE=false
         echo "### Bucket results";
