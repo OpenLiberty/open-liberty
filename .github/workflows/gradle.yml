@@ -74,8 +74,6 @@ jobs:
       fail-fast: false
       max-parallel: 18
       matrix:
-        #category: [APPCLIENT, CDI_1, CDI_2, CONCURRENT_1, CONCURRENT_2, CONCURRENT_3, EJB_1, EJB_2, GENERAL, INSTALL, JAVAEE, JAXRS_1, JAXRS_2, JAXRS_3, JAXWS, JCA, JDBC, JPA_1, JPA_2, JSF_JSP, JSON, KERNEL_1, KERNEL_2, KERNEL_3, LOGGING_1, LOGGING_2, MESSAGING, MISC, MP_CONFIG, MP_FAULT_TOLERANCE, MP_GRAPHQL, MP_HEALTH, MP_JWT_1, MP_JWT_2, MP_METRICS_1, MP_METRICS_2, MP_MISC, MP_OPENAPI, MP_REACTIVE, MP_REST_CLIENT_1, MP_REST_CLIENT_2, OPENTRACING, SECURITY_1, SECURITY_2, SECURITY_3, SECURITY_4, SESSIONS, TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, WEBCONTAINER_1, WEBCONTAINER_2, WSAT_1, WSAT_2]
-        category: [GENERAL]
         include:
           - category: GENERAL
             fat-buckets: >
@@ -586,7 +584,6 @@ jobs:
         echo "### Bucket results";
         for FAT_BUCKET in $FAT_BUCKETS
         do
-          echo "Check if $FAT_BUCKET/build/libs/autoFVT/output/passed.log exists";
           if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
             echo "  [!FAILED!] $FAT_BUCKET";
             FAILURE=true
