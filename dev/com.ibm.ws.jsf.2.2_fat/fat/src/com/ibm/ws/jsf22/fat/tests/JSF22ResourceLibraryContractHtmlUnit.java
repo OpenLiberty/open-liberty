@@ -190,11 +190,9 @@ public class JSF22ResourceLibraryContractHtmlUnit {
 
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, "TestResourceContracts", "faces/developers/index1.xhtml");
-            HtmlPage page = null;
 
             try {
-                page = (HtmlPage) webClient.getPage(url);
-
+                webClient.getPage(url);
             } catch (FailingHttpStatusCodeException fsc) {
                 Log.info(c, name.getMethodName(), "Test5_Contract_viaURL_UnavailableContract :: , statusCode -->" + fsc.getStatusCode());
                 assertTrue(fsc.getStatusCode() == 500);
@@ -303,11 +301,9 @@ public class JSF22ResourceLibraryContractHtmlUnit {
     public void Test13_MyContract_viaURL_UnavailableContract() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, "TestResourceContractsDirectory", "faces/developers/index1.xhtml");
-            HtmlPage Page;
 
             try {
-                HtmlPage page = (HtmlPage) webClient.getPage(url);
-
+                webClient.getPage(url);
             } catch (FailingHttpStatusCodeException fsc) {
                 Log.info(c, name.getMethodName(), "Test13_MyContract_viaURL_UnavailableContract :: , statusCode -->" + fsc.getStatusCode());
                 assertTrue(fsc.getStatusCode() == 500);

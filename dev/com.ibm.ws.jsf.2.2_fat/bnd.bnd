@@ -62,7 +62,18 @@ src: \
     test-applications/FunctionMapper.war/src
 
 fat.project: true
-tested.features: servlet-4.0, jsf-2.3, cdi-2.0, beanValidation-2.0
+
+tested.features: \
+    servlet-4.0,\
+    jsf-2.3,\
+    cdi-2.0,\
+    beanValidation-2.0,\
+    el-4.0,\
+    servlet-5.0,\
+    faces-3.0,\
+    jsp-3.0,\
+    cdi-3.0,\
+    beanvalidation-3.0
 
 
 -buildpath: \

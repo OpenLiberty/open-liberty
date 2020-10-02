@@ -10,6 +10,8 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +33,7 @@ import com.ibm.ws.jsf22.fat.JSFUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /*
@@ -94,7 +97,7 @@ public class JSFServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testLibertyWebConfigProviderFactory() throws Exception {
         String msgToSearchFor = "getWebConfigProvider Entry";
 
@@ -113,12 +116,12 @@ public class JSFServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testLibertyWebConfigProvider() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "");
             // Ensure the isErrorPagePresent message is logged in the trace during the RESTORE_VIEW phase.
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.getPage(url);
 
             String msgToSearchFor = "isErrorPagePresent ENTRY";
 
@@ -211,15 +214,27 @@ public class JSFServerTest {
     @Test
     public void testBeanValidation11Disabled() throws Exception {
         String msgToSearchFor = "MyFaces Bean Validation support disabled";
+        String msgToSearchForMyFaces30 = "MyFaces Core Bean Validation support disabled";
 
-        Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchFor);
-        // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
-        String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchFor);
+        if (JakartaEE9Action.isActive()) {
+            Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchForMyFaces30);
+            // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
+            String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchForMyFaces30);
 
-        Log.info(c, name.getMethodName(), "Message found after searching logs : " + isBeanValidationDisabled);
+            Log.info(c, name.getMethodName(), "Message found after searching logs : " + isBeanValidationDisabled);
 
-        // There should be a match so fail if there is not.
-        assertNotNull("The following message was not found in the trace log: " + msgToSearchFor, isBeanValidationDisabled);
+            // There should be a match so fail if there is not.
+            assertNotNull("The following message was not found in the trace log: " + msgToSearchForMyFaces30, isBeanValidationDisabled);
+        } else {
+            Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchFor);
+            // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
+            String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchFor);
+
+            Log.info(c, name.getMethodName(), "Message found after searching logs : " + isBeanValidationDisabled);
+
+            // There should be a match so fail if there is not.
+            assertNotNull("The following message was not found in the trace log: " + msgToSearchFor, isBeanValidationDisabled);
+        }
     }
 
     /**

@@ -21,4 +21,5 @@ dependencies {
       'xml-apis:xml-apis:1.4.01'
     }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
 
