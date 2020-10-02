@@ -1,3 +1,5 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 name: OpenLiberty CI
 
 on:
@@ -20,32 +22,15 @@ on:
       - 'images/**'
       - 'logos/**'
 
-env:
-  LANG: en_US
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
         java-version: 11
-        openjdk_impl: openj9
-    - name: Apply repository caches
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches/modules-2
-          !~/.gradle/caches/modules-2/io.openliberty*
-          !~/.gradle/caches/modules-2/com.ibm.w*
-          ~/.gradle/wrapper
-          ~/.m2/repository/
-          !~/.m2/repository/io/openliberty
-          !~/.m2/repository/com/ibm/w*
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
     - name: Build with Gradle
       run: |
         cd dev
@@ -60,34 +45,20 @@ jobs:
           dev/build.image/wlp/
   unit_tests:
     name: Unit Tests
+    if: "false" # TEMP
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
         java-version: 11
-        openjdk_impl: openj9
-    - name: Apply repository caches
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches/modules-2
-          !~/.gradle/caches/modules-2/io.openliberty*
-          !~/.gradle/caches/modules-2/com.ibm.w*
-          ~/.gradle/wrapper
-          ~/.m2/repository/
-          !~/.m2/repository/io/openliberty
-          !~/.m2/repository/com/ibm/w*
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
     - name: Run unit tests
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew --continue cnf:initialize testClasses testResults
+        ./gradlew --continue cnf:initialize assemble testClasses testResults
     - name: Upload unit test logs
       if: failure()
       uses: actions/upload-artifact@v2
@@ -278,6 +249,7 @@ jobs:
               com.ibm.ws.install.packaging_fat
               com.ibm.ws.os.packaging_fat
               com.ibm.ws.repository_fat
+              com.ibm.ws.repository_fat_shared
               wlp.lib.extract_fat
           - category: JAXRS_1
             fat-buckets: >
@@ -502,6 +474,7 @@ jobs:
           - category: SECURITY_1
             fat-buckets: >
               com.ibm.ws.security.acme_fat
+              com.ibm.ws.security.audit_fat.common.tooling
               com.ibm.ws.security.jaspic_fat
           - category: SECURITY_2
             fat-buckets: >
@@ -509,10 +482,10 @@ jobs:
               com.ibm.ws.security.javaeesec_fat.2
               com.ibm.ws.security.javaeesec_fat.3
           - category: SECURITY_3
-            # TODO: bucket 'com.ibm.ws.security.social_fat.oidcCertification' is disabled currently
             fat-buckets: >
               com.ibm.ws.security.registry.basic_fat
               com.ibm.ws.security.social_fat
+              com.ibm.ws.security.social_fat.oidcCertification
               com.ibm.ws.security.wim.adapter.file_fat
           - category: SECURITY_4
             fat-buckets: >
@@ -546,24 +519,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: joschi/setup-jdk@v2
+      uses: actions/setup-java@v1
       with:
         java-version: 11
-        openjdk_impl: openj9
-    - name: Apply repository caches
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches/modules-2
-          !~/.gradle/caches/modules-2/io.openliberty*
-          !~/.gradle/caches/modules-2/com.ibm.w*
-          ~/.gradle/wrapper
-          ~/.m2/repository/
-          !~/.m2/repository/io/openliberty
-          !~/.m2/repository/com/ibm/w*
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
     - name: Download liberty image
       uses: actions/download-artifact@v2
       with:
@@ -577,7 +535,6 @@ jobs:
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
-        GH_EVENT_NAME: ${{github.event_name}}
       run: .github/workflow-scripts/run-fat-build.sh
     - name: Check for FAT failures
       shell: bash
