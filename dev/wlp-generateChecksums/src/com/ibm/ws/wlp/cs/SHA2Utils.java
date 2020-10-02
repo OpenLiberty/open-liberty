@@ -17,26 +17,24 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MD5Utils {
-
-    protected static char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+public class SHA2Utils {
 
     protected static MessageDigest messagedigest = null;
 
     static {
         try {
-            messagedigest = MessageDigest.getInstance("MD5");
+            messagedigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             //should not happen
         }
     }
 
-    public static String getMD5String(String str) {
+    public static String getFileSHA2String(String str) {
         messagedigest.update(str.getBytes());
         return byteArrayToHexString(messagedigest.digest());
     }
 
-    public static String getFileMD5String(File file) throws IOException {
+    public static String getFileSHA2String(File file) throws IOException {
         InputStream fis = null;
         try {
             fis = new FileInputStream(file);
@@ -60,14 +58,15 @@ public class MD5Utils {
 
     public static String byteArrayToHexString(byte[] byteArray) {
 
-        StringBuffer stringbuffer = new StringBuffer(2 * byteArray.length);
+        StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < byteArray.length; i++) {
-            char upper = hexDigits[(byteArray[i] & 0xf0) >> 4];
-            char lower = hexDigits[byteArray[i] & 0xf];
-            stringbuffer.append(upper);
-            stringbuffer.append(lower);
+            String hex = Integer.toHexString(0xff & byteArray[i]);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
         }
-        return stringbuffer.toString();
+        return hexString.toString();
 
     }
 
