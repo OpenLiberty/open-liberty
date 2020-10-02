@@ -213,12 +213,7 @@ public class OSGiConfigUtils {
         if (FrameworkState.isValid()) {
             ServiceReference<?> appRef = getApplicationServiceRef(bundleContext, applicationName);
             if (appRef != null) {
-                //not actually sure what the difference is between service.pid and ibm.extends.source.pid but this is the way it is done everywhere else!
                 applicationPID = (String) appRef.getProperty(Constants.SERVICE_PID);
-                String sourcePid = (String) appRef.getProperty("ibm.extends.source.pid");
-                if (sourcePid != null) {
-                    applicationPID = sourcePid;
-                }
             }
         }
         return applicationPID;

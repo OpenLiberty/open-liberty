@@ -18,7 +18,8 @@ src: \
 	test-applications/mapEnvVarApp/src,\
 	test-applications/hotAddMPConfigApp/src,\
 	test-applications/variableServerXMLApp/src,\
-	test-applications/duplicateInServerXMLApp/src
+	test-applications/duplicateInServerXMLApp/src,\
+	test-applications/serverXMLWebApp/src
 
 	
 fat.project: true
