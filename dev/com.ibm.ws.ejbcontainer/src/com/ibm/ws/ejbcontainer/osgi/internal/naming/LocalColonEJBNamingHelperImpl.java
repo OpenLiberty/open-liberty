@@ -77,7 +77,7 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
     }
 
     @Override
-    public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName) throws NamingException {
+    public synchronized boolean bind(EJBBinding binding, String name, boolean isSimpleName, boolean isDefaultBinding) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         boolean notAmbiguous = true;
         EJBBinding newBinding = new EJBBinding(binding.homeRecord, binding.interfaceName, binding.interfaceIndex, binding.isLocal);
@@ -95,34 +95,39 @@ public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements
         }
 
         if (previousBinding != null) {
+            if (isDefaultBinding) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "found ambiguous default binding");
+                }
+            } else {
+                OnError onError = ContainerProperties.customBindingsOnErr;
 
-            OnError onError = ContainerProperties.customBindingsOnErr;
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "found ambiguous binding and customBindingsOnErr=" + onError.toString());
+                }
 
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "found ambiguous binding and customBindingsOnErr=" + onError.toString());
-            }
-
-            BeanMetaData bmd = newBinding.homeRecord.getBeanMetaData();
-            BeanMetaData oldbmd = previousBinding.homeRecord.getBeanMetaData();
-            switch (onError) {
-                case WARN:
-                    //NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
-                    Tr.warning(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
-                               new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
-                                              previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
-                    break;
-                case FAIL:
-                    Tr.error(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
-                             new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
-                                            previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
-                    throw new NamingException("The " + newBinding.interfaceName + " interface of the " + bmd.j2eeName.getComponent() + " bean in the "
-                                              + bmd.j2eeName.getModule() + " module of the application cannot be bound to " + name
-                                              + ", a bean is already bound to that location.");
-                case IGNORE:
-                    if (isTraceOn && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "customBindingsOnErr is IGNORE, not binding");
-                    }
-                    return false;
+                BeanMetaData bmd = newBinding.homeRecord.getBeanMetaData();
+                BeanMetaData oldbmd = previousBinding.homeRecord.getBeanMetaData();
+                switch (onError) {
+                    case WARN:
+                        //NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: The {0} interface of the {1} bean in the {2} module of the {3} application cannot be bound to the {4} name location. The {5} interface of the {6} bean in the {7} module of the {8} application is already bound to the {4} name location. The {4} name location is not accessible.
+                        Tr.warning(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                                   new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
+                                                  previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                        break;
+                    case FAIL:
+                        Tr.error(tc, "NAME_ALREADY_BOUND_WARN_CNTR0338W",
+                                 new Object[] { newBinding.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), name,
+                                                previousBinding.interfaceName, oldbmd.j2eeName.getComponent(), oldbmd.j2eeName.getModule(), oldbmd.j2eeName.getApplication() });
+                        throw new NamingException("The " + newBinding.interfaceName + " interface of the " + bmd.j2eeName.getComponent() + " bean in the "
+                                                  + bmd.j2eeName.getModule() + " module of the application cannot be bound to " + name
+                                                  + ", a bean is already bound to that location.");
+                    case IGNORE:
+                        if (isTraceOn && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "customBindingsOnErr is IGNORE, not binding");
+                        }
+                        return false;
+                }
             }
 
             newBinding.setAmbiguousReference();
