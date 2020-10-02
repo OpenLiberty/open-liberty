@@ -536,6 +536,7 @@ jobs:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
       run: |
+        set +e
         cd dev
         chmod +x gradlew
         chmod 777 build.image/wlp/bin/*
@@ -557,11 +558,11 @@ jobs:
           BUCKET_PASSED=true
           ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_PASSED=false
           mkdir -p "$FAT_BUCKET/build/libs/autoFVT/output"
-          if [[ ! "$BUCKET_PASSED" ]]; then
+          if $BUCKET_PASSED; then
+            touch "$FAT_BUCKET/build/libs/autoFVT/output/passed.log"
+          else
             echo "::error::The bucket $FAT_BUCKET failed.";
             touch "$FAT_BUCKET/build/libs/autoFVT/output/fail.log"
-          else
-            touch "$FAT_BUCKET/build/libs/autoFVT/output/passed.log"
           fi
           echo "### END running FAT bucket $FAT_BUCKET"
         done
@@ -573,6 +574,7 @@ jobs:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
       run: |
+        set +e
         echo "Done running all FAT buckets. Checking for failures now."
         mkdir failing_buckets
         FAILURE=false
@@ -582,6 +584,7 @@ jobs:
           if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
             echo "  [!FAILED!] $FAT_BUCKET";
             FAILURE=true
+            mkdir -p "$FAT_BUCKET/build/libs/autoFVT/"
             pushd $FAT_BUCKET/build/libs/autoFVT/ &> /dev/null
             zip -r ../../../../failing_buckets/$FAT_BUCKET.zip output/ results/ &> /dev/null
             popd &> /dev/null
@@ -590,6 +593,7 @@ jobs:
           fi
         done
         
+        set -e
         if $FAILURE; then
           echo "At least one bucket failed.";
           exit 1;
