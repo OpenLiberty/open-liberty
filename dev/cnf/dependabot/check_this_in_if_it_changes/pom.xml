@@ -1839,7 +1839,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.lra</groupId>
       <artifactId>microprofile-lra-api</artifactId>
-      <version>1.0-M1</version>
+      <version>1.0-M2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
