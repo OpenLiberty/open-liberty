@@ -64,7 +64,7 @@ Service-Component: \
     delegationProvider=com.ibm.ws.security.delegation.DelegationProvider; \
     defaultDelegationProvider=com.ibm.ws.security.delegation.DefaultDelegationProvider; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
-    optional:='delegationProvider,credentialsService'; \
+    optional:='delegationProvider,defaultDelegationProvider,credentialsService'; \
     greedy:='delegationProvider,defaultDelegationProvider'; \
     dynamic:='delegationProvider,defaultDelegationProvider'; \
     properties:="service.vendor=IBM", \
