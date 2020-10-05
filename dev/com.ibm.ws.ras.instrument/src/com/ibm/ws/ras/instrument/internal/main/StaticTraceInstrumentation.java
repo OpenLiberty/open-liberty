@@ -151,6 +151,10 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
             case TR:
                 visitor = new WebSphereTrTracingClassAdapter(visitor, classInfo);
                 break;
+            case LIBERTY:
+            	break;
+            case NONE:
+            	break;
         }
 
         if (getInstrumentWithFFDC()) {

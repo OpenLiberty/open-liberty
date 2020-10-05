@@ -17,6 +17,7 @@ import org.apache.tools.ant.types.Commandline;
 import com.ibm.ws.ras.instrument.internal.main.AbstractInstrumentation;
 import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation;
 
+@SuppressWarnings("restriction")
 public class InstrumentForTrace extends AbstractInstrumentationTask {
 
     /**

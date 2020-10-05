@@ -27,6 +27,7 @@ import org.apache.tools.ant.types.FileSet;
 import com.ibm.ws.ras.instrument.internal.bci.InstrumentationException;
 import com.ibm.ws.ras.instrument.internal.main.AbstractInstrumentation;
 
+@SuppressWarnings("restriction")
 public abstract class AbstractInstrumentationTask extends Task {
 
     protected File file = null;
@@ -96,7 +97,7 @@ public abstract class AbstractInstrumentationTask extends Task {
      * @return the ant Commandline that holds the command line arguments
      */
     protected Commandline getCommandline() {
-        Commandline cmdl = new Commandline();
+		Commandline cmdl = new Commandline();
         if (configFile != null) {
             cmdl.createArgument().setValue("--config");
             cmdl.createArgument().setFile(configFile);

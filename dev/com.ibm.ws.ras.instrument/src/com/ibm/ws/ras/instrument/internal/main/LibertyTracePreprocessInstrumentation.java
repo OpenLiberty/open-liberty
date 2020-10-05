@@ -31,19 +31,18 @@ import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
-import com.ibm.ws.ras.instrument.internal.bci.LibertyTracePreprocessClassAdapter;
-import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter;
-import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingMethodAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.CheckInstrumentableClassAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.FFDCClassAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.JSR47TracingClassAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.JSR47TracingMethodAdapter;
+import com.ibm.ws.ras.instrument.internal.bci.LibertyTracePreprocessClassAdapter;
+import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter;
+import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingMethodAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.WebSphereTrTracingClassAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.WebSphereTrTracingMethodAdapter;
 import com.ibm.ws.ras.instrument.internal.introspect.InjectedTraceAnnotationVisitor;
@@ -202,7 +201,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private boolean isClassTrivial(ClassTraceInfo info) {
         AnnotationNode trivialAnnotation = getAnnotation(TRIVIAL_TYPE.getDescriptor(), info.classNode.visibleAnnotations);
         if (trivialAnnotation != null) {
@@ -216,7 +214,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private boolean isInnerClass(ClassTraceInfo info) {
     	
 	if(info.classNode.innerClasses.isEmpty())
@@ -239,7 +236,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processClassTraceOptionsAnnotation(ClassTraceInfo info) {
         // Get class annotation
         AnnotationNode traceOptionsAnnotation = getAnnotation(TRACE_OPTIONS_TYPE.getDescriptor(), info.classNode.visibleAnnotations);
@@ -291,7 +287,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processLibertyTraceComponentDiscovery(ClassTraceInfo info) {
         List<FieldNode> traceComponentFields = getFieldsByDesc(LIBERTY_TRACE_COMPONENT_TYPE.getDescriptor(), info.classNode.fields);
         if (!traceComponentFields.isEmpty()) {
@@ -333,18 +328,12 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
 		return defaultTraceComponentName;
 	}
 
-    private void setDefaultTraceComponentName(String name) {
-    	defaultTraceComponentName = name;
-		
-	}
-
 	/**
      * Introspect the class to obtain the list of fields declared as {@code com.ibm.ejs.ras.TraceComponent}s. Only static declarations
      * are considered.
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processWebsphereTraceComponentDiscovery(ClassTraceInfo info) {
         List<FieldNode> traceComponentFields = getFieldsByDesc(WEBSPHERE_TRACE_COMPONENT_TYPE.getDescriptor(), info.classNode.fields);
         if (!traceComponentFields.isEmpty()) {
@@ -380,7 +369,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processJavaLoggerDiscovery(ClassTraceInfo info) {
         List<FieldNode> loggerFields = getFieldsByDesc(LOGGER_TYPE.getDescriptor(), info.classNode.fields);
         if (!loggerFields.isEmpty()) {
@@ -422,7 +410,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void setupTraceStateObjectField(ClassTraceInfo info) {
         // Skip adding trace object field if it already exists
         AnnotationNode traceObjectAnnotation = getAnnotation(TRACE_OBJECT_FIELD_TYPE.getDescriptor(), info.classNode.visibleAnnotations);
@@ -488,7 +475,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @return true if a non-FFDC RAS method adapter processed the specified method
      */
-    @SuppressWarnings("unchecked")
     private boolean isMethodAlreadyInjectedAnnotationPresent(MethodNode methodNode) {
         AnnotationNode injectedTraceAnnotation = getAnnotation(INJECTED_TRACE_TYPE.getDescriptor(), methodNode.visibleAnnotations);
         AnnotationNode manualTraceAnnotation = getAnnotation(MANUAL_TRACE_TYPE.getDescriptor(), methodNode.visibleAnnotations);
@@ -520,7 +506,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processExistingStaticInitializer(ClassTraceInfo info) {
         List<MethodNode> clinitMethods = getMethods("<clinit>", info.classNode.methods);
         MethodNode staticInitializer = clinitMethods.isEmpty() ? null : clinitMethods.get(0);
@@ -562,7 +547,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processToString(ClassTraceInfo info) {
         for (MethodNode mn : (List<MethodNode>) info.classNode.methods) {
             if (!mn.name.equals("toString") || !mn.desc.equals("()Ljava/lang/String;")) {
@@ -656,7 +640,6 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * 
      * @param info the collected class information
      */
-    @SuppressWarnings("unchecked")
     private void processManuallyTracedMethods(ClassTraceInfo info) {
         for (MethodNode mn : (List<MethodNode>) info.classNode.methods) {
             // Don't re-process methods that have already had trace injected

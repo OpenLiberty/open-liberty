@@ -20,7 +20,6 @@ import org.objectweb.asm.Type;
 
 import com.ibm.ws.ras.instrument.internal.introspect.TraceObjectFieldAnnotationVisitor;
 import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
-import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 
 public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassAdapter {
 

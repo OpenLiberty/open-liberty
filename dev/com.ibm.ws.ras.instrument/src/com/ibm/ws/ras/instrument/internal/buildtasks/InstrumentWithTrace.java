@@ -15,6 +15,7 @@ import org.apache.tools.ant.types.Commandline;
 /**
  * Build task to instrument classes and jars with trace.
  */
+@SuppressWarnings("restriction")
 public class InstrumentWithTrace extends InstrumentWithFFDC {
 
     protected String traceType = null;
