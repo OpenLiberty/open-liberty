@@ -48,7 +48,7 @@
             <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMTest" />         
       
                  
-            <!-- MP JWT 1.2 tests  --> 
+            <!-- MP JWT 1.2 tests  - ECPublicKey tests - Blocked Issue 14092; TokenAsCookieTest - Blocked Issue 13959; EmptyTokenTest - Blocked 14011
             <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsJWKLocationTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMLocationTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMTest" />
@@ -59,6 +59,7 @@
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
+            --> 
        
               
             <!-- MP JWT 1.2 - need to enable when JWE support is delivered 
