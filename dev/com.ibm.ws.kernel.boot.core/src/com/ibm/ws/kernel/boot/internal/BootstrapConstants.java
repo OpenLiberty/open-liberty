@@ -272,4 +272,8 @@ public final class BootstrapConstants {
      * liberty boot mode.
      */
     public static final String LIBERTY_BOOT_PROPERTY = "wlp.liberty.boot";
+
+    public static final String ENV_SERVICE_BINDING_ROOT = "SERVICE_BINDING_ROOT";
+
+    public static final String LOC_PROPERTY_SERVICE_BINDING_ROOT = "wlp.svc.binding.root";
 }
