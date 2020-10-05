@@ -1,6 +1,6 @@
 package com.ibm.ws.sib.msgstore.expiry;
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,13 +23,13 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * Item which contains an expiry time. ExpirableReferences are
  * used to populate the ExpiryIndex.
  */
-public class ExpirableReference extends SoftReference<Expirable>
+public class ExpirableReference extends SoftReference
 {
     private static TraceComponent tc = SibTr.register(ExpirableReference.class,
                                                       MessageStoreConstants.MSG_GROUP,
                                                       MessageStoreConstants.MSG_BUNDLE);
-    private final long expiryTime;
-    private final long objectID;
+    private long expiryTime = 0;
+    private long objectID = 0;
 
     /**
      * Constructor to create the ExpiryReference for the Item. Sets the expiry time to zero.
@@ -40,24 +40,23 @@ public class ExpirableReference extends SoftReference<Expirable>
     {
         super(expirable);
 
-        if (expirable != null) {
+        if (expirable != null)
+        {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", "id="+expirable.expirableGetID());
     
-            expiryTime = expirable.expirableGetExpiryTime();
+            expiryTime = 0;
             objectID   = expirable.expirableGetID();
         }
         else
         {
-           if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", "null");
-           expiryTime = 0;
-           objectID = 0; 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", "null");
         }
 
         if (objectID == AbstractItem.NO_ID)
         {
             // This item is not a member of a stream and therefore the ID is not unique.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
-                throw new SevereMessageStoreException("DUPLICATE_EXPIRABLE_SIMS2000");
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
+            throw new SevereMessageStoreException("DUPLICATE_EXPIRABLE_SIMS2000");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
@@ -79,5 +78,14 @@ public class ExpirableReference extends SoftReference<Expirable>
     public long getID()
     {
         return objectID;
+    }
+
+    /**
+     * Set the expiry time.
+     * @param expiryTime the expiry time in milliseconds.
+     */
+    public void setExpiryTime(long expiryTime)
+    {
+        this.expiryTime = expiryTime;
     }
 }

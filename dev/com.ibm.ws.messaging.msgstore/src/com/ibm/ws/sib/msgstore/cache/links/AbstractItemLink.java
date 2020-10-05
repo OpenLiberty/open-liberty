@@ -2946,7 +2946,7 @@ public abstract class AbstractItemLink extends Link implements Membership, Prior
         {
             // we can only expire if we are available
             long expiryTime = _tuple.getExpiryTime();
-            if (expiryTime != 0 && expiryTime <= System.currentTimeMillis())
+            if (expiryTime != 0 && expiryTime <= Expirer.timeNow())
             {
                 // we are due to expire
                 boolean hasBecomeNonReleasable = false;
@@ -3211,7 +3211,7 @@ public abstract class AbstractItemLink extends Link implements Membership, Prior
             long expiryStartTime = item.getExpiryStartTime();
             if (expiryStartTime == 0)
             {
-                expiryStartTime = System.currentTimeMillis();
+                expiryStartTime = Expirer.timeNow();
             }
             expiryTime = expiryStartTime + expiryDelay;
         }
