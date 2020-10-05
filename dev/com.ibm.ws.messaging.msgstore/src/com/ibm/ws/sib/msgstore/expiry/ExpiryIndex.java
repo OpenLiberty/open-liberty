@@ -1,6 +1,6 @@
 package com.ibm.ws.sib.msgstore.expiry;
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,16 @@ package com.ibm.ws.sib.msgstore.expiry;
  *******************************************************************************/
 
 import java.util.Comparator;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentSkipListSet;
-
 import com.ibm.websphere.ras.TraceComponent;
-
+import com.ibm.ws.sib.msgstore.gbs.GBSTree;
+import com.ibm.ws.sib.msgstore.gbs.GBSTree.Iterator;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 /**
  * Provides an index for ExpirableReferences by wrapping the underlying tree
- * indexing mechanism.
+ * indexing mechanism. The operations are modelled on those of java.util.Treemap
+ * but will be implemented by the use of a Generalised Binary Tree algorithm.
  */
 public class ExpiryIndex
 {
@@ -29,126 +28,134 @@ public class ExpiryIndex
                                                       MessageStoreConstants.MSG_GROUP,
                                                       MessageStoreConstants.MSG_BUNDLE);
 
-    private final ConcurrentSkipListSet<ExpirableReference> tree;
+    private GBSTree tree = null;
+    private Iterator iterator = null;
+    private int size = 0;
 
     /**
-     * Create an empty expiry index.
+     * Constructor to create an empty expiry index.
      */
-    public ExpiryIndex() {
+    public ExpiryIndex()
+    {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>");
 
-        tree = new ConcurrentSkipListSet<ExpirableReference>(new ExpiryComparator());
+        // Create new GBS tree with K-factor=2 and NodeWidth=10
+        tree = new GBSTree(2, 10, new ExpiryComparator(), new ExpiryComparator());
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>", new Object[] {tree});
+        iterator = tree.iterator();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
     }
 
     /**
      * Add an ExpirableReference to the expiry index.
      * @param expirable an ExpirableReference.
-     * @return true if the ExpirableReference was not already in the set of ExpirableReferences.
+     * @return true if the object was added to the index successfully.
      */
-    public boolean put(ExpirableReference expirable) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "put", "ObjecId=" + expirable.getID() + " ExpiryTime=" + expirable.getExpiryTime());
-
-        boolean added = tree.add(expirable);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "put", "added=" + added);
-        return added;
-    }
-
-    /**
-     * @return the first ExpirableReference in the expiry index, this is the next ExpirableReference to expire.
-     * @throws NoSuchElementException if the index is empty.
-     */
-    public ExpirableReference first() throws NoSuchElementException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "first");
-
-        ExpirableReference first = tree.first();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "first", first);
-        return first;
-    }
-
-    /**
-     * Remove an ExpirableReference from this ExpiryIndex.
-     *
-     * @param expirableReference the ExpirableReference to be removed.
-     * @return true if the ExpirableReference was removed from the index.
-     */
-    public boolean remove(ExpirableReference expirableReference)
+    public boolean put(ExpirableReference expirable)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "remove", (expirableReference == null ? "null" : "ObjectId=" + expirableReference.getID() + " ExpiryTime=" + expirableReference.getExpiryTime()));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "put", "ObjId=" + expirable.getID() + " ET=" + expirable.getExpiryTime());
 
-        if (expirableReference == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "remove", " expirableReference=null");
-            return false;
+        boolean reply = tree.insert(expirable);
+        if (reply)
+        {
+            size++;
         }
 
-        boolean removed = tree.remove(expirableReference);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "remove", "removed=" + removed);
-        return removed;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "put", "reply=" + reply);
+        return reply;
     }
 
     /**
-     * Scan all of the ExpirableReferences in the index. If the weak reference is null or if the item indicates
-     * that it has gone from the store, then remove the expirableReferece from the index.
+     * Remove an ExpirableReference from the expiry index. This method
+     * removes the object referenced by the preceding call to next().
+     * @return true if the object was removed from the index successfully.
      */
-    long cleaned = 0;
-    Object cleanLock = new Object();
-    public long clean() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "clean", "isEmpty="+tree.isEmpty());
+    public boolean remove()
+    {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "remove");
 
-        synchronized (cleanLock) {
-            cleaned = 0;
-            for (ExpirableReference expirableReference : tree) {
-                Expirable expirable = expirableReference.get();
-                if (expirable == null || !(expirable.expirableIsInStore())) {
-                    boolean removed = tree.remove(expirableReference);
-                    if (removed)
-                        cleaned++;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(tc, "Removed (cleaned) removed=" + removed + " ExpiryTime=" + expirableReference.getExpiryTime() + " objectId=" + expirableReference.getID());
-                }
-            }
+        boolean reply = iterator.remove();
+
+        if (reply)
+        {
+            size--;
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "clean", "isEmpty="+tree.isEmpty());
-        return cleaned;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "remove", "reply=" + reply);
+        return reply;
     }
 
     /**
-     * Returns {@code true} if there are no ExpirableReferences in the index
-     * @return {@code true} if this tree contains no ExpirableReferences
+     * Remove a specific ExpirableReference from the expiry index. This method
+     * removes the object directly from the tree and does not use the iterator.
+     * It does not therefore require a prior call to next().
+     * @param expirable the ExpirableReference to be removed.
+     * @return true if the object was removed from the index successfully.
      */
-    public boolean isEmpty() {
-        return tree.isEmpty();
+    public boolean remove(ExpirableReference expirable)
+    {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "remove", (expirable == null ? "null" : "ObjId=" + expirable.getID() + " ET=" + expirable.getExpiryTime()));
+
+        boolean reply = tree.delete(expirable);
+        if (reply)
+        {
+            size--;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "remove", "reply=" + reply);
+        return reply;
     }
 
     /**
-     * Return the number of ExpirableReferences in the tree.
-     *
-     * @return the number of ExpirableReferences
+     * Re-create the iterator so that a subsequent call to next() will
+     * start at the beginning of the index.
      */
-    public int size() {
-        return tree.size();
+    public void resetIterator()
+    {
+        iterator.reset();
+        return;
     }
 
     /**
-     * The comparator to be used by the ConcurrentSkipListset of ExpirableReferences.
+     * Return the number of objects in the tree
+     * @return the number of objects
      */
-    private static class ExpiryComparator implements Comparator<ExpirableReference> {
+    public int size()
+    {
+        return size;
+    }
+
+    /**
+     * Return the next expiry reference from the expiry index via the iterator.
+     * @return the expirable reference, or null if there are no more
+     * items in the index.
+     */
+    public ExpirableReference next()
+    {
+        return(ExpirableReference) iterator.next();
+    }
+
+    /**
+     * This class provides a comparator to be used by the GBS tree algorithms. It
+     * compares the expiry time and (if necessary) the object IDs of two objects.
+     * The same comparator is used for inserts, deletes and searches.
+     */
+    private static class ExpiryComparator implements Comparator
+    {
         /**
-         * Compare the expiry times of ExpirableReferences,
-         * in the case of equal times compare the IDs of two ExpirableReferences.
-         * This allows insertion of ExpirableRefrences with identical expiry times and presents
-         * the set ordered by expiry time with soonest times first.
-         *
-         * @param ref1 the first ExpirableReference.
-         * @param ref2 the second ExpirableReference.
-         * @return zero if the ExpirableReferences are equal, -1 if ref1 has a earlier expiry time than ref2 or the expiry times are equal and ref1.Id is less than ref2.Id,
-         * otherwise return 1.
+         * Compare two objects and return a value representing their respective
+         * collating sequence. This uses 'expiry time' as the primary key and 'object ID'
+         * as the secondary key.
+         * @param o1 the first object.
+         * @param o2 the second object.
+         * @return zero if the objects are equal, -1 if o1 is less than o2, else 1.
          */
-    	@Override
-        public int compare(ExpirableReference ref1, ExpirableReference ref2) {
+        public int compare(Object o1, Object o2)
+        {
+            ExpirableReference ref1 = (ExpirableReference) o1;
+            ExpirableReference ref2 = (ExpirableReference) o2;
+
             long time1 = ref1.getExpiryTime();
             long time2 = ref2.getExpiryTime();
 
