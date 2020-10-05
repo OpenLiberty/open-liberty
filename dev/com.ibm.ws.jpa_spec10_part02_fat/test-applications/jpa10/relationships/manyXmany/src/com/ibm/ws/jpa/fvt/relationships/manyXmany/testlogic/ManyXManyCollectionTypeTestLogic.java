@@ -50,7 +50,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testCollectionType(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -247,11 +247,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testCollectionType(): End");
         }
@@ -275,7 +270,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testSetType(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -471,11 +466,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testSetType(): End");
         }
@@ -499,7 +489,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testListType(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -695,11 +685,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testListType(): End");
         }
@@ -726,7 +711,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testOrderedListType(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -933,11 +918,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testOrderedListType(): End");
         }
@@ -961,7 +941,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testMapType(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("ManyXManyCollectionTypeTestLogic.testMapType(): Missing context and/or resources.  Cannot execute the test.");
@@ -1158,11 +1138,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testMapType(): End");
         }
@@ -1186,7 +1161,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testMapWithKeyType(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1383,11 +1358,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testMapWithKeyType(): End");
         }
@@ -1396,7 +1366,7 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         // Fetch JPA Resources
@@ -1434,11 +1404,6 @@ public class ManyXManyCollectionTypeTestLogic extends AbstractTestLogic {
 //            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCollectionTypeTestLogic.testTemplate(): End");
         }

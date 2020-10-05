@@ -50,7 +50,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      * Points: 10
      */
     public void testManyXManyUni001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -199,11 +199,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni001(): End");
         }
@@ -295,7 +290,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      *
      */
     public void testManyXManyUni002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -901,11 +896,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni002(): End");
         }
@@ -976,7 +966,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyUni003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1509,11 +1499,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni003(): End");
         }
@@ -1544,7 +1529,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyUni004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2176,11 +2161,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni004(): End");
         }
@@ -2206,7 +2186,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyUni005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2710,11 +2690,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni005(): End");
         }
@@ -2742,7 +2717,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyUni006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3349,11 +3324,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni006(): End");
         }
@@ -3381,7 +3351,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyUni007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3989,11 +3959,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyUni007(): End");
         }
@@ -4012,7 +3977,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -4248,18 +4213,13 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testTemplate(): End");
         }
     }
 
     public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -4302,11 +4262,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testTemplate(): End");
         }
@@ -4335,7 +4290,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "unchecked" })
     public void testManyXManyBi001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -4476,11 +4431,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi001(): End");
         }
@@ -4566,7 +4516,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyBi002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -5064,11 +5014,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi002(): End");
         }
@@ -5142,7 +5087,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyBi003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -5666,11 +5611,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi003(): End");
         }
@@ -5700,7 +5640,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      * the EntityA in BiEntityB_CP is an entity that is not managed and does not exist on the database.
      */
     public void testManyXManyBi004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -5820,11 +5760,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi004(): End");
         }
@@ -5852,7 +5787,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyBi005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -6012,11 +5947,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi005(): End");
         }
@@ -6053,7 +5983,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyBi006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -6240,11 +6170,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi006(): End");
         }
@@ -6276,7 +6201,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings("rawtypes")
     public void testManyXManyBi007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -6446,11 +6371,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testManyXManyBi007(): End");
         }
@@ -6470,7 +6390,7 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "unchecked" })
     public void testBiCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                     Object managedComponentObject) {
+                                     Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -6710,11 +6630,6 @@ public class ManyXManyBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyBidirectionalTestLogic.testBiCardinality001(): End");
         }
