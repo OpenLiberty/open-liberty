@@ -80,30 +80,31 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
      *         are in order from head to tail so it can be iterated normally.
      *
      */
-    @Override
-    public <T> T[] toArray(T[] arr) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public <X> X[] toArray(X[] arr) {
 
         if (arr == null) {
             return null;
         }
-        T[] retMe;
+        X[] retMe;
         int currTailIndex;
         do {
             currTailIndex = tailIndex.get(); // start from the tailIndex (technically the first slot *after* the tail)
 
-            ArrayList<T> returnArrayList = new ArrayList<T>();
+            ArrayList<X> returnArrayList = new ArrayList<X>();
             //Go through the SoftReference Buffer and retrieve elements that have not been GCed.
             //Restore these elements into a strong reference and add them into an arraylist
             //which will be used to retrieve an array that will be returned to the caller.
             for (int i = 0, index = currTailIndex; i < elements.size(); i++, index++) {
                 index = index % elements.size();
-                T element = (T) elements.get(index).get();
+                X element = (X) elements.get(index).get();
                 if (element != null) {
                     returnArrayList.add(element);
                 }
             }
 
-            retMe = (T[]) Array.newInstance(arr.getClass().getComponentType(), returnArrayList.size());
+            retMe = (X[]) Array.newInstance(arr.getClass().getComponentType(), returnArrayList.size());
             returnArrayList.toArray(retMe);
 
             // Make sure tailIndex wasn't updated by another thread during the copy
@@ -129,7 +130,8 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
         return false;
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public T[] toArray() {
         Object[] messagesList = this.toArray(new Object[elements.size()]);
         return (T[]) messagesList;
