@@ -22,7 +22,9 @@ for FAT_BUCKET in $FAT_BUCKETS
 do
   echo "### BEGIN running FAT bucket $FAT_BUCKET"
   BUCKET_PASSED=true
-  ./gradlew :$FAT_BUCKET:buildandrun || BUCKET_PASSED=false
+  # TODO: set GIT_DIFF based on env vars, and only set it if the event type is a PR
+  GIT_DIFF="1dc95cb6ef98cff80d686eda1db174145bb29215..2c3e337aa8a615d85e9147081acc822bb014761d"
+  ./gradlew :$FAT_BUCKET:buildandrun -Dgit_diff=$GIT_DIFF || BUCKET_PASSED=false
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
   mkdir -p $OUTPUT_DIR
   if $BUCKET_PASSED; then

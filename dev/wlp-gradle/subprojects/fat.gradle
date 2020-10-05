@@ -405,8 +405,32 @@ if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
   }
 }
 
+task trySkipFat(type: JavaExec) {
+  enabled = System.getProperty('git_diff') != null
+  dependsOn autoFVT
+  dependsOn ':build.changeDetector:assemble'
+  inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
+  
+  main = 'com.ibm.ws.infra.depchain.ChangeDetector2'
+  classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
+    
+  args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
+       '--git-diff', System.getProperty('git_diff', 'UNSET'), //'1dc95cb6ef98cff80d686eda1db174145bb29215..2c3e337aa8a615d85e9147081acc822bb014761d',
+       '--deps', autoFvtDir.toString() + '/fat-metadata.json',
+       '--fat-name', project.name,
+       '--output', autoFvtDir.toString() + '/canSkipFat'
+       
+  doLast {
+    if (new File(autoFvtDir, 'canSkipFat').exists()) {
+      println "Disabling FAT bucket " + project.name + " from running based on modified files"
+      tasks['runfat'].enabled = false
+    }
+  }
+}
+
 task runfat(type: Exec) {
   dependsOn cleanBeforeRun
+  dependsOn trySkipFat
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()

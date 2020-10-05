@@ -29,5 +29,6 @@ mockito: \
 -buildpath.fattestjars: ${if;${matches;${project};.*_fat.*}; \
   org.jboss.shrinkwrap:shrinkwrap-api\\;version=1.2.3, \
   fattest.simplicity\\;version=latest, \
+  build.changeDetector\\;version=latest, \
   com.ibm.ws.componenttest:public.api\\;version=1.0.0, \
-  com.ibm.ws.componenttest\\;version=latest}
+  com.ibm.ws.componenttest\\;version=latest},\
