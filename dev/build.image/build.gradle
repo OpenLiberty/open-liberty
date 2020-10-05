@@ -80,8 +80,8 @@ task copySwidTagToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
     into project.file('wlp/lib/versions/tags')
-    include 'openliberty.io_OpenLiberty.swidtag'
     include 'ibm.com_WebSphereLiberty*.swidtag'
+    include 'openliberty.io_OpenLiberty.swidtag'
     filter(ReplaceTokens,
            tokens: [ VERSION: bnd.libertyRelease ])
 }
