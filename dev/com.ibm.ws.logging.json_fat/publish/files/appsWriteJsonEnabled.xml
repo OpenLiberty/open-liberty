@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
-	<logging consoleLogLevel="ERROR" consoleFormat="json" messageFormat="json" appsWriteJson="true"/>
+	<logging consoleFormat="json" messageFormat="json" appsWriteJson="true"/>
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
