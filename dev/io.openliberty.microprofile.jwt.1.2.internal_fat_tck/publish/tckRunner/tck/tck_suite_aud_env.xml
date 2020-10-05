@@ -26,7 +26,8 @@
         </groups>
         <classes>
              
-              <!-- MP JWT 1.1 that need audiences set. They contain a key but do not define mp.jwt.verify.publickey.location or issuer. 
+              <!-- These are tests from MP JWT 1.1 that need audiences set. 
+                  They contain a key but do not define mp.jwt.verify.publickey.location or issuer. 
                    Passes if key and issuer are overridden with server.env.  -->  
               
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ClaimValueInjectionTest" />
@@ -38,17 +39,17 @@
 	          <!--   
 	          In MP JWT TCK 1.1, this was disabled because it failed intermittently with a 404.  Something to do with the harness 
 	          starting the app twice.  Similar coverage is available in the mpjwt 1.0 tck bucket. In MP JWT 1.2, there are new tests
-	          so this bucket needs to be enabled.  RolesAllowedTest- blocked Issue 14101
+	          so this bucket needs to be enabled.  --> 
 	   
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RolesAllowedTest" />  
-              --> 
+           
                          
- 			  <!-- MP JWT 1.2 JAXRS - needs investigation as fails when run with other tests   
+ 			<!-- New jaxrs tests added with mp-jwt 1.2 - needs investigation as fails when run with other tests -->  
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.PrincipalInjectionTest" /> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ApplicationScopedInjectionTest" />
-              -->
               
-              <!--  MP JWT 1.2 JAXRS JWE tests  - Need to enable when JWE support is delivered
+              
+              <!--  JAXRS JWE tests added with mp-jwt 1.2 - Need to enable when JWE support is delivered
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedEncryptTest" />
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedSignEncryptTest" />
               -->

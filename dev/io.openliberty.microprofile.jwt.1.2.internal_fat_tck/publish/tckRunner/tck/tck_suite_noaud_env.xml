@@ -27,15 +27,14 @@
         
         <classes>
              
-             <!--  MP JWT 1.1 these 3 require no audience      --> 
+             <!--  these 3 require no audience  -->
              <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsTest" />
              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.UnsecuredPingTest" />             
              <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationTest" /> 
-      
-                 
-             <!--  MP JWT 1.1 this needs key and issuer overridden in server.env, and needs null audiences.  Issue 13757/TCK issue 209			              
+                       
+             <!--  this needs key and issuer overridden in server.env, and needs null audiences.  
+			   -->             
              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RequiredClaimsTest" /> 
-              --> 
              
            
         </classes>

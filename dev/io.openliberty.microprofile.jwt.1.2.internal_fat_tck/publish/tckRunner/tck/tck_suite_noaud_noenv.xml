@@ -26,7 +26,7 @@
         </groups>
         <classes>
 
-              <!-- MP JWT 1.1 - These tests do not require an audience defined in the server.xml -->
+             <!-- MP JWT 1.1 - These tests do not require an audience defined in the server.xml -->
               <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationFailTest" />  
               
               <!--  MP JWT 1.2 jaxrs tests  -->
