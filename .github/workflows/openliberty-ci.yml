@@ -1,5 +1,3 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 name: OpenLiberty CI
 
 on:
@@ -31,6 +29,15 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Build with Gradle
       run: |
         cd dev
@@ -54,6 +61,15 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Run unit tests
       run: |
         cd dev
@@ -249,7 +265,6 @@ jobs:
               com.ibm.ws.install.packaging_fat
               com.ibm.ws.os.packaging_fat
               com.ibm.ws.repository_fat
-              com.ibm.ws.repository_fat_shared
               wlp.lib.extract_fat
           - category: JAXRS_1
             fat-buckets: >
@@ -474,7 +489,6 @@ jobs:
           - category: SECURITY_1
             fat-buckets: >
               com.ibm.ws.security.acme_fat
-              com.ibm.ws.security.audit_fat.common.tooling
               com.ibm.ws.security.jaspic_fat
           - category: SECURITY_2
             fat-buckets: >
@@ -482,10 +496,10 @@ jobs:
               com.ibm.ws.security.javaeesec_fat.2
               com.ibm.ws.security.javaeesec_fat.3
           - category: SECURITY_3
+            # TODO: bucket 'com.ibm.ws.security.social_fat.oidcCertification' is disabled currently
             fat-buckets: >
               com.ibm.ws.security.registry.basic_fat
               com.ibm.ws.security.social_fat
-              com.ibm.ws.security.social_fat.oidcCertification
               com.ibm.ws.security.wim.adapter.file_fat
           - category: SECURITY_4
             fat-buckets: >
@@ -522,6 +536,15 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Download liberty image
       uses: actions/download-artifact@v2
       with:
