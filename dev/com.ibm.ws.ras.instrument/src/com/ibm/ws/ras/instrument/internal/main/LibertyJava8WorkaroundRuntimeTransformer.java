@@ -86,14 +86,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      * the transformer.
      */
     private static LibertyJava8WorkaroundRuntimeTransformer registeredTransformer = null;
-
-    /**
-     * Indication that hot-code-replace is not available or should not be used.
-     * Class transforms will be done aggressively as classes are defined to the
-     * VM.
-     */
-    private static boolean injectAtTransform = false;
-
+    
     /**
      * Flag that indicates we should attempt to work around an emma
      * instrumentation issue by removing the bad local variable table
@@ -191,7 +184,6 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      * @param injectAtTransform true if classes should be transformed at definition
      */
     protected static void setInjectAtTransform(boolean injectAtTransform) {
-        LibertyJava8WorkaroundRuntimeTransformer.injectAtTransform = injectAtTransform;
         if (injectAtTransform) {
             addTransformer();
         }
