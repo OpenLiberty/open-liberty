@@ -21,6 +21,6 @@ Export-Package: org.eclipse.microprofile.health;version=3.0, \
                 org.eclipse.microprofile.health.spi;version=3.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.health:microprofile-health-api;3.0.0.RC4;EXACT}
+  @${repo;org.eclipse.microprofile.health:microprofile-health-api;3.0.0.RC5;EXACT}
 
 WS-TraceGroup: HEALTH

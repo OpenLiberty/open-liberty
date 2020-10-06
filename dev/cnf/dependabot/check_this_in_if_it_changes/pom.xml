@@ -1829,7 +1829,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
-      <version>3.0-RC4</version>
+      <version>3.0-RC5</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
