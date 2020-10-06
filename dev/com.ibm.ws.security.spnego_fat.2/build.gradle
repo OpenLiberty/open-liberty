@@ -1,0 +1,130 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               project(':com.ibm.ws.security.spnego.fat.common')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.doLast {
+  
+  /******************************************************************
+   * Setup server: AuthFilterElementTest
+   ******************************************************************/
+  def server = 'AuthFilterElementTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'spnegoauth.war'
+  }  
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: com.ibm.ws.security.spnego.fat.setup
+   ******************************************************************/
+  server = 'com.ibm.ws.security.spnego.fat.setup'
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: DynamicAuthFilterTest
+   ******************************************************************/
+  server = 'DynamicAuthFilterTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: InvokeAfterSSOTest
+   ******************************************************************/
+  server = 'InvokeAfterSSOTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+}
