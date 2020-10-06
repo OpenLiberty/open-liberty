@@ -58,20 +58,20 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      */
     private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
-	/**
-	 * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
-	 * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
-	 * to signal that they should be transformed up front.
-	*/
-	private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    /**
+     * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
+     * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
+     * to signal that they should be transformed up front.
+    */
+    private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
         @Override
         public Boolean run()
         {
-			Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
+            Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
             return (prop == null ? false : prop.booleanValue());
         }
     });
-	
+
     /** Issue detailed entry/exit trace for class transforms if this is true. */
     private static final boolean detailedTransformTrace = Boolean.getBoolean("com.ibm.ws.logging.instrumentation.detail.enabled");
 
