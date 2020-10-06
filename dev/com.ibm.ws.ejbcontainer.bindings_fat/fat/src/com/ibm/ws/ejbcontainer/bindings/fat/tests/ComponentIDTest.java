@@ -44,7 +44,9 @@ public class ComponentIDTest extends FATServletClient {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                server.dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();
@@ -61,6 +63,9 @@ public class ComponentIDTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the ears
         JavaArchive ComponentIDBndEJB = ShrinkHelper.buildJavaArchive("ComponentIDBndEJB.jar", "com.ibm.ejb3x.ComponentIDBnd.ejb.");
         ShrinkHelper.addDirectory(ComponentIDBndEJB, "test-applications/ComponentIDBndEJB.jar/resources");
@@ -79,7 +84,7 @@ public class ComponentIDTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
     }
 

@@ -41,6 +41,8 @@ import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * @author anupag
@@ -138,8 +140,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
         } catch (Exception e) {
-            e.getMessage();
-            e.printStackTrace();
+            LOG.info(m + " " + e.getMessage());
+            throw e;
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ----- invoking producer rest client to delete app: " + appName);
@@ -232,8 +234,9 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(entity.contains("Store has successfully added the app [myApp4]"));
 
         } catch (Exception e) {
-
+            LOG.info(m + " " + e.getMessage());
             e.printStackTrace();
+            throw e;
 
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
@@ -426,7 +429,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info(m + " ----------------------------------------------------------------");
     }
 
-    @Test
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testClientStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testClientStreamingMetrics";

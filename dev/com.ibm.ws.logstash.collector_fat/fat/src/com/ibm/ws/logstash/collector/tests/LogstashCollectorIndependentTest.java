@@ -25,7 +25,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -37,29 +36,22 @@ public class LogstashCollectorIndependentTest extends LogstashCollectorTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("LogstashCollectorServer");
 
-    private static String JVMSecurity = System.getProperty("Djava.security.properties");
-
     protected static boolean runTest;
 
-    @MinimumJavaLevel(javaLevel = 8)
     @BeforeClass
     public static void setUp() throws Exception {
+        String host = logstashContainer.getContainerIpAddress();
+        String port = String.valueOf(logstashContainer.getMappedPort(5043));
+        Log.info(c, "setUp", "Logstash container: host=" + host + "  port=" + port);
+        server.addEnvVar("LOGSTASH_HOST", host);
+        server.addEnvVar("LOGSTASH_PORT", port);
 
         Log.info(c, "setUp", "installed liberty root is at: " + server.getInstallRoot());
-
         Log.info(c, "setUp", "server root is at: " + server.getServerRoot());
-
-        String extendedPath = "usr/servers/LogstashServer/jvm.options";
-        if (server.getServerRoot().contains(server.getInstallRoot())) {
-            extendedPath = server.getServerRoot().replaceAll(server.getInstallRoot(), "").substring(1);
-        }
-        server.copyFileToLibertyInstallRoot(extendedPath, "jvm.options");
-        server.copyFileToLibertyInstallRoot(extendedPath.replace("jvm.options", "java.security"), "java.security");
         serverStart();
     }
 
     /* Test that logstash-collector-1.0 feature can run independently, without any other features present */
-    @MinimumJavaLevel(javaLevel = 8)
     @AllowedFFDC({ "java.lang.NullPointerException", "java.lang.ArithmeticException", "java.lang.ArrayIndexOutOfBoundsException" })
     @Test
     public void logstashCollectorIndependentTest() throws Exception {
@@ -77,28 +69,20 @@ public class LogstashCollectorIndependentTest extends LogstashCollectorTest {
 
     }
 
-    @MinimumJavaLevel(javaLevel = 8)
     @After
     public void tearDown() {
     }
 
-    @MinimumJavaLevel(javaLevel = 8)
     @AfterClass
     public static void completeTest() throws Exception {
         try {
             if (server.isStarted()) {
                 Log.info(c, "competeTest", "---> Stopping server..");
                 server.stopServer("TRAS4301W");
-                resetServerSecurity();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static void resetServerSecurity() {
-        //Reset JVM security to its original value
-        System.setProperty("Djava.security.properties", JVMSecurity);
     }
 
     @Override

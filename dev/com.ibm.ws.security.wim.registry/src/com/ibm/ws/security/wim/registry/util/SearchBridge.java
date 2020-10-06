@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,10 +164,10 @@ public class SearchBridge {
                         if (value instanceof String) {
                             people.add((String) value);
                         } else {
-                            people.add(String.valueOf(((List<?>) value).get(0)));
+                            people.add(BridgeUtils.getStringValue(((List<?>) value).get(0)));
                         }
                     } else {
-                        people.add((String) loginAccount.getIdentifier().get(outputAttrName));
+                        people.add(BridgeUtils.getStringValue(loginAccount.getIdentifier().get(outputAttrName)));
                     }
                 }
                 returnValue = new SearchResult(people, true);
@@ -353,10 +353,10 @@ public class SearchBridge {
                             if (value instanceof String) {
                                 groups.add((String) value);
                             } else {
-                                groups.add(String.valueOf(((List<?>) value).get(0)));
+                                groups.add(BridgeUtils.getStringValue(((List<?>) value).get(0)));
                             }
                         } else {
-                            groups.add((String) group.getIdentifier().get(outputAttrName));
+                            groups.add(BridgeUtils.getStringValue(group.getIdentifier().get(outputAttrName)));
                         }
                     } else {
                         if (tc.isEventEnabled()) {

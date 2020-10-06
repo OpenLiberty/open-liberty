@@ -15,6 +15,7 @@ import java.util.Dictionary;
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 public class TestConfigEvaluator extends ConfigEvaluator {

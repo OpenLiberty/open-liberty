@@ -47,7 +47,9 @@ import componenttest.topology.utils.FATServletClient;
  * outbound grpc call. Make sure to set a header testHeader=testValue on this initial request.
  * 3. verify that testHeader is included with the grpc request that’s made to the
  * test grpc service. The easiest way to do this will be to create a server interceptor
- * that implements interceptCall(), which will give you easy access to the metadata (headers)
+ * that implements interceptCall(), which will give you easy access to the metadata (headers).
+ *
+ * Also test the security related metadata here since the nature of the checks are similar.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -61,6 +63,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
     private static final String GRPC_CLIENT_HTP_MATCH = "grpc.client.htp.match.server.xml";
     private static final String GRPC_CLIENT_HTP_MULTIMATCH = "grpc.client.htp.multimatch.server.xml";
     private static final String GRPC_CLIENT_HTP_NOMATCH = "grpc.client.htp.nomatch.server.xml";
+    private static final String GRPC_CLIENT_SECHEADER = "grpc.client.secheader.server.xml";
     private static final int SHORT_TIMEOUT = 500; // .5 seconds
 
     @Server("GrpcServer")
@@ -68,6 +71,8 @@ public class ClientHeaderPropagationTests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        GrpcServer.deleteAllDropinApplications();
+        GrpcServer.removeAllInstalledAppsForValidation();
         LOG.info("ClientHeaderPropagationTests : setUp() : add HelloWorldClient and HelloWorldService apps to the server");
         ShrinkHelper.defaultDropinApp(GrpcServer, "HelloWorldClient.war",
                                       "com.ibm.ws.grpc.fat.helloworld.client",
@@ -298,4 +303,131 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         }
     }
 
+    /**
+     * test security metadata overrideAuthority
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOverrideAuthority() throws Exception {
+        LOG.info("ClientHeaderPropagationTests : testOverrideAuthority() : test overrideAuthority is propagated.");
+
+        // First set a config with a <grpcTarget> that matches a header
+        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_SECHEADER, null, LOG);
+        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        String contextRoot = "HelloWorldClient";
+        try (WebClient webClient = new WebClient()) {
+
+            // Construct the URL for the test
+            URL url = GrpcTestUtils.createHttpUrl(GrpcServer, contextRoot, "grpcClient");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            assertTrue("the servlet was not loaded correctly",
+                       page.asText().contains("gRPC helloworld client example"));
+
+            HtmlForm form = page.getFormByName("form1");
+
+            // set a name in the form, which we'll expect the RPC to return
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
+            inputText.setValueAttribute("us3r1");
+
+            // set the port of the grpcserver in the form
+            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
+            inputPort.setValueAttribute(String.valueOf(GrpcServer.getHttpDefaultPort()));
+
+            // set the hostname of the gprcserver in the form
+            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
+            inputHost.setValueAttribute(GrpcServer.getHostname());
+
+            // submit to the grpcClient, and execute the RPC
+            HtmlSubmitInput submitButton = form.getInputByName("submit");
+            page = submitButton.click();
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+
+            //Make sure the Interceptor was called to verify match
+            String interceptorHasRun = GrpcServer.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor3 has been invoked!",
+                                                                     SHORT_TIMEOUT);
+            if (interceptorHasRun == null) {
+                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+            }
+
+            // make sure expected header was found
+            String headerFound = GrpcServer.waitForStringInLog("TestDomain123", SHORT_TIMEOUT);
+            if (headerFound == null) {
+                Assert.fail(c + ": overrideAuthority not found when it should have in " + SHORT_TIMEOUT + "ms");
+            }
+        }
+    }
+
+    /**
+     * test security metadata userAgent
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUserAgent() throws Exception {
+        LOG.info("ClientHeaderPropagationTests : testUserAgent() : test userAgent is propagated.");
+
+        // First set a config with a <grpcTarget> that matches a header
+        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_SECHEADER, null, LOG);
+        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+
+        String contextRoot = "HelloWorldClient";
+        try (WebClient webClient = new WebClient()) {
+
+            // Construct the URL for the test
+            URL url = GrpcTestUtils.createHttpUrl(GrpcServer, contextRoot, "grpcClient");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            assertTrue("the servlet was not loaded correctly",
+                       page.asText().contains("gRPC helloworld client example"));
+
+            HtmlForm form = page.getFormByName("form1");
+
+            // set a name in the form, which we'll expect the RPC to return
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
+            inputText.setValueAttribute("us3r1");
+
+            // set the port of the grpcserver in the form
+            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
+            inputPort.setValueAttribute(String.valueOf(GrpcServer.getHttpDefaultPort()));
+
+            // set the hostname of the gprcserver in the form
+            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
+            inputHost.setValueAttribute(GrpcServer.getHostname());
+
+            // submit to the grpcClient, and execute the RPC
+            HtmlSubmitInput submitButton = form.getInputByName("submit");
+            page = submitButton.click();
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+
+            //Make sure the Interceptor was called to verify match
+            String interceptorHasRun = GrpcServer.waitForStringInLog("com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor3 has been invoked!",
+                                                                     SHORT_TIMEOUT);
+            if (interceptorHasRun == null) {
+                Assert.fail(c + ": server.xml with <grpcTarget> element: no interceptor ran when it should have in " + SHORT_TIMEOUT + "ms");
+            }
+
+            // make sure expected header was found
+            String headerFound = GrpcServer.waitForStringInLog("User-Agent=Agent456", SHORT_TIMEOUT);
+            if (headerFound == null) {
+                Assert.fail(c + ": userAgent not found when it should have in " + SHORT_TIMEOUT + "ms");
+            }
+        }
+    }
 }

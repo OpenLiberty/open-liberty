@@ -23,6 +23,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,7 @@ public class ConsumerUtilTest {
 
     private static final String MSG_JWT_NULL_SIGNING_KEY_WITH_ERROR = "CWWKS6007E";
     private static final String MSG_JWT_ISSUER_NOT_TRUSTED = "CWWKS6022E";
+    private static final String MSG_JWT_AUDIENCE_NOT_TRUSTED = "CWWKS6023E";
     private static final String MSG_JWT_IAT_AFTER_EXP = "CWWKS6024E";
     private static final String MSG_JWT_TOKEN_EXPIRED = "CWWKS6025E";
     private static final String MSG_JWT_TOKEN_BEFORE_NBF = "CWWKS6026E";
@@ -1370,6 +1372,130 @@ public class ConsumerUtilTest {
 
     /********************************************* validateAudience *********************************************/
 
+    @Test
+    public void testValidateAudience_withConfig_noAudiencesConfigured_nullTokenAudiences_ignoreAudIfNotConfigured() {
+        List<String> audiences = null;
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(null));
+                    one(jwtConfig).ignoreAudClaimIfNotConfigured();
+                    will(returnValue(true));
+                }
+            });
+            consumerUtil.validateAudience(jwtConfig, audiences);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testValidateAudience_withConfig_noAudiencesConfigured_nullTokenAudiences() {
+        List<String> audiences = null;
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(null));
+                    one(jwtConfig).ignoreAudClaimIfNotConfigured();
+                    will(returnValue(false));
+                }
+            });
+            consumerUtil.validateAudience(jwtConfig, audiences);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testValidateAudience_withConfig_noAudiencesConfigured_emptyTokenAudiences() {
+        List<String> audiences = new ArrayList<String>();
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(null));
+                    one(jwtConfig).ignoreAudClaimIfNotConfigured();
+                    will(returnValue(false));
+                }
+            });
+            consumerUtil.validateAudience(jwtConfig, audiences);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testValidateAudience_withConfig_noAudiencesConfigured_nonEmptyTokenAudiences_ignoreAudIfNotConfigured() {
+        List<String> audiences = Arrays.asList("aud1", "aud2", "aud3");
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(null));
+                    one(jwtConfig).ignoreAudClaimIfNotConfigured();
+                    will(returnValue(true));
+                }
+            });
+            consumerUtil.validateAudience(jwtConfig, audiences);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testValidateAudience_withConfig_noAudiencesConfigured_nonEmptyTokenAudiences() {
+        List<String> audiences = Arrays.asList("aud1", "aud2", "aud3");
+        final String configId = testName.getMethodName();
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(null));
+                    one(jwtConfig).ignoreAudClaimIfNotConfigured();
+                    will(returnValue(false));
+                    one(jwtConfig).getId();
+                    will(returnValue(configId));
+                }
+            });
+            try {
+                consumerUtil.validateAudience(jwtConfig, audiences);
+                fail("Should have thrown an exception but didn't.");
+            } catch (InvalidClaimException e) {
+                validateExceptionWithInserts(e, MSG_JWT_AUDIENCE_NOT_TRUSTED, configId);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testValidateAudience_withConfig_audiencesConfigured_nullTokenAudiences() {
+        List<String> audiences = null;
+        final String configId = testName.getMethodName();
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtConfig).getAudiences();
+                    will(returnValue(new ArrayList<String>()));
+                    one(jwtConfig).getId();
+                    will(returnValue(configId));
+                }
+            });
+            try {
+                consumerUtil.validateAudience(jwtConfig, audiences);
+                fail("Should have thrown an exception but didn't.");
+            } catch (InvalidClaimException e) {
+                validateExceptionWithInserts(e, MSG_JWT_AUDIENCE_NOT_TRUSTED, configId);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /********************************************* validateAudience *********************************************/
+
     /**
      * Method under test: {@link ConsumerUtil#validateAudience(List, List)}
      */
@@ -1381,8 +1507,8 @@ public class ConsumerUtilTest {
             allAudiencesList.add(Constants.ALL_AUDIENCES);
 
             // Null/empty token and allowed audiences
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, null));
-            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience(null, emptyList));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience((List<String>) null, null));
+            assertTrue("Validation should have succeeded.", consumerUtil.validateAudience((List<String>) null, emptyList));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, null));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, emptyList));
 
@@ -1402,7 +1528,7 @@ public class ConsumerUtilTest {
             // Null/empty allowed audiences, single aud in the token
             tokenAud = new ArrayList<String>();
             tokenAud.add(ENTRY1);
-            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(null, tokenAud));
+            assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience((List<String>) null, tokenAud));
             assertFalse("Validation should NOT have succeeded.", consumerUtil.validateAudience(emptyList, tokenAud));
 
             // Null/empty audiences in token, single aud in allowed audiences
@@ -2195,7 +2321,7 @@ public class ConsumerUtilTest {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
-    
+
     /********************************************* validateAMRClaim *********************************************/
 
     /**

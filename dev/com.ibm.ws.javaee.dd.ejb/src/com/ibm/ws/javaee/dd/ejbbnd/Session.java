@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import com.ibm.ws.javaee.ddmetadata.annotation.DDAttribute;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDAttributeType;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDElement;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDXMIAttribute;
-import com.ibm.ws.javaee.ddmetadata.annotation.LibertyNotInUse;
 
 /**
  * Represents &lt;session>.
@@ -26,7 +25,6 @@ public interface Session extends EnterpriseBean {
     /**
      * @return &lt;Interface>, or empty list if unspecified
      */
-    @LibertyNotInUse
     @DDElement(name = "interface")
     List<Interface> getInterfaces();
 

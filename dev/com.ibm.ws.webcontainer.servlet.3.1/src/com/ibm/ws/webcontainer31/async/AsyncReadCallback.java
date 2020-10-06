@@ -50,6 +50,8 @@ public class AsyncReadCallback implements InterChannelCallback {
     
     // We were driven for an error and should not assume any future async reads are outstanding.
     private boolean onErrorDriven = false;
+
+    private boolean onAllDataReadCalled = false;
     
     public AsyncReadCallback(SRTInputStream31 in, ThreadContextManager tcm){
         this.in = in;
@@ -125,10 +127,17 @@ public class AsyncReadCallback implements InterChannelCallback {
                             Tr.debug(tc, "Message is fully read, calling ReadListener onAllDataRead : " + this.in.getReadListener());
                         }
                         try{
-                            this.in.getReadListener().onAllDataRead();
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Returned from user's ReadListener onAllDataRead : " + this.in.getReadListener());
-                            } 
+                            if (!onAllDataReadCalled) {
+                                onAllDataReadCalled = true;
+                                this.in.getReadListener().onAllDataRead();
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Returned from user's ReadListener onAllDataRead : " + this.in.getReadListener());
+                                }
+                            } else {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Returned from user's ReadListener onAllDataRead onAllDataRead has already been called, do nothing here.");
+                                }
+                            }
                         } catch (Throwable onAllDataReadException){
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Exception occurred during ReadListener.onAllDataRead : " + onAllDataReadException + ", " + this.in.getReadListener());

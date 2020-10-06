@@ -21,15 +21,20 @@ import javax.naming.Reference;
 public class EJBRemoteReferenceBinding extends Reference {
 
     private final EJBBinding ivBinding;
+    private final String ivBindingName;
 
-    public EJBRemoteReferenceBinding(EJBBinding binding) {
+    public EJBRemoteReferenceBinding(EJBBinding binding, String bindingName) {
         // pass className and ObjectFactory className
         super(EJBRemoteReferenceBinding.class.getName(), EJBRemoteBeanFactory.class.getName(), null);
         this.ivBinding = binding;
+        this.ivBindingName = bindingName;
     }
 
     public EJBBinding getReferenceBinding() {
         return ivBinding;
     }
 
+    public String getBindingName() {
+        return ivBindingName;
+    }
 }

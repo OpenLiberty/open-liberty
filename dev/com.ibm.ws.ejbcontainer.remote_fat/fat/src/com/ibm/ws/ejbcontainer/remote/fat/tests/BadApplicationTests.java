@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.enventry.web.EnvEntryServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -74,7 +75,7 @@ public class BadApplicationTests extends AbstractTest {
         EnterpriseArchive AppExcExtendsThrowableErrBean = ShrinkWrap.create(EnterpriseArchive.class, "AppExcExtendsThrowableErrBean.ear");
         AppExcExtendsThrowableErrBean.addAsModule(AppExcExtendsThrowableErrBeanJar);
 
-        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean);
+        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean, DeployOptions.DISABLE_VALIDATION);
 
         //#################### EnvEntryShared.jar
         JavaArchive EnvEntrySharedJar = ShrinkHelper.buildJavaArchive("EnvEntryShared.jar", "com.ibm.ws.ejbcontainer.remote.enventry.shared.");

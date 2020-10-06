@@ -931,29 +931,26 @@ public abstract class AbstractClient implements Client {
     // invocation thus it is also important to have baseURI and currentURI
     // synched up with the latest endpoint address, after a successful proxy
     // or web client invocation has returned
-    protected void prepareConduitSelector(Message m, URI currentURI, boolean proxy) {
+    protected void prepareConduitSelector(Message message, URI currentURI, boolean proxy) {
         try {
-            cfg.prepareConduitSelector(m);
+            cfg.prepareConduitSelector(message);
 
         } catch (Fault ex) {
             LOG.warning("Failure to prepare a message from conduit selector");
         }
-        //Liberty code change start
-        MessageImpl message = (MessageImpl) m;
         message.getExchange().put(ConduitSelector.class, cfg.getConduitSelector());
         message.getExchange().put(Service.class, cfg.getConduitSelector().getEndpoint().getService());
 
-        String address = (String)message.getEndpointAddress();
+        String address = (String)message.get(Message.ENDPOINT_ADDRESS);
         // custom conduits may override the initial/current address
         if (address.startsWith(HTTP_SCHEME) && !address.equals(currentURI.toString())) {
             URI baseAddress = URI.create(address);
             currentURI = calculateNewRequestURI(baseAddress, currentURI, proxy);
             String uri = currentURI.toString();
-            message.setEndpointAddress(uri);
-            message.setRequestUri(uri);
+            message.put(Message.ENDPOINT_ADDRESS, uri);
+            message.put(Message.REQUEST_URI, uri);
         }
-        message.setBasePath(getBaseURI().toString());
-        //Liberty code change end
+        message.put(Message.BASE_PATH, getBaseURI().toString());
     }
 
     protected static PhaseInterceptorChain setupOutInterceptorChain(ClientConfiguration cfg) {
@@ -1006,40 +1003,38 @@ public abstract class AbstractClient implements Client {
                                     Map<String, Object> invocationContext,
                                     boolean proxy) {
         checkClosed();
-        //Liberty code change start
-        MessageImpl m = (MessageImpl) cfg.getConduitSelector().getEndpoint().getBinding().createMessage();
-        m.setRequestorRole(Boolean.TRUE);
-        m.setInboundMessage(Boolean.FALSE);
+        Message m = cfg.getConduitSelector().getEndpoint().getBinding().createMessage();
+        m.put(Message.REQUESTOR_ROLE, Boolean.TRUE);
+        m.put(Message.INBOUND_MESSAGE, Boolean.FALSE);
 
         setRequestMethod(m, httpMethod);
-        m.setProtocolHeaders(headers);
+        m.put(Message.PROTOCOL_HEADERS, headers);
         if (currentURI.isAbsolute() && currentURI.getScheme().startsWith(HTTP_SCHEME)) {
-            m.setEndpointAddress(currentURI.toString());
+            m.put(Message.ENDPOINT_ADDRESS, currentURI.toString());
         } else {
-            m.setEndpointAddress(state.getBaseURI().toString());
+            m.put(Message.ENDPOINT_ADDRESS, state.getBaseURI().toString());
         }
 
         Object requestURIProperty = cfg.getRequestContext().get(Message.REQUEST_URI);
         if (requestURIProperty == null) {
-            m.setRequestUri(currentURI.toString());
+            m.put(Message.REQUEST_URI, currentURI.toString());
         } else {
-            m.setRequestUri(requestURIProperty.toString());
+            m.put(Message.REQUEST_URI, requestURIProperty.toString());
         }
 
         String ct = headers.getFirst(HttpHeaders.CONTENT_TYPE);
-        m.setContentType(ct);
+        m.put(Message.CONTENT_TYPE, ct);
 
         body = checkIfBodyEmpty(body, ct);
         setEmptyRequestPropertyIfNeeded(m, body);
 
         m.setContent(List.class, getContentsList(body));
 
-        m.setTemplateParameters(getState().getTemplates());
+        m.put(URITemplate.TEMPLATE_PARAMETERS, getState().getTemplates());
 
         PhaseInterceptorChain chain = setupOutInterceptorChain(cfg);
         chain.setFaultObserver(setupInFaultObserver(cfg));
         m.setInterceptorChain(chain);
-        //Liberty code change end
 
         exchange = createExchange(m, exchange);
         exchange.put(Message.REST_MESSAGE, Boolean.TRUE);
@@ -1056,9 +1051,7 @@ public abstract class AbstractClient implements Client {
     }
 
     private void setRequestMethod(Message m, String httpMethod) {
-        //Liberty code change start
-        ((MessageImpl) m).setHttpRequestMethod(httpMethod);
-        //Liberty code change end
+        m.put(Message.HTTP_REQUEST_METHOD, httpMethod);
         if (!KNOWN_METHODS.contains(httpMethod)) {
             if (!m.containsKey("use.async.http.conduit")) {
                 // if the async conduit is loaded then let it handle this method without users
@@ -1143,7 +1136,7 @@ public abstract class AbstractClient implements Client {
         }
     }
 
-    protected void setContexts(MessageImpl message, Exchange exchange,
+    protected void setContexts(Message message, Exchange exchange,
                                Map<String, Object> context, boolean proxy) {
         if (context == null) {
             context = new HashMap<>();
@@ -1154,11 +1147,9 @@ public abstract class AbstractClient implements Client {
             reqContext = new HashMap<>(cfg.getRequestContext());
             context.put(REQUEST_CONTEXT, reqContext);
         }
-        //Liberty code change start
-        reqContext.put(Message.PROTOCOL_HEADERS, message.getProtocolHeaders());
-        reqContext.put(Message.REQUEST_URI, message.getRequestUri());
-        reqContext.put(Message.ENDPOINT_ADDRESS, message.getEndpointAddress());
-        //Liberty code change end
+        reqContext.put(Message.PROTOCOL_HEADERS, message.get(Message.PROTOCOL_HEADERS));
+        reqContext.put(Message.REQUEST_URI, message.get(Message.REQUEST_URI));
+        reqContext.put(Message.ENDPOINT_ADDRESS, message.get(Message.ENDPOINT_ADDRESS));
         reqContext.put(PROXY_PROPERTY, proxy);
 
         if (resContext == null) {

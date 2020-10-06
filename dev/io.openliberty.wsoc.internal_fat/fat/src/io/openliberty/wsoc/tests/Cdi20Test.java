@@ -27,7 +27,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -38,12 +37,7 @@ import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
 
-/**
- * Skipped for EE9 until the jmsServer and jmsClient for JakartaEE9 are developed and delivered
- * to test CDI and Websocket integration
- */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class Cdi20Test extends LoggingTest {
 
     @ClassRule
@@ -161,7 +155,7 @@ public class Cdi20Test extends LoggingTest {
         this.runAsSSCAndVerifyResponse("CdiTest", "testCdiInjectCDI12");
     }
 
-    @Mode(TestMode.FULL)
+    @Mode(TestMode.LITE)
     @Test
     public void testCdiProgrammaticEndpointCDI20() throws Exception {
         ct.testCdiProgrammaticEndpointCDI20();

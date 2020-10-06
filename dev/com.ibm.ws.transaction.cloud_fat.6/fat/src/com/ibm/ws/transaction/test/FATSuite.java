@@ -14,9 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-
 import com.ibm.ws.transaction.test.tests.DualServerPeerLockingTest;
 
 @RunWith(Suite.class)
@@ -24,7 +21,4 @@ import com.ibm.ws.transaction.test.tests.DualServerPeerLockingTest;
                 DualServerPeerLockingTest.class,
 })
 public class FATSuite {
-
-    private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD001");
-    private static LibertyServer server2 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD002");
 }

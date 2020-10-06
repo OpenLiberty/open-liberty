@@ -329,3 +329,34 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Obtain a new token for one of the trusted AMR
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the {1} signature algorithm, but that algorithm is only available in the beta edition. The {2} signature algorithm is used instead.
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can be used only in the beta edition.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.
+
+# 0=Key management algorithm, 1=List of supported key management algorithms
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM=CWWKS6056E: The [{0}] key management algorithm is not valid. The set of valid key management algorithms is {1}.
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM.explanation=The provided key management algorithm is either null, empty, or does not match a supported key management algorithm that is specified in the message.
+UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM.useraction=Verify that the provided key management algorithm matches one of the supported algorithms.
+
+# 0=Content encryption algorithm, 1=List of supported content encryption algorithms
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM=CWWKS6057E: The [{0}] content encryption algorithm is not valid. The set of valid content encryption algorithms is {1}.
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM.explanation=The provided content encryption algorithm is either null, empty, or does not match a supported content encryption algorithm that is specified in the message.
+UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM.useraction=Verify that the provided content encryption algorithm matches one of the supported algorithms.
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: The [{0}] JWT builder cannot create JSON Web Encryption (JWE) tokens because a key management key is not provided.
+KEY_MANAGEMENT_KEY_MISSING.explanation=A key management key is a key that is used to encrypt the Content Encryption Key of a JWE token. A key must be specified so the JWT builder can create JWE tokens.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Verify that a key is provided to the builder API if the builder should create JWE tokens.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: The [{0}] JWT builder configuration is missing the {1} attribute, so it cannot create JSON Web Encryption (JWE) tokens. Either configure the specified attribute or remove the {2} and {3} attributes.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=The key management alias refers to a key that is used to encrypt the Content Encryption Key of a JWE token. A key alias must be specified so the JWT builder can create JWE tokens.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=If the JWT builder should create JWE tokens, configure the key management alias attribute. If the JWT builder does not need to create JWE tokens, remove the other attributes that are mentioned in the message.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: The [{0}] JWT builder cannot create a JSON Web Encryption (JWE) token. {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=The JWT builder encountered an error while creating the JWE token. Check the error that is included in the message for more information.
+ERROR_BUILDING_SIGNED_JWE.useraction=Check the error that is included in the message for more information.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: The [{0}] JWT builder cannot create a JSON Web Encryption (JWE) token because a key management key cannot be found. They key management key alias is [{1}], and the configured trust store is [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=A key management key is a key that is used to encrypt the Content Encryption Key of a JWE token. A key must be specified so the JWT builder can create JWE tokens.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verify that a key with the alias that is specified in the message exists in the trust store that is specified in the message.

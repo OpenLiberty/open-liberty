@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>enterpriseBeans-4.0</feature>
+        <feature>jaxrs-3.0</feature>
+    </featureManager>
+    
+</server>

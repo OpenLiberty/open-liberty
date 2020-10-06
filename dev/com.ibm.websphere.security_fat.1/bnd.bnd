@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/WebsphereUserRegistry/src,\
+  test-applications/PasswordUtilAPI/src
+
+fat.project: true
+
+#tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, jaxb-3.0, jaspic-2.0, jacc-2.0
+
+-buildpath: \
+  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+  com.ibm.websphere.security;version=latest,\
+  com.ibm.ws.crypto.passwordutil;version=latest,\
+  com.ibm.ws.org.apache.directory.server;version=latest,\
+  com.ibm.ws.security.registry;version=latest,\
+  com.ibm.ws.security.registry_test.custom;version=latest,\
+  com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+  commons-codec:commons-codec;version=1.4,\
+  commons-logging:commons-logging;version=1.1.1,\
+  fattest.simplicity;version=latest,\
+  org.apache.httpcomponents:httpclient;version=4.1.2,\
+  org.apache.httpcomponents:httpcore;version=4.1.2
+  

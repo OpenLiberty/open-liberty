@@ -143,7 +143,6 @@ import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.jaxrs.utils.multipart.AttachmentUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
@@ -281,6 +280,7 @@ public final class JAXRSUtils {
         injectParameters(ori, ori.getClassResourceInfo(), requestObject, message);
     }
 
+    @SuppressWarnings("unchecked")
     public static void injectParameters(OperationResourceInfo ori,
                                         BeanResourceInfo bri,
                                         Object requestObject,
@@ -293,10 +293,7 @@ public final class JAXRSUtils {
             }
         }
         // Param methods
-        @SuppressWarnings("unchecked")
-        //Liberty code change start
-        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>)((MessageImpl) message).getTemplateParameters();
-        //Liberty code change end
+        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>) message.get(URITemplate.TEMPLATE_PARAMETERS);
         for (Method m : bri.getParameterMethods()) {
             Parameter p = ResourceUtils.getParameter(0, m.getAnnotations(),
                                                      m.getParameterTypes()[0]);
@@ -546,9 +543,7 @@ public final class JAXRSUtils {
         }
         Map.Entry<ClassResourceInfo, MultivaluedMap<String, String>> firstCri = matchedResources.entrySet().iterator().next();
         String name = firstCri.getKey().isRoot() ? "NO_OP_EXC" : "NO_SUBRESOURCE_METHOD_FOUND";
-        //Liberty code change start
-        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, ((MessageImpl) message).getRequestUri(), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
-        //Liberty code change end
+        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, message.get(Message.REQUEST_URI), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
         if (!"OPTIONS".equalsIgnoreCase(httpMethod)) {
             Level logLevel = getExceptionLogLevel(message, ClientErrorException.class);
             if (logLevel != null && logLevel.intValue() >= Level.WARNING.intValue()) {
@@ -1053,10 +1048,8 @@ public final class JAXRSUtils {
                                              Annotation[] paramAnns,
                                              String defaultValue,
                                              boolean decode) {
-        //Liberty code change start
-        List<PathSegment> segments = JAXRSUtils.getPathSegments((String) ((MessageImpl) m).getRequestUri(), decode);
-        //Liberty code change end
-
+        List<PathSegment> segments = JAXRSUtils.getPathSegments(
+                                                                (String) m.get(Message.REQUEST_URI), decode);
         if (!segments.isEmpty()) {
             MultivaluedMap<String, String> params = new MetadataMap<>();
             for (PathSegment ps : segments) {
@@ -1221,9 +1214,7 @@ public final class JAXRSUtils {
     public static Message getContextMessage(Message m) {
 
         Message contextMessage = m.getExchange() != null ? m.getExchange().getInMessage() : m;
-        //Liberty code change start
-        if (contextMessage == null && !PropertyUtils.isTrue(((MessageImpl) m).getInboundMessage())) {
-            //Liberty code change end
+        if (contextMessage == null && !PropertyUtils.isTrue(m.get(Message.INBOUND_MESSAGE))) {
             contextMessage = m;
         }
         return contextMessage;
@@ -1274,14 +1265,12 @@ public final class JAXRSUtils {
         return clazz.cast(o);
     }
 
+    @SuppressWarnings("unchecked")
     private static UriInfo createUriInfo(Message m) {
         if (MessageUtils.isRequestor(m)) {
             m = m.getExchange() != null ? m.getExchange().getOutMessage() : m;
         }
-        @SuppressWarnings("unchecked")
-        //Liberty code change start
-        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>)((MessageImpl) m).getTemplateParameters();
-        //Liberty code change end
+        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>) m.get(URITemplate.TEMPLATE_PARAMETERS);
         return new UriInfoImpl(m, templateParams);
     }
 
@@ -2003,12 +1992,10 @@ public final class JAXRSUtils {
     public static void pushOntoStack(OperationResourceInfo ori,
                                      MultivaluedMap<String, String> params,
                                      Message msg) {
-        //Liberty code change start
-        OperationResourceInfoStack stack = (OperationResourceInfoStack) ((MessageImpl) msg).getOperationResourceInfoStack();
+        OperationResourceInfoStack stack = msg.get(OperationResourceInfoStack.class);
         if (stack == null) {
             stack = new OperationResourceInfoStack();
-            ((MessageImpl) msg).setOperationResourceInfoStack(stack);
-            //Liberty code change end
+            msg.put(OperationResourceInfoStack.class, stack);
         }
 
         List<String> values = null;

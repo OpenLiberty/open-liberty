@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.5
+bVersion: 1.6
 
 Bundle-Name: WebSphere Kernel Services SPI
 Bundle-Description: WebSphere Kernel Services SPI, version ${bVersion}

@@ -26,7 +26,9 @@ import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.ConfigVariables;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -110,7 +112,7 @@ class ServerXMLConfiguration {
      */
 
     @FFDCIgnore(ConfigParserTolerableException.class)
-    public void loadInitialConfiguration(ConfigVariableRegistry variableRegistry) throws ConfigValidationException, ConfigParserTolerableException {
+    public void loadInitialConfiguration(ConfigVariableRegistry variableRegistry) throws ConfigValidationException, ConfigParserException {
         if (configRoot != null && configRoot.exists()) {
 
             try {
@@ -128,6 +130,8 @@ class ServerXMLConfiguration {
             } catch (ConfigParserException ex) {
                 Tr.error(tc, "error.config.update.init", ex.getMessage());
                 serverConfiguration = new ServerConfiguration();
+                if (ErrorHandler.INSTANCE.fail())
+                    throw ex;
             }
 
             serverConfiguration.setDefaultConfiguration(new BaseConfiguration());
@@ -430,7 +434,7 @@ class ServerXMLConfiguration {
      * @return
      * @throws ConfigMergeException
      */
-    public Map<String, ConfigVariable> getVariables() throws ConfigMergeException {
+    public Map<String, LibertyVariable> getVariables() throws ConfigMergeException {
         return serverConfiguration.getVariables();
     }
 

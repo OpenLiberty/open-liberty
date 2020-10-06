@@ -20,7 +20,7 @@
     
     <include location="../fatTestCommon.xml"/>
     
-    <grpcClient host="*" maxInboundMessageSize="12" enableKeepAlive="true" keepAliveTime="120" keepAliveTimeout="360" />
+    <grpcClient host="*" maxInboundMessageSize="12" keepAliveTime="120" keepAliveTimeout="360" />
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>

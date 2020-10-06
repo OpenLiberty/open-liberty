@@ -262,14 +262,22 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
-
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
 
+            }
         }
     }
 
@@ -316,13 +324,23 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -378,13 +396,23 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -434,13 +462,23 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ---------------- " + m + "--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -799,14 +837,23 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
-
-            assertDeleteSingleAppData(m, service, appName);
             builderConsumer = null;
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ----------------testGetAppInfo--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -860,14 +907,25 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
             _log.info(m + " ------------------------------------------------------------");
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
             builderConsumer = null;
 
-            _log.info(m + " ----------------testGetAppInfo_BadBasicAuth--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            try {
+                assertDeleteSingleAppData(m, service, appName);
+
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -916,13 +974,23 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             // entityAppPrice: {"appNameswPrice":[{"appName":"myAppConsumer","prices":[{"purchaseType":"BLUEPOINTS","sellingPrice":200.0}]}]}
             isValidResponse = entityAppPrice.contains("BLUEPOINTS");
             assertTrue(isValidResponse);
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
-            assertDeleteSingleAppData(m, service, appName);
+            try {
+                assertDeleteSingleAppData(m, service, appName);
 
-            _log.info(m + " ----------------testGetAppPrice--FINISH -------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -983,14 +1051,24 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             isValidResponse = entityAppPrice.contains("CREDITCARD");
             assertTrue(isValidResponse);
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
             _log.info(m + " ------------------------------------------------------------");
+            try {
+                this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
-            this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
-            _log.info(m + " ----------------testGetMultiAppPrices--FINISH -----------------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -1050,14 +1128,24 @@ public class ConsumerEndpointFATServlet extends FATServlet {
             assertTrue(entityName.contains(app2));
             assertTrue(entityName.contains(app3));
             assertTrue(entityName.contains(app4));
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
             _log.info(m + " ------------------------------------------------------------");
-            this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
+            try {
+                this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
-            _log.info(m + " ----------------testGetMultiAppNames--FINISH--------------");
-            _log.info(m + " ------------------------------------------------------------");
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
+
+            }
 
         }
 
@@ -1134,15 +1222,24 @@ public class ConsumerEndpointFATServlet extends FATServlet {
 
             isValidResponse = entityAppInfo.contains(app3);
             assertTrue(isValidResponse);
+        } catch (Exception e) {
+            _log.info(m + " " + e.getMessage());
+            throw e;
 
         } finally {
 
             _log.info(m + " ------------------------------------------------------------");
+            try {
+                this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
 
-            this.assertDeleteMultipleAppData(m, service, app1, app2, app3, app4);
+            } catch (Exception e) {
+                _log.info(m + " " + e.getMessage());
+                throw e;
+            } finally {
+                _log.info(m + " ---------------- " + m + "--FINISH -------------------");
+                _log.info(m + " ------------------------------------------------------------");
 
-            _log.info(m + " ---------------testGetMultiAppsInfo --- FINISH -----------------");
-            _log.info(m + " ------------------------------------------------------------");
+            }
 
         }
 

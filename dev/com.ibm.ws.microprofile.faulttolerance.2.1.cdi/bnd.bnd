@@ -16,10 +16,6 @@ Bundle-Name: com.ibm.ws.microprofile.faulttolerance.2.1.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.2.1.cdi
 Bundle-Description: MicroProfile Fault Tolerance 2.1 CDI Integration, version ${bVersion}
 
-Import-Package: \
-	org.eclipse.microprofile.config.*;version="[1.0,2)",\
-	*
-
 Export-Package: com.ibm.ws.microprofile.faulttolerance21.cdi.config.impl
 
 Include-Resource: 
@@ -40,7 +36,6 @@ testsrc=test/src
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.2.1;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.microprofile.faulttolerance.spi;version=latest,\
@@ -53,6 +48,7 @@ testsrc=test/src
 	com.ibm.ws.microprofile.config.1.3;version=latest,\
 	com.ibm.ws.microprofile.config.1.2;version=latest,\
 	com.ibm.ws.microprofile.config.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
 	io.openliberty.microprofile.config.internal.common;version=latest, \
 	io.openliberty.microprofile.config.internal.serverxml;version=latest, \
 	com.ibm.ws.container.service;version=latest, \

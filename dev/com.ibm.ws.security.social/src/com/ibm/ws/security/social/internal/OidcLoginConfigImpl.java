@@ -466,6 +466,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return audiences;
     }
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isValidationRequired() { // TODO may need to be set from configuration

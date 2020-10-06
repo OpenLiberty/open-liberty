@@ -84,6 +84,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_AUDIENCE = "audiences";
     String[] audience = null;
 
+    boolean ignoreAudClaimIfNotConfigured = false;
+
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     protected boolean hostNameVerificationEnabled = false;
 
@@ -205,15 +207,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     }
 
     void loadConfigValuesForHigherVersions(ComponentContext cc, Map<String, Object> props) {
-        MpJwtRuntimeVersion runtimeVersion = getMpJwtRuntimeVersion();
-        if (runtimeVersion == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to find runtime version");
-            }
-            return;
-        }
-        Version version = runtimeVersion.getVersion();
-        if (version.compareTo(MpJwtRuntimeVersion.VERSION_1_2) < 0) {
+        if (!isRuntimeVersionAtLeast(MpJwtRuntimeVersion.VERSION_1_2)) {
             return;
         }
         if (tc.isDebugEnabled()) {
@@ -221,6 +215,21 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         }
         tokenHeader = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER);
         cookieName = configUtils.getConfigAttribute(props, KEY_COOKIE_NAME);
+        // Ensure that for MP JWT 1.2 and above that "aud" claim is allowed in tokens even if audiences or
+        // mp.jwt.verify.audiences are not configured
+        ignoreAudClaimIfNotConfigured = true;
+    }
+
+    boolean isRuntimeVersionAtLeast(Version minimumVersionRequired) {
+        MpJwtRuntimeVersion mpJwtRuntimeVersion = getMpJwtRuntimeVersion();
+        if (mpJwtRuntimeVersion == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find runtime version");
+            }
+            return false;
+        }
+        Version runtimeVersion = mpJwtRuntimeVersion.getVersion();
+        return (runtimeVersion.compareTo(minimumVersionRequired) >= 0);
     }
 
     MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
@@ -286,6 +295,11 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return ignoreAudClaimIfNotConfigured;
     }
 
     /** {@inheritDoc} */

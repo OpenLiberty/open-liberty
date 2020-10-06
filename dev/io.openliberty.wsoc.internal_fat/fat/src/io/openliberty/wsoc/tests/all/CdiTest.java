@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 
-import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.util.wsoc.WsocTestContext;
-import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
 import io.openliberty.wsoc.common.Constants;
 import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 import io.openliberty.wsoc.endpoints.client.basic.ProgrammaticClientEP;
 import io.openliberty.wsoc.endpoints.client.context.SimpleClientEP;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.util.wsoc.WsocTestContext;
+import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
 
 /**
  *
@@ -172,6 +172,11 @@ public class CdiTest {
      */
     public void testCdiProgrammaticEndpointCDI12() throws Exception {
 
+        // Reset counter to 0 for the second FAT run since a new application is deployed
+        if (sequenceCounter12 == 2) {
+            sequenceCounter12 = 0;
+        }
+
         String s1 = "Message1FromClient";
         String e1 = "Dependent Scoped Counter: 2 ApplicationScopedCounter: 3";
 
@@ -193,6 +198,11 @@ public class CdiTest {
      * ServerEndpoint - @see ProgrammaticExtendEndpointCDI12
      */
     public void testCdiProgrammaticEndpointMultipleOnMessageCDI12() throws Exception {
+
+        // Reset counter to 0 for the second FAT run since a new application is deployed
+        if (sequenceCounter12 == 2) {
+            sequenceCounter12 = 0;
+        }
 
         String s1 = "Message1FromClient";
         String s2 = "Message2FromClient";
@@ -239,6 +249,11 @@ public class CdiTest {
      */
     public void testCdiProgrammaticEndpointCDI20() throws Exception {
 
+        // Reset counter to 0 for the second FAT run since a new application is deployed
+        if (sequenceCounter20 == 2) {
+            sequenceCounter20 = 0;
+        }
+
         String s1 = "Message1FromClient";
         String e1 = "Dependent Scoped Counter: 2 ApplicationScopedCounter: 3";
 
@@ -260,6 +275,11 @@ public class CdiTest {
      * ServerEndpoint - @see ProgrammaticExtendEndpointCDI20
      */
     public void testCdiProgrammaticEndpointMultipleOnMessageCDI20() throws Exception {
+
+        // Reset counter to 0 for the second FAT run since a new application is deployed
+        if (sequenceCounter20 == 2) {
+            sequenceCounter20 = 0;
+        }
 
         String s1 = "Message1FromClient";
         String s2 = "Message2FromClient";

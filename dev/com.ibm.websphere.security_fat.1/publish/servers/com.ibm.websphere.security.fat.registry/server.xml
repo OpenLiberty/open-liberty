@@ -1,0 +1,37 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.websphere.security.fat.publicapi">
+
+	<featureManager>
+        <feature>webspheresecuritylibertyinternals-1.0</feature>
+        <feature>servlet-3.1</feature>
+	</featureManager>
+
+    <basicRegistry id="basic" realm="BasicRegistry">
+      <user name="user0" password="user0pwd" />
+      <user name="user1" password="user1pwd" />
+      <user name="user2" password=" {xor}Kiw6LW0vKDs= " /> <!-- user2pwd -->
+      <group name="group0" />
+      <group name="group1">
+        <member name="user2" />
+      </group>
+      <group name="group2">
+        <member name="user1" />
+        <member name="user2" />
+      </group>
+    </basicRegistry>
+
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read" />
+
+
+	<include location="../fatTestPorts.xml" />
+
+</server>

@@ -53,7 +53,9 @@ import com.ibm.ws.config.xml.internal.ConfigEvaluator.UnresolvedReference;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.UnresolvedService;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.SymbolRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -104,7 +106,7 @@ public class ConfigEvaluatorTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
@@ -842,7 +844,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("one", "logs_directory");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "log1");
@@ -890,7 +892,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("one", "replacedValue");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "${one}");
@@ -1001,7 +1003,7 @@ public class ConfigEvaluatorTest {
         assertEquals("a=" + nestedPortPid, dictionary.get("a"));
         assertEquals("z=" + nestedPortPid, dictionary.get("z"));
 
-        VariableRegistry vr = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        VariableRegistry vr = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
         assertEquals("portRef should not be in the variable registry", "${portRef}", vr.resolveString("${portRef}"));
         // Just checking that the variable registry is sane
         assertEquals("server config dir should be in the variable registry", wsLocation.resolveString("${" + WsLocationConstants.LOC_SERVER_CONFIG_DIR + "}"),
@@ -1049,7 +1051,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("test", "expanded variable");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
@@ -1088,7 +1090,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("com.ibm.ws.logging.log.directory", "a,b,c");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
@@ -1126,7 +1128,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("com.ibm.ws.logging.log.directory", "a,b,c");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
@@ -1167,7 +1169,7 @@ public class ConfigEvaluatorTest {
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
         variableRegistryHelper.addVariable("com.ibm.ws.logging.log.directory", "a,b,c");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
@@ -1340,7 +1342,7 @@ public class ConfigEvaluatorTest {
         variableRegistryHelper.addVariable("singleValue", "a");
         variableRegistryHelper.addVariable("intValues", "1,2,3,4,5");
         variableRegistryHelper.addVariable("varArray", "${multiValue}, ${singleValue}, ${intValues}");
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         Map<ConfigID, String> pids = new HashMap<ConfigID, String>();
@@ -1579,7 +1581,7 @@ public class ConfigEvaluatorTest {
 
         String[] commandLineVariables = new String[] { "--onlyCLV=foo", "--inBoth=fromCLV", "--zzz", "--emptyInCLV", "--=====", "--=bcd", "--empty=", "onlyCLV=invalidFromCLV",
                                                        "-inBoth=invalidFromBoth" };
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, commandLineVariables, null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, commandLineVariables, null, wsLocation);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
         ConfigElement loggingElement = serverConfig.getSingleton(loggingPid, loggingRE.getAlias());
@@ -1769,7 +1771,7 @@ public class ConfigEvaluatorTest {
             RegistryEntry re = registry.getRegistryEntry(pid);
 
             VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
-            ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null);
+            ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper, new String[0], null, wsLocation);
             TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
             for (boolean variables : new boolean[] { false, true }) {
@@ -3146,7 +3148,7 @@ public class ConfigEvaluatorTest {
             assertEquals(2, c21.size());
         }
 
-        VariableRegistry vr = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        VariableRegistry vr = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
         assertEquals("flat variable should not be in the variable registry", "${c1.0.multiAttr}", vr.resolveString("${c1.0.multiAttr}"));
     }
 

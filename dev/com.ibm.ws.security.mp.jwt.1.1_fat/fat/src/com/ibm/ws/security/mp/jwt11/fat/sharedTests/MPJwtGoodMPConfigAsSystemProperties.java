@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 
 @RunWith(FATRunner.class)
-public class MPJwtGoodMPConfigAsSystemProperties extends MPJwtMPConfigTests {
+public class MPJwtGoodMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat.jvmOptions")
     public static LibertyServer resourceServer;
@@ -44,7 +44,7 @@ public class MPJwtGoodMPConfigAsSystemProperties extends MPJwtMPConfigTests {
     public void MPJwtGoodMPConfigAsSystemProperties_GoodMpJwtConfigSpecifiedInServerXml() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_goodServerXmlConfig.xml");
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
@@ -60,7 +60,7 @@ public class MPJwtGoodMPConfigAsSystemProperties extends MPJwtMPConfigTests {
     @Test
     public void MPJwtGoodMPConfigAsSystemProperties_MpJwtConfigNotSpecifiedInServerXml() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }

@@ -514,14 +514,12 @@ public abstract class HTTPConduit
         setupConnection(message, currentAddress, csPolicy);
 
         // If the HTTP_REQUEST_METHOD is not set, the default is "POST".
-        //Liberty code change start
         String httpRequestMethod =
-            (String)((MessageImpl) message).getHttpRequestMethod();
+            (String)message.get(Message.HTTP_REQUEST_METHOD);
         if (httpRequestMethod == null) {
             httpRequestMethod = "POST";
-            ((MessageImpl) message).setHttpRequestMethod("POST");
+            message.put(Message.HTTP_REQUEST_METHOD, "POST");
         }
-        //Liberty code change end
 
         boolean isChunking = false;
         int chunkThreshold = 0;
@@ -714,26 +712,23 @@ public abstract class HTTPConduit
      * @throws MalformedURLException
      * @throws URISyntaxException
      */
-    private Address setupAddress(Message m) throws URISyntaxException {
-        //Liberty code change start
-        MessageImpl message = (MessageImpl) m;
-        String result = (String)message.getEndpointAddress();
-        String pathInfo = (String)message.getPathInfo();
-        String queryString = (String) message.getQueryString();
+    private Address setupAddress(Message message) throws URISyntaxException {
+        String result = (String)message.get(Message.ENDPOINT_ADDRESS);
+        String pathInfo = (String)message.get(Message.PATH_INFO);
+        String queryString = (String)message.get(Message.QUERY_STRING);
         setAndGetDefaultAddress();
         if (result == null) {
             if (pathInfo == null && queryString == null) {
                 if (defaultAddress != null) {
-                    message.setEndpointAddress(defaultAddress.getString());
+                    message.put(Message.ENDPOINT_ADDRESS, defaultAddress.getString());
                 }
                 return defaultAddress;
             }
             if (defaultAddress != null) {
                 result = defaultAddress.getString();
-                message.setEndpointAddress(result);
+                message.put(Message.ENDPOINT_ADDRESS, result);
             }
         }
-        //Liberty code change end
 
         // REVISIT: is this really correct?
         if (null != pathInfo && !result.endsWith(pathInfo)) {
@@ -1081,9 +1076,7 @@ public abstract class HTTPConduit
          */
         @Override
         @FFDCIgnore(IOException.class)
-        public void onMessage(Message message) {
-            //Liberty code change start
-            MessageImpl inMessage = (MessageImpl) message;
+        public void onMessage(Message inMessage) {
             // disposable exchange, swapped with real Exchange on correlation
             inMessage.setExchange(new ExchangeImpl());
             inMessage.getExchange().put(Bus.class, bus);
@@ -1091,13 +1084,12 @@ public abstract class HTTPConduit
             // REVISIT: how to get response headers?
             //inMessage.put(Message.PROTOCOL_HEADERS, req.getXXX());
             Headers.getSetProtocolHeaders(inMessage);
-            inMessage.setResponseCode(HttpURLConnection.HTTP_OK);
+            inMessage.put(Message.RESPONSE_CODE, HttpURLConnection.HTTP_OK);
 
             // remove server-specific properties
-            inMessage.removeHttpRequest();
-            inMessage.removeHttpResponse();
+            inMessage.remove(AbstractHTTPDestination.HTTP_REQUEST);
+            inMessage.remove(AbstractHTTPDestination.HTTP_RESPONSE);
             inMessage.remove(Message.ASYNC_POST_RESPONSE_DISPATCH);
-            //Liberty code change end
 
             //cache this inputstream since it's defer to use in case of async
             try {
@@ -1370,9 +1362,7 @@ public abstract class HTTPConduit
             }
         }
         protected String getMethod() {
-            //Liberty code change start
-            return (String)((MessageImpl) outMessage).getHttpRequestMethod();
-            //Liberty code change end
+            return (String)outMessage.get(Message.HTTP_REQUEST_METHOD);
         }
 
 
@@ -1691,12 +1681,10 @@ public abstract class HTTPConduit
             InputStream in = null;
             // oneway or decoupled twoway calls may expect HTTP 202 with no content
 
-            //Liberty code change start
-            MessageImpl inMessage = new MessageImpl();
+            Message inMessage = new MessageImpl();
             inMessage.setExchange(exchange);
             updateResponseHeaders(inMessage);
-            inMessage.setResponseCode(responseCode);
-            //Liberty code change end
+            inMessage.put(Message.RESPONSE_CODE, responseCode);
             if (MessageUtils.getContextualBoolean(outMessage, SET_HTTP_RESPONSE_MESSAGE, false)) {
                 inMessage.put(HTTP_RESPONSE_MESSAGE, getResponseMessage());
             }
@@ -1745,9 +1733,7 @@ public abstract class HTTPConduit
                 LOG.log(Level.WARNING, m);
                 throw new IOException(m);
             }
-            //Liberty code change start
-            ((MessageImpl) inMessage).setEncoding(normalizedEncoding);
-            //Liberty code change end
+            inMessage.put(Message.ENCODING, normalizedEncoding);
             if (in == null) {
                 in = getInputStream();
             }

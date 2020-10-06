@@ -16,6 +16,8 @@ Bundle-Name: WebSocketCDI1.2
 Bundle-SymbolicName: com.ibm.ws.wsoc.cdi.weld
 Bundle-Description: WebSocket v1.2 CDI Integration Bundle; version=${bVersion}
 
+jakartaeeMe:true
+
 Export-Package: \
   com.ibm.ws.wsoc.cdi.weld
 

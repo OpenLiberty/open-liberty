@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall
 IBM-API-Package: jakarta.jms; version="3.0"; type="spec"
 IBM-ShortName: messaging-3.0
+WLP-AlsoKnownAs: jms-3.0
 Subsystem-Name: Jakarta Message Service 3.0
 -features=io.openliberty.messaging-3.0.internal, \
  com.ibm.websphere.appserver.transaction-2.0, \

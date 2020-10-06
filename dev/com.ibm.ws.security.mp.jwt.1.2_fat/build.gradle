@@ -1,0 +1,181 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
+  		project(':com.ibm.ws.security.mp.jwt.1.1_fat'),
+      'commons-logging:commons-logging:1.1.3',
+      'org.apache.httpcomponents:httpclient:4.5.4',
+      'org.apache.httpcomponents:httpcore:4.4.9',
+      'net.sourceforge.htmlunit:htmlunit:2.27',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
+      'net.sourceforge.cssparser:cssparser:0.9.23',
+      'org.apache.commons:commons-lang3:3.5',
+      'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+      'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+      'commons-codec:commons-codec:1.6',
+      'xml-apis:xml-apis:1.4.01',
+      'xerces:xercesImpl:2.11.0'
+}
+
+/* for debugging
+ gradle.taskGraph.whenReady {taskGraph ->
+    println "Found task graph: " + taskGraph
+    println "Found " + taskGraph.allTasks.size() + " tasks."
+    taskGraph.allTasks.forEach { task ->
+        println task
+        task.dependsOn.forEach { dep ->
+            println "  - " + dep
+        }
+    }
+}
+*/
+
+def serversFrom12 = [
+	'com.ibm.ws.security.mp.jwt.1.2.fat',
+	'com.ibm.ws.security.mp.jwt.1.2.fat.jvmOptions',
+	'com.ibm.ws.security.mp.jwt.1.2.fat.builder'
+	]
+
+def serversFrom11 = [
+	'com.ibm.ws.security.mp.jwt.1.1.fat',
+	'com.ibm.ws.security.mp.jwt.1.1.fat.client',
+	'com.ibm.ws.security.mp.jwt.1.1.fat.jvmOptions',
+	'com.ibm.ws.security.mp.jwt.1.1.fat.builder'
+	]
+	
+def servers= serversFrom11 + serversFrom12
+	
+task copyServerFiles_sharedConfig { 
+ doLast {
+ 
+ /** copy common config files (like ssl config definitions)  We will override with project specific later **/
+   copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+    /* copy the mpJwt-1.1 fat test servers to the current project so we can run the 1.1 tests with the 1.2 feature enabled */
+   copy {
+      from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('publish')
+      into new File(autoFvtDir, 'publish')
+      /* eachFile { println it.name } */
+    }
+  }
+ }
+ 
+ task copyServerFiles_keyAndTrust {
+  doLast {
+  servers.each { server ->
+/******************* Start Copy Security Keys **********************/
+  	/* Copy all shared key/trust stores from the common security FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+
+  	/* copy shared key/trust stores from the common jwt security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+ 
+   	/* copy shared key/trust stores from the mpjwt 1.1 project */
+    copy { 
+     from project(':com.ibm.ws.security.mp.jwt.1.1_fat').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  
+    /* Copy all shared key/trust stores from this project
+  		overwrites shared jks files from the common security FAT 
+    */	
+    copy { 
+     from ('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  	/* Copy all server specific key/trust stores - overwrites shared
+  		key/trust stores from either the common security FAT, or this
+  		project
+  	 */
+    copy { 
+     from new File(autoFvtDir, 'publish/servers/' + server + '/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+/******************* End Copy Security Keys ***********************/
+  }
+  }
+ }
+ 
+ task copy11TesBinaries {
+  doLast {
+  
+     /*
+     * Copy test application binaries.
+     */
+   copy {
+      from(zipTree(new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'com.ibm.ws.security.mp.jwt.1.1_fat.jar')))      
+      into new File(autoFvtDir, 'build/classes')
+   }
+ }
+ }
+ 
+ task copyServerFiles { 
+
+ doLast {
+
+  servers.each { server ->
+
+	/* copy test marker (small test app that marks the start/end of each test case in the server side logs */  
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+  }
+  
+  	/* copy builder assistance apps */  
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat.builder/apps')
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.1.fat.builder/apps')
+    }
+ 
+    copy {
+      from new File(project(':com.ibm.ws.security.mp.jwt.1.1_fat').buildDir, 'autoFVT/test-applications')
+      into new File(autoFvtDir, 'test-applications') ;
+    }
+    
+    /* override the feature file (replacing 1.1 with 1.2) */
+    copy { 
+      from ('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    } 
+    
+    /* copy configs from jwt fat server to the jwt jvmOptions server */
+    /* the servers are basically the same, just need the jvmOptions file in only this instance */
+    copy {
+      from ('publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat/configs')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.2.fat.jvmOptions/configs') ;
+    }
+    
+  }
+}
+
+autoFVT.dependsOn copyServerFiles_sharedConfig, copyServerFiles_keyAndTrust, copyServerFiles, copy11TesBinaries 
+

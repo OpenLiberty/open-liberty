@@ -20,4 +20,4 @@ Export-Package: \
   org.eclipse.microprofile.lra*; version="1.0.0"
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.lra:microprofile-lra-api;1.0.0.M1;EXACT}
+  @${repo;org.eclipse.microprofile.lra:microprofile-lra-api;1.0.0.M2;EXACT}

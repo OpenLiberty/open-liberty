@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
+import com.ibm.ws.kernel.boot.BootstrapLocations;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
 
 import test.common.SharedOutputManager;
@@ -61,7 +62,10 @@ public class SharedBootstrapConfig extends BootstrapConfig {
 
         HashMap<String, String> map = new HashMap<String, String>();
 
-        this.findLocations(serverName, rootDirStr, null, null, null);
+        BootstrapLocations bl = new BootstrapLocations();
+        bl.setProcessName(serverName);
+        bl.setUserDir(rootDirStr);
+        this.findLocations(bl);
         this.configure(map);
     }
 

@@ -6,12 +6,13 @@ IBM-API-Package: com.ibm.websphere.jaxrs.server; type="ibm-api", \
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: restfulWS-3.0
+WLP-AlsoKnownAs: jaxrs-3.0
 Subsystem-Name: Java RESTful Web Services 3.0
 -features=\
  io.openliberty.restfulWSClient-3.0, \
  io.openliberty.internal.restfulWS-3.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  io.openliberty.cdi-3.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

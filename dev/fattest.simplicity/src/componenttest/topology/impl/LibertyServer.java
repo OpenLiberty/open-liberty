@@ -4132,7 +4132,18 @@ public class LibertyServer implements LogMonitorClient {
         if (savedServerXml == null) {
             throw new RuntimeException("The server configuration cannot be restored because it was never saved via the saveServerConfiguration method.");
         }
+        Log.info(c, "restoreServerConfiguration", savedServerXml.getName());
         getServerConfigurationFile().copyFromSource(savedServerXml);
+    }
+
+    /**
+     * This will restore the server configuration and wait for all apps to be ready
+     *
+     * @throws Exception
+     */
+    public void restoreServerConfigurationAndWaitForApps(String... extraMsgs) throws Exception {
+        restoreServerConfiguration();
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), extraMsgs);
     }
 
     public String getServerConfigurationPath() {

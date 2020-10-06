@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -35,6 +36,7 @@ import componenttest.topology.utils.HttpUtils;
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat("jaxws-2.3")
 public class WsBndEndpointOverrideTest_Lite {
     private static final int CONN_TIMEOUT = 5;
 

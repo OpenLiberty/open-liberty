@@ -13,3 +13,4 @@ visibility=private
 -files=clients/ejbRemotePortable.jakarta.jar
 kind=beta
 edition=base
+WLP-Activation-Type: parallel
