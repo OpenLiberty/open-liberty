@@ -54,7 +54,9 @@ public class StoreClientTestsUtils {
                                                 "com.ibm.testapp.g3store.grpcservice",
                                                 "com.ibm.testapp.g3store.servletStore",
                                                 "com.ibm.testapp.g3store.utilsStore",
-                                                "com.ibm.test.g3store.grpc"); // add generated src
+                                                "com.ibm.test.g3store.grpc", // add generated src
+                                                "componenttest.app", // provide componenttest servlet for SVT
+                                                "org.junit"); // provide junit for SVT
         } catch (Exception e) {
 
             Log.info(c, "addStoreApp", "Unable to add the StoreApp.");
@@ -86,7 +88,10 @@ public class StoreClientTestsUtils {
                                                          "com.ibm.testapp.g3store.servletProducer",
                                                          "com.ibm.testapp.g3store.utilsProducer",
                                                          "com.ibm.ws.fat.grpc.monitoring",
-                                                         "com.ibm.test.g3store.grpc"); // add generated src
+                                                         "com.ibm.test.g3store.grpc", // add generated src
+                                                         "componenttest.app", // provide componenttest servlet for SVT
+                                                         "org.junit",
+                                                         "org.hamcrest");
         } catch (Exception e) {
 
             Log.info(c, "addProducerApp", "Unable to add the ProducerApp.");
@@ -127,7 +132,10 @@ public class StoreClientTestsUtils {
                                                               "com.ibm.testapp.g3store.restProducer.model",
                                                               "com.ibm.testapp.g3store.servletProducer",
                                                               "com.ibm.test.g3store.grpc", // add generated src
-                                                              "com.ibm.testapp.g3store.restProducer.client");
+                                                              "com.ibm.testapp.g3store.restProducer.client",
+                                                              "componenttest.app", // provide componenttest servlet for SVT
+                                                              "org.junit", // provide junit for SVT
+                                                              "org.hamcrest"); // provide junit for SVT
         } catch (Exception e) {
 
             Log.info(c, "addConsumerApp_RestClient", "Unable to add the ConsumerApp.");
@@ -164,7 +172,9 @@ public class StoreClientTestsUtils {
                                                    "com.ibm.testapp.g3store.restConsumer.client",
                                                    "com.ibm.testapp.g3store.restProducer.model",
                                                    "com.ibm.testapp.g3store.restProducer.client",
-                                                   "com.ibm.test.g3store.grpc");// add generated src
+                                                   "com.ibm.test.g3store.grpc", // add generated src
+                                                   "componenttest.app", // provide junit for SVT
+                                                   "org.hamcrest"); // provide junit for SVT
         } catch (Exception e) {
             Log.info(c, "addConsumerApp", "Unable to add the ConsumerApp.");
             throw e;
