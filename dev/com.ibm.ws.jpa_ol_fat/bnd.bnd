@@ -15,8 +15,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/ConcurrentEnhancementVerification/src,\
-	test-applications/helpers/DatabaseManagement/src,\
-	test-framework/src
+	test-applications/helpers/DatabaseManagement/src
 
 fat.project: true
 tested.features: el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0, jdbc-4.0, beanvalidation-1.1, jpa-2.0
@@ -24,6 +23,7 @@ tested.features: el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, ente
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
+	com.ibm.ws.jpa_testframework;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

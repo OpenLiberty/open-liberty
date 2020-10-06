@@ -23,7 +23,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class JPAInjectionTestLogic extends AbstractTestLogic {
     public void testInjectionTarget(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testInjectionTarget: Missing context and/or resources.  Cannot execute the test.");
@@ -152,11 +152,6 @@ public class JPAInjectionTestLogic extends AbstractTestLogic {
 
             System.out.println("********************************************************************************");
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("JPAInjectionTestLogic.testInjectionTarget(): End");
         }

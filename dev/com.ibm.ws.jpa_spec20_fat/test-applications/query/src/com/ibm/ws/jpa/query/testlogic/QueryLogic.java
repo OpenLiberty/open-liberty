@@ -49,7 +49,7 @@ public class QueryLogic extends AbstractTestLogic {
      * However, this behavior is JPA Provider specific.
      */
     public void testUnwrap001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -92,11 +92,6 @@ public class QueryLogic extends AbstractTestLogic {
                     Assert.fail("The wrong exception was thrown.");
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -112,7 +107,7 @@ public class QueryLogic extends AbstractTestLogic {
      * However, this behavior is JPA Provider specific
      */
     public void testUnwrap002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -153,11 +148,6 @@ public class QueryLogic extends AbstractTestLogic {
                     Assert.fail("The wrong exception was thrown.");
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -177,7 +167,7 @@ public class QueryLogic extends AbstractTestLogic {
      *
      */
     public void testUnwrap003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -234,11 +224,6 @@ public class QueryLogic extends AbstractTestLogic {
                     }
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

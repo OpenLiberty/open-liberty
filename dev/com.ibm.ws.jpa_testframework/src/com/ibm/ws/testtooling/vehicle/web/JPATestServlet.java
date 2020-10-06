@@ -127,7 +127,7 @@ public abstract class JPATestServlet extends FATServlet {
         Map<String, String> testResourcesList = new HashMap<String, String>();
         testResourcesList.put("test-jpa-resource", testResource);
 
-        executeTest(testName, testMethod, testResourcesList, null);
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     protected void executeTest(String testName, String testMethod, Map<String, String> testResourcesList, Map<String, java.io.Serializable> props) throws Exception {
