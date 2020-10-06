@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.cdi3.0-websocket2.0.feature
+symbolicName=io.openliberty.cdi3.0-websocket2.0
 visibility=private
 IBM-App-ForceRestart: install, \
  uninstall
