@@ -22,6 +22,7 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_BIND_PA
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_TIME_OUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CONNECT_TIMEOUT;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_DEREFALIASES;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_HOST;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_INIT_POOL_SIZE;
@@ -424,6 +425,11 @@ public class LdapConnection {
         String referral = (String) configProps.get(CONFIG_PROP_REFERRAL);
         referral = referal != null ? referal : referral;
         iContextManager.setReferral(referral.toLowerCase());
+
+        /*
+         * Set alias dereferencing handling.
+         */
+        iContextManager.setDerefAliases((String) configProps.get(CONFIG_PROP_DEREFALIASES));
 
         /*
          * Set binary attribute names.
