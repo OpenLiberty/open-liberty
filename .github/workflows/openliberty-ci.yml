@@ -26,9 +26,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: actions/setup-java@v1
+      uses: joschi/setup-jdk@v2
       with:
         java-version: 11
+        openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
@@ -52,15 +53,15 @@ jobs:
           dev/build.image/wlp/
   unit_tests:
     name: Unit Tests
-    if: "false" # TEMP
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: actions/setup-java@v1
+      uses: joschi/setup-jdk@v2
       with:
         java-version: 11
+        openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
@@ -74,7 +75,7 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew --continue cnf:initialize assemble testClasses testResults
+        ./gradlew --continue cnf:initialize testClasses testResults
     - name: Upload unit test logs
       if: failure()
       uses: actions/upload-artifact@v2
@@ -533,9 +534,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Java
-      uses: actions/setup-java@v1
+      uses: joschi/setup-jdk@v2
       with:
         java-version: 11
+        openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
