@@ -560,6 +560,7 @@ jobs:
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
+        GH_EVENT_NAME: ${{github.event_name}}
       run: .github/workflow-scripts/run-fat-build.sh
     - name: Check for FAT failures
       shell: bash
