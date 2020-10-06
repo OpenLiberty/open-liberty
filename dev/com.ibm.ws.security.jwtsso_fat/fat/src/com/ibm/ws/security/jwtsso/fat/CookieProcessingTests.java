@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,15 +34,19 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
+import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.expectations.CookieExpectation;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
-import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -57,14 +62,21 @@ public class CookieProcessingTests extends CommonSecurityFat {
     String defaultUser = JwtFatConstants.TESTUSER;
     String defaultPassword = JwtFatConstants.TESTUSERPWD;
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
+
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
     private final JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
+    private static JwtFatUtils fatUtils = new JwtFatUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.CURRENT_REPEAT_ACTION);
+
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
@@ -255,11 +267,11 @@ public class CookieProcessingTests extends CommonSecurityFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_TokenInAuthHeader() throws Exception {
-     
+
         // we need to make sure we get a jwt with a unique issued-at claim, i.e. at least one second after last test,
         // otherwise we can get a duplicate jwt, same as prior test, and test will fail because jwt is a duplicate.
         Thread.sleep(1100);
-        
+
         // get jwt token from token endpoint
         String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + "/jwt/ibm/api/defaultJwtSso/token";
         wc = actions.createWebClient();

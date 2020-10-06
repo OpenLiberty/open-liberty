@@ -22,6 +22,7 @@ import javax.json.JsonReader;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,9 +48,11 @@ import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
+import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
+import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
-import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
@@ -58,6 +61,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
@@ -65,6 +70,9 @@ import componenttest.topology.impl.LibertyServer;
 public class ReplayCookieTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = ReplayCookieTests.class;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -76,6 +84,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
     private final JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
+    private static JwtFatUtils fatUtils = new JwtFatUtils();
 
     static final String DEFAULT_CONFIG = "server_withBuilderApp.xml";
     static final String APP_NAME_JWT_BUILDER = "jwtbuilder";
@@ -88,6 +97,9 @@ public class ReplayCookieTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.CURRENT_REPEAT_ACTION);
+
         bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
         bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
 
