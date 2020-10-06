@@ -94,7 +94,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         testName = "testLogstashDefaultConfig";
         setConfig("server_default_conf.xml");
         assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLogUsingMark("TRAS0218I"));
-
+        assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
         clearContainerOutput();
 
         int numOfMsg = 10;
