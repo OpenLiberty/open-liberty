@@ -185,9 +185,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
         // Do some work and hopefully some GC events will be created
         for (int i = 1; i <= 10; i++) {
-            createMessageEvent(testName + " " + i);
+            createGCEvent();
         }
-        createGCEvent();
         assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
     }
 
@@ -410,7 +409,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     }
 
     private boolean checkGcSpecialCase() {
-        Log.info(c, testName, "Cannot find event type liberty_gc in logstash output file");
+        Log.info(c, testName, "checkGcSpecialCase");
         /**
          * Check if if belongs to the special case where build machine does not have Health centre installed, which prevents gc event to be produced
          * by checking 1. whether the operating system is Mac or linux 2. whether the machine is running IBM JDK
