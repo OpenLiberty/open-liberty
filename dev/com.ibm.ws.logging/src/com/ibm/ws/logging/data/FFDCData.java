@@ -72,10 +72,6 @@ public class FFDCData extends GenericData {
         setPair(index, NAMES_JSON[index], s);
     }
 
-    private void setPair(int index, int i) {
-        setPair(index, NAMES_JSON[index], i);
-    }
-
     private void setPair(int index, long l) {
         setPair(index, NAMES_JSON[index], l);
     }
