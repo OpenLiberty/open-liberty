@@ -97,7 +97,7 @@ public abstract class AbstractInstrumentationTask extends Task {
      * @return the ant Commandline that holds the command line arguments
      */
     protected Commandline getCommandline() {
-		Commandline cmdl = new Commandline();
+        Commandline cmdl = new Commandline();
         if (configFile != null) {
             cmdl.createArgument().setValue("--config");
             cmdl.createArgument().setFile(configFile);
