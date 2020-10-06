@@ -30,13 +30,18 @@ jobs:
       with:
         java-version: 11
         openjdk_impl: openj9
-    - name: Apply Gradle cache
+    - name: Apply repository caches
       uses: actions/cache@v2
       with:
         path: |
-          ~/.gradle/caches
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Build with Gradle
@@ -62,13 +67,18 @@ jobs:
       with:
         java-version: 11
         openjdk_impl: openj9
-    - name: Apply Gradle cache
+    - name: Apply repository caches
       uses: actions/cache@v2
       with:
         path: |
-          ~/.gradle/caches
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Run unit tests
@@ -538,13 +548,18 @@ jobs:
       with:
         java-version: 11
         openjdk_impl: openj9
-    - name: Apply Gradle cache
+    - name: Apply repository caches
       uses: actions/cache@v2
       with:
         path: |
-          ~/.gradle/caches
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}-${{ hashFiles('**/*.bnd') }}
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Download liberty image
