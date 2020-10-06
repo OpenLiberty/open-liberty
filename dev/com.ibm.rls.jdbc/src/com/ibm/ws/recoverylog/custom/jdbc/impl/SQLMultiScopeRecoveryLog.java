@@ -11,20 +11,18 @@
 
 package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.net.MalformedURLException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
+import java.sql.SQLTransientException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,16 +134,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private final Properties _internalLogProperties;
 
     /**
-     * The URLs that describe the JDBC driver location
-     */
-    private java.net.URL[] _urls;
-
-    /**
-     * The string that defines the JDBC URL.
-     */
-    private String _dbURL;
-
-    /**
      * Are we working against an Oracle Database or DB2
      */
     volatile private boolean _isOracle;
@@ -157,7 +145,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /**
      * A map of recoverable units. Each recoverable unit is keyed by its identity.
      */
-    private HashMap<Long, RecoverableUnit> _recoverableUnits;
+    private HashMap<Long, SQLRecoverableUnitImpl> _recoverableUnits;
 
     /**
      * Counter to track the number of times the recovery log must be closed by the
@@ -362,20 +350,20 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS = 2; // We'll keep retrying for 2 seconds in the lightweight case
     private int _transientRetryAttempts;
     private int _lightweightTransientRetryAttempts;
-    private boolean sqlTransientErrorHandlingEnabled = false;
+    private boolean sqlTransientErrorHandlingEnabled = true;
 
     /**
      * Flag to indicate whether the server is stopping.
      */
     private boolean _serverStopping;
 
-    volatile SQLMultiScopeRecoveryLog _associatedLog = null;
-    volatile boolean _failAssociatedLog = false;
+    volatile SQLMultiScopeRecoveryLog _associatedLog;
+    volatile boolean _failAssociatedLog;
 
     private final String _currentProcessServerName;
 
     // This flag is set to "true" when the new HADB locking scheme has been enabled for peer recovery
-    private static volatile boolean _useNewLockingScheme = false;
+    private static volatile boolean _useNewLockingScheme;
     private static int _logGoneStaleTime = 10; // If a timestamp has not been updated in _logGoneStaleTime seconds, we assume that
     // the owning server has crashed. The default is 10 seconds. Note in Liberty this default is enforced in metatype.xml.
     private int _peerLockTimeBetweenHeartbeats = 5;
@@ -426,8 +414,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         _failureScope = fs;
         _isHomeServer = Configuration.localFailureScope().equals(_failureScope);
         _internalLogProperties = _customLogProperties.properties();
-        _urls = null;
-        _dbURL = null;
         _currentProcessServerName = Configuration.fqServerName();
 
         /**
@@ -573,7 +559,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                     if (_recoverableUnits != null)
                         _recoverableUnits.clear();
-                    _recoverableUnits = new HashMap<Long, RecoverableUnit>();
+                    _recoverableUnits = new HashMap<Long, SQLRecoverableUnitImpl>();
 
                     _cachedInsertsA.clear();
                     _cachedInsertsB.clear();
@@ -598,16 +584,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "fullLogDirectory = " + fullLogDirectory);
 
-                        if (!fullLogDirectory.contains("datasource")) {
-                            // The absence of this string indicates a fully specified JDBC connection string has been specified
-                            // by the administrator ** THIS IS RETAINED FOR TESTING PURPOSES ONLY **
-                            conn = getConnFromTranLogDirString(fullLogDirectory);
-                        } else {
-                            // The presence of this string means that a Data Source has been specified
-                            conn = getConnection(fullLogDirectory); // DB2 = ny01DS, Oracle = nyoraDS
-                        }
-
-                        // If we were unable to get a connection, throw an exception
+                        conn = getConnection(fullLogDirectory); // DB2 = ny01DS, Oracle = nyoraDS
                         if (conn == null) {
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "openLog", "Null connection InternalLogException");
@@ -738,221 +715,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.getConnFromTranLogDirString
-    //------------------------------------------------------------------------------
-    /**
-     * Extracts the config from the Transaction Log Directory String
-     * where database parameters have been specified in name/value
-     * pairs. Establish a jdbc connection using the parameters.
-     *
-     * @return The Connection.
-     *
-     * @exception
-     */
-    public Connection getConnFromTranLogDirString(String fullLogDirectory) throws LogCorruptedException, LogAllocationException, InternalLogException {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getConnFromTranLogDirString", new java.lang.Object[] { fullLogDirectory, this });
-
-        Connection conn = null;
-
-        try {
-            // Parse the _internalLogProperties in order to extract the config parameters to connect to the database
-            // The LOG_DIRECTORY will be of the form,
-            //    DB2:  custom://com.ibm.rls.jdbc.SQLRecoveryLog?url=jdbc:db2://localhost:50000/SAMPLE,user=db2admin,
-            //                                                  password=db2admin,dbdir=C:\\SQLLIB\\java
-            // ORACLE:  custom://com.ibm.rls.jdbc.SQLRecoveryLog?url=jdbc:oracle:thin:@localhost:1521:orcl,user=scott,
-            //                                                  password=tiger,dbdir=C:\\Oracle\\app\\Administrator\\product\\11.2.0\\dbhome_1\\jdbc\\lib
-            //
-            // Other DB2 URL specs might be "jdbc:db2\:WSTEST" or "jdbc:db2://moondb05.rtp.raleigh.ibm.com:50000/BFTESTDB"
-            //
-            // The dbdir property enables the location of the db2 jars so the driver can be found
-            // On WINDOWS
-            //          java.io.File file1 = new java.io.File("C:\\SQLLIB\\java\\db2jcc.jar");
-            //          java.io.File file2 = new java.io.File("C:\\SQLLIB\\java\\db2jcc_license_cu.jar");
-            //          java.io.File file3 = new java.io.File("C:\\SQLLIB\\java\\");
-            //On UNIX
-            //        java.io.File file1 = new java.io.File("/test/db2jcc.jar");
-            //        java.io.File file2 = new java.io.File("/test/db2jcc_license_cu.jar");
-            //        java.io.File file3 = new java.io.File("/test");
-
-            // Set up RDBMS properties to be used by JDBC
-            Properties dbProps = new Properties();
-
-            // Parse the string we've been given
-            parseLogDirectoryString(fullLogDirectory, dbProps);
-
-            // Set up the class for the specific RDBMS implementation's JDBC driver
-            Class cls = null;
-            // Create a new class loader with the directory
-            ClassLoader sqlDriverClassLoader = null;
-
-            try {
-                sqlDriverClassLoader = (ClassLoader) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    @Override
-                    public Object run() {
-                        ClassLoader cl = new java.net.URLClassLoader(_urls);
-                        return cl;
-                    }
-                });
-            } catch (PrivilegedActionException e) {
-                Tr.error(tc, e.getMessage());
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, e.getMessage(), e);
-                }
-            }
-
-            if (_isOracle) {
-                cls = sqlDriverClassLoader.loadClass("oracle.jdbc.OracleDriver");
-            } else if (_isDB2) {
-                cls = sqlDriverClassLoader.loadClass("com.ibm.db2.jcc.DB2Driver");
-            } else if (_isPostgreSQL) {
-                cls = sqlDriverClassLoader.loadClass("org.postgresql.Driver");
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "defaulting to DB2Driver");
-                cls = sqlDriverClassLoader.loadClass("com.ibm.db2.jcc.DB2Driver");
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "instantiate jdbc driver class = " + cls);
-            // Class cls = Class.forName("com.ibm.db2.jcc.DB2Driver") //.newInstance();
-            java.sql.Driver d = (java.sql.Driver) cls.newInstance();
-
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, " **** Does this driver accept my URL? " + d.acceptsURL(_dbURL));
-            DriverManager.registerDriver(d);
-
-            // Connect to the Database
-            conn = d.connect(_dbURL, dbProps);
-        } catch (Throwable exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.openLog", "500", this);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Unexpected exception caught in openLog", exc);
-            markFailed(exc); /* @MD19484C */
-            _recoverableUnits = null;
-
-            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, " " + ste);
-            }
-
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "openLog", "InternalLogException");
-            throw new InternalLogException(exc);
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getConnFromTranLogDirString", conn);
-        return conn;
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.parseLogDirectoryString
-    //------------------------------------------------------------------------------
-    /**
-     * <p>
-     * Extract the information needed from the LogDirectoryString in
-     * order to make a connection to the database via JDBC.
-     * Specifically, we need to retrieve the appropriate database
-     * properties and to derive the appropriate JDBC driver class.
-     * </p>
-     */
-    public void parseLogDirectoryString(String fullLogDirectory, Properties dbProps) throws MalformedURLException, IOException {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "parseLogDirectoryString", new java.lang.Object[] { fullLogDirectory, this });
-
-        StringTokenizer st = new StringTokenizer(fullLogDirectory, "?");
-        String cname = st.nextToken();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "cname = " + cname);
-
-        // Extract the DB related properties
-        String dbPropertiesString = st.nextToken();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "dbPropertiesString = " + dbPropertiesString);
-
-        //Determine whether we are dealing with Oracle or DB2
-        if (dbPropertiesString.contains("oracle")) {
-            _isOracle = true;
-            // We can set the transient error codes to watch for at this point too.
-            _sqlTransientErrorCodes = _oracleTransientErrorCodes;
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Configure a connection to an ORACLE database");
-        } else if (dbPropertiesString.contains("DB2")) {
-            // we are DB2
-            _isDB2 = true;
-            _sqlTransientErrorCodes = _db2TransientErrorCodes;
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Configure a connection to a DB2 database");
-            // Flag the we can tolerate transient SQL error codes
-            sqlTransientErrorHandlingEnabled = true;
-// Used for local testing with Derby
-//        } else if (dbPropertiesString.contains("Liberty")) {
-//            // we are DB2
-//            _isDB2 = true;
-//            _sqlTransientErrorCodes = _db2TransientErrorCodes;
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "Configure a connection to a Derby database");
-//            // Flag the we can tolerate transient SQL error codes
-//            sqlTransientErrorHandlingEnabled = true;
-        } else {
-            // Not DB2 or Oracle, cannot handle transient SQL errors
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "This is neither Oracle nor DB2");
-        }
-
-        dbProps.load(new StringReader(dbPropertiesString.replace(',', '\n')));
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "dbProps = " + dbProps);
-        _dbURL = dbProps.getProperty("url");
-        dbProps.remove("url");
-        String dbDir = dbProps.getProperty("dbdir");
-        dbProps.remove("dbdir");
-
-        // Set us the 3 files
-        String file3String = dbDir + "\\";
-        String file1String = "";
-        String file2String = "";
-        if (_isOracle) {
-            file1String = file3String + "ojdbc6.jar";
-        } else {
-            file1String = file3String + "db2jcc.jar";
-            file2String = file3String + "db2jcc_license_cu.jar";
-        }
-
-        // Output DB related trace information
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "DB URL: " + _dbURL);
-            Tr.debug(tc, "DB props: " + dbProps);
-            Tr.debug(tc, "DB file1String: " + file1String);
-            Tr.debug(tc, "DB file2String: " + file2String);
-            Tr.debug(tc, "DB file3String: " + file3String);
-        }
-
-        // Set up files
-        java.io.File file1 = new java.io.File(file1String);
-        java.io.File file2 = new java.io.File(file2String);
-        java.io.File file3 = new java.io.File(file3String);
-
-        // Convert File to a URL
-        java.net.URL url1 = file1.toURL();
-        java.net.URL url2 = file2.toURL();
-        java.net.URL url3 = file3.toURL();
-
-        // Set up the urls
-        if (_isOracle) {
-            _urls = new java.net.URL[] { url1 };
-        } else if (_isDB2) {
-            _urls = new java.net.URL[] { url1, url2, url3 };
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "defaulting to DB2 stype _urls");
-            _urls = new java.net.URL[] { url1, url2, url3 };
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "parseLogDirectoryString");
-    }
-
-    //------------------------------------------------------------------------------
     // Method: SQLMultiScopeRecoveryLog.getConnection
     //------------------------------------------------------------------------------
     /**
@@ -1020,42 +782,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Got connection: " + conn);
             DatabaseMetaData mdata = conn.getMetaData();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Got metadata: " + mdata);
             String dbName = mdata.getDatabaseProductName();
             if (dbName.toLowerCase().contains("oracle")) {
                 _isOracle = true;
-                // We can set the transient error codes to watch for at this point too.
                 _sqlTransientErrorCodes = _oracleTransientErrorCodes;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is an Oracle Database");
-                // Flag the we can tolerate transient SQL error codes
-                sqlTransientErrorHandlingEnabled = true;
             } else if (dbName.toLowerCase().contains("db2")) {
-                // we are DB2
                 _isDB2 = true;
                 _sqlTransientErrorCodes = _db2TransientErrorCodes;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a DB2 Database");
-                // Flag the we can tolerate transient SQL error codes
-                sqlTransientErrorHandlingEnabled = true;
-// Used for local testing with Derby
-//            } else if (dbPropertiesString.contains("Liberty")) {
-//                // we are DB2
-//                _isDB2 = true;
-//                _sqlTransientErrorCodes = _db2TransientErrorCodes;
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Configure a connection to a Derby database");
-//                // Flag the we can tolerate transient SQL error codes
-//                sqlTransientErrorHandlingEnabled = true;
             } else if (dbName.toLowerCase().contains("postgresql")) {
                 _isPostgreSQL = true;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a PostgreSQL database");
             } else {
-                // Not DB2 or Oracle, cannot handle transient SQL errors
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is neither Oracle nor DB2, it is " + dbName);
+                sqlTransientErrorHandlingEnabled = false;
             }
 
             String dbVersion = mdata.getDatabaseProductVersion();
@@ -1101,7 +838,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             while (recoveryRS.next()) {
                 final long ruId = recoveryRS.getLong(1);
                 if (ruId != -1) {
-                    SQLRecoverableUnitImpl ru = (SQLRecoverableUnitImpl) _recoverableUnits.get(ruId);
+                    SQLRecoverableUnitImpl ru = _recoverableUnits.get(ruId);
                     if (ru == null) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Creating ru with id: " + ruId);
@@ -1745,11 +1482,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         // No need to access this inside a sync block as the caller is required to
         // hold off from changing the underlying structures whilst the cursor is open.
-        final Iterator iterator = _recoverableUnits.values().iterator();
-
-        while (iterator.hasNext()) {
-            final SQLRecoverableUnitImpl recoverableUnit = (SQLRecoverableUnitImpl) iterator.next();
-
+        for (SQLRecoverableUnitImpl recoverableUnit : _recoverableUnits.values()) {
             if (_bypassContainmentCheck || (recoverableUnit.failureScope().isContainedBy(failureScope))) {
                 recoverableUnits.add(recoverableUnit);
             }
@@ -1777,7 +1510,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         return cursor;
     }
 
-    //TODO: remove the getRecoverableUnit method ... this is the 'interface' method
     @Override
     public synchronized RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException {
         if (tc.isEntryEnabled())
@@ -2281,16 +2013,33 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.event(tc, " Error code: " + sqlErrorCode);
         }
 
-        for (int transientCode : _sqlTransientErrorCodes) {
-            Tr.event(tc, "Test against stored code: " + transientCode);
-            if (transientCode == sqlErrorCode) {
-                Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
+        if (_isDB2 || _isOracle) {
+            for (int transientCode : _sqlTransientErrorCodes) {
+                Tr.event(tc, "Test against stored code: " + transientCode);
+                if (transientCode == sqlErrorCode) {
+                    Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
+                    if (tc.isDebugEnabled()) {
+                        if (!(sqlex instanceof SQLTransientException)) {
+                            Tr.debug(tc, "Exception is considered transient but does not implement SQLTransientException!");
+                        }
+                    }
+                    retryBatch = true;
+                    break;
+                }
+            }
+        } else {
+            if (sqlex instanceof SQLTransientException) {
                 retryBatch = true;
-                break;
             }
         }
 
         if (!retryBatch && sqlex instanceof BatchUpdateException) {
+            if (tc.isDebugEnabled()) {
+                if (sqlex instanceof SQLTransientException) {
+                    Tr.debug(tc, "Exception is not considered transient but does implement SQLTransientException!");
+                }
+            }
+
             BatchUpdateException buex = (BatchUpdateException) sqlex;
             Tr.event(tc, "BatchUpdateException: Update Counts - ");
             int[] updateCounts = buex.getUpdateCounts();
@@ -2298,22 +2047,40 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.event(tc, "   Statement " + i + ":" + updateCounts[i]);
             }
             SQLException nextex = buex.getNextException();
-            while (nextex != null) {
+            while (nextex != null && !retryBatch) {
                 sqlErrorCode = nextex.getErrorCode();
                 if (tc.isEventEnabled()) {
                     Tr.event(tc, " SQL exception:");
                     Tr.event(tc, " Message: " + nextex.getMessage());
                     Tr.event(tc, " SQLSTATE: " + nextex.getSQLState());
-
                     Tr.event(tc, " Error code: " + sqlErrorCode);
                 }
 
-                for (int transientCode : _sqlTransientErrorCodes) {
-                    Tr.event(tc, "Test against stored code: " + transientCode);
-                    if (transientCode == sqlErrorCode) {
-                        Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
+                boolean typeIndicatesTransient = (nextex instanceof SQLTransientException);
+
+                if (_isDB2 || _isOracle) {
+                    for (int transientCode : _sqlTransientErrorCodes) {
+                        Tr.event(tc, "Test against stored code: " + transientCode);
+                        if (transientCode == sqlErrorCode) {
+                            Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
+                            if (tc.isDebugEnabled()) {
+                                if (!typeIndicatesTransient) {
+                                    Tr.debug(tc, "Exception is considered transient but does not implement SQLTransientException!");
+                                }
+                            }
+                            retryBatch = true;
+                            break;
+                        } else {
+                            if (tc.isDebugEnabled()) {
+                                if (typeIndicatesTransient) {
+                                    Tr.debug(tc, "Exception is not considered transient but does implement SQLTransientException!");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (typeIndicatesTransient) {
                         retryBatch = true;
-                        break;
                     }
                 }
 
@@ -3080,7 +2847,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *                            during recovery we need to reserve the associated id so that
      *                            it can't be allocated to an independent RecoverableUnit.
      */
-    protected void addRecoverableUnit(RecoverableUnit recoverableUnit, boolean recovered) {
+    protected void addRecoverableUnit(SQLRecoverableUnitImpl recoverableUnit, boolean recovered) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addRecoverableUnit", new Object[] { recoverableUnit, recovered, this });
 
@@ -3113,7 +2880,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         if (tc.isEntryEnabled())
             Tr.entry(tc, "removeRecoverableUnitMapEntries", new Object[] { identity, this });
 
-        final SQLRecoverableUnitImpl recoverableUnit = (SQLRecoverableUnitImpl) _recoverableUnits.remove(identity);
+        final SQLRecoverableUnitImpl recoverableUnit = _recoverableUnits.remove(identity);
 
         // PI88168 - reusing recovered RU ids is more trouble than it's worth
         if (recoverableUnit != null && !recoverableUnit._recovered) {
@@ -3150,7 +2917,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.exit(tc, "getRecoverableUnit", lce);
             throw lce;
         }
-        recoverableUnit = (SQLRecoverableUnitImpl) _recoverableUnits.get(identity);
+        recoverableUnit = _recoverableUnits.get(identity);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getRecoverableUnit", recoverableUnit);
         return recoverableUnit;
@@ -3320,166 +3087,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         return "";
     }
 
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.getTransientSQLErrorRetryAttempts
-    //------------------------------------------------------------------------------
-    /**
-     * This method retrieves a system property named
-     * com.ibm.ws.recoverylog.custom.jdbc.impl.TransientRetryAttempts
-     * which allows a value to be specified for the number of times
-     * that we should try to get a connection and retry SQL work in
-     * the face of transient sql error conditions.
-     */
-    private Integer getTransientSQLErrorRetryAttempts() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getTransientSQLErrorRetryAttempts");
-
-        Integer transientSqlRetryAttempts = null;
-
-        try {
-            transientSqlRetryAttempts = AccessController.doPrivileged(
-                                                                      new PrivilegedExceptionAction<Integer>() {
-                                                                          @Override
-                                                                          public Integer run() {
-                                                                              return Integer.getInteger("com.ibm.ws.recoverylog.custom.jdbc.impl.TransientRetryAttempts",
-                                                                                                        DEFAULT_TRANSIENT_RETRY_ATTEMPTS);
-                                                                          }
-                                                                      });
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SqlMultiScopeRecoveryLog.getTransientSQLErrorRetryAttempts", "132");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting transient SQL retry attempts", e);
-            transientSqlRetryAttempts = null;
-        }
-
-        if (transientSqlRetryAttempts == null)
-            transientSqlRetryAttempts = Integer.valueOf(DEFAULT_TRANSIENT_RETRY_ATTEMPTS);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getTransientSQLErrorRetryAttempts", transientSqlRetryAttempts);
-        return transientSqlRetryAttempts;
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.getTransientSQLErrorRetrySleepTime
-    //------------------------------------------------------------------------------
-    /**
-     * This method retrieves a system property named
-     * com.ibm.ws.recoverylog.custom.jdbc.impl.TransientRetrySleepTime
-     * which allows a value to be specified for the time we should
-     * sleep between attempts to get a connection and retry SQL work
-     * in the face of transient sql error conditions.
-     */
-    private Integer getTransientSQLErrorRetrySleepTime() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getTransientSQLErrorRetrySleepTime");
-
-        Integer transientSqlRetrySleepTime = null;
-
-        try {
-            transientSqlRetrySleepTime = AccessController.doPrivileged(
-                                                                       new PrivilegedExceptionAction<Integer>() {
-                                                                           @Override
-                                                                           public Integer run() {
-                                                                               return Integer.getInteger("com.ibm.ws.recoverylog.custom.jdbc.impl.TransientRetrySleepTime",
-                                                                                                         DEFAULT_TRANSIENT_RETRY_SLEEP_TIME);
-                                                                           }
-                                                                       });
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SqlMultiScopeRecoveryLog.getTransientSQLErrorRetrySleepTime", "132");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting transient SQL retry sleep time", e);
-            transientSqlRetrySleepTime = null;
-        }
-
-        if (transientSqlRetrySleepTime == null)
-            transientSqlRetrySleepTime = Integer.valueOf(DEFAULT_TRANSIENT_RETRY_SLEEP_TIME);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getTransientSQLErrorRetrySleepTime", transientSqlRetrySleepTime);
-        return transientSqlRetrySleepTime;
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.getLightweightSQLErrorRetryAttempts
-    //------------------------------------------------------------------------------
-    /**
-     * This method retrieves a system property named
-     * com.ibm.ws.recoverylog.custom.jdbc.impl.LightweightRetryAttempts
-     * which allows a value to be specified for the number of times
-     * that we should try to get a connection and retry SQL work in
-     * the face of transient sql error conditions.
-     */
-    private Integer getLightweightSQLErrorRetryAttempts() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLightweightSQLErrorRetryAttempts");
-
-        Integer lightweightRetryAttempts = null;
-
-        try {
-            lightweightRetryAttempts = AccessController.doPrivileged(
-                                                                     new PrivilegedExceptionAction<Integer>() {
-                                                                         @Override
-                                                                         public Integer run() {
-                                                                             return Integer.getInteger("com.ibm.ws.recoverylog.custom.jdbc.impl.LightweightRetryAttempts",
-                                                                                                       LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS);
-                                                                         }
-                                                                     });
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SqlMultiScopeRecoveryLog.getLightweightSQLErrorRetryAttempts", "132");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting lightweight transient SQL retry attempts", e);
-            lightweightRetryAttempts = null;
-        }
-
-        if (lightweightRetryAttempts == null)
-            lightweightRetryAttempts = Integer.valueOf(LIGHTWEIGHT_TRANSIENT_RETRY_ATTEMPTS);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLightweightSQLErrorRetryAttempts", lightweightRetryAttempts);
-        return lightweightRetryAttempts;
-    }
-
-    //------------------------------------------------------------------------------
-    // Method: SQLMultiScopeRecoveryLog.getLightweightSQLErrorRetrySleepTime
-    //------------------------------------------------------------------------------
-    /**
-     * This method retrieves a system property named
-     * com.ibm.ws.recoverylog.custom.jdbc.impl.LightweightRetrySleepTime
-     * which allows a value to be specified for the time we should
-     * sleep between attempts to get a connection and retry SQL work
-     * in the face of transient sql error conditions.
-     */
-    private Integer getLightweightSQLErrorRetrySleepTime() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLightweightSQLErrorRetrySleepTime");
-
-        Integer lightweightRetrySleepTime = null;
-
-        try {
-            lightweightRetrySleepTime = AccessController.doPrivileged(
-                                                                      new PrivilegedExceptionAction<Integer>() {
-                                                                          @Override
-                                                                          public Integer run() {
-                                                                              return Integer.getInteger("com.ibm.ws.recoverylog.custom.jdbc.impl.LightweightRetrySleepTime",
-                                                                                                        LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
-                                                                          }
-                                                                      });
-        } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SqlMultiScopeRecoveryLog.getLightweightSQLErrorRetrySleepTime", "132");
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting transient SQL retry sleep time", e);
-            lightweightRetrySleepTime = null;
-        }
-
-        if (lightweightRetrySleepTime == null)
-            lightweightRetrySleepTime = Integer.valueOf(LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLightweightSQLErrorRetrySleepTime", lightweightRetrySleepTime);
-        return lightweightRetrySleepTime;
-    }
-
     // Class: ruForReplay
     //------------------------------------------------------------------------------
     /**
@@ -3555,7 +3162,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         Exception e = new Exception();
         try {
             FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.provideServiceability", "3624", this);
-            HashMap<Long, RecoverableUnit> rus = _recoverableUnits;
+            HashMap<Long, SQLRecoverableUnitImpl> rus = _recoverableUnits;
             if (rus != null)
                 FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.provideServiceability", "3628", rus);
         } catch (Exception ex) {
@@ -3874,7 +3481,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads (this really isn't necessary now we don't support sharing tables)
         {
             int queryRetries = 0;
-            Exception excToCheck = null;
+
             while (!success) {
                 try {
                     if (conn == null) {
@@ -4278,7 +3885,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimLocalRecoveryLogs", new Boolean(isClaimed));
+            Tr.exit(tc, "claimLocalRecoveryLogs", isClaimed);
 
         return isClaimed;
     }
@@ -4406,7 +4013,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "internalClaimRecoveryLogs", new Boolean(isClaimed));
+            Tr.exit(tc, "internalClaimRecoveryLogs", isClaimed);
 
         return isClaimed;
     }
@@ -4517,7 +4124,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerRecoveryLogs", new Boolean(isClaimed));
+            Tr.exit(tc, "claimPeerRecoveryLogs", isClaimed);
 
         return isClaimed;
     }
