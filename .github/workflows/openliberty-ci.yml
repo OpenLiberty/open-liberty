@@ -20,6 +20,8 @@ on:
       - 'images/**'
       - 'logos/**'
 
+env:
+  LANG: en_US
 jobs:
   build:
     runs-on: ubuntu-latest
