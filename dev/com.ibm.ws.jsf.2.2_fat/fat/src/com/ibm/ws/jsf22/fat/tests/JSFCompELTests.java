@@ -34,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -156,7 +157,8 @@ public class JSFCompELTests {
             }
 
             //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
-            String msgToSearchFor = "javax.servlet.ServletException: javax.el.ELException: java.lang.NullPointerException";
+            String msgToSearchFor = (JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "servlet.ServletException: " + (JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+                                    + "el.ELException: java.lang.NullPointerException";
             List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
 
             //There should be a match so fail if there is not.
