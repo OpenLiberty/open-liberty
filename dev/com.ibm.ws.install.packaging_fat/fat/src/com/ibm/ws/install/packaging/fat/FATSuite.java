@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 DummyTest.class,
                 InstallPackagesTest.class,
-                ServicesTest.class
+                ServicesTest.class,
+                CheckTags.class
 })
 public class FATSuite {
 
