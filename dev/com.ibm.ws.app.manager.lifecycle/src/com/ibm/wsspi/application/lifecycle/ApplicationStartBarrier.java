@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.application.manager.test;
+package com.ibm.wsspi.application.lifecycle;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                FATTest.class,
-                AutoExtractTest.class,
-                AppOrderTests.class,
-                DropinsTests.class,
-                AppPrereqTest.class
-})
-public class FATSuite {
+/**
+ * A marker interface for the singleton service component, for which application handlers should wait
+ * before starting wsspi.applications.
+ */
+public interface ApplicationStartBarrier {
 
 }

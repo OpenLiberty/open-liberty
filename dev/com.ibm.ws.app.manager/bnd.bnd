@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ bVersion=1.1
 Bundle-Name: WebSphere Application Manager
 Bundle-SymbolicName: com.ibm.ws.app.manager
 Bundle-Description: WebSphere Application Manager, version ${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: \
   OSGI-INF/metatype=resources/OSGI-INF/metatype, \
@@ -29,6 +30,8 @@ Export-Package: \
 Private-Package: com.ibm.ws.app.manager.internal*
 
 -dsannotations: \
+  com.ibm.ws.app.manager.internal.lifecycle.ApplicationStartBarrierImpl, \
+  com.ibm.ws.app.manager.internal.lifecycle.ApplicationPrereqMonitor, \
   com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor, \
   com.ibm.ws.app.manager.internal.monitor.DropinMonitor, \
   com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator, \
