@@ -25,7 +25,6 @@
         <feature>jaxrs-2.1</feature>
         <feature>appSecurity-2.0</feature>
         <feature>mpJwt-1.2</feature>
-        <feature>mpConfig-1.4</feature>
         <feature>localConnector-1.0</feature>
         <feature>arquillian-support-1.0</feature>
     </featureManager>

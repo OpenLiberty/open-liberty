@@ -47,7 +47,7 @@ public class Mpjwt12TCKLauncher_aud_noenv {
         // CWWKZ0014W  - we need app listed in server.xml even when it might not there, so allow this "missing app" error.
         // CWWKE0921W, 12w - the harness generates a java2sec socketpermission error, there's no way to suppress it  by itself in server.xml, so suppress this way
         // CWWKG0014E - intermittently caused by server.xml being momentarily missing during server reconfig
-        server.stopServer("CWWKG0014E", "CWWKS5524E", "CWWKS6023E", "CWWKS5523E", "CWWKS6031E", "CWWKS5524E", "CWWKZ0014W", "CWWKS5604E", "CWWKE0921W", "CWWKE0912W");
+        server.stopServer("CWWKG0014E", "CWWKS5524E", "CWWKS6023E", "CWWKS5523E", "CWWKS5522E", "CWWKS6031E", "CWWKS5524E", "CWWKZ0014W", "CWWKS5604E", "CWWKE0921W", "CWWKE0912W");
     }
 
     @Test
