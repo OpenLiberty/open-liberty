@@ -81,7 +81,7 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
      *
      */
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public <X> X[] toArray(X[] arr) {
 
         if (arr == null) {
@@ -131,7 +131,7 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
     }
     
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public T[] toArray() {
         Object[] messagesList = this.toArray(new Object[elements.size()]);
         return (T[]) messagesList;

@@ -99,7 +99,7 @@ public class SimpleRotatingQueue<T> implements Queue<T> {
         }
 
         @SuppressWarnings("unchecked")
-		X[] retMe = (arr.length >= elements.length)
+        X[] retMe = (arr.length >= elements.length)
                         ? arr
                         : (X[]) Array.newInstance(arr.getClass().getComponentType(), elements.length);
 
