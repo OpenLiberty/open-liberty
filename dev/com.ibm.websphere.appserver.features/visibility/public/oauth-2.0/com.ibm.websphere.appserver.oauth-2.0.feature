@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.oauth-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: com.ibm.wsspi.security.oauth20.token;  type="ibm-api", \
  com.ibm.oauth.core.api.oauth20.mediator;  type="ibm-api", \

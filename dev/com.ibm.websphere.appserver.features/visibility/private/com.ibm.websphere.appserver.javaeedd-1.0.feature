@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeedd-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-SPI-Package: com.ibm.ws.javaee.dd.appbnd, \
  com.ibm.ws.javaee.dd.common, \
  com.ibm.ws.javaee.dd.web, \
