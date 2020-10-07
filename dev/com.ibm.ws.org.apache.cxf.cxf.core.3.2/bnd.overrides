@@ -18,7 +18,7 @@ Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
 # (yes, unused rules cause failures...). So, without a co-delivery
 # (changing the OL code at the same time we change the WS-CD-Open code),
 # it is not possible to update the export version.
-exportVer=3.2.4
+exportVer=3.4.1
 
 #Export-Package: org.apache.cxf,\
 #  org.apache.cxf.attachment,\

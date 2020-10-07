@@ -1184,7 +1184,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
     /**
      * Use for injection of entityProviders
 
-     * @param entityProviders the entityProviders to set
+     * @param userProviders the userProviders to set
      */
     public void setUserProviders(List<?> userProviders) {
         setProviders(true, false, userProviders.toArray());
@@ -1279,23 +1279,18 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
     }
 
-    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
-        Boolean custom1 = p1.isCustom();
-        Boolean custom2 = p2.isCustom();
-        int result = custom1.compareTo(custom2) * -1;
+    protected static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
+        boolean custom1 = p1.isCustom();
+        int result = Boolean.compare(p2.isCustom(), custom1);
         if (result == 0 && custom1) {
-            Boolean busGlobal1 = p1.isBusGlobal();
-            Boolean busGlobal2 = p2.isBusGlobal();
-            result = busGlobal1.compareTo(busGlobal2);
+            result = Boolean.compare(p1.isBusGlobal(), p2.isBusGlobal());
         }
         return result;
     }
 
 
     static int comparePriorityStatus(Class<?> cl1, Class<?> cl2) {
-        Integer value1 = AnnotationUtils.getBindingPriority(cl1);
-        Integer value2 = AnnotationUtils.getBindingPriority(cl2);
-        return value1.compareTo(value2);
+        return Integer.compare(AnnotationUtils.getBindingPriority(cl1), AnnotationUtils.getBindingPriority(cl2));
     }
 
     private static class ContextResolverComparator

@@ -20,6 +20,7 @@
 package org.apache.cxf.jaxrs.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
@@ -612,12 +613,12 @@ public final class ResourceUtils {
         return null;
     }
 
-    public static InputStream getResourceStream(String loc, Bus bus) throws Exception {
+    public static InputStream getResourceStream(String loc, Bus bus) throws IOException {
         URL url = getResourceURL(loc, bus);
         return url == null ? null : url.openStream();
     }
 
-    public static URL getResourceURL(final String loc, final Bus bus) throws Exception {
+    public static URL getResourceURL(final String loc, final Bus bus) throws IOException {
         URL url = null;
         if (loc.startsWith(CLASSPATH_PREFIX)) {
             String path = loc.substring(CLASSPATH_PREFIX.length());
@@ -645,7 +646,8 @@ public final class ResourceUtils {
                     }
                 });
             } catch (PrivilegedActionException pae) {
-                throw pae.getException();
+                Throwable t = pae.getException();
+                throw t instanceof IOException ? (IOException) t : new IOException(t);
             }
 
         }
@@ -675,7 +677,7 @@ public final class ResourceUtils {
         return null;
     }
 
-    public static Properties loadProperties(String propertiesLocation, Bus bus) throws Exception {
+    public static Properties loadProperties(String propertiesLocation, Bus bus) throws IOException {
         Properties props = new Properties();
         InputStream is = getResourceStream(propertiesLocation, bus);
         props.load(is);
@@ -1007,7 +1009,7 @@ public final class ResourceUtils {
         bean.setStaticSubresourceResolution(staticSubresourceResolution);
         bean.setResourceClasses(resourceClasses);
         bean.setProviders(providers);
-        bean.setFeatures(features);
+        bean.getFeatures().addAll(features);
         for (Map.Entry<Class<?>, ResourceProvider> entry : map.entrySet()) {
             bean.setResourceProvider(entry.getKey(), entry.getValue());
         }

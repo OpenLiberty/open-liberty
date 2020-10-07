@@ -46,11 +46,15 @@ Import-Package: \
  org.eclipse.microprofile.rest.client.ext;version="[1.0,2)",\
  org.eclipse.microprofile.rest.client.inject;version="[1.0,2)",\
  org.eclipse.microprofile.rest.client.spi;version="[1.0,2)",\
+ org.reactivestreams,\
  com.ibm.websphere.ras,\
  com.ibm.wsspi.classloading,\
  com.ibm.ws.cdi.extension;resolution:=optional,\
  com.ibm.ws.jaxrs20.client.configuration
 # org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
+
+DynmaicImport-Package: \
+ org.apache.cxf.jaxrs.ext;version="[3.1,4)"
 
 -dsannotations: com.ibm.ws.microprofile.rest.client.component.*
 

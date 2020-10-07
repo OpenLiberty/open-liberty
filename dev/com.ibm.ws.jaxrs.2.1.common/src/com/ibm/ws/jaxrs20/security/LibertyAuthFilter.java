@@ -91,7 +91,7 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
             }
         } else {
             HttpServletRequest req = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
-            Method method = MessageUtils.getTargetMethod(message, () -> 
+            Method method = MessageUtils.getTargetMethod(message).orElseThrow(() -> 
                 new AccessDeniedException("Method is not available : Unauthorized"));
             if (RoleMethodAuthUtil.parseMethodSecurity(method,
                                                        req.getUserPrincipal(),
