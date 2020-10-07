@@ -157,9 +157,11 @@
 			<Option label="internal use only" value="follow"/>
 		</AD>
 
-		<!-- Made the plural derefAliases to derefAlias for consumability -->	
-		<AD id="derefAlias" name="internal" description="internal use only"
-			required="false" type="Boolean" default="false"/>
+		<AD id="derefAliases" name="%derefAliases" description="%derefAliases.desc" required="false" type="String" default="always">
+			<Option label="%derefAliases.always" value="always"/>
+			<Option label="%derefAliases.never" value="never"/>
+		</AD>
+	    
 		<AD id="primaryServerQueryTimeInterval" name="%primaryServerQueryTimeInterval" description="%primaryServerQueryTimeInterval.desc"
 			required="false" type="Integer" default="15"/>
 		<AD id="returnToPrimaryServer" name="%returnToPrimaryServer" description="%returnToPrimaryServer.desc"

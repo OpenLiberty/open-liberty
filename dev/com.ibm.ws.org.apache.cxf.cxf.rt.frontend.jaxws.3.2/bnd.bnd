@@ -16,6 +16,7 @@ cxfVersion=3.3.3
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf,\
   META-INF=resources/META-INF
    
 -buildpath: \

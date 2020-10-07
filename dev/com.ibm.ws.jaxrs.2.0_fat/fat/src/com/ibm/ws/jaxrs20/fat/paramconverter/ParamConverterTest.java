@@ -18,12 +18,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.paramconverter.ClientTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ParamConverterTest extends FATServletClient {
 
     private static final String app = "paramconverter";

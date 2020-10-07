@@ -28,6 +28,7 @@ import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -86,7 +87,7 @@ class SystemConfiguration {
 
         ServiceReference<LibertyProcess> procRef = bc.getServiceReference(LibertyProcess.class);
         LibertyProcess libertyProcess = bc.getService(procRef);
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCacheData"));
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCacheData"), locationService);
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 
@@ -111,7 +112,7 @@ class SystemConfiguration {
 
         bundleProcessor = new BundleProcessor(bc, this, locationService, configUpdater, changeHandler, validator, configRetriever);
 
-        this.configRefresher = new ConfigRefresher(bc, changeHandler, serverXMLConfig);
+        this.configRefresher = new ConfigRefresher(bc, changeHandler, serverXMLConfig, variableRegistry);
 
         extendedMetatypeManager.init();
 

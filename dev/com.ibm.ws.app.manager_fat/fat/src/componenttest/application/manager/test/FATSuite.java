@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 FATTest.class,
                 AutoExtractTest.class,
                 AppOrderTests.class,
-                DropinsTests.class
+                DropinsTests.class,
+                AppPrereqTest.class
 })
 public class FATSuite {
 

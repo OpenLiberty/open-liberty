@@ -37,6 +37,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -49,7 +50,8 @@ public class JSF22MiscellaneousTests {
     @Rule
     public TestName name = new TestName();
 
-    String contextRoot = "JSF22Miscellaneous";
+    String contextRootMiscellaneous = "JSF22Miscellaneous";
+    String contextRootMiscellaneousSerialize = "JSF22MiscellaneousSerialize";
 
     protected static final Class<?> c = JSF22MiscellaneousTests.class;
 
@@ -98,7 +100,7 @@ public class JSF22MiscellaneousTests {
     public void testSimple() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testSimple.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testSimple.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             if (page == null) {
@@ -118,7 +120,7 @@ public class JSF22MiscellaneousTests {
     public void testAPI() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testAPI.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testAPI.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -171,7 +173,7 @@ public class JSF22MiscellaneousTests {
             // Use a synchronizing ajax controller to allow proper ajax updating
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testResetValues.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testResetValues.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -217,7 +219,7 @@ public class JSF22MiscellaneousTests {
     public void testCSRF() throws Exception {
         try (WebClient webClient = new WebClient(); WebClient webClient2 = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testCSRF.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testCSRF.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -251,7 +253,7 @@ public class JSF22MiscellaneousTests {
             if (!page.asText().contains("This is a protected page.")) {
                 Assert.fail("Invalid response from server.  The protected page was not retrieved = " + page.asText());
             }
-            if (!page.getUrl().toString().contains("javax.faces.Token=")) {
+            if (!page.getUrl().toString().contains((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.Token=")) {
                 Assert.fail("Invalid response from server.  This page does NOT contain the token = " + page.asText());
             }
 
@@ -259,7 +261,7 @@ public class JSF22MiscellaneousTests {
             try {
                 // Turn off printing for this webClient.   We know there will very likely be an error.
                 webClient2.getOptions().setPrintContentOnFailingStatusCode(false);
-                url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "protectedPage.xhtml");
+                url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "protectedPage.xhtml");
                 webClient2.getPage(url);
                 Assert.fail("Protected page was retrieved.   This should not occur.");
             } catch (Exception ex1) {
@@ -281,7 +283,7 @@ public class JSF22MiscellaneousTests {
     public void testViewScopeBinding() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testViewScopeBinding.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testViewScopeBinding.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -312,7 +314,7 @@ public class JSF22MiscellaneousTests {
     public void testViewScopeBindingSerialize() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testViewScopeBinding.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneousSerialize, "testViewScopeBinding.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -343,7 +345,7 @@ public class JSF22MiscellaneousTests {
     public void testViewScopeMyFaces() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testViewScopeMyFaces.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testViewScopeMyFaces.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             System.out.println(page.asText());
@@ -423,7 +425,7 @@ public class JSF22MiscellaneousTests {
     public void testExpressionFactoryImplConsistency() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "testExpressionFactoryImplConsistency.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testExpressionFactoryImplConsistency.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -438,19 +440,19 @@ public class JSF22MiscellaneousTests {
         }
     }
 
-      /**
-     * 
-     * Ensure FunctionMapper is set on the ELContext 
+    /**
+     *
+     * Ensure FunctionMapper is set on the ELContext
      * - MyFaces 4333
      *
      * @throws Exception
      */
     @Test
     public void testFunctionMapper() throws Exception {
-        String contextRoot = "FunctionMapper";
+        String contextRootMiscellaneous = "FunctionMapper";
         try (WebClient webClient = new WebClient()) {
-    
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "index.xhtml");
+
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 

@@ -74,7 +74,7 @@ public class FeatureDefinitionUtils {
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     public static final String IBM_PROCESS_TYPES = "IBM-Process-Types";
     public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
-    public static final String IBM_ALT_NAMES = "IBM-AlsoKnownAs";
+    public static final String IBM_ALT_NAMES = "WLP-AlsoKnownAs";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";

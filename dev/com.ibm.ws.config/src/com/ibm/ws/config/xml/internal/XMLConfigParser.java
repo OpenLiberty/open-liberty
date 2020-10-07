@@ -35,6 +35,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
@@ -351,7 +353,7 @@ public class XMLConfigParser {
         }
     }
 
-    enum MergeBehavior {
+    public enum MergeBehavior {
         MERGE,
         REPLACE,
         IGNORE,

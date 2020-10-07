@@ -35,23 +35,16 @@ Service-Component: \
 Include-Resource: \
   META-INF=resources/META-INF
 
-Import-Package: \
-  !sun.misc,\
-  *
-
 Private-Package: \
-	io.smallrye.config.*,\
-	io.smallrye.common.*,\
 	io.openliberty.microprofile.config.internal.extension
 
+Export-Package: \
+        io.smallrye.config.*;version="2.0.0"
+
 -buildpath: \
+  io.openliberty.io.smallrye.common;version=latest, \
   io.smallrye.config:smallrye-config;version=latest, \
   io.smallrye.config:smallrye-config-common;version=latest, \
-  io.smallrye.common:smallrye-common-annotation;version=latest, \
-  io.smallrye.common:smallrye-common-expression;version=latest, \
-  io.smallrye.common:smallrye-common-constraint;version=latest, \
-  io.smallrye.common:smallrye-common-function;version=latest, \
-  io.smallrye.common:smallrye-common-classloader;version=latest, \
   com.ibm.websphere.javaee.cdi.2.0;version=latest, \
   com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   io.openliberty.org.eclipse.microprofile.config.2.0;version=latest, \

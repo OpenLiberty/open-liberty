@@ -10,6 +10,8 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +49,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -869,7 +872,7 @@ public class JSF22AparTests {
             HtmlForm statefulForm = page.getFormByName("statefulForm");
 
             // Change the value of ViewState to stateless
-            HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm.getInputByName("javax.faces.ViewState");
+            HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm.getInputByName((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.ViewState");
             viewStateInput.setValueAttribute("stateless");
 
             // Get the button and then click it
@@ -881,7 +884,7 @@ public class JSF22AparTests {
 
             // Check that a FacesException is thrown
             assertTrue("PI89168: FacesException was not thrown!\n" + page.asText(),
-                       page.asText().contains("javax.faces.FacesException: unable to create view \"/statefulView.xhtml\""));
+                       page.asText().contains((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.FacesException: unable to create view \"/statefulView.xhtml\""));
         }
     }
 
@@ -1011,7 +1014,7 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testPI90507NonBindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
@@ -1055,7 +1058,7 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testPI90507BindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {

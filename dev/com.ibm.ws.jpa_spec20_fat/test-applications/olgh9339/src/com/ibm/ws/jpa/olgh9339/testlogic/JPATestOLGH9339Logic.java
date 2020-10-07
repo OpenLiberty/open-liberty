@@ -27,7 +27,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH9339Logic extends AbstractTestLogic {
 
     public void testCoalesceJPQLQueryWithNullParameterValue(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                            Object managedComponentObject) {
+                                                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -68,11 +68,6 @@ public class JPATestOLGH9339Logic extends AbstractTestLogic {
 
             Assert.assertNotNull("Query result should be non-null", result);
             Assert.assertEquals("Incorrect query results", new Long(2), result); // result value from db
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

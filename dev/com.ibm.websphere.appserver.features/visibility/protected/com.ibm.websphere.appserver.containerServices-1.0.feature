@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.containerServices-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-SPI-Package: \
  com.ibm.ws.container.service.annotations, \

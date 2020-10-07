@@ -36,7 +36,6 @@ public class WebServiceRefTest {
 
     @Server("WebServiceRefTestServer")
     public static LibertyServer server;
-
     private static String BASE_URL;
     private static final int CONN_TIMEOUT = 5;
 

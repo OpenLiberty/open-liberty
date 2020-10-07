@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 /**

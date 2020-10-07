@@ -22,6 +22,8 @@ import org.osgi.service.cm.ManagedService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
+import com.ibm.ws.config.xml.internal.variables.VariableMonitor;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -56,11 +58,15 @@ class ConfigurationMonitor implements ManagedService {
 
     /** Configuration file monitor */
     private ConfigFileMonitor fileMonitor;
+    private VariableMonitor variableMonitor;
 
-    public ConfigurationMonitor(BundleContext bc, ServerXMLConfiguration serverXMLConfig, ConfigRefresher configRefresher) {
+    private final ConfigVariableRegistry variableRegistry;
+
+    public ConfigurationMonitor(BundleContext bc, ServerXMLConfiguration serverXMLConfig, ConfigRefresher configRefresher, ConfigVariableRegistry variableRegistry) {
         this.bundleContext = bc;
         this.serverXMLConfig = serverXMLConfig;
         this.configRefresher = configRefresher;
+        this.variableRegistry = variableRegistry;
     }
 
     public void registerService() {
@@ -122,6 +128,20 @@ class ConfigurationMonitor implements ManagedService {
     }
 
     synchronized void resetConfigurationMonitoring(boolean monitorConfiguration, Long monitorInterval, String fileMonitorType) {
+
+        if (variableMonitor == null) {
+            if (monitorConfiguration) {
+                variableMonitor = new VariableMonitor(bundleContext, monitorInterval, fileMonitorType, configRefresher, variableRegistry);
+                variableMonitor.register();
+            }
+        } else {
+            if (monitorConfiguration) {
+                variableMonitor.update(monitorInterval, fileMonitorType);
+            } else {
+                variableMonitor.unregister();
+                variableMonitor = null;
+            }
+        }
         if (fileMonitor == null) {
             if (monitorConfiguration) {
                 // check if configuration was changed when monitoring was disabled
@@ -139,6 +159,7 @@ class ConfigurationMonitor implements ManagedService {
                 fileMonitor = null;
             }
         }
+
     }
 
     public synchronized void stopConfigurationMonitoring() {

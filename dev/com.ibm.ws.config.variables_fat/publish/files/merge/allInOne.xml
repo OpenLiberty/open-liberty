@@ -1,0 +1,33 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+	<include location="common.xml"/>
+
+	<topLevelElement id="a">
+		<child.a attrA1="a1" />
+	</topLevelElement>
+
+	<topLevelElement id="a">
+		<child.a attrA2="a2" />
+	</topLevelElement>
+
+	<topLevelElement id="b">
+		<child.b attrB1="b1" />
+		<child.b attrB2="b2" />
+	</topLevelElement>
+
+	<topLevelElement id="c" />
+
+	<top.d attrD1="d1" />
+	<top.d attrD1="d1copy" />
+
+
+</server>

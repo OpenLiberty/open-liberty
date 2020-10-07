@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.ejb-3.1
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 -bundles=com.ibm.websphere.javaee.ejb.3.1; location:="dev/api/spec/,lib/"; mavenCoordinates="org.glassfish:javax.ejb:3.1"
 kind=ga

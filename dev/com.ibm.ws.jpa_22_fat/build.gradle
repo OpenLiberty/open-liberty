@@ -9,7 +9,23 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+  ecl27
+}
+
+dependencies {
+  ecl27 project(':com.ibm.websphere.appserver.thirdparty.eclipselink.2.7')
+}
+
+task copyECL27(type: Copy) {
+  mustRunAfter jar
+  from configurations.ecl27
+  include "**/com.ibm.websphere.appserver.thirdparty.eclipselink.2.7.jar"
+  into new File(autoFvtDir, 'lib')
+}
+
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addJakartaTransformer
+  dependsOn copyECL27
 }

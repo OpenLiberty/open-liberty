@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.ws.persistence-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
 -features=com.ibm.websphere.appserver.jndi-1.0, \

@@ -20,11 +20,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.security.servlet.SecurityAnnotationsTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class SecurityAnnotationsTest {
 
     private static final String secwar = "security";

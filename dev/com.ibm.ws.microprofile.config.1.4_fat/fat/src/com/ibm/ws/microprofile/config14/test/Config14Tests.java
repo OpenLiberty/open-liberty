@@ -25,8 +25,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE7;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
@@ -88,13 +86,6 @@ public class Config14Tests extends FATServletClient {
         List<String> msgs = server.findStringsInLogs("java.util.NoSuchElementException: CWMCG0015E: The property DOESNOTEXIST was not found in the configuration.");
         assertTrue("NoSuchElementException message not found", msgs.size() > 0);
         msgs = server.findStringsInLogs("org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type String with qualifiers @ConfigProperty");
-        assertTrue("DeploymentException message not found", msgs.size() > 0);
-    }
-
-    @Test
-    @SkipForRepeat({ RepeatConfig14EE7.ID, RepeatConfig14EE8.ID })
-    public void testBadObserver20() throws Exception {
-        List<String> msgs = server.findStringsInLogs("org.jboss.weld.exceptions.DeploymentException: SRCFG02000: No Config Value exists for required property DOESNOTEXIST");
         assertTrue("DeploymentException message not found", msgs.size() > 0);
     }
 

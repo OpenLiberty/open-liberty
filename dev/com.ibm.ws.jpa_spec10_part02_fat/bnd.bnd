@@ -18,8 +18,7 @@ src: \
 	test-applications/jpa10/relationships/manyXmany/src,\
 	test-applications/jpa10/relationships/manyXone/src,\
 	test-applications/jpa10/relationships/oneXmany/src,\
-    test-applications/jpa10/relationships/oneXone/src,\
-	test-framework/src
+    test-applications/jpa10/relationships/oneXone/src
 
 fat.project: true
 tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
@@ -28,6 +27,7 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0, servlet
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
+	com.ibm.ws.jpa_testframework;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

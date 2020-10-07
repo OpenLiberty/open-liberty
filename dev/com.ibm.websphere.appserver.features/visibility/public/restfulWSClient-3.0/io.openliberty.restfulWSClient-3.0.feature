@@ -14,7 +14,7 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: restfulWSClient-3.0
-IBM-AlsoKnownAs: jaxrsClient-3.0
+WLP-AlsoKnownAs: jaxrsClient-3.0
 Subsystem-Name: Java RESTful Services Client 3.0
 -features=\
  io.openliberty.jakarta.restfulWS-3.0, \

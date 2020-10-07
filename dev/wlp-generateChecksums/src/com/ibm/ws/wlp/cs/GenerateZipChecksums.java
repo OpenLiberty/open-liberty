@@ -29,6 +29,7 @@ public class GenerateZipChecksums extends Task {
 
     //the ext name of all the checksum files
     private static String MD5_FILE_EXT = "md5";
+    private static String SHA2_FILE_EXT = "sha2";
 
     @Override
     public void execute() {
@@ -51,18 +52,28 @@ public class GenerateZipChecksums extends Task {
         checksumsDir.mkdirs();
         File[] zipFiles = dir.listFiles();
         for (File zipFile : zipFiles) {
-            System.out.println(zipFile.getName());
             if (!zipFile.getName().endsWith(".zip")) {
                 continue;
             }
             //generate the cs file from each packaged zip
             String md5Checksum = MD5Utils.getFileMD5String(zipFile);
+            String sha2Checksum = SHA2Utils.getFileSHA2String(zipFile);
             String fileName = zipFile.getName();
+            //Create MD5 file
             File md5File = new File(checksumsDir, fileName + "." + MD5_FILE_EXT);
             OutputStream out = null;
             try {
                 out = new FileOutputStream(md5File, false);
                 byte checksumbytes[] = md5Checksum.getBytes();
+                out.write(checksumbytes);
+            } finally {
+                FileUtils.tryToClose(out);
+            }
+            //Create SHA2 file
+            File sha2File = new File(checksumsDir, fileName + "." + SHA2_FILE_EXT);
+            try {
+                out = new FileOutputStream(sha2File, false);
+                byte checksumbytes[] = sha2Checksum.getBytes();
                 out.write(checksumbytes);
             } finally {
                 FileUtils.tryToClose(out);

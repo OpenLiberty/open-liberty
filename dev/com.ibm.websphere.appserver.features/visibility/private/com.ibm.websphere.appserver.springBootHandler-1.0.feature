@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.springBootHandler-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 -features=\
  com.ibm.websphere.appserver.artifact-1.0, \

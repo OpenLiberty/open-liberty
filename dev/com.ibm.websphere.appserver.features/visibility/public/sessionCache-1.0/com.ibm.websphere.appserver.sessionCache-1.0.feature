@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.sessionCache-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: sessionCache-1.0
 Manifest-Version: 1.0
@@ -18,7 +19,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.sessionStore-1.0.0.JCache, \
   com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.javax.servlet-4.0; ibm.tolerates:="3.1,3.0"; apiJar=false, \
+  io.openliberty.servlet.api-4.0; ibm.tolerates:="3.1,3.0"; apiJar=false, \
   com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:=1.1
 -bundles=\
   com.ibm.websphere.javaee.jcache.1.1; mavenCoordinates="javax.cache:cache-api:1.1.0", \

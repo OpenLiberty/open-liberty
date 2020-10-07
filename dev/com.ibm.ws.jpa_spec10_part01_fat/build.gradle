@@ -8,10 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+configurations {
+  jpaFatTools
+}
+
+dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')      
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn copyDatabaseRotationDrivers
   dependsOn copyFattestDatabases
   dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
 }

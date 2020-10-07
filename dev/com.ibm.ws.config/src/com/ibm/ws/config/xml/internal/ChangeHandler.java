@@ -28,11 +28,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.ConfigComparator.ComparatorResult;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinition;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -74,7 +76,7 @@ class ChangeHandler {
         if (!result.getVariableDelta().isEmpty()) {
             configUpdater.updateSystemVariables(serverXMLConfig);
             if (result.getVariableDelta().containsKey(OnErrorUtil.CFG_KEY_ON_ERROR)) {
-                ConfigVariable var = serverXMLConfig.getVariables().get(OnErrorUtil.CFG_KEY_ON_ERROR);
+                LibertyVariable var = serverXMLConfig.getVariables().get(OnErrorUtil.CFG_KEY_ON_ERROR);
                 if (var == null) {
                     ErrorHandler.INSTANCE.setOnError(OnErrorUtil.getDefaultOnError());
                 } else {

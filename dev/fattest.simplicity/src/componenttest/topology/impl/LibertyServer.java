@@ -2738,7 +2738,9 @@ public class LibertyServer implements LogMonitorClient {
                                     || toCopy.getName().contains("Snap")
                                     || toCopy.getName().contains(serverToUse + ".dump");
 
-                    if (moveFile && isLog) {
+                    boolean isConfigBackup = absPath.contains("serverConfigBackups");
+
+                    if (moveFile && (isLog || isConfigBackup)) {
                         boolean copied = false;
 
                         // If we're local, try to rename the file instead..

@@ -510,7 +510,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(15, TimeUnit.SECONDS);
+            latch.await(28, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcClientStreamApp: latch.await got interrupted");
         }
@@ -612,7 +612,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(5, TimeUnit.SECONDS);
+            latch.await(28, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcServerStreamApp: latch.await got interrupted");
         }
@@ -774,7 +774,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(25, TimeUnit.SECONDS);
+            latch.await(28, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcTwoWayStreamApp: latch.await got interrupted");
         }
@@ -821,8 +821,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String lastTwoWayMessageReceived = null;
         String errorMessage = null;
         CountDownLatch latch = null;
-        Object messageSync = new Object() {
-        };
+        Object messageSync = new Object() {};
 
         public TwoWayStreamClass(CountDownLatch inLatch) {
             latch = inLatch;

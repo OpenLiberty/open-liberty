@@ -226,6 +226,7 @@ public class ClientTestServlet extends HttpServlet {
 //        assertEquals(check, entity);
         if (check.compareToIgnoreCase(entity) != 0)
         {
+            System.out.println("failure: check = " + check + ": entity = " + entity);
             return "failure: check = " + check + ": entity = " + entity;
         }
         else

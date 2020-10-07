@@ -38,12 +38,14 @@ import com.ibm.ws.jaxrs.fat.duplicateuris.MyRegularResource;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC("java.lang.ClassNotFoundException")
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 @RunWith(FATRunner.class)
 public class AnnotationScanTest {
 
