@@ -42,6 +42,7 @@ public class Config20TCKLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.setDebuggingAllowed(true);
         server.startServer();
     }
 
