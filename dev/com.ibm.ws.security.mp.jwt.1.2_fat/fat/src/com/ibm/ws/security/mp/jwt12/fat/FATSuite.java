@@ -38,6 +38,8 @@ import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_
 import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc;
 import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc;
 import com.ibm.ws.security.mp.jwt11.fat.featureSupportTests.MPJwtNoMpJwtConfig;
+import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_notUsingWebTarget;
+import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_usingWebTarget;
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtBadMPConfigAsSystemProperties;
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK;
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509;
@@ -82,8 +84,8 @@ import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12Confi
                 MPJwtNoMpJwtConfig.class,
                 // propagation tests
                 //TODO - broken with 1.2 at the moment...
-//                MPJwtPropagationTests_usingWebTarget.class,
-//                MPJwtPropagationTests_notUsingWebTarget.class,
+                MPJwtPropagationTests_usingWebTarget.class,
+                MPJwtPropagationTests_notUsingWebTarget.class,
                 // mp-config specified in the applications
                 MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests.class,
                 MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests.class,
