@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile JSON Web Token 1.1
   com.ibm.ws.security.mp.jwt.1.1.config
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
