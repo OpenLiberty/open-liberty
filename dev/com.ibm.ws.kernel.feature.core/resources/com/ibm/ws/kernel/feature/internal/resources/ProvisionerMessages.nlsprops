@@ -222,9 +222,9 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: An existing feature definition, {1}, is
 MISSING_FEATURE_HAS_ALT_NAME.explanation=The feature manager cannot find a definition for a feature specified in the server configuration. The name specified might match an existing feature definition.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Consider specifying the named, existing feature definition instead. 
 
-UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: The configuration includes an incompatible combination of features that is not supported. As a result the feature manager has not installed any features.
-UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=The configuration includes an incompatible combination of features. To avoid invalid behavior the feature manager has disabled all features.
-UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Try to specify a different version of the configured features that caused the conflict.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: The configuration includes an incompatible combination of features. As a result, the feature manager has not installed any features.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=The configuration includes an incompatible combination of features. To avoid invalid behavior, the feature manager has disabled all features.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specify a different version of the configured features that caused the conflict.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
