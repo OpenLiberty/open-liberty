@@ -394,14 +394,19 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
             }
         }
 
+        /**
+         * finalize to close the file as a fail safe
+         * in case the file has not already been closed.
+         * You should not rely on finalize to close the file
+         * for you as it needs to wait for a garbage collection
+         */
         @Override
         protected void finalize() {
             try {
                 close();
             } catch (IOException ex) {
-
+                //will be auto ffdc'd.
             }
-
         }
     }
 
