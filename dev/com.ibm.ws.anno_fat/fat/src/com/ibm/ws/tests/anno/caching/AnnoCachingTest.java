@@ -435,7 +435,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
 	 */
     public static void renameEntryInZip(String sourceEntry, 
     		                            String destinationEntry,
-    		                            String zipLocationOnDisk) {
+    		                            String zipLocationOnDisk) throws IOException {
 
     	LOG.info("sourceEntry: " + sourceEntry);
     	LOG.info("destinationEntry:  " + destinationEntry);
@@ -449,9 +449,6 @@ public abstract class AnnoCachingTest extends LoggingTest {
     		Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
     		Files.delete(sourcePath);
     		
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
     	}
     }
 
@@ -643,7 +640,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
         String destDirPath = destPath;
         File destDir = new File(destDirPath);
         
-        LOG.info("unzip ENTER [ " + sourceArchive + " ] to [" + destDirPath + " ]" );
+        LOG.info("unzip [ " + sourceArchive + " ] to [" + destDirPath + " ]" );
         
         if (sourceArchive.isDirectory()) {
         	LOG.info("sourceArchive is a directory - will copy directory" );
@@ -706,59 +703,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
         	backupEarFile.delete();
         }
         FileUtils.copyFile(earFile, backupEarFile);
-    }
-    
-//    public static void unzip(String zipFileName, String destPath){
-//
-//        byte[] buffer = new byte[1024];
-//
-//        try {
-//            LOG.info("Unzipping  [ " + zipFileName + " ]" );
-//            
-//            File destDir  = new File(destPath);
-//            if ( !destDir.exists() ) {
-//                mkDir(destPath);
-//            }
-//
-//            ZipInputStream zis = new ZipInputStream( new FileInputStream(zipFileName) );
-//            ZipEntry entry = zis.getNextEntry();
-//
-//            while ( entry != null ) {
-//
-//                String entryName = entry.getName();
-//                File newFile = new File( destPath + File.separator + entryName );
-//                
-//                String parentPath = newFile.getParent();
-//                
-//                if (entryName.toUpperCase().endsWith(".WAR")) {
-//                    
-//                    unzip(destPath + File.separator + entryName);
-//                
-//                }                
-//
-//                LOG.info("unzipping entry [ " + newFile.getAbsoluteFile() + "]");;
-//
-//                //create all directories that don't exist
-//                new File(newFile.getParent()).mkdirs();
-//
-//                FileOutputStream fos = new FileOutputStream(newFile);             
-//
-//                int len;
-//                while ((len = zis.read(buffer)) > 0) {
-//                    fos.write(buffer, 0, len);
-//                }
-//
-//                fos.close();   
-//                entry = zis.getNextEntry();
-//            }
-//
-//            zis.closeEntry();
-//            zis.close();
-//
-//        }catch(IOException ex){
-//            ex.printStackTrace(); 
-//        }
-//    }    
+    }    
 
     public static void zipWarInExpandedApp(SharedServer sharedServer, String parentPath, String warName) throws IOException {
         String warPath = parentPath + "/" + warName;

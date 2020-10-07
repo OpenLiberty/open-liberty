@@ -40,19 +40,17 @@ public class FragmentOrderTest extends AnnoCachingTest {
      * Optionally updates the app, then depending on the start type, it either starts the app
      * or waits for start already in progress to finish.
      * 
-     * @param altWebXml
-     * @param startType
      * @throws Exception
      */
     private void handleStart(String altWebXml, ServerStartType startType, boolean updateApp) throws Exception {
     	
     	if (!updateApp && (altWebXml != null) ) {
     		LOG.info("handleStart: ");
-    		throw new IllegalStateException("Don't need to update app, but altWebXml is supplied - Probably not what was intended: [" + altWebXml + "]");
+    		throw new IllegalArgumentException("Don't need to update app, but altWebXml is supplied - Probably not what was intended: [" + altWebXml + "]");
     		
     	} else if (updateApp && (altWebXml == null) ) {
     		LOG.info("handleStart: ");
-    		throw new IllegalStateException("Want to update app, but altWebXml not supplied.");		
+    		throw new IllegalArgumentException("Want to update app, but altWebXml not supplied.");		
     	} 
     	
         if (updateApp) {
