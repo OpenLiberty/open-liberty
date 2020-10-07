@@ -1,0 +1,28 @@
+<server description="Server for testing config_ordinal in appProperties and variables">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>cdi-2.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>mpConfig-1.4</feature>
+    </featureManager>
+
+    <!-- See ConfigOrdinalServerXMLTest for explanation of defined properties-->
+
+    <application location="configOrdinalServerXMLApp.war">
+       <appProperties>
+            <property name="key_serverxml_app_props" value="serverxml_app_props" />
+            <property name="key_system_props" value="serverxml_app_props" />
+            <property name="config_ordinal" value="350"/>
+       </appProperties>
+    </application>
+    
+    <variable name="key_serverxml_vars" value="serverxml_vars" />
+    <variable name="key_env_vars" value="serverxml_vars" />
+    <variable name="key_serverxml_app_props" value="serverxml_vars" />
+    <variable name="key_system_props" value="serverxml_vars" />
+    <variable name="config_ordinal" value="150"/>
+    
+</server>
