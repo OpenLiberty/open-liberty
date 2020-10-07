@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -617,19 +617,18 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     //
                     // HADB Peer Locking is enabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
                     boolean shouldBeRecovered = true;
-                    boolean enableHADBPeerLocking = recoveryAgent.enableHADBPeerLocking();
+                    boolean enableHADBPeerLocking = recoveryAgent.isDBTXLogPeerLocking();
                     if (enableHADBPeerLocking) {
-                        RecoveryLog customRecLog = recoveryAgent.getCustomPartnerLog(failureScope);
-                        if (customRecLog != null) {
+                        // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
+                        // or peer server. In each case we get a reference to the appropriate Recovery Log.
+                        HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
+
+                        if (heartbeatLog != null) {
                             if (currentFailureScope.equals(failureScope)) {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
-                                shouldBeRecovered = recoveryAgent.claimLocalHADBLogs(customRecLog);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "LOCAL RECOVERY, so start heartbeat");
-                                if (shouldBeRecovered) {
-                                    recoveryAgent.startHADBLogAvailabilityHeartbeat(customRecLog);
-                                } else {
+                                shouldBeRecovered = heartbeatLog.claimLocalRecoveryLogs();
+                                if (!shouldBeRecovered) {
                                     // Cannot recover the home server, throw exception
                                     RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
 
@@ -639,11 +638,10 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                             } else {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                shouldBeRecovered = recoveryAgent.claimPeerHADBLogs(customRecLog);
+                                shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
                                 if (!shouldBeRecovered) {
                                     // Cannot recover peer server, throw exception
                                     RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
-
                                     throw rfex;
                                 }
                             }
@@ -655,7 +653,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     if (shouldBeRecovered)
                         recoveryAgent.initiateRecovery(failureScope);
                 } catch (RecoveryFailedException exc) {
-
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
                     throw exc;

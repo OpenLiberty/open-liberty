@@ -14,7 +14,7 @@ IBM-App-ForceRestart: install, uninstall
   com.ibm.websphere.appserver.jndi-1.0, \
   com.ibm.websphere.appserver.jsp-2.3, \
   com.ibm.websphere.appserver.jsfProvider-2.2.0.Container, \
-  com.ibm.websphere.appserver.javaeeCompatible-7.0
+  com.ibm.websphere.appserver.eeCompatible-7.0
 -jars=com.ibm.ws.jsfContainer; location:=lib/
 kind=ga
 edition=core

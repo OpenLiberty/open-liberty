@@ -24,6 +24,7 @@ import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.EvaluationResult;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -50,8 +51,6 @@ public class ChildAliasTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
-
     }
 
     @AfterClass
@@ -65,7 +64,8 @@ public class ChildAliasTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -78,7 +78,8 @@ public class ChildAliasTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     @Test

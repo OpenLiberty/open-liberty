@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -319,7 +319,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
             H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
             if (!isValidPseudoHeader(header)) {
-                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString()); 
+                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString());
                 pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
                 throw pe;
             }
@@ -327,7 +327,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         //Authority is not required to be present, check if it is.
         if (pseudoHeaders.containsKey(HpackConstants.METHOD)) {
-            this.setMethod(pseudoHeaders.get(HpackConstants.METHOD));
+            this.setMethod(MethodValues.find(pseudoHeaders.get(HpackConstants.METHOD)));
         }
         if (pseudoHeaders.containsKey(HpackConstants.PATH)) {
             this.setRequestURI(pseudoHeaders.get(HpackConstants.PATH));
@@ -2169,14 +2169,15 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     /**
      * Check the to see if the current remote host is allowed to send a private header
+     *
      * @see HttpDispatcher.usePrivateHeaders()
-     * 
-     * @param key WAS private header 
+     *
+     * @param key WAS private header
      * @return true if the remote host is allowed to send key
      */
     private boolean isPrivateHeaderTrusted(HeaderKeys key) {
         HttpServiceContextImpl hisc = getServiceContext();
-        InetAddress remoteAddr = null;       
+        InetAddress remoteAddr = null;
         String address = null;
         if (hisc != null && (remoteAddr = hisc.getRemoteAddr()) != null) {
             address = remoteAddr.getHostAddress();

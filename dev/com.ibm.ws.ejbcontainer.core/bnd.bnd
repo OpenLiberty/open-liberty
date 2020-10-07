@@ -15,8 +15,6 @@ instrument.disabled: true
 
 publish.wlp.jar.disabled: true
 
--buildpath.bootclasspath: ${javac.bootclasspath.1.7}
-
 -buildpath: \
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\

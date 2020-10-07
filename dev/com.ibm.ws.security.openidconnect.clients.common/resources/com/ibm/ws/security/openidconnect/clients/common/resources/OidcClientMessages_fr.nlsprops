@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Relancez la demande avec diff\u00e9rents at
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Le client de connexion OpenID requiert SSL (HTTPS) mais l''URL fournisseur OpenID est HTTP : [{0}].  Mettez \u00e0 jour la configuration afin que l''attribut [enforceHTTPS] corresponde au sch\u00e9ma de l''URL cible. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Le client OpenID Connect requiert SSL (HTTPS) mais l''URL fournisseur OpenID est HTTP : [{0}]. Mettez \u00e0 jour la configuration afin d''utiliser une URL HTTPS ou utilisez le client OpenID Connect et d\u00e9finissez la valeur false pour enforceHTTPS. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Le client OpenID Connect (partie utilisatrice ou serveur de ressources) requiert le protocole SSL (HTTPS) mais le protocole d'URL du fournisseur OpenID Connect (OP) sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect n'est pas HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Assurez-vous que le fournisseur de connexion OpenID prend en charge SSL. 2) Si le fournisseur OpenID Connector ne prend pas en charge SSL, attribuez \u00e0 enforceHTTPS la valeur 'false' dans la configuration du client OpenID Connect.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effectuez l'une des op\u00e9rations suivantes : d'abord, assurez-vous que le fournisseur OpenID Connect prend en charge SSL. 2) Si le fournisseur OpenID Connect ne prend pas en charge SSL, utilisez le client OpenID Connect et d\u00e9finissez la valeur false pour enforceHTTPS dans la configuration du client OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: L''\u00e9tat en cours [{0}] du client de connexion OpenID [{2}] et le param\u00e8tre d''\u00e9tat [{1}] dans la r\u00e9ponse du fournisseur de connexion OpenID ne correspondent pas.  Cette condition n''est pas autoris\u00e9e.

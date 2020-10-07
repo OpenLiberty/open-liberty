@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,104 +18,52 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  *
  */
 public class AuditData extends GenericData {
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE,
-                                              LogFieldConstants.IBM_THREADID,
-                                              LogFieldConstants.HOST,
-                                              LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+    public static final String[] NAMES_JSON = {
+                                                LogFieldConstants.IBM_DATETIME,
+                                                LogFieldConstants.IBM_SEQUENCE,
+                                                LogFieldConstants.IBM_THREADID,
+                                                LogFieldConstants.HOST,
+                                                LogFieldConstants.IBM_USERDIR,
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
     };
 
-    private final static String[] NAMES = {
-                                            LogFieldConstants.DATETIME,
-                                            LogFieldConstants.SEQUENCE,
-                                            LogFieldConstants.THREADID,
-                                            LogFieldConstants.HOSTNAME,
-                                            LogFieldConstants.WLPUSERDIR,
-                                            LogFieldConstants.SERVERNAME
+    private final static String[] NAMES_LC = {
+                                               LogFieldConstants.DATETIME,
+                                               LogFieldConstants.SEQUENCE,
+                                               LogFieldConstants.THREADID,
+                                               LogFieldConstants.HOSTNAME,
+                                               LogFieldConstants.WLPUSERDIR,
+                                               LogFieldConstants.SERVERNAME,
+                                               LogFieldConstants.TYPE
     };
 
-    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+    private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES_JSON);
+    private static NameAliases logstashNameAliases = new NameAliases(NAMES_LC);
 
+    private static NameAliases[] nameAliases = { jsonLoggingNameAliases, logstashNameAliases };
+
+    // For renaming fields - only applicable to regular JSON logging and not logstash collector
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
+    }
+
+    public static void resetJsonLoggingNameAliases() {
+        jsonLoggingNameAliases.resetAliases();
     }
 
     public AuditData() {
         super(14);
     }
 
-    public String getDatetimeKey() {
-        return NAMES[0];
-    }
-
-    public String getSequenceKey() {
-        return NAMES[1];
-    }
-
-    public String getThreadIDKey() {
-        return NAMES[2];
-    }
-
-    public String getHostKey() {
-        return NAMES[3];
-    }
-
-    public String getUserDirKey() {
-        return NAMES[4];
-    }
-
-    public String getServerNameKey() {
-        return NAMES[5];
-    }
-
-    public String getDatetimeKey1_1() {
-        return NAMES1_1[0];
-    }
-
-    public String getSequenceKey1_1() {
-        return NAMES1_1[1];
-    }
-
-    public String getThreadIDKey1_1() {
-        return NAMES1_1[2];
-    }
-
-    public String getHostKey1_1() {
-        return NAMES1_1[3];
-    }
-
-    public String getUserDirKey1_1() {
-        return NAMES1_1[4];
-    }
-
-    public String getServerNameKey1_1() {
-        return NAMES1_1[5];
-    }
-
-    public static String getDatetimeKeyJSON() {
-        return jsonLoggingNameAliases.aliases[0];
-    }
-
-    public static String getSequenceKeyJSON() {
-        return jsonLoggingNameAliases.aliases[1];
-    }
-
-    public static String getThreadIDKeyJSON() {
-        return jsonLoggingNameAliases.aliases[2];
-    }
-
-    public static String getHostKeyJSON() {
-        return jsonLoggingNameAliases.aliases[3];
-    }
-
-    public static String getUserDirKeyJSON() {
-        return jsonLoggingNameAliases.aliases[4];
-    }
-
-    public static String getServerNameKeyJSON() {
-        return jsonLoggingNameAliases.aliases[5];
-    }
+    //@formatter:off
+    public static String getDatetimeKey(int format)   { return nameAliases[format].aliases[0]; }
+    public static String getSequenceKey(int format)   { return nameAliases[format].aliases[1]; }
+    public static String getThreadIDKey(int format)   { return nameAliases[format].aliases[2]; }
+    public static String getHostKey(int format)       { return nameAliases[format].aliases[3]; }
+    public static String getUserDirKey(int format)    { return nameAliases[format].aliases[4]; }
+    public static String getServerNameKey(int format) { return nameAliases[format].aliases[5]; }
+    public static String getTypeKey(int format)       { return nameAliases[format].aliases[6]; }
+    //@formatter:on
 
 }

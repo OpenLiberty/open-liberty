@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -22,5 +20,7 @@ fat.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	org.testcontainers:testcontainers;version=1.12.3,\
+	org.testcontainers:testcontainers;version=1.14.0,\
 	org.slf4j:slf4j-api;version=1.7.7
+
+tested.features: componenttest-2.0

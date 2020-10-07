@@ -1,0 +1,146 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+war { enabled false } // We aren't making a war for the entire project
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               project(':com.ibm.websphere.security')
+}
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** WebsphereUserRegistry.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task WebsphereUserRegistry_WAR(type: War, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "WebsphereUserRegistry.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/WebsphereUserRegistry/resources') { 
+  	include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/UserRegistryServlet.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** PasswordUtilAPI.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task PasswordUtilAPI_WAR(type: War, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "PasswordUtilAPI.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/PasswordUtilAPI/resources') { 
+  	include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/pu/PasswordUtilServlet.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn WebsphereUserRegistry_WAR
+assemble.dependsOn PasswordUtilAPI_WAR
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
+autoFVT.doLast {
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+
+  /*
+   * Copy the WebsphereUserRegistry WAR into test servers.
+   */
+  def servers = [
+    'com.ibm.websphere.security.fat.registry.custom',
+    'com.ibm.websphere.security.fat.registry'
+  ]
+  servers.each { server ->
+    copy { 
+      from file("${appBuildDir}")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      include 'WebsphereUserRegistry.war'
+    }
+  }
+  
+  /*
+   * Copy the PasswordUtilAPI WAR into test servers.
+   */
+  servers = [
+    'com.ibm.websphere.security.fat.passwordutil.api',
+    'com.ibm.websphere.security.fat.passwordutil'
+  ]
+  servers.each { server ->
+    copy { 
+      from file("${appBuildDir}")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      include 'PasswordUtilAPI.war'
+    }
+  }
+  
+  /*
+   * Copy sample custom UserRegistry feature to this test bucket.
+   */
+  copy { 
+    from project(':com.ibm.ws.security.registry_test.custom').file('publish/features/customRegistrySample-1.0.mf')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.registry_test.custom').buildDir, 'com.ibm.ws.security.registry_test.custom.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
+    rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry.custom.sample_1.0.jar'
+  }
+}

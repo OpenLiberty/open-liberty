@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.jndi
 Bundle-SymbolicName: com.ibm.ws.cdi.jndi
 Bundle-Description: CDI JNDI, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-javac.source: 1.7
-javac.target: 1.7
 
 -dsannotations: com.ibm.ws.cdi.jndi.liberty.BeanManagerJavaColonNamingHelper,\
                 com.ibm.ws.cdi.jndi.liberty.BeanManagerObjectFactoryInfo
@@ -34,6 +31,8 @@ Import-Package: \
 Private-Package: com.ibm.ws.cdi.jndi.liberty
 
 WS-TraceGroup: JCDI
+
+jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

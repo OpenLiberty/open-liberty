@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=V\u00e9rifiez que toutes les o
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Une entr\u00e9e jaasLoginContext {0} ne peut pas \u00eatre sp\u00e9cifi\u00e9e en tant qu''entr\u00e9e de configuration JAAS dans le fichier server.xml, le fichier jaas.conf ou les deux.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=Le runtime utilise une configuration Krb5LoginModule par d\u00e9faut et la configuration SPNEGO figurant dans le fichier server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Supprimez l'entr\u00e9e jaasLoginContext du fichier server.xml ou laissez le runtime utiliser l'entr\u00e9e par d\u00e9faut.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: Le module de connexion personnalis\u00e9 JAAS {0} n''a pas \u00e9t\u00e9 charg\u00e9 car l''\u00e9l\u00e9ment de configuration {1} sp\u00e9cifie l''attribut libraryRef ainsi que l''attribut classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Vous ne devez sp\u00e9cifier qu'un seul attribut, libraryRef ou classProviderRef, pour indiquer l'artefact \u00e0 partir duquel charger le module de connexion personnalis\u00e9e JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Retirez l'attribut qui ne contient pas la classe du module de connexion personnalis\u00e9 JAAS, qu'il s'agisse de l'attribut libraryRef ou de l'attribut classProviderRef.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: Le module de connexion personnalis\u00e9 JAAS {0} est introuvable car l''\u00e9l\u00e9ment de configuration {1} ne sp\u00e9cifie pas l''attribut libraryRef ou l''attribut classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Vous ne devez sp\u00e9cifier qu'un seul attribut, libraryRef ou classProviderRef, pour indiquer l'artefact \u00e0 partir duquel charger le module de connexion personnalis\u00e9e JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Sp\u00e9cifiez l'attribut libraryRef ou classProviderRef pour indiquer l'emplacement \u00e0 partir duquel charger la classe du module de connexion personnalis\u00e9 JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: La classe du module de connexion personnalis\u00e9 JAAS {0} est introuvable dans l''artefact {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=L'application ou l'adaptateur de ressources sp\u00e9cifi\u00e9 ne contient pas la classe du module de connexion personnalis\u00e9 JAAS demand\u00e9e ou la classe du module de connexion personnalis\u00e9 JAAS se trouve dans l'application, mais dans un emplacement \u00e0 partir duquel elle ne peut pas \u00eatre charg\u00e9e.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Assurez-vous que la classe du module de connexion personnalis\u00e9 JAAS configur\u00e9e et son nom de package sont corrects. Si une application est sp\u00e9cifi\u00e9e, la classe du module de connexion doit se trouver dans l'application, dans un fichier JAR de niveau sup\u00e9rieur ou dans un module d'adaptateur de ressources.

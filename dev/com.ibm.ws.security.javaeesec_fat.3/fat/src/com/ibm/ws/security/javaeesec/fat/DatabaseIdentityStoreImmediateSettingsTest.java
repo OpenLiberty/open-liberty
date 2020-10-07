@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.identitystore.DatabaseIdentityStore;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -56,7 +55,6 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link DatabaseIdentityStore} configured with immediate EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBase {
@@ -154,6 +152,7 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER3_PWD);
 
+        resetConnection();
     }
 
     /**
@@ -176,23 +175,7 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
 
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
 
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * This test will verify that we can't change the dataSourceLookup setting via an immediate EL expression.
-     *
-     * <ul>
-     * <li>DB_USER1 - authorized with default datasourc</li>
-     * <li>DB_USER2 - authorized with datasource</li>
-     * <li>DB_USER3 - unauthorized (never authorized)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    public void dataSourceLookup() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Starting dataSourceLookup -- verify that we can't change the dataSourceLookup setting via an immediate EL expression");
 
         Map<String, String> overrides = new HashMap<String, String>();
         overrides.put(JavaEESecConstants.DS_LOOKUP, "java:comp/InvalidDataSource");
@@ -212,29 +195,17 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
         foundResults = myServer.findStringsInLogs(msg2);
         assertTrue("Should not have evaluated the datasource: " + msg2, foundResults.isEmpty());
 
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
+        Log.info(logClass, getCurrentTestName(), "-----Finished dataSourceLookup");
 
-    /**
-     * This test will verify that we can't change the groupsQuery setting via an immediate EL expression.
-     *
-     * <ul>
-     * <li>DB_USER1 - authorized via user</li>
-     * <li>DB_USER2 - authorized with default query</li>
-     * <li>DB_USER3 - unauthorized (never authorized)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    public void groupsQuery() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Starting groupsQuery -- Verify that we can't change the groupsQuery setting via an immediate EL expression");
 
-        Map<String, String> overrides = new HashMap<String, String>();
+        overrides = new HashMap<String, String>();
         overrides.put(JavaEESecConstants.GROUPS_QUERY, "select group_name from badtable where caller_name = ?");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Finished groupsQuery");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

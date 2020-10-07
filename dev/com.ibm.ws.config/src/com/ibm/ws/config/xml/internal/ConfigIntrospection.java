@@ -11,8 +11,7 @@
 package com.ibm.ws.config.xml.internal;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,18 +26,18 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
-import com.ibm.websphere.metatype.MetaTypeFactory;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
-import com.ibm.wsspi.logging.IntrospectableService;
+import com.ibm.wsspi.logging.Introspector;
+import com.ibm.wsspi.logging.SensitiveIntrospector;
 
-@Component(service = { IntrospectableService.class },
+@Component(service = { Introspector.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       Constants.SERVICE_VENDOR + "=" + "IBM"
+                        Constants.SERVICE_VENDOR + "=" + "IBM"
            })
-public class ConfigIntrospection implements IntrospectableService {
+public class ConfigIntrospection extends SensitiveIntrospector {
 
     private final static String NAME = "ConfigIntrospection";
     private final static String DESC = "Introspect internal configuration store";
@@ -74,39 +73,18 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.logging.IntrospectableService#getName()
-     */
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.logging.IntrospectableService#getDescription()
-     */
-    @Override
-    public String getDescription() {
-        return DESC;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.logging.IntrospectableService#introspect(java.io.OutputStream)
      */
     @Override
-    public void introspect(OutputStream out) throws IOException {
-        PrintStream ps = new PrintStream(out);
+    public void introspect(PrintWriter ps) throws IOException {
 
         ServerConfiguration server = systemConfiguration.getServerConfiguration();
 
         for (String name : server.getConfigurationNames()) {
             ps.println("");
             ps.println("Configuration Element Information for top level PID: " + name);
-            RegistryEntry re = metaTypeRegistry.getRegistryEntry(name);
+            RegistryEntry re = metaTypeRegistry.getRegistryEntryByAlias(name);
             ps.println("Has Metatype: " + (re != null));
             ConfigurationList<SimpleElement> cl = server.getConfigurationList(name);
             ConfigurationList<SimpleElement> defaultCl = server.getDefaultConfiguration().getConfigurationList(name);
@@ -120,24 +98,24 @@ public class ConfigIntrospection implements IntrospectableService {
                 ps.println("\tOrigin: " + element.getDocumentLocation());
                 ps.println("\tAttributes: " + filterMetatypeAttributes(re, element.getAttributes()));
                 ps.println("\tMerge Behavior: " + element.mergeBehavior);
-                printNestedConfiguration(1, ps, element);
+                printNestedConfiguration(1, ps, element, re);
             }
 
         }
     }
 
-    private void printNestedElementInformation(int indent, PrintStream ps, ConfigElement element, RegistryEntry re) {
+    private void printNestedElementInformation(int indent, PrintWriter ps, ConfigElement element, RegistryEntry re) {
         boolean hasMetatype = (re != null);
         print(indent, ps, "");
         print(indent, ps, "PID: " + (hasMetatype ? re.getPid() : element.getNodeDisplayName()));
         print(indent, ps, "Has Metatype: " + hasMetatype);
         print(indent, ps, "Sequence Number: " + element.getSequenceId());
         print(indent, ps, "Attributes: " + filterMetatypeAttributes(re, element.getAttributes()));
-        printNestedConfiguration(indent + 1, ps, element);
+        printNestedConfiguration(indent + 1, ps, element, re);
 
     }
 
-    private void print(int indent, PrintStream ps, String text) {
+    private void print(int indent, PrintWriter ps, String text) {
         StringWriter writer = new StringWriter();
         writer.append('\t');
         for (int i = 0; i < indent; i++) {
@@ -147,19 +125,44 @@ public class ConfigIntrospection implements IntrospectableService {
         ps.println(writer.toString());
     }
 
+    private String[] getReferenceAttributes(String name) {
+        if (name.endsWith(XMLConfigConstants.CFG_REFERENCE_SUFFIX)) {
+            return new String[] { name, name.substring(0, name.length() - XMLConfigConstants.CFG_REFERENCE_SUFFIX.length()) };
+        } else {
+            return new String[] { name + XMLConfigConstants.CFG_REFERENCE_SUFFIX, name };
+        }
+    }
+
     /**
      * @param element
+     * @param parent
      */
-    private void printNestedConfiguration(int indent, PrintStream ps, ConfigElement element) {
+    private void printNestedConfiguration(int indent, PrintWriter ps, ConfigElement element, RegistryEntry parent) {
         if (!element.hasNestedElements())
             return;
 
         print(indent, ps, "");
         print(indent, ps, "Nested Elements for " + element.getNodeDisplayName());
         for (ConfigElement nested : element.getChildren()) {
-            RegistryEntry re = metaTypeRegistry.getRegistryEntry(nested);
-            if (re == null)
+            // Try by child alias (child first)
+            RegistryEntry re = metaTypeRegistry.getRegistryEntry(parent, nested.getNodeName());
+            if (re == null && parent != null) {
+                // try by PID (parent first)
+                String[] attrNames = getReferenceAttributes(nested.getNodeName());
+                for (String attrName : attrNames) {
+                    ExtendedAttributeDefinition ad = parent.getAttributeMap().get(attrName);
+                    if (ad != null && ad.getReferencePid() != null) {
+                        re = metaTypeRegistry.getRegistryEntryByPidOrAlias(ad.getReferencePid());
+                        break;
+                    }
+                }
+
+            }
+
+            if (re == null) {
+                // Try by node name
                 re = metaTypeRegistry.getRegistryEntry(nested.getNodeName());
+            }
             printNestedElementInformation(indent, ps, nested, re);
         }
         print(indent, ps, "");
@@ -168,7 +171,7 @@ public class ConfigIntrospection implements IntrospectableService {
 
     /**
      * Filter out password fields
-     * 
+     *
      * @param attributes
      * @return
      */
@@ -176,33 +179,27 @@ public class ConfigIntrospection implements IntrospectableService {
         if (re == null)
             return attributes;
 
-        Map<String, ExtendedAttributeDefinition> attributeMap = re.getObjectClassDefinition().getAttributeMap();
         Map<String, Object> retVal = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-            ExtendedAttributeDefinition ad = attributeMap.get(entry.getKey());
-            if (isPasswordType(ad)) {
+
+            if (re.isObscuredAttribute(entry.getKey())) {
                 retVal.put(entry.getKey(), "*******");
             } else {
-                retVal.put(entry.getKey(), entry.getValue());
+                retVal.put(entry.getKey(), getObscuredValue(entry.getKey(), entry.getValue()));
             }
         }
 
         return retVal;
-
     }
 
-    /**
-     * @param ad
-     * @return
-     */
-    private boolean isPasswordType(ExtendedAttributeDefinition ad) {
-        if (ad == null)
-            return false;
+    @Override
+    public String getIntrospectorDescription() {
+        return DESC;
+    }
 
-        if (ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE)
-            return true;
-
-        return false;
+    @Override
+    public String getIntrospectorName() {
+        return NAME;
     }
 
 }

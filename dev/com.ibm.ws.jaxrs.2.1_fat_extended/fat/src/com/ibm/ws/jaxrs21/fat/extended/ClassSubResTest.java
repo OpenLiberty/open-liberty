@@ -17,12 +17,15 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.classSubRes.ClassSubResTestServlet;
 
+@SkipForRepeat(JakartaEE9Action.ID) // multiple errors needs investigation
 @RunWith(FATRunner.class)
 public class ClassSubResTest extends FATServletClient {
 

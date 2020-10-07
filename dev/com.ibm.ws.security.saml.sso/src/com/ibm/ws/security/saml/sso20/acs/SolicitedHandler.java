@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 
@@ -42,6 +43,7 @@ public class SolicitedHandler {
     SsoRequest samlRequest;
     Map<String, Object> parameters;
     SsoSamlService ssoService;
+    InitialRequestUtil irUtil = new InitialRequestUtil();
 
     public SolicitedHandler(HttpServletRequest request,
                             HttpServletResponse response,

@@ -22,8 +22,8 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaWriter;
 
 @WebServlet("/KafkaSharedLibTestServlet")
 @ApplicationScoped
@@ -33,13 +33,13 @@ public class KafkaSharedLibTestServlet extends AbstractKafkaTestServlet {
 
     @Test
     public void testSharedLibrary() {
-        SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(SharedLibMessagingBean.CHANNEL_OUT);
-        SimpleKafkaWriter<String> writer = kafkaTestClient.writerFor(SharedLibMessagingBean.CHANNEL_IN);
+        KafkaReader<String, String> reader = kafkaTestClient.readerFor(SharedLibMessagingBean.CHANNEL_OUT);
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(SharedLibMessagingBean.CHANNEL_IN);
 
         writer.sendMessage("123");
         writer.sendMessage("xyz");
 
-        List<String> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+        List<String> msgs = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertThat(msgs, contains("321", "zyx"));
     }

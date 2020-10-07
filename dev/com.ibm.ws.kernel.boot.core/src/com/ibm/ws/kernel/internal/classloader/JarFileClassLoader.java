@@ -207,7 +207,11 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
                 }
             }
 
-            definePackage(packageName, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+            try {
+                definePackage(packageName, specTitle, specVersion, specVendor, implTitle, implVersion, implVendor, sealBase);
+            } catch (IllegalArgumentException iae) {
+                // Ignore rather than protect against redefining packages when parallel-enabled
+            }
         }
     }
 

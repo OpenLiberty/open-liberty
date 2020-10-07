@@ -12,6 +12,8 @@ package com.ibm.ws.ejbcontainer.remote.fat.tests;
 
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -21,6 +23,21 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 public abstract class AbstractTest {
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                System.runFinalization();
+                System.gc();
+                getServer().serverDump("heap");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
 
     public abstract LibertyServer getServer();
 

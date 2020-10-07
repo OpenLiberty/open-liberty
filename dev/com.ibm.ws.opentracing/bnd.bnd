@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.opentracing
 Bundle-SymbolicName: com.ibm.ws.opentracing
@@ -22,30 +20,36 @@ WS-TraceGroup: OPENTRACING
 
 -dsannotations: com.ibm.ws.opentracing.OpentracingUserFeatureAccessService, \
                 com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister, \
-                com.ibm.ws.opentracing.OpentracingService
+                com.ibm.ws.opentracing.OpentracingJaxRsEMCallbackImpl, \
+                com.ibm.ws.opentracing.OpentracingService, \
+                com.ibm.ws.opentracing.AppStateListener
                 
 Import-Package: \
+    !com.ibm.ws.opentracing, \
     io.opentracing;version=0.30.0, \
     io.opentracing.propagation;version=0.30.0, \
     io.opentracing.tag;version=0.30.0, \
     *
 
 Export-Package: \
-	com.ibm.ws.opentracing;version=1.0,\
-	com.ibm.ws.opentracing.filters;version=1.0,\
-	com.ibm.ws.opentracing.tracer;version=1.0;provide=true
+    com.ibm.ws.opentracing;version=1.0,\
+    com.ibm.ws.opentracing.filters;version=1.0,\
+    com.ibm.ws.opentracing.tracer;version=1.0;provide=true
                 
 Private-Package: com.ibm.ws.opentracing.resources
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.jaxrs.2.0.common;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.core;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.org.osgi.service.cm;version=latest,\
-	com.ibm.ws.io.opentracing.opentracing-api;version=latest
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.jaxrs.2.0.common;version=latest,\
+    com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.core;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.websphere.org.osgi.service.cm;version=latest,\
+    com.ibm.ws.io.opentracing.opentracing-api;version=latest,\
+    com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.classloading;version=latest, \
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest

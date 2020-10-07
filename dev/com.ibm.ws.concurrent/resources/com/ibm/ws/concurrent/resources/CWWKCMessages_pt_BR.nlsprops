@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: O elemento de configura\u00e7\u00e3o {0} cont\u00e9m um atributo n\u00e3o reconhecido {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Atualize o aplicativo para evitar chama
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Uma tarefa enviada ao executor gerenciado{0} cont\u00e9m uma propriedade de execu\u00e7\u00e3o {1} com o valor {2} que n\u00e3o \u00e9 v\u00e1lido para executores gerenciados.
 CWWKC1130.xprop.value.invalid.explanation=Alguns valores da propriedade de execu\u00e7\u00e3o n\u00e3o s\u00e3o v\u00e1lidos para executores gerenciados, mas podem ser v\u00e1lidos para outros tipos de recursos, como servi\u00e7o de contexto ou factory de encadeamento gerenciado.
 CWWKC1130.xprop.value.invalid.useraction=Atualize o aplicativo para omitir a propriedade de execu\u00e7\u00e3o ou configure-o como um valor v\u00e1lido.
+
+CWWKC1156.not.supported=CWWKC1156E: A opera\u00e7\u00e3o solicitada n\u00e3o est\u00e1 dispon\u00edvel como um m\u00e9todo est\u00e1tico na implementa\u00e7\u00e3o do executor gerenciado de CompletableFuture. Em vez disso, use a seguinte opera\u00e7\u00e3o: {0}.
+CWWKC1156.not.supported.explanation=A implementa\u00e7\u00e3o do executor gerenciado de CompletableFuture n\u00e3o fornece equivalentes de m\u00e9todo est\u00e1tico para os m\u00e9todos est\u00e1ticos de CompletableFuture.
+CWWKC1156.not.supported.useraction=Atualize o aplicativo para usar o m\u00e9todo que \u00e9 recomendado na mensagem no lugar da opera\u00e7\u00e3o solicitada.

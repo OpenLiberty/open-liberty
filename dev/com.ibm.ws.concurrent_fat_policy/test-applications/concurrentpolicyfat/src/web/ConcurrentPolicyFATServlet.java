@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -32,15 +33,16 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.AbortedException;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.NamingException;
-import javax.servlet.annotation.WebServlet;
-import javax.transaction.TransactionSynchronizationRegistry;
-import javax.transaction.UserTransaction;
 
 import org.junit.After;
 import org.junit.Test;
@@ -660,6 +662,58 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         blockerTask.continueLatch.countDown();
         assertEquals(Integer.valueOf(1), blockerTaskFuture.get());
         cancelAfterTest.remove(blockerTaskFuture);
+    }
+
+    /**
+     * Specify the LONGRUNNING_HINT execution property key from both the Jakarta and Java EE specs, but set to
+     * different values. Verify that the Jakarta one takes precedence because the Jakarta Concurrency feature
+     * is enabled.
+     */
+    @Test
+    public void testLongRunningHintFromJakartaTakesPrecedenceWhenJakartaConcurrencyIsEnabled() throws Exception {
+        // Use up maxConcurrency of 1
+        CountingTask blockerTask1 = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        blockerTask1.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> blockerTaskFuture1 = executor1.submit(blockerTask1);
+        cancelAfterTest.add(blockerTaskFuture1);
+        assertTrue(blockerTask1.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up maxQueueSize of 1
+        CountingTask queuedTask1 = new CountingTask(null, null, null, null);
+        queuedTask1.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> queuedTaskFuture1 = executor1.submit(queuedTask1);
+        cancelAfterTest.add(queuedTaskFuture1);
+
+        // Submit task that aborts due to full queue
+        CountingTask abortedTask1 = new CountingTask(null, null, null, null);
+        Map<String, String> execProps = abortedTask1.getExecutionProperties();
+        execProps.put(ManagedTask.LONGRUNNING_HINT.replace("jakarta", "javax"), Boolean.FALSE.toString());
+        execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString()); // should override
+        try {
+            Future<Integer> abortedTaskFuture1 = executor1.submit(abortedTask1);
+            cancelAfterTest.add(abortedTaskFuture1);
+            fail("Unexpectedly allowed submit: " + abortedTaskFuture1);
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        // Even though the queue is full for long running tasks, we can still submit and run short-lived tasks per the normal policy
+        CountingTask normalTask1 = new CountingTask(null, null, null, null);
+        execProps = normalTask1.getExecutionProperties();
+        execProps.put(ManagedTask.LONGRUNNING_HINT.replace("jakarta", "javax"), Boolean.TRUE.toString());
+        execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.FALSE.toString()); // should override
+
+        Future<Integer> normalTaskFuture1 = executor1.submit(normalTask1);
+        cancelAfterTest.add(normalTaskFuture1);
+        assertEquals(Integer.valueOf(1), normalTaskFuture1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Cancel queued and running tasks,
+        cancelAfterTest.remove(queuedTaskFuture1);
+        assertTrue(queuedTaskFuture1.cancel(false));
+
+        cancelAfterTest.remove(blockerTaskFuture1);
+        assertTrue(blockerTaskFuture1.cancel(true));
     }
 
     /**

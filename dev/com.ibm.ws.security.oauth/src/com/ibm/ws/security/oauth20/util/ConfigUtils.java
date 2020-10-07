@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.osgi.framework.ServiceReference;
@@ -49,28 +49,20 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.JwtAccessTokenMediator;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 
-@Component(service = ConfigUtils.class,
-        name = "com.ibm.ws.security.oauth20.util.ConfigUtils",
-        immediate = true,
-        configurationPolicy = ConfigurationPolicy.IGNORE,
-        property = "service.vendor=IBM")
+@Component(service = ConfigUtils.class, name = "com.ibm.ws.security.oauth20.util.ConfigUtils", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class ConfigUtils {
 
     private static TraceComponent tc = Tr.register(ConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     protected static final List<OidcBaseClient> clientsList = Collections.synchronizedList(new ArrayList<OidcBaseClient>());
     protected static final Map<String, List<OAuth20Parameter>> providerConfigMap = Collections.synchronizedMap(new HashMap<String, List<OAuth20Parameter>>());
-    protected static final Map<String, ClassLoader> providerPluginClassLoaderMap =
-            Collections.synchronizedMap(new HashMap<String, ClassLoader>());
-    private static Map<String, Object[]> jdbcCredentialsMap =
-            Collections.synchronizedMap(new HashMap<String, Object[]>());
+    protected static final Map<String, ClassLoader> providerPluginClassLoaderMap = Collections.synchronizedMap(new HashMap<String, ClassLoader>());
+    private static Map<String, Object[]> jdbcCredentialsMap = Collections.synchronizedMap(new HashMap<String, Object[]>());
     private static UserClaimsRetrieverService userClaimsRetrieverService;
     public static final String KEY_JWT_MEDIATOR = "jwtAccessTokenMediator";
-    private static ConcurrentServiceReferenceMap<String, JwtAccessTokenMediator> jwtMediatorRef =
-            new ConcurrentServiceReferenceMap<String, JwtAccessTokenMediator>(KEY_JWT_MEDIATOR);
+    private static ConcurrentServiceReferenceMap<String, JwtAccessTokenMediator> jwtMediatorRef = new ConcurrentServiceReferenceMap<String, JwtAccessTokenMediator>(KEY_JWT_MEDIATOR);
     public static final String KEY_IDTOKEN_MEDIATOR = "idTokenMediator";
-    private static ConcurrentServiceReferenceMap<String, IDTokenMediator> idTokenMediatorRef =
-            new ConcurrentServiceReferenceMap<String, IDTokenMediator>(KEY_IDTOKEN_MEDIATOR);
+    private static ConcurrentServiceReferenceMap<String, IDTokenMediator> idTokenMediatorRef = new ConcurrentServiceReferenceMap<String, IDTokenMediator>(KEY_IDTOKEN_MEDIATOR);
 
     public static final String BUILTIN_DB_PROVIDER_CLASS = "com.ibm.ws.security.oauth20.plugins.db.CachedDBOidcClientProvider";
     public static final String BUILTIN_DB_TOKEN_STORE_CLASS = "com.ibm.ws.security.oauth20.plugins.db.CachedDBOidcTokenStore";
@@ -83,17 +75,14 @@ public class ConfigUtils {
     public static final String BUILTIN_MEDIATOR_CLASS = "com.ibm.oauth.core.internal.oauth20.mediator.impl.OAuth20MediatorDefaultImpl";
     public static final String BUILTIN_SAMPLE_MEDIATOR_CLASS = "com.ibm.ws.security.oauth20.mediator.ResourceOwnerValidationMediator";
 
-    private static Map<String, SecurityService> mapSecurityService =
-            Collections.synchronizedMap(new HashMap<String, SecurityService>());
+    private static Map<String, SecurityService> mapSecurityService = Collections.synchronizedMap(new HashMap<String, SecurityService>());
 
     public static final String KEY_ID = "id";
     public static final String KEY_OIDC_SERVER_CONFIG = "oidcServerConfig";
     private static final String KEY_VMM_SERVICE = "vmmService";
-    static AtomicServiceReference<VMMService> vmmServiceRef =
-            new AtomicServiceReference<VMMService>(KEY_VMM_SERVICE);
+    static AtomicServiceReference<VMMService> vmmServiceRef = new AtomicServiceReference<VMMService>(KEY_VMM_SERVICE);
 
-    private final static ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef =
-            new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
+    private final static ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef = new ConcurrentServiceReferenceMap<String, OidcServerConfig>(KEY_OIDC_SERVER_CONFIG);
     private static boolean bOidcUpdated = false;
     private static HashMap<String, OidcServerConfig> oidcMap = new HashMap<String, OidcServerConfig>();
 
@@ -122,10 +111,7 @@ public class ConfigUtils {
         vmmServiceRef.deactivate(cc);
     }
 
-    @Reference(service = OidcServerConfig.class, name = KEY_OIDC_SERVER_CONFIG,
-            policy = ReferencePolicy.DYNAMIC,
-            cardinality = ReferenceCardinality.MULTIPLE,
-            policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = OidcServerConfig.class, name = KEY_OIDC_SERVER_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     public void setOidcServerConfig(ServiceReference<OidcServerConfig> ref) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setOidcServerConfig", new Object[] { ref });
@@ -142,9 +128,7 @@ public class ConfigUtils {
         }
     }
 
-    @Reference(service = VMMService.class,
-            name = KEY_VMM_SERVICE,
-            policy = ReferencePolicy.DYNAMIC)
+    @Reference(service = VMMService.class, name = KEY_VMM_SERVICE, policy = ReferencePolicy.DYNAMIC)
     public void setVmmService(ServiceReference<VMMService> ref) {
         vmmServiceRef.setReference(ref);
     }
@@ -157,8 +141,7 @@ public class ConfigUtils {
      * This is a singleton instance.
      * Do not use it for multiple instance
      */
-    @Reference(name = KEY_OIDC_IDTOKEN_HANDLER,
-            service = OAuth20TokenTypeHandler.class)
+    @Reference(name = KEY_OIDC_IDTOKEN_HANDLER, service = OAuth20TokenTypeHandler.class)
     protected void setOidcIDTokenTypeHandler(OAuth20TokenTypeHandler handler) {
         oidcIDTokenHandler = handler;
         LibertyOAuth20Provider.setOidcIDTokenTypeHandler(handler);
@@ -173,8 +156,7 @@ public class ConfigUtils {
      * This is a singleton instance.
      * Do not use it for multiple instance
      */
-    @Reference(name = KEY_OIDC_GRANT_TYPE_HANDLER_FACTORY,
-            service = OAuth20GrantTypeHandlerFactory.class)
+    @Reference(name = KEY_OIDC_GRANT_TYPE_HANDLER_FACTORY, service = OAuth20GrantTypeHandlerFactory.class)
     protected void setOidcGrantTypeHandlerFactory(OAuth20GrantTypeHandlerFactory handler) {
         oidcGrantTypeHandlerFactory = handler;
         LibertyOAuth20Provider.setOidcGrantTypeHandlerFactory(handler);
@@ -189,8 +171,7 @@ public class ConfigUtils {
      * This is a singleton instance.
      * Do not use it for multiple instance
      */
-    @Reference(name = KEY_OIDC_RESPONSE_TYPE_HANDLER_FACTORY,
-            service = OAuth20ResponseTypeHandlerFactory.class)
+    @Reference(name = KEY_OIDC_RESPONSE_TYPE_HANDLER_FACTORY, service = OAuth20ResponseTypeHandlerFactory.class)
     protected void setOidcResponseTypeHandlerFactory(OAuth20ResponseTypeHandlerFactory handler) {
         oidcResponseTypeHandlerFactory = handler;
         LibertyOAuth20Provider.setOidcResponseTypeHandlerFactory(handler);
@@ -267,9 +248,9 @@ public class ConfigUtils {
             String propName = prefix + key;
             for (Iterator<?> k = spProps.entrySet().iterator(); k.hasNext();) {
                 Entry<String, String> entry = (Entry<String, String>) k.next();
-                String name = (String) entry.getKey();
+                String name = entry.getKey();
                 if (name != null && name.equalsIgnoreCase(propName)) {
-                    value = (String) entry.getValue();
+                    value = entry.getValue();
                     break;
                 }
             }
@@ -279,16 +260,13 @@ public class ConfigUtils {
         return value;
     }
 
-    public static boolean isCustomPropStringGood(String propString) throws Exception
-    {
+    public static boolean isCustomPropStringGood(String propString) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "isCustomPropStringGood", propString);
 
         try {
-            if (propString != null && propString.length() > 0)
-            {
-                if (!propString.startsWith("\"") && !propString.endsWith("\""))
-                {
+            if (propString != null && propString.length() > 0) {
+                if (!propString.startsWith("\"") && !propString.endsWith("\"")) {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "isCustomPropStringGood", false);
                     return false;
@@ -297,25 +275,19 @@ public class ConfigUtils {
                 // StringTokenizer tokenizer = new StringTokenizer(propString, "(\"\")+");
                 StringTokenizer tokenizer = new StringTokenizer(propString, "\""); // PK84743
 
-                while (tokenizer.hasMoreTokens())
-                {
+                while (tokenizer.hasMoreTokens()) {
                     String token = tokenizer.nextToken();
-                    if (token.indexOf("=") < 0)
-                    {
+                    if (token.indexOf("=") < 0) {
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "isCustomPropStringGood", false);
                         return false;
                     }
 
-                    if (tokenizer.hasMoreTokens())
-                    {
+                    if (tokenizer.hasMoreTokens()) {
                         String getComma = tokenizer.nextToken();
-                        if (getComma != null && getComma.trim().equals(",") && tokenizer.hasMoreTokens())
-                        {
+                        if (getComma != null && getComma.trim().equals(",") && tokenizer.hasMoreTokens()) {
                             continue;
-                        }
-                        else
-                        {
+                        } else {
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "isCustomPropStringGood", false);
                             return false;
@@ -323,10 +295,9 @@ public class ConfigUtils {
                     }
                 }
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception while tokenizing custom property string " + e.getMessage());
+                Tr.debug(tc, "Exception while tokenizing custom property string " + e);
             throw e;
         }
         if (tc.isEntryEnabled())
@@ -366,17 +337,16 @@ public class ConfigUtils {
     }
 
     public static boolean isBuiltinClass(String className) {
-        boolean isBuiltin =
-                className.equals(BUILTIN_DB_PROVIDER_CLASS) ||
-                        className.equals(BUILTIN_DB_TOKEN_STORE_CLASS) ||
-                        className.equals(BUILTIN_BASE_PROVIDER_CLASS) ||
-                        className.equals(BUILTIN_BASE_TOKEN_HANDLER_CLASS) ||
-                        className.equals(BUILTIN_BASE_ID_TOKEN_HANDLER_CLASS) || // oidc10
-                        className.equals(BUILTIN_GRANT_TYPE_HANDLER_FACTORY_CLASS) || // oidc10
-                        className.equals(BUILTIN_RESPONSE_TYPE_HANDLER_FACTORY_CLASS) || // oidc10
-                        className.equals(BUILTIN_MEDIATOR_CLASS) ||
-                        className.equals(BUILTIN_SAMPLE_MEDIATOR_CLASS) ||
-                        className.equals(BUILTIN_BASE_TOKEN_STORE_CLASS);
+        boolean isBuiltin = className.equals(BUILTIN_DB_PROVIDER_CLASS) ||
+                className.equals(BUILTIN_DB_TOKEN_STORE_CLASS) ||
+                className.equals(BUILTIN_BASE_PROVIDER_CLASS) ||
+                className.equals(BUILTIN_BASE_TOKEN_HANDLER_CLASS) ||
+                className.equals(BUILTIN_BASE_ID_TOKEN_HANDLER_CLASS) || // oidc10
+                className.equals(BUILTIN_GRANT_TYPE_HANDLER_FACTORY_CLASS) || // oidc10
+                className.equals(BUILTIN_RESPONSE_TYPE_HANDLER_FACTORY_CLASS) || // oidc10
+                className.equals(BUILTIN_MEDIATOR_CLASS) ||
+                className.equals(BUILTIN_SAMPLE_MEDIATOR_CLASS) ||
+                className.equals(BUILTIN_BASE_TOKEN_STORE_CLASS);
         // System.out.println("isBuiltinClass:" + isBuiltin + ":" + className);
         return isBuiltin;
     }
@@ -440,13 +410,13 @@ public class ConfigUtils {
     }
 
     /**
-     * 
+     *
      */
     public HashMap<String, OidcServerConfig> checkDuplicateOAuthProvider(ConcurrentServiceReferenceMap<String, OidcServerConfig> oidcServerConfigRef) {
         HashMap<String, OidcServerConfig> result = new HashMap<String, OidcServerConfig>();
         HashMap<String, String> mapProviderId = new HashMap<String, String>();
         HashMap<String, String> mapConfigId = new HashMap<String, String>();
-        Set<String> configIDs = (Set<String>) oidcServerConfigRef.keySet();
+        Set<String> configIDs = oidcServerConfigRef.keySet();
         for (String configId : configIDs) {
             OidcServerConfig oidcServerConfig = oidcServerConfigRef.getService(configId);
             String oidcProviderId = oidcServerConfig.getProviderId();

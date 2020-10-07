@@ -1,0 +1,9 @@
+<server>
+
+	<jwtBuilder
+		id=""
+		valid="1h"
+		audiences="Client02 Client03"
+		jti="true" />
+
+</server>

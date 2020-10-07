@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.internal;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for setting a started Application instance
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = Application.class,
@@ -94,7 +95,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for setting a starting Application instance
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = Application.class,
@@ -144,8 +145,32 @@ public class ApplicationTracker {
     }
 
     /**
+     * Dump internal state to the introspector.
+     *
+     * @param out writer for the introspector.
+     */
+    void introspect(PrintWriter out) {
+        if (lock.readLock().tryLock())
+            try {
+                for (Map.Entry<String, Set<Runnable>> entry : deferredTasks.entrySet()) {
+                    out.print("Deferred tasks for ");
+                    out.print(entry.getKey());
+                    out.print(": ");
+                    out.println(entry.getValue());
+                }
+                for (Map.Entry<String, ApplicationState> entry : appStates.entrySet()) {
+                    out.print(entry.getKey());
+                    out.print(" is ");
+                    out.println(entry.getValue());
+                }
+            } finally {
+                lock.readLock().unlock();
+            }
+    }
+
+    /**
      * Returns true if the application with the specified name is started, otherwise false.
-     * 
+     *
      * @return true if the application with the specified name is started, otherwise false.
      */
     boolean isStarted(String appName) {
@@ -159,7 +184,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for unsetting a started Application instance
-     * 
+     *
      * @param ref reference to the service
      */
     protected void removeStartedApplication(ServiceReference<Application> ref) {
@@ -174,7 +199,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for unsetting a starting Application instance
-     * 
+     *
      * @param ref reference to the service
      */
     protected void removeStartingApplication(ServiceReference<Application> ref) {
@@ -182,7 +207,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for setting the Liberty executor.
-     * 
+     *
      * @param svc the service
      */
     @Reference(target = "(component.name=com.ibm.ws.threading)")
@@ -192,7 +217,7 @@ public class ApplicationTracker {
 
     /**
      * Declarative Services method for unsetting the Liberty executor.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetExecutor(ExecutorService svc) {

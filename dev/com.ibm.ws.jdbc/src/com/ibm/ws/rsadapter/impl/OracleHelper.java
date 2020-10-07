@@ -10,11 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLInvalidAuthorizationSpecException; 
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,23 +40,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.XMLFormatter;
-import java.sql.PreparedStatement; 
-import java.sql.ResultSet;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringReader; 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import javax.resource.ResourceException;
+import javax.sql.CommonDataSource;
+import javax.sql.DataSource;
 import javax.transaction.xa.XAException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
@@ -82,6 +90,9 @@ public class OracleHelper extends DatabaseHelper {
     /**
      * Oracle methods
      */
+    private static final MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+    private MethodHandle setConnectionProperties,
+                         getConnectionProperties;
     private final AtomicReference<Method>
                     clearDefines = new AtomicReference<Method>(),
                     close = new AtomicReference<Method>(),
@@ -244,6 +255,11 @@ public class OracleHelper extends DatabaseHelper {
                     Tr.debug(oraTc, "Oracle trace file is not set, Oracle logging/tracing will be mergned with WAS logging based on WAS logging settings");
             }
         }
+    }
+    
+    @Override
+    public boolean supportsSubjectDoAsForKerberos() {
+        return true;
     }
 
     /**
@@ -756,6 +772,76 @@ public class OracleHelper extends DatabaseHelper {
             pstmtImpl.setCharacterStream(i, new StringReader(x), x.length());
         } else {
             pstmtImpl.setString(i, x);
+        }
+    }
+    
+    private void setKerberosDatasourceProperties(CommonDataSource ds) throws ResourceException {
+        try {
+            if (setConnectionProperties == null) {
+                getConnectionProperties = lookup.findVirtual(ds.getClass(), "getConnectionProperties", MethodType.methodType(Properties.class));
+                setConnectionProperties = lookup.findVirtual(ds.getClass(), "setConnectionProperties", MethodType.methodType(void.class, Properties.class));
+            }
+
+            Properties connProps = (Properties) getConnectionProperties.invoke(ds);
+            if (connProps == null)
+                connProps = new Properties();
+            
+            if (!connProps.containsKey("oracle.net.authentication_services") &&
+                !connProps.containsKey("oracle.net.kerberos5_mutual_authentication")) {
+                connProps.put("oracle.net.authentication_services", "( KERBEROS5 )");
+                connProps.put("oracle.net.kerberos5_mutual_authentications", "true");
+                
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Automatically setting kerberos connectionProperties for Oracle: ", connProps);
+
+                setConnectionProperties.invoke(ds, connProps);
+            }
+        } catch (Throwable e) {
+            throw new ResourceException(e);
+        }
+    }
+    
+    @Override
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        
+        if (useKerb != KerbUsage.NONE) {
+            try {
+                checkIBMJava8();
+                setKerberosDatasourceProperties(ds);
+            } catch (ResourceException ex) {
+                throw AdapterUtil.toSQLException(ex);
+            }
+        }
+        
+        return super.getConnectionFromDatasource(ds, useKerb, gssCredential);
+    }
+
+    @Override
+    public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
+                                                 WSConnectionRequestInfoImpl cri, KerbUsage useKerberos, Object gssCredential) throws ResourceException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
+
+        if (isTraceOn && tc.isEntryEnabled()) 
+            Tr.entry(this, tc, "getPooledConnection", AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase",
+                     cri, useKerberos, gssCredential);
+        
+        if (useKerberos != KerbUsage.NONE) {
+            checkIBMJava8();
+            setKerberosDatasourceProperties(ds);
+        }
+        ConnectionResults results = super.getPooledConnection(ds, userName, password, is2Phase, cri, useKerberos, gssCredential);
+
+        if (isTraceOn && tc.isEntryEnabled()) 
+            Tr.exit(this, tc, "getPooledConnection", results);
+        return results;
+    }
+    
+    private static void checkIBMJava8() throws ResourceException {
+        if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
+            // The Oracle JDBC driver does not support kerberos authentication on IBM JDK 8 because
+            // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
+            Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
+            throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
         }
     }
 

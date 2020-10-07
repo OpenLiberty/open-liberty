@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.dynamicSources.test.DynamicSourcesTestServlet;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -46,14 +47,18 @@ public class DynamicSourcesTest extends FATServletClient {
     @TestServlet(servlet = DynamicSourcesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = RepeatConfigActions.repeat("DynamicSourcesServer", Version.CONFIG11_EE8);
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive dynamicSources_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.dynamicSources.test")
-                        .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
-                                               "services/org.eclipse.microprofile.config.spi.ConfigSource");
+                                                  .addPackages(true, "com.ibm.ws.microprofile.appConfig.dynamicSources.test")
+                                                  .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
+                                                  .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                                                  .addAsManifestResource(new File("test-applications/" + APP_NAME
+                                                                                  + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
+                                                                         "services/org.eclipse.microprofile.config.spi.ConfigSource");
 
         ShrinkHelper.exportDropinAppToServer(server, dynamicSources_war);
 
@@ -64,8 +69,5 @@ public class DynamicSourcesTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("CWMCG0016E"); //On shutdown allow "The server is unable to cancel the asynchronous update thread."
     }
-
-    @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig11Not14("DynamicSourcesServer");
 
 }

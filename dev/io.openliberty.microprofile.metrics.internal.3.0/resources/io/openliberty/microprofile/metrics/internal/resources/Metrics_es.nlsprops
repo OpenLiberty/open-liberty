@@ -1,0 +1,140 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: El formato de la cabecera de aceptaci\u00f3n {0} no es correcto.
+notAcceptable.info.CWMMC0000I.explanation=La cabecera accept utiliza un formato no soportado.
+notAcceptable.info.CWMMC0000I.useraction=Utilice las cabeceras adecuadas.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: El tipo de solicitud de m\u00e9todo debe ser GET u OPTIONS.
+requestType.info.CWMMC0001I.explanation=El tipo de solicitud no est\u00e1 soportado. El tipo debe ser GET u OPTIONS.
+requestType.info.CWMMC0001I.useraction=Realice solicitudes GET u OPTIONS.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: El nombre de m\u00e9trica {0} no se ha encontrado.
+metricNotFound.info.CWMMC0002I.explanation=La m\u00e9trica no existe.
+metricNotFound.info.CWMMC0002I.useraction=Especifique el nombre de m\u00e9trica correcto.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: El registro {0} no se ha encontrado.
+registryNotFound.info.CWMMC0003I.explanation=El registro no existe.
+registryNotFound.info.CWMMC0003I.useraction=Especifique el nombre de registro correcto.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: El registro {0} no tiene contenido.
+emptyRegistry.info.CWMMC0004I.explanation=El registro est\u00e1 vac\u00edo.
+emptyRegistry.info.CWMMC0004I.useraction=Llene el registro con m\u00e9tricas.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: Se ha producido un error interno: {0}
+internal.error.CWMMC0005E.explanation=El servidor de aplicaciones ha experimentado un error interno.
+internal.error.CWMMC0005E.useraction=Re\u00fana un conjunto de rastreos y abra un nuevo problema del servidor de aplicaciones.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: Se ha producido un error interno.
+internal.error.CWMMC0006E.explanation=El servidor de aplicaciones ha experimentado un error interno.
+internal.error.CWMMC0006E.useraction=Re\u00fana un conjunto de rastreos y abra un nuevo problema del servidor de aplicaciones.
+
+#Memory usedHeap message
+memory.usedHeap.description=Muestra la cantidad de memoria de almacenamiento din\u00e1mico utilizado en bytes.
+
+#Memory committedHeap message
+memory.committedHeap.description=Muestra la cantidad de memoria en bytes que est\u00e1 confirmada para que utilice la m\u00e1quina virtual Java. Esta cantidad de memoria est\u00e1 garantizada para que la utilice la m\u00e1quina virtual Java.
+
+#Memory maxHeap message
+memory.maxHeap.description=Muestra la cantidad m\u00e1xima de memoria de almacenamiento din\u00e1mico en bytes que se puede utilizar para la gesti\u00f3n de memoria. Este atributo muestra -1 si no se ha definido el tama\u00f1o m\u00e1ximo de la memoria de almacenamiento din\u00e1mico. No est\u00e1 garantizada la disponibilidad de esta cantidad de memoria para la gesti\u00f3n de memoria si es mayor que la cantidad de memoria confirmada. La m\u00e1quina virtual Java puede fallar para asignar memoria, aunque la cantidad de memoria utilizada no exceda este tama\u00f1o m\u00e1ximo.
+
+#Jvm uptime message
+jvm.uptime.description=Muestra la hora de inicio de la m\u00e1quina virtual Java en milisegundos. Este atributo muestra la hora aproximada cuando se inici\u00f3 la m\u00e1quina virtual Java.
+
+#Thread count message
+thread.count.description=Muestra el n\u00famero actual de hebras activas incluyendo ambas hebras, la de daemon y la de no daemon.
+
+#Thread daemon count message
+thread.daemon.count.description=Muestra el n\u00famero actual de hebras de daemon activas.
+
+#Thread max count message
+thread.max.count.description=Muestra el recuento de hebras activas en hora punta desde que se inici\u00f3 la m\u00e1quina virtual Java o desde que se restableci\u00f3 la hora punta. Esto incluye hebras de daemon y de no daemon.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=Muestra el n\u00famero de clases que est\u00e1n cargadas actualmente en la m\u00e1quina virtual Java.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Muestra el n\u00famero total de clases que se han cargado desde que la m\u00e1quina virtual Java ha iniciado la ejecuci\u00f3n.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Muestra el n\u00famero total de clases descargadas desde que la m\u00e1quina virtual Java ha iniciado la ejecuci\u00f3n.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=Muestra el n\u00famero de procesadores disponibles para la m\u00e1quina virtual Java. Este valor puede cambiar durante una invocaci\u00f3n concreta de la m\u00e1quina virtual.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=Muestra la carga media del sistema durante el \u00faltimo minuto. La carga media del sistema es la suma del n\u00famero de entidades ejecutables en cola para los procesadores disponibles y el n\u00famero de entidades ejecutables que se ejecutan en los procesadores disponibles por promedio durante un periodo de tiempo. La forma en la cual se calcula la carga media es espec\u00edfica de sistema operativo pero, normalmente, es un promedio amortiguado que depende del tiempo. Si la carga media no est\u00e1 disponible, se muestra un valor negativo. Este atributo se ha dise\u00f1ado para proporcionar una pista sobre la carga del sistema y se puede consultar con frecuencia. La carga media puede no estar disponible en alguna plataforma, donde es caro implementar este m\u00e9todo.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=Muestra el 'uso de cpu reciente' para el proceso de la m\u00e1quina virtual Java.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Muestra el tiempo de CPU utilizado por el proceso en el cual se est\u00e1 ejecutando la m\u00e1quina virtual Java.
+
+#Garbage collection count message
+garbageCollectionCount.description=Muestra el n\u00famero total de colecciones que se han producido. Este atributo lista -1 si el recuento de la colecci\u00f3n no est\u00e1 definido para este recopilador.
+
+#Garbage collection time message
+garbageCollectionTime.description=Muestra el tiempo transcurrido en milisegundos de la colecci\u00f3n acumulada aproximada. Este atributo muestra -1 si el transcurso de tiempo de la colecci\u00f3n no est\u00e1 definido para este recopilador. La implementaci\u00f3n de la m\u00e1quina virtual Java puede utilizar un temporizador de alta resoluci\u00f3n para medir el tiempo transcurrido. Este atributo puede mostrar el mismo valor aunque la el recuento de la colecci\u00f3n se haya incrementado, si el tiempo transcurrido de la colecci\u00f3n es muy breve.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=N\u00famero de hebras que ejecutan tareas.
+threadpool.size.description=Tama\u00f1o de la agrupaci\u00f3n de hebras.
+
+servlet.request.total.description=N\u00famero de visitas a este servlet desde el inicio del servidor.
+servlet.responseTime.total.description=Tiempo total de respuesta de este servlet desde el inicio del servidor.
+
+connectionpool.create.total.description=N\u00famero total de conexiones gestionadas que se han creado desde la creaci\u00f3n de la agrupaci\u00f3n.
+connectionpool.destroy.total.description=N\u00famero total de conexiones gestionadas que se han destruido desde la creaci\u00f3n de la agrupaci\u00f3n.
+connectionpool.managedConnections.description=N\u00famero de conexiones gestionadas en las agrupaciones libres, compartidas y no compartidas.
+connectionpool.connectionHandles.description=N\u00famero de conexiones que est\u00e1n en uso. Este n\u00famero podr\u00eda incluir varias conexiones que se comparten desde una sola conexi\u00f3n gestionada.
+connectionpool.freeConnections.description=N\u00famero de conexiones gestionadas en la agrupaci\u00f3n libre.
+
+session.create.total.description=N\u00famero de sesiones iniciadas desde la habilitaci\u00f3n de esta m\u00e9trica.
+session.liveSessions.description=N\u00famero de usuarios con la sesi\u00f3n iniciada actualmente.
+session.activeSessions.description=N\u00famero de sesiones activas simult\u00e1neamente. (Una sesi\u00f3n est\u00e1 activa si el producto est\u00e1 procesando actualmente una solicitud que utiliza esa sesi\u00f3n de usuario).
+session.invalidated.total.description=N\u00famero de sesiones cerradas desde la habilitaci\u00f3n de esta m\u00e9trica.
+session.invalidatedbyTimeout.total.description=N\u00famero de sesiones cerradas por tiempo de espera excedido desde la habilitaci\u00f3n de esta m\u00e9trica.
+
+
+REST.request.description=N\u00famero de invocaciones y tiempo de respuesta de este m\u00e9todo de recurso RESTful desde el inicio del servidor.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: Se ha producido un error de API de m\u00e9tricas: {0}
+temporary.CWMMC9999E.explanation=Un error de API de m\u00e9tricas impide el funcionamiento normal.
+temporary.CWMMC9999E.useraction=Revise los registros FFDC y el texto de excepci\u00f3n para identificar el problema.

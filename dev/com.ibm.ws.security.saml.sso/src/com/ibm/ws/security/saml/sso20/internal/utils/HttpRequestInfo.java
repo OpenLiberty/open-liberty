@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,7 +81,7 @@ public class HttpRequestInfo implements Serializable {
      */
     public HttpRequestInfo(HttpServletRequest request) throws SamlException {
         this.reqUrl = request.getRequestURL().toString(); // keep this for restore the saved parameters (on SAMLReqponseTai)
-        this.requestURL = getReqURL(request); // save the requestURL and queries if any
+        this.requestURL = getRequestURL(request); // save the requestURL and queries if any
         // bFromRequest = true;
         this.method = request.getMethod();
         this.strInResponseToId = SamlUtil.generateRandomID();
@@ -99,6 +99,21 @@ public class HttpRequestInfo implements Serializable {
                 // this should not happen. Let the SamlException handles it
                 throw new SamlException(e);
             }
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
+        }
+    }
+    
+    public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
+        this.reqUrl = reqUrl;
+        this.requestURL = requestURL;
+        this.method = method;
+        this.strInResponseToId = strInResponseToId;
+        this.formLogoutExitPage = formlogout;
+        
+        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {  
+                this.savedPostParams = postParams;                
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
@@ -142,8 +157,16 @@ public class HttpRequestInfo implements Serializable {
     }
 
     // for FAT
-    public String getRequestUrl() {
+    public String getReqUrl() {
         return this.reqUrl;
+    }
+    
+    public String getRequestUrl() {
+        return this.requestURL;
+    }
+    
+    public Map getSavedPostParams() {
+        return this.savedPostParams;
     }
 
     public String getFragmentCookieId() {
@@ -251,7 +274,7 @@ public class HttpRequestInfo implements Serializable {
         return birthTime;
     }
 
-    static public String getReqURL(HttpServletRequest req) {
+    static public String getRequestURL(HttpServletRequest req) {
         StringBuffer reqURL = req.getRequestURL();
         String queryString = req.getQueryString();
         if (queryString != null) {

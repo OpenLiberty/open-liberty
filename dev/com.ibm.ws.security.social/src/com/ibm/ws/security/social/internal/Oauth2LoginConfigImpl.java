@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,22 +36,21 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.SslRefInfo;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
+import com.ibm.ws.security.social.internal.utils.SocialConfigUtils;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
 import com.ibm.ws.security.social.tai.SocialLoginTAI;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
-import com.ibm.wsspi.ssl.SSLSupport;
 
 @Component(name = "com.ibm.ws.security.social.oauth2login", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=oauth2Login" })
 public class Oauth2LoginConfigImpl implements SocialLoginConfig {
@@ -148,6 +147,9 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_userNameAttribute = "userNameAttribute";
     protected String userNameAttribute = null;
     private final String DEFAULT_USER_NAME_ATTRIBUTE = "email";
+    
+    public static final String KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
+    protected String introspectionTokenTypeHint = null;
 
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
@@ -175,9 +177,12 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
+    public static final String USER_API_TYPE_BASIC = "basic";
+    public static final String USER_API_TYPE_KUBE = "kube";
+
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
-    private final String DEFAULT_USER_API_TYPE = "basic";
+    private final String DEFAULT_USER_API_TYPE = USER_API_TYPE_BASIC;
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
@@ -189,6 +194,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected String accessTokenHeaderName = null;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
+    protected SocialConfigUtils socialConfigUtils = new SocialConfigUtils();
 
     final AtomicServiceReference<SocialLoginService> socialLoginServiceRef = new AtomicServiceReference<SocialLoginService>(KEY_SOCIAL_LOGIN_SERVICE);
 
@@ -242,6 +248,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+
+        if (isIntrospectConfiguration(props)) {
+            checkForRequiredConfigAttributesForIntrospect(props);
+        }
         if (isConfiguredForProxyFlow(props)) {
             checkForRequiredConfigAttributesForProxyFlow(props);
         }
@@ -251,7 +261,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             getRequiredConfigAttribute(props, KEY_clientId);
             getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
             getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            getRequiredConfigAttribute(props, KEY_scope);
+            //getRequiredConfigAttribute(props, KEY_scope);  // removing as not all providers require it. 
         }
     }
 
@@ -263,9 +273,22 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_userApi, uniqueId);
     }
 
+    boolean isIntrospectConfiguration(Map<String, Object> props) {
+        String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        if (userApiType != null && "introspect".equals(userApiType)) {
+            return true;
+        }
+        return false;
+    }
+
+    protected void checkForRequiredConfigAttributesForIntrospect(Map<String, Object> props) {
+        getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+    }
+
     boolean isKubeConfiguration(Map<String, Object> props) {
         String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
-        if (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType)) {
+        if (userApiType != null && USER_API_TYPE_KUBE.equals(userApiType)) {
             return true;
         }
         return false;
@@ -292,6 +315,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
         this.userNameAttribute = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userNameAttribute, DEFAULT_USER_NAME_ATTRIBUTE);
+        this.introspectionTokenTypeHint = configUtils.getConfigAttribute(props, KEY_INTROSPECTION_TOKEN_TYPE_HINT);
         this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.realmNameAttribute = configUtils.getConfigAttribute(props, KEY_realmNameAttribute);
@@ -432,10 +456,12 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             Tr.debug(tc, KEY_authFilterRef + " = " + authFilterRef);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, KEY_userNameAttribute + " = " + userNameAttribute);
+            Tr.debug(tc, KEY_INTROSPECTION_TOKEN_TYPE_HINT + " = " + introspectionTokenTypeHint);
             Tr.debug(tc, KEY_userApi + " = " + userApi);
             Tr.debug(tc, "userApiConfigs = " + (userApiConfigs == null ? "null" : userApiConfigs.length));
             Tr.debug(tc, KEY_realmName + " = " + realmName);
             Tr.debug(tc, KEY_realmNameAttribute + " = " + realmNameAttribute);
+            Tr.debug(tc, KEY_accessTokenHeaderName + " = " + accessTokenHeaderName);
             Tr.debug(tc, KEY_groupNameAttribute + " = " + groupNameAttribute);
             Tr.debug(tc, KEY_userUniqueIdAttribute + " = " + userUniqueIdAttribute);
             Tr.debug(tc, KEY_mapToUserRegistry + " = " + mapToUserRegistry);
@@ -613,68 +639,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     @Override
-    public SSLContext getSSLContext() throws SocialLoginException {
-        if (this.sslContext == null) {
-            SocialLoginService service = socialLoginServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Social login service is not available");
-                }
-                return null;
-            }
-            SSLSupport sslSupport = service.getSslSupport();
-            if (sslSupport == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SSL support could not be found for social login service");
-                }
-                return null;
-            }
-            try {
-                JSSEHelper jsseHelper = sslSupport.getJSSEHelper();
-                if (jsseHelper != null) {
-                    sslContext = jsseHelper.getSSLContext(sslRef, null, null, true);
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "sslContext (" + sslRef + ") get: " + sslContext);
-                        // Properties sslProps =
-                        // jsseHelper.getProperties(sslRef);
-                    }
-                }
-            } catch (Exception e) {
-                throw new SocialLoginException("FAILED_TO_GET_SSL_CONTEXT", e, new Object[] { uniqueId, e.getLocalizedMessage() });
-            }
-        }
-
-        return this.sslContext;
-    }
-
-    @Override
     public SSLSocketFactory getSSLSocketFactory() throws SocialLoginException {
-        if (this.sslContext == null) {
-            SocialLoginService service = socialLoginServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Social login service is not available");
-                }
-                return null;
-            }
-            SSLSupport sslSupport = service.getSslSupport();
-            if (sslSupport == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SSL support could not be found for social login service");
-                }
-                return null;
-            }
-            try {
-                sslSocketFactory = sslSupport.getSSLSocketFactory(sslRef);
-                JSSEHelper jsseHelper = sslSupport.getJSSEHelper();
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sslSocketFactory (" + sslRef + ") get: " + sslSocketFactory);
-                }
-            } catch (Exception e) {
-                throw new SocialLoginException("FAILED_TO_GET_SSL_CONTEXT", e, new Object[] { uniqueId, e.getLocalizedMessage() });
-            }
-        }
-
+        this.sslSocketFactory = socialConfigUtils.getSSLSocketFactory(uniqueId, sslContext, socialLoginServiceRef, sslRef);
         return this.sslSocketFactory;
     }
 
@@ -700,6 +666,12 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     @Override
     public String getUserNameAttribute() {
         return this.userNameAttribute;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        return this.introspectionTokenTypeHint;
     }
 
     /** {@inheritDoc} */
@@ -832,6 +804,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public String getAccessTokenHeaderName() {
         return accessTokenHeaderName;
 
+    }
+
+    public long getApiResponseCacheTime() {
+        return 0;
     }
 
 }

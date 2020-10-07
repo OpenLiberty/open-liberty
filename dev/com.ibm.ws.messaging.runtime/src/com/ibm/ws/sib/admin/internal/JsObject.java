@@ -485,7 +485,7 @@ public class JsObject implements RuntimeEventListener {
   
   public String toString(){
   	StringBuffer buf = new StringBuffer();
-	String newline = System.getProperty("line.separator");
+	String newline = System.lineSeparator();
  
   	buf.append(this.getClass().getName());
   	buf.append("@");

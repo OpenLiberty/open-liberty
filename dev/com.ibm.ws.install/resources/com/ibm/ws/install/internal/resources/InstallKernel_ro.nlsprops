@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=URL-ul urm\u0103tor nu este valid: {0}. Sunt suportat
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protocolul de URL pentru urm\u0103toarea magazie nu este suportat: {0}. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect.
 MSG_VALIDATION_INVALID_HOST=Urm\u0103toarea gazd\u0103 de server proxy nu este valid\u0103: {0}. pecifica\u0163i un nume valid de gazd\u0103 de server proxy HTTP. Nu este necesar prefixul http://.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Nu au fost g\u0103site caracteristici.
+
 VALIDATION_INVALID_VALUE=Valoare nesuportat\u0103
 VALIDATION_INVALID_KEY=Nume de proprietate nesuportat
 VALIDATION_EMPTY_KEY=Nume de proprietate gol
@@ -838,6 +841,38 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Caracteristica nu este supor
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Rula\u0163i featureUtility cu o caracteristic\u0103 compatibil\u0103.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Urm\u0103toarele caracteristici de utilizator sunt specificate \u00een server.xml \u015fi ele nu vor fi instalate: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Caracteristicile {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Caracteristicile singleton {0} \u015fi {1} sunt incompatibile \u00eentre ele \u015fi ele nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Caracteristicile nu pot fi instalate \u00een acela\u015fi timp.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=\u00cenl\u0103tura\u0163i una dintre caracteristici \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Nu s-a dezarhiva pachetul de licen\u0163\u0103 cu coordonata Maven {0} din magazie de la calea de fi\u015fier {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Imposibil de dezarhivat pachetul de licen\u0163\u0103 la instalarea wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i permisiunile corecte pentru a citi din magazie.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Nu se poate procesa fi\u015fierul de licen\u0163\u0103 de la loca\u0163ia de fi\u015fier {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Nu se poate procesa fi\u015fierul de licen\u0163\u0103 pentru informa\u0163iile de acceptare licen\u0163\u0103.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i permisiunile corecte pentru a citi fi\u015fierul de la licen\u0163\u0103.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Nu se poate g\u0103si fi\u015fierul JSON Websphere la loca\u0163ia de fi\u015fier {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Nu se poate g\u0103si fi\u015fierul JSON Websphere.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i conexiune la re\u0163ea \u015fi permisiuni de scriere la directorul Maven local configurat.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Nu s-au putut g\u0103si local sau pe magazia Maven configurat\u0103 urm\u0103toarele fi\u015fiere JSON de caracteristic\u0103: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Fi\u015fierele JSON nu pot fi g\u0103site local sau pe magazia Maven configurat\u0103.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i conexiune la re\u0163ea \u015fi fi\u015fierele JSON exist\u0103 pe magazia Maven configurat\u0103.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Caracteristica {0} nu poate fi instalat\u0103 la edi\u0163ia {1} {2} deoarece se aplic\u0103 doar la edi\u0163ia {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Caracteristica nu este aplicabil\u0103 pentru edi\u0163ia produsului instalat.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instala\u0163i caracteristici ce sunt suportate de edi\u0163ia produsului.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Instalarea sau actualizarea caracteristicilor nu este suportat\u0103 pentru edi\u0163iile beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Instalarea sau actualizarea caracteristicilor nu este suportat\u0103 pentru produsul instalat.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.

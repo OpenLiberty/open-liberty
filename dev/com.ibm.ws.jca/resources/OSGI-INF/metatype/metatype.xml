@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2019 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -75,30 +75,6 @@
  <OCD id="com.ibm.ws.jca.bundleResourceAdapter" ibm:alias="bundleResourceAdapter" ibm:supportExtensions="true" name="internal" description="internal use only">
   <AD id="location"                           type="String"  name="internal" description="internal use only" />
   <AD id="resourceAdapterBundleService.target" type="String"  default="(type=${id})" ibm:final="true" name="internal" description="internal use only"/>
- </OCD>
-
- <!-- Resource Adapter supertype -->
-
- <Designate factoryPid="com.ibm.ws.jca.resourceAdapter.supertype">
-  <Object ocdref="com.ibm.ws.jca.resourceAdapter.supertype" />
- </Designate>
-
- <OCD id="com.ibm.ws.jca.resourceAdapter.supertype" ibm:extends="com.ibm.ws.app.manager" 
-	 ibm:supportHiddenExtensions="true" name="internal" 
-	 description="internal use only" 
-	 ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, 	 	
-	 	com.ibm.ws.javaee.dd.appbnd.ApplicationBnd,
-	 	com.ibm.ws.javaee.dd.appext.ApplicationExt,
-	 	com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
-	 	com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
-	 	com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd, 
-	 	com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd, 
-	 	com.ibm.ws.javaee.dd.ejbext.EJBJarExt,
-	 	com.ibm.ws.javaee.dd.webbnd.WebBnd,
-	 	com.ibm.ws.javaee.dd.webext.WebExt">
-  <AD id="type" name="internal" description="internal use only" default="rar" type="String" ibm:final="true" />
-  <AD id="context-root" name="internal" description="internal use only" type="String" ibm:final="true" default="/"/>
-  <AD id="name"                               type="String"  required="false" ibm:copyOf="id" ibm:final="true" name="internal" description="internal use only"/>
  </OCD>
 
  <!-- Resource Adapter Properties (generic supertype) -->

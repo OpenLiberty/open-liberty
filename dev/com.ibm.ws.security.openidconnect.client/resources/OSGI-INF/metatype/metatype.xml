@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2013, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -53,6 +53,9 @@
          <AD id="discoveryEndpointUrl" name="%discoveryEndpointUrl" description="%discoveryEndpointUrl.desc" required="false" type="String" />
          <AD id="authorizationEndpointUrl" name="%authorizationEndpointUrl" description="%authorizationEndpointUrl.desc" required="false" type="String" />
          <AD id="tokenEndpointUrl" name="%tokenEndpointUrl" description="%tokenEndpointUrl.desc" required="false" type="String" />
+         <AD id="introspectionTokenTypeHint" name="internal" description="internal use only" type="String" required="false" default="access_token">
+     	 		<Option label="access_token" value="access_token" />
+		 </AD>
          <AD id="userInfoEndpointUrl" name="%userInfoEndpointUrl" description="%userInfoEndpointUrl.desc"
             required="false" type="String" />  
          <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnabled.desc"
@@ -63,7 +66,7 @@
 
         <!--  use of responseType is preferred -->
          <AD id="grantType" name="%grantType" description="%grantType.desc" required="true" type="String" default="authorization_code">
-                <Option label="%grantType.authorization_code" value="authorization_code" />
+         		<Option label="%grantType.authorization_code" value="authorization_code" />
             	<Option label="%grantType.implicit" value="implicit" />
          </AD>
          
@@ -121,7 +124,8 @@
 		 <AD id="validateAccessTokenLocally" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
 		 <AD id="sharedKey" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
          <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
-         <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="300s" ibm:type="duration" />        
+         <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
+         <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="300s" ibm:type="duration" />
 
          <AD id="authContextClassReference" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
          <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
@@ -133,6 +137,8 @@
          <AD id="useAccessTokenAsIdToken" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>
          <AD id="tokenReuse" name="%tokenReuse" description="%tokenReuse.desc" required="false" type="Boolean" default="false" />
          <AD id="forwardLoginParameter" name="%forwardLoginParameter" description="%forwardLoginParameter.desc" required="false" type="String" cardinality="2147483647" />
+         <AD id="requireExpClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+         <AD id="requireIatClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">

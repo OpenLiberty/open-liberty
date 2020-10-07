@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,12 +16,25 @@ Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.ejb
 Bundle-Description: WAS Security EJB support for JACC Service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.authorization.internal.jacc.ejb.jar
+#JakartaEE-Bundle-Name: EJB support for Jakarta Authorization 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authorization.internal.jacc.ejb
+#JakartaEE-Bundle-Description: EJB support for Jakarta Authorization 2.0
+#JakartaEE-Bundle-Version: 2.0
 
 WS-TraceGroup: Authorization
 
 Export-Package: \
- com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+  com.ibm.ws.security.authorization.jacc.ejb.impl;provide:=true, \
+
+Import-Package: \
+  !com.ibm.ws.security.authorization.jacc.ejb.impl, \
+  javax.xml.rpc.handler; version="[1.1,2)";resolution:=optional, \
+  ${defaultPackageImport}
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.ejb.impl.EJBServiceImpl
@@ -31,8 +44,20 @@ Export-Package: \
 	com.ibm.websphere.javaee.jacc.1.5;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.jaxrpc.stub;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.componenttest;version=latest,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1

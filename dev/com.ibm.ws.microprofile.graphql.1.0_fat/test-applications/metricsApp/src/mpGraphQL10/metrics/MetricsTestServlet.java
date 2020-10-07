@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,9 +110,9 @@ public class MetricsTestServlet extends FATServlet {
         assertEquals("Count", widget.getName());
         assertEquals(3, widget.getCount());
         
-        Stats stats = statsBuilder.build(StatsClient.class).getVendorStats();
+        Stats stats = statsBuilder.register(LoggingFilter.class).build(StatsClient.class).getVendorStats();
         assertNotNull(stats);
-        assertEquals(3, stats.getCount());
+        assertEquals(3, stats.getCount().getCount());
     }
 
     @Test
@@ -135,6 +135,7 @@ public class MetricsTestServlet extends FATServlet {
         Widget widget = widgets.get(0);
         assertEquals("Time", widget.getName());
         Duration duration = Duration.ofNanos(widget.getTime());
+        Duration runningDuration = Duration.ofNanos(widget.getTime());
         assertTrue(duration.compareTo(HALF_SECOND) >=0 );
 
         response = client.time(query);
@@ -144,6 +145,7 @@ public class MetricsTestServlet extends FATServlet {
         widget = widgets.get(0);
         assertEquals("Time", widget.getName());
         duration = Duration.ofNanos(widget.getTime());
+        runningDuration = runningDuration.plus(duration);
         assertTrue(duration.compareTo(HALF_SECOND.multipliedBy(2)) >=0 );
 
         response = client.time(query);
@@ -153,6 +155,7 @@ public class MetricsTestServlet extends FATServlet {
         widget = widgets.get(0);
         assertEquals("Time", widget.getName());
         duration = Duration.ofNanos(widget.getTime());
+        runningDuration = runningDuration.plus(duration);
         assertTrue( duration.compareTo(HALF_SECOND.multipliedBy(3)) >=0 );
         
         //TODO: check mpMetrics shows that (1.5s + someBuffer) >= time_from_mpMetrics >= time_from_widget 
@@ -160,9 +163,9 @@ public class MetricsTestServlet extends FATServlet {
         assertNotNull(stats);
         assertNotNull(stats.getTime());
         assertEquals(3, stats.getTime().getCount());
-        Duration metricsDuration = Duration.ofNanos((long)stats.getTime().getMean());
+        Duration metricsDuration = Duration.ofNanos((long)stats.getTime().getElapsedTime());
         Duration maxTimeDuration = Duration.ofMillis(1500 + PADDING_TIME);
         assertTrue( maxTimeDuration.compareTo(metricsDuration) >= 0 );
-        assertTrue( metricsDuration.compareTo(duration.dividedBy(3)) >= 0 );
+        assertTrue( Math.abs(metricsDuration.minus(runningDuration).toMillis()) <= PADDING_TIME);
     }
 }

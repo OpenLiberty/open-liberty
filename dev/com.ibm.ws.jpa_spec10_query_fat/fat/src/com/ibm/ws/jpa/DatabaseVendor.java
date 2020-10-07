@@ -56,6 +56,9 @@ public enum DatabaseVendor {
         if (toLower.contains("sqlserver")) {
             return SQLSERVER;
         }
+        if (toLower.contains("microsoft sql server")) {
+            return SQLSERVER;
+        }
         if (toLower.contains("sybase")) {
             return SYBASE;
         }

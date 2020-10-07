@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  */
 package com.ibm.ws.jsf22.fat;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf22.fat.tests.CDIConfigByACPTests;
@@ -40,37 +42,30 @@ import com.ibm.ws.jsf22.fat.tests.JSF22ThirdPartyApiTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ViewActionAndPhaseIdTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ViewPoolingTests;
 import com.ibm.ws.jsf22.fat.tests.JSFCompELTests;
-import com.ibm.ws.jsf22.fat.tests.JSFDummyTest;
 import com.ibm.ws.jsf22.fat.tests.JSFHtml5Tests;
 import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
 import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
  * JSF 2.2 Tests
- * 
+ *
  * Make sure to add any new test classes to the @SuiteClasses
  * annotation.
- * 
+ *
  * By default only lite mode tests are run.
- * 
+ *
  * Add "-Dfat.test.mode=full" to the end of your command, to run
- * the bucket in full mode. 
- * 
+ * the bucket in full mode.
+ *
  * Tests will also run with JSF 2.3 feature due to @ClassRule RepeatTests
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSFDummyTest.class,
                 JSFServerTest.class,
                 JSFHtmlUnit.class,
                 JSFSimpleHtmlUnit.class,
@@ -111,16 +106,12 @@ public class FATSuite {
         FatLogHandler.generateHelpFile();
     }
 
-    static Set<String> removeFeatures = new HashSet<>(Arrays.asList("jsf-2.2", "cdi-1.2", "beanValidation-1.1"));
-    static Set<String> addFeatures = new HashSet<>(Arrays.asList("jsf-2.3", "cdi-2.0", "beanValidation-2.0"));
-
     /**
      * Run the tests again with the jsf-2.3 feature. Tests should be skipped where appropriate
      * using @SkipForRepeat("JSF-2.3").
      */
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                                             .andWith(new FeatureReplacementAction(removeFeatures, addFeatures)
-                                             .withID("JSF-2.3").forceAddFeatures(false)
-                                             .withMinJavaLevel(8));
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

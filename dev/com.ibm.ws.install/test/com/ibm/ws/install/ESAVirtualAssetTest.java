@@ -21,12 +21,14 @@ import java.util.Locale;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.internal.asset.ESAVirtualAsset;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -34,7 +36,17 @@ import com.ibm.ws.install.internal.asset.ESAVirtualAsset;
 public class ESAVirtualAssetTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testESAVirtualAsset() {

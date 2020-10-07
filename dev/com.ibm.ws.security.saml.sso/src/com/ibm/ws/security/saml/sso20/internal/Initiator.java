@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
+import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.TraceConstants;
@@ -33,6 +34,7 @@ public class Initiator {
                                                         TraceConstants.MESSAGE_BUNDLE);
 
     SsoSamlService ssoService = null;
+    WebSSOUtils webssoUtils = new WebSSOUtils();
 
     /**
      * @param service
@@ -68,6 +70,7 @@ public class Initiator {
                 //ignore it. Session exists
             }
         }
+        //webssoUtils.savePostParameters(req);
 
         String loginPageUrl = samlConfig.getLoginPageURL();
         if (loginPageUrl != null && !loginPageUrl.isEmpty()) {

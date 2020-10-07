@@ -14,12 +14,11 @@ bVersion=1.0
 src: \
 	fat/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 
 tested.features: mpConfig-1.4,\
+                 mpConfig-2.0,\
                  cdi-1.2,\
                  cdi-2.0,\
                  servlet-3.1,\

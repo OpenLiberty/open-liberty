@@ -6,7 +6,6 @@ Subsystem-Name: System for Cross-domain Identity Management 2.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0"
 -bundles=com.ibm.ws.security.wim.scim.2.0, \
- com.ibm.ws.com.fasterxml.jackson.2.9.1, \
-  com.ibm.ws.require.java8
+ io.openliberty.com.fasterxml.jackson
 kind=noship
 edition=full

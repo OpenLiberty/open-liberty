@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=\u9a8c\u8bc1 server.xml \u6587
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: \u4e0d\u80fd\u5728 server.xml \u6587\u4ef6\u548c/\u6216 jaas.conf \u6587\u4ef6\u4e2d\u5c06 {0} jaasLoginContext \u6761\u76ee\u6307\u5b9a\u4e3a JAAS \u914d\u7f6e\u6761\u76ee\u3002
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=\u8fd0\u884c\u65f6\u4f7f\u7528\u7f3a\u7701 Krb5LoginModule \u914d\u7f6e\u548c  server.xml \u6587\u4ef6\u4e2d\u7684 SPNEGO \u914d\u7f6e\u3002
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=\u4ece server.xml \u6587\u4ef6\u4e2d\u79fb\u9664 jaasLoginContext \u6761\u76ee\uff0c\u6216\u8005\u8ba9\u8fd0\u884c\u65f6\u4f7f\u7528\u7f3a\u7701\u6761\u76ee\u3002
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: \u672a\u88c5\u5165 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757 {0}\uff0c\u56e0\u4e3a\u914d\u7f6e\u5143\u7d20 {1} \u540c\u65f6\u6307\u5b9a\u4e86 libraryRef \u548c classProviderRef \u5c5e\u6027\u3002
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=\u60a8\u5fc5\u987b\u4ec5\u6307\u5b9a\u4e00\u4e2a\u5c5e\u6027\uff08libraryRef \u6216 classProviderRef\uff09\uff0c\u4ee5\u6307\u793a\u4ece\u5176\u4e2d\u88c5\u5165 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7684\u5de5\u4ef6\u3002
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=\u79fb\u9664\u4e0d\u5305\u542b JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\u7684 libraryRef \u5c5e\u6027\u6216\u8005 classProviderRef \u5c5e\u6027\u3002
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: \u627e\u4e0d\u5230 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757 {0}\uff0c\u56e0\u4e3a\u914d\u7f6e\u5143\u7d20 {1} \u672a\u6307\u5b9a libraryRef \u5c5e\u6027\u6216\u8005 classProviderRef \u5c5e\u6027\u3002
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=\u60a8\u5fc5\u987b\u4ec5\u6307\u5b9a\u4e00\u4e2a\u5c5e\u6027\uff08libraryRef \u6216 classProviderRef\uff09\uff0c\u4ee5\u6307\u793a\u4ece\u5176\u4e2d\u88c5\u5165 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7684\u5de5\u4ef6\u3002
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=\u6307\u5b9a libraryRef \u5c5e\u6027\u6216\u8005 classProviderRef \u5c5e\u6027\uff0c\u4ee5\u6307\u793a\u4ece\u5176\u4e2d\u88c5\u5165 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\u7684\u4f4d\u7f6e\u3002
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: \u5728 {1} {2} \u5de5\u4ef6\u4e2d\u627e\u4e0d\u5230 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b {0}\u3002
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u6216\u8d44\u6e90\u9002\u914d\u5668\u4e0d\u5305\u542b\u6240\u8bf7\u6c42\u7684 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\uff0c\u6216\u8005 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\u867d\u7136\u5b58\u5728\u4e8e\u5e94\u7528\u7a0b\u5e8f\u4e2d\uff0c\u4f46\u662f\u5b58\u5728\u4e8e\u4e00\u4e2a\u65e0\u6cd5\u88c5\u5165 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\u7684\u4f4d\u7f6e\u3002
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=\u8bf7\u786e\u4fdd\u6240\u914d\u7f6e\u7684 JAAS \u5b9a\u5236\u767b\u5f55\u6a21\u5757\u7c7b\u53ca\u5176\u5305\u540d\u6b63\u786e\u3002\u5982\u679c\u6307\u5b9a\u4e86\u5e94\u7528\u7a0b\u5e8f\uff0c\u90a3\u4e48\u767b\u5f55\u6a21\u5757\u7c7b\u5fc5\u987b\u5305\u542b\u5728\u8be5\u5e94\u7528\u7a0b\u5e8f\u4e2d\uff0c\u4f4d\u4e8e\u9876\u7ea7 JAR \u6216\u8d44\u6e90\u9002\u914d\u5668\u6a21\u5757\u4e2d\u3002

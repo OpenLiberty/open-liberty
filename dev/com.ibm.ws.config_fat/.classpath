@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-bundles/test.config.variables/src"/>
 	<classpathentry kind="src" path="test-bundles/metatype/src"/>
 	<classpathentry kind="src" path="test-applications/configdropins/src"/>
 	<classpathentry kind="src" output="bin_test" path="test"/>
@@ -10,12 +9,11 @@
 	<classpathentry kind="src" path="test-applications/childalias/src"/>
 	<classpathentry kind="src" path="test-bundles/test.config.extensions/src"/>
 	<classpathentry kind="src" path="test-applications/confighelper/src"/>
-	<classpathentry kind="src" path="test-applications/varmerge/src"/>
 	<classpathentry kind="src" path="test-applications/mbeans/src"/>
 	<classpathentry kind="src" path="test-bundles/test.prod.extensions/src"/>
 	<classpathentry kind="src" path="test-bundles/test.user.prod.extensions/src"/>
 	<classpathentry kind="src" path="test-applications/restart/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

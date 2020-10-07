@@ -22,19 +22,19 @@ import org.eclipse.microprofile.reactive.messaging.Message;
  * <p>
  * To use this class, subclass it and override {@link #getMessage()} to add an {@code @Outgoing} annotation.
  */
-public class AbstractDeliveryBean {
+public class AbstractDeliveryBean<T> {
 
-    private final Queue<Message<String>> pendingMessages = new LinkedList<>();
-    private final Queue<CompletableFuture<Message<String>>> incompleteFutures = new LinkedList<>();
+    private final Queue<Message<T>> pendingMessages = new LinkedList<>();
+    private final Queue<CompletableFuture<Message<T>>> incompleteFutures = new LinkedList<>();
 
     public AbstractDeliveryBean() {
         super();
     }
 
-    public CompletionStage<Message<String>> getMessage() {
+    public CompletionStage<Message<T>> getMessage() {
         synchronized (this) {
             if (pendingMessages.isEmpty()) {
-                CompletableFuture<Message<String>> nextMessage = new CompletableFuture<>();
+                CompletableFuture<Message<T>> nextMessage = new CompletableFuture<>();
                 incompleteFutures.add(nextMessage);
                 System.out.println("Delivery bean returning incomplete CS");
                 return nextMessage;
@@ -53,14 +53,14 @@ public class AbstractDeliveryBean {
      * @param message the string to send in the message
      * @return a CompletableFuture which completes when the message is acknowledged
      */
-    public CompletableFuture<Void> sendMessage(String message) {
+    public CompletableFuture<Void> sendMessage(T message) {
         CompletableFuture<Void> ackCf = new CompletableFuture<>();
-        Message<String> msg = Message.of(message, () -> {
+        Message<T> msg = Message.of(message, () -> {
             ackCf.complete(null);
             return CompletableFuture.completedFuture(null);
         });
         synchronized (this) {
-            CompletableFuture<Message<String>> nextMessage = incompleteFutures.poll();
+            CompletableFuture<Message<T>> nextMessage = incompleteFutures.poll();
             if (nextMessage != null) {
                 System.out.println("Delivery bean passing message to incomplete CS");
                 nextMessage.complete(msg);

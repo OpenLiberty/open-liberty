@@ -10,15 +10,12 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-management;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
 
 cxfVersion=3.3.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-management;${cxfVersion};EXACT}!/!*-INF/*
-   com/ibm/ws=${bin}/com/ibm/ws,\
-   org/apache/cxf=${bin}/org/apache/cxf
+   @${repo;org.apache.cxf:cxf-rt-management;${cxfVersion};EXACT}!/!*-INF/*, \
+   META-INF/cxf=resources/META-INF/cxf
 
 -buildpath: org.apache.cxf:cxf-rt-management;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.javaee.annotation.1.1;version=latest,\

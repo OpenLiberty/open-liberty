@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +23,7 @@ import java.util.regex.Pattern;
 
 import javax.batch.runtime.JobExecution;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.apache.commons.io.IOUtils;
 
 import com.ibm.jbatch.container.ws.WSJobExecution;
@@ -318,7 +309,7 @@ public class BatchRequestUtil {
      */
     public static HttpsURLConnection sendRESTRequest(String restUrl, String requestMethod, 
     		RESTRequest request, RESTResponse response) throws ProtocolException, MalformedURLException, IOException {
-
+    	
     	if (isSSLAvailable) {
     		URL url = new URL(restUrl);
     		HttpsURLConnection connection = BatchRequestUtil.getConnection(url);
@@ -363,10 +354,12 @@ public class BatchRequestUtil {
     		return connection;
 
     	} else {
+    		Tr.debug(tc, "A request to " + restUrl + " could not be completed. " +
+    				"An SSL connection to the endpoint was not available.");
     		return null;
     	}
     }
-    
+
     // Getter for isSSLAvailable
     public static boolean getSSLAvailable() {
     	return isSSLAvailable;

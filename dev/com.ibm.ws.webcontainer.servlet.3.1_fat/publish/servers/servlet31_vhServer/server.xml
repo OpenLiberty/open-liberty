@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Server for testing Webcontainer">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <httpEndpoint id="localHostOnly1" host="localhost" httpPort="18080" />
+    <httpEndpoint id="localHostOnly2" host="localhost" httpPort="18082" />
+    <httpEndpoint id="localHostOnly3" host="localhost" httpPort="18443" />
+
+    <virtualHost id="alternateHost1">
+        <hostAlias>*:18080</hostAlias>
+    </virtualHost>
+
+     <virtualHost id="alternateHost2">
+        <hostAlias>*:18082</hostAlias>
+        <hostAlias>*:18443</hostAlias>
+    </virtualHost>
+
+    <logging traceSpecification="*=info:com.ibm.ws.webcontainer*=all:com.ibm.ws.http.dispatcher.internal*=all"/>
+
+    <webContainer useServlet31="true"/>
+
+</server>

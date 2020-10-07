@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,12 +21,17 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health.internal;
 
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.management.MBeanInfo;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -57,6 +62,7 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AppTrackerImpl.class);
+    private static final MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
@@ -92,8 +98,17 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     /** {@inheritDoc} */
     @Override
+    public Set<String> getAllAppNames() {
+        return appStateMap.keySet();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Set<String> getModuleNames(String appName) {
-        return appModules.get(appName);
+        if (appModules.containsKey(appName)) {
+            return appModules.get(appName);
+        }
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -135,12 +150,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         lock.writeLock().lock();
         try {
             appStateMap.put(appName, ApplicationState.STARTING);
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarting(): starting app added in appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**
@@ -214,13 +229,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         try {
             if (appStateMap.containsKey(appName)) {
                 appStateMap.replace(appName, ApplicationState.STARTING, ApplicationState.STARTED);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
             }
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStarted(): started app updated in appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**
@@ -236,6 +250,67 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    /**
+     * Returns true if the application with the specified name is installed, otherwise false.
+     *
+     * @return true if the application with the specified name is installed, otherwise false.
+     */
+    @Override
+    public boolean isInstalled(String appName) {
+        lock.readLock().lock();
+        try {
+            if (appStateMap.get(appName) == ApplicationState.INSTALLED) {
+                String state = getApplicationMBean(appName);
+                if (state.isEmpty()) {
+                    appStateMap.replace(appName, null);
+                } else {
+                    return true;
+                }
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the application with the specified name is uninstalled, otherwise false.
+     *
+     * @return true if the application with the specified name is uninstalled, otherwise false.
+     */
+    @Override
+    public boolean isUninstalled(String appName) {
+        lock.readLock().lock();
+        try {
+            if (appStateMap.get(appName) == null) {
+                return true;
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        return false;
+    }
+
+    /**
+     * Returns the MBeanInfo of appName if the ApplicationMBean exists, otherwise null.
+     *
+     * @return the MBeanInfo of appName if the ApplicationMBean exists, otherwise null.
+     */
+    private String getApplicationMBean(String appName) {
+        MBeanInfo bean = null;
+        String state = "";
+        try {
+            ObjectName objectName = new ObjectName("WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=" + appName);
+            bean = mbeanServer.getMBeanInfo(objectName);
+            state = (String) mbeanServer.getAttribute(objectName, "State");
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "getApplicationMBean() : Failed to retrieve MBean for app: " + appName + " : \n" + e.getMessage());
+            }
+        }
+        return state;
     }
 
     /** {@inheritDoc} */
@@ -262,13 +337,17 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         // Remove the stopped application from the appState map
         lock.writeLock().lock();
         try {
-            appStateMap.remove(appName);
+            String state = getApplicationMBean(appName);
+            if (state.equals("STARTING")) {
+                appStateMap.replace(appName, ApplicationState.INSTALLED);
+            } else {
+                appStateMap.remove(appName);
+            }
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
         } finally {
             lock.writeLock().unlock();
         }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "applicationStopped(): stopped app removed from appStateMap = " + appStateMap.toString() + " for app: " + appName);
     }
 
     /**

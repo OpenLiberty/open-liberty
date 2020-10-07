@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2015 IBM Corporation and others.
+    Copyright (c) 2015, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -15,9 +15,14 @@
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
 
-	<permission>  
-	  <class-name>java.lang.RuntimePermission</class-name>
-      <name>getClassLoader</name>  
-   </permission>
+    <permission>  
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>getClassLoader</name>  
+    </permission>
+
+    <permission>  
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>accessClassInPackage.com.sun.beans.editors</name>  
+    </permission>
 
 </permissions>

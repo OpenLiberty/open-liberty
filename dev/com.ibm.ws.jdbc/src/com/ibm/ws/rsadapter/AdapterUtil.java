@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2015 IBM Corporation and others.
+ * Copyright (c) 2001, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,9 +141,9 @@ public class AdapterUtil {
      */
     public static XAException createXAException(String key, Object args, int xaErrorCode) {
         XAException xaX = new XAException(
-                        args == null ?
-                                        getNLSMessage(key) :
-                                        getNLSMessage(key, args));
+                        args == null ? getNLSMessage(key) :
+                        args instanceof Object[] ? getNLSMessage(key, (Object[]) args) :
+                        getNLSMessage(key, args));
 
         xaX.errorCode = xaErrorCode;
 
@@ -798,7 +798,7 @@ public class AdapterUtil {
 
     /**
      * Converts a ResourceException to a SQLException. Returns the first chained exception
-     * found to be a SQLException or ConnectionWaitTimeoutException. If none of the chained
+     * found to be a SQLException or ConnectionWaitTimeoutException. If none of the
      * chained exceptions are SQLExceptions or ConnectionWaitTimeoutExceptions, a new
      * SQLException is created containing information from the ResourceException.
      * 
@@ -821,11 +821,15 @@ public class AdapterUtil {
             // The J2C connection manager raises a special exception subclass.
             else if (linkedX instanceof ResourceAllocationException
                      && linkedX.getClass().getName().equals("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException")) {
-                // Use a special SQLException subclass for connection wait timeout. 
-                sqlX = new ConnectionWaitTimeoutException(linkedX.getMessage()); 
-                sqlX.initCause(resX); 
-
-                sqlX = new SQLTransientConnectionException(linkedX.getMessage(), "08001", 0, sqlX); 
+                // The following exception was changed from throwing an SQLTransientConnectionException 
+                // to a ConnectionWaitTimeoutException instead to allow for traditional WebSphere applications to work since they expect a 
+                // ConnectionWaitTimeoutException instead.  This will continue to work with existing liberty applications as well since 
+                // SQLTransientConnectionException is the parent class of ConnectionWaitTimeoutException.  
+                // The ConnectionWaitTimeoutException is linked to another ConnectionWaitTimeoutException for backwards compatibility for liberty applications
+                // that were traversing the previous SQLTransientConnectionException to get to the underlying ConnectionWaitTimeoutException
+                SQLException sqlX2 = new ConnectionWaitTimeoutException(linkedX.getMessage());
+                // Keeping the original SQLState and SQLCode from the previous SQLTransientConnectionException
+                sqlX = new ConnectionWaitTimeoutException(linkedX.getMessage(), "08001", 0, sqlX2);
                 break;
             }
         }

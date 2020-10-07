@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,7 +15,15 @@ Bundle-Name: WAS Security JASPI
 Bundle-Description: WAS Security JASPI 1.1, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.jaspic.1.1
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.jaspic.2.0.internal.jar
+#JakartaEE-Bundle-Name: JASPI 2.0 
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jaspic.2.0.internal
+#JakartaEE-Bundle-Description: JASPI 2.0., version=${bVersion} 
+#JakartaEE-Bundle-Version: 2.0
 
 WS-TraceGroup: \
   JASPI
@@ -30,6 +38,7 @@ Export-Package: \
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   com.ibm.ws.common.internal.encoder,\
+  !com.ibm.ws.security.jaspi, \
   !*.internal.*,\
   !com.ibm.ws.kernel.boot.cmdline,\
   javax.xml.bind;version=!,\
@@ -40,8 +49,8 @@ Private-Package: \
   com.ibm.ws.security.jaspi.internal.resources
 
 -dsannotations: \
-com.ibm.ws.security.jaspi.JaspiServiceImpl, \
-com.ibm.ws.security.jaspi.JaspiServletContainerInitializer
+  com.ibm.ws.security.jaspi.JaspiServiceImpl, \
+  com.ibm.ws.security.jaspi.JaspiServletContainerInitializer
 
 -dsannotations-inherit: true
 

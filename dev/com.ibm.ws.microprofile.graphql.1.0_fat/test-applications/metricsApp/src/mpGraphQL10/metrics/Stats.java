@@ -14,11 +14,9 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class Stats {
 
-    public static class Time {
+    public static class SimpleTimerStat {
         private int count;
-        private double mean;
-        private double max;
-        private double min;
+        private long elapsedTime;
 
         public int getCount() {
             return count;
@@ -26,41 +24,30 @@ public class Stats {
         public void setCount(int count) {
             this.count = count;
         }
-        public double getMean() {
-            return mean;
+        public long getElapsedTime() {
+            return elapsedTime;
         }
-        public void setMean(double mean) {
-            this.mean = mean;
-        }
-        public double getMax() {
-            return max;
-        }
-        public void setMax(double max) {
-            this.max = max;
-        }
-        public double getMin() {
-            return min;
-        }
-        public void setMin(double min) {
-            this.min = min;
+        public void setElapsedTime(long elapsedTime) {
+            this.elapsedTime = elapsedTime;
         }
     }
 
-    @JsonbProperty("mp_graphql_mpGraphQL10.metrics.MyGraphQLEndpoint.getCountWidget.count")
-    private int count;
-    @JsonbProperty("mp_graphql_mpGraphQL10.metrics.MyGraphQLEndpoint.getTimeWidget.time")
-    private Time time;
+    @JsonbProperty("mp_graphql_Query_getCountWidget")
+    private SimpleTimerStat count;
+    @JsonbProperty("mp_graphql_Query_getTimeWidget")
+    private SimpleTimerStat time;
 
-    public int getCount() {
+    public SimpleTimerStat getCount() {
         return count;
     }
-    public void setCount(int count) {
+    public void setCount(SimpleTimerStat count) {
         this.count = count;
     }
-    public Time getTime() {
+    public SimpleTimerStat getTime() {
         return time;
     }
-    public void setTime(Time time) {
+    public void setTime(SimpleTimerStat time) {
         this.time = time;
     }
+
 }

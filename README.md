@@ -32,7 +32,7 @@ A lightweight open framework for building fast and efficient cloud-native Java m
 ### Launch a sample app using [Maven](https://maven.apache.org/)
     git clone https://github.com/OpenLiberty/sample-getting-started.git
     cd sample-getting-started
-    mvn clean package liberty:run-server
+    mvn clean package liberty:run
 
 Open browser to http://localhost:9080/ and explore the demo application.
 
@@ -79,7 +79,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 
         cd open-liberty/dev
         ./gradlew cnf:initialize
-        ./gradlew assemble`
+        ./gradlew assemble
     
 3. Run the unit or FAT tests.
 

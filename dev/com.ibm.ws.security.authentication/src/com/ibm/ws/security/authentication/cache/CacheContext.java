@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.cache;
 
+import java.security.cert.X509Certificate;
+
 import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -24,6 +26,7 @@ public class CacheContext {
     private final AuthCacheConfig config;
     private String userid;
     private String password;
+    private X509Certificate[] certChain = null;
 
     /**
      * @param config
@@ -45,9 +48,15 @@ public class CacheContext {
         this.password = password;
     }
 
+    public CacheContext(AuthCacheConfig config, CacheObject cacheObject, X509Certificate[] certChain) {
+        this.config = config;
+        this.cacheObject = cacheObject;
+        this.certChain = certChain;
+    }
+
     /**
      * Gets the AuthCacheConfig object.
-     * 
+     *
      * @return
      */
     public AuthCacheConfig getAuthCacheConfig() {
@@ -56,7 +65,7 @@ public class CacheContext {
 
     /**
      * Gets the subject being cached.
-     * 
+     *
      * @return
      */
     public Subject getSubject() {
@@ -65,7 +74,7 @@ public class CacheContext {
 
     /**
      * Gets the userid currently used.
-     * 
+     *
      * @return
      */
     public String getUserid() {
@@ -74,12 +83,21 @@ public class CacheContext {
 
     /**
      * Gets the password currently used.
-     * 
+     *
      * @return
      */
     @Sensitive
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Gets the certificate currently used.
+     *
+     * @return
+     */
+    public X509Certificate[] getCertChain() {
+        return certChain;
     }
 
 }

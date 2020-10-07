@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -216,3 +216,12 @@ APPLICATION_JANDEX_ENABLED.useraction=Aucune action n'est requise.
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: L''utilisation de Jandex est d\u00e9sactiv\u00e9e pour l''application {0}.
 APPLICATION_JANDEX_DISABLED.explanation=L'index Jandex est d\u00e9sactiv\u00e9 pour l'application sp\u00e9cifi\u00e9e.
 APPLICATION_JANDEX_DISABLED.useraction=Aucune action n'est requise.
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: Les applications suivantes ne peuvent pas d\u00e9marrer car la valeur de leurs attributs startAfter g\u00e9n\u00e8re un cycle : {0} 
+error.startAfter.cycle.explanation=Aucune des applications ne peut d\u00e9marrer car chacune d\u00e9pend du d\u00e9marrage d'une autre application.
+error.startAfter.cycle.useraction=Modifiez la valeur de l'attribut startAfter pour les applications impliqu\u00e9es dans le cycle afin qu'elles ne pr\u00e9sentent pas de d\u00e9pendances circulaires.
+
+dropins.app.also.configured=CWWKZ0067W: L''application de d\u00e9p\u00f4t \u00e0 l''emplacement {0} ne peut pas d\u00e9marrer car elle est \u00e9galement configur\u00e9e. 
+dropins.app.also.configured.explanation=Une application dans la configuration de serveur sp\u00e9cifie un emplacement dans le r\u00e9pertoire de d\u00e9p\u00f4t surveill\u00e9. 
+dropins.app.also.configured.useraction=D\u00e9placez l'application \u00e0 un autre emplacement. 

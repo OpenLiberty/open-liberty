@@ -25,7 +25,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.classloading-1.0,\
   com.ibm.websphere.appserver.injection-1.0,\
   com.ibm.websphere.appserver.javax.mail-1.6,\
-  com.ibm.websphere.appserver.javaeeCompatible-8.0
+  com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
   com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \
   com.ibm.ws.javamail.1.6,\

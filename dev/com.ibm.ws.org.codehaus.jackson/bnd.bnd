@@ -26,7 +26,7 @@ publish.wlp.jar.disabled: true
 -pedantic: false
 
 -buildpath: \
-	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2,\
-	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2
+	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2.1,\
+	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2.1

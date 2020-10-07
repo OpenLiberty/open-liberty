@@ -1,0 +1,47 @@
+<server description="JASPIC 1.1 Security FAT">
+
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>usr:jaspicUserTestFeature-1.0</feature>
+	</featureManager>
+
+	<basicRegistry id="basic1" realm="JaspiRealm">
+		<user name="jaspiuser2" password="s3cur1ty" />
+		<user name="jaspiuser1" password="s3cur1ty" />
+		<user name="jaspiuser3" password="s3cur1ty" />
+		<user name="jaspiuser4" password="s3cur1ty" />
+		<user name="jaspiuser5" password="s3cur1ty" />
+		<group name="group1">
+			<member name="jaspiuser1" />
+		</group>
+		<group name="group2">
+			<member name="jaspiuser2" />
+		</group>
+		<group name="group3">
+			<member name="jaspiuser3" />
+		</group>
+		<group name="group5">
+			<member name="jaspiuser5" />
+		</group>
+	</basicRegistry>
+	
+    <application type="war" id="JASPIWrappingServlet" name="JASPIWrappingServlet" location="JASPIWrappingServlet.war">
+ 		<application-bnd>
+			<security-role name="jaspi_basic">
+				<user name="jaspiuser1" />
+				<group name="group2" />
+			</security-role>	
+			<security-role name="jaspi_form">
+				<user name="jaspiuser3" />
+				<group name="group5" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<include location="../fatTestPorts.xml" />
+</server>

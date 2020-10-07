@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,33 +34,30 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-/**
- * All declarative services annotations on this class are ignored.
- * The annotations on
- * com.ibm.ws.concurrent.ee.ManagedScheduledExecutorServiceImpl and
- * com.ibm.ws.concurrent.mp.ManagedScheduledExecutorImpl
- * apply instead.
- */
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
-                       ManagedScheduledExecutorService.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
+           service = { ExecutorService.class, ManagedExecutorService.class, //
+                       ResourceFactory.class, ApplicationRecycleComponent.class, //
+                       ScheduledExecutorService.class, ManagedScheduledExecutorService.class },
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
+
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
 
     /**
@@ -217,6 +214,15 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     @Override
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        super.setEEVersion(ref);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
     @Trivial
     protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
@@ -246,6 +252,11 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
+    }
+
+    @Override
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        super.unsetEEVersion(ref);
     }
 
     @Override

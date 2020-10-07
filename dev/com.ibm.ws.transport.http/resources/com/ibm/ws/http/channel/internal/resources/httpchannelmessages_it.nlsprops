@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,39 @@ duplicateAlias.useraction=Assicurarsi che tutti gli alias host definiti come ele
 context.root.changed=CWWKT0028I: Applicazione Web spostata ({0}): {1}
 context.root.changed.explanation=Messaggio a solo scopo informativo.
 context.root.changed.useraction=Non \u00e8 richiesta alcuna azione.
+
+compression.duplicateType=CWWKT0029W: \u00c8 stata tentata un''aggiunta duplicata del tipo {0}. Viene utilizzata la configurazione predefinita {1}. 
+compression.duplicateType.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto accettabile per la compressione.
+compression.duplicateType.useraction=Quando si definisce il valore delle codifiche accettabili, assicurarsi che ciascun valore sia univoco. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: \u00c8 stata tentata una rimozione duplicata della codifica {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeRemoval.explanation=Il valore specificato \u00e8 gi\u00e0 registrato come tipo di contenuto escluso per la compressione.
+compression.duplicateTypeRemoval.useraction=Quando si utilizza l'opzione di rimozione (-), assicurarsi che il valore specificato non sia gi\u00e0 registrato come tipo di contenuto escluso.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: \u00c8 stato effettuato un tentativo sia di aggiungere che di rimuovere lo stesso tipo di contenuto {0}. Viene utilizzata la configurazione predefinita {1}.
+compression.duplicateTypeAddRemove.explanation=Il valore specificato \u00e8 contemporaneamente in fase di aggiunta e rimozione dalle opzioni di configurazione '+/-'.
+compression.duplicateTypeAddRemove.useraction=Non aggiungere (+) e rimuovere (-) lo stesso tipo di contenuto.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: \u00c8 stato effettuato un tentativo di sovrascrivere la configurazione predefinita di compressione, ma \u00e8 stata anche utilizzata l''opzione di aggiunta (+) su altri tipi di contenuto. Viene utilizzata la configurazione predefinita {0}.
+compression.duplicateOverwriteAndAdd.explanation=La configurazione sta tentando di sovrascrivere il valore predefinito in concomitanza con l'utilizzo dell'opzione di aggiunta (+). L'opzione di aggiunta non pu\u00f2 essere utilizzata mentre si sovrascrivono i valori predefiniti.
+compression.duplicateOverwriteAndAdd.useraction=Se \u00e8 necessario sovrascrivere la configurazione predefinita, non utilizzare l'opzione di aggiunta (+). Se non \u00e8 necessario sovrascrivere i valori predefiniti, includere gli altri tipi di contenuto desiderati utilizzando l'opzione di aggiunta (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: \u00c8 stato effettuato un tentativo di configurare {0} come algoritmo preferito del server. I valori supportati sono gzip, x-gzip, zlib, deflate, identity e none. Viene utilizzata la configurazione predefinita {1}.
+compression.unsupportedAlgorithm.explanation=La configurazione sta tentando di impostare un algoritmo non supportato come algoritmo preferito del server da utilizzare per la compressione. 
+compression.unsupportedAlgorithm.useraction= Quando si definisce il valore, assicurarsi che sia impostato su gzip, x-gzip, deflate, zlib, identity o none.
+
+decompression.tolerance.reached=CWWKT0034E: Il canale HTTP ha tentato di decomprimere un corpo con un rapporto pi\u00f9 grande del tollerato.
+decompression.tolerance.reached.explanation=\u00c8 stato raggiunto il numero massimo di cicli di decompressione, con un conseguente rapporto di decompressione pi\u00f9 grande rispetto al limite configurato. Il limite di decompressione \u00e8 definito dall'attributo decompressionRatioLimit httpOption.
+decompression.tolerance.reached.useraction=Quando questa eccezione si verifica su un corpo di richiesta valido, riconfigurare gli attributi decompressionTolerance e decompressionRatioLimit httpOption per ottenere i risultati di decompressione appropriati.
+
+cookies.samesite.duplicateName=CWWKT0035W: Un nome cookie o pattern duplicato [{0}] \u00e8 stato trovato nella configurazione SameSite [{1}]. Il nome cookie o pattern [{0}] viene ignorato per tutti gli elenchi di configurazione. Qualsiasi nome cookie o pattern definito dalle configurazioni ''lax'', ''none'' e ''strict'' pu\u00f2 essere definito in una sola delle tre configurazioni.
+cookies.samesite.duplicateName.explanation=Il valore specificato \u00e8 stato gi\u00e0 rilevato dalla configurazione e associato ad un valore SameSite.
+cookies.samesite.duplicateName.useraction=Assicurarsi che i nomi cookie e i pattern siano univoci tra gli elenchi di configurazione 'lax', 'none' e 'strict'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Un utilizzo non supportato del carattere jolly \u00e8 stato tentato tramite il valore [{0}]. La configurazione SameSite non \u00e8 impostata per questo valore.
+cookies.samesite.unsupportedWildcard.explanation=Il carattere jolly (*) \u00e8 stato utilizzato in modo non supportato. Il modo supportato consiste in un carattere jolly unico (*) utilizzato come valore autonomo o dopo qualsiasi numero di prefissi di nomi cookie.
+cookies.samesite.unsupportedWildcard.useraction=Assicurarsi che venga utilizzato un singolo carattere jolly (*) per pattern negli elenchi 'lax', 'none' e 'strict'. Inoltre, l'utilizzo di questo carattere \u00e8 supportato solo nelle seguenti due condizioni: come valore autonomo o dopo i prefissi dei nomi cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: Un nome cookie o uno schema [{0}], contrassegnato come un duplicato, \u00e8 stato trovato nella configurazione SameSite [{1}]. Il nome cookie o pattern [{0}] viene ignorato. Qualsiasi nome cookie o pattern definito dalle configurazioni ''lax'', ''none'' e ''strict'' pu\u00f2 essere definito in una sola delle tre configurazioni.
+cookies.samesite.knownDuplicateName.explanation=Il valore specificato \u00e8 stato gi\u00e0 rilevato dalla configurazione e associato ad un valore SameSite.
+cookies.samesite.knownDuplicateName.useraction=Assicurarsi che i nomi cookie e i pattern siano univoci tra gli elenchi di configurazione 'lax', 'none' e 'strict'.

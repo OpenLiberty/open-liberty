@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.2.0.web
 Bundle-SymbolicName: com.ibm.ws.cdi.2.0.web
 Bundle-Description: CDI 2.0 Web, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-javac.source: 1.8
-javac.target: 1.8
+jakartaeeMe: true
 
 Export-Package: com.ibm.ws.cdi.web.factories
 

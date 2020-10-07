@@ -19,8 +19,6 @@ src: \
 	test-applications/AroundTimeoutXmlEJB.jar/src,\
 	test-applications/AroundTimeoutWeb.war/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinitionImpl
  * Registry for MetaType information.
  */
 
-final class MetaTypeRegistry {
+public final class MetaTypeRegistry {
 
     private static final TraceComponent tc = Tr.register(MetaTypeRegistry.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
@@ -124,9 +124,20 @@ final class MetaTypeRegistry {
             MetaTypeInformation metaTypeInformation = metaTypeService.getMetaTypeInformation(bundle);
 
             if (metaTypeInformation != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Adding metatype for bundle {0}", bundle);
+                }
                 return addMetaType(metaTypeInformation);
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No metatype found for bundle {0}", bundle);
+                }
             }
 
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The metatype service was not available");
+            }
         }
         return Collections.emptySet();
     }
@@ -1183,6 +1194,33 @@ final class MetaTypeRegistry {
         @Trivial
         public String toString() {
             return super.toString() + "[" + pid + "]";
+        }
+
+        /**
+         * @param key
+         * @return
+         */
+        public boolean isObscuredAttribute(String key) {
+            return traverseHierarchy(new EntryAction<Boolean>() {
+
+                boolean result = false;
+
+                @Override
+                public boolean entry(RegistryEntry registryEntry) {
+                    ExtendedAttributeDefinition ad = registryEntry.getAttributeMap().get(key);
+
+                    if (ad != null && (ad.isObscured() || ad.getType() == MetaTypeFactory.PASSWORD_TYPE || ad.getType() == MetaTypeFactory.HASHED_PASSWORD_TYPE))
+                        result = true;
+
+                    return true;
+                }
+
+                @Override
+                public Boolean getResult() {
+                    return result;
+                }
+
+            });
         }
 
     }

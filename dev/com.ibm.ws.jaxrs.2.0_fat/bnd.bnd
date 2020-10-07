@@ -23,6 +23,8 @@ src: \
   test-applications/client/src,\
   test-applications/context/src,\
   test-applications/contextresolver/src,\
+  test-applications/customsecuritycontext/src,\
+  test-applications/exceptionMappingWithOT/src,\
   test-applications/extraproviders/src,\
   test-applications/getCgetS/src,\
   test-applications/helloworld/src,\
@@ -33,6 +35,7 @@ src: \
   test-applications/linkheader/src,\
   test-applications/testManagedBeans/src,\
   test-applications/paramconverter/src,\
+  test-applications/options/src,\
   test-applications/params/src,\
   test-applications/providerAndResource/src,\
   test-applications/providerCache/src,\
@@ -40,12 +43,15 @@ src: \
   test-applications/resourcealgorithm/src,\
   test-applications/resourcepkg/src,\
   test-applications/responseAPI/src,\
+  test-applications/restmetrics/src,\
   test-applications/security/src,\
   test-applications/servicescope/src,\
   test-applications/servletcoexist1/src,\
   test-applications/servletcoexist2/src,\
   test-applications/servletcoexist3/src,\
+  test-applications/simpleJson/src,\
   test-applications/thirdpartyjersey/src,\
+  test-applications/thirdpartyjerseywithinjection/src,\
   test-applications/uriInfo/src,\
   test-applications/validation/src,\
   test-applications/wadl/src,\
@@ -53,7 +59,7 @@ src: \
 
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
@@ -72,6 +78,8 @@ tested.features: \
   com.ibm.websphere.javaee.servlet.3.1,\
   com.ibm.websphere.javaee.validation.1.1,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
+  com.ibm.ws.jaxrs.2.x.monitor;version=latest,\
+  com.ibm.ws.monitor;version=latest,\
   com.ibm.json4j;version=latest,\
   commons-httpclient:commons-httpclient;version=3.1,\
   org.apache.httpcomponents:httpclient;version=4.3.1,\

@@ -1,0 +1,28 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+	<featureManager>
+	    <feature>componenttest-1.0</feature>
+		<feature>localConnector-1.0</feature>
+		<feature>cdi-2.0</feature>
+		<feature>servlet-4.0</feature>
+		<feature>mpFaultTolerance-2.0</feature>
+	</featureManager>
+
+	<logging traceSpecification="FAULTTOLERANCE=event"/>
+	
+	<!-- Allow the OpenJDK 11 ForkJoinPool to read its properties without raising exceptions until #7111 is resolved--> 
+	<javaPermission className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.common.maximumSpares" actions="read"/>
+	
+</server>

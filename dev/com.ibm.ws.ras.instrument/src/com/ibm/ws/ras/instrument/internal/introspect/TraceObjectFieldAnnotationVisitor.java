@@ -20,11 +20,11 @@ public class TraceObjectFieldAnnotationVisitor extends AnnotationVisitor {
     private String fieldDescriptor;
 
     public TraceObjectFieldAnnotationVisitor() {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
     }
 
     public TraceObjectFieldAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM7, av);
+        super(Opcodes.ASM8, av);
     }
 
     @Override

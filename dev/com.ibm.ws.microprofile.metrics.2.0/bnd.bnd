@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.${libertyBundleMicroVersion}
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics Common
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.2.0
@@ -30,7 +28,7 @@ Private-Package: \
 	com.ibm.ws.microprofile.metrics.exceptions,\
 	com.ibm.ws.microprofile.metrics.helper,\
 	com.ibm.ws.microprofile.metrics.writer,\
-	com.ibm.ws.microprofile.metrics.resources
+	io.openliberty.microprofile.metrics.internal.resources
 
 Export-Package: \
 	com.ibm.ws.microprofile.metrics,\
@@ -43,11 +41,12 @@ Export-Package: \
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
+	com.ibm.ws.microprofile.metrics.BaseMetrics,\
 	com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries,\
+	com.ibm.ws.microprofile.metrics.helper.WriterFactoryImpl20,\
 	com.ibm.ws.microprofile.metrics.config.MetricAppNameConfigSource,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: METRICS
 

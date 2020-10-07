@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: L''\u00e9l\u00e9ment de configuration {0} contient un attribut non reconnu {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Mettez \u00e0 jour l'application afin d
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Une t\u00e2che soumise pour le programme d''ex\u00e9cution g\u00e9r\u00e9 {0} contient une propri\u00e9t\u00e9 d''ex\u00e9cution {1} avec la valeur {2} qui n''est pas valide pour les programmes d''ex\u00e9cution g\u00e9r\u00e9s.
 CWWKC1130.xprop.value.invalid.explanation=Certaines valeurs de propri\u00e9t\u00e9 d'ex\u00e9cution ne sont pas valides pour les programmes d'ex\u00e9cution g\u00e9r\u00e9s, mais peuvent l'\u00eatre pour d'autres types de ressource, par exemple le service de contexte ou la fabrique d'unit\u00e9s d'ex\u00e9cution g\u00e9r\u00e9e.
 CWWKC1130.xprop.value.invalid.useraction=Mettez \u00e0 jour l'application afin d'omettre la propri\u00e9t\u00e9 d'ex\u00e9cution ou d\u00e9finissez-la sur une valeur valide.
+
+CWWKC1156.not.supported=CWWKC1156E: L''op\u00e9ration demand\u00e9e n''est pas disponible comme m\u00e9thode statique pour l''impl\u00e9mentation du programme d''ex\u00e9cution g\u00e9r\u00e9 de CompletableFuture. A la place, utilisez l''op\u00e9ration suivante : {0}.
+CWWKC1156.not.supported.explanation=L'impl\u00e9mentation du programme d'ex\u00e9cution g\u00e9r\u00e9 de CompletableFuture ne fournit pas de m\u00e9thode statique \u00e9quivalente aux m\u00e9thodes statiques de CompletableFuture.
+CWWKC1156.not.supported.useraction=Mettez \u00e0 jour l'application afin d'utiliser la m\u00e9thode recommand\u00e9e dans le message \u00e0 la place de l'op\u00e9ration demand\u00e9e.

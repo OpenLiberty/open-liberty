@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -38,7 +39,7 @@ public class Unsolicited {
                                                         TraceConstants.MESSAGE_BUNDLE);
 
     SsoSamlService ssoService = null;
-
+    InitialRequestUtil irUtil = new InitialRequestUtil();
     /**
      * @param service
      */
@@ -68,11 +69,13 @@ public class Unsolicited {
         }
         String targetId = SamlUtil.generateRandom(); // no need to Base64 encode
         HttpRequestInfo cachingRequestInfo = new HttpRequestInfo(req);
-
         RequestUtil.cacheRequestInfo(targetId, ssoService, cachingRequestInfo);
+        irUtil.handleSerializingInitialRequest(req, resp, Constants.IDP_INITAL, targetId, cachingRequestInfo, ssoService);
         TAIResult result = redirectToUserDefinedLoginPageURL(req, resp, targetId, decodedLoginPageUrl, cachingRequestInfo);
         return result;
     }
+
+
 
     /**
      * @param req
@@ -114,6 +117,8 @@ public class Unsolicited {
         }
 
         // expect to return a form to redirect to the idp by the browser
-        return TAIResult.create(HttpServletResponse.SC_FORBIDDEN);
+        // due to admin center intercepting 403, send 401.
+        //return TAIResult.create(HttpServletResponse.SC_FORBIDDEN);
+        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED); 
     }
 }

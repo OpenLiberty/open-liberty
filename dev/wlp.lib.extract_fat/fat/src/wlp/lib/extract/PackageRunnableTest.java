@@ -16,6 +16,7 @@ import static org.junit.Assume.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,10 +36,13 @@ import java.util.jar.JarFile;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class PackageRunnableTest {
     private static String serverName = "runnableTestServer";
     private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
@@ -46,6 +50,8 @@ public class PackageRunnableTest {
     private static final File extractDirectory1 = new File("publish" + File.separator + "wlpExtract1");
     private static final File extractDirectory2 = new File("publish" + File.separator + "wlpExtract2");
     private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
+    private static final File extractDirectory3 = new File("publish" + File.separator + "wlpExtract3");
+    private static File extractLocation = null;
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
@@ -85,6 +91,9 @@ public class PackageRunnableTest {
         deleteDir(extractAndRunDir);
         deleteDir(extractDirectory1);
         deleteDir(extractDirectory2);
+        deleteDir(extractDirectory3);
+        if (extractLocation != null)
+            deleteDir(extractLocation);
     }
 
     private static void deleteDir(File file) {
@@ -113,9 +122,10 @@ public class PackageRunnableTest {
             return; // get out
         }
 
-        executeTheJar(extractDirectory1, false);
-
+        executeTheJar(extractDirectory1, false, true, false);
+        checkDirStructure(extractDirectory1, true);
         extractAndExecuteMain();
+
     }
 
     /**
@@ -142,7 +152,103 @@ public class PackageRunnableTest {
             return; // get out
         }
 
-        executeTheJar(extractDirectory2, true);
+        executeTheJar(extractDirectory2, true, true, false);
+        checkDirStructure(extractDirectory2, true);
+    }
+
+    /**
+     * When WLP_JAR_EXTRACT_DIR is not set, the server should be completely deleted minus the /logs folder via the Shutdown Hook.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRunnableDeleteServerMinusLogsFolder() throws Exception {
+
+        // Doesn't work on z/OS (because you can't package into a jar on z/OS)
+        assumeTrue(!System.getProperty("os.name").equals("z/OS"));
+
+        String stdout = server.executeServerScript("package",
+                                                   new String[] { "--archive=" + runnableJar.getAbsolutePath(),
+                                                                  "--include=minify,runnable" }).getStdout();
+
+        String searchString = "Server " + serverName + " package complete";
+        if (!stdout.contains(searchString)) {
+            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            return; // get out
+        }
+
+        extractLocation = new File(executeTheJar(extractDirectory3, true, false, true));
+
+        // wait 30s to give the shutdown script time to run in the shutdown hook
+        Thread.sleep(30000);
+
+        checkDirStructure(extractLocation, false);
+    }
+
+    /**
+     * When WLP_JAR_EXTRACT_DIR is set, the server should be left as-is by the Shutdown Hook.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRunnableDoNotDeleteServerFolder() throws Exception {
+
+        // Doesn't work on z/OS (because you can't package into a jar on z/OS)
+        assumeTrue(!System.getProperty("os.name").equals("z/OS"));
+
+        String stdout = server.executeServerScript("package",
+                                                   new String[] { "--archive=" + runnableJar.getAbsolutePath(),
+                                                                  "--include=minify,runnable" }).getStdout();
+
+        String searchString = "Server " + serverName + " package complete";
+        if (!stdout.contains(searchString)) {
+            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            return; // get out
+        }
+
+        String extLoc = executeTheJar(extractDirectory3, false, true, true);
+
+        assertTrue("The extract location does not match the WLP_JAR_EXTRACT_DIR. ExtractDir = " + extractDirectory3.getAbsolutePath() + " vs " + extractLocation,
+                   extLoc.startsWith(extractDirectory3.getAbsolutePath()));
+
+        assertTrue("root folder at " + extractDirectory3.getAbsolutePath() + " does not exist, but should.", extractDirectory3.exists());
+    }
+
+    /**
+     * Checks that the /logs and optionally the /bin folder exist within the /wlp folder structure.
+     *
+     * @param extractDir
+     * @param shouldBinFolderExist
+     *
+     */
+    private void checkDirStructure(File extractDir, boolean shouldBinFolderExist) {
+
+        StringBuffer sb = new StringBuffer();
+        File[] files = extractDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            sb.append(files[i] + "\n");
+        }
+
+        File logDir = null;
+        File binDir = null;
+
+        if (extractDir.getAbsolutePath().endsWith("wlp")) {
+            logDir = new File(extractDir.getAbsolutePath() + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                              + File.separator + "logs");
+            binDir = new File(extractDir.getAbsolutePath() + File.separator + "bin");
+        } else {
+            logDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                              + File.separator + "logs");
+            binDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "bin");
+        }
+
+        assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
+
+        if (shouldBinFolderExist) {
+            assertTrue(File.separator + "bin folder at " + binDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(), binDir.exists());
+        } else {
+            assertTrue(File.separator + "bin folder at " + binDir.getAbsolutePath() + " exists, but should not. Contents = " + sb.toString(), !binDir.exists());
+        }
     }
 
     /**
@@ -151,28 +257,37 @@ public class PackageRunnableTest {
      * @throws IOException
      * @throws InterruptedException
      */
-    private void executeTheJar(File extractDirectory, boolean useDummyUserDir) throws IOException, InterruptedException {
+    private String executeTheJar(File extractDirectory, boolean useDummyUserDir, boolean useRunEnv, boolean useNormalStop) throws Exception, InterruptedException {
 
         if (!extractDirectory.exists()) {
             extractDirectory.mkdirs();
         }
 
+        OutputStream os = new FileOutputStream(server.getLogsRoot() + File.separator + "executeTheJar.log");
+
         assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
         String cmd = "java -jar " + runnableJar.getAbsolutePath();
-        Process proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath(), useDummyUserDir), null); // run server
+        Process proc = null;
+        if (useRunEnv == true) {
+            proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath(), useDummyUserDir), null); // run server
+        } else {
+            proc = Runtime.getRuntime().exec(cmd);
+        }
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
 //        errorReader.start();
-        StreamReader outputReader = new StreamReader(proc.getInputStream(), "OUTPUT", "CWWKF0011I");
+        StreamReader outputReader = new StreamReader(proc.getInputStream(), "OUTPUT", "CWWKF0011I", os);
         outputReader.start();
 
         int count = 0;
 
         // wait up to 90 seconds to find watch for string
 
+        String extractLoc = null;
         boolean found = outputReader.foundWatchFor();
+        extractLoc = outputReader.extractLoc();
         while (!found && count <= 90) {
 
             synchronized (proc) {
@@ -180,20 +295,29 @@ public class PackageRunnableTest {
                 System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
+            extractLoc = outputReader.extractLoc();
             count++;
         }
 
         assertTrue("Server did not start successfully in time.", found);
 
         outputReader.setIs(null);
-        proc.destroy(); // ensure no process left behind
-        System.out.println("Removing WLP installation directory: " + extractDirectory.getAbsolutePath());
-        if (extractDirectory.exists()) {
-            deleteDir(extractDirectory);
-            System.out.println("WLP installation directory was removed.");
+        if (useNormalStop != true) {
+            // ensure no process left behind
+            proc.destroy();
+        } else {
+            // stop cleanly so shutdown hook is called
+            stopServer(extractLoc);
         }
+
+        if (os != null) {
+            os.close();
+        }
+
         System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
+
+        return extractLoc;
     }
 
     /**
@@ -205,6 +329,9 @@ public class PackageRunnableTest {
         if (!extractAndRunDir.exists()) {
             extractAndRunDir.mkdirs();
         }
+
+        OutputStream os = new FileOutputStream(server.getLogsRoot() + File.separator + "extractAndExecuteMain.log");
+
         Path extractAndRunPath = extractAndRunDir.toPath();
         assertTrue("Extract and run directory " + extractAndRunDir.getAbsolutePath() + " does not exist.", extractAndRunDir.exists());
         try (JarFile jar = new JarFile(runnableJar)) {
@@ -226,7 +353,7 @@ public class PackageRunnableTest {
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
 //        errorReader.start();
-        StreamReader outputReader = new StreamReader(proc.getInputStream(), "OUTPUT", "CWWKF0011I");
+        StreamReader outputReader = new StreamReader(proc.getInputStream(), "OUTPUT", "CWWKF0011I", os);
         outputReader.start();
 
         int count = 0;
@@ -253,6 +380,11 @@ public class PackageRunnableTest {
             deleteDir(extractAndRunDir);
             System.out.println("WLP installation directory was removed.");
         }
+
+        if (os != null) {
+            os.close();
+        }
+
         System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
     }
@@ -263,6 +395,7 @@ public class PackageRunnableTest {
         OutputStream os;
         String watchFor;
         boolean foundWatchFor = false;
+        String extractLoc = null;
 
         StreamReader(InputStream is, String type, String watchFor) {
             this(is, type, watchFor, null);
@@ -288,6 +421,10 @@ public class PackageRunnableTest {
 
         public boolean foundWatchFor() {
             return foundWatchFor;
+        }
+
+        public String extractLoc() {
+            return extractLoc;
         }
 
         @Override
@@ -320,10 +457,18 @@ public class PackageRunnableTest {
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
             String line = null;
+            String extract = "Extracting files to ";
             while (!foundWatchFor && is != null && (line = br.readLine()) != null) {
                 if (pw != null)
                     pw.println("runInputStream() - readLine(): " + line);
                 System.out.println(line);
+
+                // Save off the extract location
+                if (line.contains(extract)) {
+                    extractLoc = line.substring(extract.length());
+                    pw.println("extractLoc = " + line);
+                }
+
                 // if watchFor string supplied - search for it
                 if (watchFor != null) {
                     if (line.indexOf(watchFor) > -1) {
@@ -347,4 +492,25 @@ public class PackageRunnableTest {
         }
     }
 
+    /**
+     * Stops the server at the specified location
+     *
+     * @param extractLocation
+     * @throws Exception
+     */
+    private void stopServer(String extractLocation) throws Exception {
+        // build the stop command for Unix platforms
+        String cmd = extractLocation + File.separator + "bin" + File.separator + "server stop " + serverName + " --force";
+
+        // modify cmd if windows based
+        if (System.getProperty("os.name").startsWith("Win")) {
+            if (System.getenv("WLP_JAR_CYGWIN") != null) {
+                cmd = "bash -c  " + '"' + cmd.replace('\\', '/') + '"';
+            } else {
+                cmd = "cmd /k " + cmd;
+            }
+        }
+
+        Runtime.getRuntime().exec(cmd); // stop server
+    }
 }

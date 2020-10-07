@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  */
 public final class ApplicationStateCoordinator {
     public enum AppStatus {
-        FAILED, STOPPED, STARTED, REMOVED, DUP_APP_NAME
+        FAILED, STOPPED, STARTED, REMOVED, DUP_APP_NAME, CYCLE
     };
 
     private static final class LatchAndAppSet {
@@ -142,6 +142,7 @@ public final class ApplicationStateCoordinator {
             } catch (InterruptedException e) {
                 // Auto FFDC
             }
+
             appConfigurator.readyForAppsToStart();
             endTime = System.nanoTime() + unit.toNanos(getApplicationStartTimeout());
             try {
@@ -172,6 +173,9 @@ public final class ApplicationStateCoordinator {
         LatchAndAppSet unstarted = unstartedApps;
         if (unstarted != null) {
             unstarted.removeAppPid(appPid);
+        }
+        if (appStatus == AppStatus.STARTED) {
+            appConfigurator.unblockAppStartDependencies(appPid);
         }
     }
 

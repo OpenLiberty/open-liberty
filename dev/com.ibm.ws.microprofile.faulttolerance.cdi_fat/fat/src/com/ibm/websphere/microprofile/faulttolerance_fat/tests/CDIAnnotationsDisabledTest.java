@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.AnnotationsDisabledServlet;
 
 import componenttest.annotation.Server;
@@ -66,6 +66,10 @@ public class CDIAnnotationsDisabledTest extends FATServletClient {
     @Test
     public void testBulkheadSynchronous() throws Exception {
 
+        final long TEST_TWEAK_TIME_UNIT = 100;
+        final long TIMEOUT = 5000;
+        final long FUTURE_THRESHOLD = 6000;
+
         // Make an initial request so that everything is initialized
         HttpUtils.getHttpResponseAsString(server, "/CDIFaultTolerance/multi-request-bulkhead");
 
@@ -74,22 +78,22 @@ public class CDIAnnotationsDisabledTest extends FATServletClient {
         // Connect C has a pool size of 2
         // Fire three requests in parallel
         Future<String> future1 = executor.submit(() -> HttpUtils.getHttpResponseAsString(server, "/CDIFaultTolerance/multi-request-bulkhead"));
-        Thread.sleep(CDIBulkheadTest.TEST_TWEAK_TIME_UNIT);
+        Thread.sleep(TEST_TWEAK_TIME_UNIT);
 
         Future<String> future2 = executor.submit(() -> HttpUtils.getHttpResponseAsString(server, "/CDIFaultTolerance/multi-request-bulkhead"));
-        Thread.sleep(CDIBulkheadTest.TEST_TWEAK_TIME_UNIT);
+        Thread.sleep(TEST_TWEAK_TIME_UNIT);
 
         Future<String> future3 = executor.submit(() -> HttpUtils.getHttpResponseAsString(server, "/CDIFaultTolerance/multi-request-bulkhead"));
-        Thread.sleep(CDIBulkheadTest.TEST_TWEAK_TIME_UNIT);
+        Thread.sleep(TEST_TWEAK_TIME_UNIT);
 
         executor.shutdown();
 
         // First two tasks should succeed
-        assertThat("Task One", future1.get(CDIBulkheadTest.TIMEOUT + CDIBulkheadTest.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
-        assertThat("Task Two", future2.get(CDIBulkheadTest.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
+        assertThat("Task One", future1.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
+        assertThat("Task Two", future2.get(FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
 
         // Third task should fail with a Bulkhead exception
-        assertThat("Task Three", future3.get(CDIBulkheadTest.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
+        assertThat("Task Three", future3.get(FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
     }
 
     @AfterClass

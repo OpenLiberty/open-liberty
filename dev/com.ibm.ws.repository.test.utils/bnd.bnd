@@ -17,8 +17,6 @@ Bundle-Description: Shared repository test utils
 
 WS-TraceGroup: repo.resource
 
-javac.source: 1.7
-javac.target: 1.7
 
 Export-Package: com.ibm.ws.lars.testutils*; version=1.0
 

@@ -14,29 +14,80 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.bindings.soap.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
-!com.ctc.wstx.*,\
-!org.codehaus.stax2.*,\
-!com.sun.msv.*,\
-!com.sun.xml.bind.marshaller,\
-!com.sun.xml.fastinfoset.stax.*,\
-!org.apache.log4j.*,\
-!net.sf.cglib.proxy.*,\
-!org.springframework.*,\
-!javax.validation.*, \
-!org.apache.aries.*,\
-!org.apache.cxf.transport.https,\
-!org.osgi.service.blueprint.*,\
-javax.xml.bind;version=!,\
-javax.xml.bind.annotation;version=!,\
-javax.xml.bind.annotation.adapters;version=!,\
-javax.xml.bind.attachment;version=!,\
-*
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  !org.apache.aries.*;version="[0.3,2)", \
+  !org.osgi.service.blueprint.*, \
+  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  javax.activation;resolution:=optional, \
+  javax.annotation, \
+  javax.xml.bind.annotation;version="[2.2,3)", \
+  javax.jws.soap, \
+  javax.wsdl, \
+  javax.wsdl.extensions, \
+  javax.wsdl.extensions.mime, \
+  javax.wsdl.extensions.soap, \
+  javax.wsdl.extensions.soap12, \
+  javax.wsdl.factory, \
+  javax.xml.namespace, \
+  javax.xml.soap;resolution:=optional, \
+  javax.xml.stream, \
+  javax.xml.stream.events, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.validation, \
+  javax.xml.xpath, \
+  org.apache.ws.commons.schema, \
+  org.osgi.framework, \
+  org.osgi.service.cm, \
+  org.osgi.util.tracker, \
+  org.w3c.dom, \
+  org.apache.cxf.bus.*;version="[3.2.4,4.0)", \
+  org.apache.cxf.wsdl.*;version="[3.2,4.0)", \
+  org.apache.cxf;version="[3.2.4,4.0)", \
+  org.apache.cxf.annotations;version="[3.2.4,4.0)", \
+  org.apache.cxf.attachment;version="[3.2.4,4.0)", \
+  org.apache.cxf.binding;version="[3.2.4,4.0)", \
+  org.apache.cxf.binding.soap;version="[3.2.4,4.0)", \
+  org.apache.cxf.binding.soap.*;version="[3.2.4,4.0)", \
+  org.apache.cxf.common;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.i18n;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.injection;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.logging;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.util;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.xmlschema;version="[3.2.4,4.0)", \
+  org.apache.cxf.configuration;version="[3.2.4,4.0)", \
+  org.apache.cxf.configuration.blueprint;version="[3.2.4,4.0)", \
+  org.apache.cxf.configuration.spring;version="[3.2.4,4.0)", \
+  org.apache.cxf.databinding;version="[3.2.4,4.0)", \
+  org.apache.cxf.endpoint;version="[3.2.4,4.0)", \
+  org.apache.cxf.headers;version="[3.2.4,4.0)", \
+  org.apache.cxf.helpers;version="[3.2.4,4.0)", \
+  org.apache.cxf.interceptor;version="[3.2.4,4.0)", \
+  org.apache.cxf.io;version="[3.2.4,4.0)", \
+  org.apache.cxf.message;version="[3.2.4,4.0)", \
+  org.apache.cxf.phase;version="[3.2.4,4.0)", \
+  org.apache.cxf.service;version="[3.2.4,4.0)", \
+  org.apache.cxf.service.model;version="[3.2.4,4.0)", \
+  org.apache.cxf.staxutils;version="[3.2.4,4.0)", \
+  org.apache.cxf.transport;version="[3.2.4,4.0)", \
+  org.apache.cxf.ws.addressing;version="[3.2.4,4.0)", \
+  org.apache.cxf.wsdl11.*;version="[3.2.4,4.0)", \
+  org.apache.mina.core.buffer;resolution:=optional, \
+  org.apache.mina.core.filterchain;resolution:=optional, \
+  org.apache.mina.core.future;resolution:=optional, \
+  org.apache.mina.core.service;resolution:=optional, \
+  org.apache.mina.core.session;resolution:=optional, \
+  org.apache.mina.filter.codec;resolution:=optional, \
+  org.apache.mina.filter.logging;resolution:=optional, \
+  org.apache.mina.transport.socket.nio;resolution:=optional, \
+  org.xml.sax
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.bindings.soap,\
   org.apache.cxf.binding.soap.*;version=${cxfVersion}

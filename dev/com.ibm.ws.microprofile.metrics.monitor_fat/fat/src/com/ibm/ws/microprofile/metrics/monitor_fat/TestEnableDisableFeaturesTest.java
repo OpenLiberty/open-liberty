@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,7 @@ public class TestEnableDisableFeaturesTest {
     
     private static LibertyServer currentServ;
     
-    
+    private static boolean serverEDF6FirstUse = true;
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -157,8 +157,8 @@ public class TestEnableDisableFeaturesTest {
         Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
         serverEDF1.setServerConfigurationFile("server_mpMetric11.xml");
         serverEDF1.startServer();
-        Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF1.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
-        Assert.assertNotNull("Web application /metrics not loaded", serverEDF1.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
+        waitForSecurityPrerequisites(serverEDF1, 60000);
+        Assert.assertNotNull("Web application /metrics not loaded", serverEDF1.waitForStringInLog("CWWKT0016I.*http:\\/\\/.*:.*\\/metrics\\/"));
         Assert.assertNotNull("SRVE9103I NOT FOUND",serverEDF1.waitForStringInLogUsingMark("SRVE9103I"));
         Log.info(c, testName, "------- server started -----");
         checkStrings(getHttpsServlet("/metrics", serverEDF1), 
@@ -172,7 +172,7 @@ public class TestEnableDisableFeaturesTest {
     	String testName = "testEDF2";
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
     	serverEDF2.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF2.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF2, 60000);
     	serverEDF2.setServerConfigurationFile("server_monitor.xml");
         String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2001I");
         Log.info(c, testName, logMsg);
@@ -194,7 +194,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF3;
     	String testName = "testEDF3";
     	serverEDF3.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF3.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF3, 60000);
     	Log.info(c, testName, "------- Add session application and run session servlet ------");
        	ShrinkHelper.defaultDropinApp(serverEDF3, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
@@ -215,7 +215,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF4;
     	String testName = "testEDF4";
     	serverEDF4.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF4.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF4, 60000);
     	Log.info(c, testName, "------- Add session application ------");
        	ShrinkHelper.defaultDropinApp(serverEDF4, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
        	Log.info(c, testName, "------- added testSessionApp to dropins -----");
@@ -253,11 +253,11 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF5;
     	String testName = "testEDF5";
     	serverEDF5.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF5.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF5, 60000);
     	Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
        	ShrinkHelper.defaultDropinApp(serverEDF5, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
        	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-        Assert.assertNotNull("Application testJaxWsApp started",serverEDF5.waitForStringInLogUsingMark("Application testJaxWsApp started"));
+        Assert.assertNotNull("Application testJaxWsApp not started",serverEDF5.waitForStringInLogUsingMark("CWWKZ0001I.*testJaxWsApp.*"));
       	checkStrings(getHttpServlet("/testJaxWsApp/SimpleStubClientServlet",serverEDF5),
        		new String[] { "Pass" }, new String[] {});
        	Log.info(c, testName, "------- jax-ws metrics should be available ------");
@@ -282,7 +282,15 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF6;
     	String testName = "testEDF6";
     	serverEDF6.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF6.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	
+    	if (serverEDF6FirstUse) {
+    		// We only need to wait for LTPA keys if this is the first time using this server
+    		waitForSecurityPrerequisites(serverEDF6, 60000);
+    	} else {
+    		Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",60000));
+    	}
+    	serverEDF6FirstUse = false;
+    	
     	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
     	serverEDF6.setServerConfigurationFile("server_monitorFilter1.xml");
         Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF6.waitForStringInLogUsingMark("CWWKG0017I"));
@@ -299,9 +307,17 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF6;
     	String testName = "testEDF7";
     	serverEDF6.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF6.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	
+    	if (serverEDF6FirstUse) {
+    		// We only need to wait for LTPA keys if this is the first time using this server
+    		waitForSecurityPrerequisites(serverEDF6, 60000);
+    	} else {
+    		Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",60000));
+    	}
+    	serverEDF6FirstUse = false;
+    	
     	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
-       	serverEDF6.setMarkToEndOfLog();
+    	serverEDF6.setMarkToEndOfLog();
        	serverEDF6.setServerConfigurationFile("server_monitorFilter2.xml");
        	Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF6.waitForStringInLogUsingMark("CWWKG0017I"));
     	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet", serverEDF6), 
@@ -317,7 +333,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF8;
     	String testName = "testEDF8";
     	serverEDF8.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF8.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF8, 60000);
     	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF8), 
           		new String[] { "sql: create table cities" }, new String[] {});
     	Log.info(c, testName, "------- Monitor filter Session and ConnectionPool ------");
@@ -336,7 +352,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF9;
     	String testName = "testEDF9";
     	serverEDF9.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF9.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF9, 60000);
     	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF9), 
           		new String[] { "sql: create table cities" }, new String[] {});
     	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
@@ -347,8 +363,8 @@ public class TestEnableDisableFeaturesTest {
  	    		new String[] { "Session id:" }, new String[] {});
  	    checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1",serverEDF9), 
  			    new String[] { "sql: select" }, new String[] {});
- 	     Log.info(c, testName, "------- all four vendor metrics should be available ------");
- 	     checkStrings(getHttpsServlet("/metrics/vendor",serverEDF9), 
+ 	    Log.info(c, testName, "------- all four vendor metrics should be available ------");
+ 	    checkStrings(getHttpsServlet("/metrics/vendor",serverEDF9), 
  		        new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
  		        new String[] {});
     }
@@ -358,16 +374,16 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF10;
     	String testName = "testEDF10";
     	serverEDF10.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF10.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF10, 60000);
     	Log.info(c, testName, "------- Remove JAX-WS application ------");
     	boolean rc1 = serverEDF10.removeAndStopDropinsApplications("testJaxWsApp.war");
     	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
-    	Assert.assertNotNull("CWWKT0017I NOT FOUND",serverEDF10.waitForStringInLogUsingMark(".*CWWKT0017I.*testJaxWsApp.*"));
+    	Assert.assertNotNull("CWWKT0017I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKT0017I.*testJaxWsApp.*"));
     	serverEDF10.setMarkToEndOfLog();
     	serverEDF10.setServerConfigurationFile("server_noJaxWs.xml");
     	Assert.assertNotNull("CWWKF0008I NOT FOUND",serverEDF10.waitForStringInLogUsingMark("CWWKF0008I"));
-    	Assert.assertNotNull("testJDBCApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testJDBCApp.*"));
-        Assert.assertNotNull("testSessionApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I: Web application available .*testSessionApp.*"));
+    	Assert.assertNotNull("testJDBCApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I.*testJDBCApp.*"));
+        Assert.assertNotNull("testSessionApp not loaded", serverEDF10.waitForStringInLog("CWWKT0016I.*testSessionApp.*"));
     	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
     	checkStrings(getHttpsServlet("/metrics/vendor",serverEDF10), 
     		new String[] { "vendor:" }, 
@@ -379,7 +395,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF11;
     	String testName = "testEDF11";
     	serverEDF11.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF11.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF11, 60000);
     	Log.info(c, testName, "------- Remove JDBC application ------");
     	boolean rc2 = serverEDF11.removeAndStopDropinsApplications("testJDBCApp.war");
     	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
@@ -397,7 +413,7 @@ public class TestEnableDisableFeaturesTest {
     	currentServ = serverEDF12;
     	String testName = "testEDF12";
     	serverEDF12.startServer();
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",serverEDF12.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+    	waitForSecurityPrerequisites(serverEDF12, 60000);
     	Assert.assertNotNull("CWWKF0011I NOT FOUND",serverEDF12.waitForStringInLogUsingMark("CWWKF0011I"));
     	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	serverEDF12.setMarkToEndOfLog();
@@ -407,6 +423,15 @@ public class TestEnableDisableFeaturesTest {
     	checkStrings(getHttpsServlet("/metrics",serverEDF12), 
     		new String[] {}, 
     		new String[] { "vendor:" });
+    }
+    
+    private void waitForSecurityPrerequisites(LibertyServer server, int timeout) {
+    	// Need to ensure LTPA keys and configuration are created before hitting a secure endpoint
+        Assert.assertNotNull("LTPA keys are not created within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4104A",timeout));
+        Assert.assertNotNull("LTPA configuration is not ready within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4105I",timeout));
+        
+        // Ensure defaultHttpEndpoint-ssl TCP Channel is started
+        Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl",timeout));
     }
     
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {

@@ -1,0 +1,6 @@
+DROP TABLE CALLBACKENTITY;  
+DROP TABLE OOIRootEntity;
+DROP TABLE CallbkEntNSptDefCbk;
+DROP TABLE CallbkEntSptDefCbk;
+DROP TABLE XMLCallbkEntNSptDefCbk;
+DROP TABLE XMLCallbkEntSptDefCbk; 

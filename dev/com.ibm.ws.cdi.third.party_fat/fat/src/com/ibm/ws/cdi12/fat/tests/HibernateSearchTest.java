@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,71 +10,71 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-import com.ibm.ws.fat.util.browser.WebResponse;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.fat.util.browser.WebBrowserFactory;
+import com.ibm.ws.fat.util.browser.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipForRepeat;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.EERepeatTests;
+import componenttest.topology.utils.FATServletClient;
 
-@Mode(TestMode.FULL)
-@SkipForRepeat(NO_MODIFICATION)
-public class HibernateSearchTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class HibernateSearchTest extends FATServletClient {
 
-    private static LibertyServer server;
+    public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
+    public static final String SERVER_NAME = "cdi20HibernateSearchServer";
 
-    @Override
-    protected SharedServer getSharedServer() {
-        return null;
-    }
+    @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = cdi.hibernate.test.web.SimpleTestServlet.class, contextRoot = HIBERNATE_SEARCH_APP_NAME) 
+    })
+    public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, "hibernateSearchTest.war")
-                        .addPackages(true, "cdi.hibernate.test")
+        //Hibernate Search Test
+        WebArchive hibernateSearchTest = ShrinkWrap.create(WebArchive.class, HIBERNATE_SEARCH_APP_NAME+".war")
+                        .addPackages(true, cdi.hibernate.test.model.BasicFieldBridge.class.getPackage())
+                        .addPackages(true, cdi.hibernate.test.web.SimpleTestServlet.class.getPackage())
                         .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/persistence.xml")), "/WEB-INF/classes/META-INF/persistence.xml")
                         .add(new FileAsset(new File("test-applications/hibernateSearchTest.war/resources/WEB-INF/classes/META-INF/jpaorm.xml")), "/WEB-INF/classes/META-INF/jpaorm.xml");
 
-        server = LibertyServerFactory.getLibertyServer("cdi20HibernateSearchServer");
+        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest);
-        server.startServer();
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application hibernateSearchTest.war started");
-    }
 
-    @Test
-    public void testHibernateSearch() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        String url = createURL("/hibernateSearchTest/SimpleTestServlet");
-        WebResponse response = browser.request(url);
-        String body = response.getResponseBody();
-        Assert.assertTrue("Could not find \"field bridge called: true\" in: " + body, body.contains("field bridge called: true"));
+        server.startServer();
     }
 
     @AfterClass

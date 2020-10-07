@@ -1,0 +1,101 @@
+<!-- Copyright (c) 2020 IBM Corporation and others. All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+	IBM Corporation - initial API and implementation -->
+<server description="Server for ConsumerService REST endpoint and Grpc client">
+	<featureManager>
+		<feature>grpc-1.0</feature>
+		<feature>grpcClient-1.0</feature>
+		<feature>componenttest-1.0</feature>
+		<feature>mpRestClient-1.3</feature>
+		<feature>mpConfig-1.3</feature>
+		<feature>mpOpenAPI-1.1</feature>
+		<feature>jwt-1.0</feature>
+		<feature>ssl-1.0</feature>
+		<feature>appSecurity-2.0</feature>
+	</featureManager>
+
+	<include location="../fatTestCommon.xml"/>
+
+	 <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.member_1.http}"
+				  httpsPort="${bvt.prop.member_1.https}"/>
+				  
+				  
+<!-- 	 <keyStore id="defaultKeyStore" password="passw0rd" /> -->
+
+	<javaPermission className="java.security.AllPermission"
+		name="*" actions="*" />
+
+
+	<!-- Default SSL configuration enables trust for default certificates from 
+		the Java runtime -->
+	<!-- <ssl id="defaultSSLConfig" trustDefaultCerts="true" /> -->
+	
+	<sslDefault sslRef="DefaultSSLSettings" />
+	<ssl
+		id="DefaultSSLSettings"
+		keyStoreRef="rsa_key"
+		trustStoreRef="rsa_trust"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="rsa_key"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/rsa_key.jks" />
+	<keyStore
+		id="rsa_trust"
+		password="LibertyServer"
+		type="jks"
+		location="${server.config.dir}/rsa_trust.jks" />
+
+	<basicRegistry id="basic" realm="consumerRealmBasicReg">
+		<user name="dev" password="hello" /> 
+		<user name="test" password="bug" />
+		<group name="students">
+			<member name="dev" />
+			<member name="test" />
+		</group>
+	</basicRegistry>
+
+	<application id="StoreConsumerApp"
+		location="StoreConsumerApp.war" name="StoreConsumerApp" type="war">
+		<application-bnd>
+			<security-role name="Administrator">
+				<!--group name="${env.ROLE_NAME_ADMINISTRATOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_ADMINISTRATOR}"/ -->
+				<group name="Administrator"
+					access-id="group:consumerRealmBasicReg/Administrator" />
+			</security-role>
+			<security-role name="students">
+				<!--group name="${env.ROLE_NAME_EDITOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_EDITOR}"/ -->
+				<group name="students"
+					access-id="group:consumerRealmBasicReg/students" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<logging
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"
+		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
+		
+		
+	<jwtBuilder
+		id="defaultJWT" 
+		issuer="testIssuer"
+		 />
+		 
+	<jwtBuilder
+		id="defaultBadJWT" 
+		issuer="testIssuerBad"
+		 />
+		
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
+	
+	<!-- <grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
+</server>

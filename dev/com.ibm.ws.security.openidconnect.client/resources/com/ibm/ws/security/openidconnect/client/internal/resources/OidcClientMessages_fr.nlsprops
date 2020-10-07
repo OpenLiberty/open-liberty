@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Aucune.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Le client de connexion OpenID requiert SSL (HTTPS) mais l''URL fournisseur OpenID est HTTP : [{0}].  Mettez \u00e0 jour la configuration afin que l''attribut [enforceHTTPS] corresponde au sch\u00e9ma de l''URL cible. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Le client OpenID Connect requiert SSL (HTTPS) mais l''URL fournisseur OpenID est HTTP : [{0}]. Mettez \u00e0 jour la configuration afin d''utiliser une URL HTTPS ou utilisez le client OpenID Connect et d\u00e9finissez la valeur false pour enforceHTTPS. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Le client OpenID Connect (partie utilisatrice ou serveur de ressources) requiert le protocole SSL (HTTPS) mais le protocole d'URL du fournisseur OpenID Connect (OP) sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect n'est pas HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Assurez-vous que le fournisseur de connexion OpenID prend en charge SSL. 2) Si le fournisseur OpenID Connector ne prend pas en charge SSL, attribuez \u00e0 enforceHTTPS la valeur 'false' dans la configuration du client OpenID Connect.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effectuez l'une des op\u00e9rations suivantes : d'abord, assurez-vous que le fournisseur OpenID Connect prend en charge SSL. 2) Si le fournisseur OpenID Connect ne prend pas en charge SSL, utilisez le client OpenID Connect et d\u00e9finissez la valeur false pour enforceHTTPS dans la configuration du client OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: L''\u00e9tat en cours [{0}] du client de connexion OpenID [{2}] et le param\u00e8tre d''\u00e9tat [{1}] dans la r\u00e9ponse du fournisseur de connexion OpenID ne correspondent pas.  Cette condition n''est pas autoris\u00e9e.
@@ -272,5 +273,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Message d'information. Aucun
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: L''attribut de configuration [{0}] requis manque ou est vide et aucune valeur par d\u00e9faut n''a \u00e9t\u00e9 fournie. V\u00e9rifiez que l''attribut est configur\u00e9 ou reconnu depuis le fournisseur, qu''il n''est pas vide, et qu''il n''est pas uniquement constitu\u00e9 d''espaces.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Il se peut que l'attribut de configuration sp\u00e9cifi\u00e9 manque dans la configuration de serveur. Si une valeur est sp\u00e9cifi\u00e9e, l'espace qui la pr\u00e9c\u00e8de et l'espace qui la suit sont retir\u00e9s lorsqu'elle est trait\u00e9e ; par cons\u00e9quent, il se peut que la valeur dans la configuration soit vide ou ne comporte que des espaces. Si le noeud final de reconnaissance est sp\u00e9cifi\u00e9 en vue d'obtenir cette valeur d'attribut aupr\u00e8s du fournisseur, il se peut que la reconnaissance g\u00e9n\u00e8re une erreur.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Assurez-vous que l'attribut de configuration sp\u00e9cifi\u00e9 est configur\u00e9, qu'il n'est pas vide et qu'il n'est pas uniquement constitu\u00e9 d'espaces. Si le noeud final de reconnaissance est configur\u00e9 en vue d'obtenir cette information, assurez-vous que la demande de reconnaissance ne pr\u00e9sente pas d'erreur.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Plusieurs configurations de client OpenID Connect sp\u00e9cifient le m\u00eame filtre d''authentification [{0}], ce qui peut entra\u00eener un comportement ind\u00e9termin\u00e9.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Plusieurs configurations de client OpenID Connect contiennent un attribut authFilterRef qui fait r\u00e9f\u00e9rence au m\u00eame filtre. N'importe lequel de ces clients peut traiter une demande correspondant au filtre, ce qui g\u00e9n\u00e8re un comportement ind\u00e9termin\u00e9.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=R\u00e9visez le fichier server.xml et corrigez la configuration.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Plusieurs filtres d''authentification de client OpenID Connect correspondent \u00e0 une demande pour l''URL [{0}]. Les filtres correspondants sont [{1}]. Cette situation peut entra\u00eener un comportement ind\u00e9termin\u00e9.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Plusieurs filtres d'authentification correspondent \u00e0 une demande entrante. Tout client utilisant l'un de ces filtres peut traiter la demande, ce qui g\u00e9n\u00e8re un comportement ind\u00e9termin\u00e9.  
+AUTHFILTER_MULTIPLE_MATCHED.useraction=R\u00e9visez le fichier server.xml et corrigez la configuration.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

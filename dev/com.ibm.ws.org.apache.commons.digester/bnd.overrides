@@ -6,3 +6,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.commons.digester.1.8
 Bundle-Description: Apache commons digester, version ${original.jar.version}
 
 Export-Package: org.apache.commons.digester.*;version="1.8"
+
+Import-Package: \
+  !org.apache.xerces.impl, \
+  *

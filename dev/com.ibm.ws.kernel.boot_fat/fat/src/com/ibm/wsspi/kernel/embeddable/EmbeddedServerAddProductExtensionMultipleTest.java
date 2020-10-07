@@ -151,7 +151,6 @@ public class EmbeddedServerAddProductExtensionMultipleTest {
     }
 
     @Test
-    @Mode(TestMode.QUARANTINE)
     public void testAddProductExtensionMultiple() throws Throwable {}
 
     private static void embeddedServerTestHelper(final String REMOTE_METHOD_NAME) throws Throwable {

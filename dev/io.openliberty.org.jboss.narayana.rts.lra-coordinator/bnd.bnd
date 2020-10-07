@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#    IBM Corporation 
+# This wraps the external JAR.
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+narayanaVersion=5.10.6
+bVersion=1.0
+# bFullVersion must be a semantic version string (the build verifies it)
+# It should match the narayana version used below as far as posible. If the
+# version here is updated, then the matching values in 
+#  * the mpLRACoordinator feature file
+#  * defaultInstances.xml in the io.openliberty.microprofile.lra.coordinator.internal project
+# need to be updated as well
+bFullVersion=${narayanaVersion}
+
+Bundle-SymbolicName: io.openliberty.org.jboss.narayana.rts.lra-coordinator; singleton:=true
+                     
+# This bnd file is used to build a wab, which is then loaded as a war file via
+# defaultInstances.xml in the mpLraCoordinator feature
+-wab
+-outputmask: mpLRACoordinator.jar
+
+  
+Private-Package: \
+    com.arjuna*, \
+    org.jboss.logging*, \
+    io.narayana.lra*, \
+    org.apache*
+    
+
+# The excluded packages appear to be optional parts of narayana
+# They are excluded here, as otherwise the jars would need to be
+# dragged into the bundle which would make it huge. If a decision
+# is made to support more of the optional parts of narayana in future, 
+# some of the excluded packages may need to be added back 
+Import-Package: \
+    !android.os, \
+    !com.arjuna.ats.internal.jta, \
+    !com.sun.tools.jconsole, \
+    !org.apache.activemq.artemis.core*, \
+    !org.jfree*, \
+    !org.eclipse.microprofile.openapi*, \
+    *
+
+instrument.disabled: true
+
+# The coordinator jar is added via includeresource, as it means that non-class files get
+# pulled in, specifically the the jbossts properties file
+-includeresource: \
+  @${repo;org.jboss.narayana.rts:lra-coordinator-jar;5.10.6.Final;EXACT}!/!(META-INF/*)
+
+-buildpath: \
+  org.jboss.logging:jboss-logging;version=3.4.1.Final, \
+  org.jboss.narayana.arjunacore:arjuna;version=${narayanaVersion}.Final, \
+  org.jboss.narayana:common;version=${narayanaVersion}.Final, \
+  org.jboss.narayana.rts:lra-service-base;version=${narayanaVersion}.Final, \
+  com.ibm.ws.org.apache.httpcomponents;version=latest, \
+  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest
+  
+

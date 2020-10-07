@@ -10,9 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-api;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+instrument.disabled: true
+
 instrument.ffdc: false
-javac.source: 1.7
-javac.target: 1.7
 
 cxfVersion=2.6.2
 
@@ -26,6 +26,7 @@ Include-Resource:\
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: org.apache.cxf:cxf-api;strategy=exact;version=${cxfVersion}, \
+  javax.activation:activation;version=1.1, \
   com.ibm.websphere.javaee.mail.1.5;version=latest, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.ws.logging.core, \

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ bVersion=1.0
 Bundle-Name: JCA
 Bundle-SymbolicName: com.ibm.ws.jca
 Bundle-Description: JCA; version=${bVersion}
+
+jakartaeeMe: true
 
 WS-TraceGroup: WAS.j2c
 
@@ -127,6 +129,7 @@ Service-Component: \
     connectorService='com.ibm.ws.jca.cm.ConnectorService';\
     contextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
     contextService='com.ibm.wsspi.threadcontext.WSContextService';\
+    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion';\
     executorService='java.util.concurrent.ExecutorService';\
     futureMonitor='com.ibm.ws.threading.FutureMonitor';\
     requiredContextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
@@ -135,9 +138,10 @@ Service-Component: \
     tranSyncRegistry='javax.transaction.TransactionSynchronizationRegistry';\
     jcaSecurityContextService=com.ibm.ws.jca.security.JCASecurityContext;\
     configuration-policy:=require;\
-    greedy:='beanValidationService,contextProvider,jcaSecurityContextService';\
+    dynamic:='eEVersion';\
+    greedy:='beanValidationService,contextProvider,eEVersion,jcaSecurityContextService';\
     multiple:='contextProvider,requiredContextProvider';\
-    optional:='beanValidationService,contextProvider,requiredContextProvider,jcaSecurityContextService';\
+    optional:='beanValidationService,contextProvider,eEVersion,requiredContextProvider,jcaSecurityContextService';\
     properties:="contextService.target=(id=unbound),executorService.target=(id=unbound),requiredContextProvider.target=(id=unbound),resourceAdapterService.target=(id=unbound)",\
   com.ibm.ws.jca.sslHelper;\
     implementation:=com.ibm.ws.jca.internal.SSLHelperImpl;\
@@ -184,6 +188,7 @@ instrument.classesExcludes: com/ibm/ws/jca/internal/resources/*.class
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.version;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.config;version=latest,\
 	com.ibm.ws.dynamic.bundle;version=latest,\

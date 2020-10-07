@@ -1,0 +1,2 @@
+DELETE FROM SimpleParentEntityOLGH11795;
+DELETE FROM SimpleChildEntityOLGH11795;

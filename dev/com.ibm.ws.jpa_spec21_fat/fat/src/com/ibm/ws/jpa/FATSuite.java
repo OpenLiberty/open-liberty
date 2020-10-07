@@ -25,10 +25,12 @@ import componenttest.rules.repeater.RepeatTests;
                 TestExample_Web.class,
                 TestOLGH8820_EJB.class,
                 TestOLGH8820_Web.class,
+                TestOLGH10240_EJB.class,
+                TestOLGH10240_Web.class,
                 TestTXSynchronization.class,
                 TestTXDDSynchronization.class,
-                TestCDI.class,
-                TestCDILib.class,
+                TestCDI_WEB.class,
+                TestCDI_EJB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
@@ -38,7 +40,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
-
+                    .andWith(FeatureReplacementAction.EE7_FEATURES())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
     public static String repeatPhase = "";
 }

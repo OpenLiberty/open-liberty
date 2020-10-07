@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -81,7 +81,7 @@ APPLICATION_STOPPED.explanation=Der Server hat die Anwendung erfolgreich gestopp
 APPLICATION_STOPPED.useraction=Es ist keine Aktion erforderlich. 
 #{0} is application name
 #{1} is excaption message
-APPLICATION_STOP_FAILED=CWWKZ0010E:  Beim Stoppen der Anwendung {0} ist eine Ausnahme eingetreten. Ausnahmenachricht: {1}
+APPLICATION_STOP_FAILED=CWWKZ0010E: Beim Stoppen der Anwendung {0} ist eine Ausnahme eingetreten. Ausnahmenachricht: {1}
 APPLICATION_STOP_FAILED.explanation=Der Server konnte die Anwendung nicht stoppen.
 APPLICATION_STOP_FAILED.useraction=Stellen Sie sicher, dass die Anwendung einen Zustand hat, in dem sie gestoppt werden kann.
 
@@ -95,11 +95,11 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: Die Anwendung {0} wurde nicht gestartet.
 APPLICATION_NOT_STARTED.explanation=Die Anwendung konnte wegen fr\u00fcherer Fehler nicht gestartet werden.
-APPLICATION_NOT_STARTED.useraction=\u00dcberpr\u00fcfen Sie die Anwendungskonfiguration, und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend des Anwendungsstarts aufgetreten sind.
+APPLICATION_NOT_STARTED.useraction=\u00dcberpr\u00fcfen Sie die Anwendungskonfiguration und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend des Anwendungsstarts aufgetreten sind.
 
 #{0} the application name
 DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Es ist nicht m\u00f6glich, zwei Anwendungen mit dem Namen {0} zu starten.
-DUPLICATE_APPLICATION_NAME.explanation=Der Anwendungsname muss eindeutig sein. M\u00f6glicherweise wurden zwei Anwendungen mit demselben Namen konfiguriert, oder eine einzelne Anwendung wurde durch Konfiguration in der Datei server.xml und durch Speichern der Anwendung im Verzeichnis dropins implementiert.
+DUPLICATE_APPLICATION_NAME.explanation=Der Anwendungsname muss eindeutig sein. M\u00f6glicherweise wurden zwei Anwendungen mit demselben Namen konfiguriert oder eine einzelne Anwendung wurde durch Konfiguration in der Datei server.xml und durch Speichern der Anwendung im Verzeichnis dropins implementiert.
 DUPLICATE_APPLICATION_NAME.useraction=Wenn zwei Anwendungen denselben Namen haben, entfernen oder benennen Sie eine der Anwendungen um. Wenn eine einzelne Anwendung auf zwei verschiedene Arten implementiert wurde, \u00e4ndern Sie die Konfiguration so, dass nur eine einzige Implementierungsmethode verwendet wird.
 
 #{0} the application name
@@ -110,15 +110,15 @@ APPLICATION_NOT_FOUND.useraction=Vergewissern Sie sich, dass die definierte Posi
 
 APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Es wurde eine Anwendung ohne Position oder Namen konfiguriert.
 APPLICATION_NO_LOCATION_NO_NAME.explanation=Es wurde eine Anwendung konfiguriert, ohne eine Position oder einen Namen anzugeben.
-APPLICATION_NO_LOCATION_NO_NAME.useraction=Aktualisieren Sie die Konfiguration, und f\u00fcgen Sie eine Position hinzu.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Aktualisieren Sie die Konfiguration und f\u00fcgen Sie eine Position hinzu.
 
 APPLICATION_NO_LOCATION=CWWKZ0016E: Die Anwendung {0} wurde ohne Position konfiguriert.
 APPLICATION_NO_LOCATION.explanation=Es wurde eine Anwendung konfiguriert, ohne eine Position anzugeben.
-APPLICATION_NO_LOCATION.useraction=Aktualisieren Sie die Konfiguration, und f\u00fcgen Sie eine Position hinzu.
+APPLICATION_NO_LOCATION.useraction=Aktualisieren Sie die Konfiguration und f\u00fcgen Sie eine Position hinzu.
 
 APPLICATION_NO_TYPE=CWWKZ0017E: Es war nicht m\u00f6glich, den Anwendungstyp f\u00fcr die Anwendung {0} aus der Position {1} herzuleiten.
 APPLICATION_NO_TYPE.explanation=Es wurde eine Anwendung konfiguriert, ohne einen Typ anzugeben. Der Typ konnte \u00fcber die Position nicht ermittelt werden.
-APPLICATION_NO_TYPE.useraction=Aktualisieren Sie die Konfiguration, und f\u00fcgen Sie einen Typ hinzu.
+APPLICATION_NO_TYPE.useraction=Aktualisieren Sie die Konfiguration und f\u00fcgen Sie einen Typ hinzu.
 
 STARTING_APPLICATION=CWWKZ0018I: Die Anwendung {0} wird gestartet.
 STARTING_APPLICATION.explanation=Die Anwendung wird gerade gestartet.
@@ -131,7 +131,7 @@ PARTIAL_START.useraction=Beheben Sie das Problem in dem Teil der Anwendung, der 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Die Anwendung {0} konnte nicht aktualisiert werden.
 APPLICATION_NOT_UPDATED.explanation=Die Anwendung konnte wegen fr\u00fcherer Fehler nicht gestartet werden.
-APPLICATION_NOT_UPDATED.useraction=\u00dcberpr\u00fcfen Sie die Anwendungskonfiguration, und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend des Anwendungsstarts aufgetreten sind.
+APPLICATION_NOT_UPDATED.useraction=\u00dcberpr\u00fcfen Sie die Anwendungskonfiguration und suchen Sie in den Protokollen nach Fehlern, die w\u00e4hrend des Anwendungsstarts aufgetreten sind.
 
 #Existing message changed per resolution to design issue 117781
 #{0} is the location of the file
@@ -192,15 +192,15 @@ APPLICATION_MONITORING_FAIL.explanation=Es wurde eine Anwendung installiert, die
 APPLICATION_MONITORING_FAIL.useraction=Wenn Dateien in dieser Anwendung aktualisiert werden, muss die Anwendung deinstalliert und im Server erneut installiert werden.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Die Anwendung {0} an der Position {1} befindet sich im \u00fcberwachten Verzeichnis {2}. Das Anwendungselement wird ignoriert.
-APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Ein Anwendungselement in der Serverkonfiguration hat eine Position f\u00fcr die Anwendung definiert, die sich in dem Verzeichnis befindet, das auf Anwendungen hin \u00fcberwacht wird. Deshalb wird das Anwendungselement ignoriert, und die Anwendung wird mit dem Inhalt des \u00fcberwachten Verzeichnisses gestartet, wenn die Anwendung in diesem \u00fcberwachten Verzeichnis enthalten ist.
-APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Korrigieren Sie das Anwendungselement, oder \u00e4ndern Sie die Position des \u00fcberwachten Verzeichnisses.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Ein Anwendungselement in der Serverkonfiguration hat eine Position f\u00fcr die Anwendung definiert, die sich in dem Verzeichnis befindet, das auf Anwendungen hin \u00fcberwacht wird. Deshalb wird das Anwendungselement ignoriert und die Anwendung wird mit dem Inhalt des \u00fcberwachten Verzeichnisses gestartet, wenn die Anwendung in diesem \u00fcberwachten Verzeichnis enthalten ist.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Korrigieren Sie das Anwendungselement oder \u00e4ndern Sie die Position des \u00fcberwachten Verzeichnisses.
 
 APPLICATION_UPDATED=CWWKZ0062I: Die Anwendung {0} wurde aktualisiert, aber nicht erneut gestartet.
 APPLICATION_UPDATED.explanation=Es wurde eine geringf\u00fcgige \u00c4nderung an der angegebenen Anwendung vorgenommen, die als so geringf\u00fcgig eingestuft wurde, dass die Anwendung nicht erneut gestartet werden muss.
 APPLICATION_UPDATED.useraction=Es ist keine Aktion erforderlich.
 
 APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Die Standardeinstellung f\u00fcr die Verwendung von Jandex wurde f\u00fcr alle Anwendungen in true ge\u00e4ndert.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Bei allen Anwendungen, und wenn indexierte Jandex-Dateien verf\u00fcgbar sind, werden Klassen- und Annotationsdaten aus indexierten Jandex-Dateien abgerufen, sofern die Verwendung von Jandex f\u00fcr die Anwendung nicht speziell inaktiviert wurde.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Bei allen Anwendungen, und wenn indexierte Jandex-Dateien verf\u00fcgbar sind, werden Klassen- und Annotationsdaten aus den indexierten Jandex-Dateien abgerufen, es sei denn, die Jandex-Nutzung wurde speziell f\u00fcr die Anwendung inaktiviert.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Es ist keine Aktion erforderlich. 
 #{0} is application name
 APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Die Verwendung von Jandex ist f\u00fcr die Anwendung {0} aktiviert.
@@ -210,3 +210,12 @@ APPLICATION_JANDEX_ENABLED.useraction=Es ist keine Aktion erforderlich.
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Die Verwendung von Jandex ist f\u00fcr die Anwendung {0} inaktiviert.
 APPLICATION_JANDEX_DISABLED.explanation=Der Jandex-Index ist f\u00fcr die angegebene Anwendung inaktiviert.
 APPLICATION_JANDEX_DISABLED.useraction=Es ist keine Aktion erforderlich. 
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: Die folgenden Anwendungen k\u00f6nnen nicht starten, weil der Wert der zugeh\u00f6rigen startAfter-Attribute einen Zyklus ergeben: {0} 
+error.startAfter.cycle.explanation=Keine der Anwendungen kann starten, da jede von einer der anderen Anwendungen abh\u00e4ngt, die zuerst gestartet werden m\u00fcssen.
+error.startAfter.cycle.useraction=\u00c4ndern Sie den Wert des startAfter-Attributs f\u00fcr Anwendungen, die an dem Zyklus beteiligt sind, so dass sie keine Schleifenabh\u00e4ngigkeiten haben.
+
+dropins.app.also.configured=CWWKZ0067W: Die Drop-ins-Anwendung an der Position {0} kann nicht starten, da sie ebenfalls konfiguriert ist. 
+dropins.app.also.configured.explanation=Eine Anwendung in der Serverkonfiguration gibt eine Position im \u00fcberwachten Drop-ins-Verzeichnis an. 
+dropins.app.also.configured.useraction=Verschieben Sie die Anwendung an eine verschiedene Position. 

@@ -28,11 +28,11 @@ import org.eclipse.microprofile.reactive.messaging.Message;
  * <p>
  * To use this class, subclass it and override {@link #recieveMessage(Message)} to add {@code @Incoming} and {@code @Acknowledgement} annotations.
  */
-public class AbstractReceptionBean {
+public class AbstractReceptionBean<T> {
 
-    private final Queue<Message<String>> receivedMessages = new LinkedList<>();
+    private final Queue<Message<T>> receivedMessages = new LinkedList<>();
 
-    public CompletionStage<Void> recieveMessage(Message<String> msg) {
+    public CompletionStage<Void> recieveMessage(Message<T> msg) {
         synchronized (this) {
             receivedMessages.add(msg);
             this.notifyAll();
@@ -40,8 +40,8 @@ public class AbstractReceptionBean {
         return CompletableFuture.completedFuture(null);
     }
 
-    public List<Message<String>> getReceivedMessages(int count, Duration timeout) throws InterruptedException {
-        ArrayList<Message<String>> result = new ArrayList<>();
+    public List<Message<T>> assertReceivedMessages(int count, Duration timeout) throws InterruptedException {
+        ArrayList<Message<T>> result = new ArrayList<>();
         Duration remaining = timeout;
         long startTime = System.nanoTime();
         while (!remaining.isNegative() && result.size() < count) {
@@ -62,11 +62,11 @@ public class AbstractReceptionBean {
 
     /**
      * Return any messages which have been received by the bean, without waiting
-     * 
+     *
      * @return a list of messages, may be empty
      */
-    public List<Message<String>> getReceivedMessages() {
-        ArrayList<Message<String>> result = new ArrayList<>();
+    public List<Message<T>> getReceivedMessages() {
+        ArrayList<Message<T>> result = new ArrayList<>();
         synchronized (this) {
             while (!receivedMessages.isEmpty()) {
                 result.add(receivedMessages.poll());

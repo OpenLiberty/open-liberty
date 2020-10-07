@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=\u00c1ll\u00edtsa be a jwkEndpointUrl attrib
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: A(z) [{0}] \u00e1ltal k\u00e9rt token \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult, mert a token k\u00edv\u00fcl esik az \u00e9rv\u00e9nyes tartom\u00e1nyon. Ennek oka az lehet, hogy az aktu\u00e1lis [{1}] id\u0151 a token lej\u00e1rati [{2}] idej\u00e9t meghaladja, vagy hogy a kiad\u00e1si [{3}] id\u0151 t\u00fal t\u00e1voli az aktu\u00e1lis [{1}] id\u0151t\u0151l.
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt [{1}] felhaszn\u00e1l\u00f3ra vonatkoz\u00f3 token \u00e9rv\u00e9nyes\u00edt\u00e9s meghi\u00fasult, mert a token k\u00edv\u00fcl esik az \u00e9rv\u00e9nyes tartom\u00e1nyon. Ez a hiba vagy az\u00e9rt t\u00f6rt\u00e9nik, mert az aktu\u00e1lis [{2}] id\u0151pont a(z) [{3}] token lej\u00e1rati ideje ut\u00e1nra esik, vagy mert a(z) [{4}] kibocs\u00e1t\u00e1si id\u0151pont t\u00fal messze van az aktu\u00e1lis [{2}] id\u0151pontt\u00f3l.
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Egy token nem \u00e9rv\u00e9nyes\u00edthet\u0151, mert a megjelen\u00edtett aktu\u00e1lis id\u0151 nem a token kiad\u00e1si ideje \u00e9s lej\u00e1rati ideje k\u00f6z\u00f6tti.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy RP) \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3 (OP) rendszer\u00f3r\u00e1ja szinkronban van-e (ha azok k\u00e9t rendszeren vannak).
 
@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=A token nem tartalmazha
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=K\u00e9rjen le egy \u00faj tokent, amely nem tartalmazza a megadott ig\u00e9nyt, vagy m\u00f3dos\u00edtsa a megadott konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9k\u00e9t, hogy lehet\u0151v\u00e9 tegye ig\u00e9ny megad\u00e1s\u00e1t a tokenben.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l a(z) [{2}] konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal meghat\u00e1rozott \u00e9rt\u00e9kek k\u00f6z\u00fcl tartalmazza a(z) {1} \u00e9rt\u00e9ket. A megadott \u00e9rt\u00e9kek figyelmen k\u00edv\u00fcl maradnak.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Az OAuth 2.0 specifik\u00e1ci\u00f3 meghat\u00e1roz n\u00e9h\u00e1ny fenntartott k\u00e9r\u00e9si param\u00e9tert, amelyeket az \u00fcgyf\u00e9lnek a jogosults\u00e1gk\u00e9r\u00e9s sor\u00e1n be kell mutatnia. Ezeknek a fenntartott param\u00e9tereknek az \u00e9rt\u00e9k\u00e9t a felhaszn\u00e1l\u00f3 nem adhatja meg.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=T\u00e1vol\u00edtsa el a megadott \u00e9rt\u00e9keket az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9kek list\u00e1j\u00e1b\u00f3l.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l a(z) [{2}] konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal meghat\u00e1rozott \u00e9rt\u00e9kek k\u00f6z\u00fcl tartalmazza a(z) {1} \u00e9rt\u00e9ket. A megadott \u00e9rt\u00e9kek figyelmen k\u00edv\u00fcl maradnak.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Az OAuth 2.0 specifik\u00e1ci\u00f3 meghat\u00e1roz n\u00e9h\u00e1ny fenntartott k\u00e9r\u00e9si param\u00e9tert, amelyeket az \u00fcgyf\u00e9lnek a jogosults\u00e1gk\u00e9r\u00e9s sor\u00e1n be kell mutatnia. Ezeknek a fenntartott param\u00e9tereknek az \u00e9rt\u00e9k\u00e9t a felhaszn\u00e1l\u00f3 nem adhatja meg.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=T\u00e1vol\u00edtsa el a megadott \u00e9rt\u00e9keket az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban megadott \u00e9rt\u00e9kek list\u00e1j\u00e1b\u00f3l.

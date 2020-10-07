@@ -1,0 +1,55 @@
+#*******************************************************************************
+# Copyright (c) 2018,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/DurableUnshared/src, \
+  test-applications/JMSConsumer_118076/src, \
+  test-applications/JMSConsumer_118077/src, \
+  test-applications/JMSContextInject/src, \
+  test-applications/JMSDCF/src, \
+  test-applications/JMSDCFVar/src, \
+  test-applications/JMSMBeans/src, \
+  test-applications/JMSProducer/src, \
+  test-applications/JMSProducer_118073/src, \
+  test-applications/JMSRedelivery_120846/src, \
+  test-applications/SharedSubscription/src, \
+  test-applications/SharedSubscriptionWithMsgSel/src
+
+# test-applications/jmsmdb/src, \
+# test-applications/mdbapp/src, \
+# test-applications/mdbapp1/src
+
+test.project: true
+
+# To define a global minimum java level for the FAT, use the following property.
+# If unspecified, the default value is ${javac.source}
+# runtime.minimum.java.level: 1.8
+
+# Dependencies may be local bundles (com.ibm.websphere.javaee.servlet.3.1)
+# or binaries from Artifactory (org.apache.derby:derbynet).
+#
+# FAT projects ("*_fat*") are automatically given dependencies on:
+#   junit
+#   fattest.simplicity
+#   componenttest-1.0
+
+-buildpath: \
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  com.ibm.ws.security.registry_test.servlet;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+  com.ibm.websphere.javaee.jms.2.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+  com.ibm.websphere.javaee.cdi.1.0;version=latest
+

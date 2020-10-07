@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,11 +154,15 @@ public class TranManagerImpl {
 
     /*
      * Return the expiry time (in milliseconds) for the current transaction.
-     * This is the actual time left before the transaction expires. it could be
-     * zero or less if the tran has already expired.
+     * This is the actual time left before the transaction expires. Returns a
+     * very large number if no timeout is set.
      */
     public long getTimeout() throws IllegalStateException, WSATException {
-        return getUOWManager().getUOWExpiration() - System.currentTimeMillis();
+        long expireTime = getUOWManager().getUOWExpiration();
+        if (expireTime != 0l)
+            return expireTime - System.currentTimeMillis();
+        else
+            return Long.MAX_VALUE / 4l;
     }
 
     /*

@@ -1,0 +1,15 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+        <feature>mpMetrics-2.3</feature>
+        <feature>monitor-1.0</feature>
+    </featureManager>
+
+    <mpMetrics authentication = "false"/>
+
+
+  	<include location="../fatTestPorts.xml"/>
+ 
+<!-- Test application requires this permission in order to acquire access to Liberty's MBean server --> 	
+  	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+</server>

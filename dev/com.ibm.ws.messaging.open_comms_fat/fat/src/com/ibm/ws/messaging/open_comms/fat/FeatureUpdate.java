@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class FeatureUpdate extends FATBase {
 
   @AllowedFFDC({"com.ibm.websphere.sib.exception.SIResourceException"
                ,"com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
+               ,"com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException"
                ,"javax.resource.ResourceException"
                ,"javax.resource.spi.ResourceAllocationException"
                })
@@ -79,6 +80,11 @@ public class FeatureUpdate extends FATBase {
                                                        ,client_.getMatchingLogFile("messages.log")
                                                        );
     assertNotNull("Could not find expected exception in the messages.log", message);
+    // because we have an expected error above, we want to make sure subsequent tests don't pick up
+    // on this in their interaction with client_
+    Util.TRACE("restart client");
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
+    client_.startServer();                            // leave the server clean for future tests
 
     Util.TRACE("stop server");
     server_.stopServer();
@@ -91,6 +97,7 @@ public class FeatureUpdate extends FATBase {
 
   @AllowedFFDC({"com.ibm.websphere.sib.exception.SIResourceException"
                ,"com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
+               ,"com.ibm.ws.sib.jfapchannel.JFapHeartbeatTimeoutException"
                ,"javax.resource.ResourceException"
                ,"javax.resource.spi.ResourceAllocationException"
                ,"com.ibm.wsspi.channelfw.exception.InvalidChainNameException"
@@ -98,7 +105,8 @@ public class FeatureUpdate extends FATBase {
   @Test
   public void testSSLFeatureUpdate() throws Exception {
     Util.TRACE_ENTRY();
-    client_.stopServer();
+    // When the client AppServer stops it might observe FFDCs left behind by prior tests, hence the allowed FFDCs.
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
     client_.setServerConfigurationFile("SecurityDisabledClient.xml");
     client_.startServer();
 
@@ -114,6 +122,11 @@ public class FeatureUpdate extends FATBase {
                                                 ,client_.getMatchingLogFile("messages.log")
                                                 );
     assertNotNull("Could not find expected exception in the messages.log", message);
+    // because we have an expected error above, we want to make sure subsequent tests don't pick up
+    // on this in their interaction with client_
+    Util.TRACE("restart client");
+    client_.stopServer("^.*[EW] .*\\d{4}[EW]:.*$");   // ignore all errors from prior tests
+    client_.startServer();                            // leave the server clean for future tests
     Util.TRACE_EXIT();
   }
 
@@ -126,7 +139,7 @@ public class FeatureUpdate extends FATBase {
     serv.setServerConfigurationFile(newServerXml);
 
     // wait for configuration update to complete
-    serv.waitForStringInLogUsingMark("CWWKG0017I");
+    serv.waitForStringInLogUsingMark("CWWKG001[78]I");
     Util.TRACE_EXIT();
   }
 }

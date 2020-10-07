@@ -10,13 +10,10 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: WAS Secuity MP JWT 1.1 config
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.1.1.config
 Bundle-Description: WAS security jwt authentication mpConfig proxy for microprofile, version=${bVersion}
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 #Web-ContextPath: /ibm/api/social-login
 
@@ -35,8 +32,9 @@ Export-Package: \
    com.ibm.ws.security.mp.jwt.v11.config.impl
 
 Import-Package: \
+   !com.ibm.ws.security.mp.jwt.v11.config.impl, \
    com.ibm.ws.security.mp.jwt, \
-   org.eclipse.microprofile.config;version="[1.0,2)", \
+   org.eclipse.microprofile.config;version="[1.0,3)", \
    org.jose4j.*;version="[0.5,1)", \
    *
 

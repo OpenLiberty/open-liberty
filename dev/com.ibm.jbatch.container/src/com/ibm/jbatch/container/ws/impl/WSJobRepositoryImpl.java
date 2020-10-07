@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSBatchAuthService;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
@@ -244,7 +245,7 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     }
 
     @Override
-    public WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException {
+    public WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException {
         return (WSJobInstance) persistenceManagerService.updateJobInstanceStateOnConsumed(instanceId);
     }
 
@@ -373,6 +374,11 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     @Override
     public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey) {
         return persistenceManagerService.getRemotablePartitionInternalState(remotablePartitionKey);
+    }
+
+    @Override
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId) {
+        return persistenceManagerService.getRemotablePartitionsForJobExecution(jobExecutionId);
     }
 
     /**

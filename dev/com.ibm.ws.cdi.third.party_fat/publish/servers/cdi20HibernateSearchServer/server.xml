@@ -4,6 +4,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <featureManager>
+    <feature>componentTest-1.0</feature>
     <feature>cdi-2.0</feature>
     <feature>ejbLite-3.2</feature>
     <feature>jpaContainer-2.2</feature>
@@ -27,7 +28,7 @@
 
   <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
       <jdbcDriver libraryRef="derbyJDBCLib" />
-      <properties.derby.embedded databaseName="TestDB" createDatabase="create"/>
+      <properties.derby.embedded databaseName="memory:TestDB" createDatabase="create"/>
   </dataSource> 
 
     <SSLDefault/>

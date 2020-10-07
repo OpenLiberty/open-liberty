@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -144,7 +144,7 @@ APPLICATION_AT_LOCATION_NOT_VALID.explanation=Il server non \u00e8 attualmente c
 APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modificare la configurazione del server in modo da includere tutte le funzioni necessarie per supportare questo tipo di risorsa.
 
 APPLICATION_SLOW_STARTUP=CWWKZ0022W: L''applicazione {0} non \u00e8 stata avviata in {1} secondi.
-APPLICATION_SLOW_STARTUP.explanation=L'applicazione non \u00e8 stata avviata nel tempo previsto. La causa potrebbe essere un sovraccarico del server o alle notevoli dimensioni dell'applicazione. Se l'applicazione \u00e8 in fase di avvio come parte dell'avvio del server, tale avvio terminer\u00e0 senza attendere l'avvio dell'applicazione.
+APPLICATION_SLOW_STARTUP.explanation=L'applicazione non \u00e8 stata avviata nel tempo previsto. La causa potrebbe essere un sovraccarico del server o le notevoli dimensioni dell'applicazione. Se l'applicazione \u00e8 in fase di avvio come parte dell'avvio del server, tale avvio terminer\u00e0 senza attendere l'avvio dell'applicazione.
 APPLICATION_SLOW_STARTUP.useraction=Se l'avvio dell'applicazione richiede molto tempo, non \u00e8 richiesta alcuna azione, altrimenti controllare i log del server per verificare se altri messaggi indicano una causa.
 
 #{0} is application name
@@ -205,14 +205,23 @@ APPLICATION_UPDATED.useraction=Non \u00e8 richiesta alcuna azione.
 
 APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: L'impostazione predefinita per l'utilizzo di Jandex \u00e8 stata modificata in true per tutte le applicazioni.
 APPLICATION_JANDEX_ENABLED_ALL.explanation=Per tutte le applicazioni, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex, a meno che l'utilizzo di Jandex non sia disabilitato specificatamente per l'applicazione.
-APPLICATION_JANDEX_ENABLED_ALL.useraction=Non \u00e8 richiesta alcuna azione.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Nessuna
 
 #{0} is application name
 APPLICATION_JANDEX_ENABLED=CWWKZ0064I: L''utilizzo di Jandex \u00e8 abilitato per l''applicazione {0}.
 APPLICATION_JANDEX_ENABLED.explanation=Per l'applicazione specificata, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex.
-APPLICATION_JANDEX_ENABLED.useraction=Non \u00e8 richiesta alcuna azione.
+APPLICATION_JANDEX_ENABLED.useraction=Nessuna
 
 #{0} is application name
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: L''utilizzo di Jandex \u00e8 disabilitato per l''applicazione {0}.
 APPLICATION_JANDEX_DISABLED.explanation=L'indice Jandex \u00e8 disabilitato per l'applicazione specificata.
-APPLICATION_JANDEX_DISABLED.useraction=Non \u00e8 richiesta alcuna azione.
+APPLICATION_JANDEX_DISABLED.useraction=Nessuna
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: Impossibile avviare le seguenti applicazioni perch\u00e9 il valore degli attributi startAfter provoca un ciclo: {0} 
+error.startAfter.cycle.explanation=Impossibile avviare tutte le applicazioni perch\u00e9 ognua dipende da una delle altre da avviare prima.
+error.startAfter.cycle.useraction=Modificare il valore dell'attributo startAfter per le applicazioni coinvolte nel ciclo in modo che non abbiano dipendenze circolari.
+
+dropins.app.also.configured=CWWKZ0067W: L''applicazione drop-in nell''ubicazione {0} non pu\u00f2 essere avviata perch\u00e9 \u00e8 anche configurata. 
+dropins.app.also.configured.explanation=Un'applicazione nella configurazione del server specifica una ubicazione nella directory drop-in monitorata. 
+dropins.app.also.configured.useraction=Spostare l'applicazione in un'ubicazione diversa. 

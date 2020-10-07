@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.install.featureUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -29,17 +30,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.ExceptionUtils;
+import com.ibm.ws.install.InstallKernel;
+import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.LicenseUpgradeUtility;
+import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
+import com.ibm.ws.repository.exceptions.RepositoryException;
 //import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
@@ -49,16 +53,22 @@ public class FeatureUtility {
 
     private final InstallKernelMap map;
     private File fromDir;
-    private final File esaFile;
+    private final List<File> esaFiles;
     private final Boolean noCache;
     private Boolean isDownload;
     private Boolean isBasicInit;
+    private final Boolean licenseAccepted;
     private final List<String> featuresToInstall;
+    private final List<String> additionalJsons;
+    private final List<String> jsons;
     private static String openLibertyVersion;
+    private static String openLibertyEdition;
     private final Logger logger;
     private ProgressBar progressBar;
 
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
+    private final static String BETA_EDITION = "EARLY_ACCESS";
 
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
@@ -66,26 +76,37 @@ public class FeatureUtility {
         this.progressBar = ProgressBar.getInstance();
 
         this.openLibertyVersion = getLibertyVersion();
+        
+        if (this.openLibertyEdition.equals(BETA_EDITION)) {
+            throw new InstallException(
+                            Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_BETA_EDITION_NOT_SUPPORTED"));
+        }
+        this.additionalJsons = new ArrayList<String>();
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
-
         List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
         Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
 
         this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
         Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
+        jsonsRequired.addAll(Arrays.asList("io.openliberty.features"));
+        
 
-        this.esaFile = builder.esaFile;
+        this.esaFiles = builder.esaFiles;
         this.noCache = builder.noCache;
+        this.licenseAccepted = builder.licenseAccepted;
 
 
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
+        map.put("req.ol.json.coord", "io.openliberty.features");
+        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
+        
         if (envMap == null) {
         	throw new InstallException((String) map.get("action.error.message"));
         }
+
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {
@@ -93,18 +114,45 @@ public class FeatureUtility {
         		fine("FEATURE_REPO_PASSWORD: *********");
         	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
         		fine(key +": " + envMap.get(key));
-        		File local_repo = new File(envMap.get("FEATURE_LOCAL_REPO"));
+        		File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
         		this.fromDir = local_repo;
         	}else {
-        		fine(key +": " + envMap.get(key));
+        		fine(key +": " + (envMap.get(key)));
         	}
         }
+        map.put("json.provided", false);
+        overrideEnvMapWithProperties();
+        
+        fine("additional jsons: " + additionalJsons);
+        if (!additionalJsons.isEmpty() && additionalJsons != null) {
+        	jsonsRequired.addAll(additionalJsons);
+        }
+
+        boolean isOpenLiberty = (Boolean) map.get("is.open.liberty");
+        if (!isOpenLiberty) {
+        	jsonsRequired.add("com.ibm.websphere.appserver.features");
+        }
+
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
         }
         map.put("cleanup.needed", noCache);
+        this.jsons = (List<String>) builder.jsons; //TODO remove?
+        
+        //fine("these are the jsons group ids: " + this.jsons);
+        //List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
+        //Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
+        //fine("jsonsandfeatures: " + jsonsAndFeatures.toString());
+        //this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
+        //Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
         //log all the env props we find or don't find to debug
+        //if (this.jsons != null) {
+        //	Set<String> additionaljsons = new HashSet<String>(this.jsons);
+        //    jsonsRequired.addAll(additionaljsons);
+        //}
+        
         List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
+        
         updateProgress(progressBar.getMethodIncrement("fetchJsons"));
         fine("Finished finding jsons");
 
@@ -116,24 +164,11 @@ public class FeatureUtility {
     /**
      * Initialize the Install kernel map.
      *
-     * @throws IOException
-     */
-    private void initializeMap() throws IOException {
-        map.put("runtime.install.dir", Utils.getInstallDir());
-        map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
-        map.put("license.accept", true);
-        map.get("install.kernel.init.code");
-        map.put("is.feature.utility", true);
-
-    }
-
-    /**
-     * Initialize the Install kernel map.
-     *
      * @param jsonPaths
      * @throws IOException
      */
-    private void initializeMap(List<File> jsonPaths) throws IOException {
+    @SuppressWarnings("restriction")
+	private void initializeMap(List<File> jsonPaths) throws IOException {
         map.put("is.feature.utility", true);
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
@@ -144,14 +179,61 @@ public class FeatureUtility {
             map.put("features.to.resolve", featuresToInstall);
 
         }
-        if (esaFile != null) {
-            map.put("individual.esas", Arrays.asList(esaFile));
+        if (esaFiles != null && !esaFiles.isEmpty()) {
+            map.put("individual.esas", esaFiles);
             map.put("install.individual.esas", true);
         }
 
-        map.put("license.accept", true);
+        map.put("license.accept", licenseAccepted);
         map.get("install.kernel.init.code");
 
+    }
+
+
+    /**
+     * Override the environment variables with any properties we can find
+     */
+    private void overrideEnvMapWithProperties(){
+        if(!FeatureUtilityProperties.didLoadProperties()){
+            logger.fine("No featureUtility.properties detected.");
+            return;
+        }
+        Map<String, Object> overrideMap = new HashMap<>();
+        logger.fine("Overriding the environment variables using featureUtility.properties");
+
+        // override proxy settings
+        String host = FeatureUtilityProperties.getProxyHost();
+        String port = FeatureUtilityProperties.getProxyPort();
+        String username = FeatureUtilityProperties.getProxyUser();
+        String password = FeatureUtilityProperties.getProxyPassword();
+
+        if(FeatureUtilityProperties.canConstructHttpProxy()){
+            String http_proxy = "http://" + host + ":" + "port";
+            overrideMap.put("http_proxy", http_proxy);
+        }
+        if(FeatureUtilityProperties.canConstructHttpsProxy()) {
+            String https_proxy = "https://" + username + ":" + password + "@" + host + ":" + port;
+            overrideMap.put("http_proxy", https_proxy);
+        }
+
+        // override the local feature repo
+        if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
+            overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
+            this.fromDir = new File(FeatureUtilityProperties.getFeatureLocalRepo());
+        }
+
+        // override maven repositories
+        if(!FeatureUtilityProperties.isUsingDefaultRepo()){
+            overrideMap.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", FeatureUtilityProperties.getMirrorRepositories());
+        }
+        
+        //get any additional required jsons
+        if(FeatureUtilityProperties.additionalJsonsRequired()) {
+        	this.additionalJsons.addAll(FeatureUtilityProperties.getAdditionalJsons());
+        	map.put("json.provided", true);
+        }
+
+        map.put("override.environment.variables", overrideMap);
     }
 
     /**
@@ -171,12 +253,8 @@ public class FeatureUtility {
         Set<String> featuresRequired = new HashSet<>();
 
         String openLibertyVersion = getLibertyVersion();
-        String groupId, artifactId, version, packaging;
+        String groupId, artifactId, version, packaging = null;
         for (String feature : featureNames) {
-            groupId = null;
-            artifactId = null;
-            version = null;
-            packaging = null;
             String[] mavenCoords = feature.split(":");
             switch(mavenCoords.length){
                 case 1: // artifactId
@@ -231,10 +309,10 @@ public class FeatureUtility {
         if(!"esa".equals(packaging)){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_PACKAGING", feature));
         }
-        // block closed liberty features
-        if("com.ibm.websphere.appserver.features".equals(groupId)){
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
-        }
+//        // block closed liberty features
+//        if("com.ibm.websphere.appserver.features".equals(groupId)){
+//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
+//        }
 
     }
 
@@ -249,28 +327,52 @@ public class FeatureUtility {
         if (this.openLibertyVersion != null) {
             return this.openLibertyVersion;
         }
+        if (this.openLibertyEdition != null) {
+            return this.openLibertyEdition;
+        }
         File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
         String openLibertyVersion = null;
+        String openLibertyEdition = null;
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(propertiesFile)) {
             properties.load(input);
             String productId = properties.getProperty("com.ibm.websphere.productId");
             String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
-
+            String productEdition = properties.getProperty("com.ibm.websphere.productEdition");
             if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
                 openLibertyVersion = productVersion;
+                openLibertyEdition = productEdition;
             }
 
         }
 
-        if (openLibertyVersion == null) {
+        if (openLibertyVersion == null || openLibertyEdition == null) {
             // openliberty.properties file is missing or invalidly formatted
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
 
         }
         this.openLibertyVersion = openLibertyVersion;
+        this.openLibertyEdition = openLibertyEdition;
         return openLibertyVersion;
     }
+
+    public Set<String> findFeatures(){
+        String query = String.join(" ", featuresToInstall);
+        map.put("action.find", query);
+        Set<String> features = (Set<String>) map.get("action.result");
+
+        if(features.isEmpty()){
+            info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_NO_FEATURES_FOUND"));
+        }
+        else {
+            // display the features
+            for (String feature : features){
+                info(feature);
+            }
+        }
+        return features;
+    }
+
 
     /**
      * Resolves and installs the features
@@ -281,9 +383,31 @@ public class FeatureUtility {
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
+        if (fromDir != null) {
+        	map.put("from.repo", fromDir.toString());
+        }
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
+        boolean upgraded = (boolean) map.get("upgrade.complete");
+        List<String> causedUpgrade = (List<String>) map.get("caused.upgrade");
+        if (upgraded) {
+        	LicenseUpgradeUtility luu = new LicenseUpgradeUtility.LicenseUpgradeUtilityBuilder().setFeatures(featuresToInstall).setAcceptLicense(licenseAccepted).build();
+        	boolean isLicenseAccepted = false;
+        	try {
+            	isLicenseAccepted = luu.handleLicenses(featureFormat(causedUpgrade));
+            } catch (InstallException e) {
+            	map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+            	throw e;
+            }
+            if (!isLicenseAccepted) {
+                map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+            } else {
+            	luu.handleOLLicense();
+            }
+        	
+        }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -329,7 +453,30 @@ public class FeatureUtility {
         }
     }
 
-    /**
+    private String featureFormat(List<String> causedUpgrade) {
+		if (causedUpgrade.size() == 1) {
+			return causedUpgrade.get(0);
+		}
+		if (causedUpgrade.size() == 2) {
+			return causedUpgrade.get(0) + " and " + causedUpgrade.get(1);
+		}
+		if (causedUpgrade.size() > 2) {
+			String result = "";
+			for (String str: causedUpgrade) {
+				if (causedUpgrade.indexOf(str) == 0) {
+					result += causedUpgrade.get(0);
+				} else if (causedUpgrade.indexOf(str) < causedUpgrade.size() - 1) {
+					result += ", " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				} else {
+					result += ", and " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
+	/**
      * Check for any errors with the list of resolved features
      *
      * @param resolvedFeatures list of resolved features returned by the resolver
@@ -370,6 +517,7 @@ public class FeatureUtility {
         }
         return result;
     }
+
 
     public List<String> resolveFeatures(boolean isShortNames) throws InstallException {
         map.put("download.location", fromDir.toString());
@@ -414,12 +562,16 @@ public class FeatureUtility {
      */
     private String extractFeature(String filename) {
         String[] split = filename.split("-");
+        if(split.length > 1){
+            return split[0] + "-" + split[1];
+        }
 
-        return split[0] + "-" + split[1];
+        return filename;
+
 
     }
 
-    private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
+    public List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
         if(jsonsRequired.isEmpty()) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FEATURES_LIST_INVALID")); //
         }
@@ -434,6 +586,12 @@ public class FeatureUtility {
         if (jsonFiles.isEmpty() || jsonFiles.size() != jsonsRequired.size()) {
             fine("Could not find all json files from local directories, now downloading from Maven..");
             jsonFiles.addAll(map.getJsonsFromMavenCentral(jsonsRequired));
+            if (map.get("action.error.message") != null) {
+                // error with installation
+                fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+                String exceptionMessage = (String) map.get("action.error.message");
+                throw new InstallException(exceptionMessage);
+            }
         }
         return jsonFiles;
     }
@@ -526,16 +684,18 @@ public class FeatureUtility {
     public static class FeatureUtilityBuilder {
         File fromDir;
         Collection<String> featuresToInstall;
-        File esaFile;
+        Collection<String> jsons;
+        List<File> esaFiles;
         boolean noCache;
+        boolean licenseAccepted;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
             return this;
         }
 
-        public FeatureUtilityBuilder setEsaFile(File esaFile) {
-            this.esaFile = esaFile;
+        public FeatureUtilityBuilder setEsaFiles(List<File> esaFiles) {
+            this.esaFiles = esaFiles;
             return this;
         }
         
@@ -543,9 +703,19 @@ public class FeatureUtility {
             this.noCache = noCache;
             return this;
         }
+        
+        public FeatureUtilityBuilder setlicenseAccepted(Boolean licenseAccepted) {
+            this.licenseAccepted = licenseAccepted;
+            return this;
+        }
 
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
+            return this;
+        }
+        
+        public FeatureUtilityBuilder setJsons(Collection<String> jsons) {
+            this.jsons = jsons;
             return this;
         }
 
@@ -594,7 +764,30 @@ public class FeatureUtility {
         }
         return result;
     }
-    
 
+	public void generateJson(String targetJsonFile, List<String> jsonFiles) throws IOException, RepositoryException, InstallException {
+		Path targetDir = Files.createTempDirectory("generatedJson");
+		Map<String, String> shortNameMap = new HashMap<String, String>();
+		List<File> jsons = new ArrayList<File>();
+		for (String json: jsonFiles) {
+			jsons.add(new File(json));
+		}
+		map.put("individual.esas", jsons);
+		map.generateJson(targetDir, shortNameMap);
+		fine("targetDir: " + targetDir.toString());
+		File tempFile = new File(targetDir.toString() + "/SingleJson.json");
+		fine("targetJsonFile: " + targetJsonFile.toString());
+		File targetFile = new File(targetJsonFile);
+		FileInputStream instream = new FileInputStream(tempFile);
+		FileOutputStream outstream = new FileOutputStream(targetFile);
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = instream.read(buffer)) > 0){
+	    	outstream.write(buffer, 0, length);
+	    }
+		instream.close();
+	    outstream.close();
+	}
+    
 
 }

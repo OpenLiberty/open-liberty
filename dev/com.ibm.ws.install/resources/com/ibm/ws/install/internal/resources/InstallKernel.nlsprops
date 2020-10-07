@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=The following URL is not valid: {0}. Only HTTP, HTTPS
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=The URL protocol for the following repository is not supported: {0}. Supported protocols are HTTP, HTTPS, and file. Ensure that the URL is specified correctly.
 MSG_VALIDATION_INVALID_HOST=The following proxy server host is not valid: {0}. Specify a valid HTTP proxy server host name. The http:// prefix is not required.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=No features were found.
+
 VALIDATION_INVALID_VALUE=Unsupported value
 VALIDATION_INVALID_KEY=Unsupported property name
 VALIDATION_EMPTY_KEY=Empty property name
@@ -838,6 +841,38 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=The feature is not supported
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Run featureUtility with a compatible feature.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: The following user features are specified in the server.xml and they will not be installed: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: The {0} and {1} features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Remove one of the features and try again.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: The {0} and {1} singleton features are incompatible with each other and they cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=The features cannot be installed at the same time.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remove one of the features and try again.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Unable to unzip the license package with the {0} Maven coordinate from the repository at the {1} file path.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Unable to unzip the license package to the wlp installation.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Ensure you have the correct permissions to read from the repository.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Unable to process the license file at the {0} file location.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Unable to process the license file for license acceptance information.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Ensure you have the correct permissions to read from the license file.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Unable to find the Websphere JSON file at the {0} file location.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Unable to find Websphere JSON file.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Ensure that you have network connection and write permissions to the configured local Maven directory.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Unable to find the following feature JSON files locally or on the configured Maven repository: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=The JSON files cannot be found locally or on the configured Maven repository.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Ensure that you have network connection and the JSON files exist on the configured Maven repository.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: The {0} feature cannot be installed to {1} {2} edition because it only applies to the {3} edition.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=The feature is not applicable to the edition of the installed product.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Install features that are supported by the product edition.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Installing or updating features is not supported for beta releases.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Installing or updating features is not supported for the installed product.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=No action is required.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.

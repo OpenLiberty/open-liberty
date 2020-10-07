@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2016 IBM Corporation and others.
+# Copyright (c) 1997, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1551,11 +1551,28 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Bean-urile entitate de \u00eentreprin
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=\u00cenl\u0103tura\u0163i folosirea bean-ului de \u00eentreprindere entitate nesuportat din aplica\u0163ie sau \u00eempacheta\u0163i bean-ul \u00eentr-o versiune 6 sau \u00eentr-o aplica\u0163ie mai veche.
 
 #-------------------------------------------------------------------------------
-NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Interfa\u0163a {0} a bean-ului {1} din modulul {2} al aplica\u0163iei {3} nu poate fi g\u0103sit la loca\u0163ia nume {4}. Interfa\u0163a {5} a bean-ului {6} din modulul {7} al aplica\u0163iei {8} este deja legat\u0103 de loca\u0163ia de nume {4}. Loca\u0163ia de nume {4} nu este accesibil\u0103.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Fiecare interfa\u0163\u0103 de bean enterprise trebuie s\u0103 specifice o loca\u0163ie unic\u0103 de legare.
-NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corecta\u0163i fi\u015fierul de legare pentru una din aceste dou\u0103 interfe\u0163e bean-uri astfel \u00eenc\u00e2t fiecare interface s\u0103 aib\u0103 o loca\u0163ie de legare unic\u0103.
+#
+# CNTR0336W: Already in use.
+# CNTR0337W: Already in use.
+#
+#-------------------------------------------------------------------------------
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0338W=CNTR0338W: Interfa\u0163a {0} a bean-ului {1} din modulul {2} al aplica\u0163iei {3} nu poate fi g\u0103sit la loca\u0163ia nume {4}. Interfa\u0163a {5} a bean-ului {6} din modulul {7} al aplica\u0163iei {8} este deja legat\u0103 de loca\u0163ia de nume {4}. Loca\u0163ia de nume {4} nu este accesibil\u0103.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.explanation=Fiecare interfa\u0163\u0103 de bean enterprise trebuie s\u0103 specifice o loca\u0163ie unic\u0103 de legare.
+NAME_ALREADY_BOUND_WARN_CNTR0338W.useraction=Corecta\u0163i fi\u015fierul de legare pentru una din aceste dou\u0103 interfe\u0163e bean-uri astfel \u00eenc\u00e2t fiecare interface s\u0103 aib\u0103 o loca\u0163ie de legare unic\u0103.
 
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", or "ibm-ejb-jar-bnd.xml".
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W=CNTR0339W: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.explanation=Numele de legare JNDI nu trebuie s\u0103 con\u0163in\u0103 caracterul dou\u0103 puncte (:), care denot\u0103 un spa\u0163iu de nume. \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
+NAMESPACE_IN_JNDI_BINDING_NAME_CNTR0339W.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume.
+
+#-------------------------------------------------------------------------------
+# Do NOT translate "JNDI", "namespace", "ibm-ejb-jar-bnd.xml", or "ejblocal:".
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W=CNTR0340W: Numele de legare JNDI (Java Naming and Directory Interface) {2} pentru bean-ul {0} sau interfa\u0163a de baz\u0103 local\u0103 din modulul {1} con\u0163ine un spa\u0163iu de nume care nu este valid.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.explanation=Numele leg\u0103rii locale poate con\u0163ine doar un spa\u0163iu de nume \u015fi trebuie s\u0103 \u00eenceap\u0103 cu ejblocal:. Spa\u0163iile de nume sunt indicate de caracterul dou\u0103 puncte (:). \u00centregul \u015fir de dinainte \u015fi inclusiv caracterul dou\u0103 puncte (:) este considerat un spa\u0163iu de nume.
+NAMESPACE_IN_LOCAL_JNDI_BINDING_NAME_CNTR0340W.useraction=Corecta\u0163i fi\u015fierul de leg\u0103ri ibm-ejb-jar-bnd.xml pentru a da acestui bean un nume de legare JNDI valid prin \u00eenl\u0103turarea spa\u0163iului de nume care nu este valid.
 
 #-------------------------------------------------------------------------------
 #

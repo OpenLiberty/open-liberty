@@ -1,0 +1,96 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+configurations {
+  jackson2x
+  jersey
+}
+
+configurations.jersey {
+  transitive = false
+}
+
+dependencies {
+  jackson2x 'com.fasterxml.jackson.core:jackson-annotations:2.4.1',
+    'com.fasterxml.jackson.core:jackson-core:2.4.1',
+    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
+    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1',
+    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1',
+    'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1'
+  requiredLibs 'commons-httpclient:commons-httpclient:3.1',
+    'commons-logging:commons-logging:1.2',
+    'org.apache.httpcomponents:httpclient:4.3.1',
+    'org.apache.httpcomponents:httpcore:4.3',
+    'org.apache.httpcomponents:httpmime:4.3.1',
+    'com.fasterxml.jackson.core:jackson-core:2.4.1',
+    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
+    'org.apache.wink:wink-client:1.4',
+    'org.apache.wink:wink-common:1.4',
+    'org.apache.wink:wink-client-apache-httpclient:1.4',
+    "org.slf4j:slf4j-api:1.7.7",
+    "commons-codec:commons-codec:1.10"
+  jersey 'org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10',
+    'org.ow2.asm:asm-debug-all:5.2',
+    'org.glassfish.hk2:hk2-api:2.3.0-b10',
+    'org.glassfish.hk2:hk2-locator:2.3.0-b10',
+    'org.glassfish.hk2:hk2-utils:2.3.0-b10',
+    'org.javassist:javassist:3.21.0-GA',
+    'org.glassfish.hk2.external:javax.inject:2.3.0-b10',
+    'javax.xml.bind:jaxb-api:2.2.7',
+    'org.glassfish.jersey.core:jersey-client:2.12',
+    'org.glassfish.jersey.core:jersey-common:2.12',
+    'org.glassfish.jersey.containers:jersey-container-servlet-core:2.12',
+    'org.glassfish.jersey.containers:jersey-container-servlet:2.12',
+    'org.glassfish.jersey.bundles.repackaged:jersey-guava:2.12',
+    'org.glassfish.jersey.core:jersey-server:2.12',
+    'org.osgi:org.osgi.core:4.2.0',
+    'org.glassfish.hk2:osgi-resource-locator:1.0.1',
+    'javax.persistence:persistence-api:1.0.2',
+    'javax.validation:validation-api:1.1.0.Final'
+}
+
+task addJackson2x(type: Copy) {
+  from configurations.jackson2x
+  into "${buildDir}/autoFVT/publish/shared/resources/jackson2x/"
+}
+
+task addJersey(type: Copy) {
+  from configurations.jersey
+  into "${buildDir}/autoFVT/publish/shared/resources/jersey/"
+}
+
+task addJersey2(type: Copy) {
+  from configurations.jersey
+  into "${buildDir}/autoFVT/publish/shared/resources/jerseywithinjection/"  
+}
+
+
+addRequiredLibraries {
+  dependsOn addJackson2x
+  dependsOn addJersey
+  dependsOn addJersey2
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer

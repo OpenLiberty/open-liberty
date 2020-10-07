@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2019 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ bVersion=1.0
 Bundle-Name: Persistent Scheduled Executor
 Bundle-SymbolicName: com.ibm.ws.concurrent.persistent
 Bundle-Description: Persistent Scheduled Executor; version=${bVersion}
+
+jakartaeeMe: true
 
 WS-TraceGroup: persistentExecutor
     
@@ -44,6 +46,7 @@ Service-Component:\
 -dsannotations:\
   com.ibm.ws.concurrent.persistent.internal.ApplicationTracker,\
   com.ibm.ws.concurrent.persistent.internal.PersistentExecutorImpl,\
+  com.ibm.ws.concurrent.persistent.internal.PersistentExecutorIntrospector,\
   com.ibm.ws.concurrent.persistent.internal.PersistentExecutorMBeanImpl
 
 instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
@@ -57,6 +60,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.version;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.persistence;version=latest,\
 	com.ibm.ws.resource;version=latest,\

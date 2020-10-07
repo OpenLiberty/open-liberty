@@ -17,3 +17,5 @@ Bundle-Description: Common bundle for javax.jms-1.1 and javax.jms-2.0; version=$
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
+
+jakartaeeMe: true

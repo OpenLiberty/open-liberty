@@ -1,0 +1,23 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+
+clientcert::Employee::USER::user:SampleLdapIDSRealm/cn=LDAPUser1,o=ibm,c=us
+clientcert::Employee::GROUP::group:SampleLdapIDSRealm/cn=group1,o=ibm,c=us
+clientcert::Manager::USER::user:SampleLdapIDSRealm/cn=LDAPUser2,o=ibm,c=us
+clientcert::Manager::GROUP::group:SampleLdapIDSRealm/cn=group2,o=ibm,c=us
+clientcert::AllAuthenticated::SPECIAL::ALL_AUTHENTICATED_USERS
+
+
+
+
+

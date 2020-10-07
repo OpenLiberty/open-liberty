@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -47,7 +48,7 @@ public class XMLClientConfigParserTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+
     }
 
     @AfterClass
@@ -58,7 +59,8 @@ public class XMLClientConfigParserTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -71,7 +73,8 @@ public class XMLClientConfigParserTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName, null, true);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {

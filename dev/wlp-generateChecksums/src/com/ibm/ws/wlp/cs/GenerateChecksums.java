@@ -58,7 +58,8 @@ public class GenerateChecksums extends Task {
         try {
             // generate platform blst's checksums
             generateChecksums(platformDir, platformChecksums);
-            generateChecksums(featuresDir, featureChecksums);
+            // Only generated for platform
+            // generateChecksums(featuresDir, featureChecksums);
 
         } catch (IOException e) {
             throw new BuildException(e);
@@ -156,8 +157,7 @@ public class GenerateChecksums extends Task {
                 }
 
                 // If we have a null jar, throw a helpful exception rather than an NPE on the next line
-                if (jarFile == null)
-                {
+                if (jarFile == null) {
                     throw new IllegalArgumentException("Could not find a jar file for the bundle " + name);
                 }
 

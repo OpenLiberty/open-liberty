@@ -14,12 +14,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.net.URL;
 import java.security.PublicKey;
 
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,6 +46,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     private JWKSet jwkSet;
     private SSLSupport sslSupport;
     private boolean hnvEnabled;
+    private String signatureAlgorithm = "RS256";
     private String publickey;
     private String keyLocation;
 
@@ -66,7 +65,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @After
     public void tearDown() {
         System.out.println("Exiting test: " + testName.getMethodName());
-        outputMgr.resetStreams();
+        //        outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
 
@@ -80,7 +79,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     public void testGetPublicKeyFromJwk_relativeLocation() throws Exception {
         keyLocation = RELATIVE_JWK_LOCATION;
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
@@ -92,7 +91,7 @@ public class JwKRetrieverTest extends CommonTestClass {
         URL jwkURL = getClass().getResource(JWK_RESOURCE_NAME);
         keyLocation = jwkURL.getPath();
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
 
@@ -104,7 +103,7 @@ public class JwKRetrieverTest extends CommonTestClass {
         URL jwkURL = getClass().getResource(JWK_RESOURCE_NAME);
         keyLocation = jwkURL.toString();
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
@@ -115,7 +114,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     public void testGetPublicKeyFromJwk_relativeLocationPEM() throws Exception {
         keyLocation = RELATIVE_PEM_LOCATION;
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
 
@@ -126,7 +125,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     public void testGetPublicKeyFromJwk_publicKeyTextPEM() throws Exception {
         publickey = PemKeyUtilTest.PEM_KEY_TEXT;
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
@@ -137,7 +136,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     public void testGetPublicKeyFromJwk_publicKeyTextInvalid() throws Exception {
         publickey = "notAValidKeyText";
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
 
@@ -148,32 +147,31 @@ public class JwKRetrieverTest extends CommonTestClass {
     public void testGetPublicKeyFromJwk_publicKeyLocationInvalid() throws Exception {
         keyLocation = "badKeyLocation";
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
         assertNull("There must not be a public key.", publicKey);
     }
-    
-  
+
     // check that when useSystemPropertiesForHttpClientConnections is passed in, client gets created with correct option
     @Test
     public void testGetPublicKeyFromJwk_useSystemProperties() throws Exception {
         keyLocation = "badKeyLocation";
         String jwkEndpointUrl2 = "http://somewheretotallybogusurl";
         MockJwKRetriever jwkRetriever = new MockJwKRetriever(configId, sslConfigurationName, jwkEndpointUrl2,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);       
-        
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
         // a "real" retriever would through an io exception due to bogus url, but the mock one doesn't.   
-        
+
         assertTrue("getBuilder method of JwkRetriever was not invoked with useSystemProperties", jwkRetriever.jvmPropWasSet);
     }
 
     @Test
     public void testParseKeyText_nullArgs() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String keyText = null;
         String location = null;
@@ -187,7 +185,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_emptyKeyText() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String keyText = "";
         String location = null;
@@ -201,7 +199,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_noKtyEntryInText() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String keyText = "{\"entry1\":\"value1\"}";
         String location = null;
@@ -215,7 +213,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_keyTypeNotString() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String keyText = "{\"kty\":1}";
         String location = null;
@@ -229,7 +227,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_keyTypeUnknown() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "some unknown value";
         String keyText = "{\"kty\":\"" + kty + "\"}";
@@ -244,7 +242,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     //@Test
     public void testParseKeyText_keyTypeRSA() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "RSA";
         String keyText = "{\"kty\":\"" + kty + "\"}";
@@ -260,7 +258,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_keyTypeEC_signatureAlgorithmNull() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
@@ -275,7 +273,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testParseKeyText_keyTypeEC_signatureAlgorithmNotES() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
@@ -290,7 +288,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     //@Test
     public void testParseKeyText_keyTypeEC_signatureAlgorithmES() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, null, publickey, keyLocation);
 
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
@@ -306,7 +304,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     @Test
     public void testCreateJwkBasedOnKty_ktyEC_jsonMissingCrvEntry() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "EC";
 
@@ -321,7 +319,7 @@ public class JwKRetrieverTest extends CommonTestClass {
     //@Test
     public void testCreateJwkBasedOnKty_ktyEC_() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
-                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         String kty = "EC";
         String crv = "crvValue";

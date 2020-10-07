@@ -17,14 +17,14 @@ Bundle-SymbolicName: com.ibm.ws.com.fasterxml.jackson.2.9.1
 Bundle-Description: Provides Jackson Processor as a bundle
 
 -includeresource: \
-  @${repo;com.fasterxml.jackson.core:jackson-core;2.9.1},\
-  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.9.1},\
-  @${repo;com.fasterxml.jackson.core:jackson-databind;2.9.1},\
-  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.9.1},\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.9.1},\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.9.1},\
-  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.9.1},\
-  @${repo;org.yaml:snakeyaml;1.18}
+  @${repo;com.fasterxml.jackson.core:jackson-core;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.core:jackson-databind;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.9.1;EXACT},\
+  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.9.1;EXACT},\
+  @${repo;org.yaml:snakeyaml;1.18;EXACT}
   
 Export-Package: \
   com.fasterxml.jackson.*;version=2.9.1,\

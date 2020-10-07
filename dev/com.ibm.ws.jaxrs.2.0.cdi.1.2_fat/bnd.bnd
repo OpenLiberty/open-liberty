@@ -17,6 +17,7 @@ src: \
     test-applications/beanvalidation/src,\
     test-applications/complex/src,\
     test-applications/contextandclient/src,\
+    test-applications/contextandCDI/src,\
     test-applications/disable/src,\
     test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
@@ -26,7 +27,7 @@ src: \
 
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -28,9 +28,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -48,7 +48,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.ras.TraceNLS;
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
@@ -57,6 +56,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
+import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
@@ -90,6 +90,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_CLIENT_SECRET = "clientSecret";
     public static final String CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT = "redirectToRPHostAndPort";
     public static final String CFG_KEY_USER_IDENTIFIER = "userIdentifier";
+    public static final String CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
     public static final String CFG_KEY_GROUP_IDENTIFIER = "groupIdentifier";
     public static final String CFG_KEY_REALM_IDENTIFIER = "realmIdentifier";
     public static final String CFG_KEY_REALM_NAME = "realmName";
@@ -122,6 +123,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     public static final String CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT = "includeIdTokenInSubject";
     public static final String CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
+    public static final String CFG_KEY_ALLOW_CUSTOM_CACHE_KEY = "allowCustomCacheKey";
     public static final String CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE = "authContextClassReference";
     public static final String CFG_KEY_AUTH_FILTER_REF = "authFilterRef";
     public static final String CFG_KEY_JSON_WEB_KEY = "jsonWebKey";
@@ -154,6 +156,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_DISCOVERY_POLLING_RATE = "discoveryPollingRate";
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
+    public static final String CFG_KEY_REQUIRE_EXP_CLAIM = "requireExpClaimForIntrospection";
+    public static final String CFG_KEY_REQUIRE_IAT_CLAIM = "requireIatClaimForIntrospection";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -187,6 +191,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String clientSecret;
     private String redirectToRPHostAndPort;
     private String userIdentifier;
+    private String introspectionTokenTypeHint;
     private String groupIdentifier;
     private String realmIdentifier;
     private String realmName;
@@ -219,6 +224,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean hostNameVerificationEnabled;
     private boolean includeIdTokenInSubject;
     private boolean includeCustomCacheKeyInSubject;
+    private boolean allowCustomCacheKey;
     private String authenticationContextClassReferenceValue; // acr_values separated by space
     private String authFilterRef;
     private String authFilterId;
@@ -240,6 +246,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String[] resources;
     private boolean useAccessTokenAsIdToken;
     private List<String> forwardLoginParameter;
+    private boolean requireExpClaimForIntrospection = true;
+    private boolean requireIatClaimForIntrospection = true;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -265,6 +273,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private final CommonConfigUtils configUtils = new CommonConfigUtils();
     private final ConfigUtils oidcConfigUtils = new ConfigUtils(configAdminRef);
+    private final DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
@@ -389,6 +398,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
         }
         userIdentifier = trimIt((String) props.get(CFG_KEY_USER_IDENTIFIER));
+        introspectionTokenTypeHint = trimIt((String) props.get(CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT));
         groupIdentifier = trimIt((String) props.get(CFG_KEY_GROUP_IDENTIFIER));
         realmIdentifier = trimIt((String) props.get(CFG_KEY_REALM_IDENTIFIER));
         realmName = trimIt((String) props.get(CFG_KEY_REALM_NAME));
@@ -444,6 +454,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         hostNameVerificationEnabled = (Boolean) props.get(CFG_KEY_HOST_NAME_VERIFICATION_ENABLED);
         includeIdTokenInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT);
         includeCustomCacheKeyInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT);
+        allowCustomCacheKey = (Boolean) props.get(CFG_KEY_ALLOW_CUSTOM_CACHE_KEY);
         authenticationContextClassReferenceValue = trimIt((String) props.get(CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE));
         if (authenticationContextClassReferenceValue == null)
             authenticationContextClassReferenceValue = "";
@@ -502,6 +513,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         useAccessTokenAsIdToken = configUtils.getBooleanConfigAttribute(props, CFG_KEY_USE_ACCESS_TOKEN_AS_ID_TOKEN, useAccessTokenAsIdToken);
         tokenReuse = configUtils.getBooleanConfigAttribute(props, CFG_KEY_TOKEN_REUSE, tokenReuse);
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, id, CFG_KEY_FORWARD_LOGIN_PARAMETER);
+        requireExpClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_EXP_CLAIM, requireExpClaimForIntrospection);
+        requireIatClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_IAT_CLAIM, requireIatClaimForIntrospection);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -520,6 +533,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "clientId: " + clientId);
             Tr.debug(tc, "redirectToRPHostAndPort: " + redirectToRPHostAndPort);
             Tr.debug(tc, "userIdentifier: " + userIdentifier);
+            Tr.debug(tc, "introspectionTokenTypeHint: " + introspectionTokenTypeHint);
             Tr.debug(tc, "groupIdentifier: " + groupIdentifier);
             Tr.debug(tc, "realmIdentifier: " + realmIdentifier);
             Tr.debug(tc, "realmName: " + realmName);
@@ -691,7 +705,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      *
      */
     void adjustScopes() {
-        ArrayList<String> discoveryScopes = discoverOPConfig(discoveryjson.get(OPDISCOVERY_SCOPES));
+        ArrayList<String> discoveryScopes = discoveryUtils.discoverOPConfig(discoveryjson.get(OPDISCOVERY_SCOPES));
         if (isRPUsingDefault("scope") && !opHasRPDefault("scope", discoveryScopes)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "See if we need to adjusted the scopes. The original is : " + this.scope);
@@ -708,7 +722,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     void adjustTokenEndpointAuthMethod() {
-        ArrayList<String> discoveryTokenepAuthMethod = discoverOPConfig(discoveryjson.get(OPDISCOVERY_TOKEN_EP_AUTH));
+        ArrayList<String> discoveryTokenepAuthMethod = discoveryUtils.discoverOPConfig(discoveryjson.get(OPDISCOVERY_TOKEN_EP_AUTH));
         if (isRPUsingDefault("authMethod") && !opHasRPDefault("authMethod", discoveryTokenepAuthMethod)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "See if we need to adjusted the token endpoint authmethod. The original is : " + tokenEndpointAuthMethod);
@@ -726,7 +740,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     void adjustSignatureAlgorithm() {
 
-        ArrayList<String> discoverySigAlgorithm = discoverOPConfig(discoveryjson.get(OPDISCOVERY_IDTOKEN_SIGN_ALG));
+        ArrayList<String> discoverySigAlgorithm = discoveryUtils.discoverOPConfig(discoveryjson.get(OPDISCOVERY_IDTOKEN_SIGN_ALG));
         if (isRPUsingDefault("alg") && !opHasRPDefault("alg", discoverySigAlgorithm)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "See if we need to Adjust the signature algorithm. The original value is : " + signatureAlgorithm);
@@ -805,26 +819,13 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean opHasRPDefault(String key, ArrayList<String> opconfig) {
 
         if ("authMethod".equals(key)) {
-            return matches("client_secret_post", opconfig);
+            return discoveryUtils.matches("client_secret_post", opconfig);
         } else if ("alg".equals(key)) {
-            return matches("HS256", opconfig);
+            return discoveryUtils.matches("HS256", opconfig);
         } else if ("scope".equals(key)) {
-            return matches("openid", opconfig) && matches("profile", opconfig);
+            return discoveryUtils.matches("openid", opconfig) && discoveryUtils.matches("profile", opconfig);
         }
         return false;
-    }
-
-    private boolean matches(String rpdefault, ArrayList<String> opconfig) {
-        for (String str : opconfig) {
-            if (rpdefault.equals(str)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean matches(String rpdefault, String rpconfig) {
-        return rpconfig.equals(rpdefault);
     }
 
     /**
@@ -833,9 +834,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      */
     private boolean isRPUsingDefault(String key) {
         if ("authMethod".equals(key)) {
-            return matches("post", this.tokenEndpointAuthMethod);
+            return discoveryUtils.matches("post", this.tokenEndpointAuthMethod);
         } else if ("alg".equals(key)) {
-            return matches("HS256", this.signatureAlgorithm);
+            return discoveryUtils.matches("HS256", this.signatureAlgorithm);
         } else if ("scope".equals(key)) {
             return (matchesMultipleValues("openid profile", this.scope));
         }
@@ -915,11 +916,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     boolean discoverEndpointUrls(JSONObject json) {
 
         if (calculateDiscoveryDocumentHash(json)) {
-            this.authorizationEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
-            this.tokenEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
-            this.jwkEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_JWKS_EP_URL));
-            this.userInfoEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
-            this.issuerIdentifier = discoverOPConfigSingleValue(json.get(OPDISCOVERY_ISSUER));
+            this.authorizationEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
+            this.tokenEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
+            this.jwkEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_JWKS_EP_URL));
+            this.userInfoEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
+            this.issuerIdentifier = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_ISSUER));
             handleValidationEndpoint(json);
             if (invalidEndpoints() || invalidIssuer()) {
                 return false;
@@ -969,72 +970,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     /**
-     * @param object
-     * @return
-     */
-    private String discoverOPConfigSingleValue(Object object) {
-
-        String str = null;
-        if (object != null) {
-            return jsonValue(object).get(0);
-        }
-        return str;
-    }
-
-    /**
-     * @param object
-     */
-    private ArrayList<String> discoverOPConfig(Object obj) {
-        return jsonValue(obj);
-    }
-
-    /**
-     * @param obj
-     * @return
-     */
-    private ArrayList<String> jsonValue(Object obj) {
-        ArrayList<String> str = new ArrayList<String>();
-        int index = 0;
-        if (obj != null) {
-            if (obj instanceof String) {
-                str.add(index, (String) obj);
-                return str;
-            } else if (obj instanceof JSONArray) {
-                return parseJsonArray((JSONArray) obj);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param obj
-     * @return
-     */
-    private ArrayList<String> parseJsonArray(JSONArray jsonArrayOfStrings) {
-
-        //JSONArray jsonArrayOfStrings = null;
-        ArrayList<String> jsonString = new ArrayList<String>();
-        int index = 0;
-        //        try {
-        //            jsonArrayOfStrings = JSONArray.parse(obj.toString());
-        //        } catch (Exception e) {
-        //            if (tc.isDebugEnabled()) {
-        //                Tr.debug(tc, "Caught exception parsing JSON string [" + obj.toString() + "]: " + e.getMessage());
-        //            }
-        //        }
-        if (jsonArrayOfStrings != null) {
-            for (Object strObj : jsonArrayOfStrings) {
-                if (strObj instanceof String) {
-                    jsonString.add(index, (String) strObj);
-                    index++;
-                }
-            }
-        }
-
-        return jsonString;
-    }
-
-    /**
      * @return
      */
     private boolean invalidIssuer() {
@@ -1056,9 +991,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private void handleValidationEndpoint(JSONObject json) {
 
         if (isIntrospectionValidation()) {
-            this.validationEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_INTROSPECTION_EP_URL));
+            this.validationEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_INTROSPECTION_EP_URL));
         } else {
-            this.validationEndpointUrl = discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
+            this.validationEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_USERINFO_EP_URL));
         }
     }
 
@@ -1078,7 +1013,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }
@@ -1160,9 +1095,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             if (addBasicAuthHeader) {
                 client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
@@ -1537,7 +1472,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        return includeCustomCacheKeyInSubject;
+        if (!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+            return false;
+        }
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -1562,7 +1500,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                 config = configAdmin.getConfiguration(authFilterRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid authFilterRef configuration", e);
             }
             return null;
         }
@@ -1623,6 +1561,13 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public String getUserIdentifier() {
         // TODO Auto-generated method stub
         return userIdentifier;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        // TODO Auto-generated method stub
+        return introspectionTokenTypeHint;
     }
 
     /*
@@ -1912,6 +1857,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public HashMap<String, String> getJwkRequestParams() {
         return jwkRequestParamMap;
+    }
+
+    @Override
+    public boolean requireExpClaimForIntrospection() {
+        return requireExpClaimForIntrospection;
+    }
+
+    @Override
+    public boolean requireIatClaimForIntrospection() {
+        return requireIatClaimForIntrospection;
     }
 
 }

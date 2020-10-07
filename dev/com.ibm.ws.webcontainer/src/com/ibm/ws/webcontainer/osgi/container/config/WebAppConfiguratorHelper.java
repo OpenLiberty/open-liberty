@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,7 +222,9 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
      */
     public static int getVersionId(String version) throws IllegalStateException {
         int versionID = 0;
-        if ("4.0".equals(version)) {
+        if ("5.0".equals(version)) {
+            versionID = 50;
+        }else if ("4.0".equals(version)) {
             versionID = 40;
         }else if ("3.1".equals(version)) {
             versionID = 31;

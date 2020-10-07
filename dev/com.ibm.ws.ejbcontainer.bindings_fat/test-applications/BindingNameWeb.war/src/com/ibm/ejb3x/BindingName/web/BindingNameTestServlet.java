@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,13 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
 import com.ibm.ejb3x.BindingName.ejb.BindingNameIntf;
+import com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf;
 
 import componenttest.app.FATServlet;
 
@@ -27,29 +29,7 @@ import componenttest.app.FATServlet;
  * Tests that the default ejblocal binding is disabled when a custom binding is defined.
  *
  * Tests a number of combinations of jndi lookups for beans that have a number of combinations of
- * custom bindings defined with the BindingName element in ibm-ejb-jar-bnd.xml. Based on these rules:
- *
- * 1. You can lookup just ejblocal: local: and local:ejb to get namespace contexts and then exclude them from the lookup.
- *
- * 2. If BindingName does not have a namespace written in, it will be bound to ejblocal: only, local: and local:ejb
- * are for BindingName element normally
- *
- * 3. If binding-name="ejblocal:<name> nothing changes (with regards to local beans)
- *
- * 4. If binding-name="local:<name> it will only be bound to local: (even though these are 3X beans)
- * - also, the binding will not have ejb stuck in front, the lookup is local:<name> not local:ejb/<name>
- * - or with local: context it is <name> not ejb/<name>
- *
- * 5. If binding-name="local:ejb/<name> it will be bound in local: and local:ejb
- * - the local: lookup will not have double ejb stuck in front
- * - local:ejb/<name>
- * - with local: context: ejb/<name>
- * - with local:ejb context: <name>
- *
- * 6. If you do binding-name="<namespace>:<namespace>:<name> it will ignore up to the innermost namespace.
- * - binding-name="ejblocal:local:ejb/com/ibm/ejb3x/ejbinwar/webejb3x/Stateless2xLocalHome" would use the local:ejb rule above
- *
- * 7. You can do a lookup and chain as many ejblocal: and local: in front as you want.
+ * custom bindings defined with the binding-name element in ibm-ejb-jar-bnd.xml.
  *
  */
 @SuppressWarnings("serial")
@@ -63,9 +43,25 @@ public class BindingNameTestServlet extends FATServlet {
     @Test
     public void testBindingNameDefaultDisabled() {
         try {
-            Object bean = new InitialContext().lookup("ejblocal:BindingNameTestApp/BindingNameEJB.jar/BindingName1#com.ibm.ejb3x.BindingName.ejb.BindingNameHome");
+            Object bean = new InitialContext().lookup("ejblocal:BindingNameTestApp/BindingNameEJB.jar/BindingName1#com.ibm.ejb3x.BindingName.ejb.BindingNameIntf");
             if (bean != null) {
                 fail("EJBLocal default bindings lookup should not have worked because we have custom bindings");
+            }
+        } catch (NamingException e) {
+            // expected to not work
+        }
+    }
+
+    /*
+     * Tests that the remote default binding should not have been bound because we
+     * have custom bindings.
+     */
+    @Test
+    public void testBindingNameRemoteDefaultDisabled() {
+        try {
+            Object bean = new InitialContext().lookup("ejb/BindingNameTestApp/BindingNameEJB.jar/BindingName5#com.ibm.ejb3x.BindingName.ejb.RemoteBindingNameIntf");
+            if (bean != null) {
+                fail("Remote default bindings lookup should not have worked because we have custom bindings");
             }
         } catch (NamingException e) {
             // expected to not work
@@ -76,255 +72,232 @@ public class BindingNameTestServlet extends FATServlet {
      * Tests a bunch of different jndi lookup combinations against a bean
      * Expecting the lookup to pass or fail accordingly
      */
-    private void testLookupCombinations(String BindingName, int beanNum) throws Exception {
+    private void testLookupCombinations(boolean remote, String BindingName, int beanNum) throws Exception {
         System.out.println("Testing " + BindingName);
 
         // default context lookups -------------------------------------------------------------
         Context context = new InitialContext();
         String contextString = "Initial";
 
-        // ejb/BindingNameIntf# should always fail
+        // ejb/BindingNameIntf# should work for
+        // binding-name="ejb/BindingNameIntf3" (remote)
+        // binding-name="ejb/BindingNameIntf7" (hybrid)
         String lookupName = "ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,7");
 
-        // BindingNameIntf# should always fail
+        // BindingNameIntf# should work for
+        // binding-name="BindingNameIntf4" (remote)
+        // binding-name="BindingNameIntf8" (hybrid)
         lookupName = "BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4,8");
 
         // ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // ejblocal:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
-        // local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local:BindingNameIntf# should never work
         lookupName = "local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local:ejb/BindingNameIntf# should never work
         lookupName = "local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal:local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // ejblocal:local:BindingNameIntf# should never work
         lookupName = "ejblocal:local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal:ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // ejblocal:ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal:local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal:local:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:local:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // local:ejb/ejblocal:BindingNameIntf# should never work
         lookupName = "local:ejb/ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // ejblocal context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("ejblocal:");
         contextString = "ejblocal:";
 
         // ejblocal: + ejb/BindingNameIntf should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // ejblocal: + BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal: + ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal: + ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // ejblocal: + ejblocal:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
-        // ejblocal: + local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // ejblocal: + local:BindingNameIntf# should never work
         lookupName = "local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal: + local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // ejblocal: + local:ejb/BindingNameIntf# should never work
         lookupName = "local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal: + ejblocal:local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // ejblocal: + ejblocal:local:BindingNameIntf# should never work
         lookupName = "ejblocal:local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal: + ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // ejblocal: + ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // ejblocal: + ejblocal:ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // ejblocal: + ejblocal:ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // ejblocal: + local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal: + ejblocal:local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // ejblocal: + ejblocal:local:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:local:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // ejblocal: + local:ejb/ejblocal:BindingNameIntf# should never work
         lookupName = "local:ejb/ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("local:");
         contextString = "local:";
 
-        // local: + ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local: + ejb/BindingNameIntf# should never work
         lookupName = "ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local: + BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local: + BindingNameIntf# should never work
         lookupName = "BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local: + ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local: + ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // local: + ejblocal:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
-        // local: + local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local: + local:BindingNameIntf# should never work
         lookupName = "local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local: + local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local: + local:ejb/BindingNameIntf# should never work
         lookupName = "local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local: + ejblocal:local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local: + ejblocal:local:BindingNameIntf# should never work
         lookupName = "ejblocal:local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local: + ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local: + ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local: + ejblocal:ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local: + ejblocal:ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local: + local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local: + ejblocal:local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local: + ejblocal:local:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:local:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // local: + local:ejb/ejblocal:BindingNameIntf# should never work
         lookupName = "local:ejb/ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local:ejb context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("local:ejb");
@@ -332,81 +305,71 @@ public class BindingNameTestServlet extends FATServlet {
 
         // local:ejb/ + ejb/BindingNameIntf# should never work
         lookupName = "ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/ + BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local:ejb/ + BindingNameIntf# should never work
         lookupName = "BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local:ejb/ + ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local:ejb/ + ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // local:ejb/ + ejblocal:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
-        // local:ejb/ + local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local:ejb/ + local:BindingNameIntf# should never work
         lookupName = "local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/ + local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local:ejb/ + local:ejb/BindingNameIntf# should never work
         lookupName = "local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/ + ejblocal:local:BindingNameIntf# should work for
-        // binding-name="ejblocal:local:BindingNameIntf4"
+        // local:ejb/ + ejblocal:local:BindingNameIntf# should never work
         lookupName = "ejblocal:local:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "4");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/ + ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local:ejb/ + ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
-        // local:ejb/ + ejblocal:ejblocal:local:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
+        // local:ejb/ + ejblocal:ejblocal:local:ejb/BindingNameIntf# should never work
         lookupName = "ejblocal:ejblocal:local:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "3,5");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
 
         // local:ejb/ + local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local:ejb/ + ejblocal:local:ejblocal:BindingNameIntf# should work for
-        // binding-name="ejblocal:BindingNameIntf7"
+        // binding-name="ejblocal:BindingNameIntf2" (local)
+        // binding-name="ejblocal:BindingNameIntf6" (hybrid)
         lookupName = "ejblocal:local:ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "7");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "2,6");
 
         // local:ejb/ + ejblocal:local:ejblocal:ejb/BindingNameIntf# should work for
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
+        // binding-name="ejblocal:ejb/BindingNameIntf1" (local)
+        // binding-name="ejblocal:ejb/BindingNameIntf5" (hybrid)
         lookupName = "ejblocal:local:ejblocal:ejb/BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,2,6");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "1,5");
 
         // local:ejb/ + local:ejb/ejblocal:BindingNameIntf# should never work
         lookupName = "local:ejb/ejblocal:BindingNameIntf" + beanNum;
-        testLookupCombinationsHelper(context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(remote, context, contextString, lookupName, BindingName, Integer.toString(beanNum), "none");
     }
 
     /**
@@ -420,7 +383,16 @@ public class BindingNameTestServlet extends FATServlet {
      * @param beanNum - which bean we are testing against
      * @param passingCases - list of beans this lookupName should work on
      */
-    private void testLookupCombinationsHelper(Context context, String contextString, String lookupName, String BindingName, String beanNum, String passingCases) {
+    private void testLookupCombinationsHelper(boolean remote, Context context, String contextString, String lookupName, String SimpleBindingName, String beanNum,
+                                              String passingCases) {
+        if (remote) {
+            testLookupCombinationsHelperRemote(context, contextString, lookupName, SimpleBindingName, beanNum, passingCases);
+        } else {
+            testLookupCombinationsHelperLocal(context, contextString, lookupName, SimpleBindingName, beanNum, passingCases);
+        }
+    }
+
+    private void testLookupCombinationsHelperLocal(Context context, String contextString, String lookupName, String BindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + BindingName);
             BindingNameIntf beanHome = (BindingNameIntf) context.lookup(lookupName);
@@ -433,6 +405,7 @@ public class BindingNameTestServlet extends FATServlet {
                         fail("bean.foo() for lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace(System.out);
                     fail("bean.foo() for lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
                 }
             } else {
@@ -442,6 +415,55 @@ public class BindingNameTestServlet extends FATServlet {
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
+                fail("lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
+        } catch (ClassCastException cce) {
+            // For the hybrid beans they might have a remote bound in the lookup string, so we'll get a class cast
+            // since we try all the lookup combinations, just ignore it.
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While performing lookup " + lookupName + " for " + BindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
+        }
+    }
+
+    private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String BindingName, String beanNum, String passingCases) {
+        try {
+            System.out.println("Testing " + lookupName + " with context " + contextString + " against " + BindingName);
+            Object lookup = context.lookup(lookupName);
+            RemoteBindingNameIntf beanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(lookup, RemoteBindingNameIntf.class);
+            if (passingCases.contains(beanNum)) {
+                if (context.lookup(lookupName) == null) {
+                    fail("lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
+                }
+                try {
+                    if (beanHome.foo() == null) {
+                        fail("bean.foo() for lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace(System.out);
+                    fail("bean.foo() for lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
+                }
+            } else {
+                if (beanHome != null) {
+                    fail("lookup " + lookupName + " should have failed for " + BindingName + " and context " + contextString);
+                }
+            }
+        } catch (ClassCastException cce) {
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While narrowing lookup " + lookupName + " for " + BindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
+        } catch (NamingException e) {
+            if (passingCases.contains(beanNum)) {
+                e.printStackTrace(System.out);
                 fail("lookup " + lookupName + " should have worked for " + BindingName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
@@ -450,45 +472,51 @@ public class BindingNameTestServlet extends FATServlet {
     }
 
     @Test
-    public void testBindingNameEJBLocal() throws Exception {
-        // binding-name="ejblocal:ejblocal:ejb/BindingNameIntf1"
-        testLookupCombinations("binding-name=\"ejblocal:ejblocal:ejb/BindingNameIntf1\"", 1);
+    public void testLocalBindingNameStartsWithEJB() throws Exception {
+        // binding-name="ejblocal:ejb/BindingNameIntf1"
+        testLookupCombinations(false, "binding-name=\"ejblocal:ejb/BindingNameIntf1\"", 1);
     }
 
     @Test
-    public void testBindingNameEJB() throws Exception {
-        // binding-name="ejblocal:ejb/BindingNameIntf2"
-        testLookupCombinations("binding-name=\"ejblocal:ejb/BindingNameIntf2\"", 2);
+    public void testLocalBindingNamePlain() throws Exception {
+        // binding-name="ejblocal:BindingNameIntf2"
+        testLookupCombinations(false, "binding-name=\"ejblocal:BindingNameIntf2\"", 2);
     }
 
     @Test
-    public void testBindingNameLocalEJB() throws Exception {
-        // binding-name="ejblocal:local:ejb/BindingNameIntf3"
-        testLookupCombinations("binding-name=\"ejblocal:local:ejb/BindingNameIntf3\"", 3);
+    public void testRemoteBindingNameStartsWithEJB() throws Exception {
+        // binding-name="ejb/BindingNameIntf3"
+        testLookupCombinations(true, "binding-name=\"ejb/BindingNameIntf3\"", 3);
     }
 
     @Test
-    public void testBindingNameLocal() throws Exception {
-        // binding-name="ejblocal:local:BindingNameIntf4"
-        testLookupCombinations("binding-name=\"ejblocal:local:BindingNameIntf4\"", 4);
+    public void testRemoteBindingNamePlain() throws Exception {
+        // binding-name="BindingNameIntf4"
+        testLookupCombinations(true, "binding-name=\"BindingNameIntf4\"", 4);
     }
 
     @Test
-    public void testBindingNameEJBLocalLocalEJB() throws Exception {
-        // binding-name="ejblocal:ejblocal:local:ejb/BindingNameIntf5"
-        testLookupCombinations("binding-name=\"ejblocal:ejblocal:local:ejb/BindingNameIntf5\"", 5);
+    public void testHybridLocalBindingNameStartsWithEJB() throws Exception {
+        // binding-name="ejblocal:ejb/BindingNameIntf5"
+        testLookupCombinations(false, "binding-name=\"ejblocal:ejb/BindingNameIntf5\"", 5);
     }
 
     @Test
-    public void testBindingNameEJBLocalLocalEJBLocal() throws Exception {
-        // binding-name="ejblocal:local:ejblocal:ejb/BindingNameIntf6"
-        testLookupCombinations("binding-name=\"ejblocal:local:ejblocal:ejb/BindingNameIntf6\"", 6);
+    public void testHybridLocalBindingNamePlain() throws Exception {
+        // binding-name="ejblocal:BindingNameIntf6"
+        testLookupCombinations(false, "binding-name=\"ejblocal:BindingNameIntf6\"", 6);
     }
 
     @Test
-    public void testBindingNamePlain() throws Exception {
-        // binding-name="ejblocal:BindingNameIntf7"
-        testLookupCombinations("binding-name=\"ejblocal:BindingNameIntf7\"", 7);
+    public void testHybridRemoteBindingNameStartsWithEJB() throws Exception {
+        // binding-name="ejb/BindingNameIntf7"
+        testLookupCombinations(true, "binding-name=\"ejb/BindingNameIntf7\"", 7);
+    }
+
+    @Test
+    public void testHybridRemoteBindingNamePlain() throws Exception {
+        // binding-name="BindingNameIntf8"
+        testLookupCombinations(true, "binding-name=\"BindingNameIntf8\"", 8);
     }
 
 }

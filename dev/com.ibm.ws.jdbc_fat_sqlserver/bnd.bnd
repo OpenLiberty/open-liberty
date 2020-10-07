@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -21,14 +19,17 @@ src: \
 fat.project: true
 com.ibm.websphere.tx.propagateXAResourceTransactionTimeout: true
 
+# Uncomment to use remote docker host to simulate continuous build behavior.
+# fat.test.use.remote.docker: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	org.testcontainers:testcontainers;version=1.12.3,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:mssqlserver;version=1.12.3,\
+	org.testcontainers:testcontainers;version=1.14.0,\
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:mssqlserver;version=1.14.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7,\
-	com.microsoft.sqlserver:mssql-jdbc;version=7.4.1.jre8,\
+	com.microsoft.sqlserver:mssql-jdbc;version=8.2.1.jre8,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest

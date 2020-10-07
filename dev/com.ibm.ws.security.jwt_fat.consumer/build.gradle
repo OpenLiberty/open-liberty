@@ -1,0 +1,133 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/* apply from: '../gradle/subprojects/fat.gradle' */
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
+	project(':com.ibm.ws.org.jose4j'),
+  	  'commons-logging:commons-logging:1.1.3',
+      'org.apache.httpcomponents:httpclient:4.5.4',
+      'org.apache.httpcomponents:httpcore:4.4.9',
+      'net.sourceforge.htmlunit:htmlunit:2.27',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
+      'net.sourceforge.cssparser:cssparser:0.9.23',
+      'org.apache.commons:commons-lang3:3.8',
+      'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+      'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+      'commons-codec:commons-codec:1.6',
+      'xml-apis:xml-apis:1.4.01',
+      'xerces:xercesImpl:2.11.0',
+      'org.slf4j:slf4j-api:1.7.7'
+      
+}
+
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-applications"
+
+task jwtconsumerclient(type: War, dependsOn: classes) {
+  def appName = "jwtconsumerclient"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/jaxrs/fat/${appName}/*.class"    
+    into "WEB-INF/classes"
+  }
+  /* copy needed files from jwt common fat into our app */
+  from(zipTree("../com.ibm.ws.security.fat.common.jwt/build/libs/com.ibm.ws.security.fat.common.jwt.jar")) {
+    include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class', 'com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class'
+    into "WEB-INF/classes"
+  }  
+  /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+    into "WEB-INF/classes"
+  }
+  /* end of jose4j copy */
+}
+
+assemble {
+  dependsOn \
+    jwtconsumerclient
+}
+
+autoFVT.doLast {
+
+  def servers = [
+        'com.ibm.ws.security.jwt_fat.consumer',
+  ]
+
+  servers.each { server ->
+
+    /* copy test marker (small test app that marks the start/end of each test case in the server side logs */
+    copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from new File(appBuildDir, 'jwtconsumerclient.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
+    
+   	/* Copy all shared key/trust stores from the common security FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    /* Copy all shared key/trust stores from the common security JWT FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    
+  	/* Copy all shared key/trust stores from this project
+  		overwrites shared jks files from the common security FAT 
+  	*/
+    copy { 
+     from ('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  	/* Copy all server specific key/trust stores - overwrites shared
+  		key/trust stores from either the common security FAT, or this
+  		project
+  	 */
+    copy { 
+     from new File(autoFvtDir, 'publish/servers/' + server + '/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    
+    /* copy the all signature alg config file from security_fat.common */
+    copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+    
+        copy { 
+    from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+  }
+  
+
+
+
+  
+}

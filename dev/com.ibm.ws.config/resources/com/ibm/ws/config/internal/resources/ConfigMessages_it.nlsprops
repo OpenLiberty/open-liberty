@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -467,8 +467,12 @@ warning.supplied.config.not.valid.explanation= Un attributo di configurazione co
 warning.supplied.config.not.valid.useraction=Aggiornare la configurazione del server per rimuovere il valore dell'attributo non corretto.
 
 variables.in.id.not.supported=CWWKG0104W: L''attributo ID con valore {1} per l''elemento di configurazione {0} deve avere un valore fisso. Le variabili nell''attributo ID non verranno sostituite.
-variables.in.id.not.supported.explanation= I valori variabile non sono consentiti negli attributi ID. Tutte le variabili negli attributi ID verranno trattate come stringhe letterali.  
-variables.in.id.not.supported.useraction= Rimuovere la variabile dal valore dell'attributo ID.
+variables.in.id.not.supported.explanation=I valori variabile non sono consentiti negli attributi ID. Tutte le variabili negli attributi ID verranno trattate come stringhe letterali.  
+variables.in.id.not.supported.useraction=Rimuovere la variabile dal valore dell'attributo ID.
+
+error.root.must.be.server=CWWKG0105E: Il documento di configurazione {0} deve iniziare con l''elemento [{1}].
+error.root.must.be.server.explanation=La configurazione deve essere contenuta in un elemento server o in un elemento client. 
+error.root.must.be.server.useraction=Aggiungere un elemento server o client come root del file di configurazione. 
 
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

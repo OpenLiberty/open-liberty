@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,7 +115,7 @@ public class TemplateRetriever {
                 factory = context.getSocketFactory();
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to get SSL socket factory for connection to OP server, exception [" + e.getMessage() + "]");
+                    Tr.debug(tc, "Failed to get SSL socket factory for connection to OP server, exception [" + e + "]");
                 }
                 throw new IOException(e.getMessage(), e);
             }

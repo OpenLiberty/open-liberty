@@ -15,10 +15,7 @@ Bundle-Name: JPA 2.2 Container Runtime
 Bundle-SymbolicName: com.ibm.ws.jpa.container.v22
 Bundle-Description: JPA 2.2 Container Runtime; version=${bVersion}
 
-javac.target: 1.8
-javac.source: 1.8
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"  
-
+jakartaeeMe: true
 WS-TraceGroup: JPA
 
 Private-Package: \

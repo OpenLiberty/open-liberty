@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.WSLoginFailedException;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
@@ -39,30 +38,21 @@ public class JwtSSOTokenHelper {
     public static final String JSON_WEB_TOKEN_SSO_PROXY = "JwtSSOTokenProxy";
     protected final static AtomicServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyRef = new AtomicServiceReference<JwtSSOTokenProxy>(JSON_WEB_TOKEN_SSO_PROXY);
 
-    static private boolean isJavaVersionAtLeast18 = (JavaInfo.majorVersion() >= 8);
-
     @Reference(service = JwtSSOTokenProxy.class, name = JSON_WEB_TOKEN_SSO_PROXY, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
-        if (isJavaVersionAtLeast18) {
-            jwtSSOTokenProxyRef.setReference(ref);
-        }
+        jwtSSOTokenProxyRef.setReference(ref);
     }
 
     protected void unsetJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
-        if (isJavaVersionAtLeast18) {
-            jwtSSOTokenProxyRef.unsetReference(ref);
-        }
-
+        jwtSSOTokenProxyRef.unsetReference(ref);
     }
 
     @org.osgi.service.component.annotations.Activate
     protected void activate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18) {
-            jwtSSOTokenProxyRef.activate(cc);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jwt SSO token helper service is activated");
-            }
+        jwtSSOTokenProxyRef.activate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Jwt SSO token helper service is activated");
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Jwt SSO token helper service is activated");
@@ -70,15 +60,14 @@ public class JwtSSOTokenHelper {
     }
 
     @org.osgi.service.component.annotations.Modified
-    protected void modified(Map<String, Object> props) {}
+    protected void modified(Map<String, Object> props) {
+    }
 
     @org.osgi.service.component.annotations.Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18) {
-            jwtSSOTokenProxyRef.deactivate(cc);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jwt SSO token helper service is deactivated");
-            }
+        jwtSSOTokenProxyRef.deactivate(cc);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Jwt SSO token helper service is deactivated");
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Jwt SSO token helper service is activated");
@@ -184,6 +173,14 @@ public class JwtSSOTokenHelper {
             return jwtSSOTokenProxyRef.getService().getValidTimeInMinutes();
         }
         return 0;
+
+    }
+
+    public static boolean isDisableJwtCookie() {
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().isDisableJwtCookie();
+        }
+        return false;
 
     }
 }

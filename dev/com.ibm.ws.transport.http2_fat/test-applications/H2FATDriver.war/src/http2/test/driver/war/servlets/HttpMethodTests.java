@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
+import com.ibm.ws.http.channel.h2internal.frames.FramePing;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
@@ -48,6 +49,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
+        // add an expected PING frame
+        byte[] pingData = "aaaaaaaa".getBytes();
+        FramePing pingFrame = new FramePing(0, pingData, false);
+        pingFrame.setAckFlag();
+        h2Client.addExpectedFrame(pingFrame);
+
         setupDefaultPreface(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -70,6 +77,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame4);
 
+        // So that the test doesn't end prematurely when the headers are received, send a ping and
+        // expect a response.
+        // send over a PING frame and expect a response
+        pingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(pingFrame);
+
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
@@ -86,6 +99,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
 
         FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
         h2Client.addExpectedFrame(errorFrame);
+
+        // add an expected PING frame
+        byte[] pingData = "aaaaaaaa".getBytes();
+        FramePing pingFrame = new FramePing(0, pingData, false);
+        pingFrame.setAckFlag();
+        h2Client.addExpectedFrame(pingFrame);
 
         setupDefaultPreface(h2Client);
 
@@ -108,6 +127,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame2);
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame4);
+
+        // So that the test doesn't end prematurely when the reset is received, send a ping and
+        // expect a response.
+        // send over a PING frame and expect a response
+        pingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(pingFrame);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);

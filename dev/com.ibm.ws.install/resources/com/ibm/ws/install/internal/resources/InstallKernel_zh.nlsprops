@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=\u4ee5\u4e0b URL \u65e0\u6548\uff1a{0}\u3002\u4ec5\u6
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=\u4e0d\u652f\u6301\u4ee5\u4e0b\u5b58\u50a8\u5e93\u7684 URL \u534f\u8bae\uff1a{0}\u3002\u652f\u6301\u7684\u534f\u8bae\u4e3a HTTP\u3001HTTPS \u548c\u6587\u4ef6\u3002\u786e\u4fdd\u6b63\u786e\u6307\u5b9a\u4e86 URL\u3002
 MSG_VALIDATION_INVALID_HOST=\u4ee5\u4e0b\u4ee3\u7406\u670d\u52a1\u5668\u4e3b\u673a\u65e0\u6548\uff1a{0}\u3002\u6307\u5b9a\u6709\u6548 HTTP \u4ee3\u7406\u670d\u52a1\u5668\u4e3b\u673a\u540d\u3002\u4e0d\u9700\u8981 http:// \u524d\u7f00\u3002
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=\u627e\u4e0d\u5230\u529f\u80fd\u90e8\u4ef6\u3002
+
 VALIDATION_INVALID_VALUE=\u4e0d\u53d7\u652f\u6301\u7684\u503c
 VALIDATION_INVALID_KEY=\u4e0d\u53d7\u652f\u6301\u7684\u5c5e\u6027\u540d\u79f0
 VALIDATION_EMPTY_KEY=\u7a7a\u5c5e\u6027\u540d\u79f0
@@ -837,6 +840,38 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=Open Liberty \u4e0d\u652f\u6
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=\u8bf7\u5bf9\u517c\u5bb9\u529f\u80fd\u90e8\u4ef6\u8fd0\u884c featureUtility\u3002
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: \u5728 server.xml \u4e2d\u6307\u5b9a\u4e86\u4e0b\u5217\u7528\u6237\u529f\u80fd\u90e8\u4ef6\uff0c\u5c06\u4e0d\u4f1a\u5b89\u88c5\u8fd9\u4e9b\u529f\u80fd\u90e8\u4ef6\uff1a{0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: {0} \u529f\u80fd\u90e8\u4ef6\u4e0e {1} \u529f\u80fd\u90e8\u4ef6\u76f8\u4e92\u4e0d\u517c\u5bb9\uff0c\u4e0d\u80fd\u540c\u65f6\u5b89\u88c5\u3002
+ERROR_INCOMPATIBLE_FEATURES.explanation=\u8fd9\u4e9b\u529f\u80fd\u90e8\u4ef6\u4e0d\u80fd\u540c\u65f6\u5b89\u88c5\u3002
+ERROR_INCOMPATIBLE_FEATURES.useraction=\u8bf7\u79fb\u9664\u5176\u4e2d\u4e00\u4e2a\u529f\u80fd\u90e8\u4ef6\u5e76\u91cd\u8bd5\u3002
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: {0} \u5355\u6001\u529f\u80fd\u90e8\u4ef6\u4e0e {1} \u5355\u6001\u529f\u80fd\u90e8\u4ef6\u76f8\u4e92\u4e0d\u517c\u5bb9\uff0c\u4e0d\u80fd\u540c\u65f6\u5b89\u88c5\u3002
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=\u8fd9\u4e9b\u529f\u80fd\u90e8\u4ef6\u4e0d\u80fd\u540c\u65f6\u5b89\u88c5\u3002
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=\u8bf7\u79fb\u9664\u5176\u4e2d\u4e00\u4e2a\u529f\u80fd\u90e8\u4ef6\u5e76\u91cd\u8bd5\u3002
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: \u65e0\u6cd5\u5728 {1} \u6587\u4ef6\u8def\u5f84\u4e2d\u89e3\u538b\u6765\u81ea\u5b58\u50a8\u5e93\u7684\u5e26\u6709 {0} Maven \u5750\u6807\u7684\u8bb8\u53ef\u8bc1\u5305\u3002
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=\u65e0\u6cd5\u5c06\u8bb8\u53ef\u8bc1\u5305\u89e3\u538b\u81f3 wlp \u5b89\u88c5\u3002
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=\u786e\u4fdd\u60a8\u5177\u6709\u8bfb\u53d6\u5b58\u50a8\u5e93\u7684\u76f8\u5e94\u8bb8\u53ef\u6743\u3002
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: \u65e0\u6cd5\u5904\u7406 {0} \u6587\u4ef6\u4f4d\u7f6e\u4e2d\u7684\u8bb8\u53ef\u8bc1\u6587\u4ef6\u3002
+ERROR_FAILED_TO_READ_LICENSE.explanation=\u65e0\u6cd5\u5904\u7406\u8bb8\u53ef\u8bc1\u6587\u4ef6\u4ee5\u83b7\u53d6\u8bb8\u53ef\u8bc1\u63a5\u53d7\u4fe1\u606f\u3002
+ERROR_FAILED_TO_READ_LICENSE.useraction=\u786e\u4fdd\u60a8\u5177\u6709\u8bfb\u53d6\u8bb8\u53ef\u8bc1\u6587\u4ef6\u7684\u76f8\u5e94\u8bb8\u53ef\u6743\u3002
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: \u5728 {0} \u6587\u4ef6\u4f4d\u7f6e\u4e2d\u627e\u4e0d\u5230 Websphere JSON \u6587\u4ef6\u3002
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=\u627e\u4e0d\u5230 Websphere JSON \u6587\u4ef6\u3002
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=\u786e\u4fdd\u60a8\u5177\u6709\u7f51\u7edc\u8fde\u63a5\u53ca\u9488\u5bf9\u6240\u914d\u7f6e\u672c\u5730 Maven \u76ee\u5f55\u7684\u5199\u5165\u8bb8\u53ef\u6743\u3002
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: \u5728\u672c\u5730\u6216\u6240\u914d\u7f6e Maven \u5b58\u50a8\u5e93\u4e0a\u627e\u4e0d\u5230\u4ee5\u4e0b\u529f\u80fd\u90e8\u4ef6 JSON \u6587\u4ef6\uff1a{0}\u3002
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=\u5728\u672c\u5730\u6216\u6240\u914d\u7f6e Maven \u5b58\u50a8\u5e93\u4e0a\u627e\u4e0d\u5230 JSON \u6587\u4ef6\u3002
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=\u786e\u4fdd\u60a8\u5177\u6709\u7f51\u7edc\u8fde\u63a5\u4e14 JSON \u6587\u4ef6\u5b58\u5728\u4e8e\u6240\u914d\u7f6e Maven \u5b58\u50a8\u5e93\u4e2d\u3002
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: {0} \u529f\u80fd\u90e8\u4ef6\u65e0\u6cd5\u5b89\u88c5\u81f3 {1} {2} \u7248\uff0c\u56e0\u4e3a\u5b83\u4ec5\u9002\u7528\u4e8e {3} \u7248\u3002
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=\u6b64\u529f\u80fd\u90e8\u4ef6\u4e0d\u9002\u7528\u4e8e\u6240\u5b89\u88c5\u4ea7\u54c1\u7684\u6b64\u7248\u672c\u3002
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=\u8bf7\u5b89\u88c5\u6b64\u4ea7\u54c1\u7248\u672c\u652f\u6301\u7684\u529f\u80fd\u90e8\u4ef6\u3002
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Beta \u53d1\u884c\u7248\u4e0d\u652f\u6301\u5b89\u88c5\u6216\u66f4\u65b0\u529f\u80fd\u90e8\u4ef6\u3002
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=\u6240\u5b89\u88c5\u7684\u4ea7\u54c1\u4e0d\u652f\u6301\u5b89\u88c5\u6216\u66f4\u65b0\u529f\u80fd\u90e8\u4ef6\u3002
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: \u5df2\u6210\u529f\u4e0b\u8f7d\u8be5\u529f\u80fd\u90e8\u4ef6\u3002
 TOOL_DOWNLOAD_FEATURE_OK.explanation=\u5df2\u4e0b\u8f7d\u8be5\u529f\u80fd\u90e8\u4ef6\u3002

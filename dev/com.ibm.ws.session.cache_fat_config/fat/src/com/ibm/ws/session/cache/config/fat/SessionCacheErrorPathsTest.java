@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        if (FATSuite.isMulticastDisabled()) {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
             Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }
@@ -197,7 +198,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
-        String invalidHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/servers/sessionCacheServer/server.xml").getAbsolutePath();
+        String invalidHazelcastURI = "file:///" + new java.io.File(server.getUserDir() + "/servers/sessionCacheServer/server.xml").getAbsolutePath();
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
         server.updateServerConfiguration(config);
@@ -208,7 +209,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
+            String validHazelcastURI = "file:///" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
             config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
@@ -402,23 +403,23 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("  is statistics enabled? true"));
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  average put time:    \\d+\\.\\d+ms")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  average put time:    \\d+\\.\\d+ms")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache gets:      \\d+")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache gets:      \\d+")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache hit percentage:  \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache miss percentage: \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);
@@ -468,14 +469,14 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
 
-            assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  average put time:.*")));
+            assertFalse(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  average put time:.*")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);

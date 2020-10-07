@@ -12,11 +12,11 @@
 package com.ibm.ejb3x.HomeBindingName.ejb;
 
 /**
- * Home interface for Enterprise Bean: SimpleBindingName
+ * Home interface for Enterprise Bean: HomeBindingName
  */
 public interface LocalHomeBindingNameHome extends javax.ejb.EJBLocalHome {
     /**
-     * Creates a default instance of Session Bean: SimpleBindingName
+     * Creates a default instance of Session Bean: HomeBindingName
      */
     public LocalHomeBindingName create() throws javax.ejb.CreateException;
 }

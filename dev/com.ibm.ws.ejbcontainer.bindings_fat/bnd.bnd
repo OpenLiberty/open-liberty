@@ -13,8 +13,19 @@ bVersion=1.0
 
 src: \
 	fat/src, \
+	test-applications/AmbiguousEJB.jar/src, \
+	test-applications/AmbiguousWeb.war/src, \
 	test-applications/BindingNameEJB.jar/src, \
 	test-applications/BindingNameWeb.war/src, \
+	test-applications/BndErrorEJB.jar/src, \
+	test-applications/ComponentIDBndEJB.jar/src, \
+	test-applications/ComponentIDBndWeb.war/src, \
+	test-applications/EJB2XDefBndEJB.jar/src, \
+	test-applications/EJB2XDefBndWeb.war/src, \
+	test-applications/ConfigTestsEJB.jar/src, \
+	test-applications/ConfigTestsOtherEJB.jar/src, \
+	test-applications/ConfigTestsWeb.war/src, \
+	test-applications/ConfigTestsOtherWeb.war/src, \
 	test-applications/EJB3BndBean.jar/src, \
 	test-applications/EJB3BndWeb.war/src, \
 	test-applications/EJB3DefBndBean.jar/src, \
@@ -29,6 +40,7 @@ src: \
 	test-applications/JNDINameWeb.war/src, \
 	test-applications/NoInterfaceBndBean.jar/src, \
 	test-applications/NoInterfaceBndWeb.war/src, \
+	test-applications/ServerXMLBindingsWeb.war/src, \
 	test-applications/SimpleBindingNameEJB.jar/src, \
 	test-applications/SimpleBindingNameWeb.war/src
 
@@ -45,4 +57,5 @@ tested.features: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.appserver.api.ejbcontainer;version=latest,\
 	com.ibm.ws.ejbcontainer.fat_tools;version=latest

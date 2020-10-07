@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=Mensagem: {0}, local: {1}
+
+callbackURLTemplateEmpty=O modelo de URL do Objeto de retorno de chamada est\u00e1 vazio e n\u00e3o \u00e9 uma URL v\u00e1lida
+callbackInvalidSubstitutionVariables=O Objeto de retorno de chamada cont\u00e9m vari\u00e1veis de substitui\u00e7\u00e3o inv\u00e1lidas: \"{0}\"
+callbackMustBeRuntimeExpression=O Objeto de retorno de chamada deve conter uma express\u00e3o de tempo de execu\u00e7\u00e3o v\u00e1lida, conforme definido na Especifica\u00e7\u00e3o OpenAPI. O valor \"{0}\" especificado para a express\u00e3o de tempo de execu\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido
+callbackInvalidURL=O Objeto de retorno de chamada deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+callbackInvalidPathItem=O Objeto de retorno de chamada deve conter um item de caminho v\u00e1lido. O valor do item de caminho associado \u00e0 chave \"{0}\" n\u00e3o \u00e9 um valor v\u00e1lido
+
+contactInvalidURL=O Objeto de contato deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+contactInvalidEmail=O Objeto de contato deve conter um endere\u00e7o de e-mail v\u00e1lido. O valor \"{0}\" especificado para o endere\u00e7o de e-mail n\u00e3o \u00e9 v\u00e1lido
+
+exampleOnlyValueOrExternalValue=O Objeto de exemplo \"{0}\" especifica ambos os campos \"value\" e \"externalValue\". Especifique apenas um campo
+
+externalDocumentationInvalidURL=O Objeto de documenta\u00e7\u00e3o externa deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+
+infoTermsOfServiceInvalidURL=O Objeto de informa\u00e7\u00f5es deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para o campo \"termsOfService\" n\u00e3o \u00e9 uma URL v\u00e1lida
+invalidUrl=O Objeto \"{0}\" deve conter uma URL v\u00e1lida. O valor \"{1}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+invalidUri=O \"{0}\" valor especificado para o URI n\u00e3o \u00e9 v\u00e1lido. O valor deve estar na forma de um URI absoluto
+
+invalidExtensionName=O nome da extens\u00e3o \"{0}\" deve iniciar com \"x-\"
+
+headerExampleOrExamples=O Objeto de cabe\u00e7alho \"{0}\" n\u00e3o pode ter ambos os campos \"examples\" e \"example\". Especifique apenas um campo
+headerSchemaAndContent=O Objeto de cabe\u00e7alho \"{0}\" deve conter uma propriedade de esquema ou uma propriedade de conte\u00fado, mas n\u00e3o pode conter ambos
+headerSchemaOrContent=O Objeto de cabe\u00e7alho \"{0}\" deve conter uma propriedade de esquema ou uma propriedade de conte\u00fado
+headerContentMap=O mapa \"content\" dentro do Objeto de cabe\u00e7alho \"{0}\" deve conter apenas uma entrada
+
+licenseInvalidURL=O Objeto de licen\u00e7a deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+
+linkOperationRefInvalidOrMissing=O Objeto de link \"{0}\" especificou um campo \"operationRef\" relativo com o valor \"{1}\" que aponta para um Objeto de opera\u00e7\u00e3o inv\u00e1lido
+linkOperationRefAndId=O Objeto de link \"{0}\" define o campo \"operationRef\" e o campo \"operationId\", que s\u00e3o mutuamente exclusivos
+linkOperationIdInvalid=O Objeto de link especificou um campo \"operationId\" com o valor \"{0}\" que aponta para um Objeto de opera\u00e7\u00e3o que n\u00e3o existe
+linkMustSpecifyOperationRefOrId=O Objeto de link \"{0}\" deve ser identificado usando um \"operationRef\" ou um \"operationId\"
+
+mediaTypeExampleOrExamples=O Objeto MediaType n\u00e3o pode ter ambos os campos \"examples\" e \"example\". Especifique apenas um campo
+mediaTypeEncodingProperty=A propriedade de codifica\u00e7\u00e3o \"{0}\" especificada no objeto MediaType n\u00e3o existe no esquema como uma propriedade
+mediaTypeEmptySchema=A propriedade de codifica\u00e7\u00e3o especificada n\u00e3o pode ser validada porque a propriedade de esquema correspondente \u00e9 nula
+
+oAuthFlowInvalidURL=O Objeto de fluxo OAuth deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+
+nonApplicableField=O campo \"{0}\" n\u00e3o \u00e9 aplic\u00e1vel para o tipo \"{1}\" de \"{2}\"
+nonApplicableFieldWithValue=O campo \"{0}\" com o valor \"{1}\" n\u00e3o \u00e9 aplic\u00e1vel para o tipo \"{2}\" de \"{3}\"
+
+nullOrEmptyKeyInMap=O mapa cont\u00e9m uma chave inv\u00e1lida. Um mapa n\u00e3o deve ter chaves vazias ou nulas
+nullValueInMap=O mapa especifica um valor inv\u00e1lido para a chave \"{0}\". Um mapa n\u00e3o deve ter valores nulos
+
+openAPIVersionInvalid=O Objeto OpenAPI deve conter uma vers\u00e3o de especifica\u00e7\u00e3o OpenAPI v\u00e1lida. O valor \"{0}\" especificado para a vers\u00e3o da especifica\u00e7\u00e3o OpenAPI n\u00e3o \u00e9 v\u00e1lido
+openAPITagIsNotUnique=O objeto OpenAPI deve conter nomes de tag exclusivos. O nome de tag \"{0}\" n\u00e3o \u00e9 exclusivo
+
+operationIdsMustBeUnique=Foi localizado mais de um Objeto de opera\u00e7\u00e3o com o valor \"{0}\" para o campo \"operationId\". O \"operationId\" deve ser exclusivo entre todas as opera\u00e7\u00f5es descritas na API
+
+parameterInFieldInvalid=O valor \"{0}\" especificado para o campo \"in\" do Objeto de par\u00e2metro \"{1}\" \u00e9 inv\u00e1lido. Os valores poss\u00edveis s\u00e3o \"query\", \"header\", \"path\" ou \"cookie\"
+parameterExampleOrExamples=O Objeto de par\u00e2metro \"{0}\" especifica ambos, um campo \"example\" e um campo \"examples\". Especifique apenas um campo
+parameterSchemaOrContent=O Objeto de par\u00e2metro \"{0}\" n\u00e3o cont\u00e9m uma propriedade \"schema\" ou uma propriedade \"content\"
+parameterSchemaAndContent=O Objeto de par\u00e2metro \"{0}\" n\u00e3o deve conter uma propriedade \"schema\" e uma propriedade \"content\"
+parameterContentMapMustNotBeEmpty=O mapa \"content\" dentro do Objeto de par\u00e2metro \"{0}\" deve conter apenas uma entrada
+
+pathItemInvalidRef=O Objeto de item de caminho possui um valor $ref \"{0}\" inv\u00e1lido para o item de caminho \"{1}\". Uma refer\u00eancia a um item de caminho deve ser externa
+pathItemRequiredField=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O par\u00e2metro de caminho \"{0}\" do caminho \"{1}\" n\u00e3o cont\u00e9m o campo \"required\" ou seu valor n\u00e3o \u00e9 \"true\"
+pathItemDuplicate=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O caminho \"{0}\" define um par\u00e2metro \"{1}\" duplicado no n\u00edvel de caminho: \"{2}\"
+pathItemParameterNotDeclaredSingle=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O caminho \"{0}\" define o par\u00e2metro de caminho \"{1}\" que n\u00e3o est\u00e1 declarado
+pathItemParameterNotDeclaredMultiple=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O caminho \"{0}\" define os par\u00e2metros de caminho \"{1}\" que n\u00e3o est\u00e3o declarados: \"{2}\"
+pathItemOperationRequiredField=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O par\u00e2metro de caminho \"{0}\" da opera\u00e7\u00e3o \"{1}\" do caminho \"{2}\" n\u00e3o cont\u00e9m o campo \"required\" ou seu valor n\u00e3o \u00e9 \"true\"
+pathItemOperationDuplicate=O Objeto de item de caminho deve conter um caminho v\u00e1lido. A opera\u00e7\u00e3o \"{0}\" do caminho \"{1}\" define um par\u00e2metro \"{2}\" duplicado: \"{3}\"
+pathItemOperationNullParameter=O Objeto de item de caminho deve conter um caminho v\u00e1lido. A lista de par\u00e2metros da opera\u00e7\u00e3o \"{0}\" do caminho \"{1}\" cont\u00e9m um par\u00e2metro nulo
+pathItemOperationParameterNotDeclaredSingle=O Objeto de item de caminho deve conter um caminho v\u00e1lido. A opera\u00e7\u00e3o \"{0}\" do caminho \"{1}\" define um par\u00e2metro de caminho que n\u00e3o est\u00e1 declarado: \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=O Objeto de item de caminho deve conter um caminho v\u00e1lido. A opera\u00e7\u00e3o \"{0}\" do caminho \"{1}\" define os par\u00e2metros de caminho \"{2}\" que n\u00e3o est\u00e3o declarados: \"{3}\"
+pathItemOperationNoPathParameterDeclared=O Objeto de item de caminho deve conter um caminho v\u00e1lido. A opera\u00e7\u00e3o \"{0}\" do caminho \"{1}\" n\u00e3o define um par\u00e2metro de caminho que est\u00e1 declarado: \"{2}\"
+pathItemInvalidFormat=O Objeto de item de caminho deve conter um caminho v\u00e1lido. O formato do caminho \"{0}\" \u00e9 inv\u00e1lido
+
+pathsRequiresSlash=O Objeto de caminhos cont\u00e9m um caminho inv\u00e1lido. O valor do caminho \"{0}\" n\u00e3o come\u00e7a com uma barra
+
+referenceExternalOrExtension=O valor \"{0}\" \u00e9 uma refer\u00eancia externa ou uma extens\u00e3o. Nenhuma valida\u00e7\u00e3o dispon\u00edvel
+referenceNotPartOfModel=O valor de refer\u00eancia \"{0}\" n\u00e3o est\u00e1 definido dentro do Objeto de componentes
+referenceNotValid=O valor de refer\u00eancia \"{0}\" \u00e9 inv\u00e1lido
+referenceNotValidFormat=O valor de refer\u00eancia \"{0}\" n\u00e3o est\u00e1 em um formato v\u00e1lido
+referenceNull=O valor de refer\u00eancia \u00e9 nulo
+referenceToObjectInvalid=O valor \"{0}\" \u00e9 uma refer\u00eancia inv\u00e1lida
+
+responseMustContainOneCode=O Objeto de respostas deve conter pelo menos um c\u00f3digo de resposta
+responseShouldContainSuccess=O Objeto de respostas deve conter pelo menos um c\u00f3digo de resposta para uma opera\u00e7\u00e3o bem-sucedida
+
+securityRequirementNotDeclared=O nome \"{0}\" fornecido para o Objeto de requisito de seguran\u00e7a n\u00e3o corresponde a um esquema de seguran\u00e7a declarado
+securityRequirementScopeNamesRequired=O Objeto de requisito de seguran\u00e7a \"{0}\" deve especificar ser uma lista de nomes de escopo necess\u00e1rios para execu\u00e7\u00e3o
+securityRequirementFieldNotEmpty=O campo \"{0}\" do Objeto de requisito de seguran\u00e7a deve estar vazio, mas est\u00e1: \"{1}\"
+securityRequirementIsEmpty=O Objeto de requisito de seguran\u00e7a n\u00e3o deve estar vazio
+
+securitySchemeInFieldInvalid=O Objeto de esquema de seguran\u00e7a \"{0}\" \u00e9 inv\u00e1lido. O valor de seu campo \"in\" \u00e9 \"{1}\", mas deve ser um de (\"query\", \"header\", \"cookie\")
+securitySchemeInvalidURL=O Objeto de esquema de seguran\u00e7a deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+
+schemaTypeArrayNullItems=O Objeto de esquema do tipo \"array\" deve ter a propriedade \"items\" definida
+schemaReadOnlyOrWriteOnly=O Objeto de esquema n\u00e3o deve ter ambos os campos \"readOnly\" e \"writeOnly\" configurados como true
+schemaMultipleOfLessThanOne=O Objeto de esquema deve ter a propriedade \"multipleOf\" configurada como um n\u00famero estritamente maior que zero
+schemaPropertyLessThanZero=A propriedade \"{0}\" do Objeto de esquema deve ser maior ou igual a zero
+schemaTypeDoesNotMatchProperty=A propriedade \"{0}\" n\u00e3o \u00e9 apropriada para o Objeto de esquema de tipo \"{1}\"
+
+keyNotARegex=O nome \"{0}\" declarado dentro do Objeto de componentes \u00e9 inv\u00e1lido. Ele deve corresponder \u00e0 express\u00e3o regular, conforme definido pela Especifica\u00e7\u00e3o OpenAPI
+
+serverVariableNotDefined=A vari\u00e1vel \"{0}\" no Objeto de servidor n\u00e3o est\u00e1 definida
+serverInvalidURL=O Objeto de servidor deve conter uma URL v\u00e1lida. O valor \"{0}\" especificado para a URL n\u00e3o \u00e9 v\u00e1lido
+
+requiredFieldMissing=O campo \"{0}\" obrigat\u00f3rio est\u00e1 ausente ou configurado como um valor inv\u00e1lido

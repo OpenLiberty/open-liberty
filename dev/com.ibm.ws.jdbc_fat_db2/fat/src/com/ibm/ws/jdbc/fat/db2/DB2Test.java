@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
-import static com.ibm.ws.jdbc.fat.db2.FATSuite.db2;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.Db2Container;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -34,6 +33,8 @@ public class DB2Test extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.db2")
     @TestServlet(servlet = DB2TestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
+
+    public static Db2Container db2 = FATSuite.db2;
 
     @BeforeClass
     public static void setUp() throws Exception {

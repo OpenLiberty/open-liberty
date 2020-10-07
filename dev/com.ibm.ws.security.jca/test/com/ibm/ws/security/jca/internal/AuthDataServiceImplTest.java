@@ -44,14 +44,14 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.websphere.security.auth.data.AuthDataProvider;
 import com.ibm.websphere.security.auth.data.AuthDataProviderTestHelper;
 import com.ibm.ws.security.auth.data.internal.AuthDataTestHelper;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.intfc.SubjectManagerService;
+
+import test.common.SharedOutputManager;
 
 public class AuthDataServiceImplTest {
 
@@ -155,14 +155,7 @@ public class AuthDataServiceImplTest {
         authDataProviderTestHelper.setAuthData(authDataConfigWithDefaultIdRef1);
         authDataProviderTestHelper.setAuthData(authDataConfigWithDefaultIdRef2);
 
-        final ServiceReference<AuthDataProvider> authDataProviderRef = mockery.mock(ServiceReference.class, "authDataProviderRef");
-        authDataServiceImpl.setAuthDataProvider(authDataProviderRef);
-        mockery.checking(new Expectations() {
-            {
-                allowing(cc).locateService("authDataProvider", authDataProviderRef);
-                will(returnValue(authDataProvider));
-            }
-        });
+        authDataServiceImpl.authDataProvider = authDataProvider;
         authDataProviderTestHelper.activate();
 
         previousJaasConfiguration = Configuration.getConfiguration();

@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: A Kerberos korl\u00e1tozott meghatalmaz
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=A Kerberos korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 nem enged\u00e9lyezhet\u0151 a Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat miatt.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Haszn\u00e1ljon a Kerberos korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 \u00e1ltal t\u00e1mogatott Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3t \u00e9s v\u00e1ltozatot.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

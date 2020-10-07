@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -93,6 +93,45 @@ KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Zkontrolujte chybu, kter\u00e1 je 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] ur\u010duje [{1}] jako hodnotu pro atribut [{2}], ale odezva u\u017eivatelsk\u00e9ho rozhran\u00ed API neobsahuje kl\u00ed\u010d [{1}]. Kl\u00ed\u010d [{3}], pokud je p\u0159\u00edtomen v odezv\u011b u\u017eivatelsk\u00e9ho rozhran\u00ed API, se pou\u017e\u00edv\u00e1 k ur\u010den\u00ed jm\u00e9na u\u017eivatele.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=Odezva u\u017eivatelsk\u00e9ho rozhran\u00ed API neobsahuje kl\u00ed\u010d, kter\u00fd odpov\u00edd\u00e1 hodnot\u011b atributu konfigurace, kter\u00fd je uveden ve zpr\u00e1v\u011b. Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b se m\u00edsto toho pokou\u0161\u00ed pou\u017e\u00edt jin\u00fd kl\u00ed\u010d.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee je atribut konfigurace uveden\u00fd ve zpr\u00e1v\u011b spr\u00e1vn\u011b nakonfigurov\u00e1n. Ujist\u011bte se, \u017ee hodnota atributu konfigurace odpov\u00edd\u00e1 polo\u017ece v odezv\u011b u\u017eivatelsk\u00e9ho rozhran\u00ed API, kter\u00e1 by se m\u011bla pou\u017e\u00edt jako jm\u00e9no u\u017eivatele.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: N\u00e1sleduj\u00edc\u00ed odezvu od u\u017eivatelsk\u00e9ho rozhran\u00ed API nelze zpracovat: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Informace o servisn\u00edm \u00fa\u010dtu nelze z\u00edskat, proto\u017ee do\u0161lo k jin\u00e9 chyb\u011b.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed v\u00edce chybov\u00fdch zpr\u00e1v, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: U\u017eivatelsk\u00e9 rozhran\u00ed API vr\u00e1tilo neo\u010dek\u00e1van\u00fd k\u00f3d odezvy [{0}]. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace. Odezva z rozhran\u00ed API je [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=U\u017eivatelsk\u00e9 rozhran\u00ed API nevr\u00e1tilo o\u010dek\u00e1van\u00fd stavov\u00fd k\u00f3d. Je mo\u017en\u00e9, \u017ee v po\u017eadavku chyb\u00ed informace nebo \u017ee po\u017eadavek nemus\u00ed b\u00fdt autorizov\u00e1n.
+USER_API_RESPONSE_BAD_STATUS.useraction=Zkontrolujte odezvu rozhran\u00ed API, \u017ee je v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace. Ov\u011b\u0159te, \u017ee v\u0161echny tokeny obsa\u017een\u00e9 v po\u017eadavku jsou platn\u00e9.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Obsah odezvy nen\u00ed platn\u00fdm objektem JSON. \u00dapln\u00e1 odezva je {0}. {1}
+RESPONSE_NOT_JSON.explanation=Odezva mus\u00ed b\u00fdt platn\u00fdm objektem JSON.
+RESPONSE_NOT_JSON.useraction=Ov\u011b\u0159te, zda byl po\u017eadavek odesl\u00e1n na o\u010dek\u00e1van\u00fd c\u00edl. Ujist\u011bte se, \u017ee zam\u00fd\u0161len\u00fd c\u00edl po\u017eadavku je schopen vracet data JSON. Zkontrolujte odezvu, abyste zjistili, zda jsou zahrnuty dal\u0161\u00ed informace.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: V poskytnut\u00e9m objektu JSON chyb\u00ed o\u010dek\u00e1van\u00fd kl\u00ed\u010d: [{0}]. \u00dapln\u00fd objekt JSON je [{1}].
+JSON_MISSING_KEY.explanation=Kl\u00ed\u010d uveden\u00fd ve zpr\u00e1v\u011b mus\u00ed b\u00fdt v r\u00e1mci dat JSON. Kl\u00ed\u010d m\u016f\u017ee chyb\u011bt nebo m\u016f\u017ee b\u00fdt na neo\u010dek\u00e1van\u00e9m m\u00edst\u011b.
+JSON_MISSING_KEY.useraction=Zkontrolujte data JSON a ur\u010dete, zda kl\u00ed\u010d chyb\u00ed.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Hodnota pro kl\u00ed\u010d [{0}] v datech JSON mus\u00ed b\u00fdt typu {1}, ale hodnota je typu {2}. Data JSON jsou [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Hodnota pro uveden\u00fd kl\u00ed\u010d nem\u00e1 spr\u00e1vn\u00fd typ. Je mo\u017en\u00e9, \u017ee data JSON jsou chybn\u00e1 nebo mohou m\u00edt neo\u010dek\u00e1vanou strukturu.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Zkontrolujte strukturu dat JSON. Zkontrolujte data JSON a ov\u011b\u0159te, zda do\u0161lo k chyb\u011b.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: Odezvu od rozhran\u00ed API introspekce tokenu nelze zpracovat: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Informace o ov\u011b\u0159en\u00e9m u\u017eivatele nelze z\u00edskat, proto\u017ee do\u0161lo k jin\u00e9 chyb\u011b.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed v\u00edce chybov\u00fdch zpr\u00e1v, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Po\u017eadavek na introspekci tokenu se nezda\u0159il, proto\u017ee token, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku, nen\u00ed platn\u00fd. \u00dapln\u00e1 odezva je {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Autoriza\u010dn\u00ed server nevyvolal token, vlastn\u00edk prost\u0159edku odvolal token, vypr\u0161ela platnost tokenu nebo do\u0161lo k jin\u00e9 chyb\u011b.
+INTROSPECT_USER_API_INACTIVE.useraction=Zkontrolujte odezvu, kter\u00e1 je sou\u010d\u00e1st\u00ed zpr\u00e1vy. Ov\u011b\u0159te, \u017ee je pou\u017eit spr\u00e1vn\u00fd koncov\u00fd bod introspekce tokenu. Ov\u011b\u0159te, \u017ee token je platn\u00fd a \u017ee tokenu m\u016f\u017ee b\u00fdt provedena introspekce.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: Odezva API u\u017eivatele ozna\u010duje, \u017ee po\u017eadavek na rozhran\u00ed API u\u017eivatele nen\u00ed ov\u011b\u0159en. Ov\u011b\u0159te, zda je p\u0159\u00edstupov\u00fd token, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku na u\u017eivatelsk\u00e9ho rozhran\u00ed API, platn\u00fd a je p\u0159idru\u017een ke zn\u00e1m\u00e9mu u\u017eivateli.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=P\u0159\u00edstupov\u00fd token, kter\u00fd je v po\u017eadavku u\u017eivatelsk\u00e9ho rozhran\u00ed API, m\u016f\u017ee chyb\u011bt, vypr\u0161el, je chybn\u00fd nebo jinak neplatn\u00fd. Token nemus\u00ed b\u00fdt p\u0159idru\u017een k u\u017eivateli zn\u00e1m\u00e9mu pro u\u017eivatelsk\u00e9 rozhran\u00ed API.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Ov\u011b\u0159te, \u017ee je p\u0159\u00edstupov\u00fd token sou\u010d\u00e1st\u00ed po\u017eadavku u\u017eivatelsk\u00e9ho rozhran\u00ed API. Ujist\u011bte se, \u017ee token nevypr\u0161el nebo nen\u00ed chybn\u00fd. Ov\u011b\u0159te, \u017ee je u\u017eivatel p\u0159idru\u017een k p\u0159\u00edstupov\u00e9mu tokenu, kter\u00fd je zn\u00e1m u\u017eivatelsk\u00e9mu rozhran\u00ed API.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.

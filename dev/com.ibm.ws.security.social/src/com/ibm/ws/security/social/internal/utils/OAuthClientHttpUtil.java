@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
@@ -29,9 +29,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -207,7 +207,7 @@ public class OAuthClientHttpUtil {
         return commonEndpointInvocation(postMethod, url, baUsername, baPassword, accessToken, sslSocketFactory, isHostnameVerification, authMethod, useJvmProps);
     }
 
-    HttpPost setPostParameters(HttpPost postMethod, List<NameValuePair> params) {
+    HttpPost setPostParameters(HttpPost postMethod, @Sensitive List<NameValuePair> params) {
         try {
             if (params != null) {
                 postMethod.setEntity(new UrlEncodedFormEntity(params));
@@ -317,9 +317,9 @@ public class OAuthClientHttpUtil {
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             client = getBuilder(useJvmProps).setSSLSocketFactory(connectionFactory).build();
         }
@@ -339,9 +339,9 @@ public class OAuthClientHttpUtil {
         } else {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             client = getBuilder(useJvmProps).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
         }
@@ -350,7 +350,7 @@ public class OAuthClientHttpUtil {
     }
 
     private HttpClientBuilder getBuilder(boolean useJvmProps) {
-        return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+        return useJvmProps ? HttpClientBuilder.create().disableCookieManagement().useSystemProperties() : HttpClientBuilder.create().disableCookieManagement();
     }
 
     public static OAuthClientHttpUtil getInstance() {

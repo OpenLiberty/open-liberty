@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -36,6 +38,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.ibm.ws.security.wim.test.VmmServiceServletConnection;
 import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,12 +57,15 @@ public class LDAPRegressionTest {
     private static final Class<?> c = LDAPRegressionTest.class;
 
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.regression");
-    private static UserRegistryServletConnection servlet;
+    private static UserRegistryServletConnection urServlet;
+    private static VmmServiceServletConnection vmmServlet;
     private static ServerConfiguration basicConfiguration = null;
     private static InMemoryLDAPServer ds;
     private static final String BASE_DN = "o=ibm,c=us";
-    private static final String USER = "user1";
-    private static final String USER_DN = "uid=" + USER + "," + BASE_DN;
+    private static final String USER_1 = "user1";
+    private static final String USER_1_DN = "uid=" + USER_1 + "," + BASE_DN;
+    private static final String USER_2 = "Bob (Contractor)";
+    private static final String USER_2_DN = "uid=" + USER_2 + "," + BASE_DN;
 
     /**
      * Setup the test case.
@@ -89,9 +95,10 @@ public class LDAPRegressionTest {
                     Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
                 }
             }
-        }
 
-        libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
+            libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
+            libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/vmmapi-1.0.mf");
+        }
     }
 
     /**
@@ -108,6 +115,8 @@ public class LDAPRegressionTest {
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         libertyServer.addInstalledAppForValidation("userRegistry");
+        libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/vmmapi-1.0.mf");
+        libertyServer.addInstalledAppForValidation("vmmService");
         libertyServer.startServer(c.getName() + ".log");
 
         /*
@@ -120,13 +129,16 @@ public class LDAPRegressionTest {
         assertNotNull("Server did not came up",
                       libertyServer.waitForStringInLog("CWWKF0011I"));
 
-        Log.info(c, "setUp", "Creating servlet connection the server");
-        servlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
+        Log.info(c, "setUp", "Creating UserRegistry servlet connection the server");
+        urServlet = new UserRegistryServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
-        if (servlet.getRealm() == null) {
+        if (urServlet.getRealm() == null) {
             Thread.sleep(5000);
-            servlet.getRealm();
+            urServlet.getRealm();
         }
+
+        Log.info(c, "setUp", "Creating VMM servlet connection the server");
+        vmmServlet = new VmmServiceServletConnection(libertyServer.getHostname(), libertyServer.getHttpDefaultPort());
 
         /*
          * The original server configuration has no registry or Federated Repository configuration.
@@ -151,14 +163,26 @@ public class LDAPRegressionTest {
         ds.add(entry);
 
         /*
-         * Create the user.
+         * Create user1.
          */
-        entry = new Entry(USER_DN);
+        entry = new Entry(USER_1_DN);
         entry.addAttribute("objectclass", "wiminetorgperson");
-        entry.addAttribute("uid", USER);
-        entry.addAttribute("sn", USER);
-        entry.addAttribute("cn", USER);
-        entry.addAttribute("nickName", USER + " nick name");
+        entry.addAttribute("uid", USER_1);
+        entry.addAttribute("sn", USER_1);
+        entry.addAttribute("cn", USER_1);
+        entry.addAttribute("nickName", USER_1 + " nick name");
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
+
+        /*
+         * Create user2.
+         */
+        entry = new Entry(USER_2_DN);
+        entry.addAttribute("objectclass", "wiminetorgperson");
+        entry.addAttribute("uid", USER_2);
+        entry.addAttribute("sn", USER_2);
+        entry.addAttribute("cn", USER_2);
+        entry.addAttribute("nickName", USER_2 + " nick name");
         entry.addAttribute("userPassword", "password");
         ds.add(entry);
     }
@@ -184,7 +208,7 @@ public class LDAPRegressionTest {
         ldapRegistry.setLdapType("Custom");
         ldapRegistry.setRealm("LdapRealm");
         ldapRegistry.setHost("localhost");
-        ldapRegistry.setPort(String.valueOf(ds.getListenPort()));
+        ldapRegistry.setPort(String.valueOf(ds.getLdapPort()));
         ldapRegistry.setBindDN(ds.getBindDN());
         ldapRegistry.setBindPassword(ds.getBindPassword());
         ldapRegistry.setCustomFilters(new LdapFilters("(&(uid=%v)(objectclass=wiminetorgperson))", "(&(cn=%v)(objectclass=groupofnames))", null, null, null));
@@ -215,9 +239,9 @@ public class LDAPRegressionTest {
         ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "5s"), new SearchResultsCache(true, 5555, 3333, "2s")));
         updateConfigDynamically(libertyServer, clone);
 
-        assertEquals("LdapRealm", servlet.getRealm());
+        assertEquals("LdapRealm", urServlet.getRealm());
 
-        SearchResult result = servlet.getUsers(USER, 5);
+        SearchResult result = urServlet.getUsers(USER_1, 5);
         assertEquals("There should only be 1 entry", 1, result.getList().size());
 
         Thread.sleep(3000); // sleep long enough to timeout searchCache, but not attributesCache;
@@ -229,7 +253,7 @@ public class LDAPRegressionTest {
         assertTrue("Should not have found, " + trTrue, trMsgs.isEmpty());
 
         // access user again
-        result = servlet.getUsers(USER, 5);
+        result = urServlet.getUsers(USER_1, 5);
         assertEquals("There should only be 1 entry", 1, result.getList().size());
 
         // sleep to allow attributes cache to timeout.
@@ -249,7 +273,7 @@ public class LDAPRegressionTest {
         libertyServer.setMarkToEndOfLog(libertyServer.getMostRecentTraceFile());
 
         // access user again, this should be a new cache entry
-        result = servlet.getUsers(USER, 5);
+        result = urServlet.getUsers(USER_1, 5);
         assertEquals("There should only be 1 entry", 1, result.getList().size());
 
         trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(trTrue);
@@ -293,6 +317,62 @@ public class LDAPRegressionTest {
          * Get the user security name. This call will fail with an EntityNotFoundException from
          * LdapConnection.getAttributesByUniqueName() if the error is encountered.
          */
-        assertEquals(USER_DN, servlet.getUserSecurityName(USER));
+        assertEquals(USER_1_DN, urServlet.getUserSecurityName(USER_1));
+    }
+
+    /**
+     * Test the fix for Open Liberty issue 10462.
+     *
+     * A InvalidSearchFilterException would occur when a principal expression passed
+     * into the search method contained a paren.
+     *
+     * @throws Exception if the test fails for some reason.
+     */
+    @Test
+    public void testPrincipalSearchExpressionWithParen() throws Exception {
+        String methodName = "testPrincipalSearchExpressionWithParen";
+        Log.info(c, methodName, "Entering test " + methodName);
+
+        ServerConfiguration clone = basicConfiguration.clone();
+
+        /*
+         * Create an LDAP registry.
+         */
+        createLdapRegistry(clone);
+
+        /*
+         * Apply the changes.
+         */
+        updateConfigDynamically(libertyServer, clone);
+
+        /*
+         * Test with left paren search pattern.
+         */
+        String expression = URLEncoder.encode("@xsi:type='PersonAccount' and principalName='*(*'", StandardCharsets.UTF_8.toString());
+        String results = vmmServlet.makeServletMethodCallWithException("searchWithExpression", "?method=searchWithExpression&expression=" + expression);
+        assertNotNull(results);
+        List<String> listResults = VmmServiceServletConnection.convertToList("searchWithExpression", results);
+        assertEquals(1, listResults.size());
+        assertEquals("uid=Bob (Contractor),o=ibm,c=us", listResults.get(0));
+
+        /*
+         * Test with right paren search pattern.
+         */
+        expression = URLEncoder.encode("@xsi:type='PersonAccount' and principalName='*)*'", StandardCharsets.UTF_8.toString());
+        results = vmmServlet.makeServletMethodCallWithException("searchWithExpression", "?method=searchWithExpression&expression=" + expression);
+        assertNotNull(results);
+        listResults = VmmServiceServletConnection.convertToList("searchWithExpression", results);
+        assertEquals(1, listResults.size());
+        assertEquals("uid=Bob (Contractor),o=ibm,c=us", listResults.get(0));
+
+        /*
+         * Test with right paren search pattern.
+         */
+        expression = URLEncoder.encode("@xsi:type='PersonAccount' and principalName='*(*)*'", StandardCharsets.UTF_8.toString());
+        results = vmmServlet.makeServletMethodCallWithException("searchWithExpression", "?method=searchWithExpression&expression=" + expression);
+        assertNotNull(results);
+        listResults = VmmServiceServletConnection.convertToList("searchWithExpression", results);
+        assertEquals(1, listResults.size());
+        assertEquals("uid=Bob (Contractor),o=ibm,c=us", listResults.get(0));
     }
 }

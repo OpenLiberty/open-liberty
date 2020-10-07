@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.DOMUtils;
 
+@Trivial
 public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
 
     private static final Logger LOG = LogUtils.getL7dLogger(W3CDOMStreamReader.class);
@@ -57,7 +58,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
     /**
      * @param element
      */
-    @Trivial
     public W3CDOMStreamReader(Element element) {
         super(new ElementFrame<Node, Node>(element, null));
         LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
@@ -68,7 +68,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
 
-    @Trivial
     public W3CDOMStreamReader(Element element, String systemId) {
         this(element);
         LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
@@ -76,7 +75,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
 
-    @Trivial
     public W3CDOMStreamReader(Document doc) {
         super(new ElementFrame<Node, Node>(doc, false) {
             public boolean isDocument() {
@@ -88,7 +86,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
 
-    @Trivial
     public W3CDOMStreamReader(DocumentFragment docfrag) {
         super(new ElementFrame<Node, Node>(docfrag, true) {
             public boolean isDocumentFragment() {
@@ -444,7 +441,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         return super.getLocation();
     }
 
-    @Trivial
     public String toString() {
         LOG.entering("W3CDOMStreamReader", "toString");
         if (document == null) {

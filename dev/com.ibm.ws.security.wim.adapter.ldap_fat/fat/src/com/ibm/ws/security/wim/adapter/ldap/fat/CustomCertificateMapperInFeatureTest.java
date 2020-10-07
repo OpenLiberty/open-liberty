@@ -189,7 +189,7 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -547,7 +547,7 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -562,7 +562,7 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm2");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -606,7 +606,7 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -622,7 +622,7 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm2");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -665,7 +665,7 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
@@ -680,7 +680,7 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());

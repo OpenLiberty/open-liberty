@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -63,6 +64,16 @@ public class ThreadContextManager implements WSContextService {
     private final Set<String> alwaysEnabled = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     /**
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
+
+    /**
      * The metadata identifier service.
      */
     MetaDataIdentifierService metadataIdentifierService;
@@ -75,7 +86,7 @@ public class ThreadContextManager implements WSContextService {
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     @Activate
@@ -107,9 +118,9 @@ public class ThreadContextManager implements WSContextService {
 
     /**
      * Capture thread context.
-     * 
+     *
      * @param threadContextConfigurations map of thread context provider name to configured thread context.
-     * @param execProps execution properties.
+     * @param execProps                   execution properties.
      * @return thread context descriptor for the captured thread context.
      */
     public ThreadContextDescriptor captureThreadContext(final Map<String, Map<String, ?>> threadContextConfigurations, final Map<String, String> execProps) {
@@ -200,7 +211,7 @@ public class ThreadContextManager implements WSContextService {
     /**
      * DS method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     @Deactivate
@@ -210,15 +221,37 @@ public class ThreadContextManager implements WSContextService {
 
     /**
      * Called by Declarative Services to modify service config properties
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      */
     @Modified
-    protected void modified(ComponentContext context) {}
+    protected void modified(ComponentContext context) {
+    }
+
+    /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+        eeVersionRef = ref;
+    }
 
     /**
      * Declarative Services method for setting the metadata identifier service.
-     * 
+     *
      * @param svc the service
      */
     @Reference(service = MetaDataIdentifierService.class)
@@ -228,7 +261,7 @@ public class ThreadContextManager implements WSContextService {
 
     /**
      * Declarative Services method for adding a thread context provider.
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(name = THREAD_CONTEXT_PROVIDER,
@@ -244,8 +277,20 @@ public class ThreadContextManager implements WSContextService {
     }
 
     /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
+        }
+    }
+
+    /**
      * Declarative Services method for unsetting the metadata identifier service.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
@@ -254,7 +299,7 @@ public class ThreadContextManager implements WSContextService {
 
     /**
      * Declarative Services method for removing a thread context provider.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetThreadContextProvider(ServiceReference<ThreadContextProvider> ref) {

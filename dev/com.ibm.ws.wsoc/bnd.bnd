@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ bSymbolicName=com.ibm.ws.wsoc
 Bundle-Name: WebSocket
 Bundle-SymbolicName:com.ibm.ws.wsoc; singleton:=true
 Bundle-Description: WebSocket, version ${bVersion}
+
+jakartaeeMe:true
 
 app-resources= \
   META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator | \
@@ -52,8 +54,8 @@ Service-Component: \
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    scheduledExecutorService=java.util.concurrent.ScheduledExecutorService('service.vendor=IBM'); \
-    executorService=java.util.concurrent.ExecutorService('service.vendor=IBM'); \
+    scheduledExecutorService='java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)'; \
+    executorService='java.util.concurrent.ExecutorService(service.vendor=IBM)'; \
     injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
     injectionService=com.ibm.ws.wsoc.injection.InjectionService; \
     injectionService12=com.ibm.ws.wsoc.injection.InjectionService12; \
@@ -64,7 +66,7 @@ Service-Component: \
     implementation:=com.ibm.ws.wsoc.WebSocketVersionServiceManager; \
     configuration-policy:=ignore;\
     immediate:=true;\
-    websocketFactoryService=com.ibm.ws.wsoc.external.WebSocketFactory('service.vendor=IBM'); \
+    websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory(service.vendor=IBM)'; \
     dynamic:='websocketFactoryService'; \
     optional:='websocketFactoryService'; \
     properties:="service.vendor=IBM", \
@@ -90,7 +92,6 @@ Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF
   
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 instrument.classesExcludes: \
   com.ibm.ws.wsoc.Utils.class, \

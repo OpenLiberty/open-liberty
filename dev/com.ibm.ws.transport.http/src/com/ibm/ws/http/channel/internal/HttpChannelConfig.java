@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,19 @@
 package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.websphere.channelfw.ChannelData;
@@ -150,6 +156,10 @@ public class HttpChannelConfig {
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
     private String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
     private Pattern proxiesPattern = null;
+    /** Describes the maximum inflation ratio allowed for a request's body when decompressing */
+    private int decompressionRatioLimit = 200;
+    /** Describes the amount of times a request's body can be decompressed with a ratio above the decompressionRatioLimit before an exception in thrown */
+    private int decompressionTolerance = 3;
     /**
      * Set as an attribute to the remoteIP element to specify if X-Forwarded-* and Forwarded header
      * values affect the NCSA Access Log remote directives
@@ -164,6 +174,17 @@ public class HttpChannelConfig {
     private Set<String> excludedCompressionContentTypes = null;
     private final String compressionQValueRegex = HttpConfigConstants.DEFAULT_QVALUE_REGEX;
     private Pattern compressionQValuePattern = null;
+
+    /** Identifies if the channel has been configured to use cookie configuration */
+    private boolean useSameSiteConfig = false;
+    /**
+     * Sets of cookies configured to be defaulted to have SameSite attribute set to lax, none, or strict. This attribute is added when the cookie has no SameSite attribute defined
+     */
+    private Map<String, String> sameSiteCookies = null;
+    private Set<String> sameSiteErrorCookies = null;
+    private Map<String, String> sameSiteStringPatterns = null;
+    private Map<Pattern, String> sameSitePatterns = null;
+    private boolean onlySameSiteStar = false;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -422,6 +443,29 @@ public class HttpChannelConfig {
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM)) {
                 props.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, value);
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT)) {
+                props.put(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE)) {
+                props.put(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE)) {
+                props.put(HttpConfigConstants.PROPNAME_SAMESITE, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_LAX)) {
+                props.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_NONE)) {
+                props.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_SAMESITE_STRICT)) {
+                props.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, value);
+            }
 
             props.put(key, value);
         }
@@ -473,6 +517,13 @@ public class HttpChannelConfig {
         parseCompression(props);
         parseCompressionTypes(props);
         parseCompressionPreferredAlgorithm(props);
+        parseDecompressionRatioLimit(props);
+        parseDecompressionTolerance(props);
+        parseSameSiteConfig(props);
+        parseCookiesSameSiteLax(props);
+        parseCookiesSameSiteNone(props);
+        parseCookiesSameSiteStrict(props);
+        initSameSiteCookiesPatterns();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -958,6 +1009,253 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the configuration to see if the samesite config element has been configured
+     * to consider cookie specific attributes.
+     *
+     * @param props
+     */
+    private void parseSameSiteConfig(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE);
+        if (null != value) {
+            this.useSameSiteConfig = convertBoolean(value);
+
+            if (this.useSameSiteConfig) {
+                this.sameSiteCookies = new HashMap<String, String>();
+                this.sameSiteErrorCookies = new HashSet<String>();
+                this.sameSiteStringPatterns = new HashMap<String, String>();
+
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                    Tr.event(tc, "Http Channel Config: SameSite configuration has been enabled");
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Parse the configuration to map all cookies configured to have the SameSite=Lax attribute
+     * added to them.
+     *
+     * @param props
+     */
+    private void parseCookiesSameSiteLax(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX);
+        if (null != value && this.useSameSiteConfig) {
+
+            if (value instanceof String[]) {
+                String[] cookies = (String[]) value;
+                for (String s : cookies) {
+
+                    addSameSiteAttribute(s, HttpConfigConstants.SameSite.LAX);
+
+                }
+            }
+            if (this.useSameSiteConfig && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Channel Config: SameSite Lax configuration parsed.");
+            }
+        }
+
+    }
+
+    private void parseCookiesSameSiteNone(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE);
+        if (null != value && this.useSameSiteConfig) {
+
+            if (value instanceof String[]) {
+                String[] cookies = (String[]) value;
+                for (String s : cookies) {
+
+                    addSameSiteAttribute(s, HttpConfigConstants.SameSite.NONE);
+
+                }
+            }
+            if (this.useSameSiteConfig && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Channel Config: SameSite None configuration parsed.");
+            }
+        }
+    }
+
+    private void parseCookiesSameSiteStrict(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT);
+        if (null != value && this.useSameSiteConfig) {
+
+            if (value instanceof String[]) {
+                String[] cookies = (String[]) value;
+                for (String s : cookies) {
+
+                    addSameSiteAttribute(s, HttpConfigConstants.SameSite.STRICT);
+
+                }
+            }
+            if (this.useSameSiteConfig && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "Http Channel Config: SameSite Strict configuration parsed.");
+            }
+        }
+    }
+
+    private void addSameSiteAttribute(String name, HttpConfigConstants.SameSite sameSiteAttribute) {
+        if (this.sameSiteErrorCookies.contains(name)) {
+            Tr.warning(tc, "cookies.samesite.knownDuplicateName", name, sameSiteAttribute.getName().toLowerCase());
+        }
+
+        //If this cookie name has already been added to the error list, do not attempt to
+        //add it. Otherwise, check each set to confirm its uniqueness. If not unique,
+        //remove it from the list, warn the user, and set the cookie as erroneous. Otherwise,
+        //store the cookie under the respective list.
+        if (!sameSiteErrorCookies.contains(name)) {
+
+            //Wildcard support is only supported for patterns ending on the * character. There cannot
+            //be more than one * character in the string.
+            if (name.endsWith(HttpConfigConstants.WILDCARD_CHAR) && name.indexOf(HttpConfigConstants.WILDCARD_CHAR) == name.lastIndexOf(HttpConfigConstants.WILDCARD_CHAR)) {
+                //Check that it isn't already defined with a different SameSite value
+                if (this.sameSiteStringPatterns.containsKey(name) && !this.sameSiteStringPatterns.get(name).equals(sameSiteAttribute.getName())) {
+                    this.sameSiteStringPatterns.remove(name);
+                    Tr.warning(tc, "cookies.samesite.duplicateName", name, sameSiteAttribute.getName().toLowerCase());
+                    this.sameSiteErrorCookies.add(name);
+                } else {
+                    // If this is not a duplicate with the same value then add it, otherwise ignore the duplicate.
+                    if (!this.sameSiteStringPatterns.containsKey(name)) {
+                        this.sameSiteStringPatterns.put(name, sameSiteAttribute.getName());
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "The duplicate pattern: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
+                        }
+                    }
+                }
+            }
+            //If the wildcard character is used in any other context, report the error
+            else if (name.contains(HttpConfigConstants.WILDCARD_CHAR)) {
+                Tr.warning(tc, "cookies.samesite.unsupportedWildcard", name);
+                this.sameSiteErrorCookies.add(name);
+            }
+            //This is an explicitly named cookie
+            else {
+                /*
+                 * Check that the cookie isn't already defined with a different value. If the cookieName exists
+                 * in the sameSiteCookies map but has the same sameSiteAttribute value specified here then just
+                 * ignore since this is just a duplicate in the configuration. There is no ambiguity here since the values are the same.
+                 */
+                if (this.sameSiteCookies.containsKey(name) && !this.sameSiteCookies.get(name).equals(sameSiteAttribute.getName())) {
+                    this.sameSiteCookies.remove(name);
+                    Tr.warning(tc, "cookies.samesite.duplicateName", name, sameSiteAttribute.getName().toLowerCase());
+                    this.sameSiteErrorCookies.add(name);
+                } else {
+                    // If this is not a duplicate with the same value then add it, otherwise ignore the duplicate.
+                    if (!this.sameSiteCookies.containsKey(name)) {
+                        this.sameSiteCookies.put(name, sameSiteAttribute.getName());
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "The duplicate cookieName: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * If the Http Endpoint is configured to use the <samesite> child element, this method will compile all the
+     * wildcard regex patterns that were provided thru the samesite lax, none, and strict attributes. The patterns
+     * are loaded into a sorted linked hash map that will contain range from most specific to most broad. Both the
+     * explicit name's Map and the pattern's Map are iterated to print out a visual representation of all names
+     * registered as 'lax', 'none', and 'strict'; as well as a representation of all values that were considered
+     * erroneous.
+     */
+    private void initSameSiteCookiesPatterns() {
+        if (this.useSameSiteConfig()) {
+            Map<Pattern, String> patterns = new HashMap<Pattern, String>();
+            Pattern p = null;
+            String sameSiteValue = null;
+
+            if (this.sameSiteStringPatterns.size() == 1 && this.sameSiteStringPatterns.containsKey(HttpConfigConstants.WILDCARD_CHAR)) {
+                this.onlySameSiteStar = true;
+                this.sameSiteCookies.put(HttpConfigConstants.WILDCARD_CHAR, this.sameSiteStringPatterns.get(HttpConfigConstants.WILDCARD_CHAR));
+            }
+            if (!this.onlySameSiteStar) {
+
+                for (String s : this.sameSiteStringPatterns.keySet()) {
+                    sameSiteValue = this.sameSiteStringPatterns.get(s);
+                    s = s.replace(HttpConfigConstants.WILDCARD_CHAR, ".*");
+                    p = Pattern.compile(s);
+                    patterns.put(p, sameSiteValue);
+                }
+
+                List<Map.Entry<Pattern, String>> list = new LinkedList<Map.Entry<Pattern, String>>(patterns.entrySet());
+                //Sort by alphabetical ordering
+                Collections.sort(list, new Comparator<Map.Entry<Pattern, String>>() {
+                    @Override
+                    public int compare(Map.Entry<Pattern, String> pattern1, Map.Entry<Pattern, String> pattern2) {
+                        return pattern1.getKey().toString().compareTo(pattern2.toString());
+                    }
+                });
+                //Now order from most specific pattern to most general. If a pattern's string representation matches a second pattern,
+                //the former is considered to be more specific (a subset of the latter).
+                Collections.sort(list, new Comparator<Map.Entry<Pattern, String>>() {
+                    Pattern pat = null;
+                    Matcher mat = null;
+
+                    @Override
+                    public int compare(Map.Entry<Pattern, String> pattern1, Map.Entry<Pattern, String> pattern2) {
+                        pat = pattern1.getKey();
+                        mat = pat.matcher(pattern2.getKey().toString());
+                        return mat.matches() ? 1 : -1;
+                    }
+                });
+                //Take the sorted list and create a linked hash map to preserve ordering
+                this.sameSitePatterns = new LinkedHashMap<Pattern, String>();
+                for (Map.Entry<Pattern, String> entry : list) {
+                    this.sameSitePatterns.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            //If tracing is enabled, print out the state of these maps.
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Set<String> laxCookies = new HashSet<String>();
+                Set<String> noneCookies = new HashSet<String>();
+                Set<String> strictCookies = new HashSet<String>();
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("Http Channel Config: SameSite configuration complete. The following values are set:\n");
+                for (String key : this.sameSiteCookies.keySet()) {
+                    if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                        laxCookies.add(key);
+                    }
+                    if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                        noneCookies.add(key);
+                    }
+                    if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                        strictCookies.add(key);
+                    }
+                }
+                //This is only defined when there are patterns, ensure the list has been initialized
+                if (this.sameSitePatterns != null) {
+                    for (Pattern key : this.sameSitePatterns.keySet()) {
+
+                        if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                            laxCookies.add(key.toString());
+                        }
+                        if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                            noneCookies.add(key.toString());
+                        }
+                        if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                            strictCookies.add(key.toString());
+                        }
+                    }
+                }
+
+                //Construct the lax names
+                sb.append("SameSite Lax Cookies ").append(laxCookies).append("\n");
+                sb.append("SameSite None Cookies ").append(noneCookies).append("\n");
+                sb.append("SameSite Strict Cookies ").append(strictCookies);
+                if (!this.sameSiteErrorCookies.isEmpty()) {
+                    sb.append("\n").append("Misconfigured SameSite cookies ").append(this.sameSiteErrorCookies);
+                }
+                Tr.event(tc, sb.toString());
+            }
+        }
+    }
+
+    /**
      * Check the configuration to see if the autoCompression element has been configured
      * to consider Accept-Encoding header values to determine whether to compress the
      * response body.
@@ -1144,10 +1442,9 @@ public class HttpChannelConfig {
                 case ("none"):
                     break;
                 default:
-                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                        Tr.warning(tc, "compression.unsupportedAlgorithm", value, preferredCompressionAlgorithm);
-                    }
+                    Tr.warning(tc, "compression.unsupportedAlgorithm", value, preferredCompressionAlgorithm);
                     isSupportedConfiguration = false;
+                    break;
 
             }
 
@@ -1657,6 +1954,53 @@ public class HttpChannelConfig {
 
         }
 
+    }
+
+    /**
+     * Check the configuration to see if the decompression ratio limit
+     * has changed.
+     *
+     * @param props
+     */
+    private void parseDecompressionRatioLimit(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT);
+        if (null != value) {
+            try {
+                this.decompressionRatioLimit = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Decompression ratio limit is set to: " + getDecompressionRatioLimit());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseDecompressionRatioLimit", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid decompression ratio limit; " + value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Check the configuration to see if the decompression tolerance has
+     * changed.
+     *
+     * @param props
+     */
+
+    private void parseDecompressionTolerance(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE);
+        if (null != value) {
+            try {
+                this.decompressionTolerance = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Decompression tolerance is set to: " + getDecompressionTolerance());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseDecompressionTolerance", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid decompression tolerance; " + value);
+                }
+            }
+        }
     }
 
     /**
@@ -2219,6 +2563,67 @@ public class HttpChannelConfig {
 
     public String getPreferredCompressionAlgorithm() {
         return this.preferredCompressionAlgorithm;
+    }
+
+    /**
+     * Specifies whether the <httpEndpoint> is configured to considered the <samesite> sub element configurations.
+     *
+     * @return
+     */
+    public boolean useSameSiteConfig() {
+        return this.useSameSiteConfig;
+    }
+
+    /**
+     * Returns a Map of all the configured explicit cookie names and their corresponding SameSite
+     * value. In the case that '*' is the only configured pattern, it is added as key to this map.
+     *
+     * @return
+     */
+    public Map<String, String> getSameSiteCookies() {
+        return this.sameSiteCookies == null ? new HashMap<String, String>() : this.sameSiteCookies;
+    }
+
+    /**
+     * Returns a Map of all configured cookie name patterns and the corresponding SameSite value.
+     * This map is pre-sorted in alphabetical ordering and ranging from the most specific pattern to
+     * the least specific.
+     *
+     * @return
+     */
+    public Map<Pattern, String> getSameSitePatterns() {
+        return this.sameSitePatterns == null ? new HashMap<Pattern, String>() : this.sameSitePatterns;
+    }
+
+    /**
+     * Returns whether the only defined SameSite pattern is the standalone wildcard '*'. This is
+     * used to avoid regular expression compilation. If this is true, the corresponding SameSite
+     * value is accessible by using '*' as the key on the getSameSiteCookies map.
+     *
+     * @return
+     */
+    public boolean onlySameSiteStar() {
+        return this.onlySameSiteStar;
+    }
+
+    /**
+     * Query the maximum ratio the HTTP Channel will permit when decompressing
+     * a response that has been encoded.
+     *
+     * @return int
+     */
+    public int getDecompressionRatioLimit() {
+        return this.decompressionRatioLimit;
+    }
+
+    /**
+     * Query the maximum number of times the HTTP Channel will tolerate the decompression
+     * ratio to be above the set decompression ratio limit.
+     *
+     * @return int
+     */
+    public int getDecompressionTolerance() {
+        return this.decompressionTolerance;
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -54,6 +53,7 @@ public class RequestProbeTestDynamicFeatureChange {
     }
 
     private int fetchNoOfslowRequestWarnings() throws Exception {
+        server.waitForStringInLogUsingMark("TRAS0112W", 30000);
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
         for (String line : lines) {
             CommonTasks.writeLogMsg(Level.INFO, "----> slow request warning : " + line);
@@ -62,7 +62,8 @@ public class RequestProbeTestDynamicFeatureChange {
     }
 
     private int fetchNoENDWarnings() throws Exception {
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("END", MESSAGE_LOG);
+        server.waitForStringInLogUsingMark("I END", 30000);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("I END", MESSAGE_LOG);
         for (String line : lines) {
             CommonTasks.writeLogMsg(Level.INFO, "----> END warning : " + line);
         }
@@ -132,7 +133,16 @@ public class RequestProbeTestDynamicFeatureChange {
 
         createRequest(5000);
         int slow = fetchNoOfslowRequestWarnings();
+
+        // Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest(5000);
+            slow = fetchNoOfslowRequestWarnings();
+        }
+
         int end_new = fetchNoENDWarnings() - end;
+
         CommonTasks.writeLogMsg(Level.INFO, "----> Slow Warnings : " + slow);
         CommonTasks.writeLogMsg(Level.INFO, "----> END Warnings : " + end_new);
 

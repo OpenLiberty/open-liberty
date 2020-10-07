@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.security.KeyStoreException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,9 +39,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -54,6 +55,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -73,10 +75,8 @@ public class JwKRetriever {
     String sslConfigurationName = null;
     String jwkEndpointUrl = null; // jwksUri
 
-    String sigAlg = "RS256"; // TODO may need to allow it to be set in
-                             // configuration
-    JWKSet jwkSet = null; // using the JWKSet from the JwtConsumerConfig. Do not
-                          // create it every time
+    String sigAlg = null;
+    JWKSet jwkSet = null; // using the JWKSet from the JwtConsumerConfig. Do not create it every time
     SSLSupport sslSupport = null;//JwtUtils.getSSLSupportService();
 
     String keyFileName = null;
@@ -91,6 +91,8 @@ public class JwKRetriever {
     String publicKeyText = null;
     String locationUsed = null;
 
+    KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
+
     /**
      *
      * @param configId
@@ -103,19 +105,12 @@ public class JwKRetriever {
      *            using the jwkSet from the config
      * @param hnvEnabled
      */
-    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret) {
-        this.configId = configId;
-        this.sslConfigurationName = sslConfigurationName;
-        this.jwkEndpointUrl = jwkEndpointUrl;
-        this.jwkSet = jwkSet; // get the JWKSet from the Config
-        this.sslSupport = sslSupport;
-        this.hostNameVerificationEnabled = hnvEnabled;
-        this.jwkClientId = jwkClientId;
-        this.jwkClientSecret = jwkClientSecret;
+    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret, String signatureAlgorithm) {
+        this(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, signatureAlgorithm, null, null);
     }
 
     public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret,
-            String publicKeyText, String keyLocation) {
+            String signatureAlgorithm, String publicKeyText, String keyLocation) {
         this.configId = configId;
         this.sslConfigurationName = sslConfigurationName;
         this.jwkEndpointUrl = jwkEndpointUrl;
@@ -124,6 +119,7 @@ public class JwKRetriever {
         this.hostNameVerificationEnabled = hnvEnabled;
         this.jwkClientId = jwkClientId;
         this.jwkClientSecret = jwkClientSecret;
+        this.sigAlg = signatureAlgorithm;
         this.publicKeyText = publicKeyText;
         this.keyLocation = keyLocation;
     }
@@ -170,22 +166,20 @@ public class JwKRetriever {
         return key;
     }
 
-    protected PublicKey getJwkCache(String kid, String x5t) {
+    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use, String keyText) {
+        PublicKey key = null;
         if (kid != null) {
-            return jwkSet.getPublicKeyByKid(kid);
+            key = jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
         } else if (x5t != null) {
-            return jwkSet.getPublicKeyByx5t(x5t);
-        }
-        return jwkSet.getPublicKeyByKid(null);
-    }
-
-    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use) {
-        if (kid != null) {
-            return jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
-        } else if (x5t != null) {
-            return jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
+            key = jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
         } else if (use != null) {
-            return jwkSet.getPublicKeyBySetIdAndUse(setId, use);
+            key = jwkSet.getPublicKeyBySetIdAndUse(setId, use);
+        }
+        if (key != null) {
+            return key;
+        }
+        if (keyText != null) {
+            return jwkSet.getPublicKeyBySetIdAndKeyText(setId, keyText);
         }
         return jwkSet.getPublicKeyBySetId(setId);
     }
@@ -213,7 +207,7 @@ public class JwKRetriever {
         try {
             // figure out which cache to use for jwk from classloading
             classLoadingCacheSelector = Thread.currentThread().getContextClassLoader().toString() + location;
-            //figure out which cache to use for jwk from file system            
+            //figure out which cache to use for jwk from file system
             final String keyFile;
             if (location.startsWith("file:")) {
                 URI uri = new URI(location);
@@ -225,23 +219,23 @@ public class JwKRetriever {
             fileSystemCacheSelector = jwkFile.getCanonicalPath();
 
             synchronized (jwkSet) {
-                publicKey = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use); // try the cache.
+                publicKey = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use, null); // try the cache.
                 if (publicKey == null) {
-                    publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use);
+                    publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use, null);
                 }
                 if (publicKey == null) { // cache miss, read the jwk if we can,  &  update locationUsed
                     InputStream is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
                     if (is != null) {
                         keyString = getKeyAsString(is);
                         parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
-                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
+                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString);
                     }
                 }
             }
 
         } catch (Exception e2) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2.getMessage());
+                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2);
             }
         }
         return publicKey;
@@ -299,10 +293,10 @@ public class JwKRetriever {
 
         if (publicKeyText != null) {
             synchronized (jwkSet) {
-                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
+                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use, publicKeyText);
                 if (publicKey == null) {
                     parseJwk(publicKeyText, null, jwkSet, sigAlg);
-                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
+                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use, publicKeyText);
                 }
                 return publicKey;
             }
@@ -346,7 +340,7 @@ public class JwKRetriever {
         PublicKey key = null;
         try {
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(locationUsed, kid, x5t, use);
+                key = getJwkFromJWKSet(locationUsed, kid, x5t, use, null);
                 if (key == null) {
                     key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections);
                 }
@@ -398,7 +392,7 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(locationUsed, kid, x5t, use);
+        return getJwkFromJWKSet(locationUsed, kid, x5t, use, jsonString);
     }
 
     // separate to be an independent method for unit tests
@@ -419,7 +413,7 @@ public class JwKRetriever {
         Set<JWK> jwks = new HashSet<JWK>();
         JWK jwk = null;
 
-        if (isPEM(keyText) && "RS256".equals(signatureAlgorithm)) {
+        if (isPEM(keyText) && isPemSupportedAlgorithm(signatureAlgorithm)) {
             jwk = parsePEMFormat(keyText, signatureAlgorithm);
         } else {
             JSONObject jsonObject = parseJsonObject(keyText);
@@ -436,6 +430,9 @@ public class JwKRetriever {
         }
 
         for (JWK aJwk : jwks) {
+            if (isPEM(keyText)) {
+                jwkSet.addPemKey(location, keyText, jwk);
+            }
             if (location != null) {
                 jwkSet.add(location, aJwk);
             } else {
@@ -446,18 +443,56 @@ public class JwKRetriever {
         return !jwks.isEmpty();
     }
 
+    boolean isPemSupportedAlgorithm(String signatureAlgorithm) {
+        return keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm);
+    }
+
     @FFDCIgnore(Exception.class)
     private JWK parsePEMFormat(String keyText, String signatureAlgorithm) {
         Jose4jRsaJWK jwk = null;
-
         try {
-            RSAPublicKey pubKey = (RSAPublicKey) PemKeyUtil.getPublicKey(keyText);
-            jwk = new Jose4jRsaJWK(pubKey);
+            PublicKey pubKey = PemKeyUtil.getPublicKey(keyText);
+            if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
+                return getEcJwk(pubKey, signatureAlgorithm);
+            } else {
+                return getRsaJwk(pubKey, signatureAlgorithm);
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception parsing PEM file: " + e);
+            }
+        }
+        return jwk;
+    }
+
+    @FFDCIgnore(Exception.class)
+    private Jose4jEllipticCurveJWK getEcJwk(PublicKey publicKey, String signatureAlgorithm) {
+        if (!(publicKey instanceof ECPublicKey)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Provided public key was not of type ECPublicKey");
+            }
+            return null;
+        }
+        Jose4jEllipticCurveJWK jwk = null;
+        try {
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, signatureAlgorithm, JwkConstants.sig);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception instantiating EC JWK object: " + e);
+            }
+        }
+        return jwk;
+    }
+
+    @FFDCIgnore(Exception.class)
+    private Jose4jRsaJWK getRsaJwk(PublicKey pubKey, String signatureAlgorithm) {
+        Jose4jRsaJWK jwk = null;
+        try {
+            jwk = new Jose4jRsaJWK((RSAPublicKey) pubKey);
             jwk.setAlgorithm(signatureAlgorithm);
             jwk.setUse(JwkConstants.sig);
         } catch (Exception e) {
         }
-
         return jwk;
     }
 
@@ -511,14 +546,14 @@ public class JwKRetriever {
     JSONObject parseJsonObject(String jsonString) {
         JSONObject jsonObject = null;
         try {
-            if (!jsonString.startsWith(JSON_START)) { //convert Base64 encoded String to JSON string               
+            if (!jsonString.startsWith(JSON_START)) { //convert Base64 encoded String to JSON string
                 // jsonString=new String (Base64.getDecoder().decode(jsonString), "UTF-8");
                 jsonString = new String(Base64.decodeBase64(jsonString), "UTF-8");
             }
             jsonObject = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonObject;
@@ -531,7 +566,7 @@ public class JwKRetriever {
             jsonObject = JSONObject.parse(is);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing input stream [" + is.toString() + "]: " + e);
             }
         }
         return jsonObject;
@@ -544,40 +579,10 @@ public class JwKRetriever {
             jsonArray = JSONArray.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
         return jsonArray;
-    }
-
-    boolean jsonObjectContainsKtyForValidJwk(JSONObject entry, JWKSet jwkset, String signatureAlgorithm) {
-        if (entry == null) {
-            return false;
-        }
-
-        JWK jwk = null;
-        String kty = (String) entry.get("kty");
-        if (kty == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "JSON object is missing 'kty' entry");
-            }
-            return false;
-        }
-
-        jwk = createJwkBasedOnKty(kty, entry, signatureAlgorithm);
-        if (jwk == null) {
-            return false;
-        }
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Parsing JWK and adding it to JWK set");
-        }
-        jwk.parse();
-        jwkset.addJWK(jwk);
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "add remote key for keyid: ", jwk.getKeyID());
-        }
-        return true;
     }
 
     JWK createJwkBasedOnKty(String kty, JSONObject keyEntry, String signatureAlgorithm) {
@@ -623,7 +628,7 @@ public class JwKRetriever {
         try {
             sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
         } catch (javax.net.ssl.SSLException e) {
-            throw new SSLException(e.getMessage());
+            throw new SSLException(e);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);
@@ -717,9 +722,9 @@ public class JwKRetriever {
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             if (addBasicAuthHeader) {
                 client = getBuilder(useSystemPropertiesForHttpClientConnections).setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();

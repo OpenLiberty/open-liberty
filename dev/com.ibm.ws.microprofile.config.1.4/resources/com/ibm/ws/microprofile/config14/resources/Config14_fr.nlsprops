@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2018, 2019 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@
 no.such.element.CWMCG0300E=CWMCG0300E: La propri\u00e9t\u00e9 {0} est introuvable dans la configuration.
 no.such.element.CWMCG0300E.explanation=La propri\u00e9t\u00e9 demand\u00e9e n'existe dans aucune des sources de configuration d\u00e9finies.
 no.such.element.CWMCG0300E.useraction=Ajoutez la propri\u00e9t\u00e9 \u00e0 l'une des sources de configuration existantes ou ajoutez une nouvelle source de configuration contenant la propri\u00e9t\u00e9.
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: L'invalidation du cache MicroProfile Config ne peut pas \u00eatre planifi\u00e9e. L'exception est : {0}
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Il se peut que les modifications apport\u00e9es dans MicroProfile Config ne soient pas refl\u00e9t\u00e9es dans l'application.
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.4 error message

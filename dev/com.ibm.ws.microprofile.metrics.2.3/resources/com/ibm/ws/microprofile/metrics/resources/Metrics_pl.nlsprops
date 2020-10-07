@@ -1,0 +1,149 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Format nag\u0142\u00f3wka akceptacji {0} jest niepoprawny.
+notAcceptable.info.CWMMC0000I.explanation=Nag\u0142\u00f3wek akceptacji ma nieobs\u0142ugiwany format.
+notAcceptable.info.CWMMC0000I.useraction=U\u017cyj odpowiednich nag\u0142\u00f3wk\u00f3w.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: Typem \u017c\u0105dania metody musi by\u0107 GET lub OPTIONS.
+requestType.info.CWMMC0001I.explanation=Typ \u017c\u0105dania nie jest obs\u0142ugiwany. Wymagany typ: GET lub OPTIONS.
+requestType.info.CWMMC0001I.useraction=Wykonaj \u017c\u0105danie GET lub OPTIONS.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: Nie znaleziono nazwy pomiaru {0}.
+metricNotFound.info.CWMMC0002I.explanation=Pomiar nie istnieje.
+metricNotFound.info.CWMMC0002I.useraction=Wprowad\u017a poprawn\u0105 nazw\u0119 pomiaru.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: Nie znaleziono rejestru {0}.
+registryNotFound.info.CWMMC0003I.explanation=Rejestr nie istnieje.
+registryNotFound.info.CWMMC0003I.useraction=Wprowad\u017a poprawn\u0105 nazw\u0119 rejestru.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: Rejestr {0} nie zawiera tre\u015bci.
+emptyRegistry.info.CWMMC0004I.explanation=Rejestr jest pusty.
+emptyRegistry.info.CWMMC0004I.useraction=Zape\u0142nij rejestr pomiarami.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny: {0}
+internal.error.CWMMC0005E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMMC0005E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMMC0006E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+internal.error.CWMMC0006E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
+
+#Memory usedHeap message
+memory.usedHeap.description=Wy\u015bwietla ilo\u015b\u0107 u\u017cywanej pami\u0119ci sterty (w bajtach).
+
+#Memory committedHeap message
+memory.committedHeap.description=Wy\u015bwietla ilo\u015b\u0107 pami\u0119ci (w bajtach), kt\u00f3ra jest zatwierdzona do u\u017cycia przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java. Ta ilo\u015b\u0107 pami\u0119ci jest gwarantowana na potrzeby maszyny wirtualnej j\u0119zyka Java.
+
+#Memory maxHeap message
+memory.maxHeap.description=Wy\u015bwietla maksymaln\u0105 ilo\u015b\u0107 pami\u0119ci sterty (w bajtach), kt\u00f3ra mo\u017ce by\u0107 u\u017cywana przez funkcj\u0119 zarz\u0105dzania pami\u0119ci\u0105. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli maksymalna wielko\u015b\u0107 pami\u0119ci sterty nie jest zdefiniowana. Ta ilo\u015b\u0107 pami\u0119ci nie jest gwarantowana jako dost\u0119pna na potrzeby zarz\u0105dzania pami\u0119ci\u0105, je\u015bli jest ona wi\u0119ksza ni\u017c ilo\u015b\u0107 zatwierdzonej pami\u0119ci. Przydzielenie pami\u0119ci przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java mo\u017ce zako\u0144czy\u0107 si\u0119 niepowodzeniem nawet wtedy, gdy ilo\u015b\u0107 u\u017cywanej pami\u0119ci nie przekracza tej wielko\u015bci maksymalnej.
+
+#Jvm uptime message
+jvm.uptime.description=Wy\u015bwietla czas uruchomienia wirtualnej maszyny j\u0119zyka Java (w milisekundach). Ten atrybut przedstawia przybli\u017cony czas uruchomienia wirtualnej maszyny j\u0119zyka Java.
+
+#Thread count message
+thread.count.description=Wy\u015bwietla bie\u017c\u0105c\u0105 liczb\u0119 aktywnych w\u0105tk\u00f3w, w tym w\u0105tk\u00f3w demona i w\u0105tk\u00f3w innych ni\u017c w\u0105tki demona.
+
+#Thread daemon count message
+thread.daemon.count.description=Wy\u015bwietla bie\u017c\u0105c\u0105 liczb\u0119 aktywnych w\u0105tk\u00f3w demona.
+
+#Thread max count message
+thread.max.count.description=Wy\u015bwietla szczytow\u0105 liczb\u0119 aktywnych w\u0105tk\u00f3w od czasu uruchomienia wirtualnej maszyny j\u0119zyka Java lub zresetowania szczytu. Obejmuje to w\u0105tki demona i w\u0105tki inne ni\u017c w\u0105tki demona.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=Wy\u015bwietla liczb\u0119 klas, kt\u00f3re s\u0105 obecnie za\u0142adowane w wirtualnej maszynie j\u0119zyka Java.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 klas, kt\u00f3re zosta\u0142y za\u0142adowane od czasu rozpocz\u0119cia wykonywania przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 klas, kt\u00f3re zosta\u0142y usuni\u0119te z pami\u0119ci od czasu rozpocz\u0119cia wykonywania przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=Wy\u015bwietla liczb\u0119 procesor\u00f3w dost\u0119pnych dla wirtualnej maszyny j\u0119zyka Java. Ta warto\u015b\u0107 mo\u017ce si\u0119 zmienia\u0107 w trakcie konkretnego wywo\u0142ania maszyny wirtualnej.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=Wy\u015bwietla \u015brednie obci\u0105\u017cenie systemu w ci\u0105gu ostatniej minuty. \u015arednie obci\u0105\u017cenie systemu jest sum\u0105 liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, w kolejce do dost\u0119pnych procesor\u00f3w oraz liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, dzia\u0142aj\u0105cych na dost\u0119pnych procesorach u\u015brednion\u0105 w danym okresie. Metoda obliczania \u015bredniego obci\u0105\u017cenia jest zale\u017cna od systemu operacyjnego, ale zwykle jest to t\u0142umiona \u015brednia zale\u017cna od czasu. Je\u015bli \u015brednie obci\u0105\u017cenie nie jest dost\u0119pne, wy\u015bwietlana jest warto\u015b\u0107 ujemna. Ten atrybut jest zaprojektowany w taki spos\u00f3b, aby zapewnia\u0107 wskaz\u00f3wki na temat obci\u0105\u017cenia systemu i zapytania mog\u0105 by\u0107 do niego kierowane bardzo cz\u0119sto. \u015arednie obci\u0105\u017cenie mo\u017ce by\u0107 niedost\u0119pne na niekt\u00f3rych platformach, na kt\u00f3rych zaimplementowanie tej metody wymaga du\u017cej ilo\u015bci zasob\u00f3w.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces wirtualnej maszyny j\u0119zyka Java w ostatnim czasie.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Wy\u015bwietla czas pracy procesora u\u017cywany przez proces, w kt\u00f3rym dzia\u0142a wirtualna maszyna j\u0119zyka Java.
+
+#Garbage collection count message
+garbageCollectionCount.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 operacji gromadzenia, kt\u00f3re wyst\u0105pi\u0142y. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli liczba operacji gromadzenia dla tego kolektora jest niezdefiniowana.
+
+#Garbage collection time message
+garbageCollectionTime.description=Wy\u015bwietla szacowany \u0142\u0105czny czas trwania gromadzenia (w milisekundach). Ten atrybut ma warto\u015b\u0107 -1, je\u015bli czas trwania gromadzenia dla tego kolektora jest niezdefiniowany. Implementacja wirtualnej maszyny j\u0119zyka Java mo\u017ce u\u017cywa\u0107 zegara o wysokiej rozdzielczo\u015bci do mierzenia czasu, kt\u00f3ry up\u0142yn\u0105\u0142. Ten atrybut mo\u017ce mie\u0107 t\u0119 sam\u0105 warto\u015b\u0107, nawet je\u015bli liczba operacji gromadzenia zwi\u0119kszy\u0142a si\u0119, gdy czas trwania gromadzenia jest bardzo kr\u00f3tki.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Liczba w\u0105tk\u00f3w wykonuj\u0105cych zadania.
+threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
+
+servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
+servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera.
+
+connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
+connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
+connectionpool.managedConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w pulach wolnych, wsp\u00f3\u0142u\u017cytkowanych i niewsp\u00f3\u0142u\u017cytkowanych.
+connectionpool.connectionHandles.description=Liczba po\u0142\u0105cze\u0144, kt\u00f3re s\u0105 w u\u017cyciu. Liczba ta mo\u017ce obejmowa\u0107 wiele po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowanych z jednego po\u0142\u0105czenia zarz\u0105dzanego.
+connectionpool.freeConnections.description=Liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych w wolnym obszarze puli.
+
+session.create.total.description=Liczba sesji zalogowanych od momentu w\u0142\u0105czenia tego pomiaru.
+session.liveSessions.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0105 obecnie zalogowani.
+session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Sesja jest aktywna, je\u015bli produkt aktualnie przetwarza \u017c\u0105danie, kt\u00f3re korzysta z tej sesji u\u017cytkownika).
+session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
+session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
+
+grpc.server.rpcStarted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uruchomionych na serwerze.
+grpc.server.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uko\u0144czonych na serwerze (obejmuje zar\u00f3wno wywo\u0142ania zako\u0144czone powodzeniem, jak i zako\u0144czone niepowodzeniem).
+grpc.server.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez serwer.
+grpc.server.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z klienta.
+grpc.server.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
+grpc.client.rpcStarted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uruchomionych na kliencie.
+grpc.client.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uko\u0144czonych na kliencie (obejmuje zar\u00f3wno wywo\u0142ania zako\u0144czone powodzeniem, jak i zako\u0144czone niepowodzeniem).
+grpc.client.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez klienta.
+grpc.client.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z serwera.
+grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
+REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API pomiar\u00f3w: {0}
+temporary.CWMMC9999E.explanation=B\u0142\u0105d interfejsu API pomiar\u00f3w uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMMC9999E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.

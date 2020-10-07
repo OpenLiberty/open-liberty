@@ -1,0 +1,49 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wird ausgel\u00f6st, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option clean erneut.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: Die HealthCheck-Methode {0} in der Anwendung {1} aus dem Modul {2} hat die Ausnahme {3} mit der folgenden Nachricht ausgel\u00f6st: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=Die angegebene Aufrufmethode hat eine Ausnahme ausgel\u00f6st.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=\u00dcberpr\u00fcfen Sie Ihre Aufrufmethode innerhalb der HealthCheck-Bean, um die eingetretene Ausnahme zu ermitteln.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: Die Klasse {0}, die die HealthCheckResponse in der Anwendung {1} im Modul {2} implementiert, hat einen Status {3} mit den folgenden Daten berichtet: {4}.
+healthcheck.application.down.CWMMH0052W.explanation=Der Status DOWN kann dazu f\u00fchren, dass ein \u00dcberwachungsservice auf diesem Server ausgef\u00fchrt wird.
+healthcheck.application.down.CWMMH0052W.useraction=Es ist keine Benutzeraktion erforderlich. Diese Warnung ist eine Aufzeichnung des Status DOWN.
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: Die Statuspr\u00fcfung f\u00fcr die Bereitschaft hat einen Gesamtstatus von DOWN ergeben, weil die folgenden Anwendungen noch nicht gestartet sind: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Die angegebenen Anwendungen wurden noch nicht vollst\u00e4ndig gestartet und sind noch nicht bereit, Anforderungen zu verarbeiten. Daher hat die Statuspr\u00fcfung f\u00fcr die Bereitschaft einen Status DOWN gemeldet.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Es ist keine Benutzeraktion erforderlich. Warten Sie, bis die Anwendungen starten. Diese Warnung ist eine Aufzeichnung des Status DOWN.

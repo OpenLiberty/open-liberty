@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=Dotazy SQL s kurzorem mus\u00ed poskytovat dal\u0161\u00ed dotaz k na\u010dten\u00ed velikosti sady v\u00fdsledk\u016f.
+
+6002=Agregovan\u00e9 objekty nelze zapisovat, odstra\u0148ovat, ani se na n\u011b dotazovat nez\u00e1visle na jejich vlastn\u00edc\u00edch. {1} Deskriptor: [{0}]
+
+6003=Po\u010det argument\u016f poskytnut\u00fdch dotazu k proveden\u00ed neodpov\u00edd\u00e1 po\u010dtu argument\u016f v definici dotazu.
+
+6004=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3}nen\u00ed z m\u00edsta objekt\u016f tohoto rozhran\u00ed UnitOfWork, ale z m\u00edsta objekt\u016f nad\u0159\u00edzen\u00e9 relace. Objekt nebyl v tomto rozhran\u00ed UnitOfWork nikdy registrov\u00e1n, {3}ale byl na\u010dten z nad\u0159\u00edzen\u00e9 relace a vzta\u017een k objektu registrovan\u00e9mu v rozhran\u00ed UnitOfWork. Zkontrolujte, zda spr\u00e1vn\u011b{3}registrujete objekty. Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3}p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
+
+6005=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3}je origin\u00e1lem nov\u00e9ho registrovan\u00e9ho objektu. Klony rozhran\u00ed UnitOfWork zaregistrovaly nov\u00e9 objekty, proto je t\u0159eba zajistit, aby byl objekt {3}zaregistrov\u00e1n p\u0159ed t\u00edm, ne\u017e na n\u011bj bude odkazovat jin\u00fd objekt. Pokud nechcete nov\u00fd objekt klonovat, pou\u017eijte rozhran\u00ed API {3}UnitOfWork.registerNewObject(Object). Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3}p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
+
+6006=Mapov\u00e1n\u00ed [{0}] nepodporuje \u010dten\u00ed d\u00e1vek.
+
+6007=Chyb\u00ed deskriptor pro [{0}].
+
+6008=Chyb\u00ed deskriptor pro [{0}] pro dotaz s n\u00e1zvem [{1}].
+
+6013=T\u0159\u00edd\u011b CursoredStream byla p\u0159id\u011blena chybn\u00e1 velikost dotazu.
+
+6014=B\u011bhem rozhran\u00ed UnitOfWork nelze zapisovat objekty, mus\u00ed b\u00fdt registrov\u00e1ny.
+
+6015=Neplatn\u00fd kl\u00ed\u010d dotazu [{0}] ve v\u00fdrazu.
+
+6016=Objekty ani datab\u00e1zi nelze zm\u011bnit prost\u0159ednictv\u00edm t\u0159\u00eddy ServerSession. V\u0161echny zm\u011bny je t\u0159eba prov\u00e9st prost\u0159ednictv\u00edm rozhran\u00ed UnitOfWork t\u0159\u00eddy ClientSession.
+
+6020=Pro typ v \u0159\u00e1dku [{0}] nen\u00ed ozna\u010dena \u017e\u00e1dn\u00e1 konkr\u00e9tn\u00ed t\u0159\u00edda.
+
+6021=Pro deskriptory rozhran\u00ed nebo deskriptory v\u00edce tabulek abstraktn\u00edch t\u0159\u00edd pou\u017e\u00edvaj\u00edc\u00ed v\u00fdrazy nejsou podporov\u00e1ny kurzory. Zva\u017ete pou\u017eit\u00ed vlastn\u00edho k\u00f3du SQL nebo v\u00edce dotaz\u016f.
+
+6023=Seznam pol\u00ed, kter\u00e1 se maj\u00ed vlo\u017eit do tabulky [{0}], je pr\u00e1zdn\u00fd. Mus\u00edte definovat alespo\u0148 jedno mapov\u00e1n\u00ed pro tuto tabulku.
+
+6024=Dotazy na \u00fapravy vy\u017eaduj\u00ed objekt, kter\u00fd se m\u00e1 upravit.
+
+6026=Dotaz s n\u00e1zvem [{0}] nen\u00ed definov\u00e1n. T\u0159\u00edda dom\u00e9ny: [{1}]
+
+6027=Dotaz byl odesl\u00e1n na neaktivovan\u00e9 rozhran\u00ed UnitOfWork.
+
+6028=Do\u0161lo k pokusu o \u010dten\u00ed za koncem proudu.
+
+6029=Mus\u00ed b\u00fdt poskytnuta t\u0159\u00edda odkazu.
+
+6030=Pokud nen\u00ed povoleno ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti, nen\u00ed mo\u017en\u00e1 aktualizace.
+
+6031=Metoda size() se podporuje pouze u dotaz\u016f na v\u00fdrazy, nen\u00ed-li uveden dotaz na velikost.
+
+6032=P\u0159\u00edkaz SQL nebyl \u0159\u00e1dn\u011b nastaven.
+
+6034=Neplatn\u00fd v\u00fdraz polo\u017eky dotazu [{0}].
+
+6041=Objekt v\u00fdb\u011bru p\u0159edan\u00fd t\u0159\u00edd\u011b ReadObjectQuery m\u011bl hodnotu null.
+
+6042=Pro dotazy na jin\u00e9 \u00farovni, ne\u017e na \u00farovni objektu, mus\u00ed b\u00fdt uveden n\u00e1zev relace. Viz metoda setSessionName(String).
+
+6043=Dotazy ReportQuery bez prim\u00e1rn\u00edch kl\u00ed\u010d\u016f nemohou pou\u017e\u00edvat metodu readObject(). {1}ReportQueryResult: [{0}].
+
+6044=Bylo zji\u0161t\u011bno, \u017ee prim\u00e1rn\u00ed kl\u00ed\u010d na\u010dten\u00fd z \u0159\u00e1dku [{0}] b\u011bhem prov\u00e1d\u011bn\u00ed dotazu m\u00e1 hodnotu null. Prim\u00e1rn\u00ed kl\u00ed\u010de nesm\u00ed obsahovat hodnotu null.
+
+6045=Pro podt\u0159\u00eddu [{0}] ozna\u010denou v \u0159\u00e1dku b\u011bhem sestavov\u00e1n\u00ed objektu nen\u00ed definov\u00e1n \u017e\u00e1dn\u00fd deskriptor.
+
+6046=Nelze odstranit objekt t\u0159\u00eddy, kter\u00e1 je jen pro \u010dten\u00ed. T\u0159\u00edda [{0}] je v tomto rozhran\u00ed UnitOfWork deklarov\u00e1na jako t\u0159\u00edda jen pro \u010dten\u00ed.
+
+6047=Neplatn\u00fd oper\u00e1tor [{0}] ve v\u00fdrazu.
+
+6048=Nedovolen\u00e9 pou\u017eit\u00ed metody getField() [{0}] ve v\u00fdrazu.
+
+6049=Nedovolen\u00e9 pou\u017eit\u00ed metody getTable() [{0}] ve v\u00fdrazu.
+
+6050=Neshoda velikosti v\u00fdsledku dotazu ReportQuery. Byla o\u010dek\u00e1v\u00e1na hodnota [{0}], ale na\u010detla se hodnota [{1}].
+
+6051=Pro dotazy na \u010d\u00e1ste\u010dn\u00e9 objekty nen\u00ed povoleno udr\u017eov\u00e1n\u00ed mezipam\u011bti ani \u00fapravy. Mus\u00edte pou\u017e\u00edt metodu dontMaintainCache().
+
+6052=Vn\u011bj\u0161\u00ed spojen\u00ed (getAllowingNull nebo anyOfAllowingNone) je platn\u00e9 pouze pro mapov\u00e1n\u00ed OneToOne, OneToMany, ManyToMany, AggregateCollection a DirectCollection a nelze ho pou\u017e\u00edt pro mapov\u00e1n\u00ed [{0}].
+
+6054=Objekt [{0}] t\u0159\u00eddy [{1}] nelze p\u0159idat do t\u0159\u00eddy kontejneru [{2}] pomoc\u00ed z\u00e1sady [{3}].
+
+6055=Vyvol\u00e1n\u00ed metody [{0}] na objektu [{1}] t\u0159\u00eddy [{2}] spustilo v\u00fdjimku.
+
+6056=Nelze vytvo\u0159it klon objektu [{0}] t\u0159\u00eddy [{1}] pomoc\u00ed [{2}].
+
+6057=Metoda [{0}] nen\u00ed platn\u00e1 metoda pro vol\u00e1n\u00ed na objektu [{1}].
+
+6058=Metoda [{0}] nebyla nalezena ve t\u0159\u00edd\u011b [{1}].
+
+6059=T\u0159\u00eddu [{0}] nelze pou\u017e\u00edt jako kontejner pro v\u00fdsledky dotazu, proto\u017ee ji nelze p\u0159ev\u00e9st na instanci.
+
+6060=Objekt [{0}] typu [{1}] nelze pou\u017e\u00edt jako kl\u00ed\u010d do [{2}] typu [{3}]. Kl\u00ed\u010d nelze porovnat s kl\u00ed\u010di, kter\u00e9 jsou aktu\u00e1ln\u011b v map\u011b.
+
+6061=K metod\u011b [{0}] pro objekt [{1}] t\u0159\u00eddy [{2}] nelze p\u0159istupovat reflexivn\u011b.
+
+6062=Reflexivn\u011b volan\u00e1 metoda [{0}] na objektu [{1}] t\u0159\u00eddy [{2}] spustila v\u00fdjimku.
+
+6063=Neplatn\u00e1 operace [{0}] na kurzoru.
+
+6064=Objekt [{0}] t\u0159\u00eddy [{1}] nelze odebrat z t\u0159\u00eddy kontejneru [{2}] pomoc\u00ed z\u00e1sady [{3}].
+
+6065=Objekt [{0}] t\u0159\u00eddy [{1}] nelze p\u0159idat do kontejneru [{2}].
+
+6066=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3}byl odstran\u011bn, ale dosud na n\u011bj existuj\u00ed odkazy. Na odstran\u011bn\u00e9 objekty nelze po jejich odstran\u011bn\u00ed odkazovat. {3}Zkontrolujte, zda spr\u00e1vn\u011b registrujete objekty. Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3}p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
+
+6067=K poli [{0}] pro objekt [{1}] t\u0159\u00eddy [{2}] nelze p\u0159istupovat reflexivn\u011b.
+
+6068=Odkaz na tabulku s nelze porovnat [{0}] ve v\u00fdrazu.
+
+6069=Pole [{0}] v tomto v\u00fdrazu obsahuje v tomto kontextu neplatnou tabulku.
+
+6070=Neplatn\u00e9 pou\u017eit\u00ed kl\u00ed\u010de dotazu [{0}], kter\u00fd p\u0159edstavuje vztah typu "to-many" ve v\u00fdrazu. Nam\u00edsto get() pou\u017eijte anyOf().
+
+6071=Neplatn\u00e9 pou\u017eit\u00ed anyOf() pro kl\u00ed\u010d dotazu [{0}], kter\u00fd nep\u0159edstavuje vztah typu "to-many", ve v\u00fdrazu. Nam\u00edsto anyOf() pou\u017eijte get().
+
+6072=Dotazov\u00e1n\u00ed v r\u00e1mci VariableOneToOneMapping nen\u00ed podporov\u00e1no. {2}Deskriptor: [{0}] {2}Mapov\u00e1n\u00ed: [{1}]
+
+6073=Chybn\u00fd v\u00fdraz v dotazu. Pokus o tisk odkazu na objekt do p\u0159\u00edkazu SQL pro kl\u00ed\u010d dotazu [{0}].
+
+6074=Tento v\u00fdraz nem\u016f\u017ee ur\u010dit, zda odpov\u00edd\u00e1 objekt v pam\u011bti. Dotaz mus\u00edte nastavit tak, aby zkontroloval datab\u00e1zi.
+
+6075=Porovn\u00e1n\u00ed objekt\u016f mohou pou\u017e\u00edvat pouze oper\u00e1tory equal() nebo notEqual(). Ostatn\u00ed porovn\u00e1n\u00ed je t\u0159eba prov\u00e1d\u011bt prost\u0159ednictv\u00edm kl\u00ed\u010d\u016f dotazu nebo p\u0159\u00edm\u00fdch porovn\u00e1n\u00ed na \u00farovni atribut\u016f. {1}V\u00fdraz: [{0}]
+
+6076=Porovn\u00e1n\u00ed objekt\u016f lze pou\u017e\u00edvat pouze s t\u0159\u00eddou OneToOneMapping. Ostatn\u00ed porovn\u00e1n\u00ed mapov\u00e1n\u00ed je t\u0159eba prov\u00e1d\u011bt prost\u0159ednictv\u00edm kl\u00ed\u010d\u016f dotazu nebo p\u0159\u00edm\u00fdch porovn\u00e1n\u00ed na \u00farovni atribut\u016f. {2}Mapov\u00e1n\u00ed: [{0}] {2}V\u00fdraz: [{1}]
+
+6077=V dotazech na parametry nelze pou\u017e\u00edt porovn\u00e1n\u00ed objekt\u016f. V\u00fdraz mus\u00edte sestavit dynamicky. {1}V\u00fdraz: [{0}]
+
+6078=T\u0159\u00edda argumentu pro porovn\u00e1n\u00ed objekt\u016f je chybn\u00e1. {3}V\u00fdraz: [{0}] {3}Mapov\u00e1n\u00ed: [{1}] {3}Argument: [{2}]
+
+6079=Pro c\u00edlov\u00e9 vztahy s ciz\u00edm kl\u00ed\u010dem nelze pou\u017e\u00edt porovn\u00e1n\u00ed objekt\u016f s hodnotou null. Nam\u00edsto toho prove\u010fte dotaz na zdrojov\u00e9m prim\u00e1rn\u00edm kl\u00ed\u010di. {3}V\u00fdraz: [{0}] {3}Mapov\u00e1n\u00ed: [{1}] {3}Argument: [{2}]
+
+6080=Neplatn\u00e9 vol\u00e1n\u00ed datab\u00e1ze [{0}]. Vol\u00e1n\u00ed mus\u00ed b\u00fdt instance DatabaseCall.
+
+6081=Neplatn\u00fd p\u0159istupuj\u00edc\u00ed objekt datab\u00e1ze [{0}]. P\u0159istupuj\u00edc\u00ed objekt mus\u00ed b\u00fdt instance DatabaseAccessor.
+
+6082=Metodu [{0}] s typy argument\u016f [{1}] nelze vyvolat na v\u00fdrazu.
+
+6083=Dotazy, kter\u00e9 pou\u017e\u00edvaj\u00ed in(), nelze parametrizovat. Zaka\u017ete bu\u010f p\u0159\u00edpravu dotazu, nebo vazbu.
+
+6084=Dotaz na p\u0159esm\u011brov\u00e1n\u00ed nebyl \u0159\u00e1dn\u011b nakonfigurov\u00e1n. Nebyl nastaven n\u00e1zev t\u0159\u00eddy nebo metody.
+
+6085=Metoda dotazu na p\u0159esm\u011brov\u00e1n\u00ed nen\u00ed definov\u00e1na nebo je definov\u00e1na s chybn\u00fdmi argumenty. Mus\u00ed b\u00fdt deklarov\u00e1na jako "public static" a m\u00edt argumenty (DatabaseQuery, Record, Session) nebo (Session, Vector). {2}T\u0159\u00edda: [{0}] {2}Metoda: [{1}]
+
+6086=Vyvol\u00e1n\u00ed metody dotazu na p\u0159esm\u011brov\u00e1n\u00ed spustilo v\u00fdjimku.
+
+6087=T\u0159\u00edda uk\u00e1zkov\u00e9ho objektu [{0}] neodpov\u00edd\u00e1 t\u0159\u00edd\u011b referen\u010dn\u00edho objektu [{1}].
+
+6088=Dotaz ReportQuery nem\u00e1 \u017e\u00e1dn\u00e9 atributy.
+
+6089=V\u00fdraz nebyl spr\u00e1vn\u011b inicializov\u00e1n. Pro dotaz by se m\u011bl pou\u017e\u00edvat pouze jeden tv\u016frce v\u00fdraz\u016f. {1}Pro paraleln\u00ed v\u00fdrazy mus\u00ed b\u00fdt konstruktoru tv\u016frce v\u00fdraz\u016f poskytnuta t\u0159\u00edda dotazu a tv\u016frce v\u00fdraz\u016f dan\u00e9ho dotazu mus\u00ed {1}b\u00fdt v\u017edy na lev\u00e9 stran\u011b v\u00fdrazu. {1}V\u00fdraz: [{0}]
+
+6090=Dotaz ReportQuery nelze nastavit na hodnotu "kontrolovat pouze mezipam\u011b\u0165".
+
+6091=Typ konstanty [{0}] pou\u017eit\u00fd ve v\u00fdrazu pro porovn\u00e1n\u00ed neodpov\u00edd\u00e1 typu atributu [{1}].
+
+6092=Byl zji\u0161t\u011bn objekt ValueHolder nep\u0159eveden\u00fd na instanci. K proveden\u00ed tohoto dotazu v pam\u011bti mus\u00edte p\u0159ev\u00e9st p\u0159\u00edslu\u0161n\u00e9 objekty ValueHolder na instance.
+
+6093=Neplatn\u00fd v\u00fdraz typu na [{0}]. T\u0159\u00edda nem\u00e1 deskriptor, nebo m\u00e1 deskriptor, kter\u00fd nepou\u017e\u00edv\u00e1 d\u011bdi\u010dnost nebo pou\u017e\u00edv\u00e1 pro d\u011bdi\u010dnost ClassExtractor.
+
+6094=N\u00e1zev parametru [{0}] v krit\u00e9ri\u00edch v\u00fdb\u011bru dotazu neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu z n\u00e1zv\u016f parametr\u016f definovan\u00fdch v dotazu.
+
+6095=Je vy\u017eadov\u00e1na ve\u0159ejn\u00e1 metoda klonov\u00e1n\u00ed.
+
+6096=Metoda klonov\u00e1n\u00ed je nep\u0159\u00edstupn\u00e1.
+
+6097=Metoda klonov\u00e1n\u00ed vyvolala v\u00fdjimku: {0}.
+
+6098=Neo\u010dek\u00e1van\u00e1 v\u00fdjimka vyvol\u00e1n\u00ed: {0}.
+
+6099=P\u0159ipojen\u00ed v r\u00e1mci t\u0159\u00eddy d\u011bdi\u010dnosti s v\u00edce podt\u0159\u00eddami tabulky nen\u00ed podporov\u00e1no: {0}, {1}
+
+6100=Bylo zji\u0161t\u011bno v\u00edce hodnot pro dotaz na \u010dten\u00ed jednoho objektu.
+
+6101=Proveden\u00ed tohoto dotazu by mohlo naru\u0161it integritu mezipam\u011bti glob\u00e1ln\u00ed relace, kter\u00e1 mus\u00ed obsahovat pouze nejnov\u011bj\u0161\u00ed verze objekt\u016f. Chcete-li prov\u00e9st dotaz, kter\u00fd vr\u00e1t\u00ed objekty ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti, zkuste jeden z n\u00e1sleduj\u00edc\u00edch postup\u016f: Pou\u017eijte metodu HistoricalSession (acquireSessionAsOf), v\u0161echny na\u010dten\u00e9 objekty budou ulo\u017eeny do mezipam\u011bti a automaticky na\u010dteny ve stavu ke stejn\u00e9mu \u010dasov\u00e9mu okam\u017eiku. To bude platit i pro spou\u0161t\u011bn\u00ed vztah\u016f objekt\u016f. Prom\u011bnnou shouldMaintainCache nastavte na hodnotu false. Ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti m\u016f\u017eete vytvo\u0159it v\u00fdraz libovoln\u00e9ho objektu, pokud nen\u00ed \u017e\u00e1dn\u00e9 z jeho pol\u00ed reprezentov\u00e1no v sad\u011b v\u00fdsledk\u016f (tj. pou\u017e\u00edv\u00e1 se pouze v klauzuli Where).
+
+6102=V sou\u010dasn\u00e9 dob\u011b funguj\u00ed historick\u00e9 dotazy pouze s datab\u00e1zemi Oracle 9R2 nebo nov\u011bj\u0161\u00edmi, proto\u017ee pou\u017e\u00edvaj\u00ed funkci Flashback spole\u010dnosti Oracle.
+
+6103=Dotaz WriteQuery nelze prov\u00e9st z relace HistoricalSession jen pro \u010dten\u00ed. Chcete-li obnovit minul\u00e9 objekty, zkuste tento postup: na\u010dt\u011bte stejn\u00fd objekt v sou\u010dasn\u00e9 podob\u011b pomoc\u00ed rozhran\u00ed UnitOfWork a potvr\u010fte rozhran\u00ed UnitOfWork.
+
+6104=Objekt {0} v mezipam\u011bti neexistuje.
+
+6105=Dotaz je t\u0159eba znovu inicializovat pomoc\u00ed z\u00e1sady proudu kurzoru.
+
+6106=Objekt typu [{0}] s prim\u00e1rn\u00edm kl\u00ed\u010dem [{1}] v mezipam\u011bti neexistuje.
+
+6107=Chyb\u00ed p\u0159\u00edkazy aktualizace ve t\u0159\u00edd\u011b UpdateAllQuery.
+
+6108=Aktualizace v\u0161ech dotaz\u016f nepodporuje d\u011bdi\u010dnost s v\u00edce tabulkami.
+
+6109=Pojmenovan\u00e1 skupina na\u010dten\u00ed ({0}) nen\u00ed definov\u00e1na na \u00farovni deskriptoru.
+
+6110=\u010ctec\u00ed dotaz nem\u016f\u017ee p\u0159izp\u016fsobit nena\u010dten\u00fd atribut ({0}) \u010d\u00e1ste\u010dn\u011b na\u010dten\u00e9ho objektu v map\u011b identit jednotky pr\u00e1ce.
+
+6111=Atribut skupiny na\u010dten\u00ed ({0}) nen\u00ed definovan\u00fd nebo nen\u00ed mapovan\u00fd.
+
+6112=Skupinu na\u010dten\u00ed nelze nastavit v dotazu na sestavu.
+
+6113=Skupinu na\u010dten\u00ed nelze pou\u017e\u00edvat spolu s na\u010dten\u00edm d\u00edl\u010d\u00edch atribut\u016f.
+
+6114=Chcete-li v dotazu ({1}) nastavit skupinu na\u010dten\u00ed, mus\u00edte v deskriptoru ({0}) definovat spr\u00e1vce skupiny na\u010dten\u00ed.
+
+6115=Dotazy v izolovan\u00fdch t\u0159\u00edd\u00e1ch nebo dotazy nastaven\u00e9 na pou\u017e\u00edv\u00e1n\u00ed v\u00fdhradn\u00edch p\u0159ipojen\u00ed se nesm\u00ed prov\u00e1d\u011bt ve t\u0159\u00edd\u011b ServerSession nebo v CMP mimo transakci.
+
+6116=Pro po\u017eadovanou operaci nebylo zad\u00e1no \u017e\u00e1dn\u00e9 vol\u00e1n\u00ed ani \u017e\u00e1dn\u00e1 interakce.
+
+6117=Dotaz, kter\u00fd pou\u017e\u00edv\u00e1 v\u00fdsledek s kurzorem, nelze nastavit tak, aby ukl\u00e1dal v\u00fdsledky dotazu do mezipam\u011bti.
+
+6118=Dotaz v izolovan\u00e9 t\u0159\u00edd\u011b nesm\u00ed ukl\u00e1dat v\u00fdsledky dotazu do mezipam\u011bti.
+
+6119=V\u00fdraz spojen\u00ed {0} je neplatn\u00fd nebo je ur\u010den\u00fd pro typ mapov\u00e1n\u00ed, kter\u00fd nepodporuje spojov\u00e1n\u00ed.
+
+6120=D\u00edl\u010d\u00ed atribut {0} nen\u00ed platn\u00fdm atributem t\u0159\u00eddy {1}.
+
+6121=Dotaz nebyl spr\u00e1vn\u011b definov\u00e1n, chyb\u00ed tv\u016frce v\u00fdraz\u016f. U druhotn\u00fdch a paraleln\u00edch dotaz\u016f zajist\u011bte, aby se tv\u016frce dotaz\u016f v\u017edy nach\u00e1zel na lev\u00e9 stran\u011b.
+
+6122=V\u00fdraz nen\u00ed platn\u00fdm v\u00fdrazem. {0}
+
+6123=Uvedenou t\u0159\u00eddu kontejneru [{0}] nelze pou\u017e\u00edt, proto\u017ee kontejner mus\u00ed implementovat {1}.
+
+6124=Byl vy\u017eadov\u00e1n dotaz {0}, byl nalezen {1}
+
+6125=Metodu ReadQuery.clearQueryResults() ji\u017e nelze volat. Vol\u00e1n\u00ed metody clearQueryResults nyn\u00ed vy\u017eaduje poskytnut\u00ed relace. Je t\u0159eba volat metodu clearQueryResults(relace).
+
+6126=Prov\u00e1d\u00ed se dotaz, kter\u00fd pou\u017e\u00edv\u00e1 jak odpov\u00eddaj\u00edc\u00ed v\u00fdsledky dotazu, tak v\u00fdsledky dotazu ulo\u017een\u00e9 v mezipam\u011bti. Tato dv\u011b nastaven\u00ed nejsou kompatibiln\u00ed.
+
+6127=Ve t\u0159\u00edd\u011b EclipseLink {0} se nezda\u0159ilo reflexivn\u00ed vol\u00e1n\u00ed, prost\u0159ed\u00ed je t\u0159eba nastavit tak, aby umo\u017e\u0148ovalo reflexi jazyka Java.
+
+6128=V dotazech, kter\u00e9 pou\u017e\u00edvaj\u00ed vlastn\u00ed vol\u00e1n\u00ed, se nepodporuje \u010dten\u00ed d\u00e1vek.
+
+6129=Pokud dotaz nesm\u011bruje do datab\u00e1ze, nen\u00ed mo\u017en\u00e1 aktualizace.
+
+6130=Vlastn\u00edmu k\u00f3du SQL se nezda\u0159ilo poskytnout sloupec diskrimin\u00e1toru: {0} dle definice ve t\u0159\u00edd\u011b SQLResultSetMapping: {1}.
+
+6131=T\u0159\u00edda DeleteAllQuery definuj\u00edc\u00ed objekty, kter\u00e9 se maj\u00ed odstranit pomoc\u00ed metody setObjects s nenulov\u00fdm argumentem, mus\u00ed definovat rovn\u011b\u017e odpov\u00eddaj\u00edc\u00ed krit\u00e9ria v\u00fdb\u011bru. {1}Objekty: [{2}]{1} Deskriptor: [{0}]
+
+6132=Argument dotazu {0} nebyl nalezen v seznamu parametr\u016f poskytnut\u00fdch b\u011bhem prov\u00e1d\u011bn\u00ed dotazu.
+
+6133=Prvn\u00ed argument metody addUpdate definuje pole, kter\u00e9mu m\u00e1 b\u00fdt p\u0159i\u0159azena nov\u00e1 hodnota - nem\u016f\u017ee m\u00edt hodnotu null.
+
+6134=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate nedefinuje pole. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1} Deskriptor: [{0}]
+
+6135=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate definuje pole z tabulky, kter\u00e1 nen\u00ed mapov\u00e1na na deskriptor dotazu. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1}Chybn\u00e9 pole: [{3}]{1} Deskriptor: [{0}]
+
+6136=T\u0159\u00eddy mapovan\u00e9 s v\u00edcetabulkovou d\u011bdi\u010dnost\u00ed nemohou b\u00fdt polo\u017ekami ReportQuery. Polo\u017eka: {0}, v\u00fdraz: {1}.
+
+6137=Do\u0161lo k v\u00fdjimce p\u0159i prov\u00e1d\u011bn\u00ed dotazu ReportQuery s v\u00fdrazem konstruktoru: {0}
+
+6138=Dotaz vy\u017eaduje do\u010dasn\u00e9 \u00falo\u017ei\u0161t\u011b, ale {0} nepodporuje do\u010dasn\u00e9 tabulky.
+
+6139=Probl\u00e9m p\u0159i zji\u0161\u0165ov\u00e1n\u00ed mapov\u00e1n\u00ed pro {0} podle definice ve v\u00fdsledku pole s n\u00e1zvem {1}.
+
+6140=Pokusili jste se p\u0159i\u0159adit spojen\u00e9 v\u00fdrazy polo\u017ece sestavy {1} typu {0}. Spojen\u00e9 v\u00fdrazy jsou pou\u017eiteln\u00e9 pouze na polo\u017ek\u00e1ch, kter\u00e9 vrac\u00ed trval\u00fd objekt.
+
+6141=Do\u0161lo k v\u00fdjimce ClassCastException p\u0159i pokusu o p\u0159eveden\u00ed {0} na t\u0159\u00eddu v pokynu k dotazu.
+
+6142=Hodnota {1} dodan\u00e1 pokynu k dotazu {0} vedla k neplatn\u00e9mu vztahu. Vztah {2} nen\u00ed vztah typu OneToOne ani typu OneToMany.
+
+6143=Hodnota {1} dodan\u00e1 pokynu k dotazu {0} vedla k neexistuj\u00edc\u00edmu vztahu. Vztah {2} neexistuje.
+
+6144=Hodnota {1} dodan\u00e1 pokynu k dotazu {0} neobsahovala dostate\u010dn\u00fd po\u010det token\u016f. Spojen\u00ed mus\u00ed za\u010d\u00ednat identifika\u010dn\u00ed prom\u011bnnou dotazu. Chcete-li nap\u0159\u00edklad v dotazu "SELECT x from X x" odk\u00e1zat na "y" pat\u0159\u00edc\u00ed k "x", m\u011bli byste pou\u017e\u00edt pokyn "x.y".
+
+6145=R\u016fzn\u00fd po\u010det na t\u0159\u00edd\u011b slo\u017een\u00e9ho prim\u00e1rn\u00edho kl\u00ed\u010de [{0}] se nepodporuje. Deskriptor [{1}] 
+
+6146=Hodnota {1} dodan\u00e1 pokynu k dotazu {0} nen\u00ed platn\u00e1 hodnota. Platn\u00e9 hodnoty jsou cel\u00e1 \u010d\u00edsla nebo \u0159et\u011bzce, kter\u00e9 lze analyzovat na hodnoty typu int.
+
+6147=V\u00fdraz {0} nen\u00ed platn\u00fd pro na\u010dten\u00ed d\u00edl\u010d\u00edho atributu.
+
+6148=P\u0159id\u00e1n\u00ed {0} do t\u0159\u00eddy PLSQLStoredProcedureCall se nepodporuje.
+
+6149=T\u0159\u00edda PLSQLStoredProcedureCall nem\u016f\u017ee pou\u017e\u00edvat nepojmenovan\u00fd argument.
+
+6150=V kontejneru typu [{1}] nelze pou\u017e\u00edt jako kl\u00ed\u010d hodnotu null. Ujist\u011bte se, \u017ee va\u0161e kl\u00ed\u010de pro objekty typu [{0}] nemohou m\u00edt hodnotu null.
+
+6151=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o nastaven\u00ed p\u0159esm\u011brova\u010de {0} p\u0159ed\u00e1van\u00e9ho prost\u0159ednictv\u00edm pokyn k dotazu JPA {1}. Ov\u011b\u0159te, \u017ee poskytnut\u00fd p\u0159esm\u011brova\u010d implementuje t\u0159\u00eddu org.eclipse.persistence.queries.QueryRedirector.
+
+6152=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy {0} p\u0159ed\u00e1van\u00e9 prost\u0159ednictv\u00edm pokynu k dotazu JPA {1}. Ov\u011b\u0159te, \u017ee m\u00e1 tato t\u0159\u00edda v\u00fdchoz\u00ed konstruktor.
+
+6153=Na komplexn\u00edm typu je t\u0159eba nastavit CompatibleType: {0}.
+
+6154=Na komplexn\u00edm typu je t\u0159eba nastavit TypeName: {0}.
+
+6155=V {0} nebyla nalezena \u017e\u00e1dn\u00e1 tabulka vztah\u016f. {2}V\u00fdraz joinCriteria: [{1}]
+
+6156=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o nastaven\u00ed \u010dten\u00ed kl\u00ed\u010de mapy pro [{0}]: [{1}].
+
+6157=Prvek [{0}] se p\u0159id\u00e1v\u00e1 do mapy bez kl\u00ed\u010de. To obvykle znamen\u00e1, \u017ee datab\u00e1ze neobsahuje o\u010dek\u00e1van\u00fd kl\u00ed\u010d.
+
+6158=Z\u00e1sada MapContainerPolicy byla po\u017e\u00e1d\u00e1na o rozbalen\u00ed prvku [{0}], co\u017e nen\u00ed prvek mapy. To znamen\u00e1, \u017ee se pou\u017e\u00edv\u00e1 chybn\u00e1 z\u00e1sada kontejneru.
+
+6159=Nelze naj\u00edt mapov\u00e1n\u00ed pro v\u00fdraz MapEntryExpression se z\u00e1kladem: [{0}].
+
+6160=V\u00fdraz MapEntryExpression se z\u00e1kladem: [{0}] odkazuje na mapov\u00e1n\u00ed [{1}], co\u017e nen\u00ed mapov\u00e1n\u00ed kolekce. Mapy mohou existovat pouze v mapov\u00e1n\u00edch kolekce.
+
+6161=V\u00fdraz MapEntryExpression se z\u00e1kladem: [{0}] odkazuje na mapov\u00e1n\u00ed [{1}], kter\u00e9 neodkazuje na mapu.
+
+6162=Sloupec po\u0159ad\u00ed seznamu [{0}] obsahuje chybn\u00e9 hodnoty:{2}{1}
+
+6163=index() vy\u017eaduje v\u00fdraz QueryKeyExpression, nelze pou\u017e\u00edt na [{0}]
+
+6164=index() vy\u017eaduje v\u00fdraz QueryKeyExpression s mapov\u00e1n\u00edm CollectionMapping, kter\u00e9 obsahuje sloupec po\u0159ad\u00ed seznamu s nenulovou hodnotou. [{1}] nespl\u0148uje tuto podm\u00ednku v [{0}]
+
+6165=Na\u010dten\u00ed d\u00e1vky pomoc\u00ed IN vy\u017eaduje prim\u00e1rn\u00ed kl\u00ed\u010d typu singleton.
+
+6166=Do\u0161lo k pokusu o p\u0159etypov\u00e1n\u00ed mimo hierarchii d\u011bdi\u010dnosti. [{0}] se nevyskytuje v hierarchii t\u0159\u00edd pro [{1}]. Pozn\u00e1mka: Tato v\u00fdjimka by tak\u00e9 mohla nazna\u010dovat, \u017ee prov\u00e1d\u00edte p\u0159etypov\u00e1n\u00ed na vztahu d\u011bdi\u010dnosti Jedna tabulka na t\u0159\u00eddu, co\u017e se u p\u0159etypov\u00e1n\u00ed nepodporuje.
+
+6167=Bylo vyvol\u00e1no p\u0159etypov\u00e1n\u00ed na v\u00fdrazu, kter\u00fd nepodporuje d\u011bdi\u010dnost: [{0}].
+
+6168=Nezda\u0159ilo se p\u0159ipravit dotaz, do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b: [{0}].
+
+6169=Mapov\u00e1n\u00ed bylo nakonfigurov\u00e1no na pou\u017eit\u00ed na\u010d\u00edt\u00e1n\u00ed d\u00e1vky IN, ale p\u016fvodn\u00ed dotaz na pou\u017eit\u00ed na\u010d\u00edt\u00e1n\u00ed d\u00e1vky IN nakonfigurov\u00e1n nebyl a mus\u00ed b\u00fdt: [{0}].
+
+6171=Segmentace nen\u00ed pro typ relace [{0}] podporov\u00e1na. Jsou podporov\u00e1ny pouze t\u0159\u00eddy ServerSession a ClientSession.
+
+6172=Chyb\u00ed fond p\u0159ipojen\u00ed pro segmentaci [{0}].
+
+6173=Fondu p\u0159ipojen\u00ed [{0}] se nezda\u0159ilo p\u0159ekonat selh\u00e1n\u00ed, v\u0161echny servery jsou neaktivn\u00ed.
+
+6174=Nebyla zad\u00e1na \u017e\u00e1dn\u00e1 hodnota pro vlastnost relace [{0}]. Tato v\u00fdjimka je mo\u017en\u00e1 p\u0159i pou\u017eit\u00ed dal\u0161\u00edch krit\u00e9ri\u00ed nebo sloupc\u016f diskrimin\u00e1toru n\u00e1jemce bez ur\u010den\u00ed p\u0159idru\u017een\u00e9 kontextov\u00e9 vlastnosti. Tyto vlastnosti je t\u0159eba nastavit prost\u0159ednictv\u00edm vlastnost\u00ed jednotky perzistence, EntityManager nebo EntityManagerFactory. P\u0159i pou\u017eit\u00ed nativn\u00edho produktu EclipseLink by m\u011bly b\u00fdt tyto vlastnosti nastaveny p\u0159\u00edmo v relaci.
+
+6175=Nativn\u00ed dotazy SQL byly zak\u00e1z\u00e1ny. To se prov\u00e1d\u00ed bu\u010f nastaven\u00edm vlastnosti jednotky perzistence "eclipselink.jdbc.allow-native-sql-queries" na hodnotu false, nebo definov\u00e1n\u00edm alespo\u0148 jedn\u00e9 entity s v\u00edcen\u00e1sobn\u00fdm n\u00e1jemcem v jednotce perzistence. Zkontrolujte specifikaci jednotky perzistence. Chcete-li nativn\u00ed dotazy SQL povolit, nastavte tuto vlastnost na hodnotu true. Voliteln\u011b mohou jednotliv\u00e9 dotazy obej\u00edt toto nastaven\u00ed tak, \u017ee nastav\u00ed pokyn k dotazu "eclipselink.jdbc.allow-native-sql-query" na hodnotu true.
+
+6176=Do\u0161lo k v\u00fdjimce p\u0159i inicializaci konstruktoru z t\u0159\u00eddy [{0}]:  [{1}]
+
+6177=Ve v\u00fdsledc\u00edch dotazu nebyl nalezen v\u00fdsledek sloupce [{0}].
+
+6178=Nastaven\u00ed isResultSetAccessOptimizedQuery na hodnotu true je v konfliktu s dal\u0161\u00edmi nastaven\u00edmi dotazu.
+
+6179=Nezda\u0159ilo se deserializovat objekt sopObject z [{0}] v [{1}]
+
+6180=Serializovan\u00fd objekt sopObject nebyl nalezen v [{0}] v [{1}]
+
+6181=Objekt sopObject m\u00e1 chybnou verzi [{0}] v [{1}] v [{2}]
+
+6182=Objekt sopObject m\u00e1 chybn\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d [{0}] v [{1}] v [{2}]
+
+6183=Typ mapov\u00e1n\u00ed {1} pro atribut {2} z {0} se u funkce dotazu pomoc\u00ed p\u0159\u00edkladu nepodporuje. Pokud lze tento atribut bezpe\u010dn\u011b ignorovat, p\u0159idejte ho do seznamu k ignorov\u00e1n\u00ed nebo v z\u00e1sad\u011b nastavte ov\u011b\u0159ov\u00e1n\u00ed p\u0159\u00edklad\u016f na hodnotu false.
+

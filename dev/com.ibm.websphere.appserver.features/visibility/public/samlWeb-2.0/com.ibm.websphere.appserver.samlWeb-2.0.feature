@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.samlWeb-2.0
 visibility=public
 IBM-ShortName: samlWeb-2.0
-Subsystem-Name: SAML web single sign-on  2.0
+Subsystem-Name: SAML Web Single Sign-On 2.0
 -features=com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0, \
   com.ibm.websphere.appserver.wss4j-1.0, \
   com.ibm.websphere.appserver.ssoCommon-1.0, \
@@ -19,7 +19,7 @@ Subsystem-Name: SAML web single sign-on  2.0
   com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.security.common, \
   com.ibm.json4j, \
-  com.ibm.ws.org.apache.commons.codec.1.4, \
+  com.ibm.ws.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.apache.commons.httpclient
 kind=ga

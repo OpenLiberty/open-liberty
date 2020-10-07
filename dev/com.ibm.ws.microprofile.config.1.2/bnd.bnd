@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.config.1.2
 Bundle-SymbolicName: com.ibm.ws.microprofile.config.1.2
@@ -35,9 +33,9 @@ Import-Package: \
 
 WS-TraceGroup: APPCONFIG
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
+    io.openliberty.microprofile.config.internal.common;version=latest, \
 	com.ibm.ws.org.apache.commons.lang3;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	org.eclipse.osgi;version=latest, \

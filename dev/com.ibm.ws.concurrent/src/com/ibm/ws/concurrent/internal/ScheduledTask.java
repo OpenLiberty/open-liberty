@@ -50,7 +50,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * If a repeating task, each execution of the task schedules the next execution,
  * thus guaranteeing that we never have overlapping executions of the same task.
  */
-public class ScheduledTask<T> implements Callable<T>, ManagedTask {
+public class ScheduledTask<T> implements Callable<T> {
     private static final TraceComponent tc = Tr.register(ScheduledTask.class);
 
     /**
@@ -423,7 +423,18 @@ public class ScheduledTask<T> implements Callable<T>, ManagedTask {
                                 ((Runnable) task).run();
 
                             long endTime = System.currentTimeMillis();
-                            String identityName = threadContextDescriptor.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
+
+                            Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
+                            String identityName;
+                            if (managedExecSvc.eeVersion < 9) {
+                                identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                                if (identityName == null)
+                                    identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                            } else {
+                                identityName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                                if (identityName == null)
+                                    identityName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                            }
                             lastExecution = new LastExecutionImpl(identityName, nextExecutionTime, startTime, endTime, taskResult);
                         }
                     } catch (Throwable x) {
@@ -614,31 +625,24 @@ public class ScheduledTask<T> implements Callable<T>, ManagedTask {
     }
 
     /**
-     * @see javax.enterprise.concurrent.ManagedTask#getExecutionProperties()
-     */
-    @Override
-    public final Map<String, String> getExecutionProperties() {
-        return threadContextDescriptor.getExecutionProperties();
-    }
-
-    /**
-     * @see javax.enterprise.concurrent.ManagedTask#getManagedTaskListener()
-     */
-    @Override
-    @Trivial
-    public final ManagedTaskListener getManagedTaskListener() {
-        return listener;
-    }
-
-    /**
      * Returns the task name.
      *
      * @return the task name.
      */
     @Trivial
     final String getName() {
-        Map<String, String> execProps = getExecutionProperties();
-        String taskName = execProps == null ? null : execProps.get(ManagedTask.IDENTITY_NAME);
+        Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
+        String taskName = null;
+        if (execProps != null)
+            if (managedExecSvc.eeVersion < 9) {
+                taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+            } else {
+                taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+            }
         return taskName == null ? task.toString() : taskName;
     }
 

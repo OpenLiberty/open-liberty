@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@ package com.ibm.ws.cdi.liberty;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -70,6 +72,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
+import io.openliberty.cdi.spi.CDIExtensionMetadata;
+
 /**
  * This class is to get hold all necessary services.
  */
@@ -90,6 +94,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     /** Reference for all portal extensions **/
     private final ConcurrentServiceReferenceSet<WebSphereCDIExtension> extensionsSR = new ConcurrentServiceReferenceSet<WebSphereCDIExtension>("extensionService");
 
+    /** Reference for extensions added via SPI **/
+    private final ConcurrentServiceReferenceSet<CDIExtensionMetadata> spiExtensionsSR = new ConcurrentServiceReferenceSet<CDIExtensionMetadata>("spiExtensionService");
+
     private final AtomicServiceReference<ArtifactContainerFactory> containerFactorySRRef = new AtomicServiceReference<ArtifactContainerFactory>("containerFactory");
     private final AtomicServiceReference<AdaptableModuleFactory> adaptableModuleFactorySRRef = new AtomicServiceReference<AdaptableModuleFactory>("adaptableModuleFactory");
     private final AtomicServiceReference<InjectionEngine> injectionEngineServiceRef = new AtomicServiceReference<InjectionEngine>("injectionEngine");
@@ -106,6 +113,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private boolean isClientProcess;
     private RuntimeFactory runtimeFactory;
     private ProxyServicesImpl proxyServices;
+    private final Map<String, ClassLoader> appTccls = new ConcurrentHashMap<>();
 
     public void activate(ComponentContext cc) {
         containerConfigRef.activate(cc);
@@ -113,6 +121,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         ejbEndpointServiceSR.activate(cc);
         classLoadingSRRef.activate(cc);
         extensionsSR.activate(cc);
+        spiExtensionsSR.activate(cc);
         applicationSlot = metaDataSlotServiceSR.getServiceWithException().reserveMetaDataSlot(ApplicationMetaData.class);
         ejbServices.activate(cc);
         securityServices.activate(cc);
@@ -144,6 +153,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         securityServices.deactivate(cc);
         transactionService.deactivate(cc);
         extensionsSR.deactivate(cc);
+        spiExtensionsSR.deactivate(cc);
         containerFactorySRRef.deactivate(cc);
         scheduledExecutorServiceRef.deactivate(cc);
         executorServiceRef.deactivate(cc);
@@ -229,6 +239,20 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         CDIContainerImpl cdiContainer = getCDIContainer();
         if (cdiContainer != null) {
             cdiContainer.removeRuntimeExtensionArchive(reference);
+        }
+    }
+
+    @Reference(name = "spiExtensionService", service = CDIExtensionMetadata.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+    protected void setSPIExtensionService(ServiceReference<CDIExtensionMetadata> reference) {
+        spiExtensionsSR.addReference(reference);
+    }
+
+    protected void unsetSPIExtensionService(ServiceReference<CDIExtensionMetadata> reference) {
+        spiExtensionsSR.removeReference(reference);
+        //the cdi container has a cache of ExtensionArchives ... remove this extension from that cache
+        CDIContainerImpl cdiContainer = getCDIContainer();
+        if (cdiContainer != null) {
+            cdiContainer.removeRuntimeExtensionArchiveMetaData(reference);
         }
     }
 
@@ -347,6 +371,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     }
 
     @Override
+    public Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> getSPIExtensionServices() {
+        return spiExtensionsSR.getServicesWithReferences();
+    }
+
+    @Override
     public ArtifactContainerFactory getArtifactContainerFactory() {
         return containerFactorySRRef.getService();
     }
@@ -421,9 +450,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 this.runtimeFactory.removeApplication(appInfo);
                 return;
             }
-            newCL = getRealAppClassLoader(application);
 
-            if (newCL != null) {
+            ClassLoader appCL = getRealAppClassLoader(application);
+            if (appCL != null) {
+                newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                appTccls.put(appInfo.getName(), newCL);
                 oldCl = CDIUtils.getAndSetLoader(newCL);
             }
 
@@ -486,6 +517,14 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 }
             } catch (CDIException e) {
                 //FFDC and carry on
+            } finally {
+                // Clean up the application TCCL created for startup
+                // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
+                ClassLoader tccl = appTccls.get(appInfo.getName());
+                if (tccl != null) {
+                    classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
+                    appTccls.remove(appInfo.getName());
+                }
             }
         }
     }
@@ -518,9 +557,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                                                          Set<String> extraClasses,
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException {
+                                                         boolean extClassesOnly,
+                                                         Set<String> extraExtensionClasses) throws CDIException {
 
-        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
+        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly,
+                                                                                        extraExtensionClasses);
 
         return extensionArchive;
     }
@@ -598,6 +639,16 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         } catch (CDIException e) {
             return null;
         }
+    }
+
+    @Override
+    public boolean isWeldProxy(Class clazz) {
+        return CDIUtils.isWeldProxy(clazz);
+    }
+
+    @Override
+    public boolean isWeldProxy(Object obj) {
+        return CDIUtils.isWeldProxy(obj);
     }
 
 }

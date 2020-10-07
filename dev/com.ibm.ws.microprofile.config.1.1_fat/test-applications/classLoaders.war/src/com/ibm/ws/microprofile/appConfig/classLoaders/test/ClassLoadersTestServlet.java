@@ -23,8 +23,10 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -68,6 +70,7 @@ public class ClassLoadersTestServlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC({ "java.util.ServiceConfigurationError" })
+    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testUserLoaderErrors() throws Exception {
         ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
         b.addDiscoveredConverters();

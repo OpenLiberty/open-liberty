@@ -52,17 +52,17 @@ public class JsonObjectExpectation extends Expectation {
 
     public JsonObjectExpectation(String expectedKey, CheckType checkType, Object expectedValue) {
         this(expectedKey, (ValueType) null, expectedValue);
-        this.expCheckType = checkType;
+        expCheckType = checkType;
     }
 
     public JsonObjectExpectation(String keyToLookFor, ValueType expectedValueType) {
         this(keyToLookFor, expectedValueType, null, DEFAULT_FAILURE_MSG);
-        this.expCheckType = JsonCheckType.VALUE_TYPE;
+        expCheckType = JsonCheckType.VALUE_TYPE;
     }
 
     public JsonObjectExpectation(String expectedKey, ValueType expectedValueType, Object expectedValue) {
         this(expectedKey, expectedValueType, expectedValue, DEFAULT_FAILURE_MSG);
-        this.expCheckType = (expectedValueType == ValueType.STRING) ? StringCheckType.EQUALS : ObjectCheckType.EQUALS;
+        expCheckType = (expectedValueType == ValueType.STRING) ? StringCheckType.EQUALS : ObjectCheckType.EQUALS;
     }
 
     public JsonObjectExpectation(String keyToLookFor, ValueType expectedValueType, Object expectedValue, String failureMsg) {
@@ -71,8 +71,8 @@ public class JsonObjectExpectation extends Expectation {
 
     public JsonObjectExpectation(String testAction, String keyToLookFor, ValueType expectedValueType, Object expectedValue, String failureMsg) {
         super(testAction, Constants.JSON_OBJECT, null, keyToLookFor, null, failureMsg);
-        this.expCheckType = (expectedValueType == ValueType.STRING) ? StringCheckType.EQUALS : ObjectCheckType.EQUALS;
-        this.valueType = expectedValueType;
+        expCheckType = (expectedValueType == ValueType.STRING) ? StringCheckType.EQUALS : ObjectCheckType.EQUALS;
+        valueType = expectedValueType;
         this.expectedValue = expectedValue;
     }
 

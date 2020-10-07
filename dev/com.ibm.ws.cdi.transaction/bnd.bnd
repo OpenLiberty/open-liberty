@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.transaction
 Bundle-SymbolicName: com.ibm.ws.cdi.transaction
 Bundle-Description: CDI Transaction, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-javac.source: 1.7
-javac.target: 1.7
 
 -dsannotations: com.ibm.ws.cdi.transaction.liberty.LibertyTransactionService
 
@@ -30,6 +27,8 @@ Import-Package: \
   *
 
 WS-TraceGroup: JCDI
+
+jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\

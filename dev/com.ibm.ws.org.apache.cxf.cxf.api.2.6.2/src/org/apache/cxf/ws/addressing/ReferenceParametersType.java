@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for ReferenceParametersType complex type.
@@ -45,6 +47,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "ReferenceParametersType", propOrder = {
     "any"
 })
+@Trivial
 public class ReferenceParametersType {
 
     @XmlAnyElement(lax = true)

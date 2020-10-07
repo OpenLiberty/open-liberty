@@ -637,12 +637,11 @@ class ResolveDirector extends AbstractDirector {
                                                                           && System.getProperty("INTERNAL_DOWNLOAD_FROM_FOR_BUILD") == null ? Collections.<ProvisioningFeatureDefinition> emptySet() : installedFeatureDefinitions.values();
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-            if (InstallUtils.getIsServerXmlInstall()) {
-                Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
-                allServerFeatures.addAll(assetsToInstall);
-
-                log(Level.FINE, "Using resolveAsSet to resolve features");
-                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
+            if (InstallUtils.isServerXmlInstall()) {
+                // call resolveAsSet --> detects singleton exceptions and tolerated features
+                log(Level.FINE, "Calling resolveAsSet api");
+                installResources = resolver.resolveAsSet(assetsToInstall); // use new api
+                resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
             } else {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
@@ -670,6 +669,40 @@ class ResolveDirector extends AbstractDirector {
             }
         }
         return installResourcesCollection;
+    }
+
+    static void resolveAutoFeatures(Collection<List<RepositoryResource>> installResources,
+                                    RepositoryResolver resolver) throws RepositoryResolutionException {
+        if (installResources.isEmpty()) {
+            return;
+        }
+        Set<String> resolveAsSetFeatures = new HashSet<>();
+        for (List<RepositoryResource> resList : installResources) {
+            for (RepositoryResource res : resList) {
+                if (res.getType().equals(ResourceType.FEATURE)) {
+                    resolveAsSetFeatures.add(((EsaResource) res).getProvideFeature());
+                }
+            }
+        }
+        if (!resolveAsSetFeatures.isEmpty()) {
+            // call old resolve api
+            //resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
+            Collection<List<RepositoryResource>> resolvedResources = resolver.resolve(resolveAsSetFeatures);
+            // filter install resources to include resolveAsSet feature + missing auto features from old resolve api
+            for (List<RepositoryResource> resList : resolvedResources) {
+                List<RepositoryResource> autoFeatures = new ArrayList<>();
+                for (RepositoryResource res : resList) {
+                    if (res.getType().equals(ResourceType.FEATURE)) {
+                        EsaResource esa = (EsaResource) res;
+                        if (esa.getInstallPolicy().toString().equalsIgnoreCase("WHEN_SATISFIED")) {
+                            autoFeatures.addAll(resList);
+                        }
+                    }
+                }
+                if (!autoFeatures.isEmpty())
+                    installResources.add(autoFeatures);
+            }
+        }
     }
 
     Map<String, List<List<RepositoryResource>>> resolveMap(Collection<String> assetNames, RepositoryConnectionList loginInfo, boolean download) throws InstallException {

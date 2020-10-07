@@ -1,0 +1,92 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: JNDI \u3067\u306e\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u540d\u306e\u30eb\u30c3\u30af\u30a2\u30c3\u30d7\u3067\u3001\u5024\u304c\u623b\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002 Opentracing \u30b5\u30fc\u30d3\u30b9\u540d\u306e\u30c7\u30d5\u30a9\u30eb\u30c8\u540d\u304c\u4f7f\u7528\u3055\u308c\u307e\u3059\u3002
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306f\u3001\u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory \u5b9f\u88c5\u306b\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u540d\u3092\u6307\u5b9a\u3057\u307e\u3059\u3002 "java:app/AppName" \u306e JNDI \u30eb\u30c3\u30af\u30a2\u30c3\u30d7\u3067\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u540d\u3092\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002 \u30c7\u30d5\u30a9\u30eb\u30c8\u306e\u30b5\u30fc\u30d3\u30b9\u540d\u304c\u6307\u5b9a\u3055\u308c\u307e\u3059\u3002
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction="java:app/AppName" \u306e JNDI \u30eb\u30c3\u30af\u30a2\u30c3\u30d7\u3067\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u540d\u3092\u5165\u624b\u3067\u304d\u306a\u3044\u7406\u7531\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: \u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory.newInstance(...) \u30e1\u30bd\u30c3\u30c9\u306e\u547c\u3073\u51fa\u3057\u304c\u4f8b\u5916\u3067\u5931\u6557\u3057\u307e\u3057\u305f\u3002 \u30e1\u30c3\u30bb\u30fc\u30b8 = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306f\u3001\u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory \u3067 Tracer \u5b9f\u88c5\u3092\u69cb\u6210\u3057\u307e\u3059\u3002 OpentracingTracerFactory.newInstance \u30e1\u30bd\u30c3\u30c9\u304c\u4f8b\u5916\u3092\u623b\u3057\u307e\u3057\u305f\u3002
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory newInstance \u30e1\u30bd\u30c3\u30c9\u304c\u4f8b\u5916\u3092\u623b\u3057\u305f\u7406\u7531\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: \u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory.newInstance(...) \u30e1\u30bd\u30c3\u30c9\u306e\u547c\u3073\u51fa\u3057\u304c\u30cc\u30eb\u3092\u623b\u3057\u307e\u3057\u305f\u3002
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306f\u3001\u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory \u3067 Tracer \u5b9f\u88c5\u3092\u69cb\u6210\u3057\u307e\u3059\u3002 OpentracingTracerFactory.newInstance \u30e1\u30bd\u30c3\u30c9\u304c\u30cc\u30eb\u3092\u623b\u3057\u307e\u3057\u305f\u3002
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u30e6\u30fc\u30b6\u30fc\u63d0\u4f9b\u306e OpentracingTracerFactory newInstance \u30e1\u30bd\u30c3\u30c9\u304c\u30cc\u30eb\u3092\u623b\u3057\u305f\u7406\u7531\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpentracingTracerFactory \u30af\u30e9\u30b9\u304c\u6307\u5b9a\u3055\u308c\u306a\u304b\u3063\u305f\u305f\u3081\u3001OpenTracing \u306f JAX-RS \u8981\u6c42\u3092\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u3067\u304d\u307e\u305b\u3093\u3002
+OPENTRACING_NO_TRACERFACTORY.explanation=OpentracingTracerFactory \u30af\u30e9\u30b9\u304c\u6307\u5b9a\u3055\u308c\u306a\u304b\u3063\u305f\u305f\u3081\u3001OpenTracing \u306f\u6b63\u3057\u304f\u6a5f\u80fd\u3057\u307e\u305b\u3093\u3002 JAX-RS \u8981\u6c42\u306f\u6b63\u5e38\u306b\u5b9f\u884c\u3055\u308c\u307e\u3059\u304c\u3001\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u306f\u884c\u308f\u308c\u307e\u305b\u3093\u3002
+OPENTRACING_NO_TRACERFACTORY.useraction=\u8a73\u3057\u304f\u306f\u3001OpenTracing \u5206\u6563\u30c8\u30ec\u30fc\u30b9\u3092\u6709\u52b9\u306b\u3059\u308b\u65b9\u6cd5\u306b\u3064\u3044\u3066\u306e\u8cc7\u6599\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: OpenTracing \u4f8b\u5916\u30de\u30c3\u30d1\u30fc\u304c JAX-RS \u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u304b\u3089\u672a\u51e6\u7406\u306e\u4f8b\u5916\u3092\u691c\u51fa\u3057\u3001\u51e6\u7406\u3057\u3066\u3044\u307e\u3059\u3002
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=JAX-RS \u30d9\u30fc\u30b9\u306e\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u3067\u3001\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u5185\u3067\u51e6\u7406\u3055\u308c\u306a\u3044\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 OpenTracing \u30b3\u30fc\u30c9\u306f\u3001\u4f8b\u5916\u30b9\u30bf\u30c3\u30af\u30fb\u30c8\u30ec\u30fc\u30b9\u3092\u30ed\u30b0\u306b\u8a18\u9332\u3057\u3001500 \u5185\u90e8\u30b5\u30fc\u30d0\u30fc\u30fb\u30a8\u30e9\u30fc\u5fdc\u7b54\u3092\u8fd4\u3059\u3053\u3068\u306b\u3088\u3063\u3066\u305d\u308c\u3092\u51e6\u7406\u3057\u307e\u3059\u3002
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=\u3053\u306e\u52d5\u4f5c\u306f\u8a31\u5bb9\u3067\u304d\u308b\u5834\u5408\u304c\u3042\u308a\u307e\u3059\u3002 \u4f8b\u5916\u3092\u5225\u306e\u65b9\u6cd5\u3067\u51e6\u7406\u3059\u308b\u305f\u3081\u306b\u3001\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u958b\u767a\u8005\u306f\u3001\u4f8b\u5916\u3092\u51e6\u7406\u3057\u3001\u4f8b\u5916\u3092\u5225\u306e\u5fdc\u7b54\u306b\u30de\u30c3\u30d7\u3059\u308b ExceptionMapper \u30a4\u30f3\u30bf\u30fc\u30d5\u30a7\u30fc\u30b9\u3092\u8ffd\u52a0\u3067\u304d\u307e\u3059\u3002
+
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED=CWMOT0010W: OpentracingTracerFactory \u30af\u30e9\u30b9\u304c\u6307\u5b9a\u3055\u308c\u306a\u304b\u3063\u305f\u304b\u3001\u307e\u305f\u306f\u30d0\u30c3\u30af\u30a8\u30f3\u30c9\u3092\u30c8\u30ec\u30fc\u30b9\u3059\u308b\u305f\u3081\u306e\u30af\u30e9\u30a4\u30a2\u30f3\u30c8\u30fb\u30e9\u30a4\u30d6\u30e9\u30ea\u30fc\u304c\u30af\u30e9\u30b9\u30fb\u30d1\u30b9\u306b\u306a\u3044\u305f\u3081\u3001OpenTracing \u306f JAX-RS \u8981\u6c42\u3092\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u3067\u304d\u307e\u305b\u3093\u3002
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.explanation=JAX-RS \u8981\u6c42\u306f\u6b63\u5e38\u306b\u5b9f\u884c\u3055\u308c\u307e\u3059\u304c\u3001\u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u306f\u884c\u308f\u308c\u307e\u305b\u3093\u3002
+OPENTRACING_TRACERFACTORY_NOT_PROVIDED.useraction=\u8a73\u3057\u304f\u306f\u3001OpenTracing \u5206\u6563\u30c8\u30ec\u30fc\u30b9\u3092\u6709\u52b9\u306b\u3057\u3066\u69cb\u6210\u3059\u308b\u65b9\u6cd5\u306b\u3064\u3044\u3066\u306e\u8cc7\u6599\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002 OpenTracing \u304c\u4f7f\u7528\u3055\u308c\u3066\u3044\u306a\u3044\u5834\u5408\u306f\u3053\u306e\u8b66\u544a\u3092\u7121\u8996\u3057\u3066\u69cb\u3044\u307e\u305b\u3093\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Opentracing API \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f: {0}
+temporary.CWMOT9999E.explanation=Opentracing API \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u305f\u305f\u3081\u3001\u901a\u5e38\u306e\u64cd\u4f5c\u3092\u884c\u3046\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3002
+temporary.CWMOT9999E.useraction=FFDC \u30ed\u30b0\u3068\u4f8b\u5916\u30c6\u30ad\u30b9\u30c8\u3092\u78ba\u8a8d\u3057\u3066\u3001\u554f\u984c\u3092\u7279\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002

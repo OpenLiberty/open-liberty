@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,10 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,6 +63,7 @@ public class MpConfigUtilTest {
     private final IWebAppDispatcherContext webAppDispatcherContext = mockery.mock(IWebAppDispatcherContext.class);
     private final WebApp webApp = mockery.mock(WebApp.class);
     private final ClassLoader cl = mockery.mock(ClassLoader.class);
+
     @Rule
     public final TestName testName = new TestName();
 
@@ -124,6 +127,8 @@ public class MpConfigUtilTest {
             {
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(null, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
                 one(mpConfigProxyService).getConfigValue(null, MpConstants.PUBLIC_KEY, String.class);
@@ -159,6 +164,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -194,6 +201,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(throwException(new NoSuchElementException()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -227,6 +236,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -260,6 +271,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -293,6 +306,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(throwException(new NoSuchElementException()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -322,6 +337,8 @@ public class MpConfigUtilTest {
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
+                one(mpConfigProxyService).getSupportedConfigPropertyNames();
+                will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("\t\t\t\n"));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
@@ -335,4 +352,13 @@ public class MpConfigUtilTest {
         assertEquals("the map should be 1 item.", 1, map.size());
         assertTrue("the map should contain the value" + MpConstants.KEY_LOCATION, map.get(MpConstants.KEY_LOCATION).equals("value_" + MpConstants.KEY_LOCATION));
     }
+
+    private Set<String> getSupportedMpConfigProps() {
+        Set<String> supportedMpConfigProps = new HashSet<String>();
+        supportedMpConfigProps.add(MpConstants.ISSUER);
+        supportedMpConfigProps.add(MpConstants.PUBLIC_KEY);
+        supportedMpConfigProps.add(MpConstants.KEY_LOCATION);
+        return supportedMpConfigProps;
+    }
+
 }

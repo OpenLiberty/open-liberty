@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public class InstallServerAction implements ActionHandler {
         private String fromDir;
         private String toDir;
         private Boolean noCache;
+        private Boolean acceptLicense;
         private ProgressBar progressBar;
 
 
@@ -87,6 +88,8 @@ public class InstallServerAction implements ActionHandler {
                 }
 
                 this.noCache = args.getOption("nocache") != null;
+                
+                this.acceptLicense = args.getOption("acceptlicense") != null;
                 
                 this.toDir = args.getOption("to");
 
@@ -170,7 +173,9 @@ public class InstallServerAction implements ActionHandler {
                 try {
                         featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
                         // get original server features now
-                        featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
+
+                        //TODO
+                        //featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
                         logger.fine("all server features: " + featuresToInstall);
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);
@@ -220,7 +225,7 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

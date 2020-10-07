@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jmock.Expectations;
@@ -27,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
@@ -75,6 +78,16 @@ public class TestActionsTest extends CommonTestClass {
 
             @Override
             public WebRequest createGetRequest(String url) throws MalformedURLException {
+                return request;
+            }
+
+            @Override
+            public WebRequest createPostRequest(String url) throws MalformedURLException {
+                return request;
+            }
+
+            @Override
+            public WebRequest createHttpRequest(String url, HttpMethod method) throws MalformedURLException {
                 return request;
             }
         };
@@ -249,7 +262,7 @@ public class TestActionsTest extends CommonTestClass {
                 Page result = actions.invokeUrlWithCookie(testName.getMethodName(), url, null);
                 fail("Should have thrown an exception but got a page result: " + WebResponseUtils.getResponseText(result));
             } catch (Exception e) {
-                verifyException(e, "error occurred invoking the URL.*null cookie");
+                verifyException(e, "error occurred invoking the URL.*null cookies");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -326,8 +339,9 @@ public class TestActionsTest extends CommonTestClass {
      * - Response object should be returned
      */
     @Test
-    public void test_invokeUrlWithParameters_nullParametersList() {
+    public void test_invokeUrlWithParameters_get_nullParametersList() {
         try {
+
             printMethodNameExpectation();
             printMethodNameExpectation();
             printRequestPartsExpectation();
@@ -339,7 +353,35 @@ public class TestActionsTest extends CommonTestClass {
             });
             printResponsePartsExpectation();
 
-            Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, null);
+            Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, HttpMethod.GET, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParameters_post_nullParametersList() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, HttpMethod.POST, null);
             assertEquals("Resulting page object did not point to expected object.", page, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -399,6 +441,376 @@ public class TestActionsTest extends CommonTestClass {
             printResponsePartsExpectation();
 
             Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** invokeUrlWithParametersUsingGet **************************************/
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingGet_nullParametersList() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingGet(testName.getMethodName(), webClient, url, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingGet_noWebClient_nullParametersList() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingGet(testName.getMethodName(), url, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingGet_withParams() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingGet(testName.getMethodName(), webClient, url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingGet_noWebClient_withParams() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingGet(testName.getMethodName(), url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** invokeUrlWithParametersUsingPost **************************************/
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingPost_nullParametersList() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingPost(testName.getMethodName(), webClient, url, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingPost_noWebClient_nullParametersList() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingPost(testName.getMethodName(), url, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingPost_withParams() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingPost(testName.getMethodName(), webClient, url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersUsingPost_noWebClient_withParams() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersUsingPost(testName.getMethodName(), url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** invokeUrlWithParametersAndHeaders **************************************/
+
+    /**
+     * Tests:
+     * - Parameters and headers lists are null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersAndHeaders_nullParametersAndHeadersLists() {
+        try {
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersAndHeaders(testName.getMethodName(), webClient, url, null, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters and headers lists are null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersAndHeaders_nullParameters_withHeaders() {
+        try {
+            final Map<String, String> headers = new HashMap<String, String>();
+            headers.put("name", "value");
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setAdditionalHeaders(headers);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersAndHeaders(testName.getMethodName(), webClient, url, null, headers);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters and headers lists are null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersAndHeaders_withParameters_nullHeadersList() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersAndHeaders(testName.getMethodName(), webClient, url, params, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Parameters and headers lists are null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParametersAndHeaders_withParameters_withHeaders() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+            final Map<String, String> headers = new HashMap<String, String>();
+            headers.put("name", "value");
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(request).setAdditionalHeaders(headers);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParametersAndHeaders(testName.getMethodName(), webClient, url, params, headers);
             assertEquals("Resulting page object did not point to expected object.", page, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

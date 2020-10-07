@@ -15,11 +15,17 @@ Bundle-Name: Third Party JPA Container
 Bundle-SymbolicName: com.ibm.ws.jpa.container.thirdparty
 Bundle-Description: Container-managed Third Party JPA support, version ${bVersion}
 
+jakartaeeMe: true
 WS-TraceGroup: JPA
 
 -dsannotations: com.ibm.ws.jpa.container.thirdparty.ThirdPartyJPAProvider
 
-Export-Package: com.ibm.ws.jpa.container.thirdparty
+Export-Package: \
+  com.ibm.ws.jpa.container.thirdparty
+
+Import-Package: \
+  !com.ibm.ws.jpa.container.thirdparty, \
+  *
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

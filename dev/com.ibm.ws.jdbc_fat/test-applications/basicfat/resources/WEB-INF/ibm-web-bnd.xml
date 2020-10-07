@@ -5,6 +5,10 @@
   <resource-ref name="jdbc/dsfat3" binding-name="jdbc/dsfat3">
     <authentication-alias name="auth1"/>
   </resource-ref>
+  
+  <resource-ref name="jdbc/dsfat5ref1" binding-name="jdbc/dsfat5">
+    <authentication-alias name="derbyAuth1"/>
+  </resource-ref>
 
   <resource-ref name="jdbc/dsfat6ref1" binding-name="java:comp/env/jdbc/dsfat6">
     <authentication-alias name="derbyAuth1"/>

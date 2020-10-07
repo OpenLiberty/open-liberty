@@ -113,7 +113,8 @@ public class OpentracingService {
 
     // Make sure ConfigProviderResolver is started
     @Reference(service = ConfigProviderResolver.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setConfigProvider(ConfigProviderResolver configResolver) {}
+    protected void setConfigProvider(ConfigProviderResolver configResolver) {
+    }
 
     /**
      * Check the configuration for filters of a particular type.

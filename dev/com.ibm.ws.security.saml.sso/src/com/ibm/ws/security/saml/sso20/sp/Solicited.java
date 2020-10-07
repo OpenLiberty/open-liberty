@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContextBuilder;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -79,6 +80,7 @@ public class Solicited {
                                                         TraceConstants.MESSAGE_BUNDLE);
 
     SsoSamlService ssoService = null;
+    InitialRequestUtil irUtil = new InitialRequestUtil();
 
     /**
      * @param service
@@ -128,6 +130,7 @@ public class Solicited {
         }
         String relayState = Constants.SP_INITAL + shortRelayState;
         RequestUtil.cacheRequestInfo(shortRelayState, ssoService, cachingRequestInfo); // cache with shorRelayState
+        irUtil.handleSerializingInitialRequest(req, resp, Constants.SP_INITAL, shortRelayState, cachingRequestInfo, ssoService);
         TAIResult result = postIdp(req, resp, strAuthnRequest, relayState, idpUrl, cachingRequestInfo); // send out with the long relayState
         return result;
     }
@@ -399,7 +402,9 @@ public class Solicited {
             throw wtafe;
         }
         // expect to return a form to redirect to the idp by the browser
-        return TAIResult.create(HttpServletResponse.SC_FORBIDDEN); //
+        //return TAIResult.create(HttpServletResponse.SC_FORBIDDEN); //
+        // change to 401 because admincenter intercepts 403
+        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED); 
     }
 
     /**

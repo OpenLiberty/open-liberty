@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2018, 2019 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@
 no.such.element.CWMCG0300E=CWMCG0300E: Proprietatea {0} nu a fost g\u0103sit\u0103 \u00een configura\u0163ie.
 no.such.element.CWMCG0300E.explanation=Proprietatea cerut\u0103 nu exist\u0103 \u00een niciuna dintre sursele de configurare configurate.
 no.such.element.CWMCG0300E.useraction=Ad\u0103uga\u0163i proprietatea la una dintre sursele de configurare existente sau ad\u0103uga\u0163i o surs\u0103 de configurare care con\u0163ine proprietatea.
+
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Invalidarea cache-ului MicroProfile Config nu poate fi planificat\u0103. Excep\u0163ia este {0}
+failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Modific\u0103rile din MicroProfile Config s-ar putea s\u0103 nu fie reflectate \u00een aplica\u0163ie.
+failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.4 error message

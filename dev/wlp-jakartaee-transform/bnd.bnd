@@ -1,0 +1,23 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= jar:${fileuri;${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0.SNAPSHOT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+-includeresource: \
+    @${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0.SNAPSHOT}!/!META-INF/maven/*
+
+-buildpath: \
+    org.eclipse.transformer:org.eclipse.transformer.cli;version=0.2.0.SNAPSHOT,\
+    biz.aQute.bnd:biz.aQute.bnd.transform;version=5.1.1,\
+    org.slf4j:slf4j-api;version=1.7.26,\
+    org.eclipse.transformer:org.eclipse.transformer;version=0.2.0.SNAPSHOT,\
+    commons-cli:commons-cli;version=1.4,\
+    org.slf4j:slf4j-simple;version=1.7.30

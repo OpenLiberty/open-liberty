@@ -11,13 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: JSF Classloading extensions
 Bundle-SymbolicName: com.ibm.ws.jsfContainer.classloading.2.3
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
@@ -38,6 +35,5 @@ Private-Package: \
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.websphere.javaee.el.3.0;version=latest,\
-	com.ibm.ws.org.jboss.weld3;version=latest
+	com.ibm.websphere.javaee.el.3.0;version=latest
 

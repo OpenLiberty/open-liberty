@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -30,7 +31,7 @@ add_namespace_resolvers=N\u00e9vt\u00e9r felold\u00f3k hozz\u00e1ad\u00e1sa
 
 create_descriptors=le\u00edr\u00f3k l\u00e9trehoz\u00e1sa
 
-create_mappings=Lek\u00e9pez\u00e9sek hozz\u00e1ad\u00e1sa le\u00edr\u00f3khoz
+create_mappings=Lek\u00e9pez\u00e9sek hozz\u00e1ad\u00e1sa a(z) {0} le\u00edr\u00f3hoz
 
 error=Hiba: 
 

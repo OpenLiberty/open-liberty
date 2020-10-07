@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,8 @@ public class Failover1ServerTest extends FATServletClient {
             "javax.transaction.xa.XAException", // rollback/abort path
             "javax.persistence.PersistenceException", // caused by RollbackException
             "javax.persistence.ResourceException", // connection error event on retry
-            "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.IllegalStateException", // for EclipseLink retry after connection has been aborted due to rollback
+            "java.lang.NullPointerException" // can happen when task execution overlaps removal of executor
     })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasks() throws Exception {
@@ -167,6 +168,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
             persistentExec3.setMissedTaskThreshold("3s");
+            persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
@@ -174,6 +176,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
             persistentExec4.setMissedTaskThreshold("3s");
+            persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
@@ -181,6 +184,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
             persistentExec5.setMissedTaskThreshold("3s");
+            persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -213,16 +217,22 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // Stop the server here so that expected warnings/errors can be processed by this test
                 server.stopServer(
-                        "CWWKC1500W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasks", // Rolled back task ... The task is scheduled to retry after ...
-                        "CWWKC1501W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasks", // Rolled back task ... due to failure ... The task is scheduled to retry after ...
-                        "DSRA0302E.*XA_RBROLLBACK", // XAException occurred.  Error code is: XA_RBROLLBACK (100)
-                        "DSRA0304E", // XAException occurred. XAException contents and details are...
-                        "J2CA0079E", // Method cleanup has detected an invalid state ...
-                        "J2CA0088W" // ManagedConnection is in an invalid state
+                        "CWWKC1500W.*", // Rolled back task [id or name]. The task is scheduled to retry after ...
+                        "CWWKC1501W.*", // Rolled back task [id or name] due to failure ... The task is scheduled to retry after ...
+                        "CWWKC1502W.*", // Rolled back task [id or name]
+                        "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
+                        "DSRA*", // various errors possible due to rollback or usage during shutdown
+                        "J2CA*" // various errors possible due to rollback or usage during shutdown
                         );
                 server.startServer();
             }
         }
+
+        // If this test runs last, then stopServer will happen immediately afterward,
+        // and when test infrastructure also runs slowly, then the 30 seconds allotted by server
+        // quiesce are not enough and warnings will go into the logs and be reported as a test failure.
+        // To reduce the chance of that, wait for some progress to be made,
+        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     /**
@@ -232,7 +242,7 @@ public class Failover1ServerTest extends FATServletClient {
     // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
     // This is expected. After the configuration update completes, tasks will be able to run again successfully
     // and pass the test.
-    @AllowedFFDC("java.lang.IllegalStateException")
+    @AllowedFFDC({ "java.lang.IllegalStateException", "java.lang.NullPointerException" })
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTask() throws Exception {
         // Schedule on the only instance that is currently able to run tasks
@@ -260,18 +270,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
             persistentExec3.setMissedTaskThreshold("2s");
+            persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
             persistentExec4.setMissedTaskThreshold("2s");
+            persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
             persistentExec5.setMissedTaskThreshold("2s");
+            persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -351,6 +364,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
             persistentExec1.setMissedTaskThreshold("2s");
+            persistentExec1.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -385,7 +399,7 @@ public class Failover1ServerTest extends FATServletClient {
         PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
         persistentExec1.setMissedTaskThreshold(null);
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setMissedTaskThreshold("5h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
+        persistentExec2.setMissedTaskThreshold("2h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);

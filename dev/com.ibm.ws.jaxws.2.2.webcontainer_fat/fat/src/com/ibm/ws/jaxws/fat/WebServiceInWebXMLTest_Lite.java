@@ -29,11 +29,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("jaxws-2.3")
 public class WebServiceInWebXMLTest_Lite {
 
     public static final int CONN_TIMEOUT = 5;

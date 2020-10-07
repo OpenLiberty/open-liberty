@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.7
-javac.target: 1.7
 
 Bundle-Name: Transactions CDI Integration
 Bundle-SymbolicName: com.ibm.ws.transaction.cdi
@@ -23,6 +21,7 @@ Include-Resource: META-INF=resources/META-INF
 WS-TraceGroup: Transaction
 
 Import-Package: \
+ !com.ibm.tx.jta.cdi, \
  javax.enterprise.context; version="[1.1.0,3.0.0)", \
  javax.enterprise.context.spi; version="[1.1.0,3.0.0)", \
  javax.enterprise.event; version="[1.1.0,3.0.0)", \
@@ -35,6 +34,8 @@ Export-Package: \
  com.ibm.tx.jta.cdi,\
  com.ibm.tx.jta.cdi.interceptors;thread-context=true;mandatory:="thread-context"
 
+-cdiannotations:
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.tx.jta.cdi.TransactionContextExtension
@@ -44,7 +45,7 @@ Export-Package: \
 	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-        com.ibm.websphere.appserver.spi.logging;version=latest,\
+    com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
@@ -59,3 +60,5 @@ Export-Package: \
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.logging;version=latest
+
+jakartaeeMe: true

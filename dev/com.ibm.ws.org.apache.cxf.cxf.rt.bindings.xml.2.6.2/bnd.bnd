@@ -10,9 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-xml;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+instrument.disabled: true
 instrument.ffdc: false
-javac.source: 1.7
-javac.target: 1.7
 
 cxfVersion=2.6.2
 
@@ -27,7 +26,7 @@ Include-Resource:\
   @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/schemas/**, \
   com/ibm/ws=${bin}/com/ibm/ws
 
--buildpath: org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion},, \
+-buildpath: org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.logging.core, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,35 +27,48 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.UserTransaction;
+
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 
+import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPConcurrentTestServlet")
-public class MPConcurrentTxTestServlet extends FATServlet {
+public class MPConcurrentTxTestServlet extends HttpServlet {
+    private static final String SUCCESS = "SUCCESS";
+    private static final String TEST_METHOD = "testMethod";
+
     /**
      * 2 minutes. Maximum number of nanoseconds to wait for a task to complete.
      */
@@ -71,7 +89,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
 
-    private TransactionManager tm = TransactionManagerFactory.getTransactionManager();
+    private TransactionManager tm;
 
     @Resource
     private UserTransaction tx;
@@ -99,7 +117,54 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String method = request.getParameter(TEST_METHOD);
+
+        System.out.println(">>> BEGIN: " + method);
+        System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
+        PrintWriter writer = response.getWriter();
+        if (method != null && method.length() > 0) {
+            try {
+                // Use reflection to try invoking various test method signatures:
+                // 1)  method(HttpServletRequest request, HttpServletResponse response)
+                // 2)  method()
+                // 3)  use custom method invocation by calling invokeTest(method, request, response)
+                try {
+                    Method mthd = getClass().getMethod(method, HttpServletRequest.class, HttpServletResponse.class);
+                    mthd.invoke(this, request, response);
+                } catch (NoSuchMethodException nsme) {
+                    Method mthd = getClass().getMethod(method, (Class<?>[]) null);
+                    mthd.invoke(this);
+                }
+
+                writer.println(SUCCESS);
+            } catch (Throwable t) {
+                if (t instanceof InvocationTargetException) {
+                    t = t.getCause();
+                }
+
+                System.out.println("ERROR: " + t);
+                StringWriter sw = new StringWriter();
+                t.printStackTrace(new PrintWriter(sw));
+                System.err.print(sw);
+
+                writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
+                t.printStackTrace(writer);
+            }
+        } else {
+            System.out.println("ERROR: expected testMethod parameter");
+            writer.println("ERROR: expected testMethod parameter");
+        }
+
+        writer.flush();
+        writer.close();
+
+        System.out.println("<<< END:   " + method);
+    }
+
+    @Override
     public void init(ServletConfig config) throws ServletException {
+        tm = (TransactionManager) TransactionManagerFactory.getTransactionManager();
         testThreads = Executors.newFixedThreadPool(5);
 
         // create tables for tests to use and pre-populate each with a single entry
@@ -116,6 +181,60 @@ public class MPConcurrentTxTestServlet extends FATServlet {
     }
 
     /**
+     * When the mpContextPropagation-1.0 feature is enabled in combination with the concurrent-2.0 feature,
+     * The OpenLiberty implementation of jakarta.enterprise.concurrent.ContextService is also an implementation of
+     * org.eclipse.microprofile.context.ThreadContext
+     */
+    @Test
+    public void testJakartaContextServiceIsAlsoMPThreadContext() throws Exception {
+        ContextService defaultCS = InitialContext.doLookup("java:comp/DefaultContextService");
+        assertTrue(defaultCS instanceof ThreadContext);
+
+        Callable<?> commitAction = defaultCS.createContextualProxy(() -> {
+            tx.begin();
+            try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                return st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Traverse', 3558)");
+            } finally {
+                tx.commit();
+            }
+        }, Callable.class);
+
+        tx.begin();
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Taylor', 6317)");
+            commitAction.call();
+        } finally {
+            tx.rollback();
+        }
+
+        // Confirm that the update from the contextual proxy action commits, and the other update rolls back
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT POPULATION FROM MNCOUNTIES WHERE NAME='Traverse'");
+            assertTrue(result.next());
+            assertEquals(3558, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Taylor'");
+            assertFalse(result.next());
+        }
+    }
+
+    /**
+     * When the mpContextPropagation-1.0 feature is enabled in combination with the concurrent-2.0 feature,
+     * the OpenLiberty implementation of
+     * jakarta.enterprise.concurrent.ManagedExecutorService and
+     * jakarta.enterprise.concurrent.ManagedScheduledExecutorService are also implementations of
+     * org.eclipse.microprofile.context.ManagedExecutor
+     */
+    @Test
+    public void testJakartaManagedExecutorServiceIsAlsoMPManagedExecutor() throws Exception {
+        ManagedExecutorService defaultMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+        assertTrue(defaultMES instanceof ManagedExecutor);
+
+        ManagedScheduledExecutorService defaultMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+        assertTrue(defaultMSES instanceof ManagedExecutor);
+    }
+
+    /**
      * This case demonstrates that the com.ibm.tx.jta.TransactionManagerFactory public API, even without MP Context Propagation,
      * already enables applications to concurrently run multiple operations within a single transaction
      * by resuming the transaction onto another thread and performing transactional operations in it
@@ -123,12 +242,10 @@ public class MPConcurrentTxTestServlet extends FATServlet {
      */
     @Test
     public void testJTATransactionPropagationToMultipleThreadsWithExistingTransactionManagerAPI() throws Exception {
-        javax.transaction.TransactionManager tm = com.ibm.tx.jta.TransactionManagerFactory.getTransactionManager();
-
         // scenario with successful commit
         tx.begin();
         try {
-            javax.transaction.Transaction tranToPropagate = tm.getTransaction();
+            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -136,7 +253,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    javax.transaction.Transaction tranToRestore = tm.suspend();
+                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
@@ -172,7 +289,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
         // scenario with rollback
         tx.begin();
         try {
-            javax.transaction.Transaction tranToPropagate = tm.getTransaction();
+            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -180,7 +297,7 @@ public class MPConcurrentTxTestServlet extends FATServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    javax.transaction.Transaction tranToRestore = tm.suspend();
+                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");
@@ -847,6 +964,44 @@ public class MPConcurrentTxTestServlet extends FATServlet {
             assertEquals(0, result.getInt(1));
 
             result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Sac'");
+            assertFalse(result.next());
+        }
+    }
+
+    /**
+     * When the mpContextPropagation-1.0 feature is enabled in combination with the concurrent-2.0 feature,
+     * the OpenLiberty implementation of
+     * org.eclipse.microprofile.context.ManagedExecutor is also an implementation of
+     * jakarta.enterprise.concurrent.ManagedExecutorService
+     */
+    @Test
+    public void testMPManagedExecutorIsAlsoJakartaManagedExecutorService() throws Exception {
+        ManagedExecutorService txExecutorSvc = (ManagedExecutorService) txExecutor;
+
+        Future<Integer> commitAction = txExecutorSvc.submit(() -> {
+            tx.begin();
+            try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+                return st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Tama', 17767)");
+            } finally {
+                tx.commit();
+            }
+        });
+
+        tx.begin();
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Todd', 24895)");
+            assertEquals(Integer.valueOf(1), commitAction.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            tx.rollback();
+        }
+
+        // Confirm that the update from the contextual proxy action commits, and the other update rolls back
+        try (Connection con = defaultDataSource.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT POPULATION FROM IACOUNTIES WHERE NAME='Tama'");
+            assertTrue(result.next());
+            assertEquals(17767, result.getInt(1));
+
+            result = st.executeQuery("SELECT POPULATION FROM MNCOUNTIES WHERE NAME='Todd'");
             assertFalse(result.next());
         }
     }

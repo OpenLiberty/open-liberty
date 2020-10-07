@@ -1,0 +1,15 @@
+org.apache.cxf.ws.policy.PolicyEngineImpl:org.apache.cxf.ws.policy.PolicyEngine:false
+org.apache.cxf.ws.policy.PolicyDataEngineImpl:org.apache.cxf.policy.PolicyDataEngine:false
+org.apache.cxf.ws.policy.AssertionBuilderRegistryImpl:org.apache.cxf.ws.policy.AssertionBuilderRegistry:true 
+org.apache.cxf.ws.policy.PolicyInterceptorProviderRegistryImpl:org.apache.cxf.ws.policy.PolicyInterceptorProviderRegistry:true
+org.apache.cxf.ws.policy.PolicyBuilderImpl:org.apache.cxf.ws.policy.PolicyBuilder:true
+org.apache.cxf.ws.policy.PolicyAnnotationListener::true
+
+org.apache.cxf.ws.policy.attachment.ServiceModelPolicyProvider::true
+org.apache.cxf.ws.policy.attachment.external.DomainExpressionBuilderRegistry::true
+org.apache.cxf.ws.policy.attachment.external.EndpointReferenceDomainExpressionBuilder::true
+org.apache.cxf.ws.policy.attachment.external.URIDomainExpressionBuilder::true
+org.apache.cxf.ws.policy.attachment.wsdl11.Wsdl11AttachmentPolicyProvider::true:true
+# MTOM Policy Support
+org.apache.cxf.ws.policy.mtom.MTOMAssertionBuilder::true
+org.apache.cxf.ws.policy.mtom.MTOMPolicyInterceptorProvider::true

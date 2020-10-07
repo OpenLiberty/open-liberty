@@ -40,14 +40,14 @@
     <servlet-name>ProgrammaticAPIServlet</servlet-name>
     <display-name>ProgrammaticAPIServlet</display-name>
     <description>ProgrammaticAPIServlet</description>
-    <servlet-class>web.ProgrammaticAPIServlet</servlet-class>    
+    <servlet-class>web.common.ProgrammaticAPIServlet</servlet-class>    
     <load-on-startup></load-on-startup>
   </servlet>
   <servlet id="Servlet_4">
     <servlet-name>AuthenticateRedirectServlet</servlet-name>
     <display-name>AuthenticateRedirectServlet</display-name>
     <description>AuthenticateRedirectServlet</description>
-    <servlet-class>web.AuthenticateRedirectServlet</servlet-class>    
+    <servlet-class>web.common.AuthenticateRedirectServlet</servlet-class>    
     <load-on-startup></load-on-startup>
   </servlet>  
   <servlet id="Servlet_5">

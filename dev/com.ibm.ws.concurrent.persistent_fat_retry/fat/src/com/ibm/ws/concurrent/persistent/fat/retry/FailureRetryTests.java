@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -247,10 +247,13 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetryTwiceDefaultIntervalWithFailoverEnabled() throws Exception {
-        ServerConfiguration config = updateConfiguration("2", null);
+        ServerConfiguration config = savedConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h30m"); // test does not need polling, but the fail over feature requires it, so set to a large value
-        myScheduler.setMissedTaskThreshold("30s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("2");
+        myScheduler.setPollInterval("1s30ms"); // polling is needed for retries
+        myScheduler.setMissedTaskThreshold("3s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer("testRetryTwiceDefaultIntervalFE.log");
@@ -331,10 +334,13 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetrySixWithTwoPassesWithFailoverEnabled() throws Exception {
-        ServerConfiguration config = updateConfiguration("3", null);
+        ServerConfiguration config = savedConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h31m"); // test does not need polling, but the fail over feature requires it, so set to a large value
-        myScheduler.setMissedTaskThreshold("31s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("3");
+        myScheduler.setPollInterval("1s31ms"); // polling is needed for retries
+        myScheduler.setMissedTaskThreshold("3s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer("testRetrySixWithTwoPassesFE.log");
@@ -366,10 +372,13 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetryFourWithOneSkipWithFailoverEnabled() throws Exception {
-        ServerConfiguration config = updateConfiguration("3", null);
+        ServerConfiguration config = savedConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h32m"); // test does not need polling, but the fail over feature requires it, so set to a large value
-        myScheduler.setMissedTaskThreshold("32s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("3");
+        myScheduler.setPollInterval("1s32ms"); // polling is needed for retries
+        myScheduler.setMissedTaskThreshold("2s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer("testRetryFourWithOneSkipFE.log");
@@ -401,10 +410,13 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetryFourWithOneSkipFailWithFailoverEnabled() throws Exception {
-        ServerConfiguration config = updateConfiguration("3", null);
+        ServerConfiguration config = savedConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h33m"); // test does not need polling, but the fail over feature requires it, so set to a large value
-        myScheduler.setMissedTaskThreshold("33s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("3");
+        myScheduler.setPollInterval("1s33ms"); // polling is needed for retries
+        myScheduler.setMissedTaskThreshold("3s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer("testRetryFourWithOneSkipFailFE.log");
@@ -438,10 +450,13 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetryFourTimesAutoPurgeAlwaysWithFailoverEnabled() throws Exception {
-        ServerConfiguration config = updateConfiguration("3", null);
+        ServerConfiguration config = savedConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h34m"); // test does not need polling, but the fail over feature requires it, so set to a large value
-        myScheduler.setMissedTaskThreshold("34s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("3");
+        myScheduler.setPollInterval("1s34ms"); // polling is needed for retries
+        myScheduler.setMissedTaskThreshold("4s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer("testRetryFourTimesAutoPurgeAlwaysFE.log");
@@ -540,11 +555,14 @@ public class FailureRetryTests {
      */
     @Test
     public void testRetryCountWrapWithFailoverEnabled() throws Exception {
-        ServerConfiguration cfg = updateConfiguration("-1", null);
+        ServerConfiguration cfg = savedConfig.clone();
         PersistentExecutor myScheduler = cfg.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         // In this test, polling matters because task execution might still be claimed by server instance 1 when server instance 3 comes up.
+        myScheduler.setRetryInterval(null);
+        myScheduler.setRetryLimit("-1");
         myScheduler.setPollInterval("3s");
-        myScheduler.setMissedTaskThreshold("25s");
+        myScheduler.setMissedTaskThreshold("4s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(cfg);
 
         server.startServer("testRetryCountWrapFE-1.log");

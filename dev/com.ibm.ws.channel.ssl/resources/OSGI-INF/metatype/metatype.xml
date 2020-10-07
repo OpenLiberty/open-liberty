@@ -37,7 +37,7 @@
             id="service.ranking" required="false" type="Integer" default="0"/>
             
             <AD id="sslSessionTimeout" name="%ssl.sslSessionTimeout" description="%ssl.sslSessionTimeout.desc"
-            required="false" type="String" ibm:type="duration" default="8640ms" />
+            required="false" type="String" ibm:type="duration" default="86400s" />
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.sslchannel.options">

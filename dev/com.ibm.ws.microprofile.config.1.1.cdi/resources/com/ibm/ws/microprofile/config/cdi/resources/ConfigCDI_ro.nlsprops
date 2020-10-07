@@ -48,10 +48,15 @@ property.not.found.CWMCG5004E=CWMCG5004E: Proprietatea de configura\u0163ie "{0}
 property.not.found.CWMCG5004E.explanation=Proprietatea numit\u0103 nu a fost g\u0103sit\u0103 \u00een niciuna din sursele configurate. 
 property.not.found.CWMCG5004E.useraction=Asigura\u0163i-v\u0103 c\u0103 proprietatea exist\u0103 \u00een una dintre surse de configurare.
 
-#The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
+# The InjectionPoint dependency was not resolved for the Observer method: {0}. Error: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E=CWMCG5005E: Dependen\u0163a InjectionPoint nu a fost rezolvat\u0103 pentru metoda Observer: {0}. Eroare: {1}.
 unable.to.resolve.observer.injection.point.CWMCG5005E.explanation=O proprietate de configura\u0163ie injectat\u0103 nu s-a rezolvat. Fie proprietatea numit\u0103 nu a putut fi g\u0103sit\u0103 sau nu s-a rezolvat un Convertor pentru tipul cerut. 
 unable.to.resolve.observer.injection.point.CWMCG5005E.useraction=Verifica\u0163i mesajul serverului \u015fi istoricele FFDC pentru a determina cauza. Asigura\u0163i-v\u0103 c\u0103 proprietatea exist\u0103 \u00een una dintre sursele de configura\u0163ie \u015fi c\u0103 au fost configurate Convertoarele necesare.
+
+# The InjectionPoint dependency was not resolved for the Observer bean: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E=CWMCG5006E: Dependen\u0163a InjectionPoint nu a fost procesat\u0103 pentru bean-ul Observer: {0}.
+unable.to.process.observer.injection.point.CWMCG5006E.explanation=A ap\u0103rut o eroare necunoscut\u0103. Nu a fost posibil s\u0103 procesa\u0163i corespunz\u0103tor o metod\u0103 Observer.
+unable.to.process.observer.injection.point.CWMCG5006E.useraction=Verifica\u0163i mesajul serverului \u015fi istoricele FFDC pentru a determina cauza.
 
 
 #-----------------------------------------------------------------------------------------------------------------------------

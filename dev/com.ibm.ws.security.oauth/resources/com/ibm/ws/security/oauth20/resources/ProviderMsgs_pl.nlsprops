@@ -318,11 +318,11 @@ SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Wskazywana warto\u015b\u010
 SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Sprawd\u017a, czy warto\u015bci w parametrze \u017c\u0105dania s\u0105 poprawne.
 
 # this message is also emitted by the oidc client via the PublicErrorFacingServlet
-security.oauth20.front.end.error=CWOAU0073E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas uwierzytelniania u\u017cytkownika. Je\u015bli problem nie ust\u0105pi, spr\u00f3buj zamkn\u0105\u0107 przegl\u0105dark\u0119 WWW i ponownie si\u0119 uwierzytelni\u0107 lub skontaktuj si\u0119 z administratorem serwisu.
+security.oauth20.front.end.error=CWOAU0073E: Wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania. Spr\u00f3buj zamkn\u0105\u0107 przegl\u0105dark\u0119 WWW i ponowi\u0107 uwierzytelnienie lub skontaktuj si\u0119 z administratorem serwisu, je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0142.
 security.oauth20.front.end.error.explanation=W \u017c\u0105daniu mo\u017ce brakowa\u0107 informacji, serwer m\u00f3g\u0142 napotka\u0107 b\u0142\u0105d wewn\u0119trzny lub inny b\u0142\u0105d m\u00f3g\u0142 uniemo\u017cliwi\u0107 serwerowi uwierzytelnienie u\u017cytkownika.
 security.oauth20.front.end.error.useraction=Skontaktuj si\u0119 z administratorem systemu, aby rozwi\u0105za\u0107 ten problem.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: \u017b\u0105danie wymiany has\u0142a aplikacji dla u\u017cytkownika {0} nie zosta\u0142o uko\u0144czone, poniewa\u017c nie uda\u0142o si\u0119 zweryfikowa\u0107 has\u0142a aplikacji. Has\u0142o aplikacji jest niepoprawne, utraci\u0142o wa\u017cno\u015b\u0107 lub zosta\u0142o uniewa\u017cnione albo podany identyfikator klienta jest niepoprawny.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: \u017b\u0105danie wymiany has\u0142a aplikacji dla u\u017cytkownika {0} nie zosta\u0142o wykonane, poniewa\u017c dostawca OAuth nie m\u00f3g\u0142 zweryfikowa\u0107 has\u0142a aplikacji. Has\u0142o aplikacji jest niepoprawne, utraci\u0142o wa\u017cno\u015b\u0107 lub zosta\u0142o uniewa\u017cnione, albo podany identyfikator klienta lub identyfikator u\u017cytkownika s\u0105 niepoprawne.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Dostawca OAuth nie by\u0142 w stanie zweryfikowa\u0107 has\u0142a aplikacji.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Upewnij si\u0119, \u017ce has\u0142o aplikacji jest poprawne, nie utraci\u0142o wa\u017cno\u015bci i nie zosta\u0142o odwo\u0142ane. Upewnij si\u0119 r\u00f3wnie\u017c, \u017ce identyfikator klienta w znaczniku dost\u0119pu jest taki sam, jak identyfikator klienta w nag\u0142\u00f3wku Authorization.
 

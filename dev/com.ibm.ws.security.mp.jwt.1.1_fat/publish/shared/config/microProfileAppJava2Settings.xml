@@ -1,0 +1,7 @@
+<server>
+
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="javax.security.auth.AuthPermission" actions="wssecurity.getCallerSubject" name="*"/>
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission" actions="read" name='* * "*"'/>
+
+</server>

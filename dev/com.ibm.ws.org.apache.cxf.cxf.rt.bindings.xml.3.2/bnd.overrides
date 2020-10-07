@@ -14,9 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.bindings.xml.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
 org.apache.cxf.tools.validator.*,\
@@ -39,5 +36,4 @@ javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.bindings.xml,\
   org.apache.cxf.binding.xml.*;version=${cxfVersion}

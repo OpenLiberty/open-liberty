@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Deve-se efetuar login no ServerSession antes de adquirir ClientSessions.
+
+7002=O conjunto denominado [{0}] n\u00e3o existe.
+
+7003=O tamanho m\u00e1ximo deve ser maior que o tamanho m\u00ednimo.
+
+7004=Os conjuntos devem ser configurado antes do login.
+
+7008=O tipo Java [{0}] n\u00e3o \u00e9 um tipo de banco de dados v\u00e1lido.
+
+7009=Descritor ausente para [{0}].  Verifique se o descritor foi registrado adequadamente na Sess\u00e3o.
+
+7010=O \u00edndice de in\u00edcio est\u00e1 fora da faixa.
+
+7011=O \u00edndice de parada est\u00e1 fora da faixa.
+
+7012=Ocorreu um erro fatal.
+
+7013=Voc\u00ea est\u00e1 usando a API descontinuada SessionManager e nenhum arquivo EclipseLink.properties p\u00f4de ser localizado no caminho de classe.  Nenhuma sess\u00e3o p\u00f4de ser lida do arquivo.
+
+7017=Os descritores filhos n\u00e3o t\u00eam um mapa de identidade, eles compartilham seus pais
+
+7018=Erro no arquivo.
+
+7023=Inst\u00e2ncia de login incorreto fornecida.  Um DatabaseLogin deve ser fornecido.
+
+7024=Pol\u00edtica de mesclagem inv\u00e1lida.
+
+7025=As \u00fanicas chaves v\u00e1lidas para DatabaseRows s\u00e3o Strings e DatabaseFields.
+
+7027=A sequ\u00eancia nomeada [{0}] est\u00e1 configurada incorretamente.  Seu incremento n\u00e3o corresponde a seu tamanho pr\u00e9-aloca\u00e7\u00e3o.
+
+7028=writeObject() n\u00e3o \u00e9 permitido em um UnitOfWork.
+
+7030=N\u00e3o \u00e9 poss\u00edvel configurar o tamanho do conjunto de leitura ap\u00f3s o login.
+
+7031=N\u00e3o \u00e9 poss\u00edvel incluir descritores em um SessionBroker.
+
+7032=N\u00e3o h\u00e1 nenhuma sess\u00e3o registrada para a classe [{0}].
+
+7033=N\u00e3o h\u00e1 nenhuma sess\u00e3o registrada com o nome [{0}].
+
+7038=Erro ao registrar mensagem no log de sess\u00e3o.
+
+7039=N\u00e3o \u00e9 poss\u00edvel remover do conjunto de classes somente leitura em um UnitOfWork aninhado. {0}O conjunto de classes somente leitura de um UnitOfWork aninhado deve ser igual a ou um superconjunto do conjunto de classes somente do seu pai.
+
+7040=N\u00e3o \u00e9 poss\u00edvel alterar o conjunto de classes somente leitura em um UnitOfWork ap\u00f3s esse UnitOfWork ter sido usado. {0}Mudan\u00e7as no conjunto somente leitura devem ser feitas ao adquirir o UnitOfWork ou imediatamente ap\u00f3s.
+
+7042=Classe de plataforma de banco de dados [{0}] n\u00e3o localizada.
+
+7043=[{0}] n\u00e3o tem quaisquer tabelas para criar no banco de dados.
+
+7044=A classe de cont\u00eainer especificada [{0}] n\u00e3o pode ser utilizado como cont\u00eainer porque n\u00e3o implementa Cole\u00e7\u00e3o ou Mapa.
+
+7047=O cont\u00eainer especificado [{0}] n\u00e3o requer chaves.  Voc\u00ea tentou usar o m\u00e9todo [{1}].
+
+7048=Nem o m\u00e9todo de inst\u00e2ncia nem o campo denominado [{0}] existem para a classe de item [{1}]; portanto, n\u00e3o pode ser usado para criar uma chave para o Mapa.
+
+7051=Atributo ausente [{1}] para o descritor [{0}], chamado de [{2}]
+
+7052=Foi feita uma tentativa de usar [{0}] (com o m\u00e9todo de chave [{1}]) como um cont\u00eainer para um DirectCollectionMapping.  O m\u00e9todo useMapClass() n\u00e3o pode ser usada, somente a API useCollectionClass() \u00e9 suportada para DirectCollectionMappings.
+
+7053=release() tentado em uma Sess\u00e3o que n\u00e3o \u00e9 um ClientSession.  Somente ClientSessions podem ser liberadas.
+
+7054=acquire() tentado em uma Sess\u00e3o que n\u00e3o \u00e9 um ServerSession.  Somente ClientSessions podem ser adquiridos de ServerSessions.
+
+7055=Bloqueio otimista n\u00e3o \u00e9 suportado com a gera\u00e7\u00e3o de procedimento armazenado.
+
+7056=O objeto errado foi registrado no UnitOfWork.  O objeto [{0}] deve ser o objeto do cache pai [{1}].
+
+7058=Conector inv\u00e1lido [{0}] (deve ser do tipo DefaultConnector).
+
+7059=Nome de origem de dados inv\u00e1lido [{0}].
+
+7060=N\u00e3o \u00e9 poss\u00edvel adquirir origem de dados [{0}].
+
+7061=Ocorreu uma exce\u00e7\u00e3o em JTS.
+
+7062=Bloqueio de n\u00edvel de campo n\u00e3o \u00e9 suportado fora de um UnitOfWork.  Para usar o bloqueio de n\u00edvel de campo, um UnitOfWork deve ser usado para grava\u00e7\u00e3o ALL.
+
+7063=Ocorreu uma exce\u00e7\u00e3o dentro do cont\u00eainer EJB.
+
+7064=Ocorreu uma exce\u00e7\u00e3o na extra\u00e7\u00e3o da chave prim\u00e1ria EJB refletiva.  Assegure-se de que o objeto de chave prim\u00e1ria esteja definido corretamente. {2}Chave: [{0}] {2}Bean: [{1}]
+
+7065=A classe remota para o bean n\u00e3o pode ser carregada ou localizada.  Assegure-se de que o carregador de classes correto esteja configurado. {2}Bean: [{0}] {2}Classe remota: [{1}]
+
+7066=N\u00e3o \u00e9 poss\u00edvel criar ou remover beans a menos que uma transa\u00e7\u00e3o JTS esteja presente. {1}Bean: [{0}]
+
+7068=A classe de projeto [{0}] n\u00e3o foi localizada para o projeto [{1}] usando o carregador de classes padr\u00e3o.
+
+7071=N\u00e3o \u00e9 poss\u00edvel usar par\u00e2metros de entrada/sa\u00edda sem usar liga\u00e7\u00e3o.
+
+7072=A classe de plataforma de banco de dados [{0}] n\u00e3o foi localizada para o projeto [{1}] usando o carregador de classes padr\u00e3o.
+
+7073=O tipo de objeto do Oracle com o nome do tipo [{0}] n\u00e3o est\u00e1 definido.
+
+7074=O nome do tipo de objeto do Oracle [{0}] n\u00e3o est\u00e1 definido.
+
+7075=O tamanho m\u00e1ximo n\u00e3o est\u00e1 definido para o tipo VARRAY do Oracle [{0}].  Um tamanho m\u00e1ximo deve ser definido.
+
+7076=Ao gerar a classe do projeto, os descritores do projeto n\u00e3o devem ser inicializados. {1}Descritor: [{0}]
+
+7077=A interface inicial [{0}], especificada durante a cria\u00e7\u00e3o do BMPWrapperPolicy, n\u00e3o cont\u00e9m um m\u00e9todo findByPrimaryKey() correto.  Deve existir um m\u00e9todo findByPrimaryKey() que utilize a classe PrimaryKey para esse bean.
+
+7079=O descritor para [{0}] n\u00e3o foi localizado na sess\u00e3o [{1}].  Verifique o projeto que est\u00e1 sendo usado para essa sess\u00e3o.
+
+7080=Um FinderException foi lan\u00e7ado ao tentar carregar [{0}], da classe [{1}], com a chave prim\u00e1ria [{2}].
+
+7081=O objeto agregado [{0}] n\u00e3o pode ser diretamente registrado no UnitOfWork.  Ele deve ser associado ao objeto de origem (propriet\u00e1rio).
+
+7084=O arquivo [{0}] n\u00e3o \u00e9 um tipo v\u00e1lido para leitura.  ProjectReader deve ser fornecido ao arquivo de projeto XML implementado.
+
+7086=O tipo de sess\u00e3o [{0}] do nome de sess\u00e3o [{1}] n\u00e3o foi definido corretamente.
+
+7087=O tipo de sess\u00e3o [{0}] n\u00e3o foi localizado para [{1}] usando o carregador de classes padr\u00e3o.
+
+7088=N\u00e3o \u00e9 poss\u00edvel criar uma inst\u00e2ncia do controlador de transa\u00e7\u00e3o externo [{0}], especificado no arquivo de propriedades.
+
+7089=Ocorreu uma exce\u00e7\u00e3o ao consultar ou chamar o m\u00e9todo de aditamento de sess\u00e3o [{0}] na classe [{1}] com os par\u00e2metros [{2}].
+
+7091=N\u00e3o \u00e9 poss\u00edvel configurar classes de listener.
+
+7092=N\u00e3o \u00e9 poss\u00edvel incluir uma consulta cujos tipos entram em conflito com uma consulta existente. A consulta a ser inclu\u00edda [{0}] \u00e9 denominada [{1}] com argumentos [{2}]. A consulta conflitante existente [{3}] \u00e9 denominada [{4}] com argumentos [{5}].
+
+7093=Na consulta denominada [{0}], a classe [{2}] para o argumento de consulta denominado [{1}] n\u00e3o pode ser localizada. Inclua a classe ausente em seu caminho de classe.
+
+7095=O recurso sessions.xml [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o SessionManager.getSession est\u00e3o corretos.  O sessions.xml deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o sessions.xml for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+
+7096=N\u00e3o \u00e9 poss\u00edvel usar o m\u00e9todo commit() para confirmar UnitOfWork novamente.
+
+7097=Opera\u00e7\u00e3o n\u00e3o suportada: [{0}].
+
+7099=O recurso XML do projeto de implementa\u00e7\u00e3o [{0}] n\u00e3o foi localizado no caminho de recurso.  Verifique se o nome/caminho do recurso e o carregador de classes transmitidos para o XMLProjectReader est\u00e3o corretos.  O XML do projeto deve ser inclu\u00eddo na raiz do jar implementado do aplicativo, se o XML do projeto for implementado em um subdiret\u00f3rio no jar do aplicativo para assegurar que o caminho de recurso correto "/" e n\u00e3o "\" seja usado.
+
+7100=N\u00e3o foi poss\u00edvel localizar a sess\u00e3o com o nome [{0}] no arquivo session.xml [{1}]
+
+7101=Nenhum "meta-inf/eclipselink-ejb-jar.xml" p\u00f4de ser localizado em seu caminho de classe.  A sess\u00e3o CMP n\u00e3o p\u00f4de ser lida do arquivo.
+
+7102=Encontrado um valor nulo para uma chave de cache ao tentar remover{2}um objeto do mapa de identidade [{0}]{2}que cont\u00e9m um objeto de classe [{1}] (ou uma classe nessa hierarquia){2}A causa mais prov\u00e1vel dessa situa\u00e7\u00e3o \u00e9 que o objeto j\u00e1 passou pela coleta{2}de lixo e portanto n\u00e3o existe no mapa de identidade.{2}Considere o uso de um mapa de identidade alternativo para evitar essa situa\u00e7\u00e3o.{2}Consulte a documenta\u00e7\u00e3o do EclipseLink para obter mais detalhes sobre mapas de identidade.
+
+7103=Uma refer\u00eancia nula foi encontrada ao tentar chamar{1}o m\u00e9todo [{0}] em um objeto que usa via indireta de proxy.{1}Verifique se esse objeto n\u00e3o \u00e9 nulo antes de chamar seus m\u00e9todos.
+
+7104=O login de sequenciamento n\u00e3o deve usar controlador de transa\u00e7\u00e3o externa.
+
+7105=Erro encontrado ao converter classe de criptografia: [{0}]
+
+7106=Erro encontrado durante a criptografia da sequ\u00eancia.
+
+7107=Erro encontrado durante a decriptografia da sequ\u00eancia.
+
+7108=Esta opera\u00e7\u00e3o n\u00e3o \u00e9 suportada para plataformas n\u00e3o relacionais.
+
+7109=O login no projeto usado para criar a sess\u00e3o \u00e9 nulo, ele deve ser um login v\u00e1lido.
+
+7110=O HistoricalSession presente funciona somente com bancos de dados Oracle 9R2 ou mais recente, j\u00e1 que ele usa o recurso de Flashback do Oracle.
+
+7111=Voc\u00ea n\u00e3o pode adquirir um HistoricalSession de um UnitOfWork, outro HistoricalSession, um ServerSession ou um ServerSessionBroker.  Voc\u00ea pode adquirir um de uma sess\u00e3o regular, um ClientSession ou um ClientSessionBroker.
+
+7112=Voc\u00ea especificou que o EclipseLink usa o recurso {0}, mas esse recurso n\u00e3o est\u00e1 dispon\u00edvel na vers\u00e3o do JDK atualmente em execu\u00e7\u00e3o: {1}.
+
+7113={0} n\u00e3o suporta chamada com retorno.
+
+7114=Dados isolados n\u00e3o s\u00e3o suportados atualmente em um boker de sess\u00e3o do cliente. A sess\u00e3o denominada {0} cont\u00e9m descritores que representam dados isolados.
+
+7115=Uma conex\u00e3o exclusiva n\u00e3o pode ser usada para leituras de ClientSession sem dados isolados.  Atualize o ConnectionPolicy usado para remover a configura\u00e7\u00e3o ExclusiveConnection ou o projeto para configurar determinados dados como exclusivos.
+
+7116=Argumentos inv\u00e1lidos foram usados.  Consulte a API p\u00fablica do m\u00e9todo de chamada e use valores v\u00e1lidos para os argumentos.
+
+7117=H\u00e1 um tentativa de usar mais de um cursor em SQLCall {0}
+
+7118=O m\u00e9todo setCustomSQLArgumentType foi chamado em SQLCall {0}, mas essa chamada n\u00e3o usa SQL customizado
+
+7119=Convers\u00e3o tentada pela SQLCall {0} despreparada
+
+7120=O par\u00e2metro {0} em SQLCall {1} n\u00e3o pode ser usado como um cursor, porque tem tipo de par\u00e2metro diferente de OUT
+
+7121={0} n\u00e3o suporta fun\u00e7\u00f5es armazenadas
+
+7122=A conex\u00e3o exclusiva associada \u00e0 sess\u00e3o est\u00e1 indispon\u00edvel para a consulta em {0}
+
+7123=Um writeChanges() bem-sucedido foi chamado neste UnitOfWork.  Como o processo de confirma\u00e7\u00e3o foi iniciado, mas ainda n\u00e3o foi finalizado, as \u00fanicas opera\u00e7\u00f5es suportadas agora s\u00e3o commit, commitAndResume, release, qualquer consulta que n\u00e3o seja de n\u00edvel de objeto ou execu\u00e7\u00e3o de SQLCall.  A opera\u00e7\u00e3o {0} n\u00e3o \u00e9 permitida neste momento.
+
+7124=Um writeChanges() malsucedido foi chamado neste UnitOfWork.  Devido ao risco de que mudan\u00e7as parciais foram gravados no armazenamento de dados, mas n\u00e3o retrocedidas (se dentro de transa\u00e7\u00e3o externa), as \u00fanicas opera\u00e7\u00f5es suportadas agora s\u00e3o libera\u00e7\u00e3o, retrocesso de transa\u00e7\u00e3o global, qualquer consulta que n\u00e3o seja de n\u00edvel de objeto ou execu\u00e7\u00e3o de SQLCall.  A opera\u00e7\u00e3o {0} foi tentada.
+
+7125=Depois que o UnitOfWork foi confirmado e/ou liberado, nenhuma opera\u00e7\u00e3o adicional deve ser executada nele.  A opera\u00e7\u00e3o {0} foi tentada nele.
+
+7126=writeChanges n\u00e3o pode ser chamado em um UnitOfWork aninhado.  Um UnitOfWork aninhado nunca grava mudan\u00e7as diretamente no armazenamento de dados, somente o UnitOfWork pai faz isso.
+
+7127=\u00c9 poss\u00edvel gravar mudan\u00e7as no armazenamento de dados somente uma vez, assim como voc\u00ea pode chamar a confirma\u00e7\u00e3o somente uma vez.
+
+7128=A Sess\u00e3o [{0}] j\u00e1 efetuou login.
+
+7129=Os argumentos do m\u00e9todo n\u00e3o podem ter valor nulo.
+
+7130=O UnitOfWork aninhado n\u00e3o \u00e9 suportado para o rastreamento de mudan\u00e7as de atributo.
+
+7131={0} \u00e9 o tipo errado.  O tipo de evento de mudan\u00e7a de cole\u00e7\u00e3o deve ser incluir ou remover.
+
+7132={0} \u00e9 a classe de evento errada.  Somente PropertyChangeEvent e CollectionChangeEvent s\u00e3o suportados.
+
+7133=Confirma\u00e7\u00e3o antiga n\u00e3o \u00e9 suportada para rastreamento de mudan\u00e7as de atributo.
+
+7134=A plataforma do servidor {0} \u00e9 somente leitura ap\u00f3s o login.
+
+7135=N\u00e3o \u00e9 poss\u00edvel confirmar e continuar um UnitOfWork que contenha qualquer modifica\u00e7\u00e3o de todas as consultas
+
+7136=O UnitOfWork aninhado n\u00e3o \u00e9 suportado para uma modifica\u00e7\u00e3o de todas as consultas
+
+7137=O objeto \u00e9 parcialmente buscado (usando grupo de buscas), o atributo n\u00e3o buscado ({0}) n\u00e3o \u00e9 edit\u00e1vel.
+
+7139=Modificar todas as consultas n\u00e3o pode ser emitido dentro de um UnitOfWork que contenha outras opera\u00e7\u00f5es de grava\u00e7\u00e3o.
+
+7140=O tipo de sequ\u00eancia {0} n\u00e3o tem m\u00e9todo {1}.
+
+7141=A sequ\u00eancia {0} \u00e9 do tipo DefaultSequence, que n\u00e3o pode ser usado no m\u00e9todo setDefaultSequence.
+
+7142=A sequ\u00eancia {0} n\u00e3o pode ser configurada como padr\u00e3o, porque uma sequ\u00eancia com esse nome j\u00e1 foi inclu\u00edda
+
+7143=A sequ\u00eancia {0} n\u00e3o pode ser inclu\u00edda, porque uma sequ\u00eancia com esse nome j\u00e1 foi configurada como padr\u00e3o.
+
+7144={0}: a plataforma {1} n\u00e3o suporta {2}.
+
+7145={2} tenta se conectar \u00e0 sequ\u00eancia {0}, mas j\u00e1 est\u00e1 conectado a {1}. Provavelmente, as duas sess\u00f5es compartilham o objeto DatasourcePlatform
+
+7146=QuerySequence {1} n\u00e3o tem uma consulta select.
+
+7147=A plataforma {0} n\u00e3o pode criar sequ\u00eancia padr\u00e3o de plataforma - ela n\u00e3o substitui o m\u00e9todo createPlatformDefaultSequence
+
+7148=commitAndResume() n\u00e3o pode ser usado com um UnitOfWork JTA/sincronizado.
+
+7149=O atributo de chave prim\u00e1ria composta [{2}] do tipo [{4}] na classe de entidade [{0}] deve ser do mesmo tipo que o definido em sua classe de chave prim\u00e1ria [{1}]. Ou seja, deve ser do tipo [{3}].
+
+7150=Especifica\u00e7\u00e3o de chave prim\u00e1ria composta inv\u00e1lida. Os nomes dos campos ou das propriedades de chave prim\u00e1ria na classe de chave prim\u00e1ria [{1}] e aqueles da classe de bean de entidade [{0}] devem corresponder e seus tipos devem ser os mesmos. Al\u00e9m disso, assegure-se de ter especificado elementos de ID para os atributos correspondentes no XML e/ou um @Id nos campos ou nas propriedades correspondentes da classe de entidade.
+
+7151=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento enumerado. O atributo deve ser definido como uma enumera\u00e7\u00e3o Java.
+
+7153=Anota\u00e7\u00f5es de mapeamento n\u00e3o podem ser aplicadas aos campos ou \u00e0s propriedades que t\u00eam um @Transient especificado. [{0}] est\u00e1 na viola\u00e7\u00e3o dessa restri\u00e7\u00e3o.
+
+7154=O atributo [{3}] na classe de entidade [{2}] tem um valor mappedBy de [{1}] que n\u00e3o existe em sua classe de entidade de propriedade [{0}]. Se a classe de entidade de propriedade for um @MappedSuperclass, este \u00e9 inv\u00e1lido, e seu atributo deve referenciar a subclasse correta.
+
+7155=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento serializado. O tipo de atributo deve implementar a interface Serializ\u00e1vel.
+
+7156=N\u00e3o \u00e9 poss\u00edvel localizar a classe denominada [{0}]. Assegure-se de que o nome/caminho de classe esteja correto e dispon\u00edvel ao carregador de classes.
+
+7157=A classe de entidade [{0}] deve usar um @JoinColumn em vez de @Column para mapear seu atributo de relacionamento [{1}].
+
+7158=Erro encontrado ao construir o @NamedQuery [{1}] da classe de entidade [{0}].
+
+7159=A chave de mapa [{0}] na classe de entidade [{1}] n\u00e3o p\u00f4de ser localizada para o mapeamento [{2}].
+
+7160=@OneToMany para nome de atributo [{1}] na classe de entidade [{0}] n\u00e3o deve ter JoinColumn(s) especificado. Onde um @OneToMany n\u00e3o est\u00e1 mapeado por outra entidade (por exemplo, \u00e9 o lado de propriedade e \u00e9 unidirecional), um @JoinTable deve ser especificado, n\u00e3o @JoinColumn(s). Se @JoinTable n\u00e3o for especificado, uma tabela de jun\u00e7\u00e3o padr\u00e3o ser\u00e1 usada em seu lugar; especifique @JoinTable somente se a configura\u00e7\u00e3o padr\u00e3o precisar ser substitu\u00edda.
+
+7161=A classe de entidade [{0}] n\u00e3o tem chave prim\u00e1ria especificada. Ela deve definir um @Id, @EmbeddedId ou @IdClass. Se voc\u00ea tiver definido PK usando qualquer uma dessas anota\u00e7\u00f5es, certifique-se de n\u00e3o ter tipo de acesso misto (campos e propriedades anotados) na hierarquia de classes de entidade.
+
+7162=A classe de entidade [{0}] tem diversas anota\u00e7\u00f5es @EmbeddedId especificadas (nos atributos [{1}] e [{2}]). Somente um @EmbeddedId pode ser especificado por Entidade.
+
+7163=A classe de entidade [{0}] tem um @EmbdeddedId (no atributo [{1}]) e um @Id (no atributo [{2}]). Ambos os tipos de ID n\u00e3o podem ser especificados na mesma entidade.
+
+7164=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento de lob. Para um lob do tipo BLOB, o atributo deve ser definido como um tipo java.sql.Blob, byte[], Byte[] ou Serializ\u00e1vel. Para um lob do tipo CLOB, o atributo deve ser definido como um tipo java.sql.Clob, char[], Character[] ou Sequ\u00eancia.
+
+7165=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento tempor\u00e1rio. O atributo deve ser definido como java.util.Date ou java.util.Calendar.
+
+7166=Um gerador de tabela que usa o nome reservado [{0}] para seu "nome" foi localizado em [{1}]. Ele n\u00e3o pode usar esse nome porque est\u00e1 reservado para padronizar um gerador de sequ\u00eancia "nome da sequ\u00eancia".
+
+7167=Um gerador de sequ\u00eancia que usa o nome reservado [{0}] para seu "nome de sequ\u00eancia" foi localizado em [{1}]. Ele n\u00e3o pode usar esse nome porque est\u00e1 reservado para padronizar o "nome" de um gerador de tabela.
+
+7168=O atributo [{0}] do tipo [{1}] na classe de entidade [{2}] n\u00e3o \u00e9 v\u00e1lido para uma propriedade de vers\u00e3o. Os seguintes tipos s\u00e3o suportados: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=A classe [{0}] tem dois @GeneratedValues: para os campos [{1}] e [{2}]. Somente um \u00e9 permitido.
+
+7172=Erro encontrado ao instanciar a classe [{0}].
+
+7173=Um evento de mudan\u00e7a de propriedade foi disparado em uma propriedade com o nome [{1}] em [{0}].  No entanto, essa propriedade n\u00e3o existe.
+
+7174=O m\u00e9todo getter [{1}] na classe de entidade [{0}] n\u00e3o tem um m\u00e9todo setter correspondente definido.
+
+7175=O mapeamento [{0}] n\u00e3o suporta bloqueio otimista de vers\u00e3o em cascata.
+
+7176=O mapeamento [{0}] n\u00e3o suporta bloqueio otimista de vers\u00e3o em cascata porque ele tem uma consulta customizada.
+
+7177=O descritor agregado [{0}] tem mapeamentos de propriedade privada. Descritores agregados n\u00e3o suportam bloqueio otimista de vers\u00e3o em cascata.
+
+7178=OracleOCIProxyConnector requer a origem de dados OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requer origem de dados que produza OracleConnections.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requer o Oracle JDBC vers\u00e3o 10.1.0.2 ou mais recente para que OracleConnection declare o m\u00e9todo openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer requer que o valor de propriedade PersistenceUnitProperties.ORACLE_PROXY_TYPE seja n\u00famero inteiro ou possa ser convertido em n\u00famero inteiro: por exemplo, OracleConnection.PROXYTYPE_USER_NAME ou Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - n\u00e3o foi poss\u00edvel localizar a classe do driver [{0}]
+
+7183=Erro ao fechar o arquivo persistence.xml.
+
+7184=Propriedade de sistema [{0}] n\u00e3o especificada. Ela deve ser configurada como uma classe que define um m\u00e9todo "getContainerConfig()".
+
+7185=N\u00e3o \u00e9 poss\u00edvel localizar a classe [{0}] especificada em [{1}]
+
+7186=N\u00e3o \u00e9 poss\u00edvel chamar o m\u00e9todo [{0}] na classe [{1}] especificado em [{2}]
+
+7187=[{0}] deve definir um m\u00e9todo est\u00e1tico p\u00fablico [{1}] que n\u00e3o tenha par\u00e2metros e retorne Cole\u00e7\u00e3o
+
+7188=\u00c9 necess\u00e1ria uma lista de classe n\u00e3o nula.
+
+7189=N\u00e3o \u00e9 poss\u00edvel criar carregador de classes tempor\u00e1rio do carregador atual: [{0}]
+
+7190=[{0}] falhou
+
+7191=A classe de entidade [{0}] n\u00e3o foi localizada usando o carregador de classes [{1}].
+
+7192=ClassFileTransformer [{0}] lan\u00e7a uma exce\u00e7\u00e3o ao executar transform() na classe [{1}].
+
+7193=Arquivos Jar no XML de persist\u00eancia n\u00e3o s\u00e3o suportados nesta vers\u00e3o do EclipseLink.
+
+7194=N\u00e3o foi poss\u00edvel ligar [{0}] a [{1}].
+
+7195=Exce\u00e7\u00e3o ao configurar EntityManagerFactory.
+
+7196=[{0}] do tipo [{1}] n\u00e3o pode ser lan\u00e7ado em [{2}].
+
+7197=Chave prim\u00e1ria nula ou zero encontrada no clone de UnitOfWork [{0}], chave prim\u00e1ria [{1}]. Configure o IdValidation ou a propriedade "eclipselink.id-validation" do descritor.
+
+7198=A classe [{0}] n\u00e3o foi localizada ao converter nomes de classe em classes.
+
+7199=Uma tabela prim\u00e1ria n\u00e3o foi definida para a entidade {0} no arquivo entity-mappings: {1}.  Uma tabela prim\u00e1ria \u00e9 necess\u00e1ria para processar um relacionamento de entidade.
+
+7200=O atributo [{1}] n\u00e3o foi localizado na classe integr\u00e1vel [{0}]. Ele \u00e9 referenciado em uma substitui\u00e7\u00e3o de atributo para o atributo integrado [{3}] na classe [{2}].
+
+7201=Ocorreu uma exce\u00e7\u00e3o ao analisar o arquivo entity-mappings: {0}.
+
+7202=O nome de substitui\u00e7\u00e3o de atributo {0} \u00e9 inv\u00e1lido \u2013 certifique-se de que um atributo com o mesmo nome exista no {1} integr\u00e1vel.
+
+7203=O elemento de mapeamento [{1}] para a classe [{2}] tem um tipo de cole\u00e7\u00e3o n\u00e3o suportado [{0}]. Somente Set, List, Map e Collection s\u00e3o suportados.
+
+7207=O atributo [{1}] na classe de entidade [{0}] tem um tipo inv\u00e1lido para um lob do tipo BLOB. O atributo deve ser definido como um tipo java.sql.Blob, byte[], Byte[] ou Serializ\u00e1vel.
+
+7208=O atributo [{1}] na classe de entidade [{0}] tem um tipo inv\u00e1lido para um lob de tipo CLOB. O atributo deve ser definido como um tipo java.sql.Clob, char[], Character[] ou Sequ\u00eancia.
+
+7212=O atributo [{0}] da classe de entidade [{1}] n\u00e3o especifica um tipo temporal. Um tipo temporal deve ser especificado para campos ou propriedades persistentes do tipo java.util.Date e java.util.Calendar.
+
+7213=Refer\u00eancias circulares mappedBy foram especificadas (Classe: [{0}], atributo: [{1}] e Classe: [{2}], atributo: [{3}]). Isso n\u00e3o \u00e9 v\u00e1lido; somente um lado pode ser o propriet\u00e1rio do relacionamento. Portanto, especifique um valor mappedBy somente no lado que n\u00e3o \u00e9 de propriedade do relacionamento.
+
+7214=A entidade de destino do atributo de relacionamento [{0}] na classe [{1}] n\u00e3o pode ser determinada.  Quando n\u00e3o estiver usando gen\u00e9ricos, assegure-se de que a entidade de destino esteja definida no mapeamento de relacionamento.
+
+7215=N\u00e3o foi poss\u00edvel carregar o campo denominado [{0}] na classe [{1}]. Assegure-se de que haja um campo correspondente com esse nome definido na classe.
+
+7216=N\u00e3o foi poss\u00edvel carregar o m\u00e9todo para o nome da propriedade [{0}] na classe [{1}]. Certifique-se de que haja m\u00e9todo get correspondente para esse nome de propriedade definido na classe.
+
+7217=A ordem por valor [{0}], especificada no elemento [{2}] da entidade [{3}], \u00e9 inv\u00e1lida. Nenhuma propriedade ou campo com esse nome existe na entidade de destino [{1}].
+
+7218=[{0}] n\u00e3o substitui o m\u00e9todo getCreateTempTableSqlPrefix. DatabasePlatforms que suportam tabelas tempor\u00e1rias devem substituir esse m\u00e9todo.
+
+7219=[{0}] n\u00e3o substitui o m\u00e9todo valueFromRowInternalWithJoin, mas seu m\u00e9todo isJoiningSupported retorna true. O mapeamento de refer\u00eancia estrangeira que suporta jun\u00e7\u00e3o deve substituir esse m\u00e9todo.
+
+7220=O @JoinColumns no elemento anotado [{0}] da classe de entidade [{1}] est\u00e1 incompleto. Quando a classe de entidade de origem usa uma chave prim\u00e1ria composta, um @JoinColumn deve ser especificado para cada coluna de jun\u00e7\u00e3o que usa o @JoinColumns. Os elementos name e referencedColumnName devem ser especificados em cada @JoinColumn.
+
+7222=Um @PrimaryKeyJoinColumns incompleto foi especificado no elemento anotado [{0}]. Ao especificar @PrimaryKeyJoinColumns para uma entidade que tem uma chave prim\u00e1ria composta, um @PrimaryKeyJoinColumn deve ser especificado para cada coluna de jun\u00e7\u00e3o de chave prim\u00e1ria que usa o @PrimaryKeyJoinColumns. Os elementos name e referencedColumnName devem ser especificados em cada um desses @PrimaryKeyJoinColumn.
+
+7223=Um @PrimaryKeyJoinColumns foi localizado no elemento anotado [{0}]. Quando a entidade usa uma chave prim\u00e1ria \u00fanica, somente um \u00fanico (ou zero) @PrimaryKeyJoinColumn deve ser especificado.
+
+7224=O m\u00e9todo [{1}] na classe de listener [{0}] \u00e9 um m\u00e9todo de retorno de chamada inv\u00e1lido.
+
+7225=O m\u00e9todo [{1}] n\u00e3o p\u00f4de ser localizado na classe de listener [{0}].
+
+7226=O m\u00e9todo [{1}] na classe de listener [{0}] tem um modificador inv\u00e1lido. Os m\u00e9todos de retorno de chamada n\u00e3o podem ser est\u00e1ticos ou finais.
+
+7227=A classe de listener [{0}] tem diversos m\u00e9todos de retorno de chamada do ciclo de vida para o mesmo evento de ciclo de vida ([{1}] e [{2}]).
+
+7228=O m\u00e9todo de retorno de chamada [{1}] na classe de listener [{0}] tem uma assinatura incorreta. Ele n\u00e3o deveria ter nenhum par\u00e2metro.
+
+7229=O m\u00e9todo de retorno de chamada [{3}] na classe de listener de entidade [{2}] tem uma assinatura incorreta. O m\u00e9todo deve utilizar 1 par\u00e2metro que deve ser design\u00e1vel a partir da classe de entidade. Aqui, a classe de par\u00e2metro [{1}] n\u00e3o \u00e9 design\u00e1vel a partir da classe de entidade [{0}].
+
+7231=N\u00e3o \u00e9 poss\u00edvel persistir o objeto desconectado [{0}]. {3}Classe> {1} Chave prim\u00e1ria> {2}
+
+7232=A classe de entidade [{0}] cont\u00e9m v\u00e1rias declara\u00e7\u00f5es @Id, mas n\u00e3o define quaisquer elementos <id> no documento da inst\u00e2ncia de mapeamentos de entidade.  Assegure-se de que, se houver v\u00e1rias declara\u00e7\u00f5es @Id para uma determinada classe de entidade, a defini\u00e7\u00e3o <entity> correspondente contenha um elemento <id> para cada uma.
+
+7233=Os metadados de mapeamento n\u00e3o podem ser aplicados a propriedades/m\u00e9todos que aceitam argumentos. O atributo [{0}] da classe [{1}] \u00e9 uma viola\u00e7\u00e3o dessa restri\u00e7\u00e3o. Assegure-se de que o m\u00e9todo n\u00e3o tenha argumentos se estiver mapeado com anota\u00e7\u00f5es ou em um arquivo de mapeamento XML.
+
+7234=A gera\u00e7\u00e3o de DDL requer que o transformador de classe, usado com o mapeamento de transforma\u00e7\u00e3o de atributo [{1}] do descritor [{0}], especifique um tipo de retorno espec\u00edfico para seu m\u00e9todo [{2}] (e n\u00e3o Objeto). A gera\u00e7\u00e3o de DDL requer que esse tipo de retorno espec\u00edfico para que possa gerar o tipo de campo correto.
+
+7235=O transformador de classe usado com o mapeamento de transforma\u00e7\u00e3o do atributo [{1}] do descritor [{0}] n\u00e3o implementa o m\u00e9todo [{2}]. Esse m\u00e9todo faz parte da interface FieldTransformer e deve ser implementado. Observe tamb\u00e9m que, quando implementado, seu tipo de retorno tamb\u00e9m deve ser um tipo expl\u00edcito (e n\u00e3o Objeto) ao usar a gera\u00e7\u00e3o de DDL.
+
+7237=O nome da entidade deve ser exclusivo em uma unidade de persist\u00eancia. O nome da entidade [{0}] \u00e9 usado para as classes de entidade [{1}] e [{2}].
+
+7238=O gerador de tabela especificado em [{2}] com o nome == [{0}] entra em conflito com o gerador de sequ\u00eancia com o mesmo nome especificado em [{1}].
+
+7240=O gerador de tabela especificado em [{2}] com o valor de coluna pk == [{0}] entra em conflito com o gerador de sequ\u00eancia especificado em [{1}] com o nome de sequ\u00eancia == [{0}]. Eles n\u00e3o podem usar o mesmo valor.
+
+7242=Foi feita uma tentativa de atravessar um relacionamento usando via indireta que teve uma Sess\u00e3o nula.  Isso geralmente ocorre quando uma entidade com um relacionamento LAZY n\u00e3o instanciado \u00e9 serializada e esse relacionamento \u00e9 atravessado ap\u00f3s a serializa\u00e7\u00e3o.  Para evitar esse problema, instancie o relacionamento LAZY antes da serializa\u00e7\u00e3o.
+
+7243=Metadados ausentes para a classe [{0}]. Assegure-se de que a classe n\u00e3o esteja sendo exclu\u00eddo da sua unidade de persist\u00eancia por uma configura\u00e7\u00e3o <exclude-unlisted-classes>true</exclude-unlisted-classes>. Se esse for o caso, voc\u00ea precisar\u00e1 incluir a classe diretamente, incluindo uma entrada <class>[{0}]</class> para a unidade de persist\u00eancia.
+
+7244=Um mapeamento incompat\u00edvel foi encontrado entre [{0}] e [{1}]. Isso geralmente ocorre quando a cardinalidade de um mapeamento n\u00e3o corresponde com a cardinalidade de seu ponteiro de retorno.
+
+7245=A classe integr\u00e1vel [{0}] \u00e9 usada em classes com tipos de acesso em conflito. A classe [{1}] usa o acesso [{2}] e a classe [{3}] usa o acesso [{4}]. Ao compartilhar um objeto integr\u00e1vel entre as classes, os tipos de acesso dessas classes integr\u00e1veis devem ser os mesmos.
+
+7246=A classe de entidade [{0}] tem um atributo integrado [{1}] do tipo [{2}] que N\u00c3O \u00e9 uma classe integr\u00e1vel. Motivo prov\u00e1vel: @Embeddable ou <embeddable> ausente em orm.xml se metadata-complete = true
+
+7247=Uma refer\u00eancia circular foi descoberta ao processar IDs derivados nas classes de Entidade a seguir: [{0}] 
+
+7249=A entidade [{0}] usa [{1}] como classe de ID integrado cujo tipo de acesso foi determinado como [{2}]. Mas [{1}] n\u00e3o define nenhum [{2}]. \u00c9 prov\u00e1vel que voc\u00ea n\u00e3o tenha fornecido metadados suficientes em sua classe de ID [{1}].
+
+7250=[{0}] usa uma n\u00e3o entidade [{1}] como entidade de destino no atributo de relacionamento [{2}].
+
+7251=O atributo [{1}] da classe [{0}] est\u00e1 mapeado para uma coluna de chave prim\u00e1ria no banco de dados. Atualiza\u00e7\u00f5es n\u00e3o s\u00e3o permitidas.
+
+7252=H\u00e1 v\u00e1rios arquivos de mapeamento denominados [{1}] no caminho de classe para a unidade de persist\u00eancia denominada [ {0} ].
+
+7253=N\u00e3o h\u00e1 nenhum arquivo de mapeamento denominado [{1}] no caminho de classe para a unidade de persist\u00eancia denominada [{0}].
+
+7254=O conversor com o nome [{1}] na classe [{0}] mapeou o valor de dados [{2}] para diversos valores de objetos. Um valor de convers\u00e3o deve mapear cada valor de dados somente uma vez.
+
+7255=A classe [{0}] especifica um @Convert em [{1}]. Isso \u00e9 inv\u00e1lido. Um @Convert \u00e9 suportado somente com um @Basic, @BasicCollection, @BasicMap e @ElementCollection. Para mapeamentos to-many que usam um mapa, voc\u00ea pode usar um @MapKeyConvert somente.
+
+7256=O conversor com o nome [{1}] usado com o elemento [{2}] na classe [{0}] n\u00e3o foi localizado na unidade de persist\u00eancia. Assegure-se de ter fornecido o nome de conversor correto.
+
+7257=N\u00e3o \u00e9 poss\u00edvel instanciar valor de dados com tipo [{2}] e valor [{1}] do conversor de tipo de objeto denominado [{0}]
+
+7258=N\u00e3o \u00e9 poss\u00edvel instanciar valor de objeto com tipo [{2}] e valor [{1}] do conversor de tipo de objeto denominado [{0}]
+
+7259=N\u00e3o \u00e9 poss\u00edvel determinar o tipo de dados para o atributo [{1}] da classe de entidade [{0}] que usa o conversor denominado [{2}]. Um tipo deve ser especificado usando o tipo de dados no conversor ou o atributo deve usar uma especifica\u00e7\u00e3o gen\u00e9rica.
+
+7260=N\u00e3o \u00e9 poss\u00edvel determinar o tipo de objeto para o atributo [{1}] da classe de entidade [{0}] que usa o conversor denominado [{2}]. Um tipo deve ser especificado usando o tipo de objeto no conversor ou o atributo deve usar uma especifica\u00e7\u00e3o gen\u00e9rica.
+
+7261=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento de cole\u00e7\u00e3o b\u00e1sica. O atributo deve ser do tipo Collection.class, List.class ou Set.class.
+
+7262=O tipo [{1}] para o atributo [{0}] na classe de entidade [{2}] n\u00e3o \u00e9 um tipo v\u00e1lido para um mapeamento de mapa b\u00e1sico. O atributo deve ser do tipo Map.class.
+
+7263=A classe [{0}] tem uma especifica\u00e7\u00e3o de bloqueio otimista incompleto. Para uma pol\u00edtica de bloqueio optimista do tipo SELECTED_COLUMNS, as colunas selecionadas devem ser especificadas e os nomes dessas colunas n\u00e3o podem ser omitidos.
+
+7264=A classe [{0}] tem uma especifica\u00e7\u00e3o de bloqueio otimista incompleto. Para uma pol\u00edtica de bloqueio otimista do tipo VERSION_COLUMN, um @Version deve ser especificado no campo ou na propriedade de vers\u00e3o.
+
+7265=Uma anota\u00e7\u00e3o @Cache n\u00e3o \u00e9 permitida em uma classe integr\u00e1vel.
+
+7266=A anota\u00e7\u00e3o @Cache na classe [{0}] tem expiry() e expiryTimeOfDay() especificados. Somente um dos dois pode ser especificado em uma configura\u00e7\u00e3o de anota\u00e7\u00e3o @Cache.
+
+7267=A classe do manipulador de exce\u00e7\u00f5es especificada [{0}] \u00e9 inv\u00e1lida, a classe deve existir no caminho de classe e implementar a interface ExceptionHandler.
+
+7268=A classe do listener de eventos de sess\u00e3o especificada [{0}] \u00e9 inv\u00e1lida, a classe deve existir no caminho de classe e implementar a interface SessionEventListener.
+
+7270=O valor de tamanho das instru\u00e7\u00f5es de cache especificado [{0}] \u00e9 inv\u00e1lido [{1}].
+
+7271=O valor booleano especificado [{0}] para configurar SQL nativo \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
+
+7272=O valor booleano especificado [{0}] para ativar o cache de instru\u00e7\u00e3o SQL \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
+
+7273=O valor booleano especificado [{0}] para copiar consultas denominadas do descritor na sess\u00e3o \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
+
+7274=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao tentar criar o arquivo de cria\u00e7\u00e3o de log [{0}]:[{1}].
+
+7275=N\u00e3o \u00e9 poss\u00edvel instanciar a classe de manipulador de exce\u00e7\u00f5es [{0}] especificada na propriedade eclipselink.exception-handler [{1}].
+
+7276=N\u00e3o \u00e9 poss\u00edvel instanciar a classe de listener de eventos de sess\u00e3o [{0}] especificada na propriedade eclipselink.session-event-listener [{1}].
+
+7277=O nome do arquivo de cria\u00e7\u00e3o de log n\u00e3o foi especificado.
+
+7278=O valor booleano especificado [{0}] para a propriedade de persist\u00eancia [{1}] \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
+
+7282=O StructConverter {0} n\u00e3o pode ser definido no mapeamento {1}.  StructConverters pode ser usado somente em mapeamentos diretos.
+
+7283=Dois StructConverters foram inclu\u00eddos para a classe {0}.  Somente um StructConverter pode ser inclu\u00eddo por classe.
+
+7284=A classe [{0}] n\u00e3o \u00e9 um comparador v\u00e1lido. A classe deve implementar a interface do comparador.
+
+7285=A classe de gerenciador de perfis especificada [{0}] \u00e9 inv\u00e1lida, a classe deve existir no caminho de classe e implementar a interface SessionProfiler.
+
+7286=N\u00e3o \u00e9 poss\u00edvel instanciar a classe de gerenciador de perfis [{0}] especificada na propriedade eclipselink.profiler [{1}].
+
+7287=O transformador de leitura especificado para o elemento [{0}] n\u00e3o implementa a interface necess\u00e1ria AttributeTransformer.
+
+7288=O transformador de leitura especificado para o elemento [{0}] tem classe e m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+7289=O transformador de leitura especificado para o elemento [{0}] n\u00e3o tem nem classe nem m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+7290=O transformador de grava\u00e7\u00e3o especificado para a coluna [{1}] do elemento [{0}] n\u00e3o implementa a interface necess\u00e1ria FieldTransformer.
+
+7291=O transformador de grava\u00e7\u00e3o especificado para a coluna [{1}] do elemento [{0}] tem classe e m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+7292=O transformador de grava\u00e7\u00e3o especificado para a coluna [{1}] do elemento [{0}] n\u00e3o tem nem classe nem m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+7293=O transformador de grava\u00e7\u00e3o especificado para o elemento [{0}] n\u00e3o tem uma coluna ou a coluna n\u00e3o tem nome.
+
+7294=O elemento de vari\u00e1vel um para um [{1}] tem v\u00e1rias entidades mapeadas para o mesmo discriminador [{0}]. Cada entidade que implementa a interface de vari\u00e1vel um para um deve ter seu pr\u00f3prio discriminador exclusivo.
+
+7295=O CloneCopyPolicy especificado na classe [{0}] n\u00e3o especifica um m\u00e9todo ou um workingCopyMethod.  \u00c9 necess\u00e1rio que um destes seja especificado.
+
+7296=A classe [{0}] tem diversas anota\u00e7\u00f5es CopyPolicy.  Somente um CopyPolicyAnnotation \u00e9 permitido por classe.
+
+7297=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao instanciar refletivamente a Classe [{0}].  Isso geralmente significa que essa classe \u00e9 especificada em seus metadados e, por algum motivo, o java n\u00e3o pode instanci\u00e1-la refletivamente com um construtor sem argumentos.  Verifique a exce\u00e7\u00e3o encadeada para obter mais informa\u00e7\u00f5es.  Nota: Para ver a exce\u00e7\u00e3o encadeada, voc\u00ea talvez precise aumentar seu n\u00edvel de cria\u00e7\u00e3o de log.
+
+7298=O mapeamento [{2}] da classe integrada de ID [{3}] \u00e9 um mapeamento inv\u00e1lido para essa classe. Uma classe integr\u00e1vel que \u00e9 usada com uma especifica\u00e7\u00e3o de ID integrado (atributo [{0}] da origem [{1}]) s\u00f3 pode conter mapeamentos b\u00e1sicos. Remova o mapeamento n\u00e3o b\u00e1sico ou altere a especifica\u00e7\u00e3o de ID integrado na origem a ser integrada.
+
+7299=Anota\u00e7\u00f5es em conflito com o mesmo nome [{0}] foram localizadas. A primeira [{1}] foi localizada em [{2}]; a segunda [{3}], em [{4}]. Anota\u00e7\u00f5es nomeadas devem ser exclusivas em toda a unidade de persist\u00eancia.
+
+7300=Elementos XML [{1}] em conflito com o mesmo nome [{0}] foram localizados. O primeiro foi localizado no arquivo de mapeamento [{2}] e o segundo no arquivo de mapeamento [{3}]. Elementos XML nomeados devem ser exclusivos em toda a unidade de persist\u00eancia.
+
+7301=Anota\u00e7\u00f5es em conflito foram localizadas. A primeira [{0}] foi localizada em [{1}]; a segunda [{2}], em [{3}]. Corrija isso removendo a anota\u00e7\u00e3o que n\u00e3o se aplica.
+
+7302=Elementos XML [{0}] em conflito foram localizados para o elemento [{1}]. O primeiro foi localizado no arquivo de mapeamento [{2}] e o segundo no arquivo de mapeamento [{3}]. Corrija isso removendo o elemento XML que n\u00e3o se aplica.
+
+7303=Propriedade PersistenceUnitProperties.ORACLE_PROXY_TYPE configurada como [{0}], necess\u00e1ria para esta propriedade de tipo de proxy [{1}] n\u00e3o localizada.
+
+7304=Propriedade PersistenceUnitProperties.ORACLE_PROXY_TYPE configurada como tipo desconhecido [{0}], tipos conhecidos s\u00e3o [{1}], [{2}], [{3}].
+
+7305=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao processar o arquivo de mapeamento da URL: [{0}].
+
+7306=O elemento anotado [{0}] da classe [{1}] tem um tipo de acesso expl\u00edcito incorreto especificado. Ele deve especificar um tipo de acesso de [{2}].
+
+7307=Est\u00e1 faltando uma sequ\u00eancia de contexto de cria\u00e7\u00e3o de log para o contexto [{0}]. Essa \u00e9 uma exce\u00e7\u00e3o interna que ocorreu ao recuperar uma mensagem de log para processamento de metadados JPA; relate um erro.
+
+7308=O valor especificado [{0}] para a propriedade de persist\u00eancia [{1}] \u00e9 inv\u00e1lido - [{2}].
+
+7309=O atributo denominado [{1}] da classe integr\u00e1vel [{0}] n\u00e3o \u00e9 um mapeamento v\u00e1lido para uso com uma substitui\u00e7\u00e3o de atributo para o atributo [{3}] na classe [{2}].
+
+7310=A classe de destino do atributo de cole\u00e7\u00e3o de elementos [{0}] na classe [{1}] n\u00e3o pode ser determinada.  Quando n\u00e3o estiver usando gen\u00e9ricos, assegure-se de que a classe de destino esteja definida no mapeamento de cole\u00e7\u00e3o de elementos.
+
+7311=Uma classe de destino inv\u00e1lida est\u00e1 sendo usada com o atributo de cole\u00e7\u00e3o de elemento [{0}] na classe [{1}].  Somente tipos b\u00e1sicos e classes integr\u00e1veis s\u00e3o permitidos.
+
+7312=Uma classe integr\u00e1vel inv\u00e1lida [{0}] est\u00e1 sendo usada com o atributo de cole\u00e7\u00e3o de elementos [{1}] na classe [{2}]. Consulte a se\u00e7\u00e3o 2.6 da especifica\u00e7\u00e3o: "Uma classe integr\u00e1vel (incluindo uma classe integr\u00e1vel em outra classe integr\u00e1vel) contida em uma cole\u00e7\u00e3o de elementos n\u00e3o deve conter uma cole\u00e7\u00e3o de elementos, nem pode conter um relacionamento com uma entidade diferente de um relacionamento de muitos para um ou um para um. A classe integr\u00e1vel deve estar no lado propriet\u00e1rio de tal relacionamento e o relacionamento deve ser mapeado por um mapeamento de chave estrangeira". O mapeamento para o atributo [{3}] na classe integr\u00e1vel est\u00e1 violando isso.
+
+7313=O atributo [{1}] n\u00e3o foi localizado na classe integr\u00e1vel [{0}]. Ele \u00e9 referenciado em uma substitui\u00e7\u00e3o de associa\u00e7\u00e3o para o atributo integrado [{3}] na classe [{2}].
+
+7314=O mapeamento [{0}] est\u00e1 sendo usado para mapear a chave em um MappedKeyMapContainerPolicy e usa via indireta.  Os mapeamentos usados para chaves de mapas n\u00e3o podem usar via indireta.
+
+7315=A classe de chave de mapa do atributo de cole\u00e7\u00e3o de elementos [{0}] na classe [{1}] n\u00e3o pode ser determinada.  Ao especificar uma chave de convers\u00e3o com uma cole\u00e7\u00e3o de elementos, assegure-se de estar usando uma defini\u00e7\u00e3o gen\u00e9rica para que um tipo de classe possa ser determinado para o conversor.
+
+7316=O valor de MapsId [{0}] do atributo de mapeamento [{1}] \u00e9 inv\u00e1lido. Um atributo equivalente com esse nome deve ser definido no IdClass [{2}]
+
+7317=O campo de ordem de lista n\u00e3o \u00e9 suportado para [{0}].
+
+7318=[{0}] tem ordem de lista configurada, mas CollectionChangeEvent.REMOVE foi enviado sem \u00edndice.
+
+7319=O atributo denominado [{1}] da classe integr\u00e1vel [{0}] n\u00e3o \u00e9 um relacionamento v\u00e1lido para uso com a substitui\u00e7\u00e3o de associa\u00e7\u00e3o denominada [{2}] de [{3}]. Uma substitui\u00e7\u00e3o de associa\u00e7\u00e3o pode ser especificada somente quando a integr\u00e1vel est\u00e1 no lado de propriedade do relacionamento.
+
+7320=O atributo [{0}] da classe [{1}] (ou herdado de uma superclasse mapeada) n\u00e3o \u00e9 um tipo v\u00e1lido para uso com uma especifica\u00e7\u00e3o de coluna de ordem. Ao especificar uma coluna de ordem, o atributo deve ser do tipo Lista.
+
+7321=O campo [{1}] do mapeamento de ID derivado [{2}] da classe [{3}] \u00e9 um campo de ID inv\u00e1lido da classe de refer\u00eancia [{0}]. Assegure-se de haver um mapeamento de ID correspondente para esse campo. 
+
+7322=O nome da coluna de refer\u00eancia [{0}] da substitui\u00e7\u00e3o de associa\u00e7\u00e3o denominada [{1}] no atributo [{2}] da classe [{3}] n\u00e3o \u00e9 um campo de chave prim\u00e1ria mapeada v\u00e1lido. Assegure-se de que haja um mapeamento de ID correspondente para esse campo
+
+7323=A tabela com o nome [{1}] de [{2}] tem v\u00e1rias restri\u00e7\u00f5es exclusivas com o nome [{0}]. Isso n\u00e3o \u00e9 permitido, nomes de restri\u00e7\u00e3o exclusiva devem ser exclusivos em todas as tabelas.
+
+7324=A classe de entidade [{1}] especifica um @ClassExtractor e metadados de discriminador. Ao usar um @ClassExtractor, um @DiscriminatorColumn e/ou um @DiscriminatorValue, n\u00e3o deve ser especificado nessa classe, nem metadados de valor de discriminador devem ser definidos em suas subclasses.
+
+7325=O mapeamento de conjunto de resultados sql [{0}] usado com a consulta nomeada [{1}] de [{2}] n\u00e3o \u00e9 um mapeamento de conjunto de resultados sql reconhecido. Assegure-se de que o nome esteja correto e de que um mapeamento de conjunto de resultados sql com esse nome exista.
+
+7326=O atributo [{0}] da classe [{1}] mapeado em [{2}] que usa acesso VIRTUAL n\u00e3o especifica um tipo de atributo. Ao usar acesso VIRTUAL, um tipo de atributo deve ser especificado. Nota: Em um para um ou muitos para um, o tipo de atributo \u00e9 especificado usando a entidade de destino. Para uma vari\u00e1vel um para um, \u00e9 especificado usando a classe de destino.
+
+7327=A classe integr\u00e1vel [{0}] \u00e9 usada em classes com m\u00e9todos de acesso em conflito. A classe [{1}] usa os m\u00e9todos de acesso [{2}] e a classe [{3}] usa os m\u00e9todos de acesso [{4}]. Ao compartilhar um objeto integr\u00e1vel entre as classes, os m\u00e9todos de acesso dessa classe de integra\u00e7\u00e3o devem ser os mesmos.
+
+7328=Ao usar acesso VIRTUAL, um DynamicClassLoader deve ser fornecido ao criar o EntityManagerFactory usando a propriedade eclipselink [eclipselink.classloader]. Ou seja, createEntityManagerFactory(String persistenceUnitName, propriedades de mapas) e inclua um novo DynamicClassLoader() nas propriedades de mapas.
+
+7329=O atributo {1} de {0} n\u00e3o est\u00e1 mapeado.
+
+7330=O atributo {1} de {0} faz refer\u00eancia a um grupo de buscas aninhado, mas n\u00e3o mapeado com ForeignReferenceMapping ou o mapeamento n\u00e3o tem descritor de refer\u00eancia.
+
+7331=O atributo {1} de {0} faz refer\u00eancia a um grupo de buscas aninhado, mas a classe de destino n\u00e3o suporta grupos de buscas.
+
+7332=O atributo [{2}] de chave prim\u00e1ria composta derivada do tipo [{4}] de [{1}] deve ser do mesmo tipo que o campo de ID de seu pai de [{0}]. Ou seja, deve ser do tipo [{3}].
+
+7334=A classe [{0}] tem uma especifica\u00e7\u00e3o de chave prim\u00e1ria incompleta. Ao especificar as colunas de chave prim\u00e1ria, os nomes dessas colunas devem ser especificados.
+
+7335=Valor de parti\u00e7\u00e3o duplicado [{1}] fornecido para @ValuePartitioning denominado [{0}]
+
+7336=Diversas propriedades de contexto [{2}] e [{3}] especificadas para o mesmo campo de discriminador de locat\u00e1rio [{1}] para a classe [{0}]
+
+7337=A coluna do discriminador de locat\u00e1rio mapeada [{1}] na classe [{0}] deve ser marcada como somente leitura. Em JPA, isso \u00e9 feito configurando insertable=false e updatable=false na coluna, por exemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=N\u00e3o \u00e9 poss\u00edvel incluir sequ\u00eancias em um SessionBroker.
+
+7339=O alias [{0}] \u00e9 usado pelas classes [{1}] e [{2}]. O alias do descritor deve ser exclusivo.
+
+7340=H\u00e1 v\u00e1rios arquivos de mapeamento denominados [{0}] no caminho de classe.
+
+7341=Nenhum eclipselink-orm.xml foi especificado para o XMLMetadataSource.  Especifique um usando a propriedade de unidade de persist\u00eancia eclipselink.metadata-source.xml.file ou eclipselink.metadata-source.xml.url
+
+7342=O valor booleano especificado [{0}] para a configura\u00e7\u00e3o permitir consultas SQL nativo \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
+
+7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. A entidade [{1}] usa [{0}] e a entity [{3]} usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
+
+7344=VPD (conex\u00f5es e gera\u00e7\u00e3o de DDL) n\u00e3o \u00e9 suportado para a plataforma: [{0}].
+
+7345=O arquivo {0} especificado para XMLMetadataSource n\u00e3o foi localizado
+
+7346=A propriedade de contexto [{0}] com diversos locat\u00e1rios n\u00e3o foi fornecida. Quando a propriedade de unidade de persist\u00eancia (eclipselink.multitenant.tenants-share-emf) \u00e9 configurada como false, todas as propriedades de contexto com diversos locat\u00e1rios devem ser fornecidas de antem\u00e3o. Isso pode ser feito por meio da defini\u00e7\u00e3o da unidade de persist\u00eancia diretamente ou transmitindo um mapa de propriedades contendo todas as propriedades de contexto com diversos locat\u00e1rios na chamada para criar EntityManagerFactory.
+
+7347=A classe [{0}] especifica metadados conversores de n\u00edvel de tipo sem especificar um nome de atributo para cada um. Um nome de atributo deve ser fornecido para todos os metadados conversores de n\u00edvel de tipo para assegurar o aplicativo correto para um atributo de superclasse.
+
+7348=O mapeamento integrado [{1}] de [{0}] n\u00e3o especifica um nome de atributo ao qual a convers\u00e3o deve ser aplicada. Deve-se especificar um nome de atributo no Integr\u00e1vel.
+
+7350=O nome do atributo de convers\u00e3o [{3}] do mapeamento [{1}] da classe [{0}] n\u00e3o foi localizado na classe integr\u00e1vel [{2}]. Assegure-se de que o atributo exista e esteja nomeado corretamente.
+
+7351=A classe de conversor [{2}] especificada no atributo de mapeamento [{1}] da classe [{0}] n\u00e3o foi localizada. Assegure-se de que o nome da classe de conversor esteja correto e exista com a defini\u00e7\u00e3o de unidade de persist\u00eancia.
+
+7352=A classe de conversor [{0}] deve implementar a interface JPA javax.persistence.AttributeConverter<X, Y> para ser uma classe de conversor v\u00e1lida.
+
+7353=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma especifica\u00e7\u00e3o de convers\u00e3o.
+
+7354=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma especifica\u00e7\u00e3o de convers\u00e3o de chave de mapa.
+
+7355=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma convers\u00e3o que usa uma especifica\u00e7\u00e3o de nome de atributo. Um nome de atributo s\u00f3 deve ser especificado para atravessar um tipo de mapeamento integrado.
+
+7356=Procedimento: [{1}] n\u00e3o pode ser executado porque {0} n\u00e3o suporta atualmente v\u00e1rios par\u00e2metros de sa\u00edda
+

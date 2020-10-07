@@ -85,7 +85,7 @@ public class Utils {
    * Trace formatting methods
    */
 
-  private final static String ls = System.getProperty("line.separator");
+  private final static String ls = System.lineSeparator();
 
   private static String bound (String s, String ch) {
 

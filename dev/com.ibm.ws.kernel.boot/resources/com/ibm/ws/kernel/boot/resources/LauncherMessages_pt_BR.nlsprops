@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@
 
 audit.launchTime=CWWKE0001I: O servidor {0} foi \
 ativado.
-audit.launchTime.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+audit.launchTime.explanation=Essa mensagem \u00e9 apenas informativa.
 audit.launchTime.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 audit.kernelStartTime=CWWKE0002I: O kernel foi iniciado ap\u00f3s {0}
@@ -42,7 +42,7 @@ ativada.
 audit.kernelStartTime.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 info.bootstrapChange=CWWKE0003I: Os locais de autoinicializa\u00e7\u00e3o foram alterados, portanto, o servidor passar\u00e1 por um in\u00edcio limpo.
-info.bootstrapChange.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.bootstrapChange.explanation=Essa mensagem \u00e9 apenas informativa.
 info.bootstrapChange.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 error.badLocation=CWWKE0004E: O sistema n\u00e3o p\u00f4de resolver locais para instala\u00e7\u00e3o de servidor.
@@ -173,7 +173,7 @@ warning.singleServer=CWWKE0027W: Somente um servidor pode ser especificado na li
 ignorados (servidor={0}, ignorado={1}).
 warning.singleServer.explanation=Pode ser especificado somente um servidor na linha de comandos. O primeiro nome do \
 servidor foi processado; os nomes restantes foram ignorados.
-warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
+warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
   
 error.serverAlreadyRunning=CWWKE0029E: Uma inst\u00e2ncia do servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
 error.serverAlreadyRunning.explanation=Voc\u00ea est\u00e1 tentando iniciar um servidor que j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
@@ -252,7 +252,7 @@ exemplo um arquivo JAR.
 error.unsupportedLaunch.useraction=Verifique se o comando usado est\u00e1 usando o comando java -jar <localJarFile> para ativar o ambiente de tempo de execu\u00e7\u00e3o. 
 
 error.serverDirPermission=CWWKE0044E: N\u00e3o h\u00e1 permiss\u00e3o de grava\u00e7\u00e3o para o diret\u00f3rio do servidor {0}
-error.serverDirPermission.explanation=O diret\u00f3rio do servidor deve ser grav\u00e1vel para iniciar o servidor.
+error.serverDirPermission.explanation=O diret\u00f3rio do servidor deve ser grav\u00e1vel para que o servidor possa ser iniciado.
 error.serverDirPermission.useraction=Verifique se voc\u00ea possui acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e \u00e0 \u00e1rea de \
 trabalho.
 
@@ -308,15 +308,15 @@ error.fileNotFound.useraction=Verifique se o caminho existe e de voc\u00ea tem a
 # Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: Encerramento do servidor solicitado em {0,date,full} \u00e0s {0,time,short}. O servidor {1} est\u00e1 sendo encerrado.
-info.stop.request.received.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.stop.request.received.explanation=Essa mensagem \u00e9 apenas informativa.
 info.stop.request.received.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 error.unableZipDir=CWWKE0056E: N\u00e3o \u00e9 poss\u00edvel compactar o diret\u00f3rio devido a uma exce\u00e7\u00e3o de E/S {0}. 
-error.unableZipDir.explanation=Ocorreu uma exce\u00e7\u00e3o IOException.
+error.unableZipDir.explanation=Ocorreu uma exce\u00e7\u00e3o de E/S.
 error.unableZipDir.useraction=Repita a opera\u00e7\u00e3o. Se o problema persistir, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 info.introspect.request.received=CWWKE0057I: Solicita\u00e7\u00e3o de introspec\u00e7\u00e3o recebida. O servidor est\u00e1 executando dump do status.
-info.introspect.request.received.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.introspect.request.received.explanation=Essa mensagem \u00e9 apenas informativa.
 info.introspect.request.received.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 warn.packageServer.include.unknownOption=CWWKE0058W: N\u00e3o \u00e9 poss\u00edvel usar a op\u00e7\u00e3o --include={0}, ser\u00e1 usada --include=all no \
@@ -355,7 +355,7 @@ error.loadNativeLibrary.useraction=Verifique se o caminho existe e tente novamen
 # {1} The server directory path
 error.creatingNewServerExists=CWWKE0065E: Ocorreu uma exce\u00e7\u00e3o ao criar o servidor {0}. Foi detectada atividade externa no caminho do servidor ({1}), portanto, a cria\u00e7\u00e3o do servidor foi interrompida.
 error.creatingNewServerExists.explanation=O servidor especificado n\u00e3o pode ser criado porque outro aplicativo estava executando opera\u00e7\u00f5es de arquivo no novo diret\u00f3rio do servidor.
-error.creatingNewServerExists.useraction=Investigue porque houve atividade de arquivo no diret\u00f3rio do servidor fora do comando de cria\u00e7\u00e3o e, em seguida, exclua o diret\u00f3rio do servidor e tente criar o servidor novamente.
+error.creatingNewServerExists.useraction=Investigue por que houve atividade de arquivo no diret\u00f3rio do servidor fora do comando de cria\u00e7\u00e3o e depois exclua o diret\u00f3rio do servidor e tente criar o servidor novamente.
 
 # {0} The server name
 # {1} The server directory path
@@ -364,11 +364,11 @@ error.creatingNewServerMkDirFail.explanation=O servidor especificado n\u00e3o po
 error.creatingNewServerMkDirFail.useraction=Assegure-se de que haja espa\u00e7o suficiente em disco para criar o servidor e que o local possua as permiss\u00f5es de grava\u00e7\u00e3o corretas antes de tentar criar o servidor novamente.
 
 info.javadump.request.received=CWWKE0067I: Foi recebida a solicita\u00e7\u00e3o de dump Java.
-info.javadump.request.received.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.javadump.request.received.explanation=Essa mensagem \u00e9 apenas informativa.
 info.javadump.request.received.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 info.javadump.created=CWWKE0068I: Dump Java criado: {0}
-info.javadump.created.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.javadump.created.explanation=Essa mensagem \u00e9 apenas informativa.
 info.javadump.created.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 warn.javadump.unsupported=CWWKE0069W: O tipo de dump Java {0} n\u00e3o \u00e9 suportado.
@@ -468,7 +468,7 @@ error.serverJavaDumpCommandPortDisabled.explanation=A porta de comando do servid
 error.serverJavaDumpCommandPortDisabled.useraction=Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, este dump poder\u00e1 ser solicitado a partir do console do operador.  Consulte o centro de informa\u00e7\u00f5es para obter detalhes.
 
 info.javadump.zos.system.created=CWWKE0092I: A solicita\u00e7\u00e3o de Dump de Transa\u00e7\u00e3o do Sistema Java (SYSTDUMP) foi conclu\u00edda.
-info.javadump.zos.system.created.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos. Consulte o log do sistema para obter detalhes sobre o nome do conjunto de dados e o volume que cont\u00e9m a sa\u00edda do dump do sistema Java.
+info.javadump.zos.system.created.explanation=Essa mensagem \u00e9 apenas informativa Consulte o log do sistema para obter detalhes sobre o nome do conjunto de dados e o volume que cont\u00e9m a sa\u00edda do dump do sistema Java.
 info.javadump.zos.system.created.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 warn.fingerprintUnableToMkDirs=CWWKE0093W: O servidor n\u00e3o p\u00f4de criar o local {0} ao tentar gravar o arquivo {1}. 
@@ -502,7 +502,7 @@ error.create.unknownJavaLevel.useraction=Assegure-se de utilizar um JDK suportad
 
 error.create.java8serverenv=CWWKE0103E: N\u00e3o \u00e9 poss\u00edvel criar um arquivo server.env no seguinte local: {0}
 error.create.java8serverenv.explanation=O processo que est\u00e1 tentando criar o servidor n\u00e3o p\u00f4de gerar um arquivo server.env no local especificado.  Esse arquivo fornece os argumentos JVM necess\u00e1rios para o funcionamento adequado do servidor.
-error.create.java8serverenv.useraction=Assegure-se de ter acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e que o espa\u00e7o em disco seja suficiente.  Al\u00e9m disso, \u00e9 poss\u00edvel criar manualmente o arquivo server.env com o seguinte valor: WLP_SKIP_MAXPERMSIZE=true.  Deve-se assegurar que o processo do servidor tenha acesso de leitura a esse arquivo.
+error.create.java8serverenv.useraction=Assegure-se de ter acesso de grava\u00e7\u00e3o ao diret\u00f3rio do servidor e que o espa\u00e7o em disco seja suficiente. Deve-se assegurar que o processo do servidor tenha acesso de leitura a esse arquivo.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Este produto \u00e9 beta e n\u00e3o pode ser usado na produ\u00e7\u00e3o. Os termos de licen\u00e7a integrais podem ser visualizados aqui: {0}
 audit.licenseRestriction.early_access.ilar.explanation=Este produto \u00e9 beta e deve ser usado de acordo com os termos da licen\u00e7a beta.
@@ -524,8 +524,7 @@ info.addProductExtension=CWWKE0108I: A \
 extens\u00e3o de produto {0} foi ativada programaticamente. O \
 identificador do produto da extens\u00e3o de produto \u00e9 {1}. O local de \
 instala\u00e7\u00e3o do produto da extens\u00e3o de produto \u00e9 {2}.
-info.addProductExtension.explanation= Esta mensagem tem apenas prop\u00f3sitos informativos.  \
-A extens\u00e3o de produto foi inclu\u00edda por uma chamada para o SPI em \
+info.addProductExtension.explanation= Essa mensagem \u00e9 apenas informativa. A extens\u00e3o de produto foi inclu\u00edda por uma chamada para o SPI em \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
@@ -576,7 +575,7 @@ error.creatingNewClientMkDirFail.explanation=O cliente especificado n\u00e3o pod
 error.creatingNewClientMkDirFail.useraction=Assegure-se de que haja espa\u00e7o suficiente em disco para criar o cliente e de que seja poss\u00edvel gravar no local, em seguida, tente novamente. 
 
 audit.launchTime.client=CWWKE0907I: O cliente {0} foi ativado.
-audit.launchTime.client.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+audit.launchTime.client.explanation=Essa mensagem \u00e9 apenas informativa.
 audit.launchTime.client.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 audit.kernelUpTime.client=CWWKE0908I: O cliente {0} foi interrompido ap\u00f3s {1}.
@@ -586,7 +585,7 @@ audit.kernelUpTime.client.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1r
 
 # {0} The server name 
 info.java2security.started=CWWKE0909I: Servidor {0} iniciado com a Seguran\u00e7a Java 2 ativada
-info.java2security.started.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+info.java2security.started.explanation=Essa mensagem \u00e9 apenas informativa.
 info.java2security.started.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 #{0} Cause of exception
@@ -701,7 +700,7 @@ error.server.resume.failed.useraction=Verifique os logs do servidor para obter o
 warning.server.pause.invalid.targets=CWWKE0931W: Uma solicita\u00e7\u00e3o foi recebida para pausar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
 a\u00e7\u00e3o foi tomada.
 warning.server.pause.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de pausa com uma lista de metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
-warning.server.pause.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para pausar. Para pausar todos os componentes com capacidade de pausa no servidor, emita uma solicita\u00e7\u00e3o de pausa sem a op\u00e7\u00e3o de destino.
+warning.server.pause.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes a serem pausados. Para pausar todos os componentes com capacidade de pausa no servidor, emita uma solicita\u00e7\u00e3o de pausa sem a op\u00e7\u00e3o de destino.
 
 warning.server.resume.invalid.targets=CWWKE0932W: Uma solicita\u00e7\u00e3o foi recebida para continuar componentes espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
 a\u00e7\u00e3o foi tomada.
@@ -782,7 +781,9 @@ verificar seus status. Para verificar o status cumulativo de todos os componente
 solicita\u00e7\u00e3o de status sem a op\u00e7\u00e3o de destino.
 
 warning.package.root.invalid=CWWKE0947W: Uma op\u00e7\u00e3o --server-root com um argumento vazio n\u00e3o \u00e9 permitida quando Extens\u00f5es do Produto est\u00e3o instaladas. O argumento padr\u00e3o de wlp ser\u00e1 usado.
-warning.package.root.invalid.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma op\u00e7\u00e3o --server-root especificando um argumento vazio e Extens\u00f5es do Produto foram detectadas. A raiz de servidor padr\u00e3o de wlp ser\u00e1 usada.
+warning.package.root.invalid.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma \
+op\u00e7\u00e3o --server-root especificando um argumento vazio e Extens\u00f5es do Produto foram detectadas. A raiz do \
+servidor padr\u00e3o de wlp ser\u00e1 usada.
 warning.package.root.invalid.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 warning.package.root.invalid.runnable=CWWKE0948W: Uma op\u00e7\u00e3o --server-root com \
@@ -801,6 +802,13 @@ error.package.usr.jar=CWWKE0951E: O nome do archive n\u00e3o deve terminar com u
 error.package.usr.jar.explanation=A op\u00e7\u00e3o --archive n\u00e3o deve terminar com uma extens\u00e3o de arquivo .jar quando --include=usr \u00e9 especificado.
 error.package.usr.jar.useraction=Forne\u00e7a um nome de arquivo para --archive com uma extens\u00e3o de arquivo diferente de uma extens\u00e3o de arquivo .jar quando --include=usr for especificado.
 
+error.missing.version.files=CWWKE0952E: As informa\u00e7\u00f5es de vers\u00e3o n\u00e3o podem ser lidas a partir do diret\u00f3rio {0}.
+error.missing.version.files.explanation=O diret\u00f3rio que cont\u00e9m os arquivos de informa\u00e7\u00f5es de vers\u00e3o n\u00e3o existe ou n\u00e3o pode ser lido pelo usu\u00e1rio atual.
+error.missing.version.files.useraction=Assegure-se de que o diret\u00f3rio exista e possa ser lido pelo usu\u00e1rio atual. 
+
+warning.earlyRelease=CWWKE0953W: Esta vers\u00e3o de {0} \u00e9 uma vers\u00e3o de libera\u00e7\u00e3o anterior n\u00e3o suportada.
+warning.earlyRelease.explanation=Novos recursos que n\u00e3o s\u00e3o totalmente testados s\u00e3o disponibilizados em libera\u00e7\u00f5es iniciais para obter feedback antes de serem inclu\u00eddos em uma libera\u00e7\u00e3o suportada.
+warning.earlyRelease.useraction=N\u00e3o use uma vers\u00e3o de libera\u00e7\u00e3o anterior em sistemas de produ\u00e7\u00e3o, uma vez que as vers\u00f5es de libera\u00e7\u00e3o anteriores n\u00e3o s\u00e3o suportadas.
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

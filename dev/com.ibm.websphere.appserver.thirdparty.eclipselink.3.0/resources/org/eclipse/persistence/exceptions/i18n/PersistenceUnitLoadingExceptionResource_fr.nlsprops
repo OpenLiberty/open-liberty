@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de chargement d''une unit\u00e9 de persistance pour le r\u00e9pertoire : {0}
+
+30002=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de chargement d''une unit\u00e9 de persistance pour le fichier jar : {0}
+
+30003=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du traitement de l''unit\u00e9 de persistance \u00e0 l''URL : {0}
+
+30004=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du traitement du fichier persistence.xml depuis l''URL : {0}
+
+30005=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de la recherche d''archives de persistance avec le chargeur de classe : {0}
+
+30006=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de la recherche d''entit\u00e9s \u00e0 l''URL : {0}
+
+30007=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du chargement de la classe : {0} pour v\u00e9rifier si elle impl\u00e9mente @Entity, @Embeddable ou @MappedSuperclass.
+
+30008=Le chemin d''acc\u00e8s au fichier retourn\u00e9 \u00e9tait vide ou nul
+
+30009=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de chargement d''une unit\u00e9 de persistance \u00e0 l''URL : {0}
+
+30010=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du chargement du fichier XML ORM : {0}
+
+30011=EclipseLink n''a pas pu obtenir les classes de l''URL : {0}.  EclipseLink a tent\u00e9 de lire cette URL comme un fichier jarFile et comme un r\u00e9pertoire et il n''a pas pu la traiter.
+
+30012=EclipseLink n''a pas pu obtenir les informations d''unit\u00e9 de persistance de l''URL :{0}
+
+30013=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors d''une tentative de cr\u00e9ation d''un nom d''unit\u00e9 de persistance pour l''unit\u00e9 de persistance [{1}] de l''URL : {0}.
+
+30014=L''unit\u00e9 de persistance sp\u00e9cifie le mode de validation "CALLBACK" mais le bean Validation ValidatorFactory n''a pas pu \u00eatre initialis\u00e9. Pour plus de d\u00e9tails, consultez l''exception imbriqu\u00e9e. V\u00e9rifiez que l''API de validation de bean et le fournisseur de validation de bean sont disponibles dans le chemin d''acc\u00e8s aux classes.
+
+30015=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du chargement de la classe de groupe de validation : {0}.
+
+30016=Le nom de session {0} ne peut pas \u00eatre utilis\u00e9 par l''unit\u00e9 de persistance {1}, il est d\u00e9j\u00e0 utilis\u00e9 par l''unit\u00e9 de persistance {2}
+
+30017=L''unit\u00e9 de persistance {0} est d\u00e9finie \u00e0 la fois dans l''URL :{1} et dans l''URL :{2}. Il est impossible que plusieurs unit\u00e9s de persistance soient charg\u00e9es avec le m\u00eame nom par le m\u00eame chargeur de classe.
+
+30018=L''exception : {1} s''est produite lors de la tentative d''instanciation de l''\u00e9l\u00e9ment ArchiveFactory sp\u00e9cifi\u00e9 par l''utilisateur : {0}.
+
+30019=Vous appelez l''\u00e9l\u00e9ment refreshMetadata sur un \u00e9l\u00e9ment EntityManagerFactory pour l''unit\u00e9 de persistance {0}.  Les m\u00e9tadonn\u00e9es ne peuvent pas \u00eatre actualis\u00e9es car cet \u00e9l\u00e9ment EntityManagerFactory a \u00e9t\u00e9 cr\u00e9\u00e9 depuis un objet de session au lieu d''\u00eatre d\u00e9riv\u00e9 depuis une unit\u00e9 de persistance.
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-// import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
+import org.junit.Test;
+
+import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.ComplexNoInterfaceBean;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalBusiness;
 import com.ibm.ws.ejbcontainer.bindings.noInterface.bnd.ejb.LocalComponent;
@@ -108,14 +110,14 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      * AmbiguousEJBReferenceException. All other long default bindings
      * should work fine.
      **/
-    //@Test
+    @Test
     public void testNoInterfaceDefaultBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
         String beanNameComp = beanName + "Component";
         ComplexNoInterfaceBean bean = null;
-        //ivContext = (Context) new InitialContext().lookup("");
-        ivContext = new InitialContext();
+
+        ivContext = (Context) new InitialContext().lookup("");
 
         // -----------------------------------------------------------------------
         // Lookup short default No-Interface bean - Ambiguous
@@ -125,19 +127,18 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
             bean = (ComplexNoInterfaceBean) ivContext.lookup("ejblocal:" + beanInterface);
             fail("Ambiguous No-Interface short default found");
         } catch (NamingException nex) {
-            // TODO: Enable when AmbiguousEJBReferenceException support is added
-            // Throwable cause = nex.getCause();
-            // if (cause instanceof AmbiguousEJBReferenceException) {
-            // svLogger.info("lookup of short default failed as expected : " +
-            // cause.getClass().getName() + " : " +
-            // cause.getMessage());
-            // } else {
-            svLogger.info(nex.getClass().getName() + " : " + nex.getMessage());
-            nex.printStackTrace();
-            fail("Ambiguous No-Interface short default lookup failed in an " +
-                 "unexpected way : " + nex.getClass().getName() + " : " +
-                 nex.getMessage());
-            // }
+            Throwable cause = nex.getCause();
+            if (cause instanceof AmbiguousEJBReferenceException) {
+                svLogger.info("lookup of short default failed as expected : " +
+                              cause.getClass().getName() + " : " +
+                              cause.getMessage());
+            } else {
+                svLogger.info(nex.getClass().getName() + " : " + nex.getMessage());
+                nex.printStackTrace();
+                fail("Ambiguous No-Interface short default lookup failed in an " +
+                     "unexpected way : " + nex.getClass().getName() + " : " +
+                     nex.getMessage());
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -215,7 +216,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceComponentIdBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -224,9 +225,8 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
         String componentidRemote = componentid + "r";
         String componentidComp = componentid + "c";
         ComplexNoInterfaceBean bean = null;
-        // NOTE: old lookup does not work, JNDI issue raised: #9099
-        //ivContext = (Context) new InitialContext().lookup("");
-        ivContext = new InitialContext();
+
+        ivContext = (Context) new InitialContext().lookup("");
 
         // -----------------------------------------------------------------------
         // Lookup with component-id of No-Interface bean
@@ -312,7 +312,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      * local interfaces, just the simple name is used. The No-Interface
      * view is considered a 'local' interface.
      **/
-    //@Test
+    @Test
     public void testNoInterfaceSimpleBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -321,9 +321,8 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
         String simpleNameRemote = simpleName + "Remote";
         String simpleNameComp = simpleName + "Component";
         ComplexNoInterfaceBean bean = null;
-        // NOTE: old lookup does not work, JNDI issue raised: #9099
-        //ivContext = (Context) new InitialContext().lookup("");
-        ivContext = new InitialContext();
+
+        ivContext = (Context) new InitialContext().lookup("");
 
         // -----------------------------------------------------------------------
         // Lookup with simple-binding-name of No-Interface bean
@@ -401,7 +400,7 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
      *
      * For configurations with multiple interfaces, all interfaces are tested. <p>
      **/
-    //@Test
+    @Test
     public void testNoInterfaceCustomBindings() throws Exception {
         String beanNameLocal = beanName + "Local";
         String beanNameRemote = beanName + "Remote";
@@ -410,9 +409,8 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
         String customPrefixRemote = customPrefix + "r";
         String customPrefixComp = customPrefix + "c";
         ComplexNoInterfaceBean bean = null;
-        // NOTE: old lookup does not work, JNDI issue raised: #9099
-        //ivContext = (Context) new InitialContext().lookup("");
-        ivContext = new InitialContext();
+
+        ivContext = (Context) new InitialContext().lookup("");
 
         // -----------------------------------------------------------------------
         // Lookup with custom of No-Interface bean

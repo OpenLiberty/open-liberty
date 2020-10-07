@@ -1,17 +1,32 @@
 <server>
     <featureManager>
-        <feature>componentTest-1.0</feature>
+        <feature>componenttest-1.0</feature>
 		<feature>jdbc-4.0</feature>
 		<feature>servlet-3.1</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
 
+    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/>
+
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
     <library id="DerbyLib" filesetRef="DerbyFileset"/>
     <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
 
     <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:injectionFat" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/TestDSNoAuthAlias" jndiName="jdbc/TestDSNoAuthAlias" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:injectionFat" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/TestDSAuthAliasWithNormalizedJndiBinding" jndiName="jdbc/TestDSAuthAliasWithNormalizedJndiBinding" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:injectionFat" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="jdbc/TestDSAuthAliasWithDenormalizedJndiBinding" jndiName="jdbc/TestDSAuthAliasWithDenormalizedJndiBinding" jdbcDriverRef="DerbyEmbedded">
         <properties databaseName="memory:injectionFat" createDatabase="create"/>
     </dataSource>
 	

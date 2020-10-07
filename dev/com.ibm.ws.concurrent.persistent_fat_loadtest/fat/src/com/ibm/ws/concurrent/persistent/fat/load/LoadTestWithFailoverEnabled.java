@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,12 +54,16 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("1m");
-        myScheduler.setMissedTaskThreshold("40s");
+        myScheduler.setPollInterval("5s");
+        myScheduler.setInitialPollDelay("0");
+        myScheduler.setMissedTaskThreshold("4s");
+        myScheduler.setRetryInterval(null);
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true"); // allows missedTaskThreshold value for test
+
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");
-        server.configureForAnyDatabase();
+
         server.startServer();
     }
 
@@ -67,7 +71,7 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
     public static void tearDown() throws Exception {
         try {
             if (server.isStarted())
-                server.stopServer("CWWKC1501W"); // Ignore failing task warning message
+                server.stopServer("CWWKC1502W", "CWWKC1503W"); // Ignore failing task warning messages. These are fine as long as tasks retry and are eventually successful.
         } finally {
             if (originalConfig != null)
                 server.updateServerConfiguration(originalConfig);

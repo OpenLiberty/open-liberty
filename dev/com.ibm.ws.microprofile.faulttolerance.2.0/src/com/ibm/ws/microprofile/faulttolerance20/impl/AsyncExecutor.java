@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance20.impl;
+
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.NO_FALLBACK;
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,12 +33,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController.ActivatedContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
@@ -58,7 +64,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * <p>
  * Asynchronous calls return their result inside a wrapper (currently either a {@link Future} or a {@link CompletionStage}).
  * <p>
- * When this executor is called, it must create and instance of the wrapper and return that immediately, while execution of the method takes place on another thread. Once the
+ * When this executor is called, it must create an instance of the wrapper and return that immediately, while execution of the method takes place on another thread. Once the
  * execution of the method is complete, the wrapper instance must be updated with the result of the method execution.
  * <p>
  * If an internal exception occurs, this may be thrown directly from the {@link #execute(Callable, ExecutionContext)} method, or logged and propagated back to the user via the
@@ -114,15 +120,17 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     };
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
+                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder,
+                         AsyncRequestContextController asyncRequestContext) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
-        fallback = FaultToleranceStateFactory.INSTANCE.createFallbackState(fallbackPolicy, metricRecorder);
+        fallback = FaultToleranceStateFactory.INSTANCE.createFallbackState(fallbackPolicy);
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
         this.contextService = contextService;
+        this.asyncRequestContext = asyncRequestContext;
     }
 
     private final RetryPolicy retryPolicy;
@@ -133,6 +141,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final AsyncBulkheadState bulkhead;
     private final WSContextService contextService;
     private final MetricRecorder metricRecorder;
+    private final AsyncRequestContextController asyncRequestContext;
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
@@ -241,25 +250,44 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             ArrayList<ThreadContext> context = null;
             try {
                 context = contextDescriptor.taskStarting();
+
+                if (methodResult == null) {
+                    ActivatedContext requestContext = null;
+                    if (asyncRequestContext != null) {
+                        // Activate the @RequestScoped context
+                        requestContext = asyncRequestContext.activateContext();
+                    }
+
+                    try {
+                        // Execute the method, store the result, and catch/store any exceptions for fault tolerance
+                        W result = executionContext.getCallable().call();
+                        methodResult = MethodResult.success(result);
+                    } catch (Throwable e) {
+                        methodResult = MethodResult.failure(e);
+                    } finally {
+                        contextDescriptor.taskStopping(context);
+                    }
+
+                    if (asyncRequestContext != null) {
+                        requestContext.deactivate();
+                    }
+                }
             } catch (IllegalStateException e) {
                 // The application or module has gone away, we can no longer run things for this app
                 // Mark this as an internal failure as we don't want any retries or further processing to occur
+                // Note: If the method execution threw an IllegalStateException it would have been caught by the 'catch(Throwable e)' above
                 methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
-            }
-
-            if (methodResult == null) {
-                try {
-                    W result = executionContext.getCallable().call();
-                    methodResult = MethodResult.success(result);
-                } catch (Throwable e) {
-                    methodResult = MethodResult.failure(e);
-                } finally {
-                    contextDescriptor.taskStopping(context);
-                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Execution {0} attempt result: {1}", executionContext.getId(), methodResult);
+            }
+
+            if (!methodResult.isFailure() && (methodResult.getResult() == null)) {
+                String methodName = FTDebug.formatMethod(executionContext.getMethod());
+                Tr.warning(tc, "asynchronous.returned.null.CWMFT0003W", methodName);
+                methodResult = MethodResult.internalFailure(new NullPointerException(Tr.formatMessage(tc, "asynchronous.returned.null.CWMFT0003W", methodName)));
+                // Internal Failure -> Retry and Fallback are not applied
             }
 
             processMethodResult(attemptContext, methodResult, reservation);
@@ -378,7 +406,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 }
             }
 
-            processEndOfExecution(executionContext, result);
+            processEndOfExecution(executionContext, result, NO_FALLBACK);
 
         } catch (Throwable t) {
             // This method is used as a general error handler, so we need some special logic in case something goes wrong while handling the error
@@ -388,10 +416,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         }
     }
 
-    private void processEndOfExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result) {
-        metricRecorder.incrementInvocationCount();
+    private void processEndOfExecution(AsyncExecutionContextImpl<W> executionContext, MethodResult<W> result, FallbackOccurred fallbackOccurred) {
         if (result.isFailure()) {
-            metricRecorder.incrementInvocationFailedCount();
+            metricRecorder.incrementInvocationFailedCount(fallbackOccurred);
+        } else {
+            metricRecorder.incrementInvocationSuccessCount(fallbackOccurred);
         }
 
         setResult(executionContext, result);
@@ -432,7 +461,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 }
             }
 
-            processEndOfExecution(executionContext, fallbackResult);
+            processEndOfExecution(executionContext, fallbackResult, WITH_FALLBACK);
 
         } catch (Throwable t) {
             // Handle any unexpected exceptions
@@ -451,7 +480,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
 
     @Override
     public void close() {
-        bulkhead.shutdown();
+        // Do nothing
     }
 
     /**

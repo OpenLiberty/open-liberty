@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.validation.ValidatorFactory;
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -83,9 +84,9 @@ public class ValidatorFactoryAccessor {
         ValidatorFactory factory = null;
         Configuration<?> configuration = null;
         ClassLoader classLoader = validationConfigurator.getAppClassLoader();
-
+        ClassLoaderTuple tuple = AbstractBeanValidation.instance().configureBvalClassloader(classLoader);
         try {
-            classLoader = BeanValidationExtensionHelper.newValidationClassLoader(AbstractBeanValidation.instance().configureBvalClassloader(classLoader));
+            classLoader = BeanValidationExtensionHelper.newValidationClassLoader(tuple.classLoader);
 
             // set the thread context class loader to be used, must be reset in finally block
             ThreadContextAccessor tca = System.getSecurityManager() == null ?
@@ -136,9 +137,7 @@ public class ValidatorFactoryAccessor {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                AbstractBeanValidation.instance().releaseLoader(classLoader);
-            }
+            AbstractBeanValidation.instance().releaseLoader(tuple);
 
             // Need to close the configuration mapping inputstreams and clear classloader
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -194,11 +193,13 @@ public class ValidatorFactoryAccessor {
         ValidatorFactory factory = null;
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
+        ClassLoaderTuple tuple = null;
         try {
+            tuple = AbstractBeanValidation.instance().configureBvalClassloader(classLoader);
             if (bVal11OrHigher) {
-                classLoader = BeanValidationExtensionHelper.newValidationClassLoader(AbstractBeanValidation.instance().configureBvalClassloader(classLoader));
+                classLoader = BeanValidationExtensionHelper.newValidationClassLoader(tuple.classLoader);
             } else {
-                classLoader = BeanValidationExtensionHelper.newValidation10ClassLoader(AbstractBeanValidation.instance().configureBvalClassloader(classLoader));
+                classLoader = BeanValidationExtensionHelper.newValidation10ClassLoader(tuple.classLoader);
             }
             ThreadContextAccessor tca = System.getSecurityManager() == null ?
                             ThreadContextAccessor.getThreadContextAccessor() :
@@ -240,8 +241,8 @@ public class ValidatorFactoryAccessor {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                AbstractBeanValidation.instance().releaseLoader(classLoader);
+            if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+                AbstractBeanValidation.instance().releaseLoader(tuple);
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

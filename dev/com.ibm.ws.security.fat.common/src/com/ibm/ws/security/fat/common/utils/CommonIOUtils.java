@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -101,5 +103,19 @@ public class CommonIOUtils {
             return false;
         }
         return true;
+    }
+
+    public String readFileAsString(String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String nextLine = "";
+        StringBuffer sb = new StringBuffer();
+        while ((nextLine = br.readLine()) != null) {
+            sb.append(nextLine);
+        }
+        br.close();
+        //remove newlines
+        String newString = sb.toString().replaceAll("\r[\n]?", "");
+
+        return newString;
     }
 }

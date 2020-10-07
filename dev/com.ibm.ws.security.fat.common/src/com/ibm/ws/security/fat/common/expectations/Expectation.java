@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,11 @@ public abstract class Expectation {
     protected String validationValue;
     protected String failureMsg;
     protected boolean isExpectationHandled;
+    protected boolean failureMsgAlreadyUpdated = false;
 
     protected TestValidationUtils validationUtils = new TestValidationUtils();
+
+    protected String printValidationMessage = System.getProperty("fat.test.localrun");
 
     public Expectation(String testAction, String searchLocation, String checkType, String searchFor, String failureMsg) {
         this(testAction, searchLocation, checkType, null, searchFor, failureMsg);
@@ -42,6 +45,7 @@ public abstract class Expectation {
         this.validationValue = searchFor;
         this.failureMsg = failureMsg;
         this.isExpectationHandled = false;
+        this.failureMsgAlreadyUpdated = false;
     }
 
     public String getAction() {
@@ -84,7 +88,7 @@ public abstract class Expectation {
      * Performs all of the steps necessary to verify that this particular expectation is met. If this expectation's test action is
      * set to {@code null}, validation will proceed regardless of the test action passed to this method. Otherwise, if the current
      * test action does not match the action for this expectation, validation is skipped.
-     * 
+     *
      * @param currentTestAction
      * @param contentToValidate
      *            Some kind of object to validate against (typically some kind of HtmlUnit entity like a WebResponse)
@@ -93,7 +97,16 @@ public abstract class Expectation {
         if (!isExpectationForAction(currentTestAction)) {
             return;
         }
-        Log.info(thisClass, "validate", "Checking " + this);
+        // if we're running locally, print the extra debug message (we may be writing new tests and want to see what we're checking)
+        if (printValidationMessage == null || printValidationMessage.equals("true")) {
+            Log.info(thisClass, "validate", "Checking " + this);
+        } else { // otherwise, only log the Expectation if we hit a failure
+            // Only update the msg once to avoid an OOM condition that we hit when the same expectation was reused over and over like inside a loop :)
+            if (!failureMsgAlreadyUpdated) {
+                failureMsgAlreadyUpdated = true;
+                failureMsg = "Checking " + this.toString() + System.lineSeparator() + "Error message: " + failureMsg;
+            }
+        }
         validate(contentToValidate);
     }
 

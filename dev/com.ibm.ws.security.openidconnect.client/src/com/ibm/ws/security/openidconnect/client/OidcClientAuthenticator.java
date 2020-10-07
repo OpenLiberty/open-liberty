@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client;
@@ -40,8 +40,6 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.token.IDToken;
-import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.Payload;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -264,70 +262,12 @@ public class OidcClientAuthenticator {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groups);
         }
         if (clientConfig.isDisableLtpaCookie()) {
-            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
+            customProperties.put(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, Boolean.TRUE);
         }
     }
 
     public String getIssuerIdentifier(OidcClientConfig clientConfig) {
         return authenticatorUtil.getIssuerIdentifier(clientConfig);
-    }
-
-    // parsing and validating the IDToken(tokenString)
-    IDToken createIDToken(String tokenStr, String accessToken, OidcClientConfig clientConfig) throws Exception {
-        IDToken idToken = null;
-        String issuer = getIssuerIdentifier(clientConfig);
-        Object verifyKey = null;
-
-        String clientId = clientConfig.getClientId();
-        // This createIDToken actually is parsing and "validate" the
-        // IDToken(tokenString), so, the issuer is ok to be multiple
-        idToken = oidcClientUtil.createIDToken(tokenStr, verifyKey, clientId, issuer, clientConfig.getSignatureAlgorithm(), accessToken);
-        String keyExceptionMsg = null;
-        try {
-            String kid = idToken.getHeader().getKeyId();
-            String x5t = idToken.getHeader().getX509Thumbprint();
-            verifyKey = getVerifyKey(clientConfig, kid, x5t);
-        } catch (Exception e) {
-            // error handling such as: failure on accessing JWK
-            keyExceptionMsg = e.getLocalizedMessage();
-        }
-        if (verifyKey == null) {
-            Object[] objs = new Object[] { clientConfig.getSignatureAlgorithm(), "" };
-            if (keyExceptionMsg != null) {
-                objs = new Object[] { clientConfig.getSignatureAlgorithm(), keyExceptionMsg };
-            }
-            Tr.error(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs);
-            throw new IDTokenValidationFailedException(Tr.formatMessage(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs));
-        } else {
-            if (tokenStr != null && idToken.verify(clientConfig.getClockSkewInSeconds(), verifyKey)) {
-                idToken.getPayload().setJwtId(clientConfig.getClientId()); // TODO  is this the correct jwt id?
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "ID token validation failed: ");
-                }
-                Tr.error(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { "ID token validation Error", clientId });
-                throw new IDTokenValidationFailedException(Tr.formatMessage(tc, "OIDC_CLIENT_IDTOKEN_VERIFY_ERR", new Object[] { "ID token validation Error", clientId }));
-            }
-        }
-        return idToken;
-    }
-
-    protected Object getVerifyKey(OidcClientConfig clientConfig, String kid, String x5t) throws Exception {
-        Object keyValue = null;
-        String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
-        if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
-            keyValue = Base64Coder.getBytes(clientConfig.getSharedKey());
-        } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-            if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
-                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, clientConfig.getUseSystemPropertiesForHttpClientConnections());
-            } else {
-                keyValue = clientConfig.getPublicKey();
-            }
-        } else if (SIGNATURE_ALG_NONE.equals(signatureAlgorithm)) {
-            keyValue = Base64Coder.getBytes(clientConfig.getSharedKey()); // TODO: need to look at the token to figure out which key to get from config
-            // TODO : getAlgFromToken(tokenStr);
-        }
-        return keyValue;
     }
 
     String getReqURL(HttpServletRequest req) {

@@ -50,3 +50,7 @@ Private-Package: com.ibm.ws.collector.internal*
 	com.ibm.ws.collector.manager;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest

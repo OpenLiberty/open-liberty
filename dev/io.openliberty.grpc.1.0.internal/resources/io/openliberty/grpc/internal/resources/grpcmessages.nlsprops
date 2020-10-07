@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: gRPC service provided by {0} is available at: {1}
+service.available.explanation=This message is for informational purposes only.
+service.available.useraction=No action is required.
+
+invalid.serverinterceptor=CWWKT0202W: Could not load gRPC interceptor defined in serverInterceptors {0}
+invalid.serverinterceptor.explanation=A gRPC interceptor defined in serverInterceptors could not be loaded.
+invalid.serverinterceptor.useraction=Verify the configured interceptor name and the application classpath.
+
+invalid.inbound.msg.size=CWWKT0203E: The maxInboundMessageSize {0} is not valid. Sizes must greater than 0.
+invalid.inbound.msg.size.explanation=The configured value for the maxInboundMessageSize is not valid.
+invalid.inbound.msg.size.useraction=Configure a valid value for the maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: The gRPC request for {0} cannot continue. The response was already committed.
+response.already.committed.explanation=The gRPC request is not valid because the response was committed before the gRPC methods started.
+response.already.committed.useraction=Analyze the logs for other warnings or error messages before this message. This error might occur because of a previous security error.
+
+authentication.error=CWWKT0205E: The gRPC service request for {0} failed with the {1} authentication error.
+authentication.error.explanation=The gRPC request failed to authenticate before the gRPC methods started.
+authentication.error.useraction=Analyze the logs for other warnings or error messages before this message. This error might occur because no credentials were provided with the request or because credentials that aren't valid were provided.
+
+authorization.error=CWWKT0206E: The gRPC service request for {0} failed with the {1} authorization error.
+authorization.error.explanation=The gRPC request failed to authorize before the gRPC methods started.
+authorization.error.useraction=Analyze the logs for other warnings or error messages before this message. This error might occur because no credentials were provided with the request or because credentials that aren't valid were provided.

@@ -15,7 +15,6 @@ import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.security.Permissions;
 import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.util.Enumeration;
@@ -91,7 +90,8 @@ public class WLPDynamicPolicy extends Policy {
 
     private PermissionCollection getMergedPermissions(CodeSource codesource) {
         if (permissionsCombiner != null && codesource != null && codesource.getLocation() != null) {
-            return permissionsCombiner.getCombinedPermissions(new Permissions(), codesource); // TODO: Determine if this needs merging with the static permissions.
+            //return permissionsCombiner.getCombinedPermissions(new Permissions(), codesource); // TODO: Determine if this needs merging with the static permissions.
+            return permissionsCombiner.getCombinedPermissions(policy.getPermissions(codesource), codesource); // TODO: Determine if this needs merging with the static permissions.
         } else {
             return policy.getPermissions(codesource);
         }

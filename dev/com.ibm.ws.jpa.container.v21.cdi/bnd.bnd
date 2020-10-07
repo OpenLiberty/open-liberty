@@ -12,12 +12,15 @@
 bVersion=1.0
 
 WS-TraceGroup: JPA
+jakartaeeMe: true
 
 Bundle-Name: JPA 2.1 Container CDI Integration
 Bundle-SymbolicName: com.ibm.ws.jpa.container.v21.cdi
 Bundle-Description: Container-managed JPA CDI support, version ${bVersion}
 
 Include-Resource: META-INF=resources/META-INF
+
+-cdiannotations:
 
 -dsannotations: \
 	com.ibm.ws.jpa.container.v21.cdi.internal.CDIJPAEMFPropertyProviderImpl,\

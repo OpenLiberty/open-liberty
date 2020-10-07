@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,16 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * Transaction context service provider.
  */
 public class TransactionContextProviderImpl implements JCAContextProvider, ThreadContextProvider {
+    // Constant for ManagedTask.TRANSACTION in whichever of Jakarta vs Java EE is NOT enabled
+    private static final String OTHER_SPEC_TRANSACTION_CONSTANT;
+    static {
+        int dot = ManagedTask.TRANSACTION.indexOf('.');
+        OTHER_SPEC_TRANSACTION_CONSTANT = new StringBuilder(46 - dot) //
+                        .append(dot == 5 ? "jakarta" : "javax") //
+                        .append(".enterprise.concurrent.TRANSACTION") //
+                        .toString();
+    }
+
     /**
      * Reference to the transaction inflow manager.
      */
@@ -63,7 +73,16 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     /** {@inheritDoc} */
     @Override
     public ThreadContext captureThreadContext(Map<String, String> execProps, Map<String, ?> threadContextConfig) {
-        String value = execProps == null ? null : execProps.get(ManagedTask.TRANSACTION);
+        // Determine the value of the ManagedTask.TRANSACTION execution property, if present
+        String key, value;
+        if (execProps == null) {
+            key = null;
+            value = null;
+        } else { // prefer the enabled spec
+            value = execProps.get(key = ManagedTask.TRANSACTION);
+            if (value == null)
+                value = execProps.get(key = OTHER_SPEC_TRANSACTION_CONSTANT);
+        }
         if (value == null || ManagedTask.SUSPEND.equals(value))
             return new TransactionContextImpl(true);
         else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
@@ -71,13 +90,13 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         else if ("PROPAGATE".equals(value)) {
             UOWCurrent uowCurrent = (UOWCurrent) transactionManager;
             if (uowCurrent.getUOWType() == UOWCurrent.UOW_GLOBAL) {
-                // Per spec, IllegalStateException could be reaised here to reject all propagation of transactions
+                // Per spec, IllegalStateException could be raised here to reject all propagation of transactions
                 // However, we allow propagation as long as the transaction isn't used in parallel.
                 return new SerialTransactionContextImpl();
             } else
                 return new TransactionContextImpl(true);
         } else
-            throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
+            throw new IllegalArgumentException(key + '=' + value);
     }
 
     /** {@inheritDoc} */
@@ -94,13 +113,23 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         try {
             context = (TransactionContextImpl) in.readObject();
 
-            String value = info == null ? null : info.getExecutionProperty(ManagedTask.TRANSACTION);
+            // Determine the value of the ManagedTask.TRANSACTION execution property, if present
+            String key, value;
+            if (info == null) {
+                key = null;
+                value = null;
+            } else { // prefer the enabled spec
+                value = info.getExecutionProperty(key = ManagedTask.TRANSACTION);
+                if (value == null)
+                    value = info.getExecutionProperty(key = OTHER_SPEC_TRANSACTION_CONSTANT);
+            }
+
             if (value == null || ManagedTask.SUSPEND.equals(value))
                 context.suspendTranOfExecutionThread = true;
             else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
                 context.suspendTranOfExecutionThread = false;
             else
-                throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
+                throw new IllegalArgumentException(key + '=' + value);
         } finally {
             in.close();
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2013 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,18 +14,23 @@ package com.ibm.ws.security.registry.basic.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assume.assumeTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
+@RunWith(FATRunner.class)
 public class FATTest {
     private static final String DEFAULT_CONFIG_FILE = "basic.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG = "alternateBasicRegistry.xml";
@@ -48,13 +53,21 @@ public class FATTest {
 
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.addInstalledAppForValidation("userRegistry");
+        startServer();
+        Log.info(c, "setUp", "Creating servlet connection the server");
+        servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static void startServer() throws Exception {
+        Log.info(c, "startServer", "Starting the server...");
         server.startServer(c.getName() + ".log");
         assertNotNull("Security service did not report it was ready",
                       server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The application did not report is was started",
                       server.waitForStringInLog("CWWKZ0001I"));
-        Log.info(c, "setUp", "Creating servlet connection the server");
-        servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
     }
 
     @AfterClass
@@ -206,10 +219,103 @@ public class FATTest {
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             Log.info(c, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
+            server.stopServer();
             server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
+            startServer();
             serverConfigurationFile = serverXML;
         }
+    }
+
+    /**
+     * Validate fix for OLGH10461, where a PatternSyntaxException (unclosed group near index N)
+     * was thrown when a single paren was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getUsersWithSingleParen() throws Exception {
+        assumeTrue(!isOpenJDK11());
+        Log.info(c, "getUsersWithParenthesis", "Check getUsers with single paren patterns");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getUsers("*(contrac*", 0);
+        assertEquals(1, result.getList().size());
+
+        result = servlet.getUsers("*tractor)*", 0);
+        assertEquals(1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH10461, where a PatternSyntaxException (unclosed group near index N)
+     * was thrown when a single paren was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getGroupsWithSingleParen() throws Exception {
+        assumeTrue(!isOpenJDK11());
+        Log.info(c, "getGroupsWithSingleParen", "Check getGroups with single paren patterns");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getGroups("*(contrac*", 0);
+        assertEquals(1, result.getList().size());
+
+        result = servlet.getGroups("*tractors)*", 0);
+        assertEquals(1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH11052, where a PatternSyntaxException (illegal repetition near index N)
+     * was thrown when a brace was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getUsersWithBraces() throws Exception {
+        Log.info(c, "getUsersWithBraces", "Check getUsers with braces");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getUsers("*{*", 0);
+        assertEquals("Expected 1 user with '{'.", 1, result.getList().size());
+
+        result = servlet.getUsers("*}*", 0);
+        assertEquals("Expected 1 user with '}'.", 1, result.getList().size());
+    }
+
+    /**
+     * Validate fix for OLGH11052, where a PatternSyntaxException (illegal repetition near index N)
+     * was thrown when a brace was present in a search filter.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getGroupsWithBraces() throws Exception {
+        Log.info(c, "getGroupsWithBraces", "Check getGroups with braces");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getGroups("*{*", 0);
+        assertEquals("Expected 1 group with '{'.", 1, result.getList().size());
+
+        result = servlet.getGroups("*}*", 0);
+        assertEquals("Expected 1 group with '}'.", 1, result.getList().size());
+    }
+
+    private boolean isOpenJDK11() {
+        String javaVendor = System.getProperty("java.vendor").toLowerCase();
+        String javaVersion = System.getProperty("java.version");
+        if (javaVendor.contains("openjdk") && javaVersion.equals("11.0.5")) {
+            /*
+             * Seeing test failure with only this level of java, runs fine on 11.0.8
+             */
+            Log.info(FATTest.class, "isOpenJDK11",
+                     "Skipping this test due to a bug with the specific JDK combo: " + System.getProperty("os.name")
+                                                   + " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
+            return true;
+        }
+        return false;
     }
 }

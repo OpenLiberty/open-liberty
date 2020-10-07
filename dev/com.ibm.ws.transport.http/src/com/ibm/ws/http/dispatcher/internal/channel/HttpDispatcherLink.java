@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -581,7 +581,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      *
      * @param code
      * @param failure
-     * @param         message/body
+     * @param message/body
      */
     @FFDCIgnore(IOException.class)
     private void sendResponse(StatusCodes code, String detail, Exception failure, boolean addAddress) {
@@ -746,7 +746,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             if (scheme == null && isc != null && !isc.useForwardedHeaders()) {
                 //if remoteIp is not enabled, still verify for the x-forwarded-proto
-                scheme = request.getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+                scheme = getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
             }
 
             if (scheme == null && request.getHeader(HttpHeaderKeys.HDR_HOST.getName()) != null) {
@@ -1193,7 +1193,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             else {
                 HttpInboundLink link = isc.getLink();
                 if (link != null) {
-
                     return link.isHTTP2UpgradeRequest(headers);
                 }
             }
@@ -1208,13 +1207,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @return false if some error occurred while servicing the upgrade request
      */
     @Override
-    public boolean handleHTTP2UpgradeRequest(Map<String, String> headers) {
+    public boolean handleHTTP2UpgradeRequest(Map<String, String> http2Settings) {
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
 
-        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(headers, link);
+        boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
         if (upgraded) {
             h2Link.startAsyncRead(true);
         } else {
@@ -1259,6 +1258,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return isc.useForwardedHeaders();
         }
         return false;
+    }
+
+    /**
+     * Calls function to set the supress 0 byte chunk flag.
+     */
+    public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
+        if (this.isc != null) {
+            this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
+        }
+        else{
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to set isc zero byte chunk because isc is null");
+            }
+        }
+        
     }
 
 }

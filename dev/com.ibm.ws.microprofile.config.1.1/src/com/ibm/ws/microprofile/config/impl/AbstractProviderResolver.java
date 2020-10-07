@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.config.impl;
 
 import java.io.IOException;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,16 +33,20 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import io.openliberty.microprofile.config.internal.common.ConfigException;
+
 public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
+
+    static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<>("scheduledExecutorService");
 
@@ -231,7 +234,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     private ClassLoader getThreadContextClassLoader() {
-        ClassLoader classloader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+        ClassLoader classloader = priv.getContextClassLoader();
         return classloader;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,18 +33,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
+
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.UserTransaction;
 
 import componenttest.app.FATServlet;
 import fat.concurrent.ejb.EEConcurrencyUtilsStatelessBean;
@@ -98,7 +99,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task can load classes with the application's classloader.
      *
      * @param execSvcJNDIName the managed executor service to use.
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testClassloaderContext(String execSvcJNDIName, PrintWriter out) throws Throwable {
@@ -135,7 +136,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task runs with access to the application component namespace.
      *
      * @param execSvcJNDIName the managed executor service to use
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testJEEMetadataContext(String execSvcJNDIName, PrintWriter out) throws Exception {
@@ -183,7 +184,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task submitted from and EJB runs with access to the application component namespace.
      *
      * @param unused ignored
-     * @param out PrintWriter for servlet response
+     * @param out    PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testJEEMetadataContextFromEJB(String unused, PrintWriter out) throws Exception {
@@ -207,7 +208,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task does not run with the application's classloader.
      *
      * @param execSvcJNDIName the managed executor service to use.
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testNoClassloaderContext(String execSvcJNDIName, PrintWriter out) throws Exception {
@@ -238,7 +239,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task runs without access to the application component namespace.
      *
      * @param execSvcJNDIName the executor service to use.
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testNoJEEMetadataContext(String execSvcJNDIName, PrintWriter out) throws Exception {
@@ -287,7 +288,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task submitted from an EJB runs without access to the application component namespace.
      *
      * @param unused ignored
-     * @param out PrintWriter for servlet response
+     * @param out    PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testNoJEEMetadataContextFromEJB(String unused, PrintWriter out) throws Exception {
@@ -300,7 +301,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task does not run in the transaction of the thread from which it was submitted.
      *
      * @param execSvcJNDIName the executor service to use.
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testNoTransactionContext(String execSvcJNDIName, PrintWriter out) throws Exception {
@@ -470,7 +471,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory uses a thread group with max priority = 4
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadGroupMaxPriority4(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -490,7 +491,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory uses a thread group with max priority = 6
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadGroupMaxPriority6(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -508,7 +509,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory creates daemon threads
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadIsDaemon(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -527,7 +528,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory does not create daemon threads
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadIsNotDaemon(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -544,7 +545,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory creates threads with priority = 3
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadPriority3(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -561,7 +562,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory creates threads with priority = 5
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadPriority5(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -580,7 +581,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed thread factory creates threads with priority = 8
      *
      * @param threadFactoryJNDIName the thread factory to use.
-     * @param out PrintWriter for servlet response
+     * @param out                   PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testThreadPriority8(String threadFactoryJNDIName, PrintWriter out) throws Exception {
@@ -599,7 +600,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
      * Verify that a managed task runs in an LTC.
      *
      * @param execSvcJNDIName the executor service to use.
-     * @param out PrintWriter for servlet response
+     * @param out             PrintWriter for servlet response
      * @throws Exception if it fails.
      */
     public void testTransactionContext(String execSvcJNDIName, PrintWriter out) throws Exception {

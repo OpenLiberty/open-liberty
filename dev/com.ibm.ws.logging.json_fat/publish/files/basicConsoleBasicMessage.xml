@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
-	<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="basic" maxFileSize="100"/>
+	<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="simple" maxFileSize="100"/>
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>

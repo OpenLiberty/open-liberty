@@ -122,7 +122,7 @@ action-desc.resume=\tContinue todos os componentes pausados no servidor. \u00c9 
 \top\u00e7\u00e3o --target para continuar componentes pausados espec\u00edficos.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tLimpar todas as informa\u00e7\u00f5es em cache relacionadas a esta inst\u00e2ncia do servidor.
+option-desc.start.clean=\tLimpar todas as informa\u00e7\u00f5es em cache relacionadas a esta inst\u00e2ncia do servidor.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="caminho para o arquivo de archive de destino"
 option-desc.dump.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o dump.       \n\
@@ -174,3 +174,15 @@ option-desc.no-password=\tDesativar gera\u00e7\u00e3o de senha de keystore padr\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="pasta do servidor raiz no archive"
 option-desc.package.server-root=\tEspecifica o nome da pasta do servidor raiz no archive.           \n
+#------------------------------\n\
+\ at 72 chars -- leading tab-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tIgnora o est\u00e1gio para colocar em modo quiesce antes de o servidor ser encerrado. A parada do servidor\n\
+\tnormal inclui um est\u00e1gio para colocar em modo quiesce antes de o servidor ser encerrado. O \n\
+\test\u00e1gio para colocar em modo quiesce, um per\u00edodo de 30 segundos, permite que os servi\u00e7os executem \n\
+\to trabalho de pr\u00e9-encerramento; por exemplo, os listeners de entrada s\u00e3o interrompidos, mas \n\
+\tas solicita\u00e7\u00f5es existentes t\u00eam permiss\u00e3o para concluir. A op\u00e7\u00e3o --force n\u00e3o ter\u00e1 nenhum \n\
+\tefeito se a parada do servidor j\u00e1 tiver sido chamada. Se voc\u00ea usar a op\u00e7\u00e3o --force, \n\
+\tpoder\u00e1 ver exce\u00e7\u00f5es inesperadas no arquivo messages.log \n\
+\tque ocorrem ap\u00f3s o comando stop do servidor ter sido recebido pelo servidor.

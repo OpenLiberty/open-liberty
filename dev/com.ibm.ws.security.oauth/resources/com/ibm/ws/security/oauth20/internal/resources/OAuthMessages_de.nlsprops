@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,12 +21,12 @@ OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Die Konfiguration des OAuth-Providers 
 OAUTH_PROVIDER_CONFIG_INVALID.explanation=Die angegebene Oauth-Provider-Konfiguration kann nicht abgerufen werden.
 OAUTH_PROVIDER_CONFIG_INVALID.useraction=Geben Sie eine g\u00fcltige Oauth-Provider-Konfiguration an.
 
-OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: F\u00fcr den OAuth-Provider {0} ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben, oder die Bibliothek ist nicht aktiviert.
-OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=F\u00fcr den OAuth-Provider ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben, oder die Bibliothek ist nicht aktiviert. Dies kann ein Konfigurationsfehler sein, oder die Bibliothek wurde nach der Aktivierung des Providers aktiviert.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: F\u00fcr den OAuth-Provider {0} ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben oder die Bibliothek ist nicht aktiviert.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=F\u00fcr den OAuth-Provider ist eine Mediatorklasse angegeben, aber libraryRef ist nicht angegeben oder die Bibliothek ist nicht aktiviert. Dies kann ein Konfigurationsfehler sein oder die Bibliothek wurde nach der Aktivierung des Providers aktiviert.
 OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Stellen Sie sicher, dass libraryRef f\u00fcr den OAuth-Provider ordnungsgem\u00e4\u00df definiert ist.
 
 OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE=CWWKS1402I: Die libraryRef des OAuth-Providers {0} wurde f\u00fcr die Mediatorklasse {1} aktiviert.
-OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=F\u00fcr den OAuth-Provider wurde eine Mediatorklasse angegeben, und libraryRef ist aktiviert.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=F\u00fcr den OAuth-Provider wurde eine Mediatorklasse angegeben und libraryRef ist aktiviert.
 OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.useraction=Keine.
 
 OAUTH_PROVIDER_CONFIG_PROCESSED=CWWKS1403I: Die Konfiguration des OAuth-Providers {0} wurde ordnungsgem\u00e4\u00df verarbeitet.
@@ -42,7 +42,7 @@ OAUTH_INTROSPECT_NO_TOKEN.explanation=Die Selbst\u00fcberwachungsanforderung mus
 OAUTH_INTROSPECT_NO_TOKEN.useraction=Rufen Sie die Anforderung erneut mit einem Tokenparameter auf, der ein g\u00fcltiges Zugriffstoken angibt.
 
 OAUTH_INVALID_CLIENT=CWWKS1406E: Die Anforderung {0} enth\u00e4lt einen ung\u00fcltigen Clientberechtigungsnachweis. Die Anforderungs-URI ist {1}.
-OAUTH_INVALID_CLIENT.explanation=Die angegebene Anforderung muss eine g\u00fcltige Client-ID und ein g\u00fcltiges Kennwort enthalten, und die Client-ID muss mit der Client-ID \u00fcbereinstimmen, die das Zugriffstoken erstellt hat.
+OAUTH_INVALID_CLIENT.explanation=Die angegebene Anforderung muss eine g\u00fcltige Client-ID und ein g\u00fcltiges Kennwort enthalten und die Client-ID muss mit der Client-ID \u00fcbereinstimmen, die das Zugriffstoken erstellt hat.
 OAUTH_INVALID_CLIENT.useraction=Rufen Sie die Anforderung erneut mit einem g\u00fcltigen Clientberechtigungsnachweis auf.
 
 CUSTOMIZED_FACTORY_INSTANTIATE_ERROR=CWWKS1407E: Der Klassenname {0} des angepassten Grant-Handlers kann nicht instanziiert werden: {1}
@@ -122,11 +122,11 @@ OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Die Anforderung enthiel
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Wiederholen Sie die Anforderung mit einer g\u00fcltigen Client-ID.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Es wurde eine Registrierungsanforderung an eine falsche URI abgesetzt.
-OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=Clients k\u00f6nnen nur mit einer POST-Anforderugn an die URI des Registrierungsendpunkts erstellt werden. 
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=Clients k\u00f6nnen nur mit einer POST-Anforderung an die URI des Registrierungsendpunkts erstellt werden. 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung an die URI des Registrierungsendpunkts.
 
 OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID=CWWKS1426E: Die Operation {0} ist fehlgeschlagen, weil die Anforderung den Parameter {1} nicht enth\u00e4lt.
-OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=Clients k\u00f6nnen nur mit einer POST-Anforderugn an die URI des Registrierungsendpunkts erstellt werden. 
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=Clients k\u00f6nnen nur mit einer POST-Anforderung an die URI des Registrierungsendpunkts erstellt werden. 
 OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie die Anforderung an die URI des Registrierungsendpunkts.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID=CWWKS1427E: Die Operation {0} ist fehlgeschlagen, weil die Anforderung den ung\u00fcltigen {1}-Parameter {2} enth\u00e4lt.
@@ -190,7 +190,7 @@ OAUATH_CLIENT_CERT_AUTH_FAIL.explanation=Da das Attribut certAuthentication in d
 OAUATH_CLIENT_CERT_AUTH_FAIL.useraction=Stellen Sie sicher, dass das w\u00e4hrend des SSL-Handshakes in der Anforderung bereitgestellte Clientzertifikat einen g\u00fcltigen Benutzer enth\u00e4lt und dass der Benutzer beim OpenID Connect-Provider registriert ist.
 
 OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED=CWWKS1442E: Der Wert {0} ist kein unterst\u00fctzter Wert f\u00fcr das Feld mit den Metadaten der Clientregistrierung, {1}.
-OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=Diese Clienteigenschaft ist auf genehmigte Werte beschr\u00e4nkt, und der angegebene Wert ist nicht genehmigt.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=Diese Clienteigenschaft ist auf genehmigte Werte beschr\u00e4nkt und der angegebene Wert ist nicht genehmigt.
 OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.useraction=Sehen Sie sich die API-Dokumentation f\u00fcr diesen Service an und wiederholen Sie dann die Anforderung mit einem genehmigten Wert.
 
 OAUTH_CLIENT_REGISTRATION_VALUE_DUPE=CWWKS1443E: Der Wert {0} ist ein Duplikat f\u00fcr das Feld mit den Metadaten der Clientregistrierung, {1}.
@@ -221,11 +221,11 @@ OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: Im OAuth-Provider {0}
 OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=Im OAuth-Provider ist ein Element databaseStore angegeben, aber das Attribut ist entweder nicht angegeben oder ung\u00fcltig. Dies kann auf einen Konfigurationsfehler zur\u00fcckzuf\u00fchren sein.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Stellen Sie sicher, dass das Attribut des Elements databaseStore im OAuth-Provider ordnungsgem\u00e4\u00df definiert ist.
 
-OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Ein Konfigurationsfehler ist aufgetreten. Der OpenID Connect-Provider {0} und {1} haben denselben OAuth-Provider {2}. Beide OpenID Connect-Provider werden inaktiviert.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Ein Konfigurationsfehler ist aufgetreten. Die OpenID Connect-Provider {0} und {1} haben denselben OAuth-Provider {2}. Beide OpenID Connect-Provider wurden inaktiviert.
 OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=F\u00fcr jeden OpenID Connect-Provider muss ein eindeutiger OAuth-Provider in der Datei server.xml angegeben sein. Andernfalls werden die doppelten OpenID Connect-Provider inaktiviert. 
 OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Stellen Sie sicher, dass f\u00fcr jeden OpenID Connect-Provider ein eindeutiger OAuth-Provider in der Datei server.xml angegeben ist.
 
-OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Im OAuth-Provider {0} ist ein Element databaseStore angegeben, aber die dataSourceFactory f\u00fcr die angegebene dataSource ist nicht aktiviert.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Im OAuth-Provider {0} ist ein Element databaseStore angegeben, aber das Attribut dataSourceFactory f\u00fcr die angegebene Datenquelle ist nicht aktiviert.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=Im OAuth-Provider ist ein Element databaseStore angegeben, aber das Attribut dataSourceFactory f\u00fcr die angegebene Datenquelle ist nicht aktiviert. Dies kann auf einen Konfigurationsfehler mit der Datenquelle zur\u00fcckzuf\u00fchren sein.
 OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Stellen Sie sicher, dass das Attribut dataSourceRef des Elements databaseStore im OAuth-Provider ordnungsgem\u00e4\u00df mit einer g\u00fcltigen Datenquelle definiert ist.
 
@@ -458,11 +458,11 @@ WRONG_TOKEN_GRANTTYPE.explanation=Das Token ist nicht g\u00fcltig, weil der zuge
 WRONG_TOKEN_GRANTTYPE.useraction=Verwenden Sie ein Token mit einem zul\u00e4ssigen Granttypen.
 
 # html title of logout page
-LOGOUT_PAGE_TITLE=Anmelden
+LOGOUT_PAGE_TITLE=Abmelden
 # html body of logout page
 LOGOUT_PAGE_BODY=Die Abmeldung war erfolgreich.
 
 # html title of logout error page
-LOGOUT_ERROR_PAGE_TITLE=Anmelden
+LOGOUT_ERROR_PAGE_TITLE=Abmelden
 # html body of logout error page
 LOGOUT_ERROR_PAGE_BODY=W\u00e4hrend der Abmeldung ist eine Ausnahme eingetreten. Es wird empfohlen, den Web-Browser zu schlie\u00dfen, um die Abmeldung abzuschlie\u00dfen.

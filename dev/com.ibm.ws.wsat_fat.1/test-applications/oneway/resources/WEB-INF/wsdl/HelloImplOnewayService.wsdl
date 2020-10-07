@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:wsp="http://www.w3.org/ns/ws-policy" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" 
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+	xmlns:tns="http://server.oneway.wsat.ws.ibm.com/" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http" 
+	name="HelloImplOnewayService" 
+	targetNamespace="http://server.oneway.wsat.ws.ibm.com/"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06"
+	xmlns:wsp2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+	>
+	<wsp2:Policy wsu:Id="TransactedPolicy">
+		<wsat:ATAssertion/>
+	</wsp2:Policy>
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server.oneway.wsat.ws.ibm.com/" elementFormDefault="unqualified" targetNamespace="http://server.oneway.wsat.ws.ibm.com/" version="1.0">
+<xs:element name="sayHello" type="tns:sayHello"/>
+<xs:complexType name="sayHello">
+    <xs:sequence/>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="sayHello">
+    <wsdl:part element="tns:sayHello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HelloImplOneway">
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="tns:sayHello" name="sayHello" wsam:Action="http://server.oneway.wsat.ws.ibm.com/HelloImplOneway/sayHelloRequest" wsaw:Action="http://server.oneway.wsat.ws.ibm.com/HelloImplOneway/sayHelloRequest">
+    </wsdl:input>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HelloImplOnewayServiceSoapBinding" type="tns:HelloImplOneway">
+  	<wsp2:PolicyReference URI="#TransactedPolicy"
+				wsdl:required="true" />
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsaw:UsingAddressing wsdl:required="true"/>
+    <wsp:PolicyReference URI="#HelloImplOnewayServiceSoapBinding_WSAM_Addressing_Policy"/>
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sayHello">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HelloImplOnewayService">
+    <wsdl:port binding="tns:HelloImplOnewayServiceSoapBinding" name="HelloImplOnewayPort">
+      <soap:address location="http://localhost:8010/oneway/HelloImplOnewayService"/>
+    </wsdl:port>
+  </wsdl:service>
+    <wsp:Policy wsu:Id="HelloImplOnewayServiceSoapBinding_WSAM_Addressing_Policy"><wsam:Addressing><wsp:Policy/></wsam:Addressing></wsp:Policy>
+</wsdl:definitions>

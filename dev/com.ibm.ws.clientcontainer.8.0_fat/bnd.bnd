@@ -20,10 +20,11 @@ src: \
 	test-applications/SystemExitClient.jar/src,\
 	test-applications/SystemExitClientNoDD.jar/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
+
+tested.features: \
+  jakartaeeClient-9.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest

@@ -63,6 +63,20 @@ public class ConnectorProperties extends PropertiesAsset {
     }
 
     /**
+     * Creates a simple configuration for a channel sending to a topic of the given name
+     * <p>
+     * The message type is String
+     *
+     * @param kafka       the kafka container
+     * @param channelName the channel and topic name
+     * @param topic       the topic name
+     * @return the ConnectorProperties to add to the app configuration
+     */
+    public static ConnectorProperties simpleOutgoingChannel(KafkaContainer kafka, String channelName, String topic) {
+        return simpleOutgoingChannel(kafka, DEFAULT_CONNECTOR_ID, channelName, topic);
+    }
+
+    /**
      * Creates a simple configuration for a channel sending to a topic of the same name
      * <p>
      * The message type is String

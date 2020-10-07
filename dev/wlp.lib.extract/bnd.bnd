@@ -33,6 +33,10 @@ Launcher-Agent-Class: wlp.lib.extract.agent.EnvCheck
 Export-Package: \
   wlp.lib.extract;version="1.0.16"
 
+Import-Package: \
+  !com.sun.tools.attach,\
+  *
+
 Private-Package: \
   wlp.lib.extract.platform,\
   wlp.lib.extract.agent

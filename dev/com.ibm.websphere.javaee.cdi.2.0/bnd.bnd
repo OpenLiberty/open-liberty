@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.cdi.2.0; singleton:=true
 
@@ -49,7 +47,6 @@ Include-Resource: \
   @${repo;javax.enterprise:cdi-api;[2.0,3)}!/beans_1_1.xsd, \
   @${repo;javax.enterprise:cdi-api;[2.0,3)}!/beans_2_0.xsd
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 instrument.disabled: true
 

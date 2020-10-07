@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2019 IBM Corporation and others.
+ * Copyright (c) 2005, 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,7 +115,7 @@ public class KeyStoreManager {
      ***/
     public void addKeyStoreToMap(String keyStoreName, WSKeyStore ks) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "addKeyStoreToMap: " + keyStoreName + ", ks=" + ks);
+            Tr.entry(tc, "addKeyStoreToMap", "name=" + keyStoreName + ", ks=" + ks);
 
         if (keyStoreMap.containsKey(keyStoreName))
             keyStoreMap.remove(keyStoreName);
@@ -644,18 +644,16 @@ public class KeyStoreManager {
             Tr.debug(tc, "clearJavaKeyStoresFromKeyStoreMap ", new Object[] { modifiedFiles });
 
         String filePath = null;
-        String comparePath = null;
         for (File modifiedKeystoreFile : modifiedFiles) {
             try {
                 filePath = modifiedKeystoreFile.getCanonicalPath();
-                comparePath = filePath.replace('\\', '/');
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Exception comparing file path.");
                 continue;
             }
 
-            findKeyStoreInMapAndClear(comparePath);
+            findKeyStoreInMapAndClear(filePath);
         }
     }
 

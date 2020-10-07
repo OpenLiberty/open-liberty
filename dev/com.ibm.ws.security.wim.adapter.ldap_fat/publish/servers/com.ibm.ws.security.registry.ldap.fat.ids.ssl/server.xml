@@ -26,10 +26,6 @@
 		searchTimeout="8m"
 		recursiveSearch="true"
 		idsFilters="ibm_dir_server">
-		<failoverServers name="failoverLdapServers">
-		   <server host="${ldap.server.7.name}" port="${ldap.server.7.ssl.port}"/>
-		   <server host="${ldap.server.8.name}" port="${ldap.server.8.ssl.port}"/>
-        </failoverServers>
 	</ldapRegistry>
 	
 	<!-- Yes, this is valid XML -->
@@ -44,7 +40,7 @@
 	<sslDefault sslRef="DefaultSSLSettings" />
 	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
 	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
-	<keyStore id="LDAPTrustStore" location="${server.config.dir}/LdapSSLTrustStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/truststore.p12" type="PKCS12" password="LDAPpassword" />
 
 	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
 	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="default" />

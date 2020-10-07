@@ -11,14 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: Data source validator
 Bundle-SymbolicName: com.ibm.ws.rest.handler.validator.jdbc
 Bundle-Description: Data source validator; version=${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: rest.validation
 

@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: Der von {0} bereitgestellte gRPC-Service ist an der folgenden Position verf\u00fcgbar: {1}
+service.available.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+service.available.useraction=Es ist keine Aktion erforderlich. 
+invalid.serverinterceptor=CWWKT0202W: Laden des in serverInterceptors definierten gRPC-Interceptors nicht m\u00f6glich: {0}
+invalid.serverinterceptor.explanation=Ein in serverInterceptors definierter gRPC-Interceptor konnte nicht geladen werden.
+invalid.serverinterceptor.useraction=\u00dcberpr\u00fcfen Sie den konfigurierten Interceptornamen und den Anwendungsklassenpfad.
+
+invalid.inbound.msg.size=CWWKT0203E: maxInboundMessageSize {0} ist nicht g\u00fcltig. Der Wert muss gr\u00f6\u00dfer als 0 sein.
+invalid.inbound.msg.size.explanation=Der konfigurierte Wert f\u00fcr maxInboundMessageSize ist nicht g\u00fcltig.
+invalid.inbound.msg.size.useraction=Konfigurieren Sie f\u00fcr maxInboundMessageSize einen g\u00fcltigen Wert.

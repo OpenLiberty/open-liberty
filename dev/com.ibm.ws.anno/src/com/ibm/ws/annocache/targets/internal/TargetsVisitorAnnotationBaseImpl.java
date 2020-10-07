@@ -31,7 +31,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      * @param parentVisitor The parent of the new visitor.
      */
     public TargetsVisitorAnnotationBaseImpl(TargetsVisitorClassImpl parentVisitor) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
 
         this.parentVisitor = parentVisitor;
 
@@ -46,7 +46,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
      * @param parentEncoder Reused string builder from the parent visitor.
      */
     public TargetsVisitorAnnotationBaseImpl(StringBuilder parentDetailText, StringBuilder parentEncoder) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
 
         this.parentVisitor = null;
 

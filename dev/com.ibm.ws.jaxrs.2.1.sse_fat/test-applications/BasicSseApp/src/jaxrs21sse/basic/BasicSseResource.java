@@ -205,7 +205,7 @@ public class BasicSseResource extends Application {
             } else {
                 System.out.print("BasicSseResource.sendPlainEventsFromRX: sleeping....waiting for completableFuture to complete");
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                 }
                 if (!(completableFuture.isDone())) {
@@ -304,7 +304,10 @@ public class BasicSseResource extends Application {
     @POST
     @Path("/postName")
     public void postName(String myName) {
-        BasicSseResource.names.add(myName);
+        synchronized(names) {
+            BasicSseResource.names.add(myName);
+        }
+        System.out.print("BasicSseResource.postName: " + myName);
     }
 
     @GET

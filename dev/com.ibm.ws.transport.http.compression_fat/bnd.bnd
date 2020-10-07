@@ -17,6 +17,11 @@ src: \
 
 fat.project: true
 
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
+tested.features:\
+	servlet-4.0
+
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
 # fat.minimum.java.level: 1.7

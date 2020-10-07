@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,7 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -38,10 +36,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 public class WCAddJspFileTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());
-
-    protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_addJspFileServer");
@@ -53,13 +48,11 @@ public class WCAddJspFileTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestAddJspFile.ear", false,
@@ -72,7 +65,7 @@ public class WCAddJspFileTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     /**
@@ -82,28 +75,24 @@ public class WCAddJspFileTest extends LoggingTest {
      */
     @Test
     public void testJSPOne() throws Exception {
-
         this.verifyResponse("/TestAddJspFile/jsp1", "Welcome to jsp one.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPOneDirect() throws Exception {
-
         this.verifyResponse("/TestAddJspFile/addJsp/one.jsp", "Welcome to jsp one.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPTwo() throws Exception {
-
         this.verifyResponse("/TestAddJspFile/jsp2", "Welcome to jsp two.jsp");
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testJSPDefinedInWebXml() throws Exception {
-
         this.verifyResponse("/TestAddJspFile/webxmljsp", "Welcome to jsp webxml.jsp");
     }
 
@@ -115,7 +104,6 @@ public class WCAddJspFileTest extends LoggingTest {
 
     @Test
     public void testJSPMultipleMappingPartiallyDefinedInWebXml() throws Exception {
-
         this.verifyResponse("/TestAddJspFile/webxmlpartialtwo", "Welcome to jsp webxmlpartialtwo.jsp");
         this.verifyResponse("/TestAddJspFile/webxmlpartialthree", "Welcome to jsp webxmlpartialtwo.jsp");
         this.verifyResponse("/TestAddJspFile/webxmlpartialfour", "Welcome to jsp webxmlpartialtwo.jsp");
@@ -124,7 +112,6 @@ public class WCAddJspFileTest extends LoggingTest {
 
     @Test
     public void testForCorrectExceptions() throws Exception {
-
         // Messages will come out during server start so should be there when
         // this test runs
         List<String> messages = SHARED_SERVER.getLibertyServer().findStringsInLogs("TEST.*: AddJspContextListener registration of a jsp with servletname");

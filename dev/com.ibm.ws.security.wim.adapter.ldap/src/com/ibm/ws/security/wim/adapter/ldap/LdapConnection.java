@@ -22,9 +22,11 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_BIND_PA
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_TIME_OUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CONNECT_TIMEOUT;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_DEREFALIASES;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_HOST;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_INIT_POOL_SIZE;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_JNDI_OUTPUT_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_MAX_POOL_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_POOL_TIME_OUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_POOL_WAIT_TIME;
@@ -410,6 +412,11 @@ public class LdapConnection {
         iContextManager.setReadTimeout((Long) configProps.get(CONFIG_PROP_READ_TIMEOUT));
 
         /*
+         * Set JNDI packet output to system out
+         */
+        iContextManager.setJndiOutputEnabled((Boolean) configProps.get(CONFIG_PROP_JNDI_OUTPUT_ENABLED));
+
+        /*
          * Determine referral handling behavior. Initially the attribute was spelled missing an 'r' so
          * for backwards compatibility, support customers who might still be using it. The "referal"
          * attribute has no default so unless it is set we won't use it.
@@ -418,6 +425,11 @@ public class LdapConnection {
         String referral = (String) configProps.get(CONFIG_PROP_REFERRAL);
         referral = referal != null ? referal : referral;
         iContextManager.setReferral(referral.toLowerCase());
+
+        /*
+         * Set alias dereferencing handling.
+         */
+        iContextManager.setDerefAliases((String) configProps.get(CONFIG_PROP_DEREFALIASES));
 
         /*
          * Set binary attribute names.

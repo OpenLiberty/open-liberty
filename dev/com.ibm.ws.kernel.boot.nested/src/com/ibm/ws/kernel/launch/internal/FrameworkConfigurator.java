@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,10 @@ public class FrameworkConfigurator {
     protected static void customize(BootstrapConfig config) {
         File workarea = config.getWorkareaFile(null);
 
+        // Enable logic in aries jndi-core to reset static JNDI NamingManager fields
+        // when the liberty jndi feature is activated/deactivated.
+        config.putIfAbsent("org.apache.aries.jndi.force.builder", "true");
+
         // Specify the storage area that this framework should use:
         // because information about installed/started bundles is contained in
         // that storage area, we use space specific to the server.
@@ -111,6 +115,10 @@ public class FrameworkConfigurator {
 
         // It is not clear that multi-threading really helps with performance of the resolver.
         config.putIfAbsent("equinox.resolver.thread.count", "1");
+
+        // Disable the capture of log locations since we do not use location in logging of our entries
+        // when tracing is enabled for the logservice
+        config.putIfAbsent("equinox.log.capture.entry.location", "false");
 
         // By default use multiple threads for activating bundles from start-level
         // Set to the min of 4 or Runtime.getRuntime().availableProcessors().

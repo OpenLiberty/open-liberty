@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public final class TaskRecord {
     private static final int ID = 0x1,
                     ID_OF_CLASSLOADER = 0x2,
                     ID_OF_OWNER = 0x4,
-                    ID_OF_PARTITION = 0x8,
+                    CLAIM_EXPIRY_OR_PARTITION = 0x8,
                     MISC_BINARY_FLAGS = 0x10,
                     NAME = 0x20,
                     NEXT_EXEC_TIME = 0x40,
@@ -123,9 +123,9 @@ public final class TaskRecord {
     private String idOfOwner;
 
     /**
-     * Identifier for the partition that this task belongs in.
+     * The expiry of the current claim on task execution (if fail over is enabled), or otherwise the partition to which the task is assigned.
      */
-    private long idOfPartition;
+    private long claimExpiryOrPartition;
 
     /**
      * Value that represents a combination of miscellaneous boolean flags.
@@ -223,7 +223,7 @@ public final class TaskRecord {
                    && ((attrs & ID) == 0 || id == other.id)
                    && ((attrs & ID_OF_CLASSLOADER) == 0 || match(idOfClassLoader, other.idOfClassLoader))
                    && ((attrs & ID_OF_OWNER) == 0 || match(idOfOwner, other.idOfOwner))
-                   && ((attrs & ID_OF_PARTITION) == 0 || idOfPartition == other.idOfPartition)
+                   && ((attrs & CLAIM_EXPIRY_OR_PARTITION) == 0 || claimExpiryOrPartition == other.claimExpiryOrPartition)
                    && ((attrs & MISC_BINARY_FLAGS) == 0 || miscBinaryFlags == other.miscBinaryFlags)
                    && ((attrs & NAME) == 0 || match(name, other.name))
                    && ((attrs & NEXT_EXEC_TIME) == 0 || nextExecTime == other.nextExecTime)
@@ -292,15 +292,16 @@ public final class TaskRecord {
     }
 
     /**
-     * Returns the identifier for the partition that this task belongs in.
+     * Returns the expiry of the current claim on task execution (if fail over is enabled),
+     * or otherwise the partition to which the task is assigned.
      *
-     * @return identifier for the partition that this task belongs in.
+     * @return claim expiry or partition id value.
      */
-    public final long getIdentifierOfPartition() {
-        if ((attrs & ID_OF_PARTITION) == 0)
+    public final long getClaimExpiryOrPartition() {
+        if ((attrs & CLAIM_EXPIRY_OR_PARTITION) == 0)
             throw new IllegalStateException();
         else
-            return idOfPartition;
+            return claimExpiryOrPartition;
     }
 
     /**
@@ -518,12 +519,12 @@ public final class TaskRecord {
     }
 
     /**
-     * Returns true if the IdentifierOfPartition attribute is set. Otherwise false.
+     * Returns true if the ClaimExpiryOrPartition attribute is set. Otherwise false.
      *
      * @return true if the attribute is set. Otherwise false.
      */
-    public final boolean hasIdentifierOfPartition() {
-        return (attrs & ID_OF_PARTITION) != 0;
+    public final boolean hasClaimExpiryOrPartition() {
+        return (attrs & CLAIM_EXPIRY_OR_PARTITION) != 0;
     }
 
     /**
@@ -704,13 +705,14 @@ public final class TaskRecord {
     }
 
     /**
-     * Sets the identifier for the partition that this task belongs in.
+     * Sets the expiry of the current claim on task execution (if fail over is enabled),
+     * or otherwise the partition to which the task is assigned.
      *
-     * @param partitionId identifier for the partition that this task belongs in.
+     * @param value the new value to use.
      */
-    public final void setIdentifierOfPartition(long partitionId) {
-        this.idOfPartition = partitionId;
-        attrs |= ID_OF_PARTITION;
+    public final void setClaimExpiryOrPartition(long value) {
+        this.claimExpiryOrPartition = value;
+        attrs |= CLAIM_EXPIRY_OR_PARTITION;
     }
 
     /**
@@ -872,11 +874,11 @@ public final class TaskRecord {
             output.append(EOLN).append("FLAGS=").append(Integer.toBinaryString(miscBinaryFlags));
         if ((attrs & NAME) != 0)
             output.append(EOLN).append("NAME=").append(name);
-        if ((attrs & ID_OF_PARTITION) != 0)
-            if (idOfPartition > 1500000000000l)
-                Utils.appendDate(output.append(EOLN).append("CLAIMTIL="), idOfPartition);
+        if ((attrs & CLAIM_EXPIRY_OR_PARTITION) != 0)
+            if (claimExpiryOrPartition > 1500000000000l)
+                Utils.appendDate(output.append(EOLN).append("CLAIMTIL="), claimExpiryOrPartition);
             else
-                output.append(EOLN).append("PARTITION=").append(idOfPartition);
+                output.append(EOLN).append("PARTITION=").append(claimExpiryOrPartition);
         if ((attrs & NEXT_EXEC_TIME) != 0)
             Utils.appendDate(output.append(EOLN).append("NEXTEXEC="), nextExecTime);
         if ((attrs & ORIG_SUBMIT_TIME) != 0)
@@ -960,10 +962,10 @@ public final class TaskRecord {
     }
 
     /**
-     * Unsets the IdentifierOfPartition attribute.
+     * Unsets the ClaimExpiryOrPartition attribute.
      */
-    public final void unsetIdentifierOfPartition() {
-        attrs &= ~ID_OF_PARTITION;
+    public final void unsetClaimExpiryOrPartition() {
+        attrs &= ~CLAIM_EXPIRY_OR_PARTITION;
     }
 
     /**

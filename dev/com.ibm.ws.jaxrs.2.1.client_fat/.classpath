@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21bookstore/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21clientcallback/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21clientltpa/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21clientproxyAuth/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21clientssl/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21clienttimeout/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21complexclient/src"/>
+	<classpathentry kind="src" path="test-applications/jaxrs21reactivesample/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

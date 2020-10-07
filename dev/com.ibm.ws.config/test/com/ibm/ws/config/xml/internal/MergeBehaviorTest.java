@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
@@ -52,7 +53,6 @@ public class MergeBehaviorTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass
@@ -66,7 +66,8 @@ public class MergeBehaviorTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -86,7 +87,9 @@ public class MergeBehaviorTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
+
     }
 
     @Test

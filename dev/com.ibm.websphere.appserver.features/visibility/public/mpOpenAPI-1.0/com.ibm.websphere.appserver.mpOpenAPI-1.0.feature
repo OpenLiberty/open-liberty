@@ -36,16 +36,15 @@ IBM-SPI-Package: \
 -features=\
  com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
- com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:=1.3, \
+ com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3, 1.4", \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3,\
  com.ibm.wsspi.appserver.webBundle-1.0,\
  com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1
 -bundles=\
- com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.model,\
- com.ibm.ws.com.fasterxml.jackson.2.9.1
+ io.openliberty.com.fasterxml.jackson
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

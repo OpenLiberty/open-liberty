@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ public class Http2FullTracingTests extends FATServletClient {
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
     String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
     String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
+    String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
 
     @Rule
     public TestName testName = new TestName();
@@ -130,7 +131,38 @@ public class Http2FullTracingTests extends FATServletClient {
 
     // Moved to tracing
     @Test
-    public void testTwoWindowUpdateFrameAboveMaxSize() throws Exception {
+    public void testUnknownFrameType() throws Exception {
+        runTest(genericServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testContinuationFrameAfterDataFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    @Test
+    public void testInvalidPaddingValue() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testInvalidStreamIdSequence() throws Exception {
+        runTest(genericServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testConnectMethod() throws Exception {
+        runTest(methodServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testConnectMethodError() throws Exception {
+        runTest(methodServletPath, testName.getMethodName());
+    }
+
+    @Test
+    public void testPriorityFrameAfterHeaderFrameNoEndHeaders() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
 }

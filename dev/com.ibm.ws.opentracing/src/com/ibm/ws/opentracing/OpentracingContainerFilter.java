@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,6 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,14 +42,15 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single container filter is used by all applications.</p> *
  */
-public class OpentracingContainerFilter implements ContainerRequestFilter, ContainerResponseFilter, ExceptionMapper<Throwable> {
+
+public class OpentracingContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingContainerFilter.class);
 
     public static final String SERVER_SPAN_PROP_ID = OpentracingContainerFilter.class.getName() + ".Span";
 
-    public static final String SERVER_SPAN_SKIPPED_ID = OpentracingContainerFilter.class.getName() + ".Skipped";
-
     public static final String EXCEPTION_KEY = OpentracingContainerFilter.class.getName() + ".Exception";
+
+    public static final String SERVER_SPAN_SKIPPED_ID = OpentracingContainerFilter.class.getName() + ".Skipped";
 
     @Context
     protected ResourceInfo resourceInfo;
@@ -263,10 +262,4 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Response toResponse(Throwable exception) {
-        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", exception);
-        return Response.serverError().header(EXCEPTION_KEY, exception).build();
-    }
 }

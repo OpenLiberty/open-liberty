@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -264,8 +264,6 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
             if (globalId.equals(((DistributableTransaction) tx).getGlobalId())) {
                 return (DistributableTransaction) tx;
-            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Non matching tid: " + tx.getLocalTID() + ", globalId: " + ((DistributableTransaction) tx).getGlobalId());
             }
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -442,7 +442,7 @@ public class DatabaseTaskStore implements TaskStore {
             taskRecord.setId(taskId);
             taskRecord.setIdentifierOfClassLoader((String) result[0]);
             taskRecord.setIdentifierOfOwner((String) result[1]);
-            taskRecord.setIdentifierOfPartition((Long) result[2]);
+            taskRecord.setClaimExpiryOrPartition((Long) result[2]);
             taskRecord.setMiscBinaryFlags((Short) result[3]);
             taskRecord.setName((String) result[4]);
             taskRecord.setNextExecutionTime((Long) result[5]);
@@ -567,6 +567,73 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "findOrCreate", partitionId);
         return partitionId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long findOrCreatePollPartition() throws Exception {
+        String find = "SELECT p.ID FROM Partition p WHERE p.LSERVER=:s";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findOrCreatePollPartition", find);
+
+        long partitionId;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            // First look for an existing entry
+            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            query.setParameter("s", ".pollinfo"); // prefix of . is used to avoid collision with actual Liberty server names
+            List<Long> results = query.getResultList();
+            if (results.size() > 0) {
+                partitionId = results.get(0);
+            } else {
+                // If not found, create a new entry
+                Partition partition = new Partition();
+                // Initialize to already-expired and eligible for any server to claim.
+                // Use a fractional second to help avoid accessing the database around the same time as scheduled tasks
+                // which might be scheduled to run on the hour or minute.
+                partition.EXPIRY = System.currentTimeMillis() / 1000 * 1000 + 600;
+                partition.STATES = partition.EXPIRY; // used as a last-updated timestamp
+                partition.LSERVER = ".pollinfo";
+                partition.EXECUTOR = ""; // unused, cannot be null
+                partition.HOSTNAME = ""; // unused, cannot be null
+                partition.USERDIR = ""; // unused, cannot be null
+                em.persist(partition);
+                em.flush();
+                partitionId = partition.ID;
+            }
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findOrCreatePollPartition", partitionId);
+        return partitionId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object[] findPollInfoForUpdate(long partitionId) throws Exception {
+        String find = "SELECT p.EXPIRY,p.STATES FROM Partition p WHERE p.ID=:i";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findPollInfoForUpdate", partitionId, find);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(find, Object[].class);
+            query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            query.setParameter("i", partitionId);
+            Object[] result = query.getSingleResult();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "findPollInfoForUpdate", Arrays.toString(result));
+            return result;
+        } finally {
+            em.close();
+        }
     }
 
     /** {@inheritDoc} */
@@ -840,38 +907,6 @@ public class DatabaseTaskStore implements TaskStore {
         return partitionId;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Long getPartitionWithState(long stateBits) throws Exception {
-        String select = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.STATES-p.STATES/:d*:d=:r AND p.EXPIRY>:t ORDER BY p.EXPIRY DESC";
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getPartitionWithState", stateBits, select);
-
-        long denominator = stateBits < 2 ? 2 : stateBits < 4 ? 4 : -1;
-        if (denominator == -1)
-            throw new IllegalArgumentException(Long.toString(stateBits)); // internal error: no states > 3 are currently defined
-
-        Object[] partitionInfo;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            TypedQuery<Object[]> query = em.createQuery(select.toString(), Object[].class);
-            query.setParameter("d", denominator);
-            query.setParameter("r", stateBits);
-            query.setParameter("t", System.currentTimeMillis());
-            query.setMaxResults(1);
-            List<Object[]> results = query.getResultList();
-            partitionInfo = results == null || results.isEmpty() ? null : results.get(0);
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
-        return partitionInfo == null ? null : (Long) partitionInfo[0];
-    }
-
     /**
      * Returns the persistence service unit, lazily initializing if necessary.
      *
@@ -1099,7 +1134,7 @@ public class DatabaseTaskStore implements TaskStore {
                 update.append("t.LOADER=:c2,");
             if (updates.hasIdentifierOfOwner())
                 update.append("t.OWNR=:o2,");
-            if (updates.hasIdentifierOfPartition())
+            if (updates.hasClaimExpiryOrPartition())
                 update.append("t.PARTN=:p2,");
             if (updates.hasMiscBinaryFlags())
                 update.append("t.MBITS=:m2,");
@@ -1135,7 +1170,7 @@ public class DatabaseTaskStore implements TaskStore {
             update.append(" AND t.LOADER=:c1");
         if (expected.hasIdentifierOfOwner())
             update.append(" AND t.OWNR=:o1");
-        if (expected.hasIdentifierOfPartition())
+        if (expected.hasClaimExpiryOrPartition())
             update.append(" AND t.PARTN=:p1");
         if (expected.hasMiscBinaryFlags())
             update.append(" AND t.MBITS=:m1");
@@ -1179,8 +1214,8 @@ public class DatabaseTaskStore implements TaskStore {
                     query.setParameter("c2", updates.getIdentifierOfClassLoader());
                 if (updates.hasIdentifierOfOwner())
                     query.setParameter("o2", updates.getIdentifierOfOwner());
-                if (updates.hasIdentifierOfPartition())
-                    query.setParameter("p2", updates.getIdentifierOfPartition());
+                if (updates.hasClaimExpiryOrPartition())
+                    query.setParameter("p2", updates.getClaimExpiryOrPartition());
                 if (updates.hasMiscBinaryFlags())
                     query.setParameter("m2", updates.getMiscBinaryFlags());
                 if (updates.hasName())
@@ -1215,8 +1250,8 @@ public class DatabaseTaskStore implements TaskStore {
                 query.setParameter("c1", expected.getIdentifierOfClassLoader());
             if (expected.hasIdentifierOfOwner())
                 query.setParameter("o1", expected.getIdentifierOfOwner());
-            if (expected.hasIdentifierOfPartition())
-                query.setParameter("p1", expected.getIdentifierOfPartition());
+            if (expected.hasClaimExpiryOrPartition())
+                query.setParameter("p1", expected.getClaimExpiryOrPartition());
             if (expected.hasMiscBinaryFlags())
                 query.setParameter("m1", expected.getMiscBinaryFlags());
             if (expected.hasName())
@@ -1587,6 +1622,31 @@ public class DatabaseTaskStore implements TaskStore {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "transfer", count);
             return count;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean updatePollInfo(long partitionId, long newExpiry) throws Exception {
+        String update = "UPDATE Partition p SET p.EXPIRY=:e,p.STATES=:s WHERE p.ID=:i";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "updatePollInfo", partitionId, newExpiry, update);
+
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Query query = em.createQuery(update);
+            query.setParameter("i", partitionId);
+            query.setParameter("e", newExpiry);
+            query.setParameter("s", System.currentTimeMillis()); // last-updated timestamp
+            int count = query.executeUpdate();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "updatePollInfo", count);
+            return count > 0;
         } finally {
             em.close();
         }

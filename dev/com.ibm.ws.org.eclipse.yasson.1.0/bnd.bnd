@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,21 +8,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse:yasson;1.0.5}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.eclipse:yasson;1.0.8;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
 
 instrument.disabled: true
 
 -includeresource: \
-   @${repo;org.eclipse:yasson;1.0.5}!/org/eclipse/yasson/*,\
-   @${repo;org.eclipse:yasson;1.0.5}!/META-INF/services/javax.json.bind.spi.JsonbProvider,\
+   @${repo;org.eclipse:yasson;1.0.8;EXACT}!/org/eclipse/yasson/*,\
+   @${repo;org.eclipse:yasson;1.0.8;EXACT}!/META-INF/services/javax.json.bind.spi.JsonbProvider,\
    yasson-messages.properties=resources/yasson-messages.properties
 
 -buildpath: \
     com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-	org.eclipse:yasson;version=1.0.5
+	org.eclipse:yasson;version=1.0.8
 	
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -21,7 +21,9 @@ WS-TraceGroup: \
 																																																															
 Export-Package: com.ibm.ws.security.jwtsso.token
 
-Import-Package: !*.internal.*, \
+Import-Package: \
+  !com.ibm.ws.security.jwtsso.token, \
+  !*.internal.*, \
   org.eclipse.microprofile.jwt, \
   org.jose4j.*;version="[0.5,1)", \
   *
@@ -64,6 +66,6 @@ Private-Package: \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
-    com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
+    com.ibm.ws.org.apache.commons.codec;version=latest, \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
     com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest

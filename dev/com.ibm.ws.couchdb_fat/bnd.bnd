@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -20,7 +18,7 @@ src: \
 
 fat.project: true
 
-# Define additional tested features that are NOT present any any XML files in this bucket.
+# Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
 	servlet-4.0
 
@@ -28,6 +26,6 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	org.ektorp:org.ektorp;version=1.4.1,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-	org.testcontainers:database-commons;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3,\
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0,\
 	org.slf4j:slf4j-api;version=1.7.7

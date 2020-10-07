@@ -51,11 +51,13 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Representation of VirtualHost configuration, for example:
+ *
  * <pre>
  * &lt;virtualHost id="myHost">
  * &lt;hostAlias>*:9080&lt;/hostAlias>
  * &lt;/virtualHost>
  * </pre>
+ *
  * <p>
  * This class coordinates with HttpContainers that register context
  * roots, and notifies VirtualHostListeners when context roots are
@@ -70,7 +72,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * <p>
  * The VirtualHostMap bridges VirtualHosts with HttpEndpoints
  * and simplifies runtime virtual host selection.
- * 
+ *
  * @see VirtualHostMap
  */
 @Component(configurationPid = "com.ibm.ws.http.virtualhost",
@@ -148,7 +150,7 @@ public class VirtualHostImpl implements VirtualHost {
 
         osgiService.clearRegistration();
 
-        // Remove the virtual host from the map 
+        // Remove the virtual host from the map
         // (this will trigger callbacks to listenerStopped for HttpContainer notification)
         VirtualHostMap.removeVirtualHost(config);
 
@@ -234,7 +236,7 @@ public class VirtualHostImpl implements VirtualHost {
      * Given a new shiny inbound connection, figure out which HttpContainer
      * will handle the inbound request, and return a Runnable that should
      * be used to dispatch the work.
-     * 
+     *
      * @param inboundConnection
      * @return the Runnable that should be queued for execution to handle the work,
      *         or null if it is an unknown/unmatched context root
@@ -244,7 +246,7 @@ public class VirtualHostImpl implements VirtualHost {
 
         Runnable requestHandler = null;
 
-        // Find the container that can handle this URI. 
+        // Find the container that can handle this URI.
         // The first to return a non-null wins
         for (HttpContainerContext ctx : httpContainers) {
             requestHandler = ctx.container.createRunnableHandler(inboundConnection);
@@ -326,8 +328,8 @@ public class VirtualHostImpl implements VirtualHost {
                     Tr.debug(tc, "getUrlString -- " + state);
                 }
                 if (state.httpPort > 0 && state.httpsPort > 0) {
-                    // this port has both, which is ideal, as we can listen to preferred and 
-                    // support redirects.. 
+                    // this port has both, which is ideal, as we can listen to preferred and
+                    // support redirects..
                     if (securedPreferred) {
                         return getUrlString(true, state.hostName, state.httpsPort, contextRoot);
                     } else {
@@ -348,7 +350,7 @@ public class VirtualHostImpl implements VirtualHost {
             if (httpEndpoint != null)
                 return getUrlString(false, httpEndpoint.hostName, httpEndpoint.httpPort, contextRoot);
 
-            // cover virtual hosts that ONLY have https associated with them.. . 
+            // cover virtual hosts that ONLY have https associated with them.. .
             if (httpsEndpoint != null)
                 return getUrlString(true, httpsEndpoint.hostName, httpsEndpoint.httpsPort, contextRoot);
         }
@@ -436,7 +438,7 @@ public class VirtualHostImpl implements VirtualHost {
 
     /**
      * DS method: add reference for VirtualHostListener
-     * 
+     *
      * @param reference to add/set
      */
     @Reference(name = "listener", service = VirtualHostListener.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
@@ -458,7 +460,7 @@ public class VirtualHostImpl implements VirtualHost {
 
     /**
      * DS method: remove reference for VirtualHostListener
-     * 
+     *
      * @param reference to remove/unset
      */
     protected void unsetListener(ServiceReference<VirtualHostListener> reference) {
@@ -476,7 +478,7 @@ public class VirtualHostImpl implements VirtualHost {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.http.VirtualHost#getAllowedFromEndpoints()
      */
     @Override
@@ -512,7 +514,7 @@ public class VirtualHostImpl implements VirtualHost {
      * of {@link VirtualHostMap#addVirtualHost(VirtualHostConfig, VirtualHostConfig)}. That is
      * why a "target configuration" is passed in as a parameter to this method: the aliases associated
      * with the configuration are being updated before the modified method completes.
-     * 
+     *
      * @param endpoint The endpoint that was started
      * @param targetConfig The configuration that is being notified
      * @param resolvedHostName A suitable hostname for use in messages
@@ -539,7 +541,7 @@ public class VirtualHostImpl implements VirtualHost {
 
         EndpointState newState = new EndpointState(resolvedHostName, newHttpPort, newHttpsPort);
 
-        //Check if we are changing an already listening port.. 
+        //Check if we are changing an already listening port..
         boolean updatedPort = (oldState.httpPort > 0 && oldState.httpPort != newHttpPort)
                               || (oldState.httpsPort > 0 && oldState.httpsPort != newHttpsPort);
 
@@ -559,11 +561,11 @@ public class VirtualHostImpl implements VirtualHost {
         }
 
         if (addedPort || updatedPort) {
-            // Update registration if a port changed.. 
+            // Update registration if a port changed..
             osgiService.updateRegistration(activated, targetConfig, true);
         }
 
-        // Notify that the endpoint is available only if it is a first port, or a changed port for an endpoint  
+        // Notify that the endpoint is available only if it is a first port, or a changed port for an endpoint
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "listener started for " + this + " on host " + resolvedHostName + " on port " + port, endpoint);
         }
@@ -576,12 +578,12 @@ public class VirtualHostImpl implements VirtualHost {
     /**
      * This method is called by the VirtualHostMap when an endpoint that applies to
      * this virtual host (matches one of the configured aliases) has stopped.
-     * 
+     *
      * @param endpoint The endpoint that was stopped
      * @param resolvedHostName A suitable hostname for use in messages
      * @param port The port that has stopped listening
      * @param isHttps True if this is an https port
-     * 
+     *
      * @see #listenerStarted(HttpEndpointImpl, String, int, boolean)
      */
     synchronized void listenerStopped(HttpEndpointImpl endpoint, VirtualHostConfig targetConfig, String resolvedHostName, int port, boolean isHttps) {
@@ -594,14 +596,14 @@ public class VirtualHostImpl implements VirtualHost {
 
         EndpointState oldState = myEndpoints.get(endpoint);
         if (oldState == null) {
-            // we must have been here before.. 
+            // we must have been here before..
             return;
         }
 
         int newHttpPort = isHttps ? oldState.httpPort : EndpointState.notStarted.httpPort;
         int newHttpsPort = isHttps ? EndpointState.notStarted.httpsPort : oldState.httpsPort;
 
-        // Check if we actually removed the port 
+        // Check if we actually removed the port
         boolean removedPort = (oldState.httpPort > 0 && newHttpPort == EndpointState.notStarted.httpPort)
                               || (oldState.httpsPort > 0 && newHttpsPort == EndpointState.notStarted.httpsPort);
 
@@ -689,7 +691,7 @@ public class VirtualHostImpl implements VirtualHost {
             // Remove the context root from the map
             String urlString = contextRoots.remove(contextRoot);
 
-            // Only attempt to notify for removal if a notification went out for addition.. 
+            // Only attempt to notify for removal if a notification went out for addition..
             if (urlString != null && !urlString.isEmpty()) {
                 int numPorts = owner.listeningPorts.get();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -707,12 +709,12 @@ public class VirtualHostImpl implements VirtualHost {
 
         /**
          * Notify existing contexts that a port has been started or stopped.
-         * 
+         *
          * @param added True if the port was added/started/updated
          * @param hostName HostName suitable for use in messages
          * @param port Started/stopped port
          * @param isHttps True if the port is associated with an https chain
-         * 
+         *
          * @see VirtualHostImpl#listenerStarted(HttpEndpointImpl, String, int, boolean)
          * @see VirtualHostImpl#listenerStopped(HttpEndpointImpl, String, int, boolean)
          */
@@ -736,7 +738,7 @@ public class VirtualHostImpl implements VirtualHost {
                         entry.setValue(changedUrl);
                     }
                 } else if (numPorts > 0) {
-                    // a port was removed from this virtual host. If it was the port we used for notification, 
+                    // a port was removed from this virtual host. If it was the port we used for notification,
                     // issue a message for display in the console.log / WDT console that the URL has changed
                     if (changedUrl.equals(oldUrl)) {
                         String newUrl = owner.getUrlString(contextRoot, isHttps);
@@ -757,7 +759,7 @@ public class VirtualHostImpl implements VirtualHost {
                     }
                 } else {
                     // we've removed a port from this virtual host, and it was the last one.
-                    // notify that the context root is unreachable.. 
+                    // notify that the context root is unreachable..
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "** notify URL removal.. " + changedUrl, oldUrl);
 
@@ -794,7 +796,7 @@ public class VirtualHostImpl implements VirtualHost {
          * While the owner's _listeners is a concurrent structure, this method is not
          * thread safe: To prevent add/remove notifications from interleaving, this method
          * should only be called from synchronized methods on the inner class.
-         * 
+         *
          * @param added True if this is a new/added context root, false if the context root is being removed
          * @param urlString URL to use for availabilty message
          * @param contextRoot context root for VirtualHostListener notification
@@ -884,7 +886,7 @@ public class VirtualHostImpl implements VirtualHost {
 
         /**
          * Update (or create) the service registration
-         * 
+         *
          * @param oldAliases
          * @param newAliases
          * @see VirtualHostImpl#listenerStarted(HttpEndpointImpl, String, int, boolean)
@@ -957,7 +959,7 @@ public class VirtualHostImpl implements VirtualHost {
             if (oldStrings.length != newStrings.size())
                 return true;
 
-            // We know the lists are exactly the same size, 
+            // We know the lists are exactly the same size,
             // If one list doesn't contain all of the other list, we need to update
             // the registration.
             for (String str : oldStrings) {
@@ -984,7 +986,7 @@ public class VirtualHostImpl implements VirtualHost {
                 map.put("endpointReferences", newEPReferences);
             }
 
-            // Add an SSL port if we have one... 
+            // Add an SSL port if we have one...
             for (Entry<HttpEndpointImpl, EndpointState> entry : vhost.myEndpoints.entrySet()) {
                 EndpointState state = entry.getValue();
                 if (state.httpsPort != 0) {

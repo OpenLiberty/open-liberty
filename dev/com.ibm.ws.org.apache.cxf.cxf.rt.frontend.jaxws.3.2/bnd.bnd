@@ -10,23 +10,23 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-jaxws;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
+instrument.ffdc: false
 
 cxfVersion=3.3.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/cxf/**, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/schemas/**, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/META-INF/NOTICE, \
-   META-INF/services/javax.xml.ws.spi.Provider=resources/META-INF/services/javax.xml.ws.spi.Provider
+  @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf,\
+  META-INF=resources/META-INF
    
--buildpath: org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
+-buildpath: \
+  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core

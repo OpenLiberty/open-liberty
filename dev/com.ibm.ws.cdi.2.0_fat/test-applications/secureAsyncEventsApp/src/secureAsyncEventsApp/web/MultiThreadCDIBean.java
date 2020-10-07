@@ -39,6 +39,7 @@ public class MultiThreadCDIBean {
 
                 @Override
                 public String call() throws Exception {
+                    System.out.println("user.getName(): " + user.getName());
                     return user.getName();
                 }
             });

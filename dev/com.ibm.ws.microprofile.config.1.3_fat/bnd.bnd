@@ -18,15 +18,15 @@ src: \
 	test-applications/mapEnvVarApp/src,\
 	test-applications/hotAddMPConfigApp/src,\
 	test-applications/variableServerXMLApp/src,\
-	test-applications/duplicateInServerXMLApp/src
+	test-applications/duplicateInServerXMLApp/src,\
+	test-applications/serverXMLWebApp/src
 
-javac.source: 1.8
-javac.target: 1.8
 	
 fat.project: true
 
 tested.features: mpConfig-1.3,\
                  mpConfig-1.4,\
+                 mpConfig-2.0,\
                  cdi-1.2,\
                  cdi-2.0,\
                  servlet-3.1,\

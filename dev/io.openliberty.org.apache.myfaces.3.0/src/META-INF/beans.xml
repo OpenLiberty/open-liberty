@@ -1,0 +1,10 @@
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd" version="1.1"
+  bean-discovery-mode="none">
+  <scan>
+
+    <exclude name="com.ibm.ws.jsf.**" />
+    <exclude name="org.apache.myfaces.**"/>
+
+  </scan>
+</beans>

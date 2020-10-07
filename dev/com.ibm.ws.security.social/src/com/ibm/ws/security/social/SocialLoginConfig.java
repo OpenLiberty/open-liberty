@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social;
 
@@ -14,13 +14,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.Cache;
 
 public interface SocialLoginConfig {
 
@@ -56,8 +55,6 @@ public interface SocialLoginConfig {
     String getSslRef();
 
     AuthenticationFilter getAuthFilter();
-
-    SSLContext getSSLContext() throws SocialLoginException;
 
     SSLSocketFactory getSSLSocketFactory() throws SocialLoginException;
 
@@ -121,5 +118,9 @@ public interface SocialLoginConfig {
     public boolean isAccessTokenSupported();
 
     public String getAccessTokenHeaderName();
+
+    public long getApiResponseCacheTime();
+
+    public String getIntrospectionTokenTypeHint();
 
 }

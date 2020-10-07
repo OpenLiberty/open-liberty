@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=Il seguente URL non \u00e8 valido: {0} Sono supportat
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Il protocollo URL per il seguente repository non \u00e8 supportato: {0}. I protocolli supportati sono HTTP, HTTPS e file. Assicurarsi che l''URL sia specificato correttamente.
 MSG_VALIDATION_INVALID_HOST=Il seguente host server proxy non \u00e8 valido: {0} Specificare un nome host server proxy HTTP valido. Il prefisso http:// non \u00e8 necessario.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Non sono state trovate funzioni.
+
 VALIDATION_INVALID_VALUE=Valore non supportato
 VALIDATION_INVALID_KEY=Nome propriet\u00e0\u00a0non supportato
 VALIDATION_EMPTY_KEY=Nome propriet\u00e0\u00a0vuoto
@@ -838,6 +841,38 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La funzione non \u00e8 suppo
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Eseguire featureUtility con una funzione compatibile.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Le seguenti funzioni utente sono specificate nel file server.xml e non verranno installate: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Le funzioni {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Rimuovere una delle funzioni e riprovare.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Le funzioni singleton {0} e {1} sono incompatibili tra loro e non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Le funzioni non possono essere installate contemporaneamente.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Rimuovere una delle funzioni e riprovare.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Impossibile decomprimere il package di licenza con la coordinata Maven {0} dal repository a percorso file {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Impossibile decomprimere il package di licenza nell'installazione wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Assicurarsi di avere le autorizzazioni corrette per leggere dal repository.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Impossibile elaborare il file di licenza nell''ubicazione file {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=Impossibile elaborare il file di licenza per le informazioni di accettazione della licenza.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Assicurarsi di avere le autorizzazioni corrette per leggere dal file di licenza.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Impossibile trovare il file JSON Websphere nell''ubicazione file {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Impossibile trovare il file JSON Websphere.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Assicurarsi di avere la connessione di rete e le autorizzazioni alla scrittura per la directory Maven locale configurata.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Impossibile trovare i seguenti file JSON della funzione in locale o sul repository Maven configurato: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Impossibile trovare i file JSON  localmente o sul repository Maven configurato.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Assicurarsi di avere la connessione di rete e che i file JSON esistano sul repository Maven configurato.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: La funzione {0} non pu\u00f2 essere installata sull''edizione  {1} {2} perch\u00e9 si applica solo all''edizione {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=La funzione non \u00e8 applicabile all'edizione installata del prodotto.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Installare le funzioni che sono supportate da questa edizione del prodotto.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: L'installazione o l'aggiornamento delle funzioni non \u00e8 supportato per le release beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=L'installazione o l'aggiornamento delle funzioni non \u00e8 supportato per il prodotto installato.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nessuna azione richiesta.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La funzione \u00e8 stata scaricata correttamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La funzione \u00e8 stata scaricata.

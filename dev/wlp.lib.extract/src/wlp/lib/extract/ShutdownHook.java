@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -34,6 +35,7 @@ public class ShutdownHook implements Runnable {
     String serverName;
     Thread out;
     Thread err;
+    boolean extractDirPredefined = false;
 
     // no parm ctor not public
     private ShutdownHook() {
@@ -48,12 +50,14 @@ public class ShutdownHook implements Runnable {
      * @param serverName - name of server from jar (in extraction directory)
      * @param out - output stream reader thread of parent process.
      * @param err - error stream reader thread of parent process.
+     * @param extractDirPredefined - flag which indicates if WLP_JAR_EXTRACT_DIR was predefined by user
      */
     public ShutdownHook(int platformType,
                         String dir,
                         String serverName,
                         StreamReader out,
-                        StreamReader err) {
+                        StreamReader err,
+                        boolean extractDirPredefined) {
 
         this();
         this.serverName = serverName;
@@ -61,6 +65,7 @@ public class ShutdownHook implements Runnable {
         this.err = err;
         this.dir = dir;
         this.platformType = platformType;
+        this.extractDirPredefined = extractDirPredefined;
     }
 
     /**
@@ -122,6 +127,7 @@ public class ShutdownHook implements Runnable {
      * @throws IOException
      */
     private void startAsyncDelete() throws IOException {
+
         Runtime rt = Runtime.getRuntime();
         File scriptFile = null;
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
@@ -149,20 +155,32 @@ public class ShutdownHook implements Runnable {
      * @throws IOException
      */
     private void writeWindowsCleanup(File file, BufferedWriter bw) throws IOException {
+
+        String logDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs";
+        File tempDir = Files.createTempDirectory("logs").toFile();
+
         bw.write("set max=30\n");
         bw.write("set cnt=0\n");
         bw.write("set dir=" + dir + "\n");
+        bw.write("set tempDir=" + tempDir.getAbsolutePath() + "\n");
+        bw.write("set logDir=" + logDir + "\n");
         bw.write("echo delete %dir%\n");
+        bw.write("sleep 5\n");
         bw.write(":while\n");
         bw.write("   if exist %dir% (\n");
-        bw.write("      rmdir /s /q %dir%\n");
+        bw.write("      xcopy /E/H/C/I %logDir% %tempDir% \n");
+        bw.write("      rmdir /s /q %dir%\\wlp\n");
+        bw.write("      mkdir %logDir%\n");
+        bw.write("      xcopy /E/H/C/I %tempDir% %logDir%\n");
         bw.write("      timeout 1\n");
         bw.write("      set /a cnt+=1\n");
         bw.write("      if %cnt% leq %max% (\n");
         bw.write("         goto :while \n");
         bw.write("      )\n");
-        bw.write("   )\n");
+        bw.write("   )\n ");
         bw.write("erase " + file.getAbsoluteFile() + "\n");
+        bw.write("erase " + tempDir.getAbsolutePath() + "\n");
+
     }
 
     /**
@@ -173,19 +191,29 @@ public class ShutdownHook implements Runnable {
      * @throws IOException
      */
     private void writeUnixCleanup(File file, BufferedWriter bw) throws IOException {
+
+        String logDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs";
+        String serverDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator;
+
+        File tempDir = Files.createTempDirectory("logs").toFile();
+
         bw.write("echo begin delete" + "\n");
         bw.write("n=0" + "\n");
         bw.write("while [ $n -ne 1 ]; do" + "\n");
-        bw.write("  sleep 3" + "\n");
-        bw.write("  if [ -e " + dir.replace('\\', '/') + " ]; then" + "\n");
-        bw.write("    rm -rf " + dir.replace('\\', '/') + "\n");
+        bw.write("  if [ -e " + dir.replace('\\', '/') + "/wlp ]; then" + "\n");
+        bw.write("    cp -r " + logDir.replace('\\', '/') + " " + tempDir.getAbsolutePath().replace('\\', '/') + "\n");
+        bw.write("    rm -rf " + dir.replace('\\', '/') + "/wlp/ \n");
         bw.write("  else" + "\n");
         bw.write("    echo file not found - n=$n" + "\n");
         bw.write("    n=1" + "\n");
         bw.write("  fi" + "\n");
         bw.write("done" + "\n");
+        bw.write("mkdir -p " + logDir.replace('\\', '/') + "\n");
+        bw.write("cp -r " + tempDir.getAbsolutePath().replace('\\', '/') + "/logs/ " + serverDir.replace('\\', '/') + "\n");
+        bw.write("chmod -R 755 " + dir.replace('\\', '/') + "\n");
+        bw.write("rm -rf " + file.getAbsolutePath().replace('\\', '/') + "\n");
+        bw.write("rm -rf " + tempDir.getAbsolutePath().replace('\\', '/') + "\n");
         bw.write("echo end delete" + "\n");
-        bw.write("rm " + file.getAbsolutePath().replace('\\', '/') + "\n");
     }
 
     /**
@@ -235,7 +263,6 @@ public class ShutdownHook implements Runnable {
         }
 
         File file = File.createTempFile("wlpDelete", fileSuffix);
-
         if (!file.exists()) {
             boolean success = file.createNewFile();
             if (!success) {
@@ -262,23 +289,34 @@ public class ShutdownHook implements Runnable {
      * Main method for shutdown hook. Job of this hook
      * is to stop server and delete extraction directory.
      */
+    @Override
     public void run() {
         try {
+
             stopServer(); // first, stop server
 
             // wait on error/output stream threads to complete
             // note on Windows the streams never close, so wait with brief timeout
-            if (!System.getProperty("os.name").startsWith("Win")) {
-                out.join();
-                err.join();
-            } else { // windows, so use timeout
-                out.join(500);
-                err.join(500);
+            if (out != null && err != null) {
+                if (!System.getProperty("os.name").startsWith("Win")) {
+                    out.join();
+                    err.join();
+                } else { // windows, so use timeout
+                    out.join(500);
+                    err.join(500);
+                }
             }
 
-            startAsyncDelete(); // now launch async process to cleanup extraction directory
+            // When the server is launched with java -jar, delete the server on exit minus
+            // the /logs folder, unless WLP_JAR_EXTRACT_DIR is set at which point don't delete
+            // anything.
+
+            if (extractDirPredefined != true) {
+                startAsyncDelete(); // now launch async process to cleanup extraction directory
+            }
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Shutdown hook failed with exception " + e.getMessage());
         }
 

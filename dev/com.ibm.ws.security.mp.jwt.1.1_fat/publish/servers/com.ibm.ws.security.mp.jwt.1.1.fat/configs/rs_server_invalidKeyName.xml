@@ -1,0 +1,29 @@
+
+<server>
+
+	<include location="${shared.config.dir}/rsFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/microProfileApplication.xml" />
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
+
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
+	<mpJwt
+		id="mpJwt_1"
+		keyName="someKeyName"
+		issuer="http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/JWKEnabled,
+							http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/JWKEnabled,
+							https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/JWKEnabled,
+							https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/JWKEnabled,
+							http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/JWKNotEnabled,
+							http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/JWKNotEnabled,
+							https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/JWKNotEnabled,
+							https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/JWKNotEnabled">
+	</mpJwt>
+
+</server>

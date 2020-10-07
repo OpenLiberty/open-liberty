@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,4 +30,6 @@ public interface AppManagerConstants {
     public static final String AUTO_INSTALL_PROP = ".installedByDropins";
     public static final String USE_JANDEX = "useJandex";
     public static final String XML_SUFFIX = ".xml";
+    public static final String START_AFTER = "startAfter";
+    public static final String START_AFTER_REF = "startAfterRef";
 }

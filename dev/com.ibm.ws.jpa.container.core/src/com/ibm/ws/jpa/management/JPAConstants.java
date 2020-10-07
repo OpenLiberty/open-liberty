@@ -17,10 +17,10 @@ import com.ibm.ejs.util.dopriv.SystemGetPropertyPrivileged;
 /**
  * Manifested Constants used by the JPA Service implementation.
  */
-public final class JPAConstants
-{
+public final class JPAConstants {
     // ********** JPA general, trace and bundling constants
     public static final String JPA_TRACE_GROUP = "JPA";
+    public static final String JPABYTECODE_TRACE_GROUP = "JavaPersistenceByteCode";
 
     public static final String JPA_RESOURCE_BUNDLE_NAME = "com.ibm.ws.jpa.jpa";
 
@@ -56,15 +56,10 @@ public final class JPAConstants
     // Override all <exclude-unlisted-classes> semantics to mean
     // <exclude-unlisted-classes>true</exclude-unlisted-classes>
     // Applies only to persistence.xml files at the 1.0 level of the spec. F1879-16302
-    static final boolean JPA_OVERRIDE_EXCLUDE_UNLISTED_CLASSES = Boolean.getBoolean
-                    (((String) AccessController.doPrivileged
-                                    (new SystemGetPropertyPrivileged
-                                    ("com.ibm.websphere.jpa.override.exclude.unlisted.classes", "false"))
-                    ).toLowerCase());
+    static final boolean JPA_OVERRIDE_EXCLUDE_UNLISTED_CLASSES = Boolean.getBoolean(AccessController.doPrivileged(new SystemGetPropertyPrivileged("com.ibm.websphere.jpa.override.exclude.unlisted.classes", "false")).toLowerCase());
 
     // EntityManager pool capacity per PersistenceContext reference.      d510184
-    static final String JPA_ENTITY_MANAGER_POOL_CAPACITY =
-                    "com.ibm.websphere.jpa.entitymanager.poolcapacity";
+    static final String JPA_ENTITY_MANAGER_POOL_CAPACITY = "com.ibm.websphere.jpa.entitymanager.poolcapacity";
 
     // ********** Persistence provider related constants
     static final String PROVIDER_SPI_META_INF_RESOURCE_NAME = "META-INF/services/javax.persistence.spi.PersistenceProvider";
@@ -87,11 +82,11 @@ public final class JPAConstants
      * code to create an EntityManagerFactory when the application contains a persistence.xml
      * file. This code is not needed to run for legacy Hibernate-related applications that do not
      * use openJPA or other JPA provider. <p> //PM20625
-     * 
+     *
      * <B>Value:</B> com.ibm.websphere.persistence.ApplicationsExcludedFromJpaProcessing <p>
-     * 
+     *
      * <B>Usage:</B> Optional JEERuntime Property <p>
-     * 
+     *
      * <B>Property values:</B>
      * appName1:appName2:appName3...or * for all applications <p>
      **/
@@ -102,9 +97,9 @@ public final class JPAConstants
      * non stateful session beans. This is useful for applications that need to
      * directly cast to vendor-specific EntityManagerFactory interfaces and that
      * cannot be changed to use JPAEMFactory.unwrap. <p>
-     * 
+     *
      * <B>Value:</B> com.ibm.websphere.persistence.useEntityManagerFactoryProxy <p>
-     * 
+     *
      * <B>Property values:</B> "true" (default) and "false"
      */
 //   public static final String USE_EMF_PROXY = JPAJndiLookupObjectFactory.USE_EMF_PROXY; // d706751

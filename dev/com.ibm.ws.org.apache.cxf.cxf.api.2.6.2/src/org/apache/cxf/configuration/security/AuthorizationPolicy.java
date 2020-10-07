@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -52,6 +54,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlSeeAlso({
     ProxyAuthorizationPolicy.class
 })
+@Trivial
 public class AuthorizationPolicy {
 
     @XmlElement(name = "UserName")

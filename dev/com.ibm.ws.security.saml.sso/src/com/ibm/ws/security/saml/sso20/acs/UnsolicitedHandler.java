@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
@@ -21,6 +25,7 @@ import org.opensaml.saml2.core.Assertion;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -31,6 +36,8 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequest;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -44,6 +51,8 @@ public class UnsolicitedHandler {
     SsoRequest samlRequest;
     Map<String, Object> parameters;
     SsoSamlService ssoService;
+    
+    InitialRequestUtil irUtil= new InitialRequestUtil();
 
     public UnsolicitedHandler(HttpServletRequest request,
                               HttpServletResponse response,
@@ -196,6 +205,9 @@ public class UnsolicitedHandler {
             requestInfo = (HttpRequestInfo) cache.get(cacheKey);
             if (requestInfo != null) {
                 cache.remove(cacheKey); // the cache can only be used once
+                irUtil.removeCookie(relayState, request, response);
+            } else { // since there is a cookie value with idp_initial exists, it does mean that the request was originated at our saml sp side
+                requestInfo = irUtil.recreateHttpRequestInfo(relayState, this.request, this.response, this.ssoService);
             }
         }
         return requestInfo;

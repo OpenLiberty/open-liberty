@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -304,8 +304,8 @@ public class SsoServiceImpl implements SsoSamlService {
         return getSamlConfig().getAuthFilterId();
     }
 
-    public String getDefaultKeyStoreName(String propKey) {
-        String keyStoreName = null;
+    public @Sensitive String getDefaultKeyStoreProperty(String propKey) {
+        String keyStorePropValue = null;
         //config does not specify keystore, so try to get one from servers default ssl config.
         SSLSupport sslSupport = getSslSupportRef().getService();
         JSSEHelper jsseHelper = null;
@@ -328,13 +328,13 @@ public class SsoServiceImpl implements SsoSamlService {
                 }
             }
             if (props != null) {
-                keyStoreName = props.getProperty(propKey);
+                keyStorePropValue = props.getProperty(propKey);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "KeyStore name from default ssl config = " + keyStoreName);
+                    Tr.debug(tc, "KeyStore property ( " + propKey + " ) from default ssl config  " );
                 }
             }
         }
-        return keyStoreName;
+        return keyStorePropValue;
     }
 
     /** {@inheritDoc} */
@@ -348,7 +348,10 @@ public class SsoServiceImpl implements SsoSamlService {
         String keyAlias = getSamlConfig().getKeyAlias();
 
         if (keyStoreName == null) {
-            keyStoreName = getDefaultKeyStoreName("com.ibm.ssl.keyStoreName");
+            keyStoreName = getDefaultKeyStoreProperty("com.ibm.ssl.keyStoreName");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "KeyStore name from default ssl config  = ", keyStoreName );
+            }
         }
         KeyStoreService keyStoreService = getKeyStoreServiceRef().getService();
 
@@ -394,7 +397,10 @@ public class SsoServiceImpl implements SsoSamlService {
         String keyAlias = getSamlConfig().getKeyAlias();
 
         if (keyStoreName == null) {
-            keyStoreName = getDefaultKeyStoreName("com.ibm.ssl.keyStoreName");
+            keyStoreName = getDefaultKeyStoreProperty("com.ibm.ssl.keyStoreName");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "KeyStore name from default ssl config  = ", keyStoreName );
+            }
         }
         KeyStoreService keyStoreService = getKeyStoreServiceRef().getService();
         Certificate cert = null;
@@ -479,7 +485,10 @@ public class SsoServiceImpl implements SsoSamlService {
     @Override
     public boolean searchTrustAnchors(Collection<X509Certificate> trustAnchors, String trustAnchorName) throws SamlException {
         if (trustAnchorName == null || trustAnchorName.isEmpty()) {
-            trustAnchorName = getDefaultKeyStoreName("com.ibm.ssl.trustStoreName");
+            trustAnchorName = getDefaultKeyStoreProperty("com.ibm.ssl.trustStoreName");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TrustStore name from default ssl config  = ", trustAnchorName );
+            }
         }
 
         KeyStoreService keyStoreService = getKeyStoreServiceRef().getService();
@@ -531,5 +540,14 @@ public class SsoServiceImpl implements SsoSamlService {
     @Override
     public boolean isInboundPropagation() {
         return isSamlInbound;
+    }
+
+    /* (non-Javadoc)
+     * @see com.ibm.ws.security.saml.SsoSamlService#getDefaultKeyStorePassword()
+     */
+    @Override
+    public @Sensitive String getDefaultKeyStorePassword() {
+        // TODO Auto-generated method stub
+        return getDefaultKeyStoreProperty("com.ibm.ssl.keyStorePassword");
     }
 }

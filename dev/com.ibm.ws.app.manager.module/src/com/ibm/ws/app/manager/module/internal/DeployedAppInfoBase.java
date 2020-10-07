@@ -19,11 +19,13 @@ import java.security.CodeSource;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
+import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -404,14 +406,15 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
                 addPermissions(codeSource, configuredPermissions);
             }
 
-            List<Permission> mergedPermissions = Collections.emptyList();
+            PermissionCollection mergedPermissions = new Permissions();
             if (codeSource != null) {
-                mergedPermissions = permissionManager.getEffectivePermissions(codeSource.getLocation().getPath());
+                mergedPermissions = Policy.getPolicy().getPermissions(codeSource);
             }
 
-            int count = mergedPermissions.size();
-            for (int i = 0; i < count; i++) {
-                perms.add(mergedPermissions.get(i));
+            Enumeration<Permission> enumeration = mergedPermissions.elements();
+            while (enumeration.hasMoreElements()) {
+                Permission p = enumeration.nextElement();
+                perms.add(p);
             }
         }
 

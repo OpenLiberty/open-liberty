@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -38,4 +36,6 @@ fat.project: true
     com.ibm.ws.security.jaas.common;version=latest,\
     com.ibm.ws.microprofile.openapi;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest
-    
+
+tested.features: componenttest-2.0
+

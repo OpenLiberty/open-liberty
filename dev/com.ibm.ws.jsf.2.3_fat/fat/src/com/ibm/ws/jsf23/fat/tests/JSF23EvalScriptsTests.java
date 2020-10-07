@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,28 +78,29 @@ public class JSF23EvalScriptsTests {
     @Test
     public void testEvalScriptsSimple() throws Exception {
         String contextRoot = "EvalScripts";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsSimple.xhtml");
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsSimple.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the submit button
-        HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
+            // Get the submit button
+            HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
 
-        //click the button
-        submitButton.click();
+            //click the button
+            submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the getEvalScripts worked, the javascript should have populated the outputText field.
-        assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Test Passed!"));
+            //if the getEvalScripts worked, the javascript should have populated the outputText field.
+            assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Test Passed!"));
+        }
     }
 
     /**
@@ -112,28 +113,29 @@ public class JSF23EvalScriptsTests {
     @Mode(TestMode.FULL)
     public void testEvalScriptsList() throws Exception {
         String contextRoot = "EvalScripts";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsList.xhtml");
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsList.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the submit button
-        HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
+            // Get the submit button
+            HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
 
-        //click the button
-        submitButton.click();
+            //click the button
+            submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the getEvalScripts worked, the javascript should have populated the three outputText fields.
-        assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Text Value 1,Text Value 2,Text Value 3"));
+            //if the getEvalScripts worked, the javascript should have populated the three outputText fields.
+            assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Text Value 1,Text Value 2,Text Value 3"));
+        }
     }
 
     /**
@@ -147,28 +149,29 @@ public class JSF23EvalScriptsTests {
     @Mode(TestMode.FULL)
     public void testEvalScriptsFunction() throws Exception {
         String contextRoot = "EvalScripts";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsFunction.xhtml");
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsFunction.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the submit button
-        HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
+            // Get the submit button
+            HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
 
-        //click the button
-        submitButton.click();
+            //click the button
+            submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the getEvalScripts worked, the javascript should have populated the outputText field.
-        assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Function Called!"));
+            //if the getEvalScripts worked, the javascript should have populated the outputText field.
+            assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Function Called!"));
+        }
     }
 
     /**
@@ -183,31 +186,32 @@ public class JSF23EvalScriptsTests {
     @Mode(TestMode.FULL)
     public void testEvalScriptsMultiField() throws Exception {
         String contextRoot = "EvalScripts";
-        WebClient webClient = new WebClient();
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsMultiFieldUpdate.xhtml");
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "EvalScriptsMultiFieldUpdate.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Get the form that we are dealing with
-        HtmlForm form = page.getFormByName("form1");
+            // Get the form that we are dealing with
+            HtmlForm form = page.getFormByName("form1");
 
-        // Get the input text and submit button
-        HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:inputText1");
-        HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
+            // Get the input text and submit button
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("form1:inputText1");
+            HtmlSubmitInput submitButton = form.getInputByName("form1:button1");
 
-        // Fill the input text
-        inputText.setValueAttribute("test");
+            // Fill the input text
+            inputText.setValueAttribute("test");
 
-        //click the button
-        submitButton.click();
+            //click the button
+            submitButton.click();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the getEvalScripts worked, the javascript should have populated the outputText field and ajax should have update the outputText4.
-        assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Test Passed!,test"));
+            //if the getEvalScripts worked, the javascript should have populated the outputText field and ajax should have update the outputText4.
+            assertTrue("Test failed. The javascript code from getEvalScripts was not called.", page.asText().contains("Test Passed!,test"));
+        }
     }
 }

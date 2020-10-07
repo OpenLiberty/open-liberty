@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,8 +169,9 @@ public interface WSJobRepository {
      * Update the instanceState to JMS_CONSUMED if it's a valid status transition
      *
      * @param instanceId
+     * @throws JobInstanceNotQueuedException
      */
-    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException;
 
     /**
      * Update the instanceState to JMS_QUEUED if it's a valid status transition
@@ -268,11 +269,14 @@ public interface WSJobRepository {
     public abstract WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
 
     /**
+     * Gets the internal status of a remotable partition, does nothing if RemotablePartition table does not exist
+     *
      * @param remotablePartitionKey
      * @return
-     * @throws IllegalArgumentException if partition isn't found via key
      */
     public abstract WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
+
+    public abstract List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId);
 
     /**
      * Check the version of the job execution table in the job repository.

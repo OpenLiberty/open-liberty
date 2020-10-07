@@ -29,11 +29,12 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
  com.ibm.ws.org.jvnet.mimepull, \
  com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
  com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/"; apiJar=false,\
  com.ibm.ws.jaxws.tools.2.2.10, \
- com.ibm.ws.jaxws.2.3.common, \
+ com.ibm.ws.jaxws.2.3.common; start-phase:=CONTAINER_LATE, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.ws.prereq.wsdl4j.1.6.2

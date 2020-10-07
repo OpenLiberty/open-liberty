@@ -51,9 +51,25 @@ task formlogin(type: War, dependsOn: classes) {
   }
 }
 
+task amrbuilder(type: War, dependsOn: classes) {
+  def appName = "amrbuilder"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from ("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
 assemble {
   dependsOn \
     formlogin
+  dependsOn \
+    amrbuilder
 }
 
 autoFVT.doLast {
@@ -70,6 +86,11 @@ autoFVT.doLast {
     
     copy { 
       from new File(buildDir, 'test-application/formlogin.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+    
+    copy { 
+      from new File(buildDir, 'test-application/amrbuilder.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }

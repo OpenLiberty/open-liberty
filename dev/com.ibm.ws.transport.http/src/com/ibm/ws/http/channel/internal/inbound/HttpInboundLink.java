@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
-import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -81,6 +80,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     protected List<ConnectionReadyCallback> appSides = null;
     /** Flag on whether this link has been marked for HTTP/2 */
     private boolean alreadyH2Upgraded = false;
+    /** Flag on whether grpc is being used for this link */
+    private boolean isGrpc = false;
 
     /**
      * Constructor for an HTTP inbound link object.
@@ -113,6 +114,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
         getVirtualConnection().getStateMap().put(CallbackIDs.CALLBACK_HTTPICL, this);
         this.bIsActive = true;
+        this.isGrpc = false;
     }
 
     VirtualConnection switchedVC = null;
@@ -269,7 +271,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query if this link should use HTTP/2
-     * 
+     *
      * @param vc
      * @return
      */
@@ -280,22 +282,28 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         HttpInboundServiceContextImpl sc = getHTTPContext();
         if (!sc.isH2Connection()) {
             // if ALPN has selected h2, OR if this link is not secure, check for the HTTP/2 connection preface
-            if ((checkAlpnH2() || (!sc.isSecure() && sc.isHttp2Enabled())) && checkForH2MagicString(sc))
-            {
+            if ((checkAlpnH2() || (!sc.isSecure() && sc.isHttp2Enabled())) && checkForH2MagicString(sc)) {
                 alreadyH2Upgraded = true;
-                return true;    
+                return true;
             }
         }
         return false;
+    }
+
+    public final void setIsGrpcInParentLink(boolean x) {
+        isGrpc = x;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "set isGprc: " + isGrpc);
+        }
     }
 
     /**
      * @return true if SSL is in use and "h2" was chosen via ALPN
      */
     private boolean checkAlpnH2() {
-        return this.myTSC.getSSLContext() != null 
-            && this.myTSC.getSSLContext().getAlpnProtocol() != null 
-            && this.myTSC.getSSLContext().getAlpnProtocol().equals("h2");
+        return this.myTSC.getSSLContext() != null
+               && this.myTSC.getSSLContext().getAlpnProtocol() != null
+               && this.myTSC.getSSLContext().getAlpnProtocol().equals("h2");
     }
 
     /**
@@ -344,7 +352,16 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 // with information after this call because it may go all the way
                 // from the channel above us back to the persist read, must exit
                 // this callstack immediately
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processRequest calling handleNewRequest()");
+                }
+
                 handleNewRequest();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processRequest return from handleNewRequest()");
+                }
+
                 return;
             }
             rc = this.myTSC.getReadInterface().read(1, callback, false, timeout);
@@ -1013,7 +1030,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             (buffer = myTSC.getReadInterface().getBuffer()) == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "checkForH2MagicString: returning " + hasMagicString + " due to null read buffer");
-            }        
+            }
             return hasMagicString;
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ public class SpnGssCredential {
         GSSCredential spnGSSCred;
         String previousSpn = null;
 
-        if (Krb5Common.isIBMJdk18OrLower || Krb5Common.isOtherSupportJDKs) {
+        if (Krb5Common.isIBMJdk18 || Krb5Common.isOtherSupportJDKs) {
             if (Krb5Common.isOtherSupportJDKs) {// We support multiple SPNs so switch to the right one
                 previousSpn = Krb5Common.getSystemProperty(Krb5Common.KRB5_PRINCIPAL);
                 Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, spn);

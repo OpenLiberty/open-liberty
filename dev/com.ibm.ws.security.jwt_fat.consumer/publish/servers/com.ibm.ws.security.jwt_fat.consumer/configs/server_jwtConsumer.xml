@@ -1,0 +1,9 @@
+<server>
+	<include location="${shared.config.dir}/jwtConsumerFeatures.xml" />
+	<include location="${shared.config.dir}/BasicRegistry.xml" />
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+	<include location="${shared.config.dir}/misc.xml" />
+    <include location="${shared.config.dir}/jwtConsumerBasicConfig.xml" />
+    <include location="${shared.config.dir}/jwtConsumerClientApplication.xml" />
+
+</server>

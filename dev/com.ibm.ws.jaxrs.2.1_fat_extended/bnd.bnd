@@ -17,6 +17,7 @@ src: \
   test-applications/classSubResApp/src,\
   test-applications/formApp/src,\
   test-applications/jsonbapp/src,\
+  test-applications/jsonbCharsetApp/src,\
   test-applications/jsonbContextResolverApp/src,\
   test-applications/mutableHeadersApp/src,\
   test-applications/patchapp/src,\
@@ -24,10 +25,8 @@ src: \
   test-applications/subResourceApp/src
 
 fat.project: true
-tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0
+tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, restfulWSClient-3.0, restfulWS-3.0, jsonb-2.0, jsonbcontainer-2.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
@@ -36,4 +35,5 @@ javac.target: 1.8
   com.ibm.websphere.javaee.jsonb.1.0,\
   com.ibm.websphere.javaee.jsonp.1.1,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-  com.ibm.ws.cdi.interfaces;version=latest
+  com.ibm.ws.cdi.interfaces;version=latest,\
+  fattest.simplicity

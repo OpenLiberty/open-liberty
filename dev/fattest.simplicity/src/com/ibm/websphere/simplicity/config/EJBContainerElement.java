@@ -24,6 +24,10 @@ public class EJBContainerElement extends ConfigElement {
     private Boolean startEJBsAtAppStart;
     private EJBAsynchronousElement asynchronous;
     private EJBTimerServiceElement timerService;
+    private String customBindingsOnError;
+    private String disableShortDefaultBindings;
+    private Boolean bindToJavaGlobal;
+    private Boolean bindToServerRoot;
 
     public Integer getCacheSize() {
         return cacheSize;
@@ -79,6 +83,42 @@ public class EJBContainerElement extends ConfigElement {
         this.timerService = timerService;
     }
 
+    public String getCustomBindingsOnError() {
+        return customBindingsOnError;
+    }
+
+    @XmlElement(name = "customBindingsOnError")
+    public void setCustomBindingsOnError(String customBindingsOnError) {
+        this.customBindingsOnError = customBindingsOnError;
+    }
+
+    public String getDisableShortDefaultBindings() {
+        return disableShortDefaultBindings;
+    }
+
+    @XmlElement(name = "disableShortDefaultBindings")
+    public void setDisableShortDefaultBindings(String disableShortDefaultBindings) {
+        this.disableShortDefaultBindings = disableShortDefaultBindings;
+    }
+
+    public Boolean getBindToJavaGlobal() {
+        return bindToJavaGlobal;
+    }
+
+    @XmlAttribute(name = "bindToJavaGlobal")
+    public void setBindToJavaGlobal(Boolean bindToJavaGlobal) {
+        this.bindToJavaGlobal = bindToJavaGlobal;
+    }
+
+    public Boolean getBindToServerRoot() {
+        return bindToServerRoot;
+    }
+
+    @XmlAttribute(name = "bindToServerRoot")
+    public void setBindToServerRoot(Boolean bindToServerRoot) {
+        this.bindToServerRoot = bindToServerRoot;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("EJBContainerElement {");
@@ -89,6 +129,14 @@ public class EJBContainerElement extends ConfigElement {
             buf.append("poolCleanupInterval=\"" + poolCleanupInterval + "\" ");
         if (cacheCleanupInterval != null)
             buf.append("cacheCleanupInterval=\"" + cacheCleanupInterval + "\" ");
+        if (customBindingsOnError != null)
+            buf.append("customBindingsOnError=\"" + customBindingsOnError + "\" ");
+        if (disableShortDefaultBindings != null)
+            buf.append("disableShortDefaultBindings=\"" + disableShortDefaultBindings + "\" ");
+        if (bindToJavaGlobal != null)
+            buf.append("bindToJavaGlobal=\"" + bindToJavaGlobal + "\" ");
+        if (bindToServerRoot != null)
+            buf.append("bindToServerRoot=\"" + bindToServerRoot + "\" ");
         if (asynchronous != null)
             buf.append(", " + asynchronous);
         if (timerService != null)

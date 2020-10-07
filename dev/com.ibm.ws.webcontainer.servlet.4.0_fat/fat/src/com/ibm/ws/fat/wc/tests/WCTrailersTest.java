@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
 import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.HttpEntityWithTrailers;
+import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 import org.apache.hc.core5.http.message.BasicHeader;
@@ -54,7 +54,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 public class WCTrailersTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(WCTrailersTest.class.getName());
 
     @ClassRule
@@ -62,7 +61,6 @@ public class WCTrailersTest extends LoggingTest {
 
     @BeforeClass
     public static void before() throws Exception {
-
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
         WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
@@ -79,13 +77,11 @@ public class WCTrailersTest extends LoggingTest {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-
-        SHARED_SERVER.getLibertyServer().stopServer(null);
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     @Test
     public void testServletRequestsTrailers() throws Exception {
-
         LOG.info("Starting test testServletRequestsTrailers");
 
         sendRequestWithTrailers(null);
@@ -96,7 +92,6 @@ public class WCTrailersTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void testReadListenerRequestsTrailers() throws Exception {
-
         LOG.info("Starting test testReadListenerRequestsTrailers");
 
         sendRequestWithTrailers("?Test=RL");
@@ -107,7 +102,6 @@ public class WCTrailersTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void testResponseTrailersSetAfterCommit() throws Exception {
-
         LOG.info("Starting test testResponseTrailersSetAfterCommit");
 
         getResponseWithTrailers(null);
@@ -117,7 +111,6 @@ public class WCTrailersTest extends LoggingTest {
 
     @Test
     public void testOneResponseTrailers() throws Exception {
-
         LOG.info("Starting test testOneResponseTrailers");
 
         getResponseWithTrailers("?Test=Add1Trailer");
@@ -128,7 +121,6 @@ public class WCTrailersTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void testTwoResponseTrailers() throws Exception {
-
         LOG.info("Starting test testTwoResponseTrailers");
 
         getResponseWithTrailers("?Test=Add2Trailers");
@@ -139,7 +131,6 @@ public class WCTrailersTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     public void testThreeResponseTrailers() throws Exception {
-
         LOG.info("Starting test testThreeResponseTrailers");
 
         getResponseWithTrailers("?Test=Add3Trailers");
@@ -148,7 +139,6 @@ public class WCTrailersTest extends LoggingTest {
     }
 
     private void sendRequestWithTrailers(String parameters) throws Exception {
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -161,10 +151,10 @@ public class WCTrailersTest extends LoggingTest {
             requestUri += parameters;
 
         ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
-        BasicHeader[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
-                                   new BasicHeader("t3", "TestTrailer3") };
+        Header[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
+                              new BasicHeader("t3", "TestTrailer3") };
 
-        HttpEntity requestBody = new HttpEntityWithTrailers(new StringEntity("Chunked message with trailers", ContentType.TEXT_PLAIN), trailers);
+        HttpEntity requestBody = HttpEntities.create("Chunked message with trailers", ContentType.TEXT_PLAIN, trailers[0], trailers[1], trailers[2]);
         request.setEntity(requestBody);
 
         LOG.info(">> Request URI: " + request.getUri());
@@ -180,17 +170,14 @@ public class WCTrailersTest extends LoggingTest {
             assertFalse("Response contains as failure message", responseText.contains("FAIL"));
             assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
 
-            for (BasicHeader trailerHeader : trailers) {
+            for (Header trailerHeader : trailers) {
                 assertTrue("Response indicates a trailer header was not received:" + trailerHeader.getName(),
                            responseText.contains(trailerHeader.getValue()));
             }
-
         }
-
     }
 
     private void getResponseWithTrailers(String parameters) throws Exception {
-
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
         HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
@@ -232,9 +219,7 @@ public class WCTrailersTest extends LoggingTest {
             } else {
                 LOG.info("No trailers on response");
             }
-
         }
-
     }
 
     /*
@@ -244,7 +229,6 @@ public class WCTrailersTest extends LoggingTest {
      */
     @Override
     protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 

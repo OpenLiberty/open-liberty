@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class OAuth20TokenRequestExceptionHandler implements
 
                     /*
                      * From the OAuth 2.0 spec when the error is invalid_client:
-                     * 
+                     *
                      * The authorization server MAY return an HTTP 401
                      * (Unauthorized) status code to indicate which HTTP
                      * authentication schemes are supported. If the client
@@ -121,25 +121,17 @@ public class OAuth20TokenRequestExceptionHandler implements
                                     EXAMPLE_WWW_AUTHENTICATE_BASIC_VALUE);
                         }
                          */
-                    } else if (OAuth20Exception.INVALID_GRANT.equals(error)
-                            || OAuth20Exception.INVALID_TOKEN.equals(error)) {
+                    } else if (OAuth20Exception.INVALID_TOKEN.equals(error)) {
                         /*
                          * Set the response code - 401 Unauthorized
                          */
-                        if (OAuth20Exception.INVALID_GRANT.equals(error) && ((e2.getMessage().contains("CWOAU0080E")) || (e2.getMessage().contains("CWOAU0081E")))) {
-                            
-                            rsp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        } else {
-                            rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        }
-                        
+                        rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     } else if (OAuth20Exception.INVALID_SCOPE.equals(error)) {
                         /*
                          * Set the response code - 302
                          */
                         rsp.setStatus(HttpServletResponse.SC_FOUND);
-                    }
-                    else {
+                    } else {
                         /*
                          * Set the response code - 400 Bad Request
                          */

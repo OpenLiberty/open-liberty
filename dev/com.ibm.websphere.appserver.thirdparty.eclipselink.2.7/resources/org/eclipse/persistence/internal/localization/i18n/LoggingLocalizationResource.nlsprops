@@ -117,8 +117,6 @@ connected_user_database=Connected: {3}{4}User: {0}{3}{4}Database: {1}  Version: 
 
 connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Version: {3}{6}Driver: {4}  Version: {5}
 
-connecting=connecting({0})
-
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
 create_default_dbms_tables_not_supported=WLS native CMP setting "create-default-dbms-tables" is not directly supported in EclipseLink CMP. See migration doc for details.
@@ -158,8 +156,6 @@ deprecated_property=property {1} is deprecated, property {0} should be used inst
 descriptor_named_query_cannot_be_added=Cannot add a descriptor named query whose name conflict with an existing query. Query To Be Added: [{0}] is named: [{1}] with arguments [{2}].
 
 dir_cleaned_for_mw_files=Files and sub-directories under directory {0} have been deleted in order to create a clean directory for the new generated EclipseLink Mapping Workbench project files
-
-disconnect=disconnect
 
 do_select_before_insert_not_supported=Oc4j native CMP feature "do-select-before-insert" on entity({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Locking mode({1}) on entity({0} in orion-ejb-jar.xml is n
 locking_required_for_database_change_notification=Entity {0} is not using version locking, but has multiple tables or relationships, and is using Oracle database change notification, changes to relationships or secondary tables may not invalidate the cache.
 
 log_file_under_output_dir=There is a log file called ({0}) under output directory ({1}).
-
-login_successful={0} login successful
-
-logout_successful={0} logout successful
 
 mapping_not_supported_by_mw=The EclipseLink mapping {0} is not supported by the mapping workbench
 
@@ -655,8 +647,6 @@ received_corrupt_announcement=Warning: Discovery manager could not process servi
 
 received_unexpected_message_type=Received unexpected message type: {0} from topic: {1}; ignoring
 
-reconnecting=reconnecting({0})
-
 register_new_for_persist=PERSIST operation called on: {0}.
 
 relational_descriptor_support_only=The default table generator currently only supports generating default table schema from a relational project.
@@ -674,6 +664,8 @@ retreived_null_message=Retreived null message from topic: {0}; ignoring
 retreived_unknown_message_type=Retreived unknown message type: {0} from topic: {1}; ignoring
 
 sdo_classgenerator_exception={2} A [{0}] Exception occurred - message is [{1}]
+
+sdo_error_deserialization=Unauthorized deserialization attempt with class {0}.
 
 sdo_error_processing_referenced_schema=An {0} occurred processing referenced schema with uri {1} with schemaLocation {2}.
 

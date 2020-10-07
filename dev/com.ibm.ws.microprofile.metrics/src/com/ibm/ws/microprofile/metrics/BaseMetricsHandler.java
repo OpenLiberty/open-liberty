@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetadataWriter;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetricWriter;
 import com.ibm.ws.microprofile.metrics.writer.OutputWriter;
-import com.ibm.ws.microprofile.metrics.writer.PrometheusMetricWriter;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -39,6 +38,7 @@ public abstract class BaseMetricsHandler implements RESTHandler {
 
     protected BaseMetrics bm;
     protected SharedMetricRegistries sharedMetricRegistry;
+    protected WriterFactory writerFactory;
 
     @Override
     @FFDCIgnore({ EmptyRegistryException.class, NoSuchMetricException.class, NoSuchRegistryException.class, HTTPNotAcceptableException.class, HTTPMethodNotAllowedException.class })
@@ -114,16 +114,16 @@ public abstract class BaseMetricsHandler implements RESTHandler {
 
         if (Constants.METHOD_GET.equals(method)) {
             if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
-                return new PrometheusMetricWriter(writer, locale);
+                return writerFactory.getPrometheusMetricsWriter(writer, locale);
             } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
-                return new JSONMetricWriter(writer);
+                return writerFactory.getJSONMetricWriter(writer);
             } else {
                 Tr.event(tc, "The Accept header is invalid.");
-                return new PrometheusMetricWriter(writer, locale);
+                return writerFactory.getPrometheusMetricsWriter(writer, locale);
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
             if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
-                return new JSONMetadataWriter(writer, locale);
+                return writerFactory.getJSONMetadataWriter(writer, locale);
             } else {
                 throw new HTTPNotAcceptableException();
             }

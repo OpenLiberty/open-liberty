@@ -31,14 +31,12 @@ import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class LoginToContinueELTest extends JavaEESecTestBase {
@@ -79,9 +77,12 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String PARAM_LOGIN_PAGE = "&loginPage=";
     protected static String PARAM_USE_FORWARD = "&useForwardToLogin=";
 
-    protected static String ORIGINAL_DEFERRED_SETTING = EL_DEFERRED_SERVLET + PARAM_ERROR_PAGE + ORIGINAL_ERROR + PARAM_LOGIN_PAGE + ORIGINAL_LOGIN + PARAM_USE_FORWARD + ORIGINAL_USE_FORWARD;
-    protected static String ALTERNATIVE_DEFERRED_SETTING = EL_DEFERRED_SERVLET + PARAM_ERROR_PAGE + ALTERNATIVE_ERROR + PARAM_LOGIN_PAGE + ALTERNATIVE_LOGIN + PARAM_USE_FORWARD + ALTERNATIVE_USE_FORWARD;
-    protected static String INVALID_IMMEDIATE_SETTING = EL_IMMEDIATE_SERVLET + PARAM_ERROR_PAGE + INVALID_ERROR + PARAM_LOGIN_PAGE + INVALID_LOGIN + PARAM_USE_FORWARD + INVALID_USE_FORWARD;
+    protected static String ORIGINAL_DEFERRED_SETTING = EL_DEFERRED_SERVLET + PARAM_ERROR_PAGE + ORIGINAL_ERROR + PARAM_LOGIN_PAGE + ORIGINAL_LOGIN + PARAM_USE_FORWARD
+                                                        + ORIGINAL_USE_FORWARD;
+    protected static String ALTERNATIVE_DEFERRED_SETTING = EL_DEFERRED_SERVLET + PARAM_ERROR_PAGE + ALTERNATIVE_ERROR + PARAM_LOGIN_PAGE + ALTERNATIVE_LOGIN + PARAM_USE_FORWARD
+                                                           + ALTERNATIVE_USE_FORWARD;
+    protected static String INVALID_IMMEDIATE_SETTING = EL_IMMEDIATE_SERVLET + PARAM_ERROR_PAGE + INVALID_ERROR + PARAM_LOGIN_PAGE + INVALID_LOGIN + PARAM_USE_FORWARD
+                                                        + INVALID_USE_FORWARD;
 
     protected static String SETTING_MESSAGE = "ServletName: LoginToContinueTest";
 
@@ -102,8 +103,10 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_IMMEDIATE_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.el.ltc.immediate", "web.war.servlets.el.ltc", "web.war.identitystores", "web.war.identitystores.scoped.application");
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_DEFERRED_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.el.ltc.deferred", "web.war.servlets.el.ltc", "web.war.identitystores", "web.war.identitystores.scoped.application");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_IMMEDIATE_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.el.ltc.immediate",
+                                               "web.war.servlets.el.ltc", "web.war.identitystores", "web.war.identitystores.scoped.application");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_DEFERRED_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.el.ltc.deferred",
+                                               "web.war.servlets.el.ltc", "web.war.identitystores", "web.war.identitystores.scoped.application");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_IMMEDIATE_NAME);

@@ -54,7 +54,8 @@ com.ibm.ws.security.social.internal.GoogleLoginConfigImpl,\
 com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl,\
 com.ibm.ws.security.social.internal.TwitterLoginConfigImpl, \
 com.ibm.ws.security.social.internal.SocialLoginWebappConfigImpl, \
-com.ibm.ws.security.social.internal.OidcLoginConfigImpl
+com.ibm.ws.security.social.internal.OidcLoginConfigImpl, \
+com.ibm.ws.security.social.internal.OkdServiceLoginImpl
 
 -dsannotations-inherit = true
 
@@ -129,7 +130,7 @@ Include-Resource: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -167,4 +168,5 @@ Include-Resource: \
     com.ibm.ws.kernel.boot.logging;version=latest, \
     com.ibm.ws.kernel.security.thread;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest, \
+    com.ibm.ws.container.service.compat;version=latest, \
     com.ibm.ws.kernel.boot;version=latest

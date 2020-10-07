@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -51,6 +52,7 @@ class ResolveFileAction implements Action, FileMonitor {
     private final AtomicReference<Container> _container = new AtomicReference<Container>();
     private final List<String> _filesToMonitor = new ArrayList<String>();
     private final AtomicReference<ApplicationHandler<?>> _handler;
+    private final ReentrantLock lock;
 
     /**
      * @param _locAdmin
@@ -79,6 +81,8 @@ class ResolveFileAction implements Action, FileMonitor {
         if (trigger != UpdateTrigger.DISABLED) {
             _mon.setProperty(FileMonitor.MONITOR_TYPE, trigger == UpdateTrigger.MBEAN ? FileMonitor.MONITOR_TYPE_EXTERNAL : FileMonitor.MONITOR_TYPE_TIMED);
         }
+        _mon.setProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
+        lock = new ReentrantLock();
     }
 
     private void findFile(boolean complete) {
@@ -163,6 +167,7 @@ class ResolveFileAction implements Action, FileMonitor {
         }
         _mon.setProperty(FileMonitor.MONITOR_DIRECTORIES, _filesToMonitor);
         _mon.setProperty(FileMonitor.MONITOR_FILES, _filesToMonitor);
+        _mon.setProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
         if (_trigger == UpdateTrigger.DISABLED) {
             findFile(true);
@@ -189,8 +194,13 @@ class ResolveFileAction implements Action, FileMonitor {
     /** {@inheritDoc} */
     @Override
     public void cancel() {
-        _callback.set(null);
-        _mon.unregister();
+        lock.lock();
+        try {
+            _callback.set(null);
+            _mon.unregister();
+        } finally {
+            lock.unlock();
+        }
     }
 
     /** {@inheritDoc} */
@@ -202,7 +212,16 @@ class ResolveFileAction implements Action, FileMonitor {
     /** {@inheritDoc} */
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
-        _file.set(null);
-        findFile(false);
+        lock.lock();
+        try {
+            // If the callback is null, the action was either completed or cancelled.
+            if (_callback.get() == null)
+                return;
+
+            _file.set(null);
+            findFile(false);
+        } finally {
+            lock.unlock();
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1622,9 +1622,9 @@ public class MPConcurrentTestServlet extends FATServlet {
         // However, application code cannot access declarative services or the service registry,
         // so we are cheating and using reflection. Do not copy this approach in real applications.
         ClassLoader loader = defaultManagedExecutor.getClass().getClassLoader();
-        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.concurrent.mp.spi.CompletionStageFactory");
+        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.threading.CompletionStageFactory");
         Object completionStageFactory = CompletionStageFactory.newInstance();
-        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, ExecutorService.class);
+        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, Executor.class);
 
         Supplier<String> supplyThreadName = () -> Thread.currentThread().getName();
 
@@ -1647,16 +1647,14 @@ public class MPConcurrentTestServlet extends FATServlet {
         CompletableFuture<Object> cf2 = cf1.thenApplyAsync(lookUpResourceRef);
         CompletableFuture<String> cf3 = cf2.thenApplyAsync(getThreadName);
 
-        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        threadName = cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
-        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
 
         lookupResult = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertTrue(lookupResult.toString(), lookupResult instanceof NamingException); // no access to application's namespace
 
         threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
-        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
 
         // there should not be any context clearing without a managed executor service
         lookupResult = cf3.thenApply(lookUpResourceRef).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -1679,7 +1677,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
+     * When the mpContextPropagation-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ManagedExecutorService and
      * javax.enterprise.concurrent.ManagedScheduledExecutorService are also implementations of
      * org.eclipse.microprofile.context.ManagedExecutor
@@ -1697,7 +1695,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
+     * When the mpContextPropagation-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ContextService is also an implementation of
      * org.eclipse.microprofile.context.ThreadContext
      */

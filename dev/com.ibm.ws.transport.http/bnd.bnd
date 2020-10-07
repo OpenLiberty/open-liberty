@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -36,10 +36,16 @@ Export-Package: \
     com.ibm.ws.transport.access*;provide:=true, \
     com.ibm.ws.genericbnf, \
     com.ibm.ws.http.dispatcher.classify, \
+    com.ibm.ws.http.dispatcher.internal.channel, \
     com.ibm.ws.http.channel.outstream, \
     com.ibm.ws.http.channel.inputstream, \
     com.ibm.ws.http.logging.source, \
+    com.ibm.ws.http2, \
     com.ibm.ws.http2.upgrade
+
+Import-Package: \
+    !com.ibm.ws.http.logging.source, \
+    ${defaultPackageImport}
 
 Private-Package: \
 	com.ibm.ws.http.*, \
@@ -80,7 +86,13 @@ Service-Component: \
     	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     	modified:='modified';\
     	immediate:=true;\
-    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=Compression"
+    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=Compression", \
+    com.ibm.ws.http.samesite; \
+    	implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+    	provide:=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+    	modified:='modified';\
+    	immediate:=true;\
+    	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=samesite"
 
 Provide-Capability: \
     welcome.translation.provider; \

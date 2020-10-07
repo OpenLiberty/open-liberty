@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+    <servlet>
+        <servlet-name>VarMergeTestServlet</servlet-name>
+        <servlet-class>test.config.merged.VarMergeTestServlet</servlet-class>
+        <load-on-startup></load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>VarMergeTestServlet</servlet-name>
+        <url-pattern>/varMergeTest</url-pattern>
+    </servlet-mapping>
+    
+     <servlet>
+        <servlet-name>DelayedVariableTestServlet</servlet-name>
+        <servlet-class>test.config.merged.DelayedVariableTestServlet</servlet-class>
+        <load-on-startup></load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DelayedVariableTestServlet</servlet-name>
+        <url-pattern>/delayedVarTests</url-pattern>
+    </servlet-mapping>
+    
+        <servlet>
+        <servlet-name>ServiceBindingVarTestServlet</servlet-name>
+        <servlet-class>test.config.merged.ServiceBindingVarServlet</servlet-class>
+        <load-on-startup></load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ServiceBindingVarTestServlet</servlet-name>
+        <url-pattern>/svcbindingvars</url-pattern>
+    </servlet-mapping>
+    
+</web-app>

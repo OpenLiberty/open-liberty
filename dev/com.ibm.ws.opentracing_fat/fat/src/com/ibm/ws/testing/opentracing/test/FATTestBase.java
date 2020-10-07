@@ -18,7 +18,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -28,7 +27,6 @@ import junit.framework.Assert;
  * Various utility methods.
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class FATTestBase {
     /**
      * Deploy jaxrsHelloWorld.war.

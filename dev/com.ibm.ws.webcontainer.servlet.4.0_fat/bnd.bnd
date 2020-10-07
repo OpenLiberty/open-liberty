@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,30 +12,38 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/TestServlet40.war/src,\
-	test-applications/TestServlet40.jar/src,\
-	test-applications/TestGetMapping.war/src,\
-	test-applications/TestAddJspFile.war/src, \
-	test-applications/TestEncoding.war/src, \
-	test-applications/TestPushBuilderSecurity.war/src, \
-	test-applications/ServletPathDefaultMapping.war/src, \
-	test-applications/TestGetMappingSlashStar.war/src, \
-	test-applications/SCIExceptionTest.jar/src, \
-	test-applications/SCIFilterServletNameMapping.jar/src
-	
+    fat/src,\
+    test-applications/TestServlet40.war/src,\
+    test-applications/TestServlet40.jar/src,\
+    test-applications/TestGetMapping.war/src,\
+    test-applications/TestAddJspFile.war/src,\
+    test-applications/TestEncoding.war/src,\
+    test-applications/TestPushBuilderSecurity.war/src,\
+    test-applications/ServletPathDefaultMapping.war/src,\
+    test-applications/TestBadServletContextListener.war/src,\
+    test-applications/TestGetMappingSlashStar.war/src,\
+    test-applications/SCIExceptionTest.jar/src,\
+    test-applications/SCIFilterServletNameMapping.jar/src,\
+    test-applications/SameSiteTest.war/src,\
+    test-applications/SameSiteSecurityTest.war/src,\
+    test-applications/Servlet5TestApp.war/src
+
 fat.project: true
 
-javac.source: 1.8
-javac.target: 1.8
-
+tested.features:\
+    servlet-5.0,\
+    jsp-3.0,\
+    appsecurity-4.0,\
+    cdi-3.0
 
 -buildpath:\
     com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.3;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
-	commons-httpclient:commons-httpclient;version=3.1,\
+    com.ibm.ws.org.apache.commons.codec.1.3;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.jsp.3.0;version=latest,\
+    commons-httpclient:commons-httpclient;version=3.1,\
     httpunit:httpunit;version=1.5.4,\
     net.sf.jtidy:jtidy;version=9.3.8,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0,\

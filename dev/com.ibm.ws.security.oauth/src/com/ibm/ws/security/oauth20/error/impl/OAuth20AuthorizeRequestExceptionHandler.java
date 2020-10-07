@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -242,18 +242,19 @@ public class OAuth20AuthorizeRequestExceptionHandler implements
                                 // ignore
                             }
                             location.append(error);
-                            location.append("&");
-                            location.append(ERROR_DESCRIPTION);
-                            location.append("=");
-
                             String errorDesc = e2.formatSelf(req.getLocale(), encoding);
-                            try {
-                                errorDesc = URLEncoder.encode(errorDesc, "utf-8");
-                            } catch (UnsupportedEncodingException e1) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Internal error encoding error description", new Object[] { e1 });
+                            if (errorDesc != null) {
+                                location.append("&");
+                                location.append(ERROR_DESCRIPTION);
+                                location.append("=");
+                                try {
+                                    errorDesc = URLEncoder.encode(errorDesc, "utf-8");
+                                } catch (UnsupportedEncodingException e1) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Internal error encoding error description", new Object[] { e1 });
+                                }
+                                location.append(errorDesc);
                             }
-                            location.append(errorDesc);
 
                             /*
                              * If a state was present, return it also.

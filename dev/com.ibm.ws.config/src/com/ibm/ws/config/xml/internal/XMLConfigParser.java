@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -29,10 +30,13 @@ import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
@@ -42,6 +46,10 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 public class XMLConfigParser {
 
+    /**  */
+    private static final String VARIABLE = "variable";
+    /**  */
+    private static final String INCLUDE = "include";
     private static final String VARIABLE_VALUE = "value";
     private static final String VARIABLE_DEFAULT_VALUE = "defaultValue";
     private static final String VARIABLE_NAME = "name";
@@ -61,9 +69,11 @@ public class XMLConfigParser {
     private final LinkedList<MergeBehavior> behaviorStack = new LinkedList<MergeBehavior>();
 
     private final XMLConfigValidator configValidator = XMLConfigValidatorFactory.getInstance().getXMLConfigValidator();
+    private final ConfigVariableRegistry variableRegistry;
 
-    public XMLConfigParser(WsLocationAdmin locationService) {
+    public XMLConfigParser(WsLocationAdmin locationService, ConfigVariableRegistry variableRegistry) {
         this.locationService = locationService;
+        this.variableRegistry = variableRegistry;
     }
 
     private static final class XifHolder {
@@ -86,7 +96,8 @@ public class XMLConfigParser {
             INSTANCE = xif;
         }
 
-        private XifHolder() {}
+        private XifHolder() {
+        }
     }
 
     private static XMLInputFactory getXMLInputFactory() {
@@ -111,6 +122,7 @@ public class XMLConfigParser {
     @FFDCIgnore(IOException.class)
     public ServerConfiguration parseServerConfiguration(WsResource resource, ServerConfiguration configuration) throws ConfigParserException, ConfigValidationException {
         String location = resource.toExternalURI().toString();
+        tempVariables.variables.clear();
         InputStream in = null;
         try {
             in = configValidator.validateResource(resource.get(), location);
@@ -221,10 +233,16 @@ public class XMLConfigParser {
                     if (processType.equals(name) || "server".equals(name)) {
                         parseServer(parser, docLocation, config, processType);
                         return true;
+                    } else if ("client".equals(name)) {
+                        // Silently ignore client configuration when the processType is not client
+                        return false;
                     }
                 }
             }
-            return false;
+            // If we get here, there is a single element in the file and it is not <server> or <client>
+            logError("error.root.must.be.server", docLocation, processType);
+            throw new ConfigParserTolerableException();
+
         } catch (XMLStreamException e) {
             throw new ConfigParserException(e);
         } finally {
@@ -261,6 +279,8 @@ public class XMLConfigParser {
         }
     }
 
+    private final BaseConfiguration tempVariables = new BaseConfiguration();
+
     @FFDCIgnore({ XMLStreamException.class, ConfigParserTolerableException.class })
     private void parseServer(DepthAwareXMLStreamReader parser, String docLocation, BaseConfiguration config,
                              String processType) throws ConfigParserException, ConfigValidationException {
@@ -278,10 +298,11 @@ public class XMLConfigParser {
                 int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     String name = parser.getLocalName();
-                    if ("include".equals(name)) {
+                    if (INCLUDE.equals(name)) {
                         // Pass the importedConfig variable in as a reference so that if an
                         // exception is thrown we still know what had been successfully parsed.
                         BaseConfiguration importedConfig = new BaseConfiguration();
+
                         try {
                             parseInclude(parser, docLocation, includes, importedConfig);
                         } catch (ConfigParserTolerableException e) {
@@ -299,10 +320,11 @@ public class XMLConfigParser {
                             config.updateLastModified(importedConfig.getLastModified());
                             includes.addAll(importedConfig.getIncludes());
                         }
-                    } else if ("variable".equals(name)) {
+                    } else if (VARIABLE.equals(name)) {
                         try {
                             ConfigVariable variable = parseVariable(parser, docLocation);
                             config.addVariable(variable);
+                            tempVariables.addVariable(variable);
                         } catch (ConfigParserTolerableException e) {
                             if (savedConfigParserException == null) {
                                 savedConfigParserException = e;
@@ -331,7 +353,7 @@ public class XMLConfigParser {
         }
     }
 
-    enum MergeBehavior {
+    public enum MergeBehavior {
         MERGE,
         REPLACE,
         IGNORE,
@@ -377,16 +399,16 @@ public class XMLConfigParser {
 
                 } else {
                     if (!optionalImport) {
-                        logError("error.cannot.read.location", location);
+                        logError("error.cannot.read.location", resolvePath(location));
                         throw new ConfigParserTolerableException();
                     }
                 }
             } else {
                 if (optionalImport) {
-                    Tr.warning(tc, "warn.cannot.resolve.optional.include", location);
+                    Tr.warning(tc, "warn.cannot.resolve.optional.include", resolvePath(location));
                     configuration = null;
                 } else {
-                    logError("error.cannot.read.location", location);
+                    logError("error.cannot.read.location", resolvePath(location));
                     throw new ConfigParserTolerableException();
                 }
             }
@@ -418,6 +440,7 @@ public class XMLConfigParser {
         return MergeBehavior.MERGE;
     }
 
+    @Sensitive
     private ConfigVariable parseVariable(DepthAwareXMLStreamReader parser, String docLocation) throws ConfigParserTolerableException {
         String variableName = null;
         String variableValue = null;
@@ -448,7 +471,7 @@ public class XMLConfigParser {
             throw new ConfigParserTolerableException();
         }
 
-        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation);
+        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation, false);
     }
 
     @FFDCIgnore(XMLStreamException.class)
@@ -581,9 +604,10 @@ public class XMLConfigParser {
      * @param includePath
      * @param basePath
      * @param wsLocationAdmin
+     * @param vars
      * @return <code>WsResource</code> if resolved. Null otherwise.
      */
-    static WsResource resolveInclude(String includePath, String basePath, WsLocationAdmin wsLocationAdmin) {
+    WsResource resolveInclude(String includePath, String basePath, WsLocationAdmin wsLocationAdmin) {
         if (includePath == null) {
             return null;
         }
@@ -596,10 +620,10 @@ public class XMLConfigParser {
 
         if (basePath == null) {
             // no basePath - resolve includePath as is
-            String normalIncludePath = wsLocationAdmin.resolveString(includePath);
+            String normalIncludePath = resolvePath(includePath);
             return wsLocationAdmin.resolveResource(normalIncludePath);
         } else {
-            String normalIncludePath = wsLocationAdmin.resolveString(includePath);
+            String normalIncludePath = PathUtils.normalize(resolvePath(includePath));
             if (PathUtils.pathIsAbsolute(normalIncludePath)) {
                 // includePath is absolute - resolve includePath as is
                 return wsLocationAdmin.resolveResource(normalIncludePath);
@@ -616,6 +640,40 @@ public class XMLConfigParser {
                 }
             }
         }
+    }
+
+    private String resolvePath(String path) {
+
+        if (PathUtils.isSymbol(path)) {
+            variableRegistry.updateSystemVariables(tempVariables.getVariables());
+
+            // Look for normal variables of the form $(variableName)
+            Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(path);
+
+            while (matcher.find()) {
+                String var = matcher.group(1);
+
+                // Try to resolve the variable normally ( for ${var-Name} resolve var-Name }
+                String rep = variableRegistry.lookupVariable(var);
+
+                if (rep == null) {
+                    rep = variableRegistry.lookupVariableFromAdditionalSources(var);
+                }
+
+                if (rep == null) {
+                    rep = variableRegistry.lookupVariableDefaultValue(var);
+                }
+
+                if (rep != null) {
+                    path = path.replace(matcher.group(0), rep);
+                    matcher.reset(path);
+                }
+            }
+        } else {
+            return locationService.resolveString(path);
+        }
+
+        return PathUtils.normalize(path);
     }
 
     public void handleParseError(ConfigParserException e, Bundle bundle) {

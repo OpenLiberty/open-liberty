@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: Caracteristica MicroProfile JWT nu poate re
 JWT_NOT_FOUND_IN_REQUEST.explanation=Pentru a realiza autentificarea, trebuie s\u0103 fie inclus un MicroProfile JWT \u00een antetul Authorization folosind schema de autorizare Bearer sau ca un parametru POST. Antetul Authorization lipse\u015fte, schema de autorizare a antetului Authorization nu este setat\u0103 la Bearer, cererea nu este o cerere POST sau nu este inclus un MicroProfile JWT ca parametru.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Asigura\u0163i-v\u0103 c\u0103 este inclus un MicroProfile JWT \u00een antetul Authorization sau ca parametru POST al cererii.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Caracteristica MicroProfile JWT nu poate realiza autentificarea cererii, deoarece nu poate fi creat un JWT valid din jetonul inclus \u00een cerere. ''{0}''
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: Caracteristica MicroProfile JWT nu poate autentifica cererea deoarece jetonul care este inclus \u00een cerere nu poate fi validat. ''{0}''
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=Caracteristica MicroProfile JWT a detectat o eroare \u00een timpul cre\u0103rii unui JWT din \u015firul jetonului furnizat. Fie nu poate fi creat un consumator JWT, fie consumatorul JWT a detectat o eroare \u00een timpul pars\u0103rii \u015fi valid\u0103rii \u015firului jetonului.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
 
@@ -149,9 +149,14 @@ MP_JWT_FRONT_END_ERROR.useraction=Contacta\u0163i administratorul de sistem pent
 
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Caracteristica MicroProfile JWT nu poate realiza autentificarea deoarece a\u015fteapt\u0103 \u00een aplica\u0163ie tipul de autentificare [{0}], dar a g\u0103sit [{1}]. Atributul [{2}] este setat la [{3}]. 
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Pentru a realiza autentificarea cu succes, face\u0163i una din urm\u0103toarele. a) Asigura\u0163i-v\u0103 c\u0103 atributul ignoreApplicationAuthMethod este "true" b) Adnotarea loginConfig este setat\u0103 la MP-JWT \u00een aplica\u0163ie.
-MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Asigura\u0163i-v\u0103 c\u0103 este actualizat\u0103 configura\u0163ia serverului sau aplica\u0163iei. 
+MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Asigura\u0163i-v\u0103 c\u0103 este actualizat\u0103 configura\u0163ia serverului sau aplica\u0163iei.
 
 # do not translate HttpServletRequest.logout
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Caracteristica MicroProfile JWT nu poate realiza autentificarea deoarece JWT-ul din cerere a fost delogat anterior,
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=A fost f\u0103cut anterior un apel HttpServletRequest.logout() pentru un subiect care era autentificat cu acest JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Retrimite\u0163i cererea cu un alt JWT.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: Valoarea MicroProfile Config [{0}] {1} nu este suportat\u0103. Singurele valori suportate sunt {2}. Valoarea {3} este utilizat\u0103 implicit.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=Proprietatea MicroProfile Config specificat\u0103 \u00een mesaj are un set de valori predefinite care sunt suportate. Alte valori sunt ignorate, \u015fi este folosit\u0103 \u00een loc valoarea implicit\u0103.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Specifica\u0163i una dintre valorile suportate pentru proprietatea care este indicat\u0103 \u00een mesaj.

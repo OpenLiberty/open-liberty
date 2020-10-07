@@ -14,6 +14,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -469,7 +471,33 @@ public class Director extends AbstractDirector {
         Set<String> allServerNames = new HashSet<String>(servers.size());
 
         for (ServerAsset sa : servers) {
-            Collection<String> requiredFeatures = sa.getRequiredFeatures();
+            File serverXmlFile = sa.getServerXmlFile();
+            Collection<String> requiredFeatures = InstallUtils.getFeatures(serverXmlFile.getAbsolutePath(), serverXmlFile.getName(), new HashSet<String>());
+
+            // process the configDropins folders (Defaults and overrides)
+            File serverDirectory = sa.getServerDirectory();
+            File overridesFolder = new File(serverDirectory, "/configDropins/overrides");
+            File defaultsFolder = new File(serverDirectory, "/configDropins/defaults");
+            List<File> folders = Arrays.asList(defaultsFolder, overridesFolder);
+            
+            folders.stream()
+                    .filter(folder -> folder.exists() && folder.isDirectory())
+                    .forEach(folder -> {
+                        try {
+                            logger.fine("Processing " + folder);
+                            Files.newDirectoryStream(Paths.get(folder.toURI()),
+                                    path -> path.toString().endsWith(".xml"))
+                                    .forEach(path -> {
+                                        try {
+                                            requiredFeatures.addAll(InstallUtils.getFeatures(path.toString(), path.getFileName().toString(), new HashSet<String>()));
+                                        } catch (IOException e) {
+                                            logger.fine("Could not process " + path);
+                                        }
+                                    });
+                        } catch (IOException e) {
+                            logger.fine("Could not process " + folder);
+                        }
+                    });
 
             if (!requiredFeatures.isEmpty()) {
                 logger.log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_SERVER_FEATURES",
@@ -487,12 +515,7 @@ public class Director extends AbstractDirector {
         if (!featuresToInstall.isEmpty()) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED",
                                                                                   serverNames, featuresToInstall));
-            // store the feature shortname of all original server.xml features
-            Set<String> originalServerXmlFeatures = new HashSet<>();
-            for (Entry<String, Collection<String>> assetsEntry : InstallUtils.getAssetsMap(features, false).entrySet()) {
-                originalServerXmlFeatures.addAll(assetsEntry.getValue());
-            }
-            InstallUtils.setIsServerXmlInstall(originalServerXmlFeatures);
+            InstallUtils.setServerXmlInstallTrue();
         } else {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED",
                                                                                   allServerNames));

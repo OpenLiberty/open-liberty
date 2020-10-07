@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- configurations {
+configurations {
   db2
   derbyClient
 }
@@ -16,46 +16,45 @@
 dependencies {
   db2 'com.ibm.db2:jcc:11.1.4.4'
   derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
-  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
 }
  
- //Anonymous derby jar
- task copyAnonymousDerby(type: Copy) {
+//Anonymous drivers
+task copyAnonymousDrivers(type: Copy) {
   shouldRunAfter jar
-  from configurations.derby
-  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'derby-.*.jar', 'driver.jar'
- }
- 
- //Derby client jar
- task addDerbyClient(type: Copy) {
-  shouldRunAfter jar
-  from configurations.derbyClient
-  into new File(autoFvtDir, 'publish/shared/resources/derby')
-  rename 'derbyclient.*.jar', 'derbyclient.jar'
+  from configurations.jdbcDrivers
+  into new File(autoFvtDir, 'publish/shared/resources/anonymous')
+  rename 'jcc.*.jar', 'driver0.jar'
+  rename 'derby-.*.jar', 'driver1.jar'
+  rename 'derbyclient-.*.jar', 'driver2.jar'
+  rename 'ojdbc8_g.*.jar', 'driver3.jar'
+  rename 'postgresql.*.jar', 'driver4.jar'
+  rename 'mssql-jdbc.*.jar', 'driver5.jar'
 }
 
- //Automatically discovered derby jar
- task copyAutomaticDerby(type: Copy) {
+//Automatically discovered derby jar
+task copyAutomaticDerby(type: Copy) {
   shouldRunAfter jar
   from configurations.derby
-  into new File(autoFvtDir, 'publish/lib/AutomaticDerbyLibrary/')
+  into new File(autoFvtDir, 'publish/shared/resources/AutomaticDerbyLibrary/')
   rename 'derby-.*.jar', 'derby.jar'
- }
+}
 
- //DB2 jar
- task copyDB2(type: Copy) {
+//DB2 jar
+task copyDB2(type: Copy) {
   shouldRunAfter jar
   from configurations.db2
   into new File(autoFvtDir, 'publish/shared/resources/db2')
   rename 'jcc.*.jar', 'jcc.jar'
  }
 
-
  addRequiredLibraries {
+  //Database drivers
   dependsOn addDerby
-  dependsOn copyAnonymousDerby
-  dependsOn addDerbyClient
+  dependsOn copyAnonymousDrivers
   dependsOn copyAutomaticDerby
   dependsOn copyDB2
- }
+  dependsOn copyJdbcDrivers
+  //Database Rotation
+  dependsOn copyDatabaseRotationDrivers
+  dependsOn copyFattestDatabases
+}

@@ -6,16 +6,18 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.common.jwk.impl;
 
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECGenParameterSpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,37 +47,71 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
     /**
      * generate a new EC type jwk with the specified parameters
      *
-     * @param size
      * @param alg
      * @param use
-     * @param type
      * @return
      */
-    public static Jose4jEllipticCurveJWK getInstance(int size, String alg, String use, String type) {
+    public static Jose4jEllipticCurveJWK getInstance(String alg, String use) {
         String kid = RandomUtils.getRandomAlphaNumeric(20);
+        KeyPair keypair = getKeyPair(alg);
+        if (keypair == null) {
+            return null;
+        }
+
+        ECPublicKey pubKey = (ECPublicKey) keypair.getPublic();
+        ECPrivateKey priKey = (ECPrivateKey) keypair.getPrivate();
+        Jose4jEllipticCurveJWK jwk = getInstance(pubKey, alg, use);
+
+        jwk.setPrivateKey(priKey);
+        jwk.setKeyId(kid);
+
+        return jwk;
+    }
+
+    public static Jose4jEllipticCurveJWK getInstance(ECPublicKey publicKey, String alg, String use) {
+        Jose4jEllipticCurveJWK jwk = new Jose4jEllipticCurveJWK(publicKey);
+        jwk.setAlgorithm(alg);
+        jwk.setUse(use == null ? JwkConstants.sig : use);
+        return jwk;
+    }
+
+    static KeyPair getKeyPair(String alg) {
         KeyPairGenerator keyGenerator = null;
         try {
             keyGenerator = KeyPairGenerator.getInstance("EC");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (GeneralSecurityException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "hit exception", e);
             }
             return null;
         }
+        try {
+            final String ecParameterSpecName = getECParameterSpecName(alg);
+            if (ecParameterSpecName == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to find a matching ECGenParameterSpec name for algorithm [" + alg + "]");
+                }
+                return null;
+            }
+            keyGenerator.initialize(new ECGenParameterSpec(ecParameterSpecName));
+        } catch (InvalidAlgorithmParameterException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to initialize the key generator: " + e);
+            }
+            return null;
+        }
+        return keyGenerator.generateKeyPair();
+    }
 
-        keyGenerator.initialize(size);
-        KeyPair keypair = keyGenerator.generateKeyPair();
-
-        ECPublicKey pubKey = (ECPublicKey) keypair.getPublic();
-        ECPrivateKey priKey = (ECPrivateKey) keypair.getPrivate();
-        Jose4jEllipticCurveJWK jwk = new Jose4jEllipticCurveJWK(pubKey);
-
-        jwk.setPrivateKey(priKey);
-        jwk.setAlgorithm(alg);
-        jwk.setKeyId(kid);
-        jwk.setUse(use == null ? JwkConstants.sig : use);
-
-        return jwk;
+    static String getECParameterSpecName(String alg) {
+        if (alg.endsWith("256")) {
+            return "secp256r1";
+        } else if (alg.endsWith("384")) {
+            return "secp384r1";
+        } else if (alg.endsWith("512")) {
+            return "secp521r1";
+        }
+        return null;
     }
 
     /**

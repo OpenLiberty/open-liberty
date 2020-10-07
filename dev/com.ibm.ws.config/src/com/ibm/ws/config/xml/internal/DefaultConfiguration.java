@@ -31,6 +31,7 @@ import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 
 /**
  *

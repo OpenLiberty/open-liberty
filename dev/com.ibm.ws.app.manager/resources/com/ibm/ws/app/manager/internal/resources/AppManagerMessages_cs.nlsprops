@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -121,7 +121,7 @@ APPLICATION_NO_LOCATION.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u
 APPLICATION_NO_LOCATION.useraction=Chcete-li p\u0159idat um\u00edst\u011bn\u00ed, aktualizujte konfiguraci.
 
 APPLICATION_NO_TYPE=CWWKZ0017E: Z um\u00edst\u011bn\u00ed {1} nebylo mo\u017en\u00e9 odvodit typ aplikace pro aplikaci {0}.
-APPLICATION_NO_TYPE.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u00e1n\u00ed typu. Typ se nepoda\u0159ilo ur\u010dit z um\u00edst\u011bn\u00ed.
+APPLICATION_NO_TYPE.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u00e1n\u00ed typu. Typ se nezda\u0159ilo ur\u010dit z um\u00edst\u011bn\u00ed.
 APPLICATION_NO_TYPE.useraction=Chcete-li p\u0159idat typ, aktualizujte konfiguraci.
 
 STARTING_APPLICATION=CWWKZ0018I: Spou\u0161t\u011bn\u00ed aplikace {0}.
@@ -129,8 +129,8 @@ STARTING_APPLICATION.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed apli
 STARTING_APPLICATION.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 PARTIAL_START=CWWKZ0019I: Aplikace {0} byla \u010d\u00e1ste\u010dn\u011b spu\u0161t\u011bna za {1} sekund. Server bude pokra\u010dovat ve spou\u0161t\u011bn\u00ed aplikac\u00ed na pozad\u00ed.
-PARTIAL_START.explanation=Nepoda\u0159ilo se spustit celou aplikaci. K tomu m\u016f\u017ee doj\u00edt v p\u0159\u00edpad\u011b archivu EAR obsahuj\u00edc\u00edho dva archivy WAR, kdy bude spu\u0161t\u011bn pouze jeden archiv WAR.
-PARTIAL_START.useraction=Vy\u0159e\u0161te probl\u00e9m s tou \u010d\u00e1st\u00ed aplikace, kterou se nepoda\u0159ilo spustit, a implementujte aplikaci znovu.
+PARTIAL_START.explanation=Nezda\u0159ilo se spustit celou aplikaci. K tomu m\u016f\u017ee doj\u00edt v p\u0159\u00edpad\u011b archivu EAR obsahuj\u00edc\u00edho dva archivy WAR, kdy bude spu\u0161t\u011bn pouze jeden archiv WAR.
+PARTIAL_START.useraction=Vy\u0159e\u0161te probl\u00e9m s tou \u010d\u00e1st\u00ed aplikace, kterou se nezda\u0159ilo spustit, a implementujte aplikaci znovu.
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplikace {0} nebyla aktualizov\u00e1na.
@@ -216,3 +216,12 @@ APPLICATION_JANDEX_ENABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Pou\u017eit\u00ed Jandex je pro aplikaci {0} zak\u00e1z\u00e1no.
 APPLICATION_JANDEX_DISABLED.explanation=Index Jandex je pro uvedenou aplikaci zak\u00e1z\u00e1n.
 APPLICATION_JANDEX_DISABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: N\u00e1sleduj\u00edc\u00ed aplikace nelze spustit, proto\u017ee hodnota jejich atribut\u016f startAfter vede k cyklu: {0} 
+error.startAfter.cycle.explanation=\u017d\u00e1dnou z aplikac\u00ed nelze spustit, proto\u017ee ka\u017ed\u00e1 z\u00e1vis\u00ed na n\u011bkter\u00e9 jin\u00e9 aplikaci, kter\u00e1 m\u00e1 b\u00fdt spu\u0161t\u011bna jako prvn\u00ed.
+error.startAfter.cycle.useraction=Zm\u011b\u0148te hodnotu atributu startAfter pro aplikace v cyklu, aby nem\u011bly cyklick\u00e9 z\u00e1vislosti.
+
+dropins.app.also.configured=CWWKZ0067W: Aplikaci s podporou vkl\u00e1d\u00e1n\u00ed v um\u00edst\u011bn\u00ed {0} nelze spustit, proto\u017ee je rovn\u011b\u017e konfigurov\u00e1na. 
+dropins.app.also.configured.explanation=Aplikace v konfiguraci serveru ur\u010duje um\u00edst\u011bn\u00ed v monitorovan\u00e9m adres\u00e1\u0159i pro vkl\u00e1d\u00e1n\u00ed (drop-ins). 
+dropins.app.also.configured.useraction=P\u0159esu\u0148te aplikaci do jin\u00e9ho um\u00edst\u011bn\u00ed. 

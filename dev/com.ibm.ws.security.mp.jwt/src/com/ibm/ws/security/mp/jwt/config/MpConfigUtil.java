@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,7 +45,7 @@ public class MpConfigUtil {
             return getMpConfigMap(service, getApplicationClassloader(req), map);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "mpJwt-1.1 feature is not enabled.");
+                Tr.debug(tc, "MP JWT feature is not enabled.");
             }
         }
         return map;
@@ -67,20 +67,24 @@ public class MpConfigUtil {
 
     // no null check. make sure that the caller sets non null objects.
     protected Map<String, String> getMpConfigMap(MpConfigProxyService service, ClassLoader cl, Map<String, String> map) {
-        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
+        Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
+        supportedMpConfigPropNames.forEach(s -> getMpConfig(service, cl, s, map));
         return map;
     }
 
     // no null check other than cl. make sure that the caller sets non null objects.
     @FFDCIgnore({ NoSuchElementException.class })
-    protected Map<String, String> getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName,  Map<String, String> map) {
+    protected Map<String, String> getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName, Map<String, String> map) {
         try {
-            String value = service.getConfigValue(cl, propertyName, String.class).trim();
-            if (!value.isEmpty()) {
+            String value = service.getConfigValue(cl, propertyName, String.class);
+            if (value != null) {
+                value = value.trim();
+            }
+            if (value != null && !value.isEmpty()) {
                 map.put(propertyName, value);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, propertyName + " is empty. Ignore it.");
+                    Tr.debug(tc, propertyName + " is empty or null. Ignore it.");
                 }
             }
         } catch (NoSuchElementException e) {

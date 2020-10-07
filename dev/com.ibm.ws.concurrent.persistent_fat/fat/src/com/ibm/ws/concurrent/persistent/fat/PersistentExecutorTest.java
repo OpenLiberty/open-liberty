@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class PersistentExecutorTest extends FATServletClient {
     @Server("com.ibm.ws.concurrent.persistent.fat")
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
-    
+
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
@@ -59,10 +59,12 @@ public class PersistentExecutorTest extends FATServletClient {
     	//Get driver type
     	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
+    	//testContainer.stop();
+    	//testContainer.start();
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-		//Add application to server
+	//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         server.startServer();
@@ -79,8 +81,10 @@ public class PersistentExecutorTest extends FATServletClient {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
             if (server != null && server.isStarted())
-                server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                  "CWWKC1510W", //Persistent Executor Rollback and Failed
+                server.stopServer("CWWKC1500W", //Task rolled back
+                                  "CWWKC1501W", //Task rolled back due to failure ...
+                                  "CWWKC1510W", //Task rolled back and aborted
+                                  "CWWKC1511W", //Task rolled back and aborted. Failure is ...
                                   "DSRA0174W"); //Generic Datasource Helper
         }
     }

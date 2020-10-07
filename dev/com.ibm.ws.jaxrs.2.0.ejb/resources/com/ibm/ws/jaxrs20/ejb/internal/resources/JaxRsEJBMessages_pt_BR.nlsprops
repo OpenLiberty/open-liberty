@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: O Recurso JAXRS-2.0 {0} escopo {1} n\u00e3o corresponde ao escopo EJB {2}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Se o escopo do Recurso JAXRS-2.0 n\u00e3o corresponder ao escopo EJB e a inst\u00e2ncia de recurso existir no EJB, o Liberty obter\u00e1 a inst\u00e2ncia de recurso do EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: O escopo do recurso JAXRS {0} {1} n\u00e3o corresponde ao escopo do EJB {2}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Se o escopo do recurso JAXRS n\u00e3o corresponder ao escopo do EJB e a inst\u00e2ncia do recurso existir no EJB, o Liberty obter\u00e1 a inst\u00e2ncia de recurso do EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: O escopo EJB do Provedor JAXRS-2.0 {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia do provedor de {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: O escopo do EJB do provedor do JAXRS {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia do provedor de {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=A inst\u00e2ncia do provedor \u00e9 somente Singleton. O Liberty obt\u00e9m as inst\u00e2ncias do provedor de EJB se o escopo EJB do provedor for Dependent ou ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 

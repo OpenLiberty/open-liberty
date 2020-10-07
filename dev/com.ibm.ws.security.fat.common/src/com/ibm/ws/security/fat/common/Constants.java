@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ public class Constants {
     public static final String STRING_EQUALS = "equals";
     public static final String STRING_NULL = "null";
     public static final String STRING_NOT_NULL = "not null";
+    public static final String TIME_TYPE = "time type";
 
     /**
      * This interface allows us to create a simple check type inheritance structure to divide up different categories of check
@@ -55,6 +56,8 @@ public class Constants {
 
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
     public static final String TOKEN_TYPE_BEARER = "Bearer";
+    public static final String TOKEN_TYPE_TOKEN = "Token";
+    public static final String TOKEN_TYPE_MISC = "misc";
 
     public static final String J_SECURITY_CHECK = "j_security_check";
     public static final String J_USERNAME = "j_username";
@@ -73,12 +76,16 @@ public class Constants {
 
     public static final String COMMON_CONFIG_DIR = "configs";
 
+    public static final String HELLOWORLD_APP = "helloworld";
+
     /* ***************** Http methods ******************* */
     public static final String GETMETHOD = "GET";
     public static final String POSTMETHOD = "POST";
     public static final String DELETEMETHOD = "DELETE";
     public static final String PUTMETHOD = "PUT";
     public static final String HEADMETHOD = "HEAD";
+
+    public static final String AUTHORIZATION = "Authorization";
 
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
@@ -87,5 +94,14 @@ public class Constants {
     /********************** Page Values *********************/
     public static final String FORM_LOGIN_HEADING = "Form Login Page";
     public static final String FORM_LOGIN_TITLE = "login.jsp";
+
+    /********************** Server Info *********************/
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTIP = "fat.server.hostip";
+
+    public static final String BVT_SERVER_1_PORT_NAME_ROOT = "security_1_HTTP_default";
+    public static final String BVT_SERVER_2_PORT_NAME_ROOT = "security_2_HTTP_default";
+    public static final String BVT_SERVER_3_PORT_NAME_ROOT = "security_3_HTTP_default";
+    public static final String BVT_SERVER_4_PORT_NAME_ROOT = "security_4_HTTP_default";
 
 }

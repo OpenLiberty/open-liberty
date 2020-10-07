@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
         executors.getById("executorA").setMissedTaskThreshold("21s");
         executors.getById("executorB").setMissedTaskThreshold("22s");
         executors.getById("executorC").setMissedTaskThreshold("23s");
+        executors.getById("executorA").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        executors.getById("executorB").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        executors.getById("executorC").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(failoverConfig);
 
         server.startServer();

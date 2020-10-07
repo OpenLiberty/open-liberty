@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,8 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.glassfish:javax.json:1.0.4'
+  requiredLibs 'org.glassfish:javax.json:1.0.4',
+               project(':com.ibm.ws.jca.cm')
   derby40 'org.apache.derby:derby:10.7.1.1'
 }
 
@@ -35,4 +36,5 @@ task addDerby40ToServerDir(type: Copy) {
 addRequiredLibraries {
   dependsOn addDerbyToServerDir
   dependsOn addDerby40ToServerDir
+  dependsOn addJakartaTransformer
 }

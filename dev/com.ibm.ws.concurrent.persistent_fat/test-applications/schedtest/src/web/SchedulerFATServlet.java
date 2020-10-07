@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -231,27 +231,6 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (SQLException x) {
             throw new ServletException(x);
         }
-    }
-
-    /**
-     * Utility method that waits for a task status with the specified result.
-     *
-     * @return task status if found within the allotted interval, otherwise null.
-     */
-    private <T> TaskStatus<T> pollForResult(long taskId, T result) throws Exception {
-        TaskStatus<T> status = null;
-        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-            TaskStatus<T> newStatus = scheduler.getStatus(taskId);
-            status = newStatus;
-            try {
-                if (status == null || status.hasResult() && result.equals(status.getResult()))
-                    return status;
-            } catch (SkippedException x) {
-                // allow for skips
-            }
-        } ;
-
-        return status;
     }
 
     /**
@@ -910,7 +889,7 @@ public class SchedulerFATServlet extends HttpServlet {
             foundIds = new LinkedHashSet<Long>();
             for (Object[] entry : foundAgain)
                 foundIds.add((Long) entry[0]);
-            if (foundIds.size() < found.size())
+            if (foundIds.size() < foundAgain.size())
                 throw new Exception("On the second query, duplicate task entries might have been returned. " + foundIds + " vs " + foundAgain);
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);
@@ -1261,7 +1240,10 @@ public class SchedulerFATServlet extends HttpServlet {
         try {
             taskStatus = scheduler.submit((Callable<Integer>) task);
             try {
-                phaser.awaitAdvance(1);
+                int nextPhase = phaser.awaitAdvance(0);
+                if (nextPhase != 1)
+                    throw new Exception("Unexpected next phase: " + nextPhase);
+
                 System.out.println("Task is running and has canceled itself...");
 
                 // The PROP entry for the task will remain locked within a suspended transaction
@@ -1323,7 +1305,10 @@ public class SchedulerFATServlet extends HttpServlet {
         try {
             taskStatus = scheduler.submit((Callable<Integer>) task);
             try {
-                phaser.awaitAdvance(1);
+                int nextPhase = phaser.awaitAdvance(0);
+                if (nextPhase != 1)
+                    throw new Exception("Unexpected next phase: " + nextPhase);
+
                 System.out.println("Task is running and has removed itself...");
 
                 // The PROP entry for the task will remain locked within a suspended transaction
@@ -2086,8 +2071,27 @@ public class SchedulerFATServlet extends HttpServlet {
             throw new Exception("Should not be able to see tasks from outside of application. " + resultsByTaskId);
 
         // Wait for tasks C and D to complete their only execution.
-        pollForResult(statusC.getTaskId(), 1);
-        pollForResult(statusD.getTaskId(), 1);
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusC = scheduler.getStatus(statusC.getTaskId())) != null
+                && !(statusC.hasResult() && Integer.valueOf(1).equals(statusC.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusC == null)
+            throw new Exception("Task C should not have been auto-purged.");
+
+        if (!statusC.hasResult() || !Integer.valueOf(1).equals(statusC.getResult()))
+            throw new Exception("Task C did not complete " + statusC);
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusD = scheduler.getStatus(statusD.getTaskId())) != null
+                && !(statusD.hasResult() && Integer.valueOf(1).equals(statusD.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusD == null)
+            throw new Exception("Task D should not have been auto-purged.");
+
+        if (!statusD.hasResult() || !Integer.valueOf(1).equals(statusD.getResult()))
+            throw new Exception("Task D did not complete " + statusD);
 
         // Look for successfully completed tasks, should be 2 (C,D)
         pattern = DBIncrementTask.class.getSimpleName() + "-testFindByName-%";
@@ -2297,7 +2301,12 @@ public class SchedulerFATServlet extends HttpServlet {
         if (!toString.contains("SCHEDULED"))
             throw new Exception("toString output does not contain the state of the task. Instead: " + toString);
 
-        TaskStatus<Integer> updatedStatus = pollForResult(status.getTaskId(), 1);
+        TaskStatus<Integer> updatedStatus = status;
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (updatedStatus = scheduler.getStatus(updatedStatus.getTaskId())) != null
+                && !(updatedStatus.hasResult() && Integer.valueOf(1).equals(updatedStatus.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
 
         if (updatedStatus == null || !updatedStatus.isDone())
             throw new Exception("Task not completed in allotted interval. Status: " + status);
@@ -3277,7 +3286,16 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (IllegalStateException x) {
         }
 
-        status = pollForResult(status.getTaskId(), 1);
+        // poll for result, ignoring skips
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            status = scheduler.getStatus(status.getTaskId());
+            try {
+                if (status == null || status.hasResult() && Integer.valueOf(1).equals(status.getResult()))
+                    break;
+            } catch (SkippedException x) {
+                // allow for skips
+            }
+        }
 
         if (!status.isDone())
             throw new Exception("Task should be done. " + status);
@@ -3391,7 +3409,16 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (IllegalStateException x) {
         }
 
-        status = pollForResult(status.getTaskId(), 2);
+        // poll for result, ignoring skips
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            status = scheduler.getStatus(status.getTaskId());
+            try {
+                if (status == null || status.hasResult() && Integer.valueOf(2).equals(status.getResult()))
+                    break;
+            } catch (SkippedException x) {
+                // allow for skips
+            }
+        }
 
         if (!status.isDone())
             throw new Exception("Task should be done after the final execution completes. " + status);
@@ -3779,13 +3806,21 @@ public class SchedulerFATServlet extends HttpServlet {
             tran.commit();
         }
 
-        statusA = pollForResult(statusA.getTaskId(), 1);
-        if (statusA == null || !statusA.isDone())
-            throw new Exception("TaskA not completed in allotted interval. Status: " + statusA);
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusA = scheduler.getStatus(statusA.getTaskId())) != null
+                && !(statusA.hasResult() && Integer.valueOf(1).equals(statusA.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
 
-        statusB = pollForResult(statusB.getTaskId(), 1);
-        if (statusB == null || !statusB.isDone())
-            throw new Exception("TaskB not completed in allotted interval. Status: " + statusB);
+        if (statusA == null || !statusA.isDone() || !Integer.valueOf(1).equals(statusA.getResult()))
+            throw new Exception("TaskA not completed with expected result in allotted interval. Status: " + statusA);
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusB = scheduler.getStatus(statusB.getTaskId())) != null
+                && !(statusB.hasResult() && Integer.valueOf(1).equals(statusB.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusB == null || !statusB.isDone() || !Integer.valueOf(1).equals(statusB.getResult()))
+            throw new Exception("TaskB not completed with expected result in allotted interval. Status: " + statusB);
     }
 
     /**
@@ -3830,9 +3865,13 @@ public class SchedulerFATServlet extends HttpServlet {
                     if (status.hasResult())
                         throw new Exception("Task status initial snapshot should not have a result. " + status);
 
-                    status = pollForResult(status.getTaskId(), 3);
+                    long taskId = status.getTaskId();
+                    for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                            && (status = scheduler.getStatus(taskId)) != null
+                            && !(status.hasResult() && Integer.valueOf(1).equals(status.getResult())); )
+                        Thread.sleep(POLL_INTERVAL);
 
-                    boolean removed = scheduler.remove(status.getTaskId());
+                    boolean removed = scheduler.remove(taskId);
                     if (!removed)
                         throw new Exception("Unable to remove task. " + status);
 

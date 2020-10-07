@@ -13,19 +13,25 @@ package com.ibm.ws.diagnostics.osgi;
 import java.io.PrintWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Collection;
 
+import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.ConfigVariables;
+import com.ibm.ws.config.xml.LibertyVariable;
+import com.ibm.ws.config.xml.LibertyVariable.Source;
 import com.ibm.wsspi.logging.Introspector;
 
-/**
- *
- */
-@Component
+@Component(service = { Introspector.class },
+           immediate = true,
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = {
+                        Constants.SERVICE_VENDOR + "=" + "IBM"
+           })
 public class ConfigVariableIntrospection implements Introspector {
 
     ConfigVariables configVariables;
@@ -48,7 +54,7 @@ public class ConfigVariableIntrospection implements Introspector {
 
     @Override
     public String getIntrospectorDescription() {
-        return "The User Config Variables";
+        return "Lists all variables from server configuration files, command line properties, and the file system";
     }
 
     @Override
@@ -58,13 +64,43 @@ public class ConfigVariableIntrospection implements Introspector {
         writer.println("---------------------");
 
         // Get the keys into a sorted map for display
-        Map<String, String> env = new TreeMap<String, String>(getConfigVariables());
+        Collection<LibertyVariable> env = getConfigVariables();
 
         // Write the values
-        for (Map.Entry<String, String> entry : env.entrySet()) {
-            writer.print(entry.getKey());
-            writer.print("=");
-            writer.println(entry.getValue().replaceAll("\\\n", "<nl>"));
+        for (LibertyVariable lv : env) {
+            if (lv.getSource() == Source.XML_CONFIG) {
+                writer.print(lv.getName());
+                writer.print("=");
+                writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
+            }
+        }
+        writer.println("---------------------\n");
+
+        writer.println("Service Binding Variables from " + configVariables.getServiceBindingRootDirectory());
+        writer.println("---------------------");
+
+        // Write the values
+        for (LibertyVariable lv : env) {
+
+            if (lv.getSource() == Source.SERVICE_BINDING) {
+                writer.print(lv.getName());
+                writer.print("=");
+                writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
+            }
+        }
+        writer.println("---------------------\n");
+
+        writer.println("Command Line Variables");
+        writer.println("---------------------");
+
+        // Write the values
+        for (LibertyVariable lv : env) {
+
+            if (lv.getSource() == Source.COMMAND_LINE) {
+                writer.print(lv.getName());
+                writer.print("=");
+                writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
+            }
         }
         writer.println("---------------------");
         writer.flush();
@@ -75,11 +111,12 @@ public class ConfigVariableIntrospection implements Introspector {
      *
      * @return the Config variables
      */
-    private Map<String, String> getConfigVariables() {
-        return AccessController.doPrivileged(new PrivilegedAction<Map<String, String>>() {
+    @Sensitive
+    private Collection<LibertyVariable> getConfigVariables() {
+        return AccessController.doPrivileged(new PrivilegedAction<Collection<LibertyVariable>>() {
             @Override
-            public Map<String, String> run() {
-                return configVariables.getUserDefinedVariables();
+            public Collection<LibertyVariable> run() {
+                return configVariables.getAllLibertyVariables();
             }
         });
     }

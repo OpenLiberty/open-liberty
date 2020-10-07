@@ -11,14 +11,20 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: WAS Java EE Security 1.0
 Bundle-Description: WAS Java EE Security 1.0, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.javaeesec.1.0
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.jakartasec.2.0.internal.jar
+#JakartaEE-Bundle-Name: Jakarta Security 2.0 internal
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jakartasec.2.0.internal
+#JakartaEE-Bundle-Description: Jakarta Security 2.0 internal
+#JakartaEE-Bundle-Version: 2.0
 
 WS-TraceGroup: \
   JAVAEESEC
@@ -32,6 +38,8 @@ Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
 Private-Package: \
     com.ibm.ws.security.javaeesec.internal.resources
+
+-cdiannotations:
 
 -dsannotations: \
     com.ibm.ws.security.javaeesec.BridgeBuilderImpl, \

@@ -30,6 +30,9 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public final class IOUtils {
     public static final Charset UTF8_CHARSET = Charset.forName("utf-8");
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;

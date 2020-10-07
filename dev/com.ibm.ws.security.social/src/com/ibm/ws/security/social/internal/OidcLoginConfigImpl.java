@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public static final String KEY_NONCE_ENABLED = "nonceEnabled";
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
-
     private boolean includeCustomCacheKeyInSubject = true;
 
     public static final String KEY_AUTHZ_PARAM = "authzParameter";
@@ -319,7 +318,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }
@@ -465,6 +464,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             audiences.add(clientId);
         }
         return audiences;
+    }
+
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -832,5 +836,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         }
         oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
     }
+
+	@Override
+	public List<String> getAMRClaim() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

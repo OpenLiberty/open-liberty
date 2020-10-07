@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics Public REST API
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.public
@@ -26,8 +24,8 @@ Web-ContextPath: @publicMetricsURL
 OL-VirtualHost: ${admin.virtual.host}
 
 Import-Package: \
-	org.eclipse.microprofile.metrics;version="[1.0,3)",\
-	org.eclipse.microprofile.metrics.*;version="[1.0,3)",\
+	org.eclipse.microprofile.metrics;version="[1.0,4)",\
+	org.eclipse.microprofile.metrics.*;version="[1.0,4)",\
 	*
 
 Private-Package: \
@@ -37,7 +35,6 @@ Private-Package: \
 Include-Resource: \
 	WEB-INF=resources/WEB-INF
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.metrics.publicapi.PublicMetricsRESTHandler

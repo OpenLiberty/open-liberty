@@ -14,9 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.frontend.simple.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
  !com.ctc.wstx.*,\
@@ -37,7 +34,6 @@ Import-Package: \
  *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.frontend.simple,\
   org.apache.cxf.frontend.*;version=${cxfVersion},\
   org.apache.cxf.endpoint.dynamic.*;version=${cxfVersion},\
   org.apache.cxf.simple.*;version=${cxfVersion}

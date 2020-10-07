@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ public class ValidateUtils implements TCPConfigConstants {
     protected static final int CHANNEL_SELECTOR_IDLE_TIMEOUT_MIN = 0;
     protected static final int CHANNEL_SELECTOR_IDLE_TIMEOUT_MAX = 3600000; // in
                                                                             // milliseconds
+    protected static final int PORT_OPEN_RETRIES_MIN = 0;
+    protected static final int PORT_OPEN_RETRIES_MAX = 100000; // 86400 seconds in a day, so round up to 100000
 
     protected static final int CHANNEL_SELECTOR_WAIT_TO_TERMINATE_MIN = 0;
     protected static final int CHANNEL_SELECTOR_WAIT_TO_TERMINATE_MAX = 3600; // in
@@ -69,7 +71,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the input value against the allowed min and max.
-     * 
+     *
      * @param value
      * @param min
      * @param max
@@ -84,7 +86,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the input value against the allowed min and max.
-     * 
+     *
      * @param value
      * @param min
      * @param max
@@ -99,7 +101,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the input string as an int value.
-     * 
+     *
      * @param value
      * @param min
      * @param max
@@ -123,7 +125,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the input port value for the allowed range.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -133,7 +135,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the TCP max-connections value against the allowed range.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -143,7 +145,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the TCP max-connections value against the allowed range.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -153,7 +155,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the TCP solinger value.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -163,7 +165,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the TCP solinger value.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -174,7 +176,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the configuration flag that controls whether the TCP channel
      * is using a dedicated accept selector or not.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -185,7 +187,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the configuration flag that controls whether the TCP channel
      * is using a dedicated accept selector or not.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -196,7 +198,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the buffer size used on the initial read for a new incoming
      * connection.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -206,9 +208,20 @@ public class ValidateUtils implements TCPConfigConstants {
     }
 
     /**
+     * Test the number of retries to successfully open a port before signaling that the port can not be open
+     *
+     * @param value
+     * @return int
+     */
+    public static int testPortOpenRetries(int value) {
+
+        return testInt(value, PORT_OPEN_RETRIES_MIN, PORT_OPEN_RETRIES_MAX);
+    }
+
+    /**
      * Test the buffer size used on the initial read for a new incoming
      * connection.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -218,7 +231,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the listen backlog to configure for this channel.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -228,7 +241,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the listen backlog to configure for this channel.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -238,7 +251,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the receive buffer to configure at the socket layer.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -248,7 +261,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the receive buffer to configure at the socket layer.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -258,7 +271,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the send buffer to configure at the socket layer.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -268,7 +281,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the size of the send buffer to configure at the socket layer.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -278,7 +291,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the inactivity timeout to use for the initial read.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -288,7 +301,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the configuration used for the allowed number of keys per selector.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -298,7 +311,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the configuration used for the allowed number of keys per selector.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -308,7 +321,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the default timeout used during the selector.select() calls.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -318,7 +331,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the default timeout used during the selector.select() calls.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -328,7 +341,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the selector configuration for the last timeout.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -338,7 +351,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the selector configuration for the last timeout.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -348,7 +361,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the selector configuration option for waking up with new work.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -358,7 +371,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the selector configuration option for waking up with new work.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -369,7 +382,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the configuration for the number of selector threads to create
      * for the sync manager.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -380,7 +393,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the configuration for the number of selector threads to create
      * for the sync manager.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -391,7 +404,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the sync manager configuration for the number of keys to allow
      * per selector.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -402,7 +415,7 @@ public class ValidateUtils implements TCPConfigConstants {
     /**
      * Test the sync manager configuration for the number of keys to allow
      * per selector.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -412,7 +425,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the configuration for the number of read selectors to start.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -422,7 +435,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the configuration for the number of read selectors to start.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -432,7 +445,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the internal RAS audit level.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -449,7 +462,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the NIO vs AIO comm option.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -459,7 +472,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the NIO vs AIO comm option.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -469,7 +482,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the debug stats interval configuration.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -479,7 +492,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the debug stats interval configuration.
-     * 
+     *
      * @param value
      * @return int
      */
@@ -489,7 +502,7 @@ public class ValidateUtils implements TCPConfigConstants {
 
     /**
      * Test the IP filter configuration values.
-     * 
+     *
      * @param value
      * @return int
      */

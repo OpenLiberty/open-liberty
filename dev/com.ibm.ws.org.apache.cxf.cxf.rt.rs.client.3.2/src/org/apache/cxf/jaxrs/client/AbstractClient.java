@@ -946,8 +946,9 @@ public abstract class AbstractClient implements Client {
         if (address.startsWith(HTTP_SCHEME) && !address.equals(currentURI.toString())) {
             URI baseAddress = URI.create(address);
             currentURI = calculateNewRequestURI(baseAddress, currentURI, proxy);
-            message.put(Message.ENDPOINT_ADDRESS, currentURI.toString());
-            message.put(Message.REQUEST_URI, currentURI.toString());
+            String uri = currentURI.toString();
+            message.put(Message.ENDPOINT_ADDRESS, uri);
+            message.put(Message.REQUEST_URI, uri);
         }
         message.put(Message.BASE_PATH, getBaseURI().toString());
     }

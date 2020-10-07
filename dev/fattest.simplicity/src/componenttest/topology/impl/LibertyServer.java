@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,9 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.jmx.JmxException;
+import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
+import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
@@ -292,6 +295,8 @@ public class LibertyServer implements LogMonitorClient {
 
     private boolean needsPostTestRecover = true;
 
+    private boolean logOnUpdate = true;
+
     protected boolean debuggingAllowed = true;
 
     /**
@@ -314,6 +319,14 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void setDebuggingAllowed(boolean debuggingAllowed) {
         this.debuggingAllowed = debuggingAllowed;
+    }
+
+    public boolean isLogOnUpdate() {
+        return logOnUpdate;
+    }
+
+    public void setLogOnUpdate(boolean logOnUpdate) {
+        this.logOnUpdate = logOnUpdate;
     }
 
     /**
@@ -1052,6 +1065,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public enum IncludeArg {
         MINIFY, ALL, USR, RUNNABLE, MINIFYRUNNABLE;
+
         public String getIncludeString() {
             if (this.equals(MINIFYRUNNABLE)) {
                 return "--include=" + "minify,runnable";
@@ -1378,11 +1392,11 @@ public class LibertyServer implements LogMonitorClient {
                     // extraordinarily small.
                     Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
 
-                    //Call resetStarted() to try to determine whether the server is actually running or not.
+                    // Call resetStarted() to try to determine whether the server is actually running or not.
                     int rc = resetStarted();
                     if (rc == 0) {
                         // The server is running, so proceed as if nothing went wrong.
-                        return new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
+                        output = new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
                     } else {
                         Log.info(c, method, "The server does not appear to be running. (rc=" + rc + "). Retrying server start now");
                         // If at first you don't succeed...
@@ -4118,7 +4132,18 @@ public class LibertyServer implements LogMonitorClient {
         if (savedServerXml == null) {
             throw new RuntimeException("The server configuration cannot be restored because it was never saved via the saveServerConfiguration method.");
         }
+        Log.info(c, "restoreServerConfiguration", savedServerXml.getName());
         getServerConfigurationFile().copyFromSource(savedServerXml);
+    }
+
+    /**
+     * This will restore the server configuration and wait for all apps to be ready
+     *
+     * @throws Exception
+     */
+    public void restoreServerConfigurationAndWaitForApps(String... extraMsgs) throws Exception {
+        restoreServerConfiguration();
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), extraMsgs);
     }
 
     public String getServerConfigurationPath() {
@@ -4185,7 +4210,7 @@ public class LibertyServer implements LogMonitorClient {
         // above. Even if the timestamp would not be changed, the size out be.
         LibertyFileManager.moveLibertyFile(newServerFile, file);
 
-        if (LOG.isLoggable(Level.INFO)) {
+        if (LOG.isLoggable(Level.INFO) && logOnUpdate) {
             LOG.info("Server configuration updated:");
             logServerConfiguration(Level.INFO, false);
         }
@@ -5396,7 +5421,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void addInstalledAppForValidation(String app) {
         final String method = "addInstalledAppForValidation";
-        final String START_APP_MESSAGE_CODE = "CWWKZ0001I";
+        final String START_APP_MESSAGE_CODE = "CWWKZ0001I:.*" + app;
         Log.info(c, method, "Adding installed app: " + app + " for validation");
         installedApplications.add(app);
 
@@ -5407,7 +5432,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void removeInstalledAppForValidation(String app) {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I";
+        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I:.*" + app;
         Log.info(c, method, "Removing installed app: " + app + " for validation");
         installedApplications.remove(app);
 
@@ -5505,6 +5530,11 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void startServer(boolean cleanStart, boolean validateApps) throws Exception {
         startServerAndValidate(true, cleanStart, validateApps);
+    }
+
+    public void deleteAllDropinApplications() throws Exception {
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
     }
 
     /**
@@ -5932,6 +5962,40 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Retrieves an {@link ApplicationMBean} for a particular application on this server
+     *
+     * @param  applicationName the name of the application to operate on
+     * @return                 an {@link ApplicationMBean}
+     * @throws JmxException    if the object name for the input application cannot be constructed
+     */
+    public ApplicationMBean getApplicationMBean(String applicationName) throws JmxException {
+        return new ApplicationMBean(getJmxServiceUrl(), applicationName);
+    }
+
+    /**
+     * Get the JMX connection URL of this server
+     *
+     * @return              a {@link JMXServiceURL} that allows you to invoke MBeans on the server
+     * @throws JmxException
+     *                          if the server can't be found,
+     *                          the localConnector-1.0 feature is not enabled,
+     *                          or the address file is not valid
+     */
+    public JMXServiceURL getJmxServiceUrl() throws JmxException {
+        return JmxServiceUrlFactory.getInstance().getUrl(this);
+    }
+
+    /**
+     * Restarts an application via its MBean
+     *
+     * @param  applicationName the application to be restarted
+     * @throws JmxException
+     */
+    public void restartApplication(String applicationName) throws JmxException {
+        getApplicationMBean(applicationName).restart();
+    }
+
+    /**
      * Wait for the specified regex in the default logs from the last offset.
      * The offset is incremented every time this method is called.
      * <p>
@@ -6065,9 +6129,6 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKF0017E.*cik.ext.product1.properties");
         // Added due to build break defect 221453.
         fixedIgnoreErrorsList.add("CWWKG0011W");
-        if (isJavaVersion6()) {
-            fixedIgnoreErrorsList.add("CWWKE0109W");
-        }
     }
 
     public boolean isJava2SecurityEnabled() {
@@ -6081,18 +6142,15 @@ public class LibertyServer implements LogMonitorClient {
         return !isJava2SecExempt;
     }
 
+    /**
+     * No longer using bootstrap properties to update server config for database rotation.
+     * Instead look at using the fattest.databases module
+     */
+    @Deprecated
     public void configureForAnyDatabase() throws Exception {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();
         this.updateServerConfiguration(config);
-    }
-
-    public boolean isJavaVersion6() {
-        return javaInfo.majorVersion() == 6;
-    }
-
-    public boolean isJavaVersion8() {
-        return javaInfo.majorVersion() == 8;
     }
 
     public boolean isIBMJVM() {

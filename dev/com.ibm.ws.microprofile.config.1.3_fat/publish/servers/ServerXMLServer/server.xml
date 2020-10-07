@@ -2,7 +2,7 @@
 
 	<include location="../fatTestPorts.xml" />
 
-        <variable name="testVar" value="testValue"/>
+	<variable name="testVar" value="testValue" />
 
 	<featureManager>
 		<feature>osgiconsole-1.0</feature>
@@ -13,13 +13,34 @@
 	</featureManager>
 
 	<application location="serverXMLApp.war">
-   		<appProperties>
-   		       <property name="serverXMLKey1" value="serverXMLValue1"/>
-   		       <property name="serverXMLKey1" value="serverXMLValue1a"/>
-   		       <property name="serverXMLKey2" value="serverXMLValue2"/>
-   		       <property name="serverXMLKey3" value="serverXMLValue3"/>
-   		       <property name="serverXMLKey1" value="serverXMLValue1b"/>
-   		       <property name="serverXMLKey4" value="serverXMLValue4"/>
-   		</appProperties>
+		<appProperties>
+			<property name="serverXMLKey1" value="serverXMLValue1" />
+			<property name="serverXMLKey1" value="serverXMLValue1a" />
+			<property name="serverXMLKey2" value="serverXMLValue2" />
+			<property name="serverXMLKey3" value="serverXMLValue3" />
+			<property name="serverXMLKey1" value="serverXMLValue1b" />
+			<property name="serverXMLKey4" value="serverXMLValue4" />
+		</appProperties>
 	</application>
+
+	<application location="duplicateInServerXMLApp.war">
+		<appProperties>
+			<property name="serverXMLKey1" value="valueinAppProperties1" />
+			<property name="serverXMLKey2"
+				value="valueinAppProperties2a" />
+		</appProperties>
+		<appProperties>
+			<property name="serverXMLKey2"
+				value="valueinAppProperties2b" />
+			<property name="serverXMLKey3" value="valueinAppProperties3" />
+		</appProperties>
+	</application>
+	
+	<webApplication location="serverXMLWebApp.war">
+		<appProperties>
+			<property name="serverXMLKey1" value="serverXMLValue1" />
+		</appProperties>
+	</webApplication>
+	
+	<application location="mapEnvVarApp.war"/>
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,15 +26,7 @@ public class AccessLogResponseSizeB extends AccessLogData {
                        HttpResponseMessage response, HttpRequestMessage request,
                        Object data) {
 
-        long responseSize = -999;
-        HttpResponseMessageImpl responseMessageImpl = null;
-        if (response != null) {
-            responseMessageImpl = (HttpResponseMessageImpl) response;
-        }
-
-        if (responseMessageImpl != null) {
-            responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
-        }
+        long responseSize = getBytesReceived(response, request, data);
 
         if (responseSize != -999) {
             accessLogEntry.append(responseSize);
@@ -45,4 +37,16 @@ public class AccessLogResponseSizeB extends AccessLogData {
         return true;
     }
 
+    public static long getBytesReceived(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        long responseSize = -999;
+        HttpResponseMessageImpl responseMessageImpl = null;
+        if (response != null) {
+            responseMessageImpl = (HttpResponseMessageImpl) response;
+        }
+
+        if (responseMessageImpl != null) {
+            responseSize = responseMessageImpl.getServiceContext().getNumBytesWritten();
+        }
+        return responseSize;
+    }
 }

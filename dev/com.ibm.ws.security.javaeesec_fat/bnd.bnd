@@ -45,8 +45,6 @@ src: \
 	test-applications/AnnotatedEjbinWarServletLdapRealm1.war/src,\
 	test-applications/AnnotatedEjbinWarServletLdapRealm2.war/src
 
-javac.source: 1.8
-javac.target: 1.8
 
 fat.project: true
 -buildpath: \

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -93,6 +93,45 @@ KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Consultez l'erreur qui est affich\
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: La configuration de login social [{0}] sp\u00e9cifie [{1}] comme valeur pour l''attribut [{2}], mais la r\u00e9ponse de l''API utilisateur ne contient pas de cl\u00e9 [{1}]. La cl\u00e9 [{3}], si elle est pr\u00e9sente dans la r\u00e9ponse de l''API utilisateur, est utilis\u00e9e \u00e0 la place pour d\u00e9terminer le nom d''utilisateur.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=La r\u00e9ponse de l'API utilisateur ne contient pas de cl\u00e9 correspondant \u00e0 la valeur de l'attribut de configuration qui est sp\u00e9cifi\u00e9 dans le message. La fonction de login social tente d'utiliser une autre cl\u00e9 \u00e0 la place.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=V\u00e9rifiez que l'attribut de configuration qui est sp\u00e9cifi\u00e9 dans le message est configur\u00e9 correctement. Assurez-vous que la valeur de l'attribut de configuration correspond \u00e0 l'entr\u00e9e figurant dans la r\u00e9ponse de l'API utilisateur qui doit \u00eatre utilis\u00e9e comme nom d'utilisateur.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: La r\u00e9ponse suivante de l''API utilisateur ne peut pas \u00eatre trait\u00e9e : {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Les informations sur le compte de service ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: L''API utilisateur a renvoy\u00e9 le code de r\u00e9ponse inattendu [{0}]. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l''API contient toutes les informations requises. La r\u00e9ponse de l''API est la suivante : [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=L'API utilisateur n'a pas renvoy\u00e9 le code de statut attendu. Il se peut que des informations manquent dans la demande ou que la demande ne soit pas autoris\u00e9e.
+USER_API_RESPONSE_BAD_STATUS.useraction=V\u00e9rifiez la r\u00e9ponse de l'API qui se trouve dans le message d'erreur pour plus d'informations. V\u00e9rifiez que la demande envoy\u00e9e \u00e0 l'API contient toutes les informations requises. V\u00e9rifiez que tous les jetons qui sont inclus dans la demande sont valides.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Le contenu de la r\u00e9ponse n''est pas un objet JSON valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}. {1}
+RESPONSE_NOT_JSON.explanation=La r\u00e9ponse doit \u00eatre un objet JSON valide.
+RESPONSE_NOT_JSON.useraction=V\u00e9rifiez que la demande a \u00e9t\u00e9 envoy\u00e9e \u00e0 la cible appropri\u00e9e. Assurez-vous que la cible d\u00e9sign\u00e9e de la demande peut renvoyer des donn\u00e9es JSON. Consultez la r\u00e9ponse pour d\u00e9terminer si d'autres informations sont incluses.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: Une cl\u00e9 attendue manque dans l''objet JSON fourni : [{0}]. L''objet JSON complet est le suivant : [{1}].
+JSON_MISSING_KEY.explanation=La cl\u00e9 qui est sp\u00e9cifi\u00e9e dans le message doit \u00eatre incluse dans les donn\u00e9es JSON. Il se peut qu'elle manque ou qu'elle se trouve ailleurs.
+JSON_MISSING_KEY.useraction=V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9terminer si la cl\u00e9 manque.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: La valeur de la cl\u00e9 [{0}] dans les donn\u00e9es JSON doit \u00eatre de type {1}, mais est de type {2}. L''objet JSON est [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Le type de la valeur de la cl\u00e9 sp\u00e9cifi\u00e9 n'est pas correct. Il se peut que les donn\u00e9es JSON soient incorrectement form\u00e9es ou que leur structure soit inattendue.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=V\u00e9rifiez la structure des donn\u00e9es JSON. V\u00e9rifiez les donn\u00e9es JSON pour d\u00e9terminer si une erreur est survenue.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: La r\u00e9ponse de l''API d''introspection de jeton ne peut pas \u00eatre trait\u00e9e : {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Les informations sur l'utilisateur authentifi\u00e9 ne peuvent pas \u00eatre obtenues car une autre erreur est survenue.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Si le message contient un autre message d'erreur, consultez les actions utilisateur de ce message. Sinon, recherchez dans les journaux serveur d'autres messages d'erreur indiquant o\u00f9 l'autre erreur est survenue.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La demande d''introspection de jeton a \u00e9chou\u00e9 car le jeton qui est inclus dans la demande n''est pas valide. La r\u00e9ponse compl\u00e8te est la suivante : {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Le serveur d'autorisation n'a pas \u00e9mis le jeton, le propri\u00e9taire de la ressource a r\u00e9voqu\u00e9 le jeton, le jeton est arriv\u00e9 \u00e0 expiration ou une autre erreur est survenue.
+INTROSPECT_USER_API_INACTIVE.useraction=Consultez la r\u00e9ponse incluse dans le message. V\u00e9rifiez que le noeud final d'introspection de jeton correct est utilis\u00e9. Assurez-vous que le jeton est valide et qu'il peut faire l'objet d'une introspection.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: La r\u00e9ponse d'API utilisateur indique que la demande d'API utilisateur n'est pas authentifi\u00e9e. V\u00e9rifiez que le jeton d'acc\u00e8s qui est inclus dans la demande d'API utilisateur est valide et qu'il est associ\u00e9 \u00e0 un utilisateur connu.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Il se peut que le jeton d'acc\u00e8s qui figure dans la demande d'API utilisateur manque, soit arriv\u00e9 \u00e0 expiration, soit incorrectement form\u00e9 ou ne soit pas valide pour une autre raison. Il se peut que le jeton ne soit pas associ\u00e9 \u00e0 un utilisateur connu de l'API utilisateur.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=V\u00e9rifiez qu'un jeton d'acc\u00e8s est inclus dans la demande d'API utilisateur. Assurez-vous qu'il n'est pas arriv\u00e9 \u00e0 expiration ou qu'il n'est pas incorrectement form\u00e9. V\u00e9rifiez que l'utilisateur qui est associ\u00e9 au jeton d'acc\u00e8s est connu de l'API utilisateur.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuration de login social [{0}] a \u00e9t\u00e9 trait\u00e9e correctement.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuration de login social indiqu\u00e9e a \u00e9t\u00e9 trait\u00e9e correctement.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,10 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -24,8 +28,10 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -104,6 +110,199 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.responseTextIncludesCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    
+    /**
+     * Tests Config: 
+     *  - <jwtSso disableJwtCookie="true" includeLtpaCookie="true" useLtpaIfJwtAbsent="true" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie is not found in the response, but the ltpa cookie is found.
+     */
+    @Test
+    public void test_disableJwtCookie_true_includeLtpaCookie_true() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_true_includeLtpa_true.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        Expectations expectations = new Expectations();
+        
+        currentAction = disableJwtCookie_test_base(currentAction, response, expectations);
+        
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * This helper method sets the action and expectations common across disableJwtCookie tests
+     */
+    private String disableJwtCookie_test_base(String currentAction, Page response, Expectations expectations) throws Exception {
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        
+        return currentAction;
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="true" includeLtpaCookie="true" useLtpaIfJwtAbsent="true" cookieName="AdamsJwtCookie" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie is not found in the response, but the ltpa cookie is found.
+     */
+    @Test
+    public void test_disableJwtCookie_true_includeLtpaCookie_true_differentJwtCookieName() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_true_differentJwtCookieName_includeLtpa_true.xml");
+
+        String jwtCookieName = "AdamsJwtCookie";
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        Expectations expectations = new Expectations();
+        
+        currentAction = disableJwtCookie_test_base(currentAction, response, expectations);
+        
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, jwtCookieName));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="true" includeLtpaCookie="true" useLtpaIfJwtAbsent="false" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie is not found in the response, but the ltpa cookie is found,
+     *  - the client is still on the login page because ltpa cookie is not used
+     */
+    @Test
+    public void test_disableJwtCookie_true_includeLtpaCookie_true_useLtpaIfJwtAbsent_false() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_true_includeLtpa_true_useLtpaIfJwtAbsent_false.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="true" includeLtpaCookie="false" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - neither jwt nor ltpa cookie is in the response, and the client is still on the login page
+     */
+    @Test
+    public void test_disableJwtCookie_true_includeLtpaCookie_false() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_true_includeLtpa_false.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="false" includeLtpaCookie="true" useLtpaIfJwtAbsent="true" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie and ltpa cookie are both found in the response
+     */
+    @Test
+    public void test_disableJwtCookie_false_includeLtpaCookie_true() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_false_includeLtpa_true.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        Expectations expectations = new Expectations();
+        
+        currentAction = disableJwtCookie_test_base(currentAction, response, expectations);
+        
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="false" includeLtpaCookie="false" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie is found in the response and ltpa cookie is not
+     */
+    @Test
+    public void test_disableJwtCookie_false_includeLtpaCookie_false() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_false_includeLtpa_false.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        Expectations expectations = new Expectations();
+        
+        currentAction = disableJwtCookie_test_base(currentAction, response, expectations);
+        
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Tests Config:
+     *  - <jwtSso disableJwtCookie="false" includeLtpaCookie="false" setCookieSecureFlag="false"/>
+     * Expects:
+     *  - JWT cookie is found in the response and ltpa cookie is not
+     */
+    @Test
+    public void test_disableJwtCookie_false_includeBadLtpaCookie() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_disableJwtCookie_false_includeLtpa_false.xml");
+
+        Expectations expectations = new Expectations();
+        
+        WebClient webClient = new WebClient();
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
+        Cookie badLtpaCookie = new Cookie("", JwtFatConstants.LTPA_COOKIE_NAME, "some bad value");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Page response = actions.invokeUrlWithCookies(_testName, protectedUrl, jwtCookie, badLtpaCookie);
+        
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -564,6 +763,47 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Test that the amr security attribute specified in the config is included in jwtToken. Uses the amrbuilder web app to 
+     * add the specified attribute to the subject and built a new token. Token is then decoded and sent back as response and 
+     * inspect the response to check the amrValue.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_amrValue() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_amrValues.xml", MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*amrbuilder");
+        
+        WebClient webClient = new WebClient();
+        Cookie cookie = actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword, "https?://" + "[^/]+/jwt/" + "amrBuilder");
+
+        Page response = buildNewJwtAfterAddingSecurityAttribute(cookie);
+        String responseStr = response.getWebResponse().getContentAsString();
+        boolean check = responseStr.contains("\"amr\":[\"amrValue\"]");
+        assertTrue("AMR in token did not match the one configured in the builder", check);
+
+        
+    }
+
+    /**
+     * Invokes the amrbuilder web application configured in the server with cookie to build JWT to check the amrValue is
+     * included. A JWT is built using the amrBuilder configuration with the defaultJwtSso and the jwt is printed
+     * in the response.
+     */
+    private Page buildNewJwtAfterAddingSecurityAttribute(Cookie cookie) throws Exception {
+        String jwtBuilderUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/amrbuilder/AmrServlet";
+
+        List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+        requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, "amrBuilder"));
+        
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("Cookie", cookie.getName() + "=" + cookie.getValue());
+
+        WebClient webClient = new WebClient();
+        Page response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, jwtBuilderUrl, requestParams, requestHeaders);
+
+        return response;
     }
 
 }

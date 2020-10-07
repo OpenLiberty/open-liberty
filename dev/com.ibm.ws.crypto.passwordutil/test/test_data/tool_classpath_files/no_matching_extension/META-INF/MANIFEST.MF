@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bnd-LastModified: 1458912860919
 Build-Identifier: SNAPSHOT-Fri Mar 25 09:34:20 EDT 2016
-Bundle-Copyright: The Program materials contained in this file are IBM
-  copyright materials. WLP Copyright International Business Machines C
- orp. 1999, 2016 All Rights Reserved * Licensed Materials - Property o
- f IBM US Government Users Restricted Rights - Use, duplication or dis
- closure restricted by GSA ADP Schedule Contract with IBM Corp.
+Bundle-Copyright: Copyright (c) 2006,2016 IBM Corporation and others.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
 Bundle-ManifestVersion: 2
 Bundle-Name: WebSphere Security Utility
 Bundle-SymbolicName: com.ibm.ws.security.utility.securityutil

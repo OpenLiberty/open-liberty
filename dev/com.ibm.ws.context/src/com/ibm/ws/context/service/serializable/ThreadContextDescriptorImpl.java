@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,7 +147,7 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
                     for (int i = 0; i < contextBytes.length; i++) {
                         String providerName = providerNames.get(i);
                         ThreadContextProvider contextProvider = threadContextMgr.threadContextProviders.getService(providerName);
-                        if (contextProvider == null)
+                        if (contextProvider == null && !"com.ibm.ws.concurrent.mp.cleared.context.provider".equals(providerName))
                             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKC1004.context.provider.unavailable", providerName));
                         contextProviders[i] = contextProvider;
                         if (trace && tc.isDebugEnabled())
@@ -159,10 +159,12 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
 
             // Have each context provider deserialize its own context, so that the correct class loader is used.
             for (int i = 0; i < contextBytes.length; i++) {
-                ThreadContext context = contextProviders[i].deserializeThreadContext(this, contextBytes[i]);
-                threadContext.add(context);
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, contextProviders[i].toString(), toString(context));
+                if (contextProviders[i] != null) {
+                    ThreadContext context = contextProviders[i].deserializeThreadContext(this, contextBytes[i]);
+                    threadContext.add(context);
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, contextProviders[i].toString(), toString(context));
+                }
             }
             successful = true;
         } catch (PrivilegedActionException x) {
@@ -344,7 +346,16 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
         if (!"false".equalsIgnoreCase(execProps.get(WSContextService.REQUIRE_AVAILABLE_APP)) &&
             metaDataIdentifier != null && threadContextMgr.metadataIdentifierService.getMetaData(metaDataIdentifier) == null) {
-            String taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME"); // ManagedTask.IDENTITY_NAME
+            String taskName; // ManagedTask.IDENTITY_NAME
+            if (threadContextMgr.eeVersion < 9) {
+                taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+            } else {
+                taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+            }
             notAvailable(metaDataIdentifier, taskName);
         }
 

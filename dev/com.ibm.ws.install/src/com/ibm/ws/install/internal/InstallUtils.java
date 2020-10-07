@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -539,16 +543,20 @@ public class InstallUtils {
         }
 
         @Override
-        public void printInfoMessage(String message) {}
+        public void printInfoMessage(String message) {
+        }
 
         @Override
-        public void printlnInfoMessage(String message) {}
+        public void printlnInfoMessage(String message) {
+        }
 
         @Override
-        public void printErrorMessage(String errorMessage) {}
+        public void printErrorMessage(String errorMessage) {
+        }
 
         @Override
-        public void printlnErrorMessage(String errorMessage) {}
+        public void printlnErrorMessage(String errorMessage) {
+        }
 
     }
 
@@ -659,11 +667,48 @@ public class InstallUtils {
         return null;
     }
 
-    public static Collection<String> getFeatures(InputStream serverXMLInputStream, String xml) throws InstallException {
-        Collection<String> features = new ArrayList<String>();
+    public static Set<String> getFeatures(String serverXml, String xml, Set<String> visitedServerXmls) throws IOException {
+        Set<String> features = new HashSet<String>();
+        List<String> newLocations = new ArrayList<>();
+        boolean isUrl = false;
+        HttpURLConnection conn = null;
+        Path realServerXml = null;
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(serverXMLInputStream);
+            // todo more networking support? proxy, port etc
+            URL url = new URL(serverXml);
+            conn = (HttpURLConnection) url.openConnection();
+            isUrl = true;
+
+        } catch(MalformedURLException malf){
+            realServerXml = Paths.get(serverXml).normalize();
+            if(visitedServerXmls.contains(realServerXml.toString())) {
+                return features;
+            }
+        }
+
+        try (InputStream is =  isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)){
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
+            NodeList childs = doc.getChildNodes();
+
+            // parse include tag
+            NodeList includeList = element.getElementsByTagName("include");
+            for (int i = 0; i < includeList.getLength(); i++) {
+                Node il = includeList.item(i);
+                Element ilElement = (Element) il;
+                String location = ilElement.getAttribute("location");
+
+                File f = new File(location);
+                if (!f.isAbsolute()){ // include location is relative
+                    // if not url then convert the relative path to an canonical path based off the current server.xml
+                    location = isUrl ? location : new File(realServerXml.getParent().toFile(), location).getCanonicalPath();
+                }
+                if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
+                    newLocations.add(location);
+                }
+            }
+
+            // parse featureManager tag
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
                 Node fm = fmList.item(i);
@@ -675,8 +720,14 @@ public class InstallUtils {
                 }
             }
         } catch (Exception e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e, InstallException.IO_FAILURE);
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
         }
+        visitedServerXmls.add(isUrl ? serverXml : realServerXml.toString());
+        for(String filepath : newLocations){
+            Path path = Paths.get(filepath);
+            features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
+        }
+
         return features;
     }
 
@@ -1087,7 +1138,7 @@ public class InstallUtils {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
         if (editionCodeUpperCase.equals("BASE"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.equals("BASE_ILAN"))
             return "(ILAN)";
         else if (editionCodeUpperCase.equals("DEVELOPERS"))
@@ -1103,7 +1154,7 @@ public class InstallUtils {
         else if (editionCodeUpperCase.equals("ZOS"))
             return "z/OS";
         else if (editionCodeUpperCase.equals("LIBERTY"))
-            return "";
+            return "Base";
         else if (editionCodeUpperCase.startsWith("LIBERTY "))
             return editionCode.substring("LIBERTY ".length());
         else {
@@ -1201,11 +1252,8 @@ public class InstallUtils {
         return licensesToAccept;
     }
 
-    
-    public static void setIsServerXmlInstall(Set<String> allServerFeatures) {
+    public static void setServerXmlInstallTrue() {
         isServerXmlInstallation = true;
-        serverFeatures = allServerFeatures;
-
     }
 
     /**
@@ -1213,19 +1261,10 @@ public class InstallUtils {
      *
      * @return
      */
-    public static boolean getIsServerXmlInstall() {
+    public static boolean isServerXmlInstall() {
         return isServerXmlInstallation;
     }
 
-    /**
-     * Get the set of all features from a server.xml, including the ones that have been already been installed. Note that this set remains empty
-     * until it is triggered by a method that verifies a server.xml install.
-     *
-     * @return
-     */
-    public static Set<String> getAllServerFeatures() {
-        return serverFeatures;
-    }
 
 
 }

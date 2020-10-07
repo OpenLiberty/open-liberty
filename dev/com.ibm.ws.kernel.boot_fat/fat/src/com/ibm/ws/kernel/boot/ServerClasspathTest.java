@@ -21,15 +21,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Tests what can and cannot be loaded by the server's JVM classpath.
  */
-@MinimumJavaLevel(javaLevel = 7)
 public class ServerClasspathTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.classpath.fat";
@@ -52,7 +51,7 @@ public class ServerClasspathTest {
     @BeforeClass
     public static void before() throws Exception {
         JavaArchive archive = ShrinkHelper.buildJavaArchive("checkJvmAppClasspath", "com.ibm.ws.kernel.boot.app.classpath");
-        ShrinkHelper.exportAppToServer(server, archive);
+        ShrinkHelper.exportAppToServer(server, archive, DeployOptions.DISABLE_VALIDATION);
         server.startServer();
     }
 

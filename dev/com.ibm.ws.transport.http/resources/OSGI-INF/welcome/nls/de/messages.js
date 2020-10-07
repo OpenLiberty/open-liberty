@@ -25,8 +25,8 @@ var messages = {
     UPDATE_BANNER_SECTION: "Bannerbereich aktualisieren",
     UPDATE_BANNER_SECTION_CONTENT: "Inhalt des Bannerbereichs aktualisieren",
     HEADER_UPDATE_AVAILABLE: "Aktualisierung verfügbar: ",
-    HEADER_DOWNLOAD_LINK: "Klicken Sie zum Herunterladen auf {0}", // Product name
-    HEADER_UPDATE_AVAILABLE_DOWNLOAD_LINK: "Es ist eine Aktualisierung verfügbar. Klicken Sie zum Herunterladen auf {0}", // Product name
+    HEADER_DOWNLOAD_LINK: "Zum Herunterladen von {0} auf den Link klicken", // Product name
+    HEADER_UPDATE_AVAILABLE_DOWNLOAD_LINK: "Es ist eine Aktualisierung verfügbar. Klicken Sie zum Herunterladen von {0} auf den Link", // Product name
     UPDATE_BANNER_CLOSE_BUTTON: "Aktualisierungsbanner schließen",
     CONTEXT_ROOT_NOT_FOUND: "Kontextstammverzeichnis nicht gefunden."
 };

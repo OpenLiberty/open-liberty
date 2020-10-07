@@ -14,14 +14,20 @@ bVersion=1.0
 Bundle-Name: JCA 1.7
 Bundle-SymbolicName: com.ibm.ws.jca.1.7
 Bundle-Description: JCA 1.7; version=${bVersion}
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+jakartaeeMe: true
 
 WS-TraceGroup: WAS.j2c
 
 Export-Package: \
     com.ibm.ws.jca17.processor.service, \
     com.ibm.ws.jca17.processor
-       
+
+Import-Package: \
+    !com.ibm.ws.jca17.processor, \
+    !com.ibm.ws.jca17.processor.service, \
+    ${defaultPackageImport}
+
 Private-Package: \
     com.ibm.ws.jca.osgi.v17
 

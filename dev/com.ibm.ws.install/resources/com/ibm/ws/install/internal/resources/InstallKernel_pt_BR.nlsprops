@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=A URL a seguir n\u00e3o \u00e9 v\u00e1lida: {0}. Some
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=O protocolo de URL para o reposit\u00f3rio a seguir n\u00e3o \u00e9 suportado: {0}. Os protocolos suportados s\u00e3o HTTP, HTTPS e arquivo. Assegure-se de que a URL seja especificada corretamente.
 MSG_VALIDATION_INVALID_HOST=O host do servidor proxy a seguir n\u00e3o \u00e9 v\u00e1lido: {0}. Especifique um nome do host do servidor proxy HTTP v\u00e1lido. O prefixo http:// n\u00e3o \u00e9 necess\u00e1rio.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=Nenhum recurso localizado.
+
 VALIDATION_INVALID_VALUE=Valor n\u00e3o suportado
 VALIDATION_INVALID_KEY=Nome da propriedade n\u00e3o suportado
 VALIDATION_EMPTY_KEY=Nome da propriedade vazio
@@ -838,6 +841,38 @@ ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=O recurso n\u00e3o \u00e9 su
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Execute o featureUtility com um recurso compat\u00edvel.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Os recursos de usu\u00e1rio a seguir est\u00e3o especificados em server.xml e n\u00e3o ser\u00e3o instalados: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Os recursos {0} e {1} s\u00e3o incompat\u00edveis entre si e n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Os recursos n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Remova um dos recursos e tente novamente.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Os recursos singleton {0} e {1} s\u00e3o incompat\u00edveis entre si e n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Os recursos n\u00e3o podem ser instalados ao mesmo tempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Remova um dos recursos e tente novamente.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: N\u00e3o foi poss\u00edvel descompactar o arquivo zip do pacote de licen\u00e7a com a coordenada Maven {0} do reposit\u00f3rio no caminho de arquivo {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=N\u00e3o foi poss\u00edvel descompactar o arquivo zip do pacote de licen\u00e7a para a instala\u00e7\u00e3o do wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Assegure-se de que voc\u00ea tenha as permiss\u00f5es corretas para ler a partir do reposit\u00f3rio.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: N\u00e3o foi poss\u00edvel processar o arquivo de licen\u00e7a no local do arquivo {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=N\u00e3o foi poss\u00edvel processar o arquivo de licen\u00e7a para obter informa\u00e7\u00f5es de aceita\u00e7\u00e3o de licen\u00e7a.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Assegure-se de que voc\u00ea tenha as permiss\u00f5es corretas para ler o arquivo de licen\u00e7a.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: N\u00e3o foi poss\u00edvel localizar o arquivo JSON do Websphere no local do arquivo {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=N\u00e3o foi poss\u00edvel localizar o arquivo JSON do Websphere.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Assegure de que voc\u00ea tenha conex\u00e3o de rede e permiss\u00f5es de grava\u00e7\u00e3o no diret\u00f3rio Maven local configurado.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: N\u00e3o foi poss\u00edvel localizar os arquivos JSON do recurso localmente ou no reposit\u00f3rio Maven configurado: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Os arquivos JSON n\u00e3o podem ser localizados localmente ou no reposit\u00f3rio Maven configurado.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Assegure-se de que voc\u00ea tenha uma conex\u00e3o de rede e de que os arquivos JSON existam no reposit\u00f3rio Maven configurado.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: O recurso {0} n\u00e3o pode ser instalado na edi\u00e7\u00e3o {1} {2} porque ele se aplica apenas \u00e0 edi\u00e7\u00e3o {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=O recurso n\u00e3o \u00e9 aplic\u00e1vel para a edi\u00e7\u00e3o do produto instalado.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instale os recursos que s\u00e3o suportados pela edi\u00e7\u00e3o do produto.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para libera\u00e7\u00f5es beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para o produto instalado.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: O recurso foi transferido por download com sucesso.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=O recurso foi transferido por download.

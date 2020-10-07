@@ -31,6 +31,10 @@ Export-Package: \
   com.ibm.wsspi.util,\
   com.ibm.ws.sib.api.jms.service
 
+Import-Package: \
+  !com.ibm.ws.sib.api.jms.service, \
+  ${defaultPackageImport}
+
 Service-Component: \
   com.ibm.ws.messaging.jms;\
     implementation:='com.ibm.ws.sib.api.jms.service.JmsServiceFacade';\
@@ -56,3 +60,5 @@ instrument.disabled: true
 	com.ibm.ws.jca;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

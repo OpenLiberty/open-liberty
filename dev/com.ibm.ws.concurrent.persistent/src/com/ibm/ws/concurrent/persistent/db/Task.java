@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,8 @@ public class Task {
     @Column(nullable = false)
     public int VERSION;
 
-    public Task() {}
+    public Task() {
+    }
 
     Task(TaskRecord taskRecord) {
         if (taskRecord.hasId())
@@ -96,8 +97,8 @@ public class Task {
         if (taskRecord.hasIdentifierOfOwner())
             OWNR = taskRecord.getIdentifierOfOwner();
 
-        if (taskRecord.hasIdentifierOfPartition())
-            PARTN = taskRecord.getIdentifierOfPartition();
+        if (taskRecord.hasClaimExpiryOrPartition())
+            PARTN = taskRecord.getClaimExpiryOrPartition();
 
         if (taskRecord.hasMiscBinaryFlags())
             MBITS = taskRecord.getMiscBinaryFlags();

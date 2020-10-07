@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,12 +70,18 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService);
     }
 
+    BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest request,
+                                                                                                            HttpServletResponse response) {
+        return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService, request, response);
+    }
+
     public BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> buildAcs(HttpServletRequest req,
                                                                                                      HttpServletResponse res,
                                                                                                      SsoSamlService ssoService,
                                                                                                      String externalRelayState,
                                                                                                      SsoRequest samlRequest) throws SamlException {
-        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService);
+        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
+
         basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
         basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         setIdpMetadaProvider(basicMessageContext);

@@ -14,7 +14,16 @@ bVersion=1.0
 publish.wlp.jar.disabled: false
 test.project: true
 generate.replacement: true
+
+Export-Package: \
+    com.ibm.ws.com.unboundid; version=1.0.0
+
+Include-Resource: \
+    @${repo;com.unboundid:unboundid-ldapsdk;5.1.0;EXACT}, \
+    resources=resources
   
 -buildpath: \
-    com.unboundid:unboundid-ldapsdk;version=latest,\
-    com.ibm.ws.componenttest:public.api;version=1.0.0
+	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
+	com.ibm.ws.componenttest:public.api;version=1.0.0,\
+	org.apache.commons.io
+    

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2016 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,6 @@ import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.csi.PassivationPolicy;
 import com.ibm.websphere.csi.StatefulSessionKeyFactory;
 import com.ibm.websphere.ejbcontainer.EJBContextExtension;
-import com.ibm.websphere.ejbcontainer.EntityContextExtension;
 import com.ibm.websphere.ejbcontainer.MessageDrivenContextExtension;
 import com.ibm.websphere.ejbcontainer.SessionContextExtension;
 import com.ibm.websphere.ras.Tr;
@@ -181,7 +180,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
      * does not support timers, this method should do nothing.
      *
      * @param checkDatabase only initialize the timer service if is known that
-     *            persistent timers exist in the database
+     *                          persistent timers exist in the database
      */
     protected abstract void initializeTimerService(boolean checkDatabase) throws EJBContainerException, ContainerException;
 
@@ -333,7 +332,6 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
         try {
             // Register ObjectFactory for EJBContext and subinterfaces.      F48603
             injectionEngine.registerObjectFactory(Resource.class, EntityContext.class, EJBContextObjectFactory.class, false, null, false);
-            injectionEngine.registerObjectFactory(Resource.class, EntityContextExtension.class, EJBContextObjectFactory.class, false, null, false);
             injectionEngine.registerObjectFactory(Resource.class, EJBContext.class, EJBContextObjectFactory.class, false, null, false);
             injectionEngine.registerObjectFactory(Resource.class, EJBContextExtension.class, EJBContextObjectFactory.class, false, null, false);
             injectionEngine.registerObjectFactory(Resource.class, SessionContext.class, EJBContextObjectFactory.class, false, null, false);
@@ -371,8 +369,8 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
      * Updates the start EJBs at application start (initAtStartup) settings. <p>
      *
      * @param startEjbsAtAppStart true indicates beans should start at application start;
-     *            false indicates beans should start at first use;
-     *            null indicates the setting from ibm-ejb-jar-ext.xml should be used.
+     *                                false indicates beans should start at first use;
+     *                                null indicates the setting from ibm-ejb-jar-ext.xml should be used.
      */
     protected void updateStartEjbsAtAppStart(Boolean startEjbsAtAppStart) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -671,15 +669,15 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Uninstall an EJB module. {@link EJBApplicationMetaData#stoppingModule} must be called prior to calling this method.
      *
-     * @param dobj DeployedModule representing the module to be uninstalled.
+     * @param dobj      DeployedModule representing the module to be uninstalled.
      *
-     * @param doe DeployedObjectEvent for the module to be uninstalled.
+     * @param doe       DeployedObjectEvent for the module to be uninstalled.
      *
      * @param unbindNow boolean which is "true" if this uninstall is being called
-     *            as a result of an error that occurred during installation.
+     *                      as a result of an error that occurred during installation.
      *
      * @exception CSIException is thrown if an unexpected exception
-     *                is caught.
+     *                             is caught.
      */
     private void uninstall(EJBModuleMetaDataImpl mmd, boolean unbindNow) throws RuntimeWarning //d210058
     {//d130898
@@ -843,10 +841,10 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Bind all local and remote interfaces for a bean to all binding locations.
      *
-     * @param binder the namespace binder
-     * @param bmd the bean
+     * @param binder  the namespace binder
+     * @param bmd     the bean
      * @param homeSet the remote and local home wrappers, or <tt>null</tt> if
-     *            deferred initialization bindings should be used
+     *                    deferred initialization bindings should be used
      */
     protected void bindInterfaces(NameSpaceBinder<?> binder, BeanMetaData bmd) throws Exception {
         HomeWrapperSet homeSet = null;
@@ -866,9 +864,9 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Determine the number of remote or local interfaces exposed by a bean.
      *
-     * @param bmd the bean
+     * @param bmd   the bean
      * @param local <tt>true</tt> if local interfaces should be counted, or
-     *            <tt>false</tt> if remote interfaces should be counted
+     *                  <tt>false</tt> if remote interfaces should be counted
      * @return the number of remote or local interfaces
      */
     private int countInterfaces(BeanMetaData bmd, boolean local) // F743-23167
@@ -890,16 +888,16 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Bind all interfaces for a bean to all binding locations.
      *
-     * @param binder the namespace binder
-     * @param bmd the bean
-     * @param homeSet the remote and local home wrappers, or <tt>null</tt> if
-     *            deferred initialization bindings should be used
-     * @param local <tt>true</tt> if local interfaces should be bound, or
-     *            <tt>false</tt> if remote interfaces should be bound
-     * @param numInterfaces the number of local or remote interfaces; the result
-     *            of passing bmd and local to {@link #countInterfaces}
+     * @param binder                the namespace binder
+     * @param bmd                   the bean
+     * @param homeSet               the remote and local home wrappers, or <tt>null</tt> if
+     *                                  deferred initialization bindings should be used
+     * @param local                 <tt>true</tt> if local interfaces should be bound, or
+     *                                  <tt>false</tt> if remote interfaces should be bound
+     * @param numInterfaces         the number of local or remote interfaces; the result
+     *                                  of passing bmd and local to {@link #countInterfaces}
      * @param singleGlobalInterface <tt>true</tt> if this bean has only one
-     *            total interface (counting local and remote together)
+     *                                  total interface (counting local and remote together)
      */
     private void bindInterfaces(NameSpaceBinder<?> binder,
                                 BeanMetaData bmd,
@@ -960,17 +958,17 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Bind a single interface to all binding locations.
      *
-     * @param binder the namespace binder
-     * @param hr the bean home record
+     * @param binder  the namespace binder
+     * @param hr      the bean home record
      * @param homeSet the remote and local home wrappers, or <tt>null</tt> if
-     *            deferred initialization bindings should be used
+     *                    deferred initialization bindings should be used
      * @pram numInterfaces the number of remote or local interfaces
      * @param singleGlobalInterface <tt>true</tt> if this bean has only one
-     *            total interface (counting local and remote together)
-     * @param interfaceName the interface name to bind
-     * @param interfaceIndex the interface index, or -1 for a home interface
-     * @param local <tt>true</tt> if the interface to bind is a local interface
-     * @param isHome <tt>true</tt> if the interface is a home interface
+     *                                  total interface (counting local and remote together)
+     * @param interfaceName         the interface name to bind
+     * @param interfaceIndex        the interface index, or -1 for a home interface
+     * @param local                 <tt>true</tt> if the interface to bind is a local interface
+     * @param isHome                <tt>true</tt> if the interface is a home interface
      */
     private <T> void bindInterface(NameSpaceBinder<T> binder,
                                    HomeRecord hr,
@@ -1101,12 +1099,12 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Binds the binding object for an interface into java:global.
      *
-     * @param binder the namespace binder
-     * @param bindingObject the binding object
-     * @param hr the bean home record
-     * @param interfaceName the interface name being bound
+     * @param binder                the namespace binder
+     * @param bindingObject         the binding object
+     * @param hr                    the bean home record
+     * @param interfaceName         the interface name being bound
      * @param singleGlobalInterface <tt>true</tt> if this bean has only one
-     *            total interface (counting local and remote together)
+     *                                  total interface (counting local and remote together)
      */
     private <T> void bindObjectToJavaNameSpaces(NameSpaceBinder<T> binder,
                                                 T bindingObject,
@@ -1714,7 +1712,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
      *
      * Creates the non-persistent automatic timers for the specified module.
      *
-     * @param appName the application name
+     * @param appName    the application name
      * @param moduleName the module name
      * @param timerBeans the beans with automatic timers
      * @return the number of timers created
@@ -1771,7 +1769,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
      * warnings will be logged if they are present. Subclasses should override
      * this method if different behavior is required. <p>
      *
-     * @param appName the application name
+     * @param appName    the application name
      * @param moduleName the module name
      * @param timerBeans the beans with automatic timers
      * @return the number of timers created
@@ -1834,29 +1832,29 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Creates a persistent expiration based (single action or interval) EJB timer.
      *
-     * @param beanId the bean Id for which the timer is being created
+     * @param beanId     the bean Id for which the timer is being created
      * @param expiration the initial expiration for a interval-based timer
-     * @param interval the interval for an interval-based timer, or -1 for a single-action timer
-     * @param info application information to be delivered to the timeout method, or null
+     * @param interval   the interval for an interval-based timer, or -1 for a single-action timer
+     * @param info       application information to be delivered to the timeout method, or null
      */
     protected abstract Timer createPersistentExpirationTimer(BeanId beanId, Date expiration, long interval, Serializable info);
 
     /**
      * Creates a persistent calendar based EJB timer.
      *
-     * @param beanId the bean Id for which the timer is being created
+     * @param beanId     the bean Id for which the timer is being created
      * @param parsedExpr the parsed values of the schedule for a calendar-based timer
-     * @param info application information to be delivered to the timeout method, or null
+     * @param info       application information to be delivered to the timeout method, or null
      */
     protected abstract Timer createPersistentCalendarTimer(BeanId beanId, ParsedScheduleExpression parsedExpr, Serializable info);
 
     /**
      * Creates a non-persistent expiration based (single action or interval) EJB timer.
      *
-     * @param beanO the bean for which the timer is being created
+     * @param beanO      the bean for which the timer is being created
      * @param expiration the initial expiration for a interval-based timer
-     * @param interval the interval for an interval-based timer, or -1 for a single-action timer
-     * @param info application information to be delivered to the timeout method, or null
+     * @param interval   the interval for an interval-based timer, or -1 for a single-action timer
+     * @param info       application information to be delivered to the timeout method, or null
      */
     protected Timer createNonPersistentExpirationTimer(BeanO beanO, Date expiration, long interval, Serializable info) {
 
@@ -1886,9 +1884,9 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     /**
      * Creates a non-persistent calendar based EJB timer.
      *
-     * @param beanId the bean Id for which the timer is being created
+     * @param beanId     the bean Id for which the timer is being created
      * @param parsedExpr the parsed values of the schedule for a calendar-based timer
-     * @param info application information to be delivered to the timeout method, or null
+     * @param info       application information to be delivered to the timeout method, or null
      */
     protected Timer createNonPersistentCalendarTimer(BeanO beanO, ParsedScheduleExpression parsedExpr, Serializable info) {
 

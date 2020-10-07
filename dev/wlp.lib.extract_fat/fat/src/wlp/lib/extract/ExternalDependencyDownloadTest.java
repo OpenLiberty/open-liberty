@@ -26,15 +26,16 @@ import java.util.zip.ZipOutputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class ExternalDependencyDownloadTest {
     private static LibertyServer hostingServer = LibertyServerFactory.getLibertyServer("dependencyHostServer");
     private static final String HOST_APP_NAME = "dependencyHost";
@@ -57,8 +58,9 @@ public class ExternalDependencyDownloadTest {
         }
     }
 
-    @Mode(TestMode.QUARANTINE)
-    @Test
+//    @Mode(TestMode.QUARANTINE)
+//    @Test
+//    Test should not be hitting an external site.  Need to find a better implemenation before re-enabling.
     public void testHTTP2HTTPSRedirect() throws Exception {
         String serverName = "http2httpsRedirectGood";
         String dependencyTargetFile = "shared/lib/" + serverName + ".testfile.jar";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,6 +144,17 @@ public class AppClientTestBase extends DDTestBase {
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
                   " http://xmlns.jcp.org/xml/ns/javaee/application-client_8.xsd\"" +
                 " version=\"8\"" +
+                " id=\"ApplicationClient_ID\"" +
+                ">";
+    }
+
+    protected static String appClient90() {
+        return "<application-client" +
+                " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
+                  " https://jakarta.ee/xml/ns/jakartaee/application-client_9.xsd\"" +
+                " version=\"9\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
     }

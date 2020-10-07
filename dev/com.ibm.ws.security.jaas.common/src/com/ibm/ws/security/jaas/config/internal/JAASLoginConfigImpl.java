@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,14 +43,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.library.Library;
 
-@Component(service = { JAASLoginConfig.class },
-                name = "JAASLoginConfig",
-                configurationPid = "com.ibm.ws.security.jaas.config.JAASLoginConfig",
-                immediate = true,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM" })
-public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
-{
+@Component(service = { JAASLoginConfig.class }, name = "JAASLoginConfig", configurationPid = "com.ibm.ws.security.jaas.config.JAASLoginConfig", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
+public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig {
     private static TraceComponent tc = Tr.register(JAASLoginConfigImpl.class);
 
     private final String KEY_LOCATION_ADMIN = "locationAdmin";
@@ -58,24 +52,25 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
 
     private static final String AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
 
-    public static final List<String> defaultJaasLoginContextEntries =
-                    Collections.unmodifiableList(Arrays.asList(new String[] {
-                                                                             "system.UNAUTHENTICATED",
-                                                                             "system.WEB_INBOUND",
-                                                                             "system.DEFAULT",
-                                                                             "system.DESERIALIZE_CONTEXT",
-                                                                             "system.RMI_INBOUND",
-                                                                             "DefaultPrincipalMapping",
-                                                                             "WSLogin",
-                                                                             "ClientContainer" }));
+    private static final String SKIP_WAS_PROXY_FOR_JAAS_CONFIG_FILE = "com.ibm.websphere.security.skipWASProxyForJaasConfigFile";
+
+    private boolean skipProxy = false; //Default is inserting ProxyLoginModule for custom JAAS login module in jaas.conf file
+    public static final List<String> defaultJaasLoginContextEntries = Collections.unmodifiableList(Arrays.asList(new String[] {
+                                                                                                                                "system.UNAUTHENTICATED",
+                                                                                                                                "system.WEB_INBOUND",
+                                                                                                                                "system.DEFAULT",
+                                                                                                                                "system.DESERIALIZE_CONTEXT",
+                                                                                                                                "system.RMI_INBOUND",
+                                                                                                                                "DefaultPrincipalMapping",
+                                                                                                                                "WSLogin",
+                                                                                                                                "ClientContainer" }));
     private String fileName;
     private volatile Library sharedLibrary = null;
 
     private ConfigFile configFile = null;
     private ClassLoadingService classLoadingService;
 
-    @Reference(service = WsLocationAdmin.class,
-                    name = KEY_LOCATION_ADMIN)
+    @Reference(service = WsLocationAdmin.class, name = KEY_LOCATION_ADMIN)
     protected void setLocationAdmin(ServiceReference<WsLocationAdmin> ref) {
         locationAdminRef.setReference(ref);
     }
@@ -89,12 +84,7 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
         this.classLoadingService = classLoadingService;
     }
 
-    @Reference(service = Library.class,
-                    name = "sharedLibrary",
-                    target = "(id=jaasDefaultSharedLib)",
-                    cardinality = ReferenceCardinality.MULTIPLE,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = Library.class, name = "sharedLibrary", target = "(id=jaasDefaultSharedLib)", cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setSharedLib(Library svc) {
         sharedLibrary = svc;
     }
@@ -131,8 +121,7 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public String getSystemProperty(final String propName)
-    {
+    public String getSystemProperty(final String propName) {
         String value = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
             @Override
             public Object run() {
@@ -154,23 +143,34 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
     }
 
     @Override
-    public Map<String, List<AppConfigurationEntry>> getEntries()
-    {
+    public Map<String, List<AppConfigurationEntry>> getEntries() {
         if (configFile != null) {
             return updateDelegateOptions(configFile.getFileMap());
         }
-
         return null;
+    }
+
+    /**
+     *
+     */
+    private void isSkipProxy() {
+        skipProxy = "true".equalsIgnoreCase(getSystemProperty(SKIP_WAS_PROXY_FOR_JAAS_CONFIG_FILE));
     }
 
     private Map<String, List<AppConfigurationEntry>> updateDelegateOptions(Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries) {
         Map<String, List<AppConfigurationEntry>> result = new HashMap<String, List<AppConfigurationEntry>>();
         List<String> skipDefaultJaasLoginContextEntries = new ArrayList<String>();
+        isSkipProxy();
         for (Entry<String, List<AppConfigurationEntry>> entry : jaasConfigurationEntries.entrySet()) {
             String jaasLoginContextEnrty = entry.getKey();
             if (!defaultJaasLoginContextEntries.contains(jaasLoginContextEnrty)) {
-                List<AppConfigurationEntry> updateAppConfiguationEntries = updateAppConfiguration(entry);
-                result.put(jaasLoginContextEnrty, updateAppConfiguationEntries);
+                if (skipProxy) {
+                    result.put(jaasLoginContextEnrty, entry.getValue());
+                } else {
+                    result.put(jaasLoginContextEnrty, entry.getValue());
+                    List<AppConfigurationEntry> updateAppConfiguationEntries = updateAppConfiguration(entry);
+                    result.put(jaasLoginContextEnrty, updateAppConfiguationEntries);
+                }
             } else {
                 skipDefaultJaasLoginContextEntries.add(jaasLoginContextEnrty);
             }
@@ -189,15 +189,13 @@ public class JAASLoginConfigImpl extends Parser implements JAASLoginConfig
 
         for (AppConfigurationEntry appConfigurationEntry : appConfigurationEntries) {
             Map<String, Object> options = (Map<String, Object>) appConfigurationEntry.getOptions();
-            options = JAASLoginModuleConfigImpl.processDelegateOptions(options, appConfigurationEntry.getLoginModuleName(), classLoadingService, sharedLibrary, true);
+            options = JAASLoginModuleConfigImpl.processDelegateOptions(options, appConfigurationEntry.getLoginModuleName(), null, classLoadingService, sharedLibrary, true);
             LoginModuleControlFlag controlFlag = appConfigurationEntry.getControlFlag();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "loginModuleClassName: " + JAASLoginModuleConfig.LOGIN_MODULE_PROXY + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
             }
-
             updateAppConfiguationEntries.add(new AppConfigurationEntry(JAASLoginModuleConfig.LOGIN_MODULE_PROXY, controlFlag, options));
         }
-
         return updateAppConfiguationEntries;
     }
 }

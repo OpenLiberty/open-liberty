@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.oauth20.OAuth20Component;
 import com.ibm.oauth.core.internal.oauth20.config.OAuth20ConfigProvider;
 import com.ibm.ws.security.SecurityService;
+
+import io.openliberty.security.oauth20.internal.config.OAuthEndpointSettings;
 
 public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentInstance {
 
@@ -160,5 +162,9 @@ public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentIn
     public String getInternalClientSecret();
 
     public boolean isROPCPreferUserSecurityName();
+
+    public boolean isTrackOAuthClients();
+
+    public OAuthEndpointSettings getOAuthEndpointSettings();
 
 }

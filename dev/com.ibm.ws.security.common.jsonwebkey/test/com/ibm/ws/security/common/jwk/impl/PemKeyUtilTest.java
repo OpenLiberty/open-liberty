@@ -56,9 +56,10 @@ public class PemKeyUtilTest {
         assertNotNull("There must be a public key.", publicKey);
     }
     
-    @Test(expected=Exception.class)
+    @Test
     public void testParse_BadBeginHeader() throws Exception {
         PublicKey publicKey = PemKeyUtil.getPublicKey(pemKeyTextWithBadBeginHeader);
+        assertNull("A public key should not have been extracted from a malformed PEM key, but got: " + publicKey, publicKey);
     }
     
     @Ignore

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,13 +48,17 @@ public class JsonConfigTest {
     public static final String SERVER_XML_BASIC_CONSOLE_BASIC_MESSAGE = "basicConsoleBasicMessage.xml";
     public static final String SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_MAXFILESIZE = "basicConsoleJsonMessageMaxFileSize.xml";
     public static final String SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_ACCESSTRACE = "basicConsoleJsonMessageTraceAccess.xml";
+    public static final String SERVER_XML_JSON_CONSOLE_BASIC_MESSAGE = "jsonConsoleLogServer.xml";
     public static final String SERVER_XML_JSON_CONSOLE_JSON_MESSAGE_TRACE_ENABLED = "jsonConsoleJsonMessageTraceEnabled.xml";
+    public static final String SERVER_XML_JSON_MESSAGE_MAXFILESIZE = "jsonMessageMaxFileSize.xml";
     public static final String SERVER_XML_TRACE_CONSOLE_ACCESSTRACE_MESSAGE = "traceConsoleAccessTraceMessage.xml";
     public static final String SERVER_XML_CLEAR_LOGGING_SOURCES = "clearLoggingSources.xml";
     public static final String SERVER_XML_BASIC = "basicServer.xml";
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
     public static final String SERVER_XML_JSON_CONFIG_FIELD_EXT = "jsonConfigFieldExt.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_ENABLED = "appsWriteJsonEnabled.xml";
+    public static final String SERVER_XML_APPS_WRITE_JSON_DISABLED = "appsWriteJsonDisabled.xml";
 
     ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
 
@@ -62,8 +66,11 @@ public class JsonConfigTest {
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
         server.startServer();
+
         /* start server */
         Assert.assertNotNull("Test app LogstashApp does not appear to have started.", server.waitForStringInLog("CWWKT0016I:.*LogstashApp"));
+        // Preserve the original server configuration
+        server.saveServerConfiguration();
     }
 
     //<logging consoleLogLevel="ERROR" />
@@ -90,7 +97,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "WARNING", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev"/>
     @Test
     public void testInfo() throws Exception {
         setServerConfig(SERVER_XML_CLLINFO_BASIC_CONSOLE);
@@ -100,7 +107,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //Test 6 consoleLL="INFO" consoleFormat=basic messageFormat=json
+    //Test 6 consoleLL="INFO" consoleFormat=dev messageFormat=json
     @Test
     public void testBasicConsoleJsonMessage() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE);
@@ -121,7 +128,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="basic" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="simple" maxFileSize="100"/>
     @Test
     public void testBasicConsoleBasicMessage() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_BASIC_MESSAGE);
@@ -131,7 +138,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="json" maxFileSize="100"/>
     @Test
     public void testBasicConsoleJsonMessageMaxFileSize() throws Exception {
         setServerConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_MAXFILESIZE);
@@ -141,7 +148,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testJsonMessageSrcTraceAccess() throws Exception {
         ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
@@ -163,7 +170,7 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "finest");
     }
 
-    //<logging consoleLogLevel="INFO" consoleFormat="basic" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
+    //<logging consoleLogLevel="INFO" consoleFormat="dev" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testTraceConsoleAccessTraceMessage() throws Exception {
         ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
@@ -244,6 +251,34 @@ public class JsonConfigTest {
 
     }
 
+    @Test
+    public void testAppsWriteJson() throws Exception {
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_ENABLED);
+        //run LogServlet
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        runApplication(consoleLogFile);
+        //check output are in application's JSON format
+        checkLine("\\{\"key\":\"value\"\\}");
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}");
+        checkLine("\\{\\}");
+        checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        checkLine("\\{\\}", consoleLogFile);
+
+        //update file
+        setServerConfig(SERVER_XML_APPS_WRITE_JSON_DISABLED);
+        //check output are in liberty JSON format
+        runApplication(consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*\".*\\}");
+        checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
+
+    }
+
     private void checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) throws Exception {
         if (isJson) {
             if (sourceList.contains("trace") && traceSpec.equals("finest")) {
@@ -272,7 +307,8 @@ public class JsonConfigTest {
         }
     }
 
-    private void checkConsoleLogUpdate(boolean isJson, RemoteFile consoleLogFile, String consoleLogLevel, ArrayList<String> sourceList, String traceSpec) throws Exception {
+    private void checkConsoleLogUpdate(boolean isJson, RemoteFile consoleLogFile, String consoleLogLevel, ArrayList<String> sourceList,
+                                       String traceSpec) throws Exception {
         //runApp
         if (isJson) {
             if (sourceList.contains("trace") && traceSpec.equals("finest")) {
@@ -325,10 +361,12 @@ public class JsonConfigTest {
         TestUtils.runApp(server, "logServlet");
     }
 
-    private static String setServerConfig(String fileName) throws Exception {
-        server.setMarkToEndOfLog();
+    //check message.log for CWWKG0017I.*|CWWKG0018I. message, messageSource must have "message"
+    private static void setServerConfig(String fileName) throws Exception {
+        RemoteFile log = server.getDefaultTraceFile();
+        server.setMarkToEndOfLog(log);
         server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        Assert.assertNotNull(server.waitForStringInLog("CWWKG0017I.*|CWWKG0018I.*", log));
     }
 
     @AfterClass

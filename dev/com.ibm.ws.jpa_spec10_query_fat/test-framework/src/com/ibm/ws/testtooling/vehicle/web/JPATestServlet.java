@@ -40,7 +40,7 @@ import componenttest.app.FATServlet;
 public abstract class JPATestServlet extends FATServlet {
     private static final long serialVersionUID = -4038309130483462162L;
 
-    private static int portNumber = 0;
+    protected static int portNumber = 0;
 
     protected final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
     protected String testClassName;
@@ -163,6 +163,8 @@ public abstract class JPATestServlet extends FATServlet {
         } else if (dbProductName.toLowerCase().contains("postgres")) {
             productName = "POSTGRES";
         } else if (dbProductName.toLowerCase().contains("sqlserver")) {
+            productName = "SQLSERVER";
+        } else if (dbProductName.toLowerCase().contains("microsoft sql server")) {
             productName = "SQLSERVER";
         } else if (dbProductName.toLowerCase().contains("sybase")) {
             productName = "SYBASE";

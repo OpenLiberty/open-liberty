@@ -55,7 +55,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     /**
      * Construct a new task life cycle callback. A single instance can be used for multiple tasks.
      *
-     * @param managedExecutor the managed executor to which the task was submitted.
+     * @param managedExecutor         the managed executor to which the task was submitted.
      * @param threadContextDescriptor represents thread context captured from the submitting thread.
      */
     TaskLifeCycleCallback(ManagedExecutorServiceImpl managedExecutor, ThreadContextDescriptor threadContextDescriptor) {
@@ -63,7 +63,11 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         this.threadContextDescriptor = threadContextDescriptor;
 
         Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
-        PolicyExecutor executor = Boolean.parseBoolean(execProps.get(ManagedTask.LONGRUNNING_HINT)) ? managedExecutor.longRunningPolicyExecutorRef.get() : null;
+        // TODO check the eeVersion of the managedExecutor to decide which constant takes precedence
+        String longRunning = execProps.get("jakarta.enterprise.concurrent.LONGRUNNING_HINT");
+        if (longRunning == null)
+            longRunning = execProps.get("javax.enterprise.concurrent.LONGRUNNING_HINT");;
+        PolicyExecutor executor = Boolean.parseBoolean(longRunning) ? managedExecutor.longRunningPolicyExecutorRef.get() : null;
         this.policyExecutor = executor == null ? managedExecutor.policyExecutor : executor;
     }
 
@@ -83,8 +87,8 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
      * Allows for replacing the identifier that is used in exception messages and log messages about the policy executor.
      *
      * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
-     *            concurrencyPolicy[longRunningPolicy]
-     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     *                                     concurrencyPolicy[longRunningPolicy]
+     *                                     managedExecutorService[executor1]/longRunningPolicy[default-0]
      * @return identifier to use in messages.
      */
     @Override
@@ -103,7 +107,14 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     @Trivial
     public final String getName(Object task) {
         Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
-        String taskName = execProps == null ? null : execProps.get(ManagedTask.IDENTITY_NAME);
+        String taskName;
+        if (execProps == null)
+            taskName = null;
+        else {
+            taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+            if (taskName == null)
+                taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+        }
         return taskName == null ? task.toString() : taskName;
     }
 

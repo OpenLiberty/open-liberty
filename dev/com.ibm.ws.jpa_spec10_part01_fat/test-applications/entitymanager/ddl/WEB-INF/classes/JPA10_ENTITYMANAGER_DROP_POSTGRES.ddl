@@ -1,0 +1,4 @@
+DROP TABLE JPA10EntityManagerEntityA;
+DROP TABLE JPA10EntityManagerEntityA_JPA10EntityManagerEntityB;
+DROP TABLE JPA10EntityManagerEntityB;
+DROP TABLE JPA10EntityManagerEntityC;

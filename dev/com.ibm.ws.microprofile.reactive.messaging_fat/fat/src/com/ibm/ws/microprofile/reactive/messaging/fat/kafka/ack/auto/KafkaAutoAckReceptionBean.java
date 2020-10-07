@@ -23,7 +23,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
 
 @ApplicationScoped
-public class KafkaAutoAckReceptionBean extends AbstractReceptionBean {
+public class KafkaAutoAckReceptionBean extends AbstractReceptionBean<String> {
 
     public static final String CHANNEL_IN = "auto-ack-in";
 

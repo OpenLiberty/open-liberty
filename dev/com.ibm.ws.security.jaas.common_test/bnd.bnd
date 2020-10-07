@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ test.project: true
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.authentication.builtin;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\

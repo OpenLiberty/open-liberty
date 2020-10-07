@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/linkheader/src"/>
 	<classpathentry kind="src" path="test-applications/annotationscan/src"/>
+	<classpathentry kind="src" path="test-applications/beanparam/src"/>
 	<classpathentry kind="src" path="test-applications/beanvalidation/src"/>
 	<classpathentry kind="src" path="test-applications/bookcontinuationstore/src"/>
 	<classpathentry kind="src" path="test-applications/bookstore/src"/>
@@ -11,6 +11,7 @@
 	<classpathentry kind="src" path="test-applications/client/src"/>
 	<classpathentry kind="src" path="test-applications/context/src"/>
 	<classpathentry kind="src" path="test-applications/contextresolver/src"/>
+	<classpathentry kind="src" path="test-applications/exceptionMappingWithOT/src"/>
 	<classpathentry kind="src" path="test-applications/extraproviders/src"/>
 	<classpathentry kind="src" path="test-applications/getCgetS/src"/>
 	<classpathentry kind="src" path="test-applications/helloworld/src"/>
@@ -18,27 +19,32 @@
 	<classpathentry kind="src" path="test-applications/jackson/src"/>
 	<classpathentry kind="src" path="test-applications/jacksonJsonIgnore/src"/>
 	<classpathentry kind="src" path="test-applications/json/src"/>
+	<classpathentry kind="src" path="test-applications/linkheader/src"/>
 	<classpathentry kind="src" path="test-applications/paramconverter/src"/>
 	<classpathentry kind="src" path="test-applications/params/src"/>
 	<classpathentry kind="src" path="test-applications/providerAndResource/src"/>
 	<classpathentry kind="src" path="test-applications/providerCache/src"/>
 	<classpathentry kind="src" path="test-applications/providers/src"/>
 	<classpathentry kind="src" path="test-applications/resourcealgorithm/src"/>
+	<classpathentry kind="src" path="test-applications/resourcepkg/src"/>
 	<classpathentry kind="src" path="test-applications/responseAPI/src"/>
+	<classpathentry kind="src" path="test-applications/restmetrics/src"/>
 	<classpathentry kind="src" path="test-applications/security/src"/>
+	<classpathentry kind="src" path="test-applications/servicescope/src"/>
 	<classpathentry kind="src" path="test-applications/servletcoexist1/src"/>
 	<classpathentry kind="src" path="test-applications/servletcoexist2/src"/>
 	<classpathentry kind="src" path="test-applications/servletcoexist3/src"/>
 	<classpathentry kind="src" path="test-applications/testManagedBeans/src"/>
 	<classpathentry kind="src" path="test-applications/thirdpartyjersey/src"/>
+	<classpathentry kind="src" path="test-applications/thirdpartyjerseywithinjection/src"/>
 	<classpathentry kind="src" path="test-applications/uriInfo/src"/>
 	<classpathentry kind="src" path="test-applications/validation/src"/>
 	<classpathentry kind="src" path="test-applications/wadl/src"/>
 	<classpathentry kind="src" path="test-applications/webcontainer/src"/>
-	<classpathentry kind="src" path="test-applications/servicescope/src"/>
-	<classpathentry kind="src" path="test-applications/resourcepkg/src"/>
-	<classpathentry kind="src" path="test-applications/beanparam/src"/>
+	<classpathentry kind="src" path="test-applications/simpleJson/src"/>
+	<classpathentry kind="src" path="test-applications/options/src"/>
+	<classpathentry kind="src" path="test-applications/customsecuritycontext/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

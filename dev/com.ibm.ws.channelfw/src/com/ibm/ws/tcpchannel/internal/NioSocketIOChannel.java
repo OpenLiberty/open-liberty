@@ -284,26 +284,30 @@ public class NioSocketIOChannel extends SocketIOChannel {
                 }
             }
 
-            try {
-                if (channel != null) {
-                    channel.close();
-                }
+            // retry a few times then ignore close failures
+            for (int retry_count=0;3>retry_count;++retry_count) {
+              try {
+                  if (channel != null) {
+                      channel.close();
+                  }
 
-                // need to make sure the keys get cancelled after the close call
-                if (channelSelectorRead != null) {
-                    channelSelectorRead.wakeup();
-                    channelSelectorRead = null;
-                }
-                if (channelSelectorWrite != null) {
-                    channelSelectorWrite.wakeup();
-                    channelSelectorWrite = null;
-                }
-
-            } catch (Throwable t) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Error closing channel: " + t);
-                }
-                // ignore all shutdown/close errors
+                  // need to make sure the keys get cancelled after the close call
+                  if (channelSelectorRead != null) {
+                      channelSelectorRead.wakeup();
+                      channelSelectorRead = null;
+                  }
+                  if (channelSelectorWrite != null) {
+                      channelSelectorWrite.wakeup();
+                      channelSelectorWrite = null;
+                  }
+                  break;
+              } catch (Throwable t) {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                      Tr.debug(this, tc, "(" + retry_count + ") Error closing channel: " + t);
+                  }
+                  // if we get repeated exceptions try waiting a second
+                  if (1==retry_count) try { Thread.sleep(1000); } catch (InterruptedException ie) {}
+              }
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

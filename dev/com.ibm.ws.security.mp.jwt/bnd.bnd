@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -10,16 +10,10 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: WAS Secuity MP JWT 1.0
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt
 Bundle-Description: WAS security jwt authentication for microprofile, version=${bVersion}
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-#Web-ContextPath: /ibm/api/social-login
-
 
 WS-TraceGroup: \
   MPJWT
@@ -34,7 +28,8 @@ Export-Package: \
    com.ibm.ws.security.mp.jwt, \
    com.ibm.ws.security.mp.jwt.impl, \
    com.ibm.ws.security.mp.jwt.error, \
-   com.ibm.ws.security.mp.jwt.tai
+   com.ibm.ws.security.mp.jwt.tai, \
+   io.openliberty.security.mp.jwt.osgi
 
 
 Import-Package: \
@@ -50,15 +45,14 @@ Private-Package: \
     com.ibm.ws.security.mp.jwt.tai, \
     com.ibm.ws.security.mp.jwt.config, \
     com.ibm.ws.security.mp.jwt.resources.*,
-    
--dsannotations: com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl, \
-	com.ibm.ws.security.mp.jwt.impl.utils.JsonWebTokenUtilImpl, \
-        com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtServiceImpl, \
-	com.ibm.ws.security.mp.jwt.tai.MicroProfileJwtTAI
 
+
+-dsannotations: com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl, \
+    com.ibm.ws.security.mp.jwt.impl.utils.JsonWebTokenUtilImpl, \
+    com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtServiceImpl, \
+    com.ibm.ws.security.mp.jwt.tai.MicroProfileJwtTAI
 
 -dsannotations-inherit = true
-
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
@@ -88,7 +82,7 @@ Include-Resource: \
         com.ibm.ws.security.token;version=latest, \
         com.ibm.ws.security.common;version=latest, \
         com.ibm.ws.security.common.jsonwebkey;version=latest, \
-        com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
+        com.ibm.ws.org.apache.commons.codec;version=latest, \
         com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
         com.ibm.ws.security.mp.jwt.proxy;version=latest, \
         com.ibm.ws.transport.http;version=latest
@@ -111,4 +105,6 @@ Include-Resource: \
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.injection.core;version=latest,\
     com.ibm.websphere.appserver.spi.servlet;version=latest, \
-    com.ibm.ws.anno;version=latest
+    com.ibm.ws.anno;version=latest, \
+    com.ibm.ws.threading;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

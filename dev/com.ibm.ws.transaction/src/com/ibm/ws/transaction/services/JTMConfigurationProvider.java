@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,8 +63,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -265,6 +264,23 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             logDir = parseTransactionLogDirectory();
         }
         return logDir;
+    }
+
+    @Override
+    public String getLeaseCheckStrategy() {
+        return (String) _props.get("leaseCheckStrategy");
+    }
+
+    @Override
+    public int getLeaseCheckInterval() {
+        Number num = (Number) _props.get("leaseCheckInterval");
+        return num.intValue();
+    }
+
+    @Override
+    public int getLeaseLength() {
+        Number num = (Number) _props.get("leaseLength");
+        return num.intValue();
     }
 
     @Override
@@ -492,8 +508,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @return the full path of the log directory
      */
     private String parseTransactionLogDirectory() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "parseTransactionLogDirectory working with " + _props);
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "parseTransactionLogDirectory", _props);
 
         String configuredLogDir = (String) _props.get("transactionLogDirectory");
         // don't allow null to be returned - it will result in use of a location
@@ -535,16 +551,34 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                     // if we can't establish a tran log dir, we need a way to disable
                     // the transaction service
                     // rethrow the original exception
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "parseTransactionLogDirectory", e);
                     throw e;
                 }
             } else {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "parseTransactionLogDirectory", e);
                 throw e;
             }
         }
 
-        // get full path string from resource
-        logDir = logDirResource.toExternalURI().getPath();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "logDirResource: " + logDirResource);
 
+        // get full path string from resource
+        logDir = logDirResource.asFile().getPath().replaceAll("\\\\", "/");
+//        try {
+//            logDir = logDirResource.asFile().getCanonicalPath();
+//        } catch (IOException e) {
+//            final IllegalArgumentException iae = new IllegalArgumentException(configuredLogDir);
+//            iae.initCause(e);
+//            if (tc.isEntryEnabled())
+//                Tr.exit(tc, "parseTransactionLogDirectory", iae);
+//            throw iae;
+//        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "parseTransactionLogDirectory", logDir);
         return logDir;
     }
 
@@ -610,11 +644,44 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
      */
     @Override
-    public int getLocalTimeBeforeStale() {
-        Number num = (Number) _props.get("localTimeBeforeStale");
+    public int getLightweightTransientErrorRetryTime() {
+        Number num = (Number) _props.get("lightweightTransientErrorRetryTime");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryAttempts() {
+        Number num = (Number) _props.get("lightweightTransientErrorRetryAttempts");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     */
+    @Override
+    public int getStandardTransientErrorRetryTime() {
+        Number num = (Number) _props.get("standardTransientErrorRetryTime");
+        return num.intValue();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getStandardTransientErrorRetryAttempts() {
+        Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
         return num.intValue();
     }
 }

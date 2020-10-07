@@ -9,12 +9,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-    <include optional="true" location="${shared.config.dir}/bvtTestPorts.xml"/>
+    <include optional="true" location="../fatTestPorts.xml"/>
     <config monitorInterval="1s" />
-    
-<!--     <featureManager> -->
-<!--         <feature>httpservice-2.2</feature> -->
-<!--     </featureManager> -->
-    
 </server>

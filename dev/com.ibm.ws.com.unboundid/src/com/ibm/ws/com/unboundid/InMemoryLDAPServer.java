@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,32 @@
 
 package com.ibm.ws.com.unboundid;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
 import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldap.sdk.DeleteRequest;
 import com.unboundid.ldap.sdk.Entry;
+import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.schema.Schema;
+import com.unboundid.util.ssl.KeyStoreKeyManager;
+import com.unboundid.util.ssl.SSLUtil;
+import com.unboundid.util.ssl.TrustAllTrustManager;
 
 /**
  * An in memory UnboundID LDAP server. See ContextPoolTimeoutTest for an example on how to use this.
@@ -47,37 +63,85 @@ public class InMemoryLDAPServer {
     private InMemoryDirectoryServerConfig config = null;
     private InMemoryDirectoryServer ds = null;
 
+    private static final String keystorePassword = "LDAPpassword";
+    private String keystore;
+    private static final String listenerName = "LDAP";
+    private static final String secureListenerName = "LDAPS";
+
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
      * service.
      *
-     * @param bases The base entries to create for this in-memory LDAP server.
+     * @param useWimSchema      Asking the user if they want to use the default WIM schema
+     * @param bases             The base entries to create for this in-memory LDAP servers
+     * @param useSecureListener Use the LDAPS listener
      * @throws Exception If something went wrong
      */
-    public InMemoryLDAPServer(String... bases) throws Exception {
+    public InMemoryLDAPServer(boolean useWimSchema, String... bases) throws Exception {
+        SSLContext sslc = SSLContext.getDefault();
+        SSLSocketFactory sslf = sslc.getSocketFactory();
+        SSLSocket ssls = (SSLSocket) sslf.createSocket();
+        SSLUtil.setEnabledSSLProtocols(Arrays.asList(ssls.getSupportedProtocols()));
+        SSLUtil.setEnabledSSLCipherSuites(Arrays.asList(ssls.getSupportedCipherSuites()));
 
         config = new InMemoryDirectoryServerConfig(bases);
         config.addAdditionalBindCredentials(getBindDN(), getBindPassword());
-        config.setListenerConfigs(
-                                  InMemoryListenerConfig.createLDAPConfig("LDAP", // Listener name
-                                                                          null, // Listen address. (null = listen on all interfaces)
-                                                                          0, // Listen port (0 = automatically choose an available port)
-                                                                          null) // StartTLS factory
-        ); // Client factory
 
+        keystore = extractResourceToFile("/resources/keystore.p12", "keystore", ".p12").getAbsolutePath();
+        final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
+                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
+
+        ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
+        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig(secureListenerName, 0, serverSSLUtil.createSSLServerSocketFactory());
+        configs.add(secure);
+        InMemoryListenerConfig insecure = InMemoryListenerConfig.createLDAPConfig(listenerName, null, 0, null);
+        configs.add(insecure);
+        config.setListenerConfigs(configs);
+
+        Schema schema = null;
+        if (useWimSchema) {
+            InputStream in = getClass().getResourceAsStream("/resources/wimschema.ldif");
+            Schema wimschema = Schema.getSchema(in);
+            schema = Schema.mergeSchemas(Schema.getDefaultStandardSchema(), wimschema);
+        }
+        config.setSchema(schema);
+
+        ds = new InMemoryDirectoryServer(config);
+        ds.startListening();
+    }
+
+    /**
+     * Creates a new instance of the in memory LDAP server. It initializes the directory
+     * service.
+     *
+     * @param bases The base entries to create for this in-memory LDAP servers
+     * @throws Exception If something went wrong
+     */
+    public InMemoryLDAPServer(String... bases) throws Exception {
         /*
          * Merge the default schema with our WIM schema. The WIM schema adds wimInetOrgPerson,
          * wimGroupOfNames, and simulatedMicrosoftSecurityPrincipal. The wimInetOrgPerson
          * adds WIM properties as LDAP attributes so that we do not need to set up a mapping
          * between the WIM properties and other existing LDAP attributes.
          */
+        this(true, bases);
+    }
 
-        InputStream in = getClass().getResourceAsStream("/resources/wimschema.ldif");
-        Schema wimschema = Schema.getSchema(in);
-        Schema schema = Schema.mergeSchemas(Schema.getDefaultStandardSchema(), wimschema);
-        config.setSchema(schema);
-        ds = new InMemoryDirectoryServer(config);
-        ds.startListening();
+    /**
+     * Extract a resource from the JAR to a temporary file on the file system. The
+     * file is marked for deletion on JVM exit.
+     *
+     * @param resource The resource from the JAR to extract.
+     * @param prefix   Prefix for the temporary file.
+     * @param suffix   Suffix for the temporary file.
+     * @return The {@link File} instance.
+     * @throws IOException if there was an issue extracting the file.
+     */
+    protected File extractResourceToFile(String resource, String prefix, String suffix) throws IOException {
+        File tempfile = File.createTempFile(prefix, suffix);
+        InputStream src = getClass().getResourceAsStream(resource);
+        Files.copy(src, Paths.get(tempfile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+        return tempfile;
     }
 
     /**
@@ -136,12 +200,40 @@ public class InMemoryLDAPServer {
     }
 
     /**
+     * Retrieves the configured listen address for the first active listener, if defined.
+     *
+     * @return The configured listen address for the specified listener, or null if there is no such listener or the listener does not have an explicitly-configured listen address.
+     */
+    public InetAddress getListenAddress() {
+        return ds.getListenAddress();
+    }
+
+    /**
      * Get the port the server is listening to.
      *
      * @return the port this directory server is listening to
      */
+    @Deprecated
     public int getListenPort() {
-        return ds.getListenPort();
+        return ds.getListenPort(listenerName);
+    }
+
+    /**
+     * Get the port for the insecure LDAP port.
+     *
+     * @return LDAP port
+     */
+    public int getLdapPort() {
+        return ds.getListenPort(listenerName);
+    }
+
+    /**
+     * Get the secure LDAPS port.
+     *
+     * @return LDAPS port
+     */
+    public int getLdapsPort() {
+        return ds.getListenPort(secureListenerName);
     }
 
     /**
@@ -187,5 +279,33 @@ public class InMemoryLDAPServer {
         } catch (Exception e) {
             // if the user or group doesn't exist, that's fine.
         }
+    }
+
+    /**
+     * Attempts to establish a client connection to the server.
+     *
+     * @param options The connection options to use when creating the connection. It may be null if a default set of options should be used.
+     * @returns The client connection that has been established.
+     * @throws LDAPException - If a problem is encountered while attempting to create the connection.
+     */
+    public LDAPConnection getConnection(String listenerName) throws LDAPException {
+        return ds.getConnection(listenerName);
+    }
+
+    /*
+     * Reads entries from the specified LDIF file and adds them to the server, optionally clearing any existing entries before beginning to add the new entries. If an error is
+     * encountered while adding entries from LDIF then the server will remain populated with the data it held before the import attempt (even if the clear is given with a value of
+     * true). This method may be used regardless of whether the server is listening for client connections.
+     *
+     * @param clear Indicates whether to remove all existing entries prior to adding entries read from LDIF.
+     *
+     * @param path The path to the LDIF file from which the entries should be read. It must not be null
+     *
+     * @returns The number of entries read from LDIF and added to the server.
+     *
+     * @throws LDAPException - If a problem occurs while reading entries or adding them to the server.
+     */
+    public int importFromLDIF(boolean clear, String path) throws LDAPException {
+        return ds.importFromLDIF(clear, path);
     }
 }

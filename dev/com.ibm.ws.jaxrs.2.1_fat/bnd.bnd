@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
   fat/src,\
@@ -20,6 +18,8 @@ src: \
   test-applications/jaxrs21uriInfo/src
 
 fat.project: true
+
+tested.features: mpconfig-1.4, restfulWS-3.0, restfulWSClient-3.0, appsecurity-2.0, appsecurity-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2,\

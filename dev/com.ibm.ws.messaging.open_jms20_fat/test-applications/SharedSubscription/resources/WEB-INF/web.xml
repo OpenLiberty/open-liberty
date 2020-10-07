@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>Shared Subscription Servlet</display-name>
+
+  <servlet id="Default">
+    <servlet-name>SharedSubscription FAT Servlet</servlet-name>
+    <display-name>SharedSubscription FAT Servlet</display-name>
+    <servlet-class>sharedsubscription.web.SharedSubscriptionServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>SharedSubscription FAT Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_QCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+  </resource-ref>  
+
+  <resource-ref>
+    <res-ref-name>eis/tcf</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>eis/tcf1</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf1</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>eis/tcf2</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf2</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jms/FAT_TCF</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>jms/FAT_TCF</lookup-name>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jms/FAT_COMMS_TCF</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>jms/FAT_COMMS_TCF</lookup-name>
+  </resource-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_INPUT_Q</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
+
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic2</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic3</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <resource-env-ref-name>eis/topic4</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jms/FAT_TOPIC</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

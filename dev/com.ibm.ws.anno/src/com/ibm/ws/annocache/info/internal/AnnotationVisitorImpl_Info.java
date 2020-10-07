@@ -84,7 +84,7 @@ public abstract class AnnotationVisitorImpl_Info extends AnnotationVisitor {
     // annotation class name.  (This is not validated.)
 
     protected AnnotationVisitorImpl_Info(InfoStoreImpl iStore) {
-        super(Opcodes.ASM7);
+        super(Opcodes.ASM8);
         String methodName = "<init>";
 
         this.infoStore = iStore;

@@ -29,6 +29,7 @@ IBM-API-Package: javax.decorator;  type="spec", \
  org.jboss.weld.context.beanstore;type="third-party", \
  org.jboss.weld.context.bound;type="third-party", \
  org.jboss.weld.context.conversation;type="third-party"
+IBM-SPI-Package: io.openliberty.cdi.spi;type="ibm-spi"
 IBM-ShortName: cdi-1.2
 Subsystem-Name: Contexts and Dependency Injection 1.2
 -features=com.ibm.websphere.appserver.javax.jsp-2.3, \
@@ -38,14 +39,14 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.appserver.javax.ejb-3.2, \
  com.ibm.websphere.appserver.javax.annotation-1.2, \
  com.ibm.websphere.appserver.javax.validation-1.1, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0, \
+ com.ibm.websphere.appserver.eeCompatible-7.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.javax.cdi-1.2, \
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javax.servlet-3.1, \
+ io.openliberty.servlet.api-3.1, \
  com.ibm.websphere.appserver.javax.jsf-2.2, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.ws.org.jboss.weld.2.4.8, \
@@ -59,7 +60,8 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.javaee.jaxb.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cdi.interfaces
+ com.ibm.ws.cdi.interfaces, \
+ com.ibm.websphere.appserver.spi.cdi; location:="dev/spi/ibm/,lib/"
 -jars=com.ibm.websphere.appserver.thirdparty.cdi; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:2.4.7.Final"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd

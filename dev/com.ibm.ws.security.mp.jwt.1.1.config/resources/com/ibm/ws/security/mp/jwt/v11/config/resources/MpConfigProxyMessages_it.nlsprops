@@ -15,17 +15,17 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5775 - CWWKS5799
+# Message prefix block: CWWKS5775 - CWWKS5779
 
 MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: Microprofilo JWT versione 1.1 mpConfigProxy elaborato correttamente.
 MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=La configurazione indicata \u00e8 stata elaborata correttamente.
-MPJWT_11_CONFIG_PROXY_PROCESSED.useraction=Non \u00e8 richiesta alcuna azione.
+MPJWT_11_CONFIG_PROXY_PROCESSED.useraction=Nessuna azione richiesta.
 
 MPJWT_11_CONFIG_PROXY_MODIFIED=CWWKS5776I: Microprofilo JWT versione 1.1 mpConfigProxy elaborato correttamente.
 MPJWT_11_CONFIG_PROXY_MODIFIED.explanation=La configurazione indicata \u00e8 stata elaborata correttamente.
-MPJWT_11_CONFIG_PROXY_MODIFIED.useraction=Non \u00e8 richiesta alcuna azione.
+MPJWT_11_CONFIG_PROXY_MODIFIED.useraction=Nessuna azione richiesta.
 
 MPJWT_11_CONFIG_PROXY_DEACTIVATED=CWWKS5777I: Microprofilo JWT versione 1.1 mpConfigProxy disattivato correttamente.
 MPJWT_11_CONFIG_PROXY_DEACTIVATED.explanation=La configurazione indicata \u00e8 stata disattivata correttamente.
-MPJWT_11_CONFIG_PROXY_DEACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.useraction=Nessuna azione richiesta.
 

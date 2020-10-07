@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.jpa.spec10;
 
 import java.util.HashSet;
@@ -21,7 +20,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -36,13 +37,23 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class Inheritance_Web extends JPAFATServletClient {
-    private final static String RESOURCE_ROOT = "test-applications/jpa10/inheritance/";
+
+    @Rule
+    public static SkipDatabaseRule skipDBRule = new SkipDatabaseRule();
+
+    private final static String CONTEXT_ROOT = "inheritanceWeb";
+    private final static String RESOURCE_ROOT = "test-applications/inheritance/";
+    private final static String appFolder = "web";
+    private final static String appName = "inheritanceWeb";
+    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -56,50 +67,61 @@ public class Inheritance_Web extends JPAFATServletClient {
 
     @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestInheritanceServlet.class, path = "Inheritance10Web" + "/" + "TestInheritanceServlet"),
-
+                    @TestServlet(servlet = TestInheritanceServlet.class, path = CONTEXT_ROOT + "/" + "TestInheritanceServlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
+
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(Inheritance_Web.class);
         timestart = System.currentTimeMillis();
 
-        int appStartTimeout = server1.getAppStartTimeout();
+        int appStartTimeout = server.getAppStartTimeout();
         if (appStartTimeout < (120 * 1000)) {
-            server1.setAppStartTimeout(120 * 1000);
+            server.setAppStartTimeout(120 * 1000);
         }
 
-        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
         if (configUpdateTimeout < (120 * 1000)) {
-            server1.setConfigUpdateTimeout(120 * 1000);
+            server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        server1.startServer();
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+
+        server.startServer();
+
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
+
+        System.out.println(Inheritance_Web.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipDBRule.setDatabase(getDbVendor().name());
     }
 
     private static void setupTestApplication() throws Exception {
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, "inheritance.war");
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.entities");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.entities.concretetable.ano");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.entities.concretetable.xml");
@@ -112,14 +134,14 @@ public class Inheritance_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.entities.singletable.xml");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.inheritance.tests.web");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "web/inheritance.war");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, "Inheritance_Web.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "web", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -131,41 +153,53 @@ public class Inheritance_Web extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation("Inheritance_Web.ear");
-        appRecord.setName("Inheritance_Web");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add("Inheritance_Web");
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        appNamesSet.add(appName);
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("inheritance_web");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
-            bannerEnd(Inheritance_Web.class, timestart);
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            bannerEnd(Inheritance_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/Inheritance_Web.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
-
 }

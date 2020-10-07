@@ -1,0 +1,150 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Das Accept-Header-Format {0} ist falsch.
+notAcceptable.info.CWMMC0000I.explanation=Der Accept-Header verwendet ein nicht unterst\u00fctztes Format.
+notAcceptable.info.CWMMC0000I.useraction=Verwenden Sie entsprechende Header.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: Der Methodenanforderungstyp muss GET oder OPTIONS sein.
+requestType.info.CWMMC0001I.explanation=Der Anforderungstyp wird nicht unterst\u00fctzt. Der Typ muss GET oder OPTIONS sein.
+requestType.info.CWMMC0001I.useraction=Erstellen Sie GET- oder OPTIONS-Anforderungen.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: Der {0}-Metrikname wurde nicht gefunden.
+metricNotFound.info.CWMMC0002I.explanation=Die Metrik ist nicht vorhanden.
+metricNotFound.info.CWMMC0002I.useraction=Geben Sie den richtigen Metriknamen ein.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: Die {0}-Registry wurde nicht gefunden.
+registryNotFound.info.CWMMC0003I.explanation=Die Registry ist nicht vorhanden.
+registryNotFound.info.CWMMC0003I.useraction=Geben Sie den richtigen Registry-Namen ein.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: Die {0}-Registry hat keinen Inhalt.
+emptyRegistry.info.CWMMC0004I.explanation=Die Registry ist leer.
+emptyRegistry.info.CWMMC0004I.useraction=F\u00fcllen Sie die Registry mit Metriken.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: Es ist ein interner Fehler aufgetreten: {0}
+internal.error.CWMMC0005E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0005E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: Es ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0006E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMMC0006E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
+
+#Memory usedHeap message
+memory.usedHeap.description=Zeigt die Menge des belegten Heapspeichers in Bytes an.
+
+#Memory committedHeap message
+memory.committedHeap.description=Zeigt die Speicherkapazit\u00e4t in Bytes an, die f\u00fcr die Nutzung der Java Virtual Machine festgeschrieben ist. Diese Speicherkapazit\u00e4t ist f\u00fcr die Nutzung der Java Virtual Machine garantiert.
+
+#Memory maxHeap message
+memory.maxHeap.description=Zeigt die maximale Heapspeicherkapazit\u00e4t in Bytes an, die f\u00fcr das Speichermanagement verwendet werden kann. Dieses Attribut zeigt -1 an, wenn die Gr\u00f6\u00dfe der maximalen Heapspeicherkapazit\u00e4t nicht definiert ist. Die Verf\u00fcgarkeit dieser Speicherkapazit\u00e4t ist nicht f\u00fcr das Speichermanagement garantiert, wenn sie gr\u00f6\u00dfer ist als die Kapazit\u00e4t an gebundenem Speicher. Es ist m\u00f6glich, dass die JVM den Speicher nicht zuordnen kann, auch wenn die Menge des belegten Speichers diesen H\u00f6chstwert nicht \u00fcberschreitet.
+
+#Jvm uptime message
+jvm.uptime.description=Zeigt die Startzeit der Java Virtual Machine in Millisekunden an. Dieses Attribut zeigt die n\u00e4herungsweise berechnete Zeit an, zu der die Java Virtual Machine gestartet wurde.
+
+#Thread count message
+thread.count.description=Zeigt die aktuelle Anzahl von Live-Threads, einschlie\u00dflich D\u00e4monthreads und Threads, die kein D\u00e4monthread sind, an.
+
+#Thread daemon count message
+thread.daemon.count.description=Zeigt die aktuelle Anzahl von Live-D\u00e4monthreads an.
+
+#Thread max count message
+thread.max.count.description=Zeigt den Spitzenwert der Live-Threads an, seit die Java Virtual Machine gestartet wurde oder seit der Spitzenwert zur\u00fcckgesetzt wurde. Dies schlie\u00dft D\u00e4monthreads und Threads, die kein D\u00e4monthread sind, ein.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=Zeigt die Anzahl der Klassen an, die momentan in der Java Virtual Machine geladen sind.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Zeigt die Gesamtzahl der Klassen an, die geladen wurden, seit die Java Virtual Machine mit der Ausf\u00fchrung begonnen hat.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Zeigt die Gesamtzahl der Klassen an, die entladen wurden, seit die Java Virtual Machine mit der Ausf\u00fchrung begonnen hat.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=Zeigt die Anzahl der Prozessoren an, die der Java Virtual Machine zur Verf\u00fcgung stehen. Dieser Wert kann sich bei einem bestimmten Aufruf der virtuellen Maschine \u00e4ndern.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=Zeigt die durchschnittliche Systembelastung in der letzten Minute an. Die durchschnittliche Systembelastung ist die Summe aus der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die f\u00fcr die verf\u00fcgbaren Prozessoren in eine Warteschlange eingereiht wurden, und der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die von den verf\u00fcgbaren Prozessoren ausgef\u00fchrt wurden, f\u00fcr die \u00fcber eine bestimmte Zeit ein Durchschnittswert ermittelt wurde. Die Art und Weise, wie die durchschnittliche Last berechnet wird, ist betriebssystemspezifisch. In der Regel handelt es sich um einen abgeschw\u00e4chten zeitabh\u00e4ngigen Mittelwert. Wenn keine durchschnittliche Last verf\u00fcgbar ist, wird ein negativer Wert angezeigt. Dieses Attribut soll einen Hinweis zur Systembelastung bereitstellen und kann h\u00e4ufig abgefragt werden. Die durchschnittliche Last ist m\u00f6glicherweise f\u00fcr einige Plattformen, f\u00fcr die die Implementierung dieser Methode kostenintensiv ist, nicht verf\u00fcgbar.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=Zeigt die k\u00fcrzliche CPU-Auslastung f\u00fcr den Java Virtual Machine-Prozess an.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Zeigt die CPU-Zeit an, die von dem Prozess verwendet wird, in dem die Java Virtual Machine ausgef\u00fchrt wird. 
+#Garbage collection count message
+garbageCollectionCount.description=Zeigt die Gesamtzahl der Erfassungen an, die erstellt wurden. Dieses Attribut gibt -1 an, wenn der Zahl der Erfassungen f\u00fcr diesen Collector nicht definiert ist.
+
+#Garbage collection time message
+garbageCollectionTime.description=Zeigt die n\u00e4herungsweise berechnete, kumulierte, abgelaufene Zeit f\u00fcr die Erfassung in Millisekunden an. Dieses Attribut zeigt -1 an, wenn f\u00fcr diesen Collector die abgelaufene Zeit f\u00fcr Erfassungen nicht definiert ist. Die Java Virtual Machine-Implementierung verwendet m\u00f6glicherweise einen hochaufl\u00f6senden Zeitgeber zur Messung der abgelaufenen Zeit. Dieses Attribut zeigt m\u00f6glicherweise auch dann denselben Wert an, wenn der Erfassungsz\u00e4hler erh\u00f6ht wurde, wenn die abgelaufene Zeit f\u00fcr die Erfassung sehr kurz ist. 
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Die Anzahl der Threads, die Tasks ausf\u00fchren.
+threadpool.size.description=Die Gr\u00f6\u00dfe des Thread-Pools.
+
+servlet.request.total.description=Die Anzahl der Aufrufe dieses Servlets seit dem Start des Servers.
+servlet.responseTime.total.description=Die Gesamtantwortzeit dieses Servlets seit dem Start des Servers.
+
+connectionpool.create.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung erstellt wurden.
+connectionpool.destroy.total.description=Die Gesamtzahl verwalteter Verbindungen, die seit der Poolerstellung gel\u00f6scht wurden.
+connectionpool.managedConnections.description=Die Anzahl verwalteter Verbindungen in den freien, gemeinsam genutzten und nicht gemeinsam genutzten Pools.
+connectionpool.connectionHandles.description=Die Anzahl der Verbindungen, die im Gebrauch sind. Dieser Wert kann mehrere Verbindungen enthalten, die von einer einzigen verwalteten Verbindung gemeinsam genutzt werden.
+connectionpool.freeConnections.description=Die Anzahl verwalteter Verbindungen im freien Pool.
+
+session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
+session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
+session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)
+session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik abgemeldet wurden.
+session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
+
+grpc.server.rpcStarted.total.description=Die Gesamtzahl der im Server gestarteten RPCs.
+grpc.server.rpcCompleted.total.description=Die Gesamtzahl der im Server ausgef\u00fchrten RPCs, unabh\u00e4ngig davon, ob sie erfolgreich ausgef\u00fchrt wurden oder fehlgeschlagen sind.
+grpc.server.sentMessages.total.description=Die Gesamtzahl der vom Server gesendeten Datenstromnachrichten.
+grpc.server.receivedMessages.total.description=Die Gesamtzahl der vom Client empfangenen Datenstromnachrichten.
+grpc.server.responseTime.total.description=Die Gesamtantwortzeit der ausgef\u00fchrten RPCs.
+
+grpc.client.rpcStarted.total.description=Die Gesamtzahl der im Client gestarteten RPCs.
+grpc.client.rpcCompleted.total.description=Die Gesamtzahl der im Client ausgef\u00fchrten RPCs, unabh\u00e4ngig davon, ob sie erfolgreich ausgef\u00fchrt wurden oder fehlgeschlagen sind.
+grpc.client.sentMessages.total.description=Die Gesamtzahl der vom Client gesendeten Datenstromnachrichten.
+grpc.client.receivedMessages.total.description=Die Gesamtzahl der vom Server empfangenen Datenstromnachrichten.
+grpc.client.responseTime.total.description=Die Gesamtantwortzeit der ausgef\u00fchrten RPCs.
+
+REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: Es ist ein Fehler in der Metrics-API aufgetreten: {0}
+temporary.CWMMC9999E.explanation=Es ist ein Metrics-API-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMMC9999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.

@@ -29,12 +29,15 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import io.openliberty.security.common.http.SupportedHttpMethodHandler.HttpMethod;
+import io.openliberty.security.openidconnect.web.OidcSupportedHttpMethodHandler;
 import test.common.SharedOutputManager;
 
 /*
  *
  */
 
+@SuppressWarnings("restriction")
 public class OidcEndpointServletTest {
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     @Rule
@@ -53,6 +56,15 @@ public class OidcEndpointServletTest {
     @SuppressWarnings("unchecked")
     private final ServiceReference<OidcEndpointServices> sr = context.mock(ServiceReference.class);
     private final OidcEndpointServices oes = context.mock(OidcEndpointServices.class);
+    private final OidcSupportedHttpMethodHandler supportedHttpMethodHandler = context.mock(OidcSupportedHttpMethodHandler.class);
+
+    @SuppressWarnings("serial")
+    private class MockedOidcEndpointServlet extends OidcEndpointServlet {
+        @Override
+        OidcSupportedHttpMethodHandler getOidcSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
+            return supportedHttpMethodHandler;
+        }
+    };
 
     @Before
     public void setUp() {
@@ -76,11 +88,13 @@ public class OidcEndpointServletTest {
                     will(returnValue(oes));
                     allowing(bc).getServiceReference(OidcEndpointServices.class);
                     will(returnValue(sr));
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.GET);
+                    will(returnValue(true));
                     one(oes).handleOidcRequest(request, response, sc);
                 }
             });
 
-            OidcEndpointServlet oeservlet = new OidcEndpointServlet();
+            OidcEndpointServlet oeservlet = new MockedOidcEndpointServlet();
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doGet(request, response);
@@ -108,11 +122,13 @@ public class OidcEndpointServletTest {
                     will(returnValue(null));
                     allowing(bc).getServiceReference(OidcEndpointServices.class);
                     will(returnValue(null));
+                    one(supportedHttpMethodHandler).isValidHttpMethodForRequest(HttpMethod.GET);
+                    will(returnValue(true));
                     one(oes).handleOidcRequest(request, response, sc);
                 }
             });
 
-            OidcEndpointServlet oeservlet = new OidcEndpointServlet();
+            OidcEndpointServlet oeservlet = new MockedOidcEndpointServlet();
             oeservlet.init(scfg);
             oeservlet.init();
             oeservlet.doGet(request, response);

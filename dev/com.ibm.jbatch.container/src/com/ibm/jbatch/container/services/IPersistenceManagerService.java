@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 International Business Machines Corp.
+ * Copyright 2012, 2020 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -46,6 +46,7 @@ import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
@@ -191,7 +192,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
 
     public JobInstance updateJobInstanceOnRestart(long jobInstanceId, Date date);
 
-    public JobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+    public JobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException;
 
     public JobInstance updateJobInstanceStateOnQueued(long instanceId) throws BatchIllegalJobStatusTransitionException;
 
@@ -493,7 +494,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @param key
      * @param logDirPath
      */
-    public RemotablePartitionEntity updatePartitionExecutionLogDir(RemotablePartitionKey key, String logDirPath);
+    public RemotablePartitionEntity updateRemotablePartitionLogDir(RemotablePartitionKey key, String logDirPath);
 
     // purge
     public void purgeInGlassfish(String submitter);
@@ -584,4 +585,10 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return
      */
     public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
+
+    /**
+     * @param jobExecutionId
+     * @return
+     */
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId);
 }

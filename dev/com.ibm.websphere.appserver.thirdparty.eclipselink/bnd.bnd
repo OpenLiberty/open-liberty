@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -102,11 +102,11 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence.antlr;3.2.0.v201302191141;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;7.1.0.v201909181055;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.antlr;3.5.2.v202005201612;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;8.0.1.v202008070940;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20191015-5b6c763;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200807-b093148;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
@@ -121,9 +121,9 @@ instrument.classesExcludes: \
 
 -buildpath: \
     org.eclipse.persistence.core;version=2.6.8.WAS;strategy=exact,\
-	org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
-	com.ibm.ws.javax.j2ee:persistence;version=2.1,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.ws.logging.core;version=latest
+    org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
+    com.ibm.ws.javax.j2ee:persistence;version=2.1,\
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.ws.logging.core;version=latest

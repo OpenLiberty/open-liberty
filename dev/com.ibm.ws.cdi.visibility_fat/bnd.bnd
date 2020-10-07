@@ -63,19 +63,14 @@ src: \
 	test-applications/visTestWarLib.jar/src,\
 	test-applications/visTestWarWebinfLib.jar/src
 	
-javac.source: 1.7
-javac.target: 1.7
 	
 test.project: true
 
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
+        servlet-5.0,\
+        cdi-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

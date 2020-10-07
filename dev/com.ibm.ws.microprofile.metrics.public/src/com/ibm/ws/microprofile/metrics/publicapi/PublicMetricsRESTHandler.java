@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.BaseMetricsHandler;
 import com.ibm.ws.microprofile.metrics.Constants;
+import com.ibm.ws.microprofile.metrics.WriterFactory;
 import com.ibm.ws.microprofile.metrics.helper.Util;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.wsspi.rest.handler.RESTHandler;
@@ -39,7 +40,6 @@ public class PublicMetricsRESTHandler extends BaseMetricsHandler {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
-        bm = BaseMetrics.getInstance(sharedMetricRegistry);
         for (String registry : Constants.REGISTRY_NAMES_LIST) {
             sharedMetricRegistry.getOrCreate(registry);
         }
@@ -49,6 +49,11 @@ public class PublicMetricsRESTHandler extends BaseMetricsHandler {
     @Reference
     public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         this.sharedMetricRegistry = sharedMetricRegistry;
+    }
+
+    @Reference
+    public void setWriterFactory(WriterFactory writerFactory) {
+    	this.writerFactory = writerFactory;
     }
 
     @Deactivate

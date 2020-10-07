@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,13 +50,11 @@ public class SpnegoAuthenticator {
 
             String reqHostName = getReqHostName(req, spnegoConfig);
             result = krb5Util.processSpnegoToken(resp, tokenByte, reqHostName, spnegoConfig);
-
         } catch (AuthenticationException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unexpected exception:", new Object[] { e });
             }
-
-            result = new AuthenticationResult(AuthResult.FAILURE, "SPNEGO authentication failure");
+            return spnegoAuthenticationErrorPage(resp, spnegoConfig, e.getLocalizedMessage());
         }
 
         return result;
@@ -71,20 +69,46 @@ public class SpnegoAuthenticator {
     protected AuthenticationResult notSpnegoAndKerberosTokenError(HttpServletResponse resp, SpnegoConfig spnegoConfig) {
         if (!spnegoConfig.getDisableFailOverToAppAuthType()) { // disableFailOVerToAppAuthType is false, so continue ...
             return CONTINUE;
+        } else {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.setContentType(spnegoConfig.getErrorPageConfig().getNtlmTokenReceivedPageContentType());
+            resp.setCharacterEncoding(spnegoConfig.getErrorPageConfig().getNtlmTokenReceivedPageCharset());
+
+            try {
+                resp.getWriter().println(spnegoConfig.getErrorPageConfig().getNTLMTokenReceivedPage());
+                com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(true).setAttribute("spnego.error.page", "true");
+            } catch (IOException ex) {
+                Tr.error(tc, "SPNEGO_FAIL_TO_GET_WRITER", "NTLMTokenReceivedPage", ex.getMessage());
+            }
+
+            return new AuthenticationResult(AuthResult.SEND_401, "The token included in the HttpServletRequest is not a valid SPNEGO token");
         }
+    }
 
-        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        resp.setContentType(spnegoConfig.getErrorPageConfig().getNtlmTokenReceivedPageContentType());
-        resp.setCharacterEncoding(spnegoConfig.getErrorPageConfig().getNtlmTokenReceivedPageCharset());
+    /**
+     * @param resp
+     * @param spnegoConfig
+     * @return
+     * @throws AuthenticationException
+     */
+    public AuthenticationResult spnegoAuthenticationErrorPage(HttpServletResponse resp, SpnegoConfig spnegoConfig, String msg) {
+        if (!spnegoConfig.getDisableFailOverToAppAuthType()) { // disableFailOVerToAppAuthType is false, so continue ...
+            return CONTINUE;
+        } else if (spnegoConfig.getSpnegoAuthenticationErrorPageURL() != null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.setContentType(spnegoConfig.getErrorPageConfig().getSpnegoAuthenticationErroPageContentType());
+            resp.setCharacterEncoding(spnegoConfig.getErrorPageConfig().getSpnegoAuthenticationErroPageCharset());
 
-        try {
-            resp.getWriter().println(spnegoConfig.getErrorPageConfig().getNTLMTokenReceivedPage());
-            com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(true).setAttribute("spnego.error.page", "true");
-        } catch (IOException ex) {
-            Tr.error(tc, "SPNEGO_FAIL_TO_GET_WRITER", "NTLMTokenReceivedPage", ex.getMessage());
-        }
-
-        return new AuthenticationResult(AuthResult.SEND_401, "The token included in the HttpServletRequest is not a valid SPNEGO token");
+            try {
+                resp.getWriter().println(spnegoConfig.getErrorPageConfig().getSpnegoAuthenticationErrorPage());
+                com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(true).setAttribute("spnego.error.page", "true");
+            } catch (IOException ex) {
+                Tr.error(tc, "SPNEGO_FAIL_TO_GET_WRITER", "SpnegoAuthenticationErrorPage", ex.getMessage());
+            }
+            return new AuthenticationResult(AuthResult.SEND_401, msg);
+        } else
+            //Preserve the old behavior
+            return new AuthenticationResult(AuthResult.FAILURE, msg);
     }
 
     /**

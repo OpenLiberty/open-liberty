@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,14 +21,21 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package:\
   com.ibm.ws.concurrent,\
-  com.ibm.ws.concurrent.service
-    
+  com.ibm.ws.concurrent.mp.spi.*
+
 Private-Package:\
   com.ibm.ws.concurrent.internal.*,\
   com.ibm.ws.concurrent.resources.*
 
 Include-Resource:\
   OSGI-INF=resources/OSGI-INF
+
+jakartaeeMe: true
+
+-dsannotations: \
+  com.ibm.ws.concurrent.internal.ContextServiceImpl,\
+  com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
+  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
@@ -59,6 +66,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
@@ -66,6 +74,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.ws.concurrency.policy;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.javaee.version;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\

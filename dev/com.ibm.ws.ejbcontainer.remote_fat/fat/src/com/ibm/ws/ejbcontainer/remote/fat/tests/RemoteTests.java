@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -240,7 +240,10 @@ public class RemoteTests extends AbstractTest {
         // CNTR5101W - testEJBHomeRecursiveStubs
         // CWNEN0028E - testAnnInjectionFailure, testAnnDependsOnFailure
         // WTRN0074E - testBusinessRMITransactionException, testBusinessRemoteTransactionException
-        server.stopServer("CNTR0019E", "CNTR0020E", "CNTR0021E", "CNTR0328W", "CNTR5101W", "CWNEN0028E", "WTRN0074E");
+        // CWWKG0014E - intermittently caused by server.xml being momentarily missing during server reconfig
+        if (server != null && server.isStarted()) {
+            server.stopServer("CNTR0019E", "CNTR0020E", "CNTR0021E", "CNTR0328W", "CNTR5101W", "CWNEN0028E", "WTRN0074E", "CWWKG0014E");
+        }
     }
 
     private void updateServerConfiguration(ServerConfiguration config) throws Exception {

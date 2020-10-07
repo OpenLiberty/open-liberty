@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ public interface OAuth20EnhancedTokenCache extends OAuth20TokenCache {
     public void initialize();
 
     public Collection<OAuth20Token> getAllUserTokens(String username);
-    
+
     public Collection<OAuth20Token> getUserAndClientTokens(String username, String client);
 
     public Collection<OAuth20Token> getMatchingTokens(String username, String client, String tokenType);
@@ -34,7 +34,7 @@ public interface OAuth20EnhancedTokenCache extends OAuth20TokenCache {
     public OAuth20Token getByHash(String hash);
 
     public void removeByHash(String hash);
-    
+
     public void addByHash(String hash, OAuth20Token entry, int lifetime);
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,8 +78,10 @@ import com.ibm.jbatch.container.util.WSStepThreadExecutionAggregateImpl;
 import com.ibm.jbatch.container.validation.IdentifierValidator;
 import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 //import com.ibm.jbatch.container.ws.WSSearchObject;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
@@ -812,7 +814,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstanceEntity updateJobInstanceStateOnConsumed(final long jobInstanceId) {
+    public JobInstanceEntity updateJobInstanceStateOnConsumed(final long jobInstanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException {
         EntityManager em = getPsu().createEntityManager();
         String BASE_UPDATE = "UPDATE JobInstanceEntity x SET x.instanceState = com.ibm.jbatch.container.ws.InstanceState.JMS_CONSUMED";
         if (instanceVersion >= 2) {
@@ -830,16 +832,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         try {
             return new TranRequest<JobInstanceEntity>(em) {
                 @Override
-                public JobInstanceEntity call() {
+                public JobInstanceEntity call() throws JobInstanceNotQueuedException {
                     JobInstanceEntity instance = entityMgr.find(JobInstanceEntity.class, jobInstanceId);/* , LockModeType.PESSIMISTIC_WRITE); */
                     if (instance == null) {
                         throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
-                    }
-
-                    try {
-                        verifyStateTransitionIsValid(instance, InstanceState.JMS_CONSUMED);
-                    } catch (BatchIllegalJobStatusTransitionException e) {
-                        throw new PersistenceException(e);
                     }
 
                     Query jpaQuery = entityMgr.createQuery(FINAL_UPDATE);
@@ -854,6 +850,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         entityMgr.refresh(instance);
                     } else {
                         logger.finer("No match on updateJobInstanceStateOnConsumed query for instance =  " + jobInstanceId);
+                        throw new JobInstanceNotQueuedException();
                     }
                     return instance;
                 }
@@ -2639,25 +2636,33 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 //
 //      }
 //
-//      @Override
-//      public RemotablePartitionEntity updatePartitionExecutionLogDir(final RemotablePartitionKey key, final String logDirPath) {
-//              EntityManager em = getPsu().createEntityManager();
-//              try {
-//                      return new TranRequest<RemotablePartitionEntity>(em){
-//                              public RemotablePartitionEntity call() {
-//                                      RemotablePartitionEntity partitionEntity = entityMgr.find(RemotablePartitionEntity.class, key);
-//                                      if (partitionEntity == null) {
-//                                              throw new IllegalArgumentException("No partition execution found for key = " + key);
-//                                      }
-//                                      partitionEntity.setLogpath(logDirPath);
-//                                      return partitionEntity;
-//                              }
-//                      }.runInNewOrExistingGlobalTran();
-//              } finally {
-//                      em.close();
-//              }
-//
-//      }
+    @Override
+    public RemotablePartitionEntity updateRemotablePartitionLogDir(final RemotablePartitionKey key, final String logDirPath) {
+
+        // Simply ignore if we don't have the remotable partition table
+        if (partitionVersion < 2) {
+            return null;
+        }
+
+        EntityManager em = getPsu().createEntityManager();
+        try {
+            return new TranRequest<RemotablePartitionEntity>(em) {
+                @Override
+                public RemotablePartitionEntity call() {
+                    RemotablePartitionEntity partitionEntity = entityMgr.find(RemotablePartitionEntity.class, key);
+                    if (partitionEntity == null) {
+                        return null;
+                        //throw new IllegalArgumentException("No partition execution found for key = " + key);
+                    }
+                    partitionEntity.setLogpath(logDirPath);
+                    return partitionEntity;
+                }
+            }.runInNewOrExistingGlobalTran();
+        } finally {
+            em.close();
+        }
+
+    }
 
     @Override
     public void purgeInGlassfish(String submitter) {
@@ -3120,7 +3125,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 final String causeMsg = cause.getMessage();
                 final String causeClassName = cause.getClass().getCanonicalName();
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
-                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
+                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
+			|| causeClassName.contains("SQLServerException")) &&
                     causeMsg != null &&
                     (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
@@ -3172,6 +3178,32 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
             return rp != null ? rp.getInternalStatus() : null;
 
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(final long jobExecutionId) {
+        if (partitionVersion < 2) {
+            return null;
+        }
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            JobExecutionEntity exec = new TranRequest<JobExecutionEntity>(em) {
+                @Override
+                public JobExecutionEntity call() {
+                    JobExecutionEntity je = em.find(JobExecutionEntityV3.class, jobExecutionId);
+                    if (je == null) {
+                        logger.finer("No job execution found with execution id = " + jobExecutionId);
+                        return null;
+                    }
+                    return je;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return new ArrayList<WSRemotablePartitionExecution>(exec.getRemotablePartitions());
         } finally {
             em.close();
         }

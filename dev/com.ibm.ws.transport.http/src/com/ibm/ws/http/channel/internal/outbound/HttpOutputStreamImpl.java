@@ -222,6 +222,23 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
             throw new IOException("Stream is closed");
         }
+        // There's an H2 timing window where the server could be working on a response, it gets interrupted,
+        // the frame that comes in has an error, and the connection gets shutdown and all resources
+        // including the response are cleaned up.  Then we come back here after the interruption.
+        // Handle this case.
+
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl) &&
+            ((HttpInboundServiceContextImpl) isc).isH2Connection() &&
+            (null == this.isc.getResponse())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
+            }
+
+            // Return to clean up the rest of the request/response
+            return;
+
+        }
+
         if (null == this.output) {
             setBufferSize(32768);
         }
@@ -442,10 +459,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         validate();
 
         this.ignoreFlush = false;
-        if (!this.isc.getResponse().isCommitted()) {
+        if ((null != this.isc.getResponse()) && !this.isc.getResponse().isCommitted()) {
             this.isc.getResponse().setCommitted();
         } else {
             // response headers already committed (written)
+            // or response has been freed on previous error
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.debug(tc, "Response headers already committed or response cleared; " + this.isc);
+            }
             return;
         }
         try {

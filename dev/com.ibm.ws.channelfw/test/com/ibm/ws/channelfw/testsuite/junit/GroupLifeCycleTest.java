@@ -22,8 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChainGroupData;
 import com.ibm.websphere.channelfw.ChainStartMode;
@@ -41,6 +39,8 @@ import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChainGroupException;
 import com.ibm.wsspi.channelfw.exception.ChainTimerException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
+
+import test.common.SharedOutputManager;
 
 /**
  * The purpose of this class is to test the group configuration methods
@@ -146,7 +146,7 @@ public class GroupLifeCycleTest {
     /**
      * Test startGroup method.
      */
-    @Test
+    //SplitStartUp @Test
     public void testStartGroup() {
         try {
             Chain chain1 = null;
@@ -298,6 +298,7 @@ public class GroupLifeCycleTest {
                 assertNull(framework.getRunningChain("chain1fail"));
                 // Clean up after the test.
                 framework.stopChain("chain1", 0);
+
             } catch (ChainGroupException e) {
                 e.printStackTrace();
                 fail("chaingroup exception: " + e.getMessage());

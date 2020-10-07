@@ -16,12 +16,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64.Decoder;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +36,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.JEEExecutionContextHelper;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
@@ -40,6 +48,65 @@ public abstract class JPATestServlet extends FATServlet {
 
     private static int portNumber = 0;
 
+    public final static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    public final static ObjectName fatServerInfoMBeanObjectName;
+
+    static {
+        ObjectName on = null;
+        try {
+            on = new ObjectName("WebSphereFAT:name=ServerInfo");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            fatServerInfoMBeanObjectName = on;
+        }
+    }
+
+    protected Set<String> getInstalledFeatures() {
+        HashSet<String> retVal = new HashSet<String>();
+
+        try {
+            Set<String> instFeatureSet = (Set<String>) mbeanServer.getAttribute(fatServerInfoMBeanObjectName, "InstalledFeatures");
+            if (instFeatureSet != null) {
+                retVal.addAll(instFeatureSet);
+            }
+        } catch (Throwable t) {
+        }
+        return retVal;
+    }
+
+    protected boolean isUsingJPA20Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.0");
+    }
+
+    protected boolean isUsingJPA21Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.1");
+    }
+
+    protected boolean isUsingJPA22Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.2");
+    }
+
+    protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.1");
+    }
+
+    protected boolean isUsingJPA22ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.2");
+    }
+
+    protected final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
+    protected String testClassName;
+
     @Resource
     protected UserTransaction tx;
 
@@ -48,6 +115,28 @@ public abstract class JPATestServlet extends FATServlet {
         portNumber = request.getLocalPort();
 
         super.doGet(request, response);
+    }
+
+    protected void executeTest(String testName, String testMethod, String testResource) throws Exception {
+        executeTest(testName, testMethod, testResource, null);
+    }
+
+    protected void executeTest(String testName, String testMethod, String testResource, Map<String, java.io.Serializable> props) throws Exception {
+        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testClassName, testMethod);
+
+        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
+        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
+
+        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
+        properties.put("dbProductName", getDbProductName());
+        properties.put("dbProductVersion", getDbProductVersion());
+        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
+
+        if (props != null && !props.isEmpty()) {
+            properties.putAll(props);
+        }
+
+        executeTestVehicle(testExecCtx);
     }
 
     protected void executeTestVehicle(TestExecutionContext ctx) {
@@ -144,6 +233,8 @@ public abstract class JPATestServlet extends FATServlet {
         } else if (dbProductName.toLowerCase().contains("postgres")) {
             productName = "POSTGRES";
         } else if (dbProductName.toLowerCase().contains("sqlserver")) {
+            productName = "SQLSERVER";
+        } else if (dbProductName.toLowerCase().contains("microsoft sql server")) {
             productName = "SQLSERVER";
         } else if (dbProductName.toLowerCase().contains("sybase")) {
             productName = "SYBASE";

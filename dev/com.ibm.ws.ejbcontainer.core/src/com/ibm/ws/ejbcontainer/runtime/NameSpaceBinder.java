@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,7 +176,15 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject the EJBBinding
      * @param hr the bean home record
      */
-    void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
+    void bindDefaultEJBLocal(T bindingObject, HomeRecord hr) throws NamingException;
+
+    /**
+     * Adds the default remote legacy bindings to root
+     *
+     * @param bindingObject the EJB Binding information
+     * @param hr the HomeRecord of the EJB
+     */
+    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Undoes the bindings from ejblocal namespace.
@@ -189,11 +197,37 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      * @param local - if it is a local bean
+     * @param generateDisambiguatedSimpleBindingNames - A boolean, which when true
+     *            will cause any generated simple binding names to be
+     *            constructed to include "#<interfaceName>" at the end
+     *            of the binding name.
      */
-    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) throws NamingException;
+
+    /**
+     * Binds the localHomeBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    void bindLocalHomeBindingName(T bindingObject, HomeRecord hr) throws NamingException;
+
+    /**
+     * Binds the interface binding-name custom binding for local
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     */
+    void bindLocalBusinessInterface(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Undoes the bindings from local namespace.
      */
     void unbindLocalColonEJB(List<String> names) throws NamingException;
+
+    /**
+     * Undoes the root remote bindings.
+     */
+    void unbindRemote(List<String> names);
+
 }

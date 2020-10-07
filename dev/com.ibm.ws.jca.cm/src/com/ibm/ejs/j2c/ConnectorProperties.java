@@ -26,11 +26,12 @@ import java.util.Vector;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.Traceable;
 
-public final class ConnectorProperties extends Vector<Object> implements Serializable {
+public final class ConnectorProperties extends Vector<Object> implements Serializable, Traceable {
 
     private static final long serialVersionUID = -248509787807561932L;
-    private static final TraceComponent tc = Tr.register(ConnectorProperties.class, J2CConstants.traceSpec, J2CConstants.messageFile); 
+    private static final TraceComponent tc = Tr.register(ConnectorProperties.class, J2CConstants.traceSpec, J2CConstants.messageFile);
     public static final String nl = String.format("%n");
 
     // override the Vector add method to not add duplicate entries.  That is, entries with the same name.
@@ -47,14 +48,14 @@ public final class ConnectorProperties extends Vector<Object> implements Seriali
             connectorProperty = (ConnectorProperty) e.nextElement();
             name = connectorProperty.getName();
             if (name.equals(nameToAdd)) {
-                if (tc.isDebugEnabled()) { 
-                    String value = (String) connectorPropertyToAdd.getValue(); 
-                    if (!value.equals("")) { 
-                        if (name.equals("UserName") || name.equals("Password")) { 
+                if (tc.isDebugEnabled()) {
+                    String value = (String) connectorPropertyToAdd.getValue();
+                    if (!value.equals("")) {
+                        if (name.equals("UserName") || name.equals("Password")) {
                             Tr.debug(tc, "DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103", new Object[] { (ConnectorProperty) o });
                         } else {
                             Tr.warning(tc, "DUPLICATE_CONNECTOR_PROPERTY_J2CA0308", new Object[] { (ConnectorProperty) o });
-                        } 
+                        }
                     }
                 }
                 return true;
@@ -65,13 +66,13 @@ public final class ConnectorProperties extends Vector<Object> implements Seriali
         return super.add(o);
 
     }
-    
+
     /**
      * Given this ConnectorProperties Vector, find the String identified by the
      * input desiredPropertyName. If not found, return the defaultValue.
-     * 
+     *
      * @param desiredPropertyName Name of com.ibm.ejs.j2c.ConnectorProperty entry to look for.
-     * @param defaultValue value to return if the desiredPropertyName is not found, or its value is invalid.
+     * @param defaultValue        value to return if the desiredPropertyName is not found, or its value is invalid.
      * @return String
      */
     public String findConnectorPropertyString(String desiredPropertyName, String defaultValue) {
@@ -104,7 +105,7 @@ public final class ConnectorProperties extends Vector<Object> implements Seriali
     public String toString() {
         StringBuffer buf = new StringBuffer(100);
         ConnectorProperty prop;
-        String propName = null; 
+        String propName = null;
 
         buf.append("[Deployed Resource Adapter Properties]" + nl);
 
@@ -131,8 +132,13 @@ public final class ConnectorProperties extends Vector<Object> implements Seriali
                 buf.append(prop.getValue());
                 buf.append(nl);
             }
-        } 
+        }
 
         return buf.toString();
+    }
+
+    @Override
+    public String toTraceString() {
+        return toString();
     }
 }

@@ -111,11 +111,23 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     public void bindDefaultEJBLocal(String bindingObject, HomeRecord hr) {}
 
     @Override
+    public void bindDefaultEJBRemote(String bindingObject, HomeRecord hr) {}
+
+    @Override
     public void unbindEJBLocal(List<String> names) throws NamingException {}
 
     @Override
-    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local) {}
+    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) {}
+
+    @Override
+    public void bindLocalHomeBindingName(String bindingObject, HomeRecord hr) {}
+
+    @Override
+    public void bindLocalBusinessInterface(String bindingObject, HomeRecord hr) {}
 
     @Override
     public void unbindLocalColonEJB(List<String> names) throws NamingException {}
+
+    @Override
+    public void unbindRemote(List<String> names) {}
 }

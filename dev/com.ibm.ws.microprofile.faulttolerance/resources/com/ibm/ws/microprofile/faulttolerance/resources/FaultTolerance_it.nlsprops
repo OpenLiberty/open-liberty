@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,11 @@ bulkhead.no.threads.CWMFT0001E.useraction=Aumentare la disponibilit\u00e0 nel bu
 application.shutdown.CWMFT0002W=CWMFT0002W: Il metodo asincrono {0} non pu\u00f2 essere completato perch\u00e9 l'applicazione o il componente che lo ha richiamato \u00e8 stato arrestato.
 application.shutdown.CWMFT0002W.explanation=I metodi asincroni vengono eseguiti nel contesto del componente che li ha avviati. L'applicazione o il componente che ha richiamato il metodo asincrono \u00e8 stato arrestato, ci\u00f2 ha impedito il completamento del metodo asincrono.
 application.shutdown.CWMFT0002W.useraction= Questa avvertenza di solito si verifica quando un'applicazione, un componente o un server sono in fase di chiusura. Se tutti i metodi asincroni in esecuzione devono essere completati, l'applicazione o il componente devono attendere i risultati prima dell'arresto.
+
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: Il metodo asincrono {0} ha restituito null. 
+asynchronous.returned.null.CWMFT0003W.explanation=I metodi annotati con @Asynchronous non devono restituire un valore null.
+asynchronous.returned.null.CWMFT0003W.useraction=Evitare che un valore null venga restituito dal metodo.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Si \u00e8 verificato un errore interno. L'eccezione \u00e8 {0}.

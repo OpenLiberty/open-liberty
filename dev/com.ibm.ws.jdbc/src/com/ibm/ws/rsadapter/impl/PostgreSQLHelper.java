@@ -128,17 +128,9 @@ public class PostgreSQLHelper extends DatabaseHelper {
     public boolean shouldTraceBeDisabled(WSRdbManagedConnectionImpl mc) {
         return TraceComponent.isAnyTracingEnabled() && !jdbcTC.isDebugEnabled() && mc.mcf.loggingEnabled;
     }
-
-    // may want to consider this if we ever support Kerberos with PostgreSQL
-//    /**
-//     * Indicates if the JDBC driver supports propagating the GSS credential for kerberos
-//     * to the JDBC driver by obtaining the connection within Subject.doAs.
-//     * 
-//     * @return true if version 4.0 or higher, or if we don't know the version (because a connection hasn't been established yet).
-//     */
-//    @Override
-//    public boolean supportsSubjectDoAsForKerberos() {
-//        return driverMajorVersion >= 4 // JavaKerberos feature added in version 4.0 of JDBC driver.
-//               || driverMajorVersion == 0; // Unknown version, so allow it to be attempted.
-//    }
+    
+    @Override
+    public boolean supportsSubjectDoAsForKerberos() {
+        return true;
+    }
 }

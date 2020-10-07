@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011-2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -13,6 +13,35 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
                    localization="OSGI-INF/l10n/metatype">
 
+    <!-- Let config processing have a say in the properties provided to the application start barrier service -->
+    <OCD id="com.ibm.ws.app.startbarrier" description="internal use only" name="internal">
+        <!-- Config processing populates this attribute with a list of PIDs 
+             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <AD id="applicationPrereqDeclarations" name="internal" description="internal use only"
+            type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
+            ibm:service="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" 
+            default="*" />
+        <!-- Config processing sets the number of application prereq services to expect equal to the number declared (see AD above) -->
+        <AD id="ApplicationPrereq.cardinality.minimum" name="internal" description="internal use only" 
+            type="String" ibm:final="true"
+            default="${count(applicationPrereqDeclarations)}"/>
+    </OCD>
+    <Designate pid="com.ibm.ws.app.startbarrier">
+        <Object ocdref="com.ibm.ws.app.startbarrier"/>
+    </Designate>
+
+    <!-- Let config processing provide the list of matching PIDs to the prereq monitor service as well -->
+    <OCD id="com.ibm.ws.app.prereqmonitor" description="internal use only" name="internal">
+        <!-- Config processing populates this attribute with a list of PIDs 
+             of every configuration whose ibm:objectClass matches this AD's ibm:service -->
+        <AD id="applicationPrereqDeclarations" name="internal" description="internal use only"
+            type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
+            ibm:service="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" 
+            default="*" />
+    </OCD>
+    <Designate pid="com.ibm.ws.app.prereqmonitor">
+        <Object ocdref="com.ibm.ws.app.prereqmonitor"/>
+    </Designate>
 
 	<OCD description="%appmgmt.desc" name="%appmgmt.name" id="com.ibm.ws.app.management" ibm:alias="applicationManager">
 		<AD id="autoExpand" name="%appmgmt.autoExpand" description="%appmgmt.autoExpand.desc" required="false" type="Boolean" default="false"/>
@@ -31,6 +60,8 @@
         <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
         <AD id="useJandex" name="%appmgr.useJandex.name" description="%appmgr.useJandex.desc" type="Boolean" required="false"/>
+        <AD id="startAfter" name="%appmgmt.startAfter" description="%appmgmt.startAfter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.app.manager" cardinality="2147483647"/>
+		<AD id="classloader" name="%classloader.name" description="%classloader.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" cardinality="0"/>
    </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager">
         <Object ocdref="com.ibm.ws.app.manager"/>

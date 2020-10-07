@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,8 +39,8 @@ public class EndpointInformationServlet extends HttpServlet {
         res.setHeader("Content-Type", "text/plain");
 
         PrintWriter pw = res.getWriter();
-        pw.println("Endpoint Information Servlet Test");
-        String payload = "This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. ";
+        pw.print("Endpoint Information Servlet Test. ");
+        String payload = "This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided. This message contains enough bytes for the autocompress tool to determine it is valid to compress. There must be 2048 bytes minimum for compression to happen. This message will be repeated until 2048 bytes are provided.";
 
         if (req.getHeader("TestCondition") != null) {
             String value = req.getHeader("TestCondition");
@@ -55,7 +55,7 @@ public class EndpointInformationServlet extends HttpServlet {
             }
 
             else if ("regularSize".equalsIgnoreCase(value)) {
-                res.setHeader("Content-Length", "2235");
+                res.setHeader("Content-Length", "2234");
             }
 
             else if ("testContentType".equalsIgnoreCase(value)) {
@@ -71,7 +71,7 @@ public class EndpointInformationServlet extends HttpServlet {
             }
         }
 
-        pw.println(payload);
+        pw.print(payload);
 
     }
 

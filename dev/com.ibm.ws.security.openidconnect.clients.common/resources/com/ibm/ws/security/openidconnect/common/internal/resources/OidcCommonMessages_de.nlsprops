@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Setzen Sie das Attribut jwkEndpointUrl auf d
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil das Token au\u00dferhalb des g\u00fcltigen Bereichs liegt. M\u00f6glicherweise liegt die aktuelle Zeit ({1}) nach der Ablaufzeit des Tokens ({2}) oder die Zeitspanne zwischen der Ausstellungszeit {3} und der aktuellen Zeit [{1}] ist zu lang.
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Die Validierung f\u00fcr das Token, das vom OpenID Connect-Client [{0}] f\u00fcr den Benutzer [{1}] angefordert wurde, ist fehlgeschlagen, weil das Token au\u00dferhalb des g\u00fcltigen Bereichs liegt. Dieser Fehler tritt entweder auf, weil die aktuelle Zeit [{2}] nach der Tokenablaufzeit [{3}] liegt, oder weil die Ausgabezeit [{4}] zu weit weg von der aktuellen Zeit [{2}] ist.
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Ein Token kann nicht validiert werden, weil die angezeigte aktuelle Zeit nicht zwischen der Ausstellungszeit und der Ablaufzeit des Tokens liegt.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Stellen Sie sicher, dass die Systemuhren des OpenID Connect-Clients (Relying Party, RP) und des OpenID Connect-Providers (OP) synchronisiert sind (sofern sie sich auf zwei unterschiedlichen Systemen befinden).
 
@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Das Token darf wegen de
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fordern Sie ein neues Token an, das den angegebenen Anspruch nicht enth\u00e4lt, oder \u00e4ndern Sie den angegebenen Konfigurationsattributwert so, dass der Anspruch in das Token eingeschlossen werden kann.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Der OpenID Connect-Client [{0}] enth\u00e4lt {1} in den Werten, die \u00fcber das Konfigurationsattribut [{2}] angegeben sind. Die angegebenen Werte werden ignoriert.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Die OAuth 2.0-Spezifikation definiert eine Reihe von reservierten Parametern, die vom Client f\u00fcr Berechtigungsanforderungen bereitgestellt werden m\u00fcssen. Werte f\u00fcr diese Parameter k\u00f6nnen nicht vom Benutzer bereitgestellt werden.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Entfernen Sie die angegebenen Werte aus der Liste mit den Werte, die in der OpenID Connect-Clientkonfiguration.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Der OpenID Connect-Client [{0}] enth\u00e4lt {1} in den Werten, die \u00fcber das Konfigurationsattribut [{2}] angegeben sind. Die angegebenen Werte werden ignoriert.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Die OAuth 2.0-Spezifikation definiert eine Reihe von reservierten Parametern, die vom Client f\u00fcr Berechtigungsanforderungen bereitgestellt werden m\u00fcssen. Werte f\u00fcr diese Parameter k\u00f6nnen nicht vom Benutzer bereitgestellt werden.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Entfernen Sie die angegebenen Werte aus der Liste mit den Werte, die in der OpenID Connect-Clientkonfiguration.

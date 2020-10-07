@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -103,8 +103,8 @@ APPLICATION_NOT_STARTED.useraction=Compruebe la configuraci\u00f3n de la aplicac
 
 #{0} the application name
 DUPLICATE_APPLICATION_NAME=CWWKZ0013E: No es posible iniciar dos aplicaciones llamadas {0}.
-DUPLICATE_APPLICATION_NAME.explanation=El nombre de la aplicaci\u00f3n debe ser exclusivo. Esto puede ser debido a que se han configurado dos aplicaciones con el mismo nombre, o a que se ha desplegado una sola aplicaci\u00f3n mediante la configuraci\u00f3n en el archivo server.xml y mediante la colocaci\u00f3n de la aplicaci\u00f3n en el directorio dropins.
-DUPLICATE_APPLICATION_NAME.useraction=Si dos aplicaciones tienen el mismo nombre, elimine una de ellas o cambie el nombre. Si una aplicaci\u00f3n se ha desplegado de dos maneras diferentes, cambie la configuraci\u00f3n de forma que s\u00f3lo se utilice un m\u00e9todo de despliegue. 
+DUPLICATE_APPLICATION_NAME.explanation=El nombre de la aplicaci\u00f3n debe ser exclusivo.  Esto puede ser debido a que se han configurado dos aplicaciones con el mismo nombre, o a que se ha desplegado una sola aplicaci\u00f3n mediante la configuraci\u00f3n en el archivo server.xml y mediante la colocaci\u00f3n de la aplicaci\u00f3n en el directorio dropins.
+DUPLICATE_APPLICATION_NAME.useraction=Si dos aplicaciones tienen el mismo nombre, elimine una de ellas o cambie el nombre. Si una aplicaci\u00f3n se ha desplegado de dos maneras diferentes, cambie la configuraci\u00f3n de forma que s\u00f3lo se utilice un m\u00e9todo de despliegue.
 
 #{0} the application name
 #{1} the application location that cannot be found
@@ -126,11 +126,11 @@ APPLICATION_NO_TYPE.useraction=Actualice la configuraci\u00f3n para a\u00f1adir 
 
 STARTING_APPLICATION=CWWKZ0018I: Iniciando la aplicaci\u00f3n {0}.
 STARTING_APPLICATION.explanation=La aplicaci\u00f3n se esta iniciando.
-STARTING_APPLICATION.useraction=No se requiere ninguna acci\u00f3n.                         
+STARTING_APPLICATION.useraction=No se requiere ninguna acci\u00f3n.
 
 PARTIAL_START=CWWKZ0019I: La aplicaci\u00f3n {0} se ha iniciado parcialmente en {1} segundos. El servidor continuar\u00e1 el inicio de la aplicaci\u00f3n en segundo plano.
 PARTIAL_START.explanation=No ha podido iniciarse toda la aplicaci\u00f3n. Esto puede suceder en un ear que contiene dos war donde s\u00f3lo se inicie un war.
-PARTIAL_START.useraction=Resuelva el problema con la parte de la aplicaci\u00f3n que no ha podido iniciar y vuelva a desplegar la aplicaci\u00f3n. 
+PARTIAL_START.useraction=Resuelva el problema con la parte de la aplicaci\u00f3n que no ha podido iniciar y vuelva a desplegar la aplicaci\u00f3n.
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: La aplicaci\u00f3n {0} no se ha actualizado.
@@ -145,12 +145,12 @@ APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modifique la configuraci\u00f3n del
 
 APPLICATION_SLOW_STARTUP=CWWKZ0022W: La aplicaci\u00f3n {0} no se ha iniciado en {1} segundos.
 APPLICATION_SLOW_STARTUP.explanation=La aplicaci\u00f3n no se ha iniciado en el tiempo esperado. Esto podr\u00eda deberse a que el servidor est\u00e1 sobrecargado o a que la aplicaci\u00f3n es grande. Si la aplicaci\u00f3n se inicia como parte del arranque del servidor, el arranque del servidor finalizar\u00e1 sin tener que esperar a que se inicie la aplicaci\u00f3n.
-APPLICATION_SLOW_STARTUP.useraction=Si la aplicaci\u00f3n tarda mucho tiempo en iniciarse, no es necesaria ninguna acci\u00f3n; en caso contrario, compruebe los registros del servidor para ver si otros mensajes indican una causa. 
+APPLICATION_SLOW_STARTUP.useraction=Si la aplicaci\u00f3n tarda mucho tiempo en iniciarse, no es necesaria ninguna acci\u00f3n; en caso contrario, compruebe los registros del servidor para ver si otros mensajes indican una causa.
 
 #{0} is application name
 MONITOR_APP_STOP_FAIL=CWWKZ0053E: Se ha producido un error al intentar detener la aplicaci\u00f3n {0} autom\u00e1ticamente.
 MONITOR_APP_STOP_FAIL.explanation=El supervisor de aplicaci\u00f3n no ha podido encontrar la aplicaci\u00f3n que se ejecuta en el servidor.
-MONITOR_APP_STOP_FAIL.useraction=No se requiere ninguna acci\u00f3n.                         
+MONITOR_APP_STOP_FAIL.useraction=No se requiere ninguna acci\u00f3n.
 
 #{0} is application name
 INVALID_FILE_NAME=CWWKZ0054E: El servicio de supervisi\u00f3n de aplicaciones no ha podido encontrar un nombre adecuado para la aplicaci\u00f3n {0}.
@@ -165,7 +165,7 @@ UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Aseg\u00farese de que el archivo
 #{0} is application name
 MONITOR_APP_START_FAIL=CWWKZ0056E: Se ha producido una excepci\u00f3n al intentar iniciar autom\u00e1ticamente la aplicaci\u00f3n {0}.
 MONITOR_APP_START_FAIL.explanation=El supervisor de aplicaciones no ha podido iniciar la aplicaci\u00f3n.
-MONITOR_APP_START_FAIL.useraction=No se requiere ninguna acci\u00f3n.                         
+MONITOR_APP_START_FAIL.useraction=No se requiere ninguna acci\u00f3n.
 
 #{0} is file name
 #{1} is line number
@@ -177,7 +177,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Inicie el servidor con un arranque e
 #{0} is the start time in seconds
 APPLICATION_MONITOR_STARTED=CWWKZ0058I: Supervisando aplicaciones de {0}.
 APPLICATION_MONITOR_STARTED.explanation=El servidor est\u00e1 supervisando un directorio para encontrar aplicaciones que deben desplegarse.
-APPLICATION_MONITOR_STARTED.useraction=No se requiere ninguna acci\u00f3n.                         
+APPLICATION_MONITOR_STARTED.useraction=No se requiere ninguna acci\u00f3n.
 
 #{0} is application name
 #{1} is application location
@@ -193,11 +193,11 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Si el antiguo directorio ya no se necesita, 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: No se puede supervisar la aplicaci\u00f3n {0}.
 APPLICATION_MONITORING_FAIL.explanation=Se ha instalado una aplicaci\u00f3n, pero la supervisi\u00f3n no se ha iniciado en ella, por lo que si se actualiza un archivo de la aplicaci\u00f3n, el servidor no detectar\u00e1 el cambio.
-APPLICATION_MONITORING_FAIL.useraction=Al actualizar los archivos de esta aplicaci\u00f3n, ser\u00e1 necesario desinstalar la aplicaci\u00f3n y volver a instalarla en el servidor. 
+APPLICATION_MONITORING_FAIL.useraction=Al actualizar los archivos de esta aplicaci\u00f3n, ser\u00e1 necesario desinstalar la aplicaci\u00f3n y volver a instalarla en el servidor.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: La aplicaci\u00f3n {0} en la ubicaci\u00f3n {1} est\u00e1 dentro del directorio supervisado {2}. El elemento de aplicaci\u00f3n se ignorar\u00e1.
 APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Un elemento de aplicaci\u00f3n en la configuraci\u00f3n del servidor ha definido la ubicaci\u00f3n de la aplicaci\u00f3n dentro del directorio que se supervisa en busca de aplicaciones. Como resultado, el elemento de aplicaci\u00f3n se ignorar\u00e1, y la aplicaci\u00f3n se iniciar\u00e1 utilizando el contenido del directorio supervisado si la aplicaci\u00f3n est\u00e1 presente en ese directorio supervisado.
-APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrija el elemento de la aplicaci\u00f3n o cambie la ubicaci\u00f3n del directorio supervisado. 
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrija el elemento de la aplicaci\u00f3n o cambie la ubicaci\u00f3n del directorio supervisado.
 
 APPLICATION_UPDATED=CWWKZ0062I: La aplicaci\u00f3n {0} se ha actualizado, pero no se ha reiniciado.
 APPLICATION_UPDATED.explanation=Se ha producido un cambio menor en la aplicaci\u00f3n especificada, y el cambio se ha considerado lo bastante menor para que no haya necesidad de reiniciar la aplicaci\u00f3n.
@@ -216,3 +216,12 @@ APPLICATION_JANDEX_ENABLED.useraction=No se requiere ninguna acci\u00f3n.
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: El uso de Jandex se ha inhabilitado para la aplicaci\u00f3n {0}.
 APPLICATION_JANDEX_DISABLED.explanation=El \u00edndice de Jandex se ha inhabilitado para la aplicaci\u00f3n especificada.
 APPLICATION_JANDEX_DISABLED.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} is the application name
+error.startAfter.cycle=CWWKZ0066E: Las aplicaciones siguientes no se pueden iniciar porque el valor de los atributos startAfter produce un ciclo: {0} 
+error.startAfter.cycle.explanation=No se puede iniciar ninguna de las aplicaciones porque cada una depende de una de las dem\u00e1s aplicaciones que se deben iniciar primero.
+error.startAfter.cycle.useraction=Cambie el valor del atributo startAfter para las aplicaciones implicadas en el ciclo de manera que no tengan dependencias circulares.
+
+dropins.app.also.configured=CWWKZ0067W: La aplicaci\u00f3n de drop-ins en la ubicaci\u00f3n {0} no se puede iniciar porque tambi\u00e9n se ha configurado.
+dropins.app.also.configured.explanation=Una aplicaci\u00f3n de la configuraci\u00f3n de servidor especifica una ubicaci\u00f3n en el directorio de drop-ins supervisado.
+dropins.app.also.configured.useraction=Mueva la aplicaci\u00f3n a una ubicaci\u00f3n diferente.

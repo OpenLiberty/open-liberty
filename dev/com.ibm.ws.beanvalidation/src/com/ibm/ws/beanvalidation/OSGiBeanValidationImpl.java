@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -21,6 +23,7 @@ import javax.validation.ConstraintValidatorFactory;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.metadata.BeanDescriptor;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -43,6 +46,7 @@ import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
+import com.ibm.ws.beanvalidation.service.ConstrainedHelper;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -54,6 +58,7 @@ import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -77,6 +82,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private static final String REFERENCE_VALIDATION_CONFIG_FACTORY = "validationConfigFactory";
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
     private static final String REFERENCE_VALIDATOR_FACTORY_BUILDER = "ValidatorFactoryBuilder";
+    private static final String REFERENCE_CONSTRAINED_HELPER = "ConstrainedHelper";
 
     private MetaDataSlot ivModuleMetaDataSlot;
 
@@ -85,6 +91,8 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
 
     private final AtomicServiceReference<ValidatorFactoryBuilder> validatorFactoryBuilderSR = new AtomicServiceReference<ValidatorFactoryBuilder>(REFERENCE_VALIDATOR_FACTORY_BUILDER);
+
+    private final AtomicServiceReference<ConstrainedHelper> constrainedHelperSR = new AtomicServiceReference<ConstrainedHelper>(REFERENCE_CONSTRAINED_HELPER);
 
     private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
     private Version runtimeVersion = DEFAULT_VERSION;
@@ -186,8 +194,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                                                       "already been destroyed or it was never created");
                     }
 
+                    ClassLoaderTuple tuple = null;
                     if (loader != null && !classLoadingServiceSR.getServiceWithException().isThreadContextClassLoader(loader)) {
-                        loader = createTCCL(loader);
+                        tuple = ClassLoaderTuple.of(createTCCL(loader), true);
+                        loader = tuple.classLoader;
                     }
                     ClassLoader origLoader = scopeData.setClassLoader(loader);
 
@@ -243,9 +253,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                         createSuccessful = true;
 
                     } finally {
-                        if (loader != null) {
-                            releaseLoader(loader);
-                        }
+                        releaseLoader(tuple);
                         scopeData.setClassLoader(origLoader);
 
                         // It's possible that the VF creation failed but we were able to initialize
@@ -280,8 +288,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     @Override
-    public void releaseLoader(ClassLoader tccl) {
-        classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+    public void releaseLoader(ClassLoaderTuple tuple) {
+        if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tuple.classLoader);
+        }
     }
 
     @Override
@@ -431,6 +441,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         classLoadingServiceSR.activate(cc);
         validationConfigFactorySR.activate(cc);
         validatorFactoryBuilderSR.activate(cc);
+        constrainedHelperSR.activate(cc);
     }
 
     @Deactivate
@@ -439,6 +450,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         classLoadingServiceSR.deactivate(cc);
         validationConfigFactorySR.deactivate(cc);
         validatorFactoryBuilderSR.deactivate(cc);
+        constrainedHelperSR.deactivate(cc);
     }
 
     @Reference
@@ -475,6 +487,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         classLoadingServiceSR.unsetReference(ref);
     }
 
+    @Reference(name = REFERENCE_CONSTRAINED_HELPER,
+               service = ConstrainedHelper.class,
+               cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setConstrainedHelper(ServiceReference<ConstrainedHelper> ref) {
+        constrainedHelperSR.setReference(ref);
+    }
+
+    protected void unsetConstrainedHelper(ServiceReference<ConstrainedHelper> ref) {
+        constrainedHelperSR.unsetReference(ref);
+    }
+
     @Reference(name = REFERENCE_VALIDATOR_FACTORY_BUILDER,
                service = ValidatorFactoryBuilder.class,
                cardinality = ReferenceCardinality.MULTIPLE,
@@ -504,6 +529,10 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0;
     }
 
+    private boolean isBeanValidationVersion10() {
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_0) == 0;
+    }
+
     private boolean isBeanValidationVersion11() {
         return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
     }
@@ -513,19 +542,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     @Override
-    public ClassLoader configureBvalClassloader(ClassLoader cl) {
+    public ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = priv.getContextClassLoader();
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
             if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(AbstractBeanValidation.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(AbstractBeanValidation.class.getClassLoader()), true);
     }
 
     /**
@@ -538,12 +567,14 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
             boolean wasTcclCreated = false;
+            ClassLoaderTuple tuple = null;
             try {
                 // Get a classloader that has the bean validation 1.1 API.
                 classLoader = validationConfigFactorySR.getServiceWithException().getClass().getClassLoader();
 
                 if (classLoader != null && !classLoadingServiceSR.getServiceWithException().isThreadContextClassLoader(classLoader)) {
-                    classLoader = createTCCL(classLoader);
+                    tuple = ClassLoaderTuple.of(createTCCL(classLoader), true);
+                    classLoader = tuple.classLoader;
                     wasTcclCreated = true;
                 }
 
@@ -581,9 +612,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-                if (classLoader != null && wasTcclCreated) {
-                    releaseLoader(classLoader);
-                }
+                releaseLoader(tuple);
             }
         }
     }
@@ -598,5 +627,77 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             throw new ValidationException(e);
         }
         return moduleInfo;
+    }
+
+    @Override
+    public boolean isMethodConstrained(Method method) throws ValidationException {
+        // Bean Validation 1.0 doesn't support method constraints.
+        if (isBeanValidationVersion10()) {
+            return false;
+        }
+
+        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
+
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + componentMetaData.getModuleMetaData().getName());
+        }
+
+        // Check for cached results in the module metadata slot.
+        Boolean isMethodConstrained = beanValMetaData.isExecutableConstrained(method.toString());
+        if (isMethodConstrained != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isExecutableConstrained cache hit on method " + method.toString() + " :  " + isMethodConstrained);
+            }
+            return isMethodConstrained;
+        }
+
+        Validator validator = getValidator(componentMetaData);
+        ConstrainedHelper constrainedHelper = constrainedHelperSR.getServiceWithException();
+        Class<?> declaringClass = method.getDeclaringClass();
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(declaringClass);
+        isMethodConstrained = constrainedHelper.isMethodConstrained(method, beanDescriptor, declaringClass.getClassLoader(), beanValMetaData.getModuleUri());
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isMethodConstrained calculated method " + method.toString() + " :  " + isMethodConstrained);
+        }
+        beanValMetaData.addExecutableToConstrainedCache(method.toString(), isMethodConstrained);
+        return isMethodConstrained;
+    }
+
+    @Override
+    public boolean isConstructorConstrained(Constructor<?> constructor) {
+        // Bean Validation 1.0 doesn't support constructor constraints.
+        if (isBeanValidationVersion10()) {
+            return false;
+        }
+
+        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        AbstractMetaData beanValMetaData = (AbstractMetaData) componentMetaData.getModuleMetaData().getMetaData(ivModuleMetaDataSlot);
+
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + componentMetaData.getModuleMetaData().getName());
+        }
+
+        // Check for cached results in the module metadata slot.
+        Boolean isConstructorConstrained = beanValMetaData.isExecutableConstrained(constructor.toString());
+        if (isConstructorConstrained != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isExecutableConstrained cache hit on constructor " + constructor.toString() + " :  " + isConstructorConstrained);
+            }
+            return isConstructorConstrained;
+        }
+
+        Validator validator = getValidator(componentMetaData);
+        ConstrainedHelper constrainedHelper = constrainedHelperSR.getServiceWithException();
+        Class<?> declaringClass = constructor.getDeclaringClass();
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(declaringClass);
+        isConstructorConstrained = constrainedHelper.isConstructorConstrained(constructor, beanDescriptor, declaringClass.getClassLoader(), beanValMetaData.getModuleUri());
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isConstructorConstrained calculated method " + constructor.toString() + " :  " + isConstructorConstrained);
+        }
+        beanValMetaData.addExecutableToConstrainedCache(constructor.toString(), isConstructorConstrained);
+        return isConstructorConstrained;
     }
 }

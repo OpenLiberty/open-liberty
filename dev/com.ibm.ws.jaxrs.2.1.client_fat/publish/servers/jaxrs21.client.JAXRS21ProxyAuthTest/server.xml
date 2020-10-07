@@ -1,0 +1,26 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>transportSecurity-1.0</feature>
+        <feature>jaxb-2.2</feature>
+    </featureManager>
+   
+     <sslDefault outboundSSLRef="mySSLConfig" />
+     <!-- Server SSL configuration -->
+     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" /> 
+     <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" /> 
+
+     <!-- customize SSL configuration -->
+     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+
+  	<include location="../fatTestPorts.xml"/>
+  	
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+ 	<javaPermission className="java.net.NetPermission" name="getCookieHandler"/> 
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+
+
+</server>

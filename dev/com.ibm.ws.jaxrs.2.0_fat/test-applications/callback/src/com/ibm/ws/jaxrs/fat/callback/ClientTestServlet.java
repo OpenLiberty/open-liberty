@@ -210,6 +210,12 @@ public class ClientTestServlet extends HttpServlet {
 
     protected static String compareResult(Future<Response> future, String check) throws Exception
     {
+        //277486 adding delay to allow CompletionCallback.onComplete() to execute
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            //no-op
+        }
         Response response = future.get();
         //System.out.println(response.getStatus());
         intequalCompare(200, response.getStatus());
@@ -220,7 +226,7 @@ public class ClientTestServlet extends HttpServlet {
 //        assertEquals(check, entity);
         if (check.compareToIgnoreCase(entity) != 0)
         {
-            return "failure";
+            return "failure: check = " + check + ": entity = " + entity;
         }
         else
         {
@@ -235,7 +241,7 @@ public class ClientTestServlet extends HttpServlet {
         response.close();
         if (204 != code)
         {
-            return "failure";
+            return "failure: code = " + code;
         }
         else
         {
@@ -252,7 +258,7 @@ public class ClientTestServlet extends HttpServlet {
         response.close();
         if (204 != code)
         {
-            return "failure";
+            return "failure: code = " + code;
         }
         else
         {
@@ -268,7 +274,7 @@ public class ClientTestServlet extends HttpServlet {
         System.out.println(b);
         if (a != b)
         {
-            return "failure";
+            return "failure: a = " + a + ": b = " + b;
         }
         else
         {
@@ -283,7 +289,7 @@ public class ClientTestServlet extends HttpServlet {
         System.out.println(b);
         if (a.compareToIgnoreCase(b) != 0)
         {
-            return "failure";
+            return "failure: a = " + a + ": b = " + b;
         }
         else
         {

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: clientInterceptors {0}\uc5d0 \uc815\uc758\ub41c gRPC \uc778\ud130\uc149\ud130\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalid.clientinterceptor.explanation=clientInterceptors\uc5d0 \uc815\uc758\ub41c gRPC \uc778\ud130\uc149\ud130\ub97c \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+invalid.clientinterceptor.useraction=\uad6c\uc131\ub41c \uc778\ud130\uc149\ud130 \uc774\ub984 \ubc0f \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalid.keepalive.time=CWWKT0302E: gRPC \ud074\ub77c\uc774\uc5b8\ud2b8 keepAliveTime {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc740 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.
+invalid.keepalive.time.explanation=\uad6c\uc131\ub41c keepAliveTime \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalid.keepalive.time.useraction=keepAliveTime\uc5d0 \ub300\ud574 \uc62c\ubc14\ub978 \uac12\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+invalid.keepalive.timeout=CWWKT0303E: gRPC client keepAliveTimeout {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc740 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.
+invalid.keepalive.timeout.explanation=\uad6c\uc131\ub41c keepAliveTimeout \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalid.keepalive.timeout.useraction=keepAliveTimeout\uc5d0 \ub300\ud574 \uc62c\ubc14\ub978 \uac12\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.
+
+invalid.client.inbound.msg.size=CWWKT0304E: gRPC \ud074\ub77c\uc774\uc5b8\ud2b8 maxInboundMessageSize {0}\uc774(\uac00) \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uac12\uc740 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.
+invalid.client.inbound.msg.size.explanation=\uad6c\uc131\ub41c maxInboundMessageSize \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+invalid.client.inbound.msg.size.useraction=maxInboundMessageSize\uc5d0 \ub300\ud574 \uc62c\ubc14\ub978 \uac12\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class OAuth20ExceptionUtil {
 
     /**
      * Preserved for compatibility, calls new signature
-     * 
+     *
      * @param e
      * @param locale
      * @return
@@ -66,7 +66,7 @@ public class OAuth20ExceptionUtil {
 
     /**
      * Get the appropriate error message for the given exception
-     * 
+     *
      * @param e
      * @param locale
      * @param encoding

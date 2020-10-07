@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1776,7 +1776,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         int lastSlashIndex = path.lastIndexOf("/");
         String issuerIdentifier = scheme + "://" + hostname + ":" + port + path.substring(0, lastSlashIndex);
         addParameterToAttributeList(OAuth20Constants.ISSUER_IDENTIFIER, OAuth20Constants.ATTRTYPE_REQUEST, issuerIdentifier, attributeList);
-        if (request.getAttribute("OidcRequest") != null) {
+        if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             addParameterToAttributeList(OAuth20Constants.REQUEST_FEATURE, OAuth20Constants.ATTRTYPE_REQUEST, OAuth20Constants.REQUEST_FEATURE_OIDC, attributeList);
         }
         _log.exiting(CLASS, methodName);

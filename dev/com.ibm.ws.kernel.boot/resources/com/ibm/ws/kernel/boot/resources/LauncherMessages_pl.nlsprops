@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -474,7 +474,7 @@ specyfikacji dla pliku BLST nie jest zgodny z wymagan\u0105 sk\u0142adni\u0105. 
 error.blst.spec.invalid.useraction=Okre\u015bl nazw\u0119 symboliczn\u0105 i \
 zakres wersji pliku BLST w postaci \
 <nazwa_symboliczna>;version="<zakres_wersji>". Nazwa symboliczna musi by\u0107 \
-poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czne lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
+poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czone lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: Rozstrzygni\u0119cie \
@@ -565,15 +565,12 @@ czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
 (ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
-z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
 kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
-czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
-z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
 error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
 z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
 
@@ -632,7 +629,7 @@ error.create.unknownJavaLevel.useraction=Upewnij si\u0119, \u017ce u\u017cywany 
 
 error.create.java8serverenv=CWWKE0103E: Nie mo\u017cna utworzy\u0107 pliku server.env w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}
 error.create.java8serverenv.explanation=Proces, kt\u00f3ry pr\u00f3buje utworzy\u0107 serwer, nie m\u00f3g\u0142 wygenerowa\u0107 pliku server.env w podanym po\u0142o\u017ceniu.  Ten plik udost\u0119pnia argumenty maszyny JVM wymagane do poprawnego dzia\u0142ania serwera.
-error.create.java8serverenv.useraction=Upewnij si\u0119, \u017ce katalog serwera jest dost\u0119pny do zapisu dla bie\u017c\u0105cego u\u017cytkownika i dost\u0119pna jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca na dysku.  Mo\u017cna dodatkowo r\u0119cznie utworzy\u0107 plik server.env z nast\u0119puj\u0105c\u0105 warto\u015bci\u0105: WLP_SKIP_MAXPERMSIZE=true.  Nale\u017cy upewni\u0107 si\u0119, \u017ce proces serwera ma dost\u0119p do odczytu tego pliku.
+error.create.java8serverenv.useraction=Upewnij si\u0119, \u017ce katalog serwera jest dost\u0119pny do zapisu dla bie\u017c\u0105cego u\u017cytkownika i dost\u0119pna jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca na dysku. Nale\u017cy upewni\u0107 si\u0119, \u017ce proces serwera ma dost\u0119p do odczytu tego pliku.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ten produkt jest w wersji beta i nie mo\u017cna go u\u017cywa\u0107 w \u015brodowisku produkcyjnym. Warunki pe\u0142nej licencji mo\u017cna znale\u017a\u0107 w nast\u0119puj\u0105cym miejscu: {0}.
 audit.licenseRestriction.early_access.ilar.explanation=Ten produkt jest w wersji beta i musi by\u0107 u\u017cywany zgodnie z warunkami licencji dla wersji beta.
@@ -653,8 +650,7 @@ error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i 
 info.addProductExtension=CWWKE0108I: Rozszerzenie \
 produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
 to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
-info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
-Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -949,6 +945,13 @@ error.package.usr.jar=CWWKE0951E: Nazwa pliku archiwum nie mo\u017ce ko\u0144czy
 error.package.usr.jar.explanation=Opcja --archive nie mo\u017ce ko\u0144czy\u0107 si\u0119 rozszerzeniem nazwy pliku .jar, gdy okre\u015blona jest opcja --include=usr.
 error.package.usr.jar.useraction=Podaj nazw\u0119 pliku przy u\u017cyciu opcji --archive z rozszerzeniem nazwy pliku innym ni\u017c .jar, gdy jest u\u017cywana opcja --include=usr.
 
+error.missing.version.files=CWWKE0952E: Nie mo\u017cna odczyta\u0107 informacji o wersji z katalogu {0}.
+error.missing.version.files.explanation=Katalog zawieraj\u0105cy pliki z informacjami o wersji nie istnieje lub bie\u017c\u0105cy u\u017cytkownik nie mo\u017ce go odczyta\u0107.
+error.missing.version.files.useraction=Upewnij si\u0119, \u017ce katalog istnieje i bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107. 
+
+warning.earlyRelease=CWWKE0953W: Ta wersja produktu {0} jest wersj\u0105 wst\u0119pn\u0105 nieobj\u0119t\u0105 wsparciem.
+warning.earlyRelease.explanation=W wersjach wst\u0119pnych udost\u0119pniane s\u0105 nowe, nie do ko\u0144ca przetestowane funkcje, co s\u0142u\u017cy zbieraniu informacji zwrotnych od u\u017cytkownik\u00f3w przed wydaniem tych funkcji w obs\u0142ugiwanej wersji.
+warning.earlyRelease.useraction=Nie nale\u017cy u\u017cywa\u0107 wersji wst\u0119pnych w systemach produkcyjnych, poniewa\u017c takie wersje nie s\u0105 obj\u0119te wsparciem.
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
-	<logging consoleLogLevel="INFO" consoleFormat="basic"/>
+	<logging consoleLogLevel="INFO" consoleFormat="dev"/>
 
     <include location="../fatTestPorts.xml"/>
 

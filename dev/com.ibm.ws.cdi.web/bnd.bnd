@@ -15,10 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.web
 Bundle-SymbolicName: com.ibm.ws.cdi.web
 Bundle-Description: CDI Common Web, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
-javac.source: 1.7
-javac.target: 1.7
 
 -dsannotations: com.ibm.ws.cdi.web.liberty.WeldServletInitializer,\
   com.ibm.ws.cdi.web.impl.security.WebSecurityContextStore, \
@@ -46,6 +43,8 @@ Import-Package: \
         *
 
 WS-TraceGroup: JCDI
+
+jakartaeeMe: true
 
 -buildpath: \
         com.ibm.websphere.javaee.el.3.0;version=latest,\

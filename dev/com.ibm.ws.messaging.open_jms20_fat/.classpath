@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/DurableUnshared/src"/>
+	<classpathentry kind="src" path="test-applications/JMSConsumer_118076/src"/>
+	<classpathentry kind="src" path="test-applications/JMSConsumer_118077/src"/>
+	<classpathentry kind="src" path="test-applications/JMSContextInject/src"/>
+	<classpathentry kind="src" path="test-applications/JMSDCF/src"/>
+	<classpathentry kind="src" path="test-applications/JMSDCFVar/src"/>
+	<classpathentry kind="src" path="test-applications/JMSMBeans/src"/>
+	<classpathentry kind="src" path="test-applications/JMSProducer/src"/>
+	<classpathentry kind="src" path="test-applications/JMSProducer_118073/src"/>
+	<classpathentry kind="src" path="test-applications/JMSRedelivery_120846/src"/>
+	<classpathentry kind="src" path="test-applications/SharedSubscription/src"/>
+	<classpathentry kind="src" path="test-applications/SharedSubscriptionWithMsgSel/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

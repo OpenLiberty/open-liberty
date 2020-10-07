@@ -89,7 +89,7 @@ public class DeferConstructorProcessingMethodAdapter extends MethodVisitor {
      * Create an instance of a {@code ProbeMethodAdapter}.
      */
     DeferConstructorProcessingMethodAdapter(MethodVisitor visitor) {
-        super(Opcodes.ASM7, visitor);
+        super(Opcodes.ASM8, visitor);
     }
 
     private void push(Object stackElement, int count) {

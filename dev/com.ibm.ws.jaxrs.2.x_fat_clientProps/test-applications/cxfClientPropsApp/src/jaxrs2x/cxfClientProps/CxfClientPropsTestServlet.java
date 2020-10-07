@@ -42,14 +42,23 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
-    private static final long defaultMargin = 6000;
+    private static final long defaultMargin = 14000;
     private final static String proxyPort = "8888";
     private final static String proxyHost = "127.0.0.1";
-    private final static String myHost = "1.1.1.1";    
+    private final static String myHost = "1.1.1.1";
+    private static final long aixMargin = 61000;    
     
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
         if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
+    
+    private static final boolean isAIX() {
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("AIX".toLowerCase())) {
             return true;
         }
         return false;
@@ -90,6 +99,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
         String target = null;
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }        
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -123,6 +135,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testCXFReadTimeout";
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
         
         Client client = ClientBuilder.newBuilder()
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
@@ -152,6 +167,10 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
+        
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
@@ -186,6 +205,10 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
+        if (isAIX()) {
+            MARGIN = aixMargin;
+        }    
+        
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.receive.timeout", IBM_TIMEOUT)
                                      .property("client.ReceiveTimeout", CXF_TIMEOUT)
@@ -253,6 +276,40 @@ public class CxfClientPropsTestServlet extends FATServlet {
                        .post(Entity.text(sb.toString()))
                        .readEntity(String.class);
         assertEquals("30000:30000", result);
+        
+/* This testcase is commented out since it verifies incorrect behavior by the JDK (that they will not fix).   The JAXRS client should never receive a 100 response, however in certain circumstances it does.   
+ * Customers may continue to hit this issue
+ *         
+        // Repeating the tests but adding the "Expect", "100-continue" header.  In this case a 100 will
+        // be sent prior to the 200 containing the output.  The JDK will catch and handle this 100 and 
+        // JAXRS will only get the 200 response when in streaming mode (which for now is only chunking).  
+        // If not in chunking then JAXRS will receive the 100 response which will contain no returned data.
+        client = ClientBuilder.newBuilder()
+                        .property("client.ChunkingThreshold", "10000")
+                        .build();
+   
+        Response response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking")
+                              .request().header("Expect", "100-continue")
+                              .post(Entity.text(sb.toString()));
+        int status = response.getStatus();
+        result = response.readEntity(String.class);
+        
+        assertEquals(200,status);
+        assertEquals("CHUNKING", result);
+
+        client = ClientBuilder.newBuilder()
+                        .property("client.ChunkingThreshold", "40000")
+                        .build();
+        response = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/chunking")
+                       .request().header("Expect", "100-continue")
+                       .post(Entity.text(sb.toString()));
+        status = response.getStatus();
+        result = response.readEntity(String.class);
+
+        // If a 100 response is received then no data will be sent.
+        assertEquals(100,status);
+        assertEquals("", result);
+*/
     }
 
     @Test

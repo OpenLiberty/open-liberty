@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: A(z) {0} m\u0171szer m\u00e9r\u0151sz\u00e1m \u00e9rt\u00e9ke nem oldhat\u00f3 fel.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=A m\u0171szer alapul szolg\u00e1l\u00f3 met\u00f3dusa nem oldhat\u00f3 fel. Ezt \u00e1ltal\u00e1ban az okozza, hogy a m\u0171szer el\u00e9r\u00e9sekor az alkalmaz\u00e1s m\u00e1r ki\u00fcr\u00edt\u00e9sre ker\u00fclt a mem\u00f3ri\u00e1b\u00f3l.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=Semmit sem kell tennie. A rendszer automatikusan megsz\u00fcnteti a m\u0171szer regisztr\u00e1ci\u00f3j\u00e1t.

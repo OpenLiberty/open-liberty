@@ -9,4 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries {
+    dependsOn copyJdbcDrivers
+    dependsOn copyDatabaseRotationDrivers
+    dependsOn copyFattestDatabases
+    dependsOn addJakartaTransformer
+}

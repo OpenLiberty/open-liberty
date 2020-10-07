@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,9 +46,11 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 
 import com.ibm.ws.microprofile.metrics.impl.MetricRegistryImpl;
 
-/* package-private */ final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
+public final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
 
-    private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {}, new AnnotationLiteral<Default>() {}));
+    private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {
+    }, new AnnotationLiteral<Default>() {
+    }));
 
     private final Set<Type> types;
 

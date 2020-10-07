@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
+import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.util.List;
 
@@ -20,31 +21,25 @@ import javax.naming.ldap.LdapName;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 
 /**
- *
+ * Creates a self-signed certificate using the Java keytool.
  */
 public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
     /** {@inheritDoc} */
     @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+    public File createDefaultSSLCertificate(String filePath, String password, String keyStoreType, String keyStoreProvider, int validity, String subjectDN, int keySize,
+                                            String sigAlg,
                                             List<String> extInfo) throws CertificateException {
 
-        String setKeyStoreType = null;
         KeytoolCommand keytoolCmd = null;
 
         validateParameters(filePath, password, validity, subjectDN, keySize, sigAlg);
 
         String keyType = getKeyFromSigAlg(sigAlg);
 
-        if (filePath.lastIndexOf(".") != -1) {
-            setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
-        }
+        keyStoreType = (keyStoreType == null) ? DEFAULT_KEYSTORE_TYPE : keyStoreType;
 
-        if (!setKeyStoreType.equals("p12") && (!setKeyStoreType.equals(DEFAULT_KEYSTORE_TYPE))) {
-            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, setKeyStoreType, extInfo);
-        } else {
-            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE, extInfo);
-        }
+        keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, keyStoreType, extInfo);
 
         keytoolCmd.executeCommand();
         File f = new File(filePath);
@@ -145,4 +140,15 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
             return KEYALG_RSA_TYPE;
     }
 
+    @Override
+    public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) {
+        /*
+         * Will not be updating self-signed certificates at this time.
+         */
+    }
+
+    @Override
+    public String getType() {
+        return TYPE_SELF_SIGNED;
+    }
 }

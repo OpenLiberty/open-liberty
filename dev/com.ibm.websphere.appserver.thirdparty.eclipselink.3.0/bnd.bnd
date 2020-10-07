@@ -1,0 +1,122 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.3.0
+Bundle-Description: EclipseLink JPA
+Bundle-Distributor: IBM
+Bundle-Activator: io.openliberty.persistence.internal.helper.EclipselinkPersistenceActivator
+Bundle-Name: EclipseLink JPA
+Premain-Class: org.eclipse.persistence.internal.jpa.deployment.JavaSECMPInitializerAgent
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Eclipse.org - EclipseLink Project
+Bundle-ManifestVersion: 2
+Specification-Version: 3.0.0
+
+Export-Package: \
+            org.eclipse.persistence.javax.persistence.osgi;version="3.0.0", \
+            org.eclipse.persistence.jpa.config;version="3.0.0", \
+            org.eclipse.persistence.sessions.serializers.kryo;version="3.0.0", \
+            org.eclipse.persistence.internal.jpa.config.*;version="3.0.0", \
+            org.eclipse.persistence.internal.jpa.metadata.graphs;version="3.0.0", \
+            org.eclipse.persistence.internal.jpa.metadata.sop;version="3.0.0", \
+            org.eclipse.persistence.internal.libraries.asm*;version="3.0.0", \
+            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="3.0.0", \
+            org.eclipse.persistence.jpa.jpql*;version="3.0.0", \
+            org.eclipse.persistence.*;version="3.0.0"
+
+Import-Package: \
+            com.ibm.tx.jta;resolution:=optional, \
+            com.ibm.websphere.ras, \
+            com.ibm.ws.Transaction;resolution:=optional, \
+            com.ibm.ws.jpa.container.eclipselink.logging;resolution:=optional, \
+            !javax.activation, \
+            javax.crypto;resolution:=optional, \
+            javax.crypto.spec;resolution:=optional, \
+            jakarta.enterprise.context.spi;resolution:=optional, \
+            jakarta.enterprise.inject.spi;resolution:=optional, \
+            javax.imageio;resolution:=optional, \
+            javax.imageio.stream;resolution:=optional, \
+            jakarta.jms;resolution:=optional, \
+            jakarta.json;resolution:=optional, \
+            jakarta.json.stream;resolution:=optional, \
+            javax.management;resolution:=optional, \
+            javax.management.openmbean;resolution:=optional, \
+            javax.naming;resolution:=optional, \
+            jakarta.persistence;jpa="3.0";consumer="persistenceService";resolution:=optional, \
+            jakarta.persistence.criteria;jpa="3.0";consumer="persistenceService", \
+            jakarta.persistence.metamodel;jpa="3.0";consumer="persistenceService", \
+            jakarta.persistence.spi;jpa="3.0";consumer="persistenceService";resolution:=optional, \
+            jakarta.resource;resolution:=optional, \
+            jakarta.resource.cci;resolution:=optional, \
+            javax.rmi;resolution:=optional, \
+            javax.rmi.CORBA;resolution:=optional, \
+            javax.sql;resolution:=optional, \
+            jakarta.transaction;resolution:=optional, \
+            javax.transaction.xa;resolution:=optional, \
+            jakarta.validation;resolution:=optional, \
+            jakarta.validation.groups;resolution:=optional, \
+            jakarta.validation.metadata;resolution:=optional, \
+            javax.xml.datatype;resolution:=optional, \
+            javax.xml.namespace;resolution:=optional, \
+            javax.xml.parsers;resolution:=optional, \
+            javax.xml.stream;resolution:=optional, \
+            javax.xml.stream.events;resolution:=optional, \
+            javax.xml.transform;resolution:=optional, \
+            javax.xml.transform.dom;resolution:=optional, \
+            javax.xml.transform.sax;resolution:=optional, \
+            javax.xml.transform.stream;resolution:=optional, \
+            javax.xml.validation;resolution:=optional, \
+            javax.xml.xpath;resolution:=optional, \
+            org.eclipse.persistence.jpa, \
+            org.omg.CORBA;resolution:=optional, \
+            org.omg.CORBA.portable;resolution:=optional, \
+            org.omg.CORBA_2_3.portable;resolution:=optional, \
+            org.osgi.framework, \
+            org.w3c.dom;resolution:=optional, \
+            org.xml.sax;resolution:=optional, \
+            org.xml.sax.ext;resolution:=optional, \
+            org.xml.sax.helpers;resolution:=optional
+
+# Use dynamicImport-Package for JAXB APIs, with this, Equinox will have a chance to wire
+# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
+# bundle will be always used due to JAXB 2.2 API is not resolved
+DynamicImport-Package: \
+ jakarta.activation,\
+ jakarta.xml.bind, \
+ jakarta.xml.bind.annotation, \
+ jakarta.xml.bind.annotation.adapters, \
+ jakarta.xml.bind.attachment, \
+ javax.xml.bind.helpers, \
+ javax.xml.bind.util
+
+Private-Package: io.openliberty.persistence.internal.helper
+
+Include-Resource: \
+  @${repo;org.eclipse.persistence.asm;3.0.0}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.corba;3.0.0}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.core;3.0.0}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa;3.0.0}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.jpql;3.0.0}!/!META-INF/maven/*
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+instrument.classesExcludes: \
+  org/eclipse/persistence/exceptions/i18n/*.class, \
+  org/eclipse/persistence/internal/localization/i18n/*.class, \
+  org/eclipse/persistence/internal/helper/*.class
+
+-buildpath: \
+    org.eclipse.persistence.core;version=3.0.0,\
+    org.eclipse.persistence.jpa;version=3.0.0,\
+    jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
+    com.ibm.websphere.org.osgi.core

@@ -155,12 +155,16 @@ class ConfigurationStore implements Runnable {
         }
     }
 
+    /*
+     * This method can return deleted configurations
+     */
     public ExtendedConfigurationImpl[] getFactoryConfigurations(String factoryPid) {
         readLock();
         try {
             List<ExtendedConfigurationImpl> resultList = new ArrayList<ExtendedConfigurationImpl>();
             for (ExtendedConfigurationImpl config : configurations.values()) {
-                String otherFactoryPid = config.getFactoryPid();
+                //bypassing the check to see if configuration was deleted
+                String otherFactoryPid = config.getFactoryPid(false);
                 if (otherFactoryPid != null && otherFactoryPid.equals(factoryPid))
                     resultList.add(config);
             }

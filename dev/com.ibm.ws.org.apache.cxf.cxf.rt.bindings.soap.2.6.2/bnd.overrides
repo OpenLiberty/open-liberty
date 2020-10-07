@@ -16,7 +16,6 @@ Bundle-Description: Apache CXF Runtime SOAP Binding, version 2.6.2
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2
 Bundle-Activator: com.ibm.ws.cxf.rt.bindings.soap.NoOpActivator
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: \
   !schemas.configuration, \
@@ -29,7 +28,7 @@ Export-Package: \
   org.apache.cxf.binding.soap.saaj;version="2.6.2", \
   org.apache.cxf.binding.soap.spring;version="2.6.2", \
   org.apache.cxf.binding.soap.tcp;version="2.6.2", \
-  org.apache.cxf.binding.soap.tcp.frames;version="2.6.2",, \
+  org.apache.cxf.binding.soap.tcp.frames;version="2.6.2", \
   org.apache.cxf.binding.soap.wsdl.extensions;version="2.6.2", \
   org.apache.cxf.binding.soap.wsdl11;version="2.6.2", \
   com.ibm.ws.cxf.rt.bindings.soap
@@ -71,6 +70,7 @@ Import-Package: \
   org.apache.cxf.binding.soap.tcp.frames;version="[2.6.2,2.6.3)", \
   org.apache.cxf.binding.soap.wsdl.extensions;version="[2.6.2,2.6.3)", \
   org.apache.cxf.binding.soap.wsdl11;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.bus.blueprint;version="[2.6.2,2.6.3)", \
   org.apache.cxf.common;version="[2.6.2,2.6.3)", \
   org.apache.cxf.common.i18n;version="[2.6.2,2.6.3)", \
   org.apache.cxf.common.injection;version="[2.6.2,2.6.3)", \

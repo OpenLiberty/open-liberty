@@ -1,0 +1,151 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Form\u00e1t z\u00e1hlav\u00ed Accept {0} je chybn\u00fd.
+notAcceptable.info.CWMMC0000I.explanation=Z\u00e1hlav\u00ed Accept pou\u017e\u00edv\u00e1 nepodporovan\u00fd form\u00e1t.
+notAcceptable.info.CWMMC0000I.useraction=Pou\u017eijte p\u0159\u00edslu\u0161n\u00e1 z\u00e1hlav\u00ed.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: Typ po\u017eadavku metody mus\u00ed b\u00fdt GET nebo OPTIONS.
+requestType.info.CWMMC0001I.explanation=Typ po\u017eadavku nen\u00ed podporov\u00e1n. Typ mus\u00ed b\u00fdt GET nebo OPTIONS.
+requestType.info.CWMMC0001I.useraction=Prove\u010fte po\u017eadavky GET nebo OPTIONS.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: N\u00e1zev metriky {0} nebyl nalezen.
+metricNotFound.info.CWMMC0002I.explanation=Metrika neexistuje.
+metricNotFound.info.CWMMC0002I.useraction=Zadejte spr\u00e1vn\u00fd n\u00e1zev metriky.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: Nebyl nalezen registr {0}.
+registryNotFound.info.CWMMC0003I.explanation=Registr neexistuje.
+registryNotFound.info.CWMMC0003I.useraction=Zadejte spr\u00e1vn\u00fd n\u00e1zev registru.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: Registr {0} nem\u00e1 obsah.
+emptyRegistry.info.CWMMC0004I.explanation=Registr je pr\u00e1zdn\u00fd.
+emptyRegistry.info.CWMMC0004I.useraction=Napl\u0148te registr metrikami.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: Do\u0161lo k intern\u00ed chyb\u011b: {0}
+internal.error.CWMMC0005E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMMC0005E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: Do\u0161lo k intern\u00ed chyb\u011b.
+internal.error.CWMMC0006E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
+internal.error.CWMMC0006E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
+
+#Memory usedHeap message
+memory.usedHeap.description=Zobrazuje mno\u017estv\u00ed vyu\u017eit\u00e9 pam\u011bti haldy v bajtech.
+
+#Memory committedHeap message
+memory.committedHeap.description=Zobrazuje mno\u017estv\u00ed pam\u011bti (v bajtech), kter\u00e9 je potvrzeno pro pou\u017eit\u00fd virtu\u00e1ln\u00ed po\u010d\u00edta\u010d Java. Toto mno\u017estv\u00ed pam\u011bti je zaru\u010deno pro pou\u017eit\u00fd virtu\u00e1ln\u00ed po\u010d\u00edta\u010d Java.
+
+#Memory maxHeap message
+memory.maxHeap.description=Zobrazuje maxim\u00e1ln\u00ed velikost pam\u011bti haldy v bajtech, kterou lze pou\u017e\u00edt pro spr\u00e1vu pam\u011bti. Tento atribut zobrazuje -1, pokud nen\u00ed maxim\u00e1ln\u00ed velikost pam\u011bti haldy definov\u00e1na. Nen\u00ed zaru\u010deno, \u017ee tato velikost pam\u011bti bude dostupn\u00e1 pro spr\u00e1vu pam\u011bti, je-li v\u011bt\u0161\u00ed ne\u017e velikost potvrzen\u00e9 pam\u011bti. Prost\u0159ed\u00ed JVM se nemus\u00ed poda\u0159it p\u0159id\u011blit pam\u011b\u0165 i v p\u0159\u00edpad\u011b, \u017ee velikost vyu\u017eit\u00e9 pam\u011bti nep\u0159esahuje tuto maxim\u00e1ln\u00ed velikost.
+
+#Jvm uptime message
+jvm.uptime.description=Zobrazuje \u010das zah\u00e1jen\u00ed prost\u0159ed\u00ed JVM (Java virtual machine) v milisekund\u00e1ch. Tento atribut zobrazuje p\u0159ibli\u017en\u00fd \u010das, kdy se prost\u0159ed\u00ed JVM spustilo.
+
+#Thread count message
+thread.count.description=Zobrazuje aktu\u00e1ln\u00ed po\u010det aktivn\u00edch podproces\u016f v\u010detn\u011b podproces\u016f d\u00e9monu a jin\u00fdch ne\u017e d\u00e9monu.
+
+#Thread daemon count message
+thread.daemon.count.description=Zobrazuje aktu\u00e1ln\u00ed po\u010det aktivn\u00edch podproces\u016f d\u00e9monu.
+
+#Thread max count message
+thread.max.count.description=Zobrazuje maxim\u00e1ln\u00ed aktivn\u00ed po\u010det podproces\u016f od spu\u0161t\u011bn\u00ed prost\u0159ed\u00ed JVM nebo resetu maxima. To zahrnuje podprocesy d\u00e9monu a jin\u00fdch ne\u017e d\u00e9monu.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=Zobrazuje po\u010det t\u0159\u00edd, kter\u00e9 jsou aktu\u00e1ln\u011b na\u010dteny do prost\u0159ed\u00ed JVM.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Zobrazuje celkov\u00fd po\u010det t\u0159\u00edd, kter\u00e9 byly na\u010dteny od za\u010d\u00e1tku prov\u00e1d\u011bn\u00ed JVM.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Zobrazuje celkov\u00fd po\u010det uvoln\u011bn\u00fdch t\u0159\u00edd od za\u010d\u00e1tku prov\u00e1d\u011bn\u00ed JVM.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=Zobrazuje po\u010det procesor\u016f dostupn\u00fdch pro prost\u0159ed\u00ed JVM. Tato hodnota se m\u016f\u017ee m\u011bnit b\u011bhem konkr\u00e9tn\u00edho vyvol\u00e1n\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=Zobrazuje pr\u016fm\u011brnou z\u00e1t\u011b\u017e syst\u00e9mu za posledn\u00ed minutu. Pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e syst\u00e9mu je sou\u010det po\u010dtu spustiteln\u00fdch entit ve front\u011b na dostupn\u00e9 procesory a po\u010det spustiteln\u00fdch entit b\u011b\u017e\u00edc\u00edch na dostupn\u00fdch procesorech zpr\u016fm\u011brovan\u00fd za ur\u010dit\u00e9 \u010dasov\u00e9 obdob\u00ed. Zp\u016fsob, jak\u00fdm se vypo\u010d\u00edt\u00e1 pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e, z\u00e1vis\u00ed na opera\u010dn\u00edm syst\u00e9mu, ale obvykle je to omezen\u00fd \u010dasov\u011b z\u00e1visl\u00fd pr\u016fm\u011br. Nen\u00ed-li hodnota pr\u016fm\u011brn\u00e9 z\u00e1t\u011b\u017ee dostupn\u00e1, zobraz\u00ed se z\u00e1porn\u00e9 \u010d\u00edslo. Tento atribut je navr\u017een tak, aby poskytoval informace o z\u00e1t\u011b\u017ei syst\u00e9mu, s mo\u017enost\u00ed \u010dast\u00e9ho dotazov\u00e1n\u00ed. Informace o pr\u016fm\u011brn\u00e9 z\u00e1t\u011b\u017ei m\u016f\u017ee b\u00fdt na n\u011bkter\u00fdch platform\u00e1ch nedostupn\u00e1, je-li nap\u0159. implementace t\u00e9to metody n\u00e1kladn\u00e1.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=Zobrazuje 'posledn\u00ed vyu\u017eit\u00ed procesoru' pro proces prost\u0159ed\u00ed JVM.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Zobrazuje \u010das procesoru pou\u017e\u00edvan\u00fd procesem, na kter\u00e9m b\u011b\u017e\u00ed prost\u0159ed\u00ed JVM.
+
+#Garbage collection count message
+garbageCollectionCount.description=Zobrazuje celkov\u00fd po\u010det kolekc\u00ed, kter\u00e9 se vyskytly. Tento atribut vypisuje -1, pokud po\u010det shroma\u017e\u010fov\u00e1n\u00ed nen\u00ed definov\u00e1n pro tento kolektor.
+
+#Garbage collection time message
+garbageCollectionTime.description=Zobrazuje v milisekund\u00e1ch p\u0159ibli\u017enou akumulovanou dobu uvol\u0148ov\u00e1n\u00ed. Tento atribut zobrazuje -1, pokud nen\u00ed pro tento kolektor uplynul\u00e1 doba uvol\u0148ov\u00e1n\u00ed definov\u00e1na. Implementace prost\u0159ed\u00ed JVM (Java virtual machine) m\u016f\u017ee m\u011b\u0159it uplynulou dobu \u010dasova\u010dem s vysok\u00fdm rozli\u0161en\u00edm. Tento atribut m\u016f\u017ee zobrazovat stejnou hodnotu, p\u0159esto\u017ee byl po\u010det uvoln\u011bn\u00ed zv\u00fd\u0161en, pokud je uplynula doba uvol\u0148ov\u00e1n\u00ed velmi kr\u00e1tk\u00e1.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=Po\u010det podproces\u016f spu\u0161t\u011bn\u00fdch \u00falohami.
+threadpool.size.description=Velikost fondu podproces\u016f.
+
+servlet.request.total.description=Po\u010det nav\u0161t\u00edven\u00ed na tomto servletu od spu\u0161t\u011bn\u00ed serveru.
+servlet.responseTime.total.description=Celkov\u00e1 doba odezvy tohoto servletu od spu\u0161t\u011bn\u00ed serveru.
+
+connectionpool.create.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed vytvo\u0159en\u00fdch od vytvo\u0159en\u00ed fondu.
+connectionpool.destroy.total.description=Celkov\u00fd po\u010det spravovan\u00fdch p\u0159ipojen\u00ed zlikvidovan\u00fdch od vytvo\u0159en\u00ed fondu.
+connectionpool.managedConnections.description=Po\u010det spravovan\u00fdch p\u0159ipojen\u00ed ve fondech voln\u00fdch prost\u0159edk\u016f, sd\u00edlen\u00fdch a nesd\u00edlen\u00fdch fondech.
+connectionpool.connectionHandles.description=Po\u010det aktu\u00e1ln\u011b pou\u017e\u00edvan\u00fdch p\u0159ipojen\u00ed. Tento po\u010det m\u016f\u017ee zahrnovat v\u00edce p\u0159ipojen\u00ed, kter\u00e9 jsou sd\u00edleny z jednoho spravovan\u00e9ho p\u0159ipojen\u00ed.
+connectionpool.freeConnections.description=Po\u010det spravovan\u00fdch p\u0159ipojen\u00ed ve fondu voln\u00fdch prost\u0159edk\u016f.
+
+session.create.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k p\u0159ihl\u00e1\u0161en\u00ed.
+session.liveSessions.description=Po\u010det u\u017eivatel\u016f, kte\u0159\u00ed jsou aktu\u00e1ln\u011b p\u0159ihl\u00e1\u0161eni.
+session.activeSessions.description=Po\u010det soub\u011b\u017en\u011b aktivn\u00edch relac\u00ed. (Relace je aktivn\u00ed, pokud produkt aktu\u00e1ln\u011b zpracov\u00e1v\u00e1 po\u017eadavek, kter\u00fd pou\u017e\u00edv\u00e1 relace u\u017eivatele).
+session.invalidated.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed.
+session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed z d\u016fvodu p\u0159ekro\u010den\u00ed \u010dasov\u00e9ho limitu.
+
+grpc.server.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na serveru.
+grpc.server.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na serveru bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.server.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch serverem.
+grpc.server.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od klienta.
+grpc.server.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
+
+grpc.client.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na klientovi.
+grpc.client.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na klientovi bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.client.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch klientem.
+grpc.client.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od serveru.
+grpc.client.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
+
+REST.request.description=Po\u010det vyvol\u00e1n\u00ed a celkov\u00e1 doba odezvy t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: Do\u0161lo k chyb\u011b rozhran\u00ed Metrics API: {0}
+temporary.CWMMC9999E.explanation=Chyba rozhran\u00ed Metrics API br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMMC9999E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.

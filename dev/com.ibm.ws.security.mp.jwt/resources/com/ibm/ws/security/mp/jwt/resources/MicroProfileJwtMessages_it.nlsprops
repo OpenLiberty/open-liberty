@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -133,8 +133,8 @@ JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: La funzione JWT del microprofilo non pu\u00
 JWT_NOT_FOUND_IN_REQUEST.explanation=Per eseguire l'autenticazione, \u00e8 necessario includere un JWT del microprofilo nell'intestazione Autorizzazione utilizzando lo schema di autorizzazione Bearer o come parametro POST. L'intestazione Autorizzazione \u00e8 mancante, lo schema di autorizzazione dell'intestazione Autorizzazione non \u00e8 impostato su Bearer, la richiesta non \u00e8 di tipo POST oppure un JWT del microprofilo non \u00e8 incluso come parametro.
 JWT_NOT_FOUND_IN_REQUEST.useraction=Accertarsi che un JWT del microprofilo sia incluso nell'intestazione Autorizzazione o come parametro POST della richiesta.
 
-# 0=Exception message
-ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La funzione JWT del microprofilo non \u00e8 in grado di autenticare la richiesta perch\u00e9 non \u00e8 possibile creare un JWT valido dal token incluso nella richiesta. {0}
+# 0=Exception message                       
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: La funzione JWT del microprofilo non \u00e8 in grado di autenticare la richieste perch\u00e9 non \u00e8 possibile convalidare il token incluso nella richiesta. {0}
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=La funzione JWT del microprofilo ha rilevato un errore durante la creazione di un JWT dalla stringa token fornita. Non \u00e8 possibile creare un consumer JWT oppure il consumer JWT ha rilevato un errore durante l'analisi e la convalida della stringa token.
 ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=Vedere l'azione utente per l'errore che viene visualizzato nel messaggio. Controllare i log del server per eventuali ulteriori messaggi di errore.
 
@@ -155,3 +155,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Verificare che la configurazione del s
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: La funzione JWT del microprofilo non pu\u00f2 eseguire l'autenticazione perch\u00e9 il JWT nella richiesta \u00e8 stato precedentemente scollegato.
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=\u00c8 stata gi\u00e0 effettuata una chiamata a HttpServletRequest.logout() per un soggetto autenticato con questo JWT.  
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=Reinoltrare la richiesta con un altro JWT.
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: Il valore di configurazione MicroProfilo [{0}] {1} non \u00e8 supportato. Gli unici valori supportati sono {2}. Il valore {3} viene utilizzato per impostazione predefinita.
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=La propriet\u00e0 di configurazione MicroProfilo specificata nel messaggio ha una serie predefinita di valori supportati. Altri valori vengono ignorati e viene utilizzato invece il valore predefinito.
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=Specificare uno dei valori supportati per la propriet\u00e0 indicata nel messaggio.

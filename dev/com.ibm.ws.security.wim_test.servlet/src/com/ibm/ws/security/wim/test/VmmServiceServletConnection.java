@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,7 +232,7 @@ public class VmmServiceServletConnection {
      * @param str
      * @return
      */
-    private List<String> convertToList(String methodName, String str) {
+    public static List<String> convertToList(String methodName, String str) {
         List<String> list = new ArrayList<String>();
         if (str.startsWith("[") && str.endsWith("]")) {
             if (str.length() == 2) {

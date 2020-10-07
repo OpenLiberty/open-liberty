@@ -22,9 +22,9 @@
     <include location="../fatTestPorts.xml"/>
     <include location="database.xml"/>
 
-    <!--<logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
+    <!-- <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
               traceFileName="trace.log"
               maxFileSize="2000"
               maxFiles="10"
-              traceFormat="BASIC" />-->
+              traceFormat="BASIC" /> -->
 </server>

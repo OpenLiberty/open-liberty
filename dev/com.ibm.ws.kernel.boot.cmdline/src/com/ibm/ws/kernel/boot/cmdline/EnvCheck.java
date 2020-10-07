@@ -16,11 +16,11 @@ import com.ibm.ws.kernel.boot.Launcher;
 
 /**
  * Check's the version of the Java running before starting the server or running commands,
- * if Java 6 (or below) is being used a translated error message is thrown.
+ * if Java 7 (or below) is being used a translated error message is thrown.
  */
 public class EnvCheck {
 
-    private static final int CLASS_MAJOR_VERSION_JAVA7 = 51;
+    private static final int CLASS_MAJOR_VERSION_JAVA8 = 52;
 
     // See Launcher.ReturnCode.
     private static final int ERROR_BAD_JAVA_VERSION = 30;
@@ -39,7 +39,7 @@ public class EnvCheck {
         // gij (GNU libgcj) is installed as "java" on some Linux machines.
         // This interpreter really only supports Java 5, but unhelpfully fails
         // to throw UnsupportedClassVersionError for Java 6 classes.
-        if (getClassMajorVersion() < CLASS_MAJOR_VERSION_JAVA7) {
+        if (getClassMajorVersion() < CLASS_MAJOR_VERSION_JAVA8) {
             badVersion();
         }
 
@@ -84,7 +84,7 @@ public class EnvCheck {
         if (classVersion == null) {
             // JVM didn't supply the system property.  Let's hope it throws
             // UnsupportedClassVersionError if necessary.
-            return CLASS_MAJOR_VERSION_JAVA7;
+            return CLASS_MAJOR_VERSION_JAVA8;
         }
 
         int index = classVersion.indexOf('.');
@@ -95,7 +95,7 @@ public class EnvCheck {
         } catch (NumberFormatException ex) {
             // We couldn't parse the version string.  Let's hope the JVM throws
             // UnsupportedClassVersionError if necessary.
-            return CLASS_MAJOR_VERSION_JAVA7;
+            return CLASS_MAJOR_VERSION_JAVA8;
         }
     }
 }

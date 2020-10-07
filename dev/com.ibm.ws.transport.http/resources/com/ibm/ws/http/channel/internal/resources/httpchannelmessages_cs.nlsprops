@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -139,3 +139,39 @@ duplicateAlias.useraction=Zajist\u011bte, aby byly v\u0161echny aliasy hostitel\
 context.root.changed=CWWKT0028I: Webov\u00e1 aplikace byla p\u0159esunuta ({0}): {1}
 context.root.changed.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 context.root.changed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+compression.duplicateType=CWWKT0029W: Byl proveden pokus o duplicitn\u00ed p\u0159id\u00e1n\u00ed typu {0}. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed konfigurace {1}. 
+compression.duplicateType.explanation=Uveden\u00e1 hodnota je ji\u017e registrov\u00e1na jako p\u0159ijateln\u00fd typ obsahu pro kompresi.
+compression.duplicateType.useraction=P\u0159i definov\u00e1n\u00ed hodnoty p\u0159ijateln\u00e9ho k\u00f3dov\u00e1n\u00ed se ujist\u011bte, \u017ee ka\u017ed\u00e1 hodnota je jedine\u010dn\u00e1. 
+
+compression.duplicateTypeRemoval=CWWKT0030W: Byl proveden pokus o duplicitn\u00ed odebr\u00e1n\u00ed k\u00f3dov\u00e1n\u00ed {0}. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed konfigurace {1}.
+compression.duplicateTypeRemoval.explanation=Uveden\u00e1 hodnota je ji\u017e registrov\u00e1na jako vylou\u010den\u00fd typ obsahu pro kompresi.
+compression.duplicateTypeRemoval.useraction=Pou\u017e\u00edv\u00e1te-li volbu remove (-), ujist\u011bte se, \u017ee uveden\u00e1 hodnota nen\u00ed ji\u017e registrov\u00e1na jako vylou\u010den\u00fd typ obsahu.
+
+compression.duplicateTypeAddRemove=CWWKT0031W: Do\u0161lo k pokusu o p\u0159id\u00e1n\u00ed i odebr\u00e1n\u00ed stejn\u00e9ho typu obsahu {0}. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed konfigurace {1}.
+compression.duplicateTypeAddRemove.explanation=Uveden\u00e1 hodnota je p\u0159id\u00e1van\u00e1 i odeb\u00edran\u00e1 pomoc\u00ed voleb konfigurace '+/-'.
+compression.duplicateTypeAddRemove.useraction=Nep\u0159id\u00e1vejte (+) a neodeb\u00edrejte (-) stejn\u00fd typ obsahu.
+
+compression.duplicateOverwriteAndAdd=CWWKT0032W: Do\u0161lo k pokusu o p\u0159eps\u00e1n\u00ed v\u00fdchoz\u00ed konfigurace komprese, ale tak\u00e9 k pou\u017eit\u00ed volby p\u0159id\u00e1n\u00ed (+) u jin\u00fdch typ\u016f obsahu. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed konfigurace {0}.
+compression.duplicateOverwriteAndAdd.explanation=Konfigurace se pokou\u0161\u00ed o p\u0159eps\u00e1n\u00ed v\u00fdchoz\u00ed hodnoty p\u0159i pou\u017eit\u00ed volby p\u0159id\u00e1n\u00ed (+). Volbu p\u0159id\u00e1n\u00ed nelze pou\u017e\u00edt, pokud p\u0159episujete v\u00fdchoz\u00ed hodnoty.
+compression.duplicateOverwriteAndAdd.useraction=Pokud mus\u00ed b\u00fdt v\u00fdchoz\u00ed konfigurace p\u0159eps\u00e1na, nepou\u017e\u00edvejte volbu p\u0159id\u00e1n\u00ed (+). Pokud v\u00fdchoz\u00ed nastaven\u00ed nemus\u00ed b\u00fdt p\u0159episov\u00e1no, zahr\u0148te do n\u00ed v\u0161echny ostatn\u00ed po\u017eadovan\u00e9 typy obsahu pomoc\u00ed volby p\u0159id\u00e1n\u00ed (+).
+
+compression.unsupportedAlgorithm=CWWKT0033W: Do\u0161lo k pokusu o konfiguraci {0} jako preferovan\u00e9ho algoritmu serveru. Podporovan\u00e9 hodnoty jsou gzip, x-gzip, zlib, deflate, identity a none. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed konfigurace {1}.
+compression.unsupportedAlgorithm.explanation=Konfigurace se pokou\u0161\u00ed nastavit nepodporovan\u00fd algoritmus jako preferovan\u00fd algoritmus serveru, kter\u00fd m\u00e1 b\u00fdt pou\u017eit pro kompresi. 
+compression.unsupportedAlgorithm.useraction= P\u0159i definov\u00e1n\u00ed hodnoty se ujist\u011bte, \u017ee je nastavena na gzip, x-gzip, deflate, zlib, identity nebo none.
+
+decompression.tolerance.reached=CWWKT0034E: Kan\u00e1l HTTP se pokusil dekomprimovat t\u011blo s v\u011bt\u0161\u00edm ne\u017e tolerovan\u00fdm pom\u011brem.
+decompression.tolerance.reached.explanation=Bylo dosa\u017eeno maxim\u00e1ln\u00edho po\u010dtu cykl\u016f dekomprese, co\u017e m\u00e1 za n\u00e1sledek v\u011bt\u0161\u00ed pom\u011br dekomprese, ne\u017e je nakonfigurovan\u00fd limit. Limit dekomprese je definov\u00e1n atributem decompressionRatioLimit httpOption.
+decompression.tolerance.reached.useraction=Dojde-li k t\u00e9to v\u00fdjimce u platn\u00e9ho t\u011bla po\u017eadavku, zm\u011b\u0148te konfiguraci atribut\u016f decompressionTolerance a decompressionRatioLimit httpOption za \u00fa\u010delem z\u00edsk\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edch v\u00fdsledk\u016f dekomprese.
+
+cookies.samesite.duplicateName=CWWKT0035W: Duplicitn\u00ed n\u00e1zev nebo vzor souboru cookie [{0}] byl nalezen v konfiguraci SameSite [{1}]. N\u00e1zev nebo vzor souboru cookie [{0}] je ignorov\u00e1n pro v\u0161echny konfigura\u010dn\u00ed seznamy. V\u0161echny n\u00e1zvy nebo vzory soubor\u016f cookie definovan\u00e9 pomoc\u00ed konfigurac\u00ed ''lax'', ''none'' a ''strict'' mohou b\u00fdt definov\u00e1ny pouze v jedn\u00e9 ze t\u0159\u00ed konfigurac\u00ed.
+cookies.samesite.duplicateName.explanation=Uveden\u00e1 hodnota ji\u017e byla nalezena konfigurac\u00ed a namapov\u00e1na na hodnotu SameSite.
+cookies.samesite.duplicateName.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy a vzory soubor\u016f cookie jsou jedine\u010dn\u00e9 v r\u00e1mci konfigura\u010dn\u00edch seznam\u016f 'lax', 'none' a 'strict'.
+
+cookies.samesite.unsupportedWildcard=CWWKT0036W: Do\u0161lo k pokusu o nepodporovan\u00e9 pou\u017eit\u00ed z\u00e1stupn\u00e9ho znaku pomoc\u00ed hodnoty [{0}]. Pro tuto hodnotu nen\u00ed nastavena konfigurace SameSite.
+cookies.samesite.unsupportedWildcard.explanation=Z\u00e1stupn\u00fd znak (*) byl pou\u017eit nepodporovan\u00fdm zp\u016fsobem. Podpora se skl\u00e1d\u00e1 z jednoho z\u00e1stupn\u00e9ho znaku (*) pou\u017eit\u00e9ho jako samostatn\u00e1 hodnota nebo podle libovoln\u00e9ho po\u010dtu p\u0159edpon n\u00e1zv\u016f soubor\u016f cookie.
+cookies.samesite.unsupportedWildcard.useraction=Ujist\u011bte se, \u017ee pouze jedin\u00fd z\u00e1stupn\u00fd znak (*) se pou\u017e\u00edv\u00e1 pro vzor v seznamech 'lax', 'none' a 'strict'. Krom\u011b toho je pou\u017eit\u00ed tohoto znaku podporov\u00e1no pouze za n\u00e1sleduj\u00edc\u00edch dvou podm\u00ednek: jako samostatn\u00e1 hodnota nebo n\u00e1sleduj\u00edc\u00ed p\u0159edpony n\u00e1zv\u016f soubor\u016f cookie.
+
+cookies.samesite.knownDuplicateName=CWWKT0037W: N\u00e1zev nebo vzor souboru cookie [{0}], kter\u00fd je ozna\u010den jako duplicitn\u00ed, byl nalezen v konfiguraci SameSite [{1}]. N\u00e1zev nebo vzor souboru cookie [{0}] je ignorov\u00e1n. V\u0161echny n\u00e1zvy nebo vzory soubor\u016f cookie definovan\u00e9 pomoc\u00ed konfigurac\u00ed ''lax'', ''none'' a ''strict'' mohou b\u00fdt definov\u00e1ny pouze v jedn\u00e9 ze t\u0159\u00ed konfigurac\u00ed.
+cookies.samesite.knownDuplicateName.explanation=Uveden\u00e1 hodnota ji\u017e byla nalezena konfigurac\u00ed a namapov\u00e1na na hodnotu SameSite.
+cookies.samesite.knownDuplicateName.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy a vzory soubor\u016f cookie jsou jedine\u010dn\u00e9 v r\u00e1mci konfigura\u010dn\u00edch seznam\u016f 'lax', 'none' a 'strict'.

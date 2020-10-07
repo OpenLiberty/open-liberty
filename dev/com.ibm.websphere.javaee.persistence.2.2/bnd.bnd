@@ -11,31 +11,29 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.javaee.persistence.2.2; singleton:=true
 Bundle-Activator: com.ibm.ws.javaee.persistence.internal.HybridPersistenceActivator
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 Import-Package: \
+  com.ibm.ws.threadContext, \
+  com.ibm.ws.runtime.metadata, \
   org.osgi.framework;version="[1.6,2)", \
   org.osgi.util.tracker;version="[1.5,2)", \
   javax.sql; resolution:=optional
 
 # the jaxb feature will bring geronimo.osgi.registry to liberty, and the jpa api bundle
 # tracks the ProviderRegistry service, so we need dynamicly import the package.
-#DynamicImport-Package: \
-#  org.apache.geronimo.osgi.registry.api
-
+DynamicImport-Package: \
+  org.apache.geronimo.osgi.registry.api
+  
 Export-Package: javax.persistence.*; jpa=2.2; -split-package:=first
 
-Private-Package: com.ibm.ws.javaee.persistence.internal
-#, \
-#   org.apache.geronimo.osgi.locator, \
-#   org.apache.geronimo.specs.jpa
-
+Private-Package: \
+  com.ibm.ws.javaee.persistence.internal, \
+  org.apache.geronimo.osgi.locator, \
+  org.apache.geronimo.specs.jpa
+  
 Include-Resource: \
    @${repo;javax.persistence:javax.persistence-api;2.2}!/about.html
 
@@ -44,5 +42,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-        javax.persistence:javax.persistence-api;version=2.2,\
-        com.ibm.websphere.javaee.persistence.2.0
+    javax.persistence:javax.persistence-api;version=2.2,\
+	com.ibm.ws.jpa.hybridpersistenceactivator

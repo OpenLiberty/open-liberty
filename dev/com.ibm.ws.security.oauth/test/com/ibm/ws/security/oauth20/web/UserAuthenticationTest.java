@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -300,6 +300,8 @@ public class UserAuthenticationTest {
                     will(returnValue(false));
                     allowing(provider).isAllowCertAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -432,6 +434,8 @@ public class UserAuthenticationTest {
                     will(returnValue(null));
                     one(request).getParameter(ATTR_PROMPT);
                     will(returnValue(null));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -472,6 +476,8 @@ public class UserAuthenticationTest {
                     one(request).getUserPrincipal();
                     will(returnValue(ppl));
                     one(request).logout();
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1034,7 +1040,7 @@ public class UserAuthenticationTest {
                     will(returnValue(new SSOCookieHelperImpl(config)));
                     allowing(config).createReferrerURLCookieHandler();
                     will(returnValue(new ReferrerURLCookieHandler(config)));
-                    one(request).getAttribute("OidcRequest");
+                    one(request).getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME);
                     will(returnValue(null));
                     one(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 }
@@ -1078,6 +1084,8 @@ public class UserAuthenticationTest {
                     will(returnValue(null));
                     allowing(provider).isAllowSpnegoAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);
@@ -1118,6 +1126,8 @@ public class UserAuthenticationTest {
                     will(returnValue(Constants.PROMPT_LOGIN + " " + Constants.PROMPT_CONSENT));
                     allowing(provider).isAllowSpnegoAuthentication();
                     will(returnValue(false));
+                    allowing(config).getSameSiteCookie();
+                    will(returnValue("Disabled"));
                 }
             });
             sendForLoginExpectations(requestUri, contextPath, loginUrl);

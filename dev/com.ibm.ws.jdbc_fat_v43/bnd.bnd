@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,12 +12,10 @@
 bVersion=1.0
 
 #TODO update to Java 9 once available
-javac.source: 1.8
-javac.target: 1.8
 
 javac.args.release: current
 
-fat.minimum.java.level: 9
+fat.minimum.java.level: 11
 
 src: \
 	fat/src,\
@@ -37,3 +35,5 @@ fat.project: true
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.tx.core;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1
+
+tested.features: servlet-5.0

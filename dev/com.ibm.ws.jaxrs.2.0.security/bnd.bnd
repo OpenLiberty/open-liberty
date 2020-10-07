@@ -17,8 +17,6 @@ Bundle-Description: IBM JAX-RS-2.0 SSL Security support; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
-# jaxrs-2.0-appSecurity is part of EE7 and therefore requires java 1.7 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
 Export-Package: \
   com.ibm.ws.jaxrs20.appsecurity.security

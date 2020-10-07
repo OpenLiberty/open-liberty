@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -902,8 +902,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @return
      * @throws WIMException
      */
+    @Trivial // parentDO can be very large, override entry / exit to avoid printing out such a large object to trace
     private Entity createEntityFromLdapEntry(Object parentDO, String propName, LdapEntry ldapEntry, List<String> propNames) throws WIMException {
         final String METHODNAME = "createEntityFromLdapEntry";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, METHODNAME, (parentDO == null) ? "null" : parentDO.getClass(), propName, ldapEntry, propNames);
+        }
 
         String outEntityType = ldapEntry.getType();
         Entity outEntity = null;
@@ -961,6 +965,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
         } else {
             populateEntity(outEntity, propNames, ldapEntry.getAttributes());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, METHODNAME, outEntity);
         }
         return outEntity;
     }
@@ -1714,7 +1722,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     //grpEntry = iLdapConn.getEntityByIdentifier(grpDn, null, null, groupTypes, supportedProps,nested, false);
                                 } catch (EntityNotFoundException e) {
                                     if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ingored.");
+                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ignored.");
                                     }
                                     continue;
                                 }
@@ -2817,7 +2825,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     private String getPrincipalNameFilter(String principalName) {
         List<String> loginAttrs = iLdapConfigMgr.getLoginAttributes();
+        principalName = principalName.replace("\"\"", "\""); // Unescape escaped XPath quotation marks
+        principalName = principalName.replace("''", "'"); // Unescape escaped XPath apostrophes
         principalName = Rdn.escapeValue(principalName);
+        principalName = principalName.replace("(", "\\("); // Escape paren for LDAP filter.
+        principalName = principalName.replace(")", "\\)"); // Escape paren for LDAP filter.
         StringBuffer filter = new StringBuffer();
         if (loginAttrs != null) {
             if (loginAttrs.size() > 1) {

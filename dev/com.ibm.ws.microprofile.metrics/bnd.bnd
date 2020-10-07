@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: MicroProfile Metrics Common
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics
@@ -37,12 +35,13 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics.impl,\
 	com.ibm.ws.microprofile.metrics.helper
     
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
-	com.ibm.ws.microprofile.metrics.ApplicationListener
+	com.ibm.ws.microprofile.metrics.BaseMetrics,\
+	com.ibm.ws.microprofile.metrics.ApplicationListener,\
+	com.ibm.ws.microprofile.metrics.helper.WriterFactoryImpl
 
 WS-TraceGroup: METRICS
 

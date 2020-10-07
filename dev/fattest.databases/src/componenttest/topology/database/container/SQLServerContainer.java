@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,18 @@ import java.util.stream.Stream;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.utility.LicenseAcceptance;
 
+
+//TODO This class can be removed once we have updated past org.testcontainers:mssqlserver:1.14.3
+// since this code went in: https://github.com/testcontainers/testcontainers-java/pull/2085
 public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
     public static final String NAME = "sqlserver";
     public static final String IMAGE = "mcr.microsoft.com/mssql/server";
-    public static final String DEFAULT_TAG = "2019-GA-ubuntu-16.04";
+    public static final String DEFAULT_TAG = "2019-CU2-ubuntu-16.04";
 
     public static final Integer MS_SQL_SERVER_PORT = 1433;
+    public static final Integer MSSQL_DTC_TCP_PORT = 51000;
+    public static final Integer MSSQL_RPC_PORT = 135;
     private String username = "SA";
     private String password = "A_Str0ng_Required_Password";
 
@@ -44,6 +49,10 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
         super(dockerImageName);
         withStartupTimeoutSeconds(DEFAULT_STARTUP_TIMEOUT_SECONDS);
         withConnectTimeoutSeconds(DEFAULT_CONNECT_TIMEOUT_SECONDS);
+        
+        addExposedPort(MS_SQL_SERVER_PORT);
+        addExposedPort(MSSQL_DTC_TCP_PORT);
+        addExposedPort(MSSQL_RPC_PORT);
     }
 
     @Override
@@ -58,8 +67,9 @@ public class SQLServerContainer<SELF extends SQLServerContainer<SELF>> extends J
             LicenseAcceptance.assertLicenseAccepted(this.getDockerImageName());
             acceptLicense();
         }
-
-        addExposedPort(MS_SQL_SERVER_PORT);
+        
+        addEnv("MSSQL_RPC_PORT", MSSQL_RPC_PORT.toString());
+        addEnv("MSSQL_DTC_TCP_PORT", MSSQL_DTC_TCP_PORT.toString());
         addEnv("SA_PASSWORD", password);
     }
 

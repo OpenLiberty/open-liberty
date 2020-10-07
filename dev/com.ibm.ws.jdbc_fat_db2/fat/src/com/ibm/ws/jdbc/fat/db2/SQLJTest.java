@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
-import static com.ibm.ws.jdbc.fat.db2.FATSuite.db2;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
@@ -29,6 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.Db2Container;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -48,6 +48,8 @@ public class SQLJTest extends FATServletClient {
 
     @Server("com.ibm.ws.sqlj.fat")
     public static LibertyServer server;
+
+    public static Db2Container db2 = FATSuite.db2;
 
     public static final String JEE_APP = "sqljapp";
     public static final String SERVLET_NAME = "SQLJTestServlet";
@@ -338,7 +340,7 @@ public class SQLJTest extends FATServletClient {
         String javaClassPath = System.getProperty("java.class.path");
 
         // 2 - Setup tables and stored procedures needed for the DB2 SQLJ Customizer
-        Connection conn = FATSuite.db2.createConnection("");
+        Connection conn = db2.createConnection("");
         try {
             Statement st = conn.createStatement();
             try {
@@ -379,11 +381,11 @@ public class SQLJTest extends FATServletClient {
         }
         args.add("com.ibm.db2.jcc.sqlj.Customizer");
         args.add("-url");
-        args.add(FATSuite.db2.getJdbcUrl());
+        args.add(db2.getJdbcUrl());
         args.add("-user");
-        args.add(FATSuite.db2.getUsername());
+        args.add(db2.getUsername());
         args.add("-password");
-        args.add(FATSuite.db2.getPassword());
+        args.add(db2.getPassword());
         args.add("-rootPkgName");
         args.add("web");
         args.add("SQLJProcedure_SJProfile0.ser");

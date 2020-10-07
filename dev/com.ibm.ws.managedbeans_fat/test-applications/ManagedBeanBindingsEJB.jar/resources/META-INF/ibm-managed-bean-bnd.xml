@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<managed-bean-bnd
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-managed-bean-bnd_1_0.xsd"
+  version="1.0">
+
+  <managed-bean class="com.ibm.ws.managedbeans.fat.mb.bindings.ejb.InterceptorManagedBean">
+    <ejb-ref name="myref/injBean" binding-name="java:app/ManagedBeanBindingsEJB/StatelessEJBforInjectionManaged"/>
+    <resource-ref name="myref/injDS" binding-name="mbDataSource"/>
+    <data-source name="jdbc/DSBinding" binding-name="mbDataSource"/>
+    <message-destination-ref name="myref/injQ" binding-name="Jetstream/jms/MBQueue"/>
+    <resource-env-ref name="java:app/env/ra" binding-name="mbDataSource"/>
+  </managed-bean>
+
+  <managed-bean class="com.ibm.ws.managedbeans.fat.mb.bindings.ejb.SimpleManagedBean">
+    <ejb-ref name="myref/injBean" binding-name="java:app/ManagedBeanBindingsEJB/StatelessEJBforSimpleManaged"/>
+    <resource-ref name="myref/injDS" binding-name="mbDataSource"/>
+    <data-source name="jdbc/DSBinding" binding-name="mbDataSource"/>
+    <message-destination-ref name="myref/injQ" binding-name="Jetstream/jms/MBQueue"/>
+    <resource-env-ref name="java:app/env/ra" binding-name="mbDataSource"/>
+  </managed-bean>
+
+  <interceptor class="com.ibm.ws.managedbeans.fat.mb.bindings.ejb.EJBInterceptor">
+    <resource-env-ref name="java:app/env/ra" binding-name="mbDataSource"/>
+  </interceptor>
+
+</managed-bean-bnd>

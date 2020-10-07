@@ -12,13 +12,12 @@
 package com.ibm.ejb3x.HomeBindingName.ejb;
 
 /**
- * Local interface for Enterprise Bean: LocalHomeBindingName.
+ * Local interface for Enterprise Bean: HomeBindingName.
  */
 public interface LocalHomeBindingName extends javax.ejb.EJBLocalObject {
 
     /**
     */
-    @Override
-    public String toString();
+    public String foo();
 
 }

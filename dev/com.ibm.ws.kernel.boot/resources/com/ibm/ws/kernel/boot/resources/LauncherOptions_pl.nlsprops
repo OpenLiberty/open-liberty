@@ -118,7 +118,7 @@ action-desc.resume=\tWzn\u00f3w wszystkie wstrzymane komponenty na serwerze. Mo\
 \topcj\u0119 --target, aby wznowi\u0107 konkretne wstrzymane komponenty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacje odnosz\u0105ce si\u0119 do tej instancji serwera.
+option-desc.start.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacje odnosz\u0105ce si\u0119 do tej instancji serwera.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="\u015bcie\u017cka do docelowego pliku archiwum"
 option-desc.dump.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie dump.      \n\
@@ -179,3 +179,15 @@ option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
 option-desc.package.server-root=\tOkre\u015bla nazw\u0119 g\u0142\u00f3wnego folderu serwera w pliku archiwum.\n
+#------------------------------\n\
+\ at 72 chars -- leading tab-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tPomija etap wyciszania przed zamkni\u0119ciem serwera. Normalne zatrzymanie\n\
+\tserwera obejmuje etap wyciszania przed zamkni\u0119ciem. Okres    \n\
+\twyciszania trwa 30 sekund i umo\u017cliwia us\u0142ugom     \n\
+\twykonanie operacji poprzedzaj\u0105cych zamkni\u0119cie; na przyk\u0142ad programy nas\u0142uchuj\u0105ce \u017c\u0105da\u0144 przychodz\u0105cych s\u0105 zatrzymywane,   \n\
+\tale istniej\u0105ce \u017c\u0105dania mog\u0105 zosta\u0107 uko\u0144czone. Opcja -- force nie odnosi \n\
+\tskutku, je\u015bli zatrzymanie serwera zosta\u0142o ju\u017c wywo\u0142ane. W przypadku u\u017cycia opcji -- force    \n\
+\tmog\u0105 pojawi\u0107 si\u0119 nieoczekiwane wyj\u0105tki w pliku messages.log, \n\
+\trejestrowane po odebraniu przez serwer komendy zatrzymania serwera.

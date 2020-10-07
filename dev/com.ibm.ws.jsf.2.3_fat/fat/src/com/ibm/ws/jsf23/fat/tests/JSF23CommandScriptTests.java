@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,19 +77,20 @@ public class JSF23CommandScriptTests {
     @Test
     public void testCommandScriptAutorunDefaultExecute() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorunDefaultExecute.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorunDefaultExecute.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(5000);
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.waitForBackgroundJavaScript(5000);
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the success message will be displayed on the page.
-        assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+            //if the commandScript code works properly the success message will be displayed on the page.
+            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+        }
     }
 
     /**
@@ -102,20 +103,21 @@ public class JSF23CommandScriptTests {
     @Mode(TestMode.FULL)
     public void testCommandScriptAutorun() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorun.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptAutorun.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(5000);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.waitForBackgroundJavaScript(5000);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the success message will be displayed on the page.
-        assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+            //if the commandScript code works properly the success message will be displayed on the page.
+            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+        }
     }
 
     /**
@@ -128,24 +130,25 @@ public class JSF23CommandScriptTests {
     @Test
     public void testCommandScriptActionListener() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListener.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListener.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(5000);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.waitForBackgroundJavaScript(5000);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the success message will be displayed on the page.
-        assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+            //if the commandScript code works properly the success message will be displayed on the page.
+            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
 
-        //verify that the message from the listener is in the log file.
-        List<String> result = jsf23CDIServer.findStringsInLogs("CommandScriptActionListener.processAction called");
-        assertTrue("The ActionListener was not called.", result.size() == 1);
+            //verify that the message from the listener is in the log file.
+            List<String> result = jsf23CDIServer.findStringsInLogs("CommandScriptActionListener.processAction called");
+            assertTrue("The ActionListener was not called.", result.size() == 1);
+        }
     }
 
     /**
@@ -159,24 +162,25 @@ public class JSF23CommandScriptTests {
     @Mode(TestMode.FULL)
     public void testCommandScriptActionListenerAttr() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListenerAttr.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptActionListenerAttr.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(5000);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.waitForBackgroundJavaScript(5000);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the success message will be displayed on the page.
-        assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
+            //if the commandScript code works properly the success message will be displayed on the page.
+            assertTrue("The commandScript test failed, success not displayed.", page.asText().contains("The value of output is: success"));
 
-        //verify that the message from the listener is in the log file.
-        List<String> result = jsf23CDIServer.findStringsInLogs("performAction called");
-        assertTrue("The ActionListener was not called.", result.size() == 1);
+            //verify that the message from the listener is in the log file.
+            List<String> result = jsf23CDIServer.findStringsInLogs("performAction called");
+            assertTrue("The ActionListener was not called.", result.size() == 1);
+        }
     }
 
     /**
@@ -190,20 +194,21 @@ public class JSF23CommandScriptTests {
     @Mode(TestMode.FULL)
     public void testCommandScriptParam() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptParam.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptParam.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-        webClient.waitForBackgroundJavaScript(5000);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.waitForBackgroundJavaScript(5000);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the parameter values will be displayed on the page.
-        assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("The value of output is: Value1 Value2"));
+            //if the commandScript code works properly the parameter values will be displayed on the page.
+            assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("The value of output is: Value1 Value2"));
+        }
     }
 
     /**
@@ -216,22 +221,23 @@ public class JSF23CommandScriptTests {
     @Mode(TestMode.FULL)
     public void testCommandScriptButton() throws Exception {
         String contextRoot = "CommandScript";
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptButton.xhtml");
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSF23CommandScriptButton.xhtml");
 
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        // Now click the submit button
-        page.getElementById("button1").click();
-        webClient.waitForBackgroundJavaScript(5000);
+            // Now click the submit button
+            page.getElementById("button1").click();
+            webClient.waitForBackgroundJavaScript(5000);
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), page.asText());
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        //if the commandScript code works properly the parameter values will be displayed on the page.
-        assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("submitForm called"));
+            //if the commandScript code works properly the parameter values will be displayed on the page.
+            assertTrue("The commandScript test failed, parameter values not displayed.", page.asText().contains("submitForm called"));
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017,2019 IBM Corporation and others.
+    Copyright (c) 2017,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -26,10 +26,10 @@
   <AD id="enableTaskExecution"               type="Boolean" default="true" name="%enableTaskExecution" description="%enableTaskExecution.desc"/>
   <AD id="initialPollDelay"                  type="String"  default="0" ibm:type="duration" name="%initialPollDelay" description="%initialPollDelay.desc"/>
   <AD id="jndiName"                          type="String"  required="false" ibm:unique="jndiName" name="internal" description="internal use only"/>
-  <AD id="missedTaskThreshold"               type="String"  default="-1" ibm:type="duration(s)" name="internal" description="internal use only"/>
-  <AD id="pollInterval"                      type="String"  default="-1" ibm:type="duration" name="%pollInterval" description="%pollInterval.desc"/>
+  <AD id="missedTaskThreshold"               type="String"  default="-1" ibm:type="duration(s)" name="%missedTaskThreshold" description="%missedTaskThreshold.desc"/>
+  <AD id="pollInterval"                      type="String"  required="false" ibm:type="duration" name="%pollInterval" description="%pollInterval.desc"/>
   <AD id="pollSize"                          type="Integer" required="false" min="1" name="%pollSize" description="%pollSize.desc"/>
-  <AD id="retryInterval"                     type="String"  default="1m" ibm:type="duration" name="%retryInterval" description="%retryInterval.desc"/>
+  <AD id="retryInterval"                     type="String"  required="false" ibm:type="duration" name="%retryInterval" description="%retryInterval.desc"/>
   <AD id="retryLimit"                        type="Short"   default="10" min="-1" max="10000" name="%retryLimit" description="%retryLimit.desc"/>
   <AD id="service.ranking"                   type="Integer" default="-4000" name="internal" description="internal use only"/>
   <AD id="taskStoreRef"                      type="String"  default="defaultDatabaseStore" ibm:type="pid" ibm:reference="com.ibm.ws.persistence.databaseStore" name="%taskStore" description="%taskStore.desc"/>

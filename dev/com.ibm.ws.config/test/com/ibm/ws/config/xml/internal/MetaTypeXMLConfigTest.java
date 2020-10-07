@@ -31,10 +31,12 @@ import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.metatype.MetaTypeFactory;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import test.common.SharedLocationManager;
 import test.common.SharedOutputManager;
@@ -55,7 +57,6 @@ public class MetaTypeXMLConfigTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass
@@ -69,7 +70,8 @@ public class MetaTypeXMLConfigTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -82,7 +84,8 @@ public class MetaTypeXMLConfigTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     private TestConfigEvaluator createConfigEvaluator() {
@@ -401,11 +404,14 @@ public class MetaTypeXMLConfigTest {
 
         String defaultPassword = "{xor}KD4sazs="; //was4d
         String defaultUser = "root";
+        String defaultLocation = "file:///i/am/hidden";
 
         MockObjectClassDefinition objectClass = new MockObjectClassDefinition("test");
-        objectClass.addAttributeDefinition(new MockAttributeDefinition("dbPassword", AttributeDefinition.PASSWORD, 0, new String[] { defaultPassword }));
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("dbPassword", MetaTypeFactory.PASSWORD_TYPE, 0, new String[] { defaultPassword }));
         objectClass.addAttributeDefinition(new MockAttributeDefinition("dbUser", AttributeDefinition.STRING, 0, new String[] { defaultUser }));
-
+        MockAttributeDefinition location = new MockAttributeDefinition("dbLocation", AttributeDefinition.STRING, 0, new String[] { defaultLocation });
+        location.setObscured("true");
+        objectClass.addAttributeDefinition(location);
         RegistryEntry re = toRegistryEntry(objectClass);
 
         ConfigElement config = null;
@@ -416,17 +422,21 @@ public class MetaTypeXMLConfigTest {
         dict = evaluator.evaluateToDictionary(config, re);
 
         assertEquals(defaultUser, dict.get("dbUser"));
-        assertEquals(defaultPassword, dict.get("dbPassword"));
+        assertEquals(defaultPassword, new String(((SerializableProtectedString) dict.get("dbPassword")).getChars()));
+        assertEquals(defaultLocation, new String(((SerializableProtectedString) dict.get("dbLocation")).getChars()));
 
         // test overrides
         String overridePassword = "{xor}Mj4xPjg6LQ=="; // manager
         String overrideUser = "system";
+        String overrideLocation = "http://hidden.com";
 
-        config = configParser.parseConfigElement(new StringReader("<test dbPassword=\"" + overridePassword + "\" dbUser=\"" + overrideUser + "\" />"));
+        config = configParser.parseConfigElement(new StringReader("<test dbLocation=\"" + overrideLocation + "\" dbPassword=\"" + overridePassword + "\" dbUser=\"" + overrideUser
+                                                                  + "\" />"));
         dict = evaluator.evaluateToDictionary(config, re);
 
         assertEquals(overrideUser, dict.get("dbUser"));
-        assertEquals(overridePassword, dict.get("dbPassword"));
+        assertEquals(overridePassword, new String(((SerializableProtectedString) dict.get("dbPassword")).getChars()));
+        assertEquals(overrideLocation, new String(((SerializableProtectedString) dict.get("dbLocation")).getChars()));
     }
 
 }

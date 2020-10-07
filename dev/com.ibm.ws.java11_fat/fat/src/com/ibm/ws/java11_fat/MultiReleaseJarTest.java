@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -31,7 +30,6 @@ import componenttest.topology.utils.FATServletClient;
 import java11.multirelease.web.MultiReleaseJarTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class MultiReleaseJarTest extends FATServletClient {
 
     private static final String REGULAR_APP = "multiReleaseApp";

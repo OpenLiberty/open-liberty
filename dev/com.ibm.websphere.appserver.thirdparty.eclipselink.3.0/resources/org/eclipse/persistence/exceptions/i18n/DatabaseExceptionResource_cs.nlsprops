@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Chyba konfigurace. Nebyla nalezena t\u0159\u00edda [{0}].
+
+4005=Nen\u00ed p\u0159ipojen DatabaseAccessor.
+
+4006=Chyba p\u0159i \u010dten\u00ed dat objektu BLOB z proudu v metod\u011b getObject().
+
+4007=V d\u016fsledku intern\u00ed chyby nelze p\u0159ev\u00e9st typ objektu. {0}java.sql.TYPES: [{1}]
+
+4008=Nem\u016f\u017eete se odhl\u00e1sit, kdy\u017e prob\u00edh\u00e1 transakce.
+
+4009=Informace o tabulce posloupnosti nejsou \u00fapln\u00e9.
+
+4011=Chyba p\u0159i p\u0159edb\u011b\u017en\u00e9 alokaci po\u0159adov\u00fdch \u010d\u00edsel. Informace o tabulce posloupnosti nejsou \u00fapln\u00e9.
+
+4014=Nelze registrovat SynchronizationListener.
+
+4015=Synchronizovan\u00e9 rozhran\u00ed UnitOfWork nepodporuje operaci commitAndResume().
+
+4016=Chyba konfigurace. Nelze vytvo\u0159it instanci ovlada\u010de [{0}].
+
+4017=Chyba konfigurace. Nelze p\u0159istupovat k ovlada\u010di [{0}].
+
+4018=Nebyl nastaven spr\u00e1vce TransactionManager pro ovlada\u010d JTS.
+
+4019=Chyba p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o datab\u00e1zi. Dal\u0161\u00ed informace naleznete ve vno\u0159en\u00e9 v\u00fdjimce.
+
+4020=Nelze naj\u00edt odpov\u00eddaj\u00edc\u00ed pole datab\u00e1ze pro ur\u010den\u00e9 pole zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed [{0}]. Nezapome\u0148te, \u017ee porovn\u00e1v\u00e1n\u00ed rozli\u0161uje mal\u00e1 a velk\u00e1 p\u00edsmena. Pokud jste tedy v metod\u011b getter povolili v\u00fdchoz\u00ed hodnotu n\u00e1zvu sloupce, bude n\u00e1zev uveden velk\u00fdmi p\u00edsmeny.
+
+4021=Nelze z\u00edskat p\u0159ipojen\u00ed od ovlada\u010de [{0}], u\u017eivatele [{1}] a adresy URL [{2}]. Ov\u011b\u0159te, \u017ee jste nastavili o\u010dek\u00e1vanou t\u0159\u00eddu ovlada\u010de a adresu URL. Zkontrolujte sv\u00e9 p\u0159ihl\u00e1\u0161en\u00ed, prost\u0159edek persistence.xml nebo sessions.xml. Vlastnost jdbc.driver by m\u011bla b\u00fdt nastavena na t\u0159\u00eddu kompatibiln\u00ed s va\u0161\u00ed datab\u00e1zovou platformou.
+
+4022=P\u0159istupuj\u00edc\u00ed objekt nebo jeho p\u0159ipojen\u00ed bylo nastaveno na hodnotu null. K tomu m\u016f\u017ee doj\u00edt p\u0159i uvoln\u011bn\u00ed relace ClientSession nebo rozhran\u00ed UnitOfWork v samostatn\u00e9m podprocesu, nap\u0159. pokud dojde k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu.
+

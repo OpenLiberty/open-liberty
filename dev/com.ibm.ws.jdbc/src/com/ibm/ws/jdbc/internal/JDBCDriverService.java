@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectorService;
@@ -302,6 +303,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                         // Property already has correct non-String type
                                         if (trace && tc.isDebugEnabled())
                                             Tr.debug(tc, "set " + name + " = " + value);
+                                        Class<?> targetType = descriptor.getWriteMethod().getParameterTypes()[0];
+                                        value = coerceType(targetType, value);
                                         descriptor.getWriteMethod().invoke(ds, value);
                                     }
                                 } catch (Throwable x) {
@@ -1084,35 +1087,53 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @ connProp an Oracle connectionProperties string which may contain encoded passwords
      * @return a connectionProperties string with the passwords decoded
      */
-    public static String decodeOracleConnectionPropertiesPwds(String connProp)
-                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
-        final String pattern1 = "javax\\.net\\.ssl\\.keyStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
-        final String pattern2 = "javax\\.net\\.ssl\\.trustStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
-        connProp = decodeEmbeddedPassword(connProp, pattern1, 1);
-        return decodeEmbeddedPassword(connProp, pattern2, 1);
-    }
-    /**
-     * Given a string which potentially contains a key value pair where the value is a password encoded using
-     * one of the supported methods, use the supplied regex pattern to locate the key value pair and
-     * replace the value portion of the string with the decoded password.  For example,
-     * given the following value of an Oracle database connectionProperties string:
-     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword={aes}AIEJn6kmbn878lbUd8jJGWKMDYPm9FD1EoiL4JFNXO7f;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
-     * return this string:
-     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword=foobar;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
-     * 
-     * @param input A string potentially containing an encoded password
-     * @param pattern A regex pattern which attempts to match the password portion in the group specified in groupNumber
-     * @param groupNumber The group of the regex that contains the password to be decoded
-     * @return
-     */
-    private static String decodeEmbeddedPassword(String input, String pattern, int groupNumber)
-                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
-        Matcher matcher = Pattern.compile(pattern).matcher(input);
-        if (!matcher.find()) return input; // pattern not found
-        String password = matcher.group(groupNumber);
-        // decode password if encoded                   
-        password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
-        return new StringBuilder(input).replace(matcher.start(groupNumber), matcher.end(groupNumber), password).toString();
-    }
+    public static String decodeOracleConnectionPropertiesPwds(String connProp) throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
+        final String regex = "Password\\s*=\\s*(.*?)\\s*(;|$)";
+        
+        StringBuffer sb = new StringBuffer();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(connProp);
 
+        while (matcher.find()) {
+            //group(0) = "Password = {xor}abcd;" group(1) = "{xor}abcd" group(2) = ";"
+            String password = matcher.group(1);
+            password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(matcher.group(1));
+            
+            //This appends a replacement for group(0), so we want to just replace group(1) with [decoded password]
+            matcher.appendReplacement(sb, matcher.group(0).replace(matcher.group(1), password));
+        }
+        
+        //Append any trailing characters after matches
+        //If there were no matches this will just append props
+        matcher.appendTail(sb);
+        
+        return sb.toString(); 
+    }
+    
+    @Trivial
+    private static Object coerceType(Class<?> desiredType, Object val) {
+        if (desiredType.isAssignableFrom(val.getClass()))
+            return val;
+        
+        if (val instanceof Number) {
+            Number num = (Number) val;
+            if (desiredType == long.class || desiredType == Long.class)
+                return num.longValue();
+            if (desiredType == int.class || desiredType == Integer.class)
+                return num.intValue();
+            if (desiredType == short.class || desiredType == Short.class)
+                return num.shortValue();
+        }
+        if (val instanceof String) {
+            String str = (String) val;
+            if (desiredType == long.class || desiredType == Long.class)
+                return Long.valueOf(str);
+            if (desiredType == int.class || desiredType == Integer.class)
+                return Integer.valueOf(str);
+            if (desiredType == short.class || desiredType == Short.class)
+                return Short.valueOf(str);
+        }
+        
+        return val;
+    }
 }

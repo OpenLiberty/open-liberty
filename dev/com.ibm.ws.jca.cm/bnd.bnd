@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2019 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ Bundle-Name: Connection Management and Pooling
 Bundle-SymbolicName: com.ibm.ws.jca.cm
 Bundle-Description: Connection Management and Pooling; version=${bVersion}
 
+jakartaeeMe: true
+
 WS-TraceGroup: WAS.j2c
 
 Export-Package: \
@@ -25,7 +27,9 @@ Export-Package: \
     com.ibm.wsspi.zos.tx \
 
 Import-Package: \
+    com.ibm.ws.jca.cm.handle, \
     com.ibm.ws.util;version="[1.0,2)", \
+    !com.ibm.ejs.j2c, \
     !*.internal.*, *
 
 Private-Package: \
@@ -71,6 +75,7 @@ instrument.disabled: true
 	com.ibm.ws.logging.core,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.classloading;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -354,13 +354,14 @@ public class JwtBuilder {
      * @param name
      *            This is a String and represents the name of the claim
      * @param value
-     *            This is an Object and represents the value of the claim
-     * @return {@code JwtBuilder} object
+     *            This is an Object and represents the value of the claim. Object can be a string, number, boolean, map, or list.
+     *            Other object types will have their toString method called, which might not produce valid JSON
+     *  @return {@code JwtBuilder} object
      * @throws InvalidClaimException
      *             Thrown if the claim is {@code null}, or the value is {@code null} or the value is not the correct type for the
      *             claim
      */
-
+    // object type restriction originates from https://bitbucket.org/b_c/jose4j/issues/160/unexpected-result-from-jwtclaimssetclaim
     public JwtBuilder claim(String name, Object value)
             throws InvalidClaimException {
         //        if (isValidClaim(name, value)) {

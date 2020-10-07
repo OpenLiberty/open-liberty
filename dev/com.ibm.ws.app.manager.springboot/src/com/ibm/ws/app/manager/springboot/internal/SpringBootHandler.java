@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,6 +46,7 @@ import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.application.handler.DefaultApplicationMonitoringInformation;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
 public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
@@ -128,7 +130,9 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
-                springBootApplication.getApplicationReadyLatch().countDown();
+                CountDownLatch readyLatch = springBootApplication.getApplicationReadyLatch();
+                readyLatch.countDown();
+                readyLatch.countDown();
                 springBootApplication.uninstallApp();
             }
         });
@@ -181,5 +185,9 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
             notifications.add(oldMeta);
         }
         return new DefaultApplicationMonitoringInformation(notifications, false);
+    }
+
+    @Reference
+    private void setApplicationStartBarrier(ApplicationStartBarrier applicationStartBarrier) {
     }
 }

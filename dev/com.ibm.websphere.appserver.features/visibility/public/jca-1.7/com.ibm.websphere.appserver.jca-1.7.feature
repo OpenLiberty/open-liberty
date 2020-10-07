@@ -10,7 +10,7 @@ Subsystem-Category: JavaEE7Application
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.internal.jca-1.6, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0; ibm.tolerates:=8.0
+ com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:=8.0
 -bundles=com.ibm.ws.app.manager.rar, \
  com.ibm.ws.jca.1.7
 kind=ga

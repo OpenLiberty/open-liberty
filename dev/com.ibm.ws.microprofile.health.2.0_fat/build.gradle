@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,55 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
 
+configurations {
+    kafkaClient
+    requiredLibs.extendsFrom kafkaClient
+}
 
 dependencies {
   //requiredLibs 'org.glassfish:javax.json:1.1'
+  kafkaClient 'org.apache.kafka:kafka-clients:2.3.0'
+  kafkaClient 'org.lz4:lz4-java:1.5.0'
+  kafkaClient 'com.github.luben:zstd-jni:1.3.8-1'
+  kafkaClient 'org.xerial.snappy:snappy-java:1.1.7.2'
+  kafkaClient 'org.slf4j:slf4j-api:1.7.7'
+  kafkaClient 'org.slf4j:slf4j-jdk14:1.7.7'
+  requiredLibs 'org.rnorth.duct-tape:duct-tape:1.0.7'
+  requiredLibs 'org.testcontainers:testcontainers:1.14.0'
+  requiredLibs 'org.testcontainers:kafka:1.14.0'
+  requiredLibs 'org.rnorth.visible-assertions:visible-assertions:2.1.2'
+  requiredLibs 'org.rnorth:tcp-unix-socket-proxy:1.0.2'
+  requiredLibs 'net.java.dev.jna:jna:5.2.0'
+  requiredLibs 'org.apache.commons:commons-compress:1.19'
+  requiredLibs 'org.testng:testng:6.14.3'
+  requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.2'
+  requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl')
+  requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams-operators')
+  requiredLibs project(':com.ibm.ws.crypto.passwordutil');
   requiredLibs 'org.apache.johnzon:johnzon-core:1.1.0'
 }
+
+task addKafkaClientLibs (type: Copy) {
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
+    from configurations.kafkaClient
+    shouldRunAfter autoFVT
+}
+
+zipAutoFVT.dependsOn addKafkaClientLibs

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,6 @@ import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.boot.internal.PasswordGenerator;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
 
-/**
- *
- */
 public class BootstrapConfig {
     /** ${} */
     final static Pattern SYMBOL_DEF = Pattern.compile("\\$\\{([^\\$\\{\\}]*?)\\}");
@@ -119,6 +116,8 @@ public class BootstrapConfig {
      */
     protected KernelResolver kernelResolver;
 
+    protected File serviceBindingRootDir = null;
+
     public BootstrapConfig() {
         File fbootstrapLib = null;
         try {
@@ -135,46 +134,23 @@ public class BootstrapConfig {
 
     }
 
-    protected void findLocations(String newServerName,
-                                 String instanceDirStr,
-                                 String outputDirStr,
-                                 String logDirStr,
-                                 String consoleLogFileStr) throws LocationException {
-        findLocations(newServerName, instanceDirStr, outputDirStr, logDirStr, consoleLogFileStr, null);
-    }
-
     /**
      * Light processing: find main locations
      *
-     * @param initProps
-     *                                   Initial set of properties we're working with, contains some
-     *                                   properties populated by command line parser
-     * @param instanceDirStr         Value of WLP_USER_DIR environment variable
-     * @param outputDirStr           Value of WLP_OUTPUT_DIR environment variable
-     * @param logDirStr              Value of X_LOG_DIR or LOG_DIR environment variable
-     * @param consoleLogFileStr      Value of X_LOG_FILE or LOG_FILE environment variable
-     * @param embeddedWorkareaDirStr Value of embedded workarea subpath or null for default
-     *
-     * @throws LocationException
      */
-    protected void findLocations(String newServerName,
-                                 String instanceDirStr,
-                                 String outputDirStr,
-                                 String logDirStr,
-                                 String consoleLogFileStr,
-                                 String embeddedWorkareaDirStr) throws LocationException {
+    protected void findLocations(BootstrapLocations locations) throws LocationException {
 
         // Server name only found via command line
-        setProcessName(newServerName);
+        setProcessName(locations.getProcessName());
 
         // always use the parent of the lib dir as WLP_INSTALL_ROOT
         installRoot = bootstrapLib.getParentFile();
 
         // WLP_USER_DIR = /wlp/usr
-        if (instanceDirStr == null)
+        if (locations.getUserDir() == null)
             userRoot = new File(installRoot, BootstrapConstants.LOC_AREA_NAME_USR);
         else
-            userRoot = assertDirectory(FileUtils.normalize(instanceDirStr), BootstrapConstants.ENV_WLP_USER_DIR);
+            userRoot = assertDirectory(FileUtils.normalize(locations.getUserDir()), BootstrapConstants.ENV_WLP_USER_DIR);
 
         // /wlp/usr/servers
         processesRoot = new File(userRoot, getProcessesSubdirectory());
@@ -228,28 +204,35 @@ public class BootstrapConfig {
             // Ignore.
         }
 
-        if (outputDirStr == null) {
+        if (locations.getServerDir() == null) {
             outputRoot = processesRoot;
             outputDir = configDir;
         } else {
             // separate output dir, WLP_OUTPUT_DIR
-            outputRoot = assertDirectory(FileUtils.normalize(outputDirStr), getOutputDirectoryEnvName());
+            outputRoot = assertDirectory(FileUtils.normalize(locations.getServerDir()), getOutputDirectoryEnvName());
             outputDir = new File(outputRoot, processName);
         }
 
         // Logs could be redirected to a place other than the server output dir (like /var/log.. )
-        if (logDirStr == null)
+        if (locations.getLogDir() == null)
             logDir = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_LOGS);
         else
-            logDir = assertDirectory(FileUtils.normalize(logDirStr), BootstrapConstants.ENV_LOG_DIR);
-        consoleLogFile = new File(logDir, consoleLogFileStr != null ? consoleLogFileStr : BootstrapConstants.CONSOLE_LOG);
+            logDir = assertDirectory(FileUtils.normalize(locations.getLogDir()), BootstrapConstants.ENV_LOG_DIR);
+        consoleLogFile = new File(logDir, locations.getConsoleLogFile() != null ? locations.getConsoleLogFile() : BootstrapConstants.CONSOLE_LOG);
 
         // Server workarea always a child of outputDir
-        if (embeddedWorkareaDirStr == null)
+        if (locations.getWorkAreaDir() == null)
             this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING;
         else
-            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + embeddedWorkareaDirStr;
+            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + locations.getWorkAreaDir();
         workarea = new File(outputDir, this.workareaDirStr);
+
+        String serviceBindingRootStr = locations.getServiceBindingRoot();
+        if (serviceBindingRootStr == null) {
+            this.serviceBindingRootDir = new File(configDir, "bindings");
+        } else {
+            this.serviceBindingRootDir = new File(serviceBindingRootStr);
+        }
     }
 
     /**
@@ -364,6 +347,7 @@ public class BootstrapConfig {
                                                                                       BootstrapConstants.LOC_AREA_NAME_SHARED,
                                                                                       BootstrapConstants.LOC_AREA_NAME_RES));
 
+        initProps.put(BootstrapConstants.LOC_PROPERTY_SERVICE_BINDING_ROOT, getPathProperty(serviceBindingRootDir));
         // Wait to look for symbols until we have location properties set
         substituteSymbols(initProps);
     }
@@ -1180,24 +1164,6 @@ public class BootstrapConfig {
      * @return
      */
     protected ReturnCode generateServerEnv(boolean generatePassword) {
-        double jvmLevel;
-        String s = null;
-        try {
-            s = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() throws Exception {
-                    String javaSpecVersion = System.getProperty("java.specification.version");
-                    return javaSpecVersion;
-                }
-            });
-            jvmLevel = Double.parseDouble(s);
-        } catch (Exception ex) {
-            // If we get here, it is most likely because the java.specification.version property
-            // is not a valid double.  Return bad java version
-            throw new LaunchException("Invalid java.specification.version, " + s, MessageFormat.format(BootstrapConstants.messages.getString("error.create.unknownJavaLevel"),
-                                                                                                       s), ex, ReturnCode.ERROR_BAD_JAVA_VERSION);
-        }
-
         BufferedWriter bw = null;
         File serverEnv = getConfigFile("server.env");
         try {
@@ -1208,11 +1174,6 @@ public class BootstrapConfig {
                 if (serverEnvContents != null)
                     toWrite += System.getProperty("line.separator");
                 toWrite += "keystore_password=" + new String(keystorePass);
-            }
-            if (jvmLevel >= 1.8 && (serverEnvContents == null || !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE="))) {
-                if (serverEnvContents != null || !toWrite.isEmpty())
-                    toWrite += System.getProperty("line.separator");
-                toWrite += "WLP_SKIP_MAXPERMSIZE=true";
             }
 
             if (serverEnvContents == null)
@@ -1232,5 +1193,9 @@ public class BootstrapConfig {
             }
         }
         return ReturnCode.OK;
+    }
+
+    public File getServiceBindingRoot() {
+        return this.serviceBindingRootDir;
     }
 }

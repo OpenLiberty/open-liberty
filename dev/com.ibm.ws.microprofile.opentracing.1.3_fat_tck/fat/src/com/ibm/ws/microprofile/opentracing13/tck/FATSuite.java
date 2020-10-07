@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -35,11 +36,30 @@ public class FATSuite {
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;
     private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.3.mf";
     private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.3.jar";
+    private static final String[] ALL_VERSIONS_OF_MP_REST_CLIENT = {"1.0", "1.1", "1.2", "1.3", "1.4"};
 
     @BeforeClass
     public static void setUp() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("OpentracingTCKServer");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
+    }
+    
+
+    public static FeatureReplacementAction MP_REST_CLIENT(String version, String serverName) {
+        return use(new FeatureReplacementAction(), "mpRestClient", version, ALL_VERSIONS_OF_MP_REST_CLIENT)
+                .withID("mpRestClient-" + version)
+                .forServers(serverName);
+    }
+
+    private static FeatureReplacementAction use(FeatureReplacementAction action, String featureName, String version, String... versionsToRemove) {
+        String feature = featureName + "-" + version;
+        action = action.addFeature(featureName + "-" + version);
+        for (String remove : versionsToRemove) {
+            if (!version.equals(remove)) {
+                action = action.removeFeature(featureName + "-" + remove);
+            }
+        }
+        return action;
     }
 }

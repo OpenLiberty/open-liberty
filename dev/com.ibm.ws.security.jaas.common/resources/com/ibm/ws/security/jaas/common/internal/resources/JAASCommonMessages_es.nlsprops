@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -79,3 +79,15 @@ JAAS_KRB5_LOGIN_MODULE_INVALID_OPTIONS.useraction=Verifique que todas las opcion
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1145W: Una entrada {0} jaasLoginContext no se puede especificar como una entrada de configuraci\u00f3n JAAS en el archivo server.xml, en el archivo jaas.conf o en ambos archivos.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.explanation=El tiempo de ejecuci\u00f3n utiliza una configuraci\u00f3n predeterminada de Krb5LoginModule y la configuraci\u00f3n de SPNEGO en el archivo server.xml.
 JAAS_KRB5_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Elimine la entrada jaasLoginContext del archivo server.xml o deje que el tiempo de ejecuci\u00f3n utilice la entrada predeterminada.
+
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT=CWWKS1146E: El m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS {0} no se ha cargado porque el elemento de configuraci\u00f3n {1} especifica los dos atributos libraryRef y classProviderRef.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.explanation=Debe especificar s\u00f3lo un atributo, libraryRef o classProviderRef, para indicar el artefacto desde el que se debe cargar el m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS.
+CWWKS1146_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_CONFLICT.useraction=Elimine el atributo libraryRef o el atributo classProviderRef, el que no contenga la clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS.
+
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING=CWWKS1147E: El m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS {0} no se ha encontrado porque el elemento de configuraci\u00f3n {1} no especifica el atributo libraryRef y classProviderRef.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.explanation=Debe especificar exactamente un atributo, libraryRef o classProviderRef, para indicar el artefacto desde el que se debe cargar el m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS.
+CWWKS1147_JAAS_CUSTOM_LOGIN_MODULE_CP_LIB_MISSING.useraction=Especifique el atributo libraryRef o classProviderRef para indicar la ubicaci\u00f3n desde la que se debe cargar la clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS.
+
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP=CWWKS1148E: La clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS {0} no se encuentra en el artefacto {1} {2}.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.explanation=El adaptador de recursos o aplicaci\u00f3n especificado no contiene la clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS solicitado o la clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS est\u00e1 presente en la aplicaci\u00f3n, pero en una ubicaci\u00f3n desde la que no se puede cargar.
+CWWKS1148_JAAS_CUSTOM_LOGIN_MODULE_NOT_FOUND_BY_CP.useraction=Aseg\u00farese de que la clase de m\u00f3dulo de inicio de sesi\u00f3n personalizado de JAAS y el nombre de paquete son correctos. Si se especifica una aplicaci\u00f3n, la clase de m\u00f3dulo de inicio de sesi\u00f3n debe estar contenida en la aplicaci\u00f3n, dentro de un JAR de nivel superior o un m\u00f3dulo de adaptador de recursos.

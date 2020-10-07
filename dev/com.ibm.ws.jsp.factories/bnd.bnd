@@ -20,7 +20,12 @@ com.ibm.ws.jsp22.webcontainerext.ws.PrepareJspHelper22Factory, \
 com.ibm.ws.jsp22.translator.visitor.validator.ElValidatorExtFactoryImpl, \
 com.ibm.ws.jsp22.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
 
-Import-Package: com.ibm.ws.jsp;version="[2.2,2.3)", \
+Import-Package: \
+!com.ibm.ws.jsp22.translator.visitor.generator, \
+!com.ibm.ws.jsp22.translator.visitor.validator, \
+!com.ibm.ws.jsp22.webcontainerext, \
+!com.ibm.ws.jsp22.webcontainerext.ws, \
+com.ibm.ws.jsp;version="[2.2,2.3)", \
 com.ibm.ws.jsp.configuration;version=2.2, \
 com.ibm.ws.jsp.translator;version=2.2, \
 com.ibm.ws.jsp.translator.utils;version=2.2, \
@@ -30,6 +35,7 @@ org.apache.jasper.el;version=2.2, \
 org.apache.jasper.compiler;version=2.2, \
 org.apache.jasper.runtime;version=2.2, \
  *
+
 Export-Package: com.ibm.ws.jsp22.webcontainerext;version=2.2, \
    com.ibm.ws.jsp22.webcontainerext.ws;version=2.2, \
    com.ibm.ws.jsp22.translator.visitor.validator;version="2.2", \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.fat;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,6 +22,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import fat.concurrent.spec.app.EEConcurrencyTestServlet;
@@ -35,6 +38,11 @@ import fat.concurrent.spec.app.EEConcurrencyTestServlet;
 public class EEConcurrencySpecTest extends FATServletClient {
 
     private static final String APP_NAME = "concurrentSpec";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new JakartaEE9Action());
 
     @Server("concurrent.spec.fat")
     @TestServlet(servlet = EEConcurrencyTestServlet.class, path = APP_NAME)

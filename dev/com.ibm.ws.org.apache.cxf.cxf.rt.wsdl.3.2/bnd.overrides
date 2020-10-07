@@ -14,9 +14,6 @@ cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2
 
-Bundle-Activator: com.ibm.ws.jaxws23.cxf.rt.wsdl.NoOpActivator
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
 !com.ctc.wstx.*,\
@@ -38,6 +35,5 @@ javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
-  com.ibm.ws.jaxws23.cxf.rt.wsdl,\
   org.apache.cxf.wsdl.*;version=${cxfVersion},\
   org.apache.cxf.wsdl11.*;version=${cxfVersion}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,7 @@ public class Constants {
     public static final String DEFAULT_IDP_NAME_ID_FORMAT = "email";
 
     public static final String COOKIE_WAS_REQUEST = "SAML20UnsolicitedState";
+    public static final String WAS_IR_COOKIE = "WASInitialRequest_";
 
     public static final String NAME_ID_FORMAT_UNSPECIFIED = NameIDType.UNSPECIFIED; // "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
     public static final String NAME_ID_FORMAT_EMAIL = NameIDType.EMAIL; // "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress";

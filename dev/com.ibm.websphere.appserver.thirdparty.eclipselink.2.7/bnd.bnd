@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ Premain-Class: org.eclipse.persistence.internal.jpa.deployment.JavaSECMPInitiali
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse.org - EclipseLink Project
 Bundle-ManifestVersion: 2
-Specification-Version: 2.7.5
+Specification-Version: 2.7.7
 
 Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="2.0.16", \
@@ -32,7 +32,7 @@ Export-Package: \
             org.eclipse.persistence.internal.libraries.asm*;version="2.0.16", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="2.0.16", \
             org.eclipse.persistence.jpa.jpql*;version="2.0.16", \
-            org.eclipse.persistence.*;version="2.7.5"
+            org.eclipse.persistence.*;version="2.7.7"
 
 Import-Package: \
             com.ibm.tx.jta;resolution:=optional, \
@@ -103,11 +103,11 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;org.eclipse.persistence.antlr;3.5.2.v201711011707;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;7.1.0.v201909231451;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.core;2.7.5.v20191016-ea124dd158;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.jpql;2.7.5.v20191016-ea124dd158;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.7.5.v20191016-ea124dd158;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;2.7.5.v20191016-ea124dd158;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;7.3.1.v202003311108;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.core;2.7.7.v20200504-69f2c2b80d;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.jpql;2.7.7.v20200504-69f2c2b80d;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.7.7.v20200504-69f2c2b80d;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa;2.7.7.v20200504-69f2c2b80d;EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 publish.wlp.jar.suffix: dev/api/third-party
@@ -118,10 +118,10 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence.core;version=2.7.5.v20191016-ea124dd158;strategy=exact,\
-	org.eclipse.persistence.jpa;version=2.7.5.v20191016-ea124dd158;strategy=exact,\
-	javax.persistence:javax.persistence-api;version=2.2, \
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
-	com.ibm.ws.logging.core;version=latest
+    org.eclipse.persistence.core;version=2.7.7.v20200504-69f2c2b80d;strategy=exact,\
+    org.eclipse.persistence.jpa;version=2.7.7.v20200504-69f2c2b80d;strategy=exact,\
+    javax.persistence:javax.persistence-api;version=2.2, \
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.2;version=latest,\
+    com.ibm.ws.logging.core;version=latest

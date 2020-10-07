@@ -12,11 +12,10 @@
 package com.ibm.ejb3x.BindingName.ejb;
 
 /**
- * Local interface for Enterprise Bean: SimpleBindingName.
+ * Local interface for Enterprise Bean: BindingName.
  */
 public interface BindingName extends javax.ejb.EJBLocalObject {
 
-    @Override
-    public String toString();
+    public String foo();
 
 }

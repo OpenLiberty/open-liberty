@@ -31,13 +31,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 // The following test is originally from com.ibm.ws.request.probes_fat_java7
-@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 public class RequestTimingEE7 {
     @Server("RequestTimingEE7Server")

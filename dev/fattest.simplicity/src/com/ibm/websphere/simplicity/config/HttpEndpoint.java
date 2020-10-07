@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,9 @@ public class HttpEndpoint extends ConfigElement {
     private TcpOptions tcpOptions;
     @XmlElement(name = "sslOptions")
     private SslOptions sslOptions;
+    @XmlElement(name = "samesite")
+    private SameSite sameSite;
+    private String samesiteRef;
     private String host;
     private String httpPort;
     private String httpsPort;
@@ -48,6 +51,32 @@ public class HttpEndpoint extends ConfigElement {
             this.sslOptions = new SslOptions();
         }
         return this.sslOptions;
+    }
+
+    /**
+     * return SameSite for this entry
+     */
+    public SameSite getSameSite() {
+        if (this.sameSite == null) {
+            this.sameSite = new SameSite();
+        }
+        return this.sameSite;
+    }
+
+    /**
+     * @return the samesiteRef for this entry
+     */
+    public String getSameSiteRef() {
+        return this.samesiteRef;
+    }
+
+    /**
+     * 
+     * @param samesiteRef The samesiteRef for this entry
+     */
+    @XmlAttribute
+    public void setSameSiteRef(String samesiteRef) {
+        this.samesiteRef = samesiteRef;
     }
 
     /**
@@ -126,6 +155,10 @@ public class HttpEndpoint extends ConfigElement {
             buf.append(tcpOptions.toString());
         if (this.sslOptions != null)
             buf.append(sslOptions.toString());
+        if (this.sameSite != null)
+            buf.append(sameSite.toString());
+        if (samesiteRef != null)
+            buf.append("samesiteRef=\"" + samesiteRef + "\" ");
 
         buf.append("}");
         return buf.toString();

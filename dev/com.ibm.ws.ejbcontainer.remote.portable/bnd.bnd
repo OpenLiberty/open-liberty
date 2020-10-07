@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,10 +11,16 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+jakartaeeMe: true
+
 javac.source: 1.7
 javac.target: 1.7
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+Import-Package: \
+    !com.ibm.ws.logging, \
+    *
 
 -includeresource: \
 	@${repo;com.ibm.ws.ejbcontainer.remote.portable.core}
@@ -27,6 +33,6 @@ publish.wlp.jar.suffix: clients
 
 -outputmask: ejbRemotePortable.jar
 
-publish.wlp.jar.include: ejbRemotePortable.jar
+publish.wlp.jar.include: ejbRemotePortable.*jar
 
 publish.wlp.jar.rename: false

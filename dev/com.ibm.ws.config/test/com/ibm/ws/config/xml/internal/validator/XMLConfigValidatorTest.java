@@ -23,14 +23,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.ws.config.xml.internal.ServerConfiguration;
 import com.ibm.ws.config.xml.internal.XMLConfigParser;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
+import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
 
 /**
  * <code>EmbeddedXMLConfigValidator</code> unit tester.
@@ -60,7 +62,7 @@ public class XMLConfigValidatorTest {
     /**
      * Does one time initialization before an instance of this test class is
      * created.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @BeforeClass
@@ -81,15 +83,16 @@ public class XMLConfigValidatorTest {
         testRootDir = curDir + File.separator + S_VALIDATOR_TEST_DIR;
         System.out.println("testRootDir = " + testRootDir);
 
-        // Invoke "copyMessageStream" (uncomment next statement) to get setup 
+        // Invoke "copyMessageStream" (uncomment next statement) to get setup
         // debugging info
 //        outputMgr.copyMessageStream();
         outputMgr.resetStreams();
+
     }
 
     /**
      * Clean up that is invoked after all tests have run.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @AfterClass
@@ -107,7 +110,7 @@ public class XMLConfigValidatorTest {
 
     /**
      * Set up that is performed before each test method is invoked.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Before
@@ -117,7 +120,7 @@ public class XMLConfigValidatorTest {
 
     /**
      * Clean up that is performed after each test method is invoked.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @After
@@ -136,10 +139,10 @@ public class XMLConfigValidatorTest {
     /**
      * Changes the location of the directory containing the active
      * <code>server.xml</code> document.
-     * 
+     *
      * @param profileName The name of the directory (within the
-     *            <code>test_xml_validator/usr/servers</code> directory) that contains
-     *            the active <code>server.xml</code> file.
+     *                        <code>test_xml_validator/usr/servers</code> directory) that contains
+     *                        the active <code>server.xml</code> file.
      */
     private void changeLocationSettings(String profileName) {
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -148,14 +151,14 @@ public class XMLConfigValidatorTest {
 
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(libertyLocation);
+        configParser = new XMLConfigParser(libertyLocation, new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, libertyLocation));
     }
 
     /**
      * Tests the default configuration validator
      * (<code>DefaultXMLConfigValidator</code>). (This validator does nothing
      * and is used in the non-embedded environment.)
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -180,7 +183,7 @@ public class XMLConfigValidatorTest {
 
     /**
      * Test with embedded validator and no signature in config document.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -211,7 +214,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a valid
      * signature.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -235,7 +238,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a valid signature
      * in which variables have been updated after signing.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -260,7 +263,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid signature
      * in which white space has been added to a protected section of the
      * document.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -285,7 +288,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with an (originally)
      * valid signature in which a protected section of the document has been
      * modified after signing.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -314,7 +317,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid signature
      * that contains includes to other documents (all of whom have valid
      * signatures).
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -339,7 +342,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid signature
      * that contains includes to other documents (one of which does not contain
      * a valid signature).
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -370,7 +373,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a valid signature
      * that contains a certificate that was NOT issued by the Liberty organization.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -398,7 +401,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a valid
      * signature but no applicationMonitor element.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -411,8 +414,7 @@ public class XMLConfigValidatorTest {
 
         WsResource resource = libertyLocation.resolveResource(CONFIG_ROOT);
 
-        ServerConfiguration configuration =
-                        configParser.parseServerConfiguration(resource);
+        ServerConfiguration configuration = configParser.parseServerConfiguration(resource);
         assertNotNull(configuration);
 
         try {
@@ -434,7 +436,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid
      * signature and an applicationMonitor element that does not contain
      * a dropinsEnabled attribute.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -447,8 +449,7 @@ public class XMLConfigValidatorTest {
 
         WsResource resource = libertyLocation.resolveResource(CONFIG_ROOT);
 
-        ServerConfiguration configuration =
-                        configParser.parseServerConfiguration(resource);
+        ServerConfiguration configuration = configParser.parseServerConfiguration(resource);
         assertNotNull(configuration);
 
         try {
@@ -470,7 +471,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid
      * signature and an applicationMonitor element that specifies
      * "dropinsEnabled=true".
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -483,8 +484,7 @@ public class XMLConfigValidatorTest {
 
         WsResource resource = libertyLocation.resolveResource(CONFIG_ROOT);
 
-        ServerConfiguration configuration =
-                        configParser.parseServerConfiguration(resource);
+        ServerConfiguration configuration = configParser.parseServerConfiguration(resource);
         assertNotNull(configuration);
 
         try {
@@ -506,7 +506,7 @@ public class XMLConfigValidatorTest {
      * Test with embedded validator and config document with a valid
      * signature and an applicationMonitor element that specifies
      * "dropinsEnabled=false".
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -519,8 +519,7 @@ public class XMLConfigValidatorTest {
 
         WsResource resource = libertyLocation.resolveResource(CONFIG_ROOT);
 
-        ServerConfiguration configuration =
-                        configParser.parseServerConfiguration(resource);
+        ServerConfiguration configuration = configParser.parseServerConfiguration(resource);
         assertNotNull(configuration);
         configParser.getConfigValidator().validateConfig(configuration);
 
@@ -536,7 +535,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a signature
      * that does not contain a certificate.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test
@@ -564,7 +563,7 @@ public class XMLConfigValidatorTest {
     /**
      * Test with embedded validator and config document with a signature that
      * cannot be unmarshalled.
-     * 
+     *
      * @throws Exception Thrown if an error occurs.
      */
     @Test

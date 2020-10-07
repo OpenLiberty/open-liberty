@@ -56,8 +56,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
     /**
      * Indication that the host is an IBM VM.
      */
-    private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9") ||
-                                                       System.getProperty("java.vm.name", "unknown").contains("OpenJ9");
+    private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
 	/**
 	 * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,

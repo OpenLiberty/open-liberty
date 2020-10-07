@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,7 +188,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             String key = getArgumentValue(ARG_KEY, args, null);
             stdout.println(getMessage("sslCert.createKeyStore", location));
             String encodedPassword = PasswordUtil.encode(password, encoding, key);
-            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg, extInfo);
+            creator.createDefaultSSLCertificate(location, password, keyType, null, validity, subjectDN, keySize, sigAlg, extInfo);
             String xmlSnippet = null;
             if (serverName != null) {
                 stdout.println(getMessage("sslCert.serverXML", serverName, subjectDN));
@@ -294,7 +294,8 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
         if (addSAN) {
             String defaultSAN = defaultExtInfo();
-            extArgs.add(defaultSAN);
+            if (defaultSAN != null)
+                extArgs.add(defaultSAN);
         }
         return extArgs;
     }

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,16 +11,23 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
 	test-applications/failoverTimersApp/src
 
 fat.project: true
+fat.test.databases: true
+
+# Uncomment to test against alternative databases
+# Options: Derby, Postgres, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgres
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+# fat.test.use.remote.docker: true
 
 -buildpath: \
+	fattest.databases;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
@@ -29,4 +36,9 @@ fat.project: true
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	org.osgi.service.component.annotations;version=latest
+	org.osgi.service.component.annotations;version=latest,\
+	org.testcontainers:database-commons;version=1.14.0,\
+	org.testcontainers:jdbc;version=1.14.0,\
+	org.testcontainers:testcontainers;version=1.14.0,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.slf4j:slf4j-api;version=1.7.7

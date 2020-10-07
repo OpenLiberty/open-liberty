@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,27 @@ import java.util.List;
  * <p>Info type used to represent a class.</p>
  */
 public interface ClassInfo extends Info {
+    // jakarta review:
+    // com.ibm.ws.anno.info.internal.ArrayClassInfo.getSuperclassName()
+    // com.ibm.ws.anno.info.internal.DelayedClassInfo.getSuperclassName()
+    // com.ibm.ws.anno.info.internal.NonDelayedClassInfo.NonDelayedClassInfo(String, InfoStoreImpl)
+    // com.ibm.ws.anno.info.internal.NonDelayedClassInfo.NonDelayedClassInfo(String, String, int, String[], boolean, InfoStoreImpl)
     /** <p>Naming constant: The qualified name of <code>java.lang.Object</code>.</p> */
     public static final String OBJECT_CLASS_NAME = "java.lang.Object";
 
+    // jakarta review: No current references
     /** <p>Naming constant: The qualified name of <code>java.io.Serializable</code>.</p> */
     public static final String SERIALIZABLE_CLASS_NAME = "java.io.Serializable";
 
+    // jakarta review: No current references
     /** <p>Naming constant: The qualified name of <code>java.io.Externalizable</code>.</p> */
     public static final String EXTERNALIZABLE_CLASS_NAME = "java.io.Serializable";
 
+    // jakarta review: No current references
     /** <p>Naming constant: The qualified name of <code>java.rmi.RemoteException</code>.</p> */
     public static final String REMOTE_EXCEPTION_CLASS_NAME = "java.rmi.RemoteException";
 
+    // jakarta review: No current references
     /** <p>Naming constant: The qualified name of <code>javax.ejb.EJBException</code>.</p> */
     public static final String EJB_EXCEPTION_CLASS_NAME = "javax.ejb.EJBException";
 

@@ -24,6 +24,7 @@ src: \
 	test-applications/jaxrs20ltpa/src,\
 	test-applications/jaxrs20ltpaclient/src,\
 	test-applications/jaxrs20withclientfeatureenabled/src,\
+	test-applications/jaxrsclient100Continue/src,\
 	test-applications/jaxrsclientproxy/src,\
 	test-applications/jaxrsclientproxyAuth/src,\
 	test-applications/jaxrsclientssl/src,\
@@ -35,7 +36,7 @@ src: \
 
 fat.project: true
 
-# These features get added programatically
+# These features get added programmatically
 tested.features: \
   jaxrsclient-2.1,\
   jaxrs-2.1,\

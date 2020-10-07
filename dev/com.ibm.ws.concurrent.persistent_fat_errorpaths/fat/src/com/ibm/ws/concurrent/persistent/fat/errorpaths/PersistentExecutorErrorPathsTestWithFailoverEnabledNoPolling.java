@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -96,8 +98,9 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        persistentExecutor.setInitialPollDelay("-1");
-        persistentExecutor.setMissedTaskThreshold("15s");
+        persistentExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        persistentExecutor.setInitialPollDelay("2s");
+        persistentExecutor.setMissedTaskThreshold("4s");
         config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);
 
@@ -227,6 +230,12 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
     }
 
     @Test
+    public void testRollbackWhenMissedTaskThresholdExceeded() throws Exception {
+        runInServlet("testRollbackWhenMissedTaskThresholdExceeded");
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
     public void testShutDownDerbyBeforeTaskExecutionFENoPolling() throws Exception {
         runInServlet("testShutDownDerbyBeforeTaskExecution");
     }
@@ -271,11 +280,13 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         runInServlet("testTaskFailsToSerialize");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutFENoPolling() throws Exception {
         runInServlet("testTransactionTimeout");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutSuspendedTransactionFENoPolling() throws Exception {
         runInServlet("testTransactionTimeoutSuspendedTransaction");

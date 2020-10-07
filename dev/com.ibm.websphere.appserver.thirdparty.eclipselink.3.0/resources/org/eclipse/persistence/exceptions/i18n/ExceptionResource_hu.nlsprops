@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CallHeader=H\u00edv\u00e1s: 
+
+DescriptionHeader=Kiv\u00e9tel le\u00edr\u00e1sa: 
+
+DescriptorExceptionsHeader=Le\u00edr\u00f3 kiv\u00e9telek: 
+
+DescriptorHeader=Le\u00edr\u00f3: 
+
+ErrorCodeHeader=Hibak\u00f3d: 
+
+ErrorFormattingMessage=Hiba t\u00f6rt\u00e9nt a(z) {0} kiv\u00e9tel\u00fczenet form\u00e1z\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Az argumentumok: {1}
+
+ExceptionHeader=Kiv\u00e9tel [EclipseLink-
+
+InternalExceptionHeader=Bels\u0151 kiv\u00e9tel: 
+
+InternalExceptionStackHeader=Bels\u0151 kiv\u00e9tel verem: 
+
+LocalExceptionStackHeader=Helyi kiv\u00e9tel verem: 
+
+MappingHeader=Lek\u00e9pez\u00e9s: 
+
+NoExceptionTranslationForThisLocale=(A kiv\u00e9telnek nincs ford\u00edt\u00e1sa.) {0}
+
+QueryHeader=Lek\u00e9rdez\u00e9s: 
+
+RuntimeExceptionsHeader=Fut\u00e1si kiv\u00e9telek: 
+
+TargetInvocationExceptionHeader=C\u00e9l h\u00edv\u00e1si kiv\u00e9tel: 
+
+TargetInvocationExceptionStackHeader=C\u00e9l h\u00edv\u00e1si kiv\u00e9tel verem: 
+

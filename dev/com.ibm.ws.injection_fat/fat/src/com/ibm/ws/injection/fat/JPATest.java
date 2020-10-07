@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
+import java.util.Set;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -19,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServlet;
 import com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet;
 import com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet;
@@ -28,6 +31,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -57,7 +61,7 @@ public class JPATest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.injection.fat.JPAServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.JPAServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.injection.fat.JPAServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.JPAServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.injection.fat.JPAServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,6 +71,13 @@ public class JPATest extends FATServletClient {
         JPAInjectionTest.addAsModule(JPAInjectionWeb);
 
         ShrinkHelper.exportDropinAppToServer(server, JPAInjectionTest);
+
+        // When repeated with EE 8/9 features, jpa-2.2/jpa-3.0 requires jdbc-4.2 instead of jdbc-4.1
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if ((features.contains("jpa-2.2") | features.contains("jpa-3.0")) && features.remove("jdbc-4.1"))
+            features.add("jdbc-4.2");
+        server.updateServerConfiguration(config);
 
         server.startServer();
     }

@@ -10,15 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.fat.extended;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 
                 CDITest.class,
                 ClassSubResTest.class,
+                JsonbCharsetTest.class,
                 JsonbContextResolverTest.class,
                 FormBehaviorTest.class,
                 MutableHeadersTest.class,
@@ -28,4 +33,9 @@ import org.junit.runners.Suite.SuiteClasses;
                 ProviderPriorityTest.class,
                 SubResourceTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = 
+        RepeatTests.withoutModification()
+                   .andWith(new JakartaEE9Action());
+}

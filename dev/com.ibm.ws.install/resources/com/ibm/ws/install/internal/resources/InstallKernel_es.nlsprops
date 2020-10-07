@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2018 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -601,6 +601,9 @@ MSG_VALIDATION_INVALID_URL=El URL siguiente no es v\u00e1lido: {0}. S\u00f3lo se
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=No se soporta el protocolo de URL para el repositorio siguiente: {0}. Los protocolos soportados son HTTP, HTTPS y archivo. Aseg\u00farese de que el URL se ha especificado correctamente.
 MSG_VALIDATION_INVALID_HOST=El host de servidor proxy siguiente no es v\u00e1lido: {0}. Especifique un nombre de host de servidor proxy HTTP v\u00e1lido. El prefijo http:// no es necesario.
 
+# Message for find action
+MSG_NO_FEATURES_FOUND=No se han encontrado caracter\u00edsticas.
+
 VALIDATION_INVALID_VALUE=Valor no soportado
 VALIDATION_INVALID_KEY=Nombre de propiedad no soportado
 VALIDATION_EMPTY_KEY=Nombre de propiedad vac\u00edo
@@ -831,13 +834,45 @@ ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de
 
 ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: El formato de la variable de entorno https_proxy {0} no es v\u00e1lido. Aseg\u00farese de que la variable https_proxy tenga el formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
 ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=El formato de variable de entorno de proxy no es v\u00e1lido.
-ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno https_proxy para que se ajuste al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Vuelva a dar formato a la variable de entorno https_proxy para que se ajuste al formato https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
 
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: Las caracter\u00edsticas siguientes no se han obtenido: {0}. Aseg\u00farese de que las caracter\u00edsticas son v\u00e1lidas.
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=La caracter\u00edstica no est\u00e1 soportada por Open Liberty.
 ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Ejecute featureUtility con una caracter\u00edstica compatible.
 
 MSG_USER_FEATURE_SERVER_XML=CWWKF1403I: Las caracter\u00edsticas de usuario siguientes se han especificado en server.xml y no se instalar\u00e1n: {0}
+
+ERROR_INCOMPATIBLE_FEATURES=CWWKF1404E: Las caracter\u00edsticas {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
+
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON=CWWKF1405E: Las caracter\u00edsticas singleton {0} y {1} son incompatibles entre s\u00ed y no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.explanation=Las caracter\u00edsticas no se pueden instalar al mismo tiempo.
+ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Elimine una de las caracter\u00edsticas e int\u00e9ntelo de nuevo.
+
+ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: No se puede descomprimir el paquete de licencia con la coordenada Maven {0} del repositorio en la v\u00eda de acceso de archivo {1}.
+ERROR_FAILED_TO_UNPACK_LICENSE.explanation=No se puede descomprimir el paquete de licencia en la instalaci\u00f3n de wlp.
+ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Aseg\u00farese de que tiene los permisos correctos para leer del repositorio.
+
+ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: No se ha podido procesar el archivo de licencia en la ubicaci\u00f3n de archivo {0}.
+ERROR_FAILED_TO_READ_LICENSE.explanation=No se puede procesar el archivo de licencia para la informaci\u00f3n de aceptaci\u00f3n de licencia.
+ERROR_FAILED_TO_READ_LICENSE.useraction=Aseg\u00farese de que tiene los permisos correctos para leer del archivo de licencia.
+
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: No se puede encontrar el archivo JSON de WebSphere en la ubicaci\u00f3n de archivo {0}.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=No se puede encontrar el archivo JSON de WebSphere.
+ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Aseg\u00farese de que tiene conexi\u00f3n de red y permisos de escritura para el directorio de Maven local configurado.
+
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: No se puede encontrar los siguientes archivos JSON de caracter\u00edsticas localmente o en el repositorio de Maven configurado: {0}.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Los archivos JSON no se pueden encontrar localmente o en el repositorio de Maven configurado.
+ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Aseg\u00farese de que tiene conexi\u00f3n de red y que los archivos JSON existen en el repositorio de Maven configurado.
+
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: La caracter\u00edstica {0} no se puede desinstalar en la edici\u00f3n {1} {2} porque solo se aplica a la edici\u00f3n {3}.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=La caracter\u00edstica no es aplicable a la edici\u00f3n del producto instalado.
+ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instale las caracter\u00edsticas soportadas por la edici\u00f3n del producto.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: La instalaci\u00f3n o actualizaci\u00f3n de caracter\u00edsticas no se soporta para los releases beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=La instalaci\u00f3n o actualizaci\u00f3n de caracter\u00edsticas no se soporta para el producto instalado.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=No se requiere ninguna acci\u00f3n.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La caracter\u00edstica se ha descargado satisfactoriamente.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La caracter\u00edstica se ha descargado.

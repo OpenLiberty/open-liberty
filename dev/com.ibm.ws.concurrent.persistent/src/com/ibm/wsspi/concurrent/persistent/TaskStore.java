@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,6 +151,24 @@ public interface TaskStore {
     long findOrCreate(PartitionRecord record) throws Exception;
 
     /**
+     * Creates a dedicated partition record to be used for partitioning out poll attempts across multiple instances.
+     * Only use this when missedTaskTheshold is enabled and pollInterval is unspecified, which means Liberty determines it automatically.
+     *
+     * @return unique identifier for the partition record to be used for coordination of automatically determined polling.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    long findOrCreatePollPartition() throws Exception;
+
+    /**
+     * Reads information from the partition entry for polling coordination and obtains a write lock on it.
+     *
+     * @param partitionId unique identifier of the partition entry for polling coordination.
+     * @return size 2 array where the first element is the expiry (type <code>long</code>) and the second is the last-updated timestamp (type <code>long</code>).
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    Object[] findPollInfoForUpdate(long partitionId) throws Exception;
+
+    /**
      * Find all task IDs for tasks that match the specified name pattern and the presence or absence
      * (as determined by the inState attribute) of the specified state.
      * For example, to find taskIDs for the first 100 tasks belonging to app1 in partition 12 that have not completed all executions
@@ -237,17 +255,6 @@ public interface TaskStore {
      * @throws Exception if an error occurs accessing the persistent store.
      */
     Long getPartition(long taskId) throws Exception;
-
-    /**
-     * Returns the identifier of a partition whose STATE field's rightmost bits matches the specified value.
-     * This method assumes that the sign bit of the persisted STATES field is always positive (0),
-     * so as to be able to compute the remainder when dividing by the next highest power of 2.
-     *
-     * @param stateBits desired state bits to match.
-     * @return a matching partition identifier, otherwise null.
-     * @throws Exception if an error occurs accessing the persistent store.
-     */
-    Long getPartitionWithState(long stateBits) throws Exception;
 
     /**
      * Returns name/value pairs for all persisted properties that match the specified name pattern.
@@ -381,4 +388,14 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     int transfer(Long maxTaskId, long oldPartitionId, long newPartitionId) throws Exception;
+
+    /**
+     * Writes a new expiry and last-updated timestamp to the partition entry for polling coordination.
+     *
+     * @param partitionId unique identifier of the partition entry for polling coordination.
+     * @param newExpiry   the new expiry value to use.
+     * @return true if the partition entry for polling was updated. Otherwise false.
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    boolean updatePollInfo(long partitionId, long newExpiry) throws Exception;
 }

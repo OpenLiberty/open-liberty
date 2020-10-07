@@ -5,7 +5,7 @@ bSymbolicName=com.ibm.ws.org.hibernate.validator
 
 Bundle-Name: Hibernate Validator Engine
 Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator
-Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=6.0.13.Final
+Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=6.1.6.Final
 
 # Provide these as resources to applications
 app-resources= \
@@ -18,7 +18,7 @@ app-resources= \
   META-INF/validation-configuration-2.0.xsd
 
 Export-Package: \
-  org.hibernate.validator.*;version="6.0.13.Final";thread-context=true
+  org.hibernate.validator.*;version="6.1.6.Final";thread-context=true
 
 Import-Package: \
   !javax.persistence, \
@@ -70,8 +70,8 @@ DynamicImport-Package: \
  javax.xml.bind.util
  
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator;6.0.13.Final}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;6.0.13.Final}!/META-INF/services/*,\
+  @${repo;org.hibernate.validator:hibernate-validator;6.1.6.Final;EXACT}!/META-INF/*.xsd, \
+  @${repo;org.hibernate.validator:hibernate-validator;6.1.6.Final;EXACT}!/META-INF/services/*,\
   org=resources/org
   
 Service-Component:\

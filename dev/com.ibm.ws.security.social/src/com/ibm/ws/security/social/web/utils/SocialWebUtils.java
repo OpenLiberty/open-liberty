@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -87,12 +88,9 @@ public class SocialWebUtils {
                 .append("var loc=window.location.href;")
                 .append("document.cookie=\"").append(reqUrlCookieName).append("=\"").append("+encodeURI(loc)+").append("\"; path=/;");
 
-        WebAppSecurityConfig webAppSecurityConfig = getWebAppSecurityConfig();
-        if (webAppSecurityConfig != null) {
-            if (webAppSecurityConfig.getSSORequiresSSL()) {
-                sb.append(" secure;");
-            }
-        }
+        JavaScriptUtils jsUtils = new JavaScriptUtils();
+        String cookieProps = jsUtils.createHtmlCookiePropertiesString(jsUtils.getWebAppSecurityConfigCookieProperties());
+        sb.append(cookieProps);
         sb.append("\"</script>");
 
         sb.append("<script type=\"text/javascript\" language=\"javascript\">")

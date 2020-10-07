@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,12 +54,14 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     private final static TraceComponent tc = Tr.register(WSContext.class);
     private final BundleContext userContext;
     private final Hashtable<String, Object> env;
+    private final WSContextFactory creatingFactory;
     final ContextNode myNode;
 
-    public WSContext(BundleContext userContext, ContextNode node, Hashtable<String, Object> env) {
+    public WSContext(BundleContext userContext, ContextNode node, Hashtable<String, Object> env, WSContextFactory creatingFactory) {
         this.userContext = userContext;
         this.myNode = node;
         this.env = env;
+        this.creatingFactory = creatingFactory;
     }
 
     private ServiceRegistration<?> bindIntoServiceRegistry(WSName wsName, final Object o) {
@@ -105,7 +107,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         ServiceReference<?> ref = null;
         try {
             if (o instanceof ContextNode)
-                return new WSContext(userContext, (ContextNode) o, env);
+                return new WSContext(userContext, (ContextNode) o, env, creatingFactory);
 
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Resolving object", o);
@@ -134,7 +136,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
             if (ref == null) {
                 getObjectInstance = true;
             } else {
-                o = getReference(userContext, ref);
+                o = getReference(ref);
                 if (o == null) {
                     throw new NamingException(Tr.formatMessage(tc, "jndi.servicereference.failed", subname.toString()));
                 }
@@ -209,7 +211,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
             String[] objectClass = (String[]) ref.getProperty(Constants.OBJECTCLASS);
             if (contains(objectClass, Reference.class.getName())) {
-                Reference jndiRef = (Reference) (o = getReference(userContext, ref));
+                Reference jndiRef = (Reference) (o = getReference(ref));
                 return jndiRef.getClassName();
             }
 
@@ -244,7 +246,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         // try to create the new slot - this throws the right exception if it fails
         ContextNode subnode = myNode.createSubcontext(n);
         // that succeeded, so return a new context pointing to that slot
-        return new WSContext(userContext, subnode, env);
+        return new WSContext(userContext, subnode, env, creatingFactory);
     }
 
     @Override
@@ -299,6 +301,10 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     @Override
     @Sensitive
     protected Object lookup(WSName subname) throws NamingException {
+        // 9099: detect empty lookup on a root context and return a new InitialContext with the same environment instead
+        if (subname.isEmpty()&&getNameInNamespace().isEmpty()) {
+          return new javax.naming.InitialContext(env);
+        }
         Object localObject = myNode.lookup(subname);
         return resolveObject(localObject, subname);
     }
@@ -510,13 +516,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         return "" + myNode;
     }
 
-    private Object getReference(final BundleContext context, final ServiceReference<?> ref) {
-        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-            @Override
-            public Object run() {
-                return userContext.getService(ref);
-            }
-        });
+    private Object getReference(ServiceReference<?> ref) {
+        return creatingFactory.getService(ref);
     }
 }

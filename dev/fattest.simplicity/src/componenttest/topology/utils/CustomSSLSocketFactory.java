@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 public class CustomSSLSocketFactory extends SSLSocketFactory {
     private static final Class<?> c = CustomSSLSocketFactory.class;
     private SSLSocketFactory factory;
+    private static String protocol = "TLS";
 
     public CustomSSLSocketFactory() {
         // Create trust manager that performs no checking of certificates
@@ -47,7 +48,7 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
         } };
 
         try {
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+            SSLContext sslContext = SSLContext.getInstance(protocol);
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
             factory = sslContext.getSocketFactory();
         } catch (Exception e) {
@@ -97,5 +98,13 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
     @Override
     public String[] getSupportedCipherSuites() {
         return factory.getSupportedCipherSuites();
+    }
+
+    public static void setProtocol(String protocol) {
+        CustomSSLSocketFactory.protocol = protocol;
+    }
+
+    public static void resetProtocol() {
+        CustomSSLSocketFactory.protocol = "TLS";
     }
 }

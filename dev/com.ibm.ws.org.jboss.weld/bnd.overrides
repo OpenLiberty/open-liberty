@@ -48,7 +48,7 @@ Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";\
  )",org.jboss.weld.servlet.spi.helpers;version="[2.4,3)",org.jboss.wel\
  d.transaction.spi;version="[2.4,3)",org.xml.sax,org.xml.sax.helpers,o\
  rg.jboss.logging.annotations;resolution:=optional,org.jboss.logging;v\
- ersion="[3.2,4)";packageType=was_internal
+ ersion="[3.2,4)"
 
 Service-Component: \
   com.ibm.ws.weld.deserializationClassProvider;\
@@ -75,4 +75,3 @@ Service-Component: \
 Include-Resource: \
   @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}!/!META-INF/maven/*
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

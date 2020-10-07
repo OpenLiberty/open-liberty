@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -53,7 +53,8 @@ KUBERNETES_ACCESS_TOKEN_MISSING.useraction=verifica\u0163i c\u0103 punctul final
 # 0=HTTP response code, 1=Response body
 KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: API-ul de utilizator Kubernetes a returnat un cod de r\u0103spuns nea\u015fteptat [{0}]. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile cerute \u015fi c\u0103 a fost creat jetonul contului de serviciu Kubernetes a fost creat cu permisiunile corecte. R\u0103spunsul de la API este [{1}].
 KUBERNETES_USER_API_BAD_STATUS.explanation=API-ul de utilizator Kubernetes nu a returnat un cod de stare a\u015fteptat.
-KUBERNETES_USER_API_BAD_STATUS.useraction=Pentru informa\u0163ii suplimentare, verifica\u0163i r\u0103spunsul API-ului care este \u00een mesajul de eroare. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile cerute. Asigura\u0163i-v\u0103 c\u0103 jetonul contului de serviciu Kubernetes a fost creat cu permisiunile corecte. 
+KUBERNETES_USER_API_BAD_STATUS.useraction=Pentru informa\u0163ii suplimentare, verifica\u0163i r\u0103spunsul API-ului care este \u00een mesajul de eroare. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile cerute. Asigura\u0163i-v\u0103 c\u0103 jetonul contului de serviciu Kubernetes a fost creat cu permisiunile corecte.
+
 # 0=JSON key string, 1=User API response string
 KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: R\u0103spunsului API-ului de utilizator Kubernetes \u00eei lipse\u015fte o cheie a\u015fteptat\u0103: [{0}]. R\u0103spunsul \u00eentreg este [{1}].
 KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=Cheia specificat\u0103 \u00een mesaj este a\u015fteptat\u0103 s\u0103 fie \u00een r\u0103spunsul API-ului. Cheia lipse\u015fte sau este \u00eentr-o pozi\u0163ie nea\u015fteptat\u0103.
@@ -92,6 +93,45 @@ KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Verifica\u0163i eroarea care este 
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: Configura\u0163ia de logare social\u0103 [{0}] specific\u0103 [{1}] ca valoare pentru atributul [{2}], dar r\u0103spunsul API-ului de utilizator nu con\u0163ine o cheie [{1}]. Cheia [{3}], dac\u0103 este prezent\u0103 \u00een r\u0103spunsului API-ului de utilizator, este folosit\u0103 pentru a determina \u00een schimb numele de utilizator.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=R\u0103spunsul API-ului de utilizator con\u0163ine o cheie care corespunde valorii unui atribut de configura\u0163ie care este specificat \u00een mesaj. \u00cen schimb caracteristica de logare social\u0103 \u00eencearc\u0103 s\u0103 utilizeze o alt\u0103 cheie.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifica\u0163i c\u0103 atributul de configura\u0163ie specificat \u00een mesaj este configurat corect. Asigura\u0163i-v\u0103 c\u0103 valoarea atributului corespunde cu intrarea din r\u0103spunsul API-ului de utilizator care trebuie s\u0103 fie folosit\u0103 ca nume de utilizator.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: R\u0103spunsul urm\u0103tor de la API-ul de utilizator nu poate fi procesat: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Informa\u0163iile despre contul de serviciu nu pot fi ob\u0163inute deoarece a ap\u0103rut o alt\u0103 eroare.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricele serverului pentru mesaje de eroare suplimentare care v-ar putea indica unde au ap\u0103rut alte erori.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: API-ul de utilizator a returnat un cod de r\u0103spuns nea\u015fteptat [{0}]. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile necesare. R\u0103spunsul de la API este [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=API-ul de utilizator nu a returnat un cod de stare a\u015fteptat. Cererii ar putea s\u0103-i lipseasc\u0103 informa\u0163ii sau cererea ar putea s\u0103 nu fie autorizat\u0103.
+USER_API_RESPONSE_BAD_STATUS.useraction=Pentru informa\u0163ii suplimentare, verifica\u0163i r\u0103spunsul API-ului care este \u00een mesajul de eroare. Verifica\u0163i c\u0103 cererea la API con\u0163ine toate informa\u0163iile necesare. Verifica\u0163i c\u0103 toate jetoanele care sunt incluse \u00een cerere sunt valide.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: Con\u0163inutul r\u0103spunsului nu este un obiect JSON valid. R\u0103spunsul \u00eentreg este {0}. {1}
+RESPONSE_NOT_JSON.explanation=R\u0103spunsul trebuie s\u0103 fie un obiect JSON valid.
+RESPONSE_NOT_JSON.useraction=Verifica\u0163i c\u0103 cererea a fost trimis\u0103 la \u0163inta a\u015fteptat\u0103. Asigura\u0163i-v\u0103 c\u0103 \u0163inta inten\u0163ionat\u0103 a cererii este capabil\u0103 s\u0103 returneze date JSON. Verifica\u0163i r\u0103spunsul de la API-ul de utilizator pentru a vedea ce alte informa\u0163ii sunt incluse.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: Obiectului JSON furnizat \u00eei lipse\u015fte o cheie a\u015fteptat\u0103: [{0}]. Obiectul JSON complet este [{1}].
+JSON_MISSING_KEY.explanation=Cheia care este specificat\u0103 \u00een mesaj trebuie s\u0103 fie \u00een cadrul datelor JSON. Cheia lipse\u015fte sau este \u00eentr-o pozi\u0163ie nea\u015fteptat\u0103.
+JSON_MISSING_KEY.useraction=Verifica\u0163i datele JSON pentru a determina dac\u0103 cheia lipse\u015fte.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: Valoarea pentru cheia [{0}] din datele JSON trebuie s\u0103 fie de tipul {1}, dar valoarea este de tipul {2}. Datele JSON sunt [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=Valoarea pentru cheia specificat\u0103 nu are tipul corect. Datele JSON ar putea fi formate gre\u015fit sau ar putea avea o structur\u0103 nea\u015fteptat\u0103.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Verifica\u0163i structura datelor JSON. Verifica\u0163i datele JSON pentru a vedea dac\u0103 a ap\u0103rut o eroare.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: R\u0103spunsul de la API-ul de introspec\u0163ie jeton nu poate fi procesat: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Informa\u0163iile despre utilizatorul autentificat nu pot fi ob\u0163inute deoarece a ap\u0103rut o alt\u0103 eroare.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricele serverului pentru mesaje de eroare suplimentare care v-ar putea indica unde au ap\u0103rut alte erori.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Cererea de introspec\u0163ie jeton a e\u015fuat deoarece jetonul care este inclus \u00een cerere nu este valid. R\u0103spunsul \u00eentreg este {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=Serverul de autorizare nu a emis jetonul, proprietarul resursei a revocat jetonul, jetonul este expirat sau a ap\u0103rut o alt\u0103 eroare.
+INTROSPECT_USER_API_INACTIVE.useraction=Verifica\u0163i r\u0103spunsul care este inclus \u00een mesaj. Verifica\u0163i c\u0103 este utilizat punctul final de introspec\u0163ie jeton corect. Verifica\u0163i c\u0103 jetonul este valid \u015fi c\u0103 jetonul poate fi introspectat.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: R\u0103spunsul API-ului de utilizator indic\u0103 faptul c\u0103 cererea de API de utilizator nu este autentificat\u0103. Verifica\u0163i dac\u0103 jetonul de acces care este inclus \u00een cererea de API de utilizator este valid \u015fi dac\u0103 este asociat cu un utilizator cunoscut.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Jetonul de acces din cererea de API de utilizator ar putea s\u0103 lipseasc\u0103, s\u0103 fie expirat, s\u0103 fie format gre\u015fit s\u0103 nu fie valid din alt\u0103 cauz\u0103. Este posibil ca jetonul s\u0103 nu fie asociat cu un utilizator cunoscut de c\u0103tre API-ul de utilizator.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verifica\u0163i dac\u0103 jetonul de acces este inclus \u00een cererea de API de utilizator. Asigura\u0163i-v\u0103 c\u0103 jetonul nu este expirat \u015fi c\u0103 nu este format gre\u015fit. Verifica\u0163i dac\u0103 utilizatorul care este asociat cu jetonul de acces este cunoscut de c\u0103tre API-ul de utilizator.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.

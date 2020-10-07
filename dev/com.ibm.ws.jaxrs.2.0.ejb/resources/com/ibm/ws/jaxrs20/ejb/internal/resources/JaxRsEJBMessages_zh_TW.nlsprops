@@ -23,12 +23,12 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: JAXRS-2.0 \u8cc7\u6e90 {0} \u7bc4\u570d {1} \u4e0d\u7b26\u5408 EJB \u7bc4\u570d {2}\u3002Liberty \u6703\u5f9e {3} \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
-warning.jaxrs.ejb.resource.mismatch.explanation=\u5982\u679c JAXRS-2.0 \u8cc7\u6e90\u7bc4\u570d\u4e0d\u7b26\u5408 EJB \u7bc4\u570d\uff0c\u4e14 EJB \u4e2d\u5b58\u5728\u8cc7\u6e90\u5be6\u4f8b\uff0cLiberty \u6703\u5f9e EJB \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: JAXRS \u8cc7\u6e90 {0} \u7bc4\u570d {1} \u8207 EJB \u7bc4\u570d {2} \u4e0d\u7b26\u3002Liberty \u6703\u5f9e {3} \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.resource.mismatch.explanation=\u5982\u679c JAXRS \u8cc7\u6e90\u7bc4\u570d\u8207 EJB \u7bc4\u570d\u4e0d\u7b26\uff0c\u4e14\u8cc7\u6e90\u5be6\u4f8b\u5b58\u5728\u65bc EJB \u4e2d\uff0c\u5247 Liberty \u6703\u5f9e EJB \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
 warning.jaxrs.ejb.resource.mismatch.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: JAXRS-2.0 \u63d0\u4f9b\u8005 {0} \u7684 EJB \u7bc4\u570d\u662f {1}\u3002Liberty \u6703\u5f9e {2} \u53d6\u5f97\u63d0\u4f9b\u8005\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: JAXRS \u63d0\u4f9b\u8005 {0} \u7684 EJB \u7bc4\u570d\u662f {1}\u3002Liberty \u6703\u5f9e {2} \u53d6\u5f97\u63d0\u4f9b\u8005\u5be6\u4f8b\u3002
 warning.jaxrs.ejb.provider.mismatch.explanation=\u63d0\u4f9b\u8005\u5be6\u4f8b\u53ea\u70ba Singleton\u3002\u5982\u679c\u63d0\u4f9b\u8005\u7684 EJB \u7bc4\u570d\u662f Dependent \u6216 ApplicationScoped\uff0cLiberty \u6703\u5f9e EJB \u53d6\u5f97\u63d0\u4f9b\u8005\u5be6\u4f8b\u3002
 warning.jaxrs.ejb.provider.mismatch.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 

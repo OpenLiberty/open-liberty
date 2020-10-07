@@ -17,7 +17,7 @@ Bundle-Description: WAS Security Public APIs, version ${bVersion}
 
 WS-TraceGroup: \
   security
-  
+
 
 Export-Package: \
   com.ibm.websphere.security, \
@@ -33,6 +33,10 @@ Export-Package: \
   com.ibm.ws.security.utils, \
   com.ibm.wsspi.security.audit, \
   com.ibm.wsspi.security.registry.*; provide:=true
+
+Import-Package: \
+  !com.ibm.wsspi.security.registry, \
+  ${defaultPackageImport}
 
 Service-Component: \
   wsSubjectService; \
@@ -90,6 +94,6 @@ Service-Component: \
 	org.apache.httpcomponents:httpclient;version=4.5.5, \
     org.apache.httpcomponents:httpcore;version=4.4.9, \
     commons-logging:commons-logging;version=1.1.1, \
-    commons-codec:commons-codec;version=1.4, \
+    commons-codec:commons-codec;version=1.14, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	cglib:cglib-nodep;version=3.3.0

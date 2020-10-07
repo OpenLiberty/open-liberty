@@ -116,7 +116,7 @@ action-desc.resume=\tReanudar todos los componentes puestos en pausa en el servi
 \topci\u00f3n --target para reanudar componentes concretos puestos en pausa.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.clean=\tLimpiar toda la informaci\u00f3n almacenada en memoria cach\u00e9 relacionada con esta instancia de servidor.
+option-desc.start.clean=\tLimpiar toda la informaci\u00f3n almacenada en memoria cach\u00e9 relacionada con esta instancia de servidor.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="v\u00eda al archivador de destino"
 option-desc.dump.archive=\tEspecifique el destino de archivado que la acci\u00f3n de volcado debe generar.       \n\
@@ -177,3 +177,15 @@ option-desc.no-password=\tInhabilitar la generaci\u00f3n de contrase\u00f1a de a
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="carpeta de servidor ra\u00edz del archivador"
 option-desc.package.server-root=\tEspecifica el nombre de la carpeta de servidor ra\u00edz en el archivo de archivado.           \n
+#------------------------------\n\
+\ en 72 caracteres -- pesta\u00f1a inicial-----------\n\
+\#
+option-key.force=\ \ \ \ --force
+option-desc.stop.force=\tSalta la etapa de desactivaci\u00f3n temporal antes de que se cierre el servidor. La detenci\u00f3n de servidor\n\
+\tnormal incluye una etapa de desactivaci\u00f3n temporal antes de que se cierre el servidor. La    \n\
+\tetapa de desactivaci\u00f3n temporal, un periodo de 30 segundos, permite a los servicios realizar    \n\
+\tel trabajo previo al cierre; por ejemplo, los escuchas de entrada se detienen pero    \n\
+\tse permite que las solicitudes existentes se completen. La opci\u00f3n --force no tiene ning\u00fan \n\
+\tefecto si la detenci\u00f3n de servidor ya se ha invocado. Si utiliza la opci\u00f3n --force,    \n\
+\tes posible que vea excepciones inesperadas en el archivo messages.log \n\
+\tque se producen despu\u00e9s de que el servidor haya recibido el mandato de detenci\u00f3n de servidor.

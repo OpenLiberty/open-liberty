@@ -22,5 +22,6 @@ public class WebContainerConstants {
     static String PARAMETER_ASSIGNMENT = "=";
 
     public static final String X_POWERED_BY_DEFAULT_VALUE40 = "Servlet/4.0";
+    public static final String X_POWERED_BY_DEFAULT_VALUE50 = "Servlet/5.0";
 
 }

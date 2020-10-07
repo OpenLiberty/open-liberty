@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = ApplicationHandler.class, immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -103,14 +104,16 @@ public class EARApplicationHandlerImpl implements ApplicationHandler<DeployedApp
         _monitor = fm;
     }
 
-    protected void unsetFutureMonitor(FutureMonitor fm) {}
+    protected void unsetFutureMonitor(FutureMonitor fm) {
+    }
 
     @Reference(name = "deployedAppFactory", target = "(type=ear)")
     protected void setDeployedAppFactory(DeployedAppInfoFactory deployedAppFactory) {
         this.deployedAppFactory = deployedAppFactory;
     }
 
-    protected void unsetDeployedAppFactory(DeployedAppInfoFactory deployedAppFactory) {}
+    protected void unsetDeployedAppFactory(DeployedAppInfoFactory deployedAppFactory) {
+    }
 
     @Activate
     protected void activate(ComponentContext context) {
@@ -122,5 +125,9 @@ public class EARApplicationHandlerImpl implements ApplicationHandler<DeployedApp
     @Deactivate
     protected void deactivate(ComponentContext context) {
         //
+    }
+
+    @Reference
+    private void setApplicationStartBarrier(ApplicationStartBarrier applicationStartBarrier) {
     }
 }

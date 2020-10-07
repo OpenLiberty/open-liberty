@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class AcsHandler implements SsoHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.saml.SamlHandler#getSamlVersion()
      */
     @Override
@@ -41,15 +41,14 @@ public class AcsHandler implements SsoHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.saml.SamlHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
      */
     @Override
     public void handleRequest(HttpServletRequest request,
                               HttpServletResponse response,
                               SsoRequest samlRequest,
-                              Map<String, Object> parameters
-                    ) throws SamlException {
+                              Map<String, Object> parameters) throws SamlException {
         SolicitedHandler solicitedHandler = new SolicitedHandler(request, response, samlRequest, parameters);
         UnsolicitedHandler unsolicitedHandler = new UnsolicitedHandler(request, response, samlRequest, parameters);
         handleRequest(request, response, samlRequest, parameters, solicitedHandler, unsolicitedHandler);
@@ -60,8 +59,7 @@ public class AcsHandler implements SsoHandler {
                               SsoRequest samlRequest,
                               Map<String, Object> parameters,
                               SolicitedHandler solicitedHandler,
-                              UnsolicitedHandler unsolicitedHandler
-                    ) throws SamlException {
+                              UnsolicitedHandler unsolicitedHandler) throws SamlException {
         SsoSamlService ssoService = (SsoSamlService) parameters.get(Constants.KEY_SAML_SERVICE);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "handleRequest(ACS):" +
@@ -69,8 +67,7 @@ public class AcsHandler implements SsoHandler {
                          " request:" + request +
                          " response:" + response +
                          " Request:" + samlRequest +
-                         " Service:" + ssoService
-                            );
+                         " Service:" + ssoService);
         }
 
         String externalRrelayState = request.getParameter(Constants.RELAY_STATE);

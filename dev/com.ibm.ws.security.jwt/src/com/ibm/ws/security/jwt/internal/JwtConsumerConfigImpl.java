@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -49,6 +50,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     private String jwkEndpointUrl;
     private boolean validationRequired = true;
     private boolean useSystemPropertiesForHttpClientConnections = false;
+    private List<String> amrClaim;
     String sslRef;
 
     private ConsumerUtils consumerUtil = null; // init during process(activate and modify)
@@ -100,7 +102,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         issuer = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_ISSUER));
         sharedKey = JwtConfigUtil.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
         audiences = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_AUDIENCES));
-        sigAlg = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM));
+        sigAlg = JwtConfigUtil.getSignatureAlgorithm(getId(), props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
         trustStoreRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTSTORE_REF));
         trustedAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTED_ALIAS));
         clockSkewMilliSeconds = (Long) props.get(JwtUtils.CFG_KEY_CLOCK_SKEW);
@@ -109,6 +111,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         jwkEndpointUrl = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_JWK_ENDPOINT_URL)); // internal
         sslRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SSL_REF));
         useSystemPropertiesForHttpClientConnections = (Boolean) props.get(JwtUtils.CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS);
+        amrClaim = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_CLAIM));
 
         consumerUtil = new ConsumerUtils(keyStoreServiceRef);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
@@ -133,6 +136,11 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     @Override
     public List<String> getAudiences() {
         return audiences;
+    }
+
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
     }
 
     @Override
@@ -203,6 +211,11 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     @Override
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        return amrClaim;
     }
 
 }

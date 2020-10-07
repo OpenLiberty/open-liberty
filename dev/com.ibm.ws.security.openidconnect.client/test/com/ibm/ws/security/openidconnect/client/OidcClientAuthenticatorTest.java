@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -54,7 +54,6 @@ import com.ibm.websphere.simplicity.config.HttpSession;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.openidconnect.clients.common.AuthorizationCodeHandler;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -530,7 +529,7 @@ public class OidcClientAuthenticatorTest {
                 createResultExpectations();
             } catch (Exception e) {
                 e.printStackTrace();
-                fail("Unexpected exception creating the result expectations: " + e.getMessage());
+                fail("Unexpected exception creating the result expectations: " + e);
             }
         }
         createPostParameterHelperExpectations();
@@ -813,18 +812,6 @@ public class OidcClientAuthenticatorTest {
         });
     }
 
-    //    private void createHandleAuthorizationCodeExpectations(final String stateKey) throws Exception {
-    //        createResponseStateExpectations(stateKey);
-    //        createHttpsRequirementExpectationsForTokenEndpoint();
-    //        createRedirectUrlExpectations();
-    //        createSSLContextExpectations(null, sslContext);
-    //        createTokenRequestExpectations();
-    //        createResultExpectations();
-    //        createPostParameterHelperExpectations();
-    //        createReferrerUrlCookiesExpectations();
-    //        createReferrerUrlCookieExpectations(ClientConstants.WAS_OIDC_CODE);
-    //    }
-
     private void createResponseStateExpectations(final String stateKey) {
         final Cookie[] cookies = new Cookie[] { cookie1 };
         final String cookieName = ClientConstants.WAS_OIDC_STATE_KEY + ANOTHER_ORIGINAL_STATE.hashCode();
@@ -867,38 +854,6 @@ public class OidcClientAuthenticatorTest {
             }
         });
     }
-
-    //    private void createTokenRequestExpectations() throws Exception {
-    //        mock.checking(new Expectations() {
-    //            {
-    //                one(clientConfig).getTokenEndpointUrl();
-    //                will(returnValue(TEST_TOKEN_ENDPOINT)); // TODO: Refactor code so that this is only called once.
-    //                one(clientConfig).getClientId();
-    //                will(returnValue(CLIENT01));
-    //                one(clientConfig).getClientSecret();
-    //                will(returnValue(SHARED_KEY));
-    //                allowing(clientConfig).getGrantType();
-    //                will(returnValue(TEST_GRANT_TYPE));
-    //                one(clientConfig).isHostNameVerificationEnabled();
-    //                will(returnValue(false));
-    //                one(clientConfig).getTokenEndpointAuthMethod();
-    //                will(returnValue(authMethod));
-    //            }
-    //        });
-    //
-    //        final String tokenString = TEST_TOKEN_STRING;
-    //        String accessToken = TEST_ACCESS_TOKEN;
-    //        tokens.put(Constants.ID_TOKEN, tokenString);
-    //        tokens.put(Constants.ACCESS_TOKEN, accessToken);
-    //        mock.checking(new Expectations() {
-    //            {
-    //                one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
-    //                        TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-    //                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
-    //                will(returnValue(tokens));
-    //            }
-    //        });
-    //    }
 
     private void createResultExpectations() throws IDTokenValidationFailedException {
         // IDToken creation and properties
@@ -1057,44 +1012,6 @@ public class OidcClientAuthenticatorTest {
     //        } catch (Throwable t) {
     //            outputMgr.failWithThrowable(testName.getMethodName(), t);
     //        }
-    //    }
-
-    //    private void createHandleAuthorizationCodeExpectationsWithException(final String stateKey, final Throwable throwable) throws Exception {
-    //        createResponseStateExpectations(stateKey);
-    //        createHttpsRequirementExpectationsForTokenEndpoint();
-    //        createRedirectUrlExpectations();
-    //        createSSLContextExpectations(null, sslContext);
-    //        createTokenRequestExpectationsWithException(throwable);
-    //        createPostParameterHelperExpectations();
-    //        createReferrerUrlCookiesExpectations();
-    //        createReferrerUrlCookieExpectations(ClientConstants.WAS_OIDC_CODE);
-    //    }
-
-    //    private void createTokenRequestExpectationsWithException(final Throwable throwable) throws Exception {
-    //        mock.checking(new Expectations() {
-    //            {
-    //                allowing(clientConfig).getTokenEndpointUrl();
-    //                will(returnValue(TEST_TOKEN_ENDPOINT)); // TODO: Refactor code so that this is only called once.
-    //                one(clientConfig).getClientId();
-    //                will(returnValue(CLIENT01));
-    //                one(clientConfig).getClientSecret();
-    //                will(returnValue(SHARED_KEY));
-    //                allowing(clientConfig).getGrantType();
-    //                will(returnValue(TEST_GRANT_TYPE));
-    //                one(clientConfig).isHostNameVerificationEnabled();
-    //                will(returnValue(false));
-    //                one(clientConfig).getTokenEndpointAuthMethod();
-    //                will(returnValue(authMethod));
-    //            }
-    //        });
-    //        mock.checking(new Expectations() {
-    //            {
-    //                one(oidcClientUtil).getTokensFromAuthzCode(TEST_TOKEN_ENDPOINT, CLIENT01, SHARED_KEY,
-    //                        TEST_REDIRECT_URL, TEST_AUTHORIZATION_CODE,
-    //                        TEST_GRANT_TYPE, sslSocketFactory, false, authMethod, null);
-    //                will(throwException(throwable));
-    //            }
-    //        });
     //    }
 
     @Test
@@ -1290,42 +1207,6 @@ public class OidcClientAuthenticatorTest {
         }
     }
 
-    @Test
-    public void testCreateIDTokenBadTime() {
-        try {
-            final String tokenEndpoint = TEST_TOKEN_ENDPOINT;
-            final String sharedKey = SHARED_KEY;
-            final String issuer = "";
-            mock.checking(new Expectations() {
-                {
-                    one(clientConfig).getTokenEndpointUrl();
-                    will(returnValue(tokenEndpoint));
-                    one(clientConfig).getSharedKey();
-                    will(returnValue(sharedKey));
-                    one(clientConfig).getClientId();
-                    will(returnValue(CLIENT01));
-                    allowing(clientConfig).getSignatureAlgorithm();
-                    will(returnValue("HS256"));
-                    one(clientConfig).getIssuerIdentifier();
-                    will(returnValue(issuer));
-                }
-            });
-
-            createClientConfigExpectationsForIDToken();
-
-            assertNotNull("Expected to get an instance of OidcClientAuthenticator but none", commonAuthn);
-            commonAuthn.createIDToken(TEST_TOKEN_STRING, TEST_ACCESS_TOKEN, clientConfig);
-            fail("The tokenString is expired. Ought to get an Exception but not");
-        } catch (IDTokenValidationFailedException e) {
-            String message = e.getMessage();
-            //String expected = "Invalid iat and/or exp";
-            String expected = "The JWT is no longer valid"; // jose4j's message
-            assertTrue("Message: " + message + " did not contain the expected string: " + expected, message.contains(expected));
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     private void createClientConfigExpectationsForIDToken() {
         mock.checking(new Expectations() {
             {
@@ -1335,103 +1216,6 @@ public class OidcClientAuthenticatorTest {
                 will(returnValue(false));
             }
         });
-    }
-
-    @Test
-    public void testCreateIDTokenMock() {
-        try {
-            final String tokenEndpoint = TEST_TOKEN_ENDPOINT;
-            final String sharedKey = SHARED_KEY;
-            final String issuer = "";
-            mock.checking(new Expectations() {
-                {
-                    one(clientConfig).getTokenEndpointUrl();
-                    will(returnValue(tokenEndpoint));
-                    one(clientConfig).getSharedKey();
-                    will(returnValue(sharedKey));
-                    one(clientConfig).getClientId();
-                    will(returnValue(CLIENT01));
-                    allowing(clientConfig).getSignatureAlgorithm();
-                    will(returnValue("HS256"));
-                    one(oidcClientUtil).createIDToken(with(any(String.class)),
-                            with(any(Object.class)),
-                            with(any(String.class)),
-                            with(any(String.class)),
-                            with(any(String.class)),
-                            with(any(String.class)));
-                    will(returnValue(idToken));
-                    allowing(idToken).getHeader();
-                    will(returnValue(jwsHeader));
-                    one(idToken).verify(with(any(Long.class)), with(any(Object.class)));
-                    will(returnValue(true));
-                    one(idToken).getPayload();
-                    will(returnValue(payload));
-                    one(clientConfig).getClientId();
-                    will(returnValue(CLIENT01));
-                    one(payload).setJwtId(CLIENT01);
-                    will(returnValue(payload));
-                    one(clientConfig).getIssuerIdentifier();
-                    will(returnValue(issuer));
-                }
-            });
-
-            createClientConfigExpectationsForIDToken();
-
-            assertNotNull("Expected to get an instance of OidcClientAuthenticator but none", commonAuthn);
-            commonAuthn.oidcClientUtil = oidcClientUtil;
-            IDToken result = commonAuthn.createIDToken(TEST_TOKEN_STRING, TEST_ACCESS_TOKEN, clientConfig);
-            assertNotNull("Ought to get a instance of IDToken", result);
-            assertEquals("Ought to get IDToken ", idToken, result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void testCreateIDTokenMockBad() {
-        try {
-            final String tokenEndpoint = TEST_TOKEN_ENDPOINT;
-            final String sharedKey = SHARED_KEY;
-            final String issuer = "";
-            mock.checking(new Expectations() {
-                {
-                    one(clientConfig).getTokenEndpointUrl();
-                    will(returnValue(tokenEndpoint));
-                    one(clientConfig).getSharedKey();
-                    will(returnValue(sharedKey));
-                    one(clientConfig).getClientId();
-                    will(returnValue(CLIENT01));
-                    allowing(clientConfig).getSignatureAlgorithm();
-                    will(returnValue("HS256"));
-                    one(oidcClientUtil).createIDToken(with(any(String.class)),
-                            with(any(Object.class)),
-                            with(any(String.class)),
-                            with(any(String.class)),
-                            with(any(String.class)),
-                            with(any(String.class)));
-                    will(returnValue(idToken));
-                    allowing(idToken).getHeader();
-                    will(returnValue(jwsHeader));
-                    one(idToken).verify(with(any(Long.class)), with(any(Object.class)));
-                    will(returnValue(false));
-                    one(clientConfig).getIssuerIdentifier();
-                    will(returnValue(issuer));
-                }
-            });
-
-            createClientConfigExpectationsForIDToken();
-
-            assertNotNull("Expected to get an instance of OidcClientAuthenticator but none", commonAuthn);
-            commonAuthn.oidcClientUtil = oidcClientUtil;
-            commonAuthn.createIDToken(TEST_TOKEN_STRING, TEST_ACCESS_TOKEN, clientConfig);
-            fail("The tokenString is not signed properly. Ought to get an Exception but not");
-        } catch (Exception e) {
-            e.printStackTrace();
-            String strMessage = e.getMessage();
-            assertTrue("Cannot get expected message 'IDToken validation is failed' but get '" + strMessage + "'", strMessage.contains("CWWKS1706E"));
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
     }
 
     private void createClientConfigExpectationsForResult() {
@@ -1694,8 +1478,8 @@ public class OidcClientAuthenticatorTest {
                     will(returnValue(uniqueSecurityName));
                     one(payload).get(ClientConstants.GROUPS_ID);
                     will(returnValue(arrayList));
-		            one(clientConfig).isDisableLtpaCookie();               
-             	    will(returnValue(false));
+                    one(clientConfig).isDisableLtpaCookie();
+                    will(returnValue(false));
                 }
             });
 
@@ -1747,8 +1531,8 @@ public class OidcClientAuthenticatorTest {
                 will(returnValue(USER1));
                 one(payload).get(GROUP1);
                 will(returnValue(null));
- 		        one(clientConfig).isDisableLtpaCookie();               
-             	will(returnValue(false));
+                one(clientConfig).isDisableLtpaCookie();
+                will(returnValue(false));
             }
         });
 
@@ -2078,74 +1862,6 @@ public class OidcClientAuthenticatorTest {
         checkForBadStatusExpectations(oidcResult);
     }
 
-    //@Test
-    public void testGetVerifyKey_NoneSignatureAlgorithm() {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_NONE));
-                one(clientConfig).getSharedKey();
-                will(returnValue(SHARED_KEY));
-            }
-        });
-
-        try {
-            Object keyValue = commonAuthn.getVerifyKey(clientConfig, "kid", "x5t");
-            assertNotNull("Expected a valid key but received null.", keyValue);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable("testGetVerifyKey", e);
-        }
-    }
-
-    //@Test
-    public void testGetVerifyKey_NoneJwkEndpointUrl() throws Exception {
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_RS256));
-                one(clientConfig).getJwkEndpointUrl();
-                will(returnValue(null));
-                one(clientConfig).getJsonWebKey();
-                will(returnValue(null));
-                one(clientConfig).getPublicKey();
-                will(returnValue(publicKey));
-            }
-        });
-        try {
-            Object keyValue = commonAuthn.getVerifyKey(clientConfig, "kid", "x5t");
-
-            assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable("testGetVerifyKey", e);
-        }
-    }
-
-    //@Test
-    public void testGetVerifyKey_() throws Exception {
-        final JWKSet jwkSet = mock.mock(JWKSet.class, "jwkSet");
-        final String KID = "kid";
-        mock.checking(new Expectations() {
-            {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_RS256));
-                one(clientConfig).getJwkEndpointUrl();
-                will(returnValue(TEST_URL));
-                one(clientConfig).getJwkSet();
-                will(returnValue(jwkSet));
-
-                one(jwkSet).getPublicKeyByKid(KID);
-                will(returnValue(publicKey));
-            }
-        });
-        try {
-            Object keyValue = commonAuthn.getVerifyKey(clientConfig, KID, "x5t");
-
-            assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable("testGetVerifyKey", e);
-        }
-    }
-
     private void createClientConfigExpectationsForIdentityAssertion() {
         mock.checking(new Expectations() {
             {
@@ -2195,6 +1911,7 @@ public class OidcClientAuthenticatorTest {
         }
 
         //@Override
+        @Override
         public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,
                 String clientId,
                 @Sensitive String clientSecret,
@@ -2228,18 +1945,6 @@ public class OidcClientAuthenticatorTest {
             this.iTest = iTest;
         }
 
-        /*
-         * @Override
-         * ProviderAuthenticationResult verifyResponseState(HttpServletRequest req, HttpServletResponse res, String responseState,
-         * OidcClientConfig clientConfig) {
-         * String clientId = clientConfig.getClientId();
-         * if (iTest == 0 || iTest == 2)
-         * return null;
-         * else
-         * return super.verifyResponseState(req, res, responseState, clientConfig);
-         * }
-         */
-
         @Override
         protected SSLContext getSSLContext(String tokenUrl, String sslConfigurationName, String clientId) throws SSLException {
             if (iTest == 1 || iTest == 2)
@@ -2248,31 +1953,6 @@ public class OidcClientAuthenticatorTest {
                 return super.getSSLContext(tokenUrl, sslConfigurationName, clientId);
         }
 
-        /**
-         * @Override
-         *           String buildAuthorizationUrlWithQuery(OidcClientRequest oidcClientRequest, String state, OidcClientConfig
-         *           clientConfig, String redirect_url, String acr_values) throws UnsupportedEncodingException {
-         *           if (iTest == 0) {
-         *           return TEST_URL;
-         *           } else if (iTest == 1) {
-         *           throw new UnsupportedEncodingException();
-         *           } else {
-         *           return super.buildAuthorizationUrlWithQuery(oidcClientRequest, state, clientConfig, redirect_url,
-         *           acr_values);
-         *           }
-         *           }
-         **/
-
-        @Override
-        IDToken createIDToken(String tokenStr, String accessToken, OidcClientConfig clientConfig) throws Exception {
-            if (iTest == 0) {
-                return idToken;
-            } else if (iTest == 1) {
-                throw new Exception();
-            } else {
-                return super.createIDToken(tokenStr, accessToken, clientConfig);
-            }
-        }
     }
 
 }

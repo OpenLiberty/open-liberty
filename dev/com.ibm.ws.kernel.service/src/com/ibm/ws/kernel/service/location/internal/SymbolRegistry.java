@@ -55,7 +55,7 @@ public class SymbolRegistry {
      * Inner class: struct grouping a symbol and associated value.
      * The type is used for grouping/dealing with values without
      * instanceof.
-     * 
+     *
      * SymRegEntry is used in several different lists, with
      * different comparators depending on the index.
      */
@@ -186,9 +186,9 @@ public class SymbolRegistry {
     /**
      * Resolves the given string, evaluating all symbols, and path-normalizes
      * the value.
-     * 
+     *
      * @param symbolicPath
-     * 
+     *
      * @return The resolved value, path-normalized.
      */
     String resolveSymbolicString(String symbolicPath) {
@@ -201,9 +201,9 @@ public class SymbolRegistry {
     /**
      * Resolves the given string, evaluating all symbols, but does NOT path-normalize
      * the value.
-     * 
+     *
      * @param string
-     * 
+     *
      * @return The resolved value, not path-normalized.
      */
     String resolveRawSymbolicString(String string) {
@@ -230,14 +230,14 @@ public class SymbolRegistry {
     /**
      * Recursively process symbols (primarily string substitution) with a
      * recursion limit of 10
-     * 
+     *
      * @param originalPath
-     *            Remember original path for messages if there is a problem
-     *            resolving symbols
+     *                         Remember original path for messages if there is a problem
+     *                         resolving symbols
      * @param path
-     *            Revised path (recursion)
+     *                         Revised path (recursion)
      * @param recurse
-     *            Recursion depth
+     *                         Recursion depth
      * @return Resolved WsResource, or null if an unknown symbol is
      *         encountered
      */

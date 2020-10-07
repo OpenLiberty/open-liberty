@@ -33,6 +33,13 @@ buildscript {
                     username gradle.userProps.getProperty("artifactory.download.user")
                     password gradle.userProps.getProperty("artifactory.download.token")
                 }
+                url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+            }
+            maven {
+                credentials {
+                    username gradle.userProps.getProperty("artifactory.download.user")
+                    password gradle.userProps.getProperty("artifactory.download.token")
+                }
                 url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
             }
         } else {
@@ -45,22 +52,6 @@ buildscript {
         classpath bnd_plugin
         classpath 'gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.4.11'
         classpath 'com.gradle:build-scan-plugin:2.1'
-    }
-
-    // Since the files in the repository change with each build, we need to recheck for changes
-    configurations.classpath {
-        resolutionStrategy {
-            cacheChangingModulesFor 30, 'minutes'
-            cacheDynamicVersionsFor 30, 'minutes'
-        }
-    }
-
-    dependencies {
-        components {
-            all { ComponentMetadataDetails details ->
-                details.changing = true
-            }
-        }
     }
 
     // Add bnd gradle plugin to buildscript classpath of rootProject
@@ -166,8 +157,10 @@ if (addAll) {
 
 // Add our common build/tool projects
 projectNames.add('build.image')
+projectNames.add('com.ibm.websphere.appserver.features')
 projectNames.add('wlp-bndPlugins')
 projectNames.add('wlp-rasInstrumentation')
+projectNames.add('wlp-jakartaee-transform')
 
 // Add each project and its dependencies to the graph
 projectNames.each { projectName ->

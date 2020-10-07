@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.security.openidconnect.common.Constants;
 
 /**
@@ -27,14 +24,14 @@ public class ServerConstants {
 
     public final static String JTI = "jti";
     public final static String SUB = "sub";
-    public final static String SCOPE = Constants.SCOPE; // "scope"; 
-    public final static String CLIENT_ID = Constants.CLIENT_ID; // "client_id"; 
+    public final static String SCOPE = Constants.SCOPE; // "scope";
+    public final static String CLIENT_ID = Constants.CLIENT_ID; // "client_id";
     public final static String CLIENT_SECRET = Constants.CLIENT_SECRET; // "client_secret";
     public final static String CID = "cid";
-    public final static String GRANT_TYPE = Constants.GRANT_TYPE; // "grant_type"; 
+    public final static String GRANT_TYPE = Constants.GRANT_TYPE; // "grant_type";
     public final static String USER_ID = "user_id";
     public final static String USER_NAME = "user_name";
-    public final static String EMAIL = "email"; // TODO: should it read from the config object 
+    public final static String EMAIL = "email"; // TODO: should it read from the config object
     public final static String IAT = "iat";
     public final static String EXP = "exp";
     public final static String ISS = "iss";
@@ -59,7 +56,7 @@ public class ServerConstants {
     public final static String AUTHORIZATION = "Authorization";
     public final static String BEARER = "bearer ";
     public final static List<String> primaryKeys = Arrays.asList(new String[] { JTI, SUB, SCOPE, CLIENT_ID, CID, GRANT_TYPE,
-                                                                               USER_ID, USER_NAME, EMAIL, IAT, EXP, ISS, AUD });
+                                                                                USER_ID, USER_NAME, EMAIL, IAT, EXP, ISS, AUD });
     public final static String METHOD_BASIC = "basic";
     public final static String METHOD_POST = "post";
     public final static String METHOD_JWT = "jwt";
@@ -86,11 +83,4 @@ public class ServerConstants {
 
     //"com.ibm.wssi.security.oidc.client.credential.storing.gmt.time";
     public final static String CREDENTIAL_STORING_TIME_MILLISECONDS = Constants.CREDENTIAL_STORING_TIME_MILLISECONDS;
-    public static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-    public final static boolean JAVA_VERSION_6 = JavaInfo.majorVersion() == 6;
 }

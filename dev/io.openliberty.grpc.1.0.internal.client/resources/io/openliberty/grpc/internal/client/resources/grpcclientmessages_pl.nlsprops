@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Nie mo\u017cna za\u0142adowa\u0107 przechwytywacza gRPC zdefiniowanego w obiekcie clientInterceptors {0}
+invalid.clientinterceptor.explanation=Za\u0142adowanie przechwytywacza gRPC zdefiniowanego w obiekcie clientInterceptors nie by\u0142o mo\u017cliwe.
+invalid.clientinterceptor.useraction=Sprawd\u017a skonfigurowan\u0105 nazw\u0119 przechwytywacza i \u015bcie\u017ck\u0119 klas aplikacji.
+
+invalid.keepalive.time=CWWKT0302E: Czas keepAliveTime {0} klienta gRPC jest niepoprawny. Warto\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
+invalid.keepalive.time.explanation=Skonfigurowana warto\u015b\u0107 czasu keepAliveTime jest niepoprawna.
+invalid.keepalive.time.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: Limit czasu keepAliveTimeout {0} klienta gRPC jest niepoprawny. Warto\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
+invalid.keepalive.timeout.explanation=Skonfigurowana warto\u015b\u0107 limitu czasu keepAliveTimeout jest niepoprawna.
+invalid.keepalive.timeout.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: Maksymalna wielko\u015b\u0107 maxInboundMessageSize {0} klienta gRPC jest niepoprawna. Warto\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
+invalid.client.inbound.msg.size.explanation=Skonfigurowana warto\u015b\u0107 maxInboundMessageSize jest niepoprawna.
+invalid.client.inbound.msg.size.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 maxInboundMessageSize.

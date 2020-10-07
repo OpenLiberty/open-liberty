@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -94,6 +94,44 @@ KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: A configura
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=A resposta da API do usu\u00e1rio n\u00e3o cont\u00e9m uma chave que corresponda ao valor do atributo de configura\u00e7\u00e3o especificado na mensagem. O recurso de login social tenta usar uma chave diferente no lugar.
 KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifique se o atributo de configura\u00e7\u00e3o especificado na mensagem est\u00e1 configurado corretamente. Assegure-se de que o valor do atributo de configura\u00e7\u00e3o corresponda \u00e0 entrada na resposta da API do usu\u00e1rio que deve ser usada como o nome do usu\u00e1rio.
 
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: A seguinte resposta da API do usu\u00e1rio n\u00e3o pode ser processada: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=As informa\u00e7\u00f5es sobre a conta do servi\u00e7o n\u00e3o podem ser obtidas porque ocorreu outro erro.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mais mensagens de erro que possam indicar onde ocorreu o outro erro.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: A API do usu\u00e1rio retornou um c\u00f3digo de resposta [{0}] inesperado. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias. A resposta da API \u00e9 [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=A API do usu\u00e1rio n\u00e3o retornou o c\u00f3digo de status esperado. A solicita\u00e7\u00e3o pode ter informa\u00e7\u00f5es ausentes ou a solicita\u00e7\u00e3o pode n\u00e3o ser autorizada.
+USER_API_RESPONSE_BAD_STATUS.useraction=Verifique a resposta da API que est\u00e1 na mensagem de erro para obter informa\u00e7\u00f5es adicionais. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias. Verifique se todos os tokens que est\u00e3o inclu\u00eddos na solicita\u00e7\u00e3o s\u00e3o v\u00e1lidos.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: O conte\u00fado da resposta n\u00e3o \u00e9 um objeto de JSON v\u00e1lido. A resposta completa \u00e9  {0}. {1}
+RESPONSE_NOT_JSON.explanation=A resposta deve ser um objeto de JSON v\u00e1lido.
+RESPONSE_NOT_JSON.useraction=Verifique se a solicita\u00e7\u00e3o foi enviada para o destino esperado. Assegure-se de que o destino desejado da solicita\u00e7\u00e3o seja capaz de retornar dados de JSON. Verifique a resposta para ver se mais informa\u00e7\u00f5es est\u00e3o inclu\u00eddas.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: O objeto de JSON que \u00e9 fornecido est\u00e1 com uma chave esperada ausente: [{0}]. O objeto de JSON integral \u00e9 [{1}].
+JSON_MISSING_KEY.explanation=A chave que \u00e9 especificada na mensagem deve estar dentro dos dados de JSON. A chave pode estar ausente, ou pode estar em um local inesperado.
+JSON_MISSING_KEY.useraction=Verifique os dados de JSON para determinar se a chave est\u00e1 ausente.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: O valor para a chave [{0}] nos dados de JSON deve ser do tipo {1}, mas o valor \u00e9 do tipo {2}. Os dados de JSON s\u00e3o [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=O valor da chave especificada n\u00e3o tinha o tipo correto. Os dados de JSON podem ser malformados ou podem ter uma estrutura inesperada.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Verifique a estrutura dos dados de JSON. Verifique os dados de JSON para ver se ocorreu um erro.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: A resposta da API de introspec\u00e7\u00e3o do token n\u00e3o pode ser processada: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=As informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado n\u00e3o podem ser obtidas porque ocorreu outro erro.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mais mensagens de erro que possam indicar onde ocorreu o outro erro.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: A solicita\u00e7\u00e3o de introspec\u00e7\u00e3o do token falhou porque o token inclu\u00eddo na solicita\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido. A resposta completa \u00e9  {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=O servidor de autoriza\u00e7\u00e3o n\u00e3o emitiu o token, o propriet\u00e1rio do recurso revogou o token, o token expirou ou ocorreu outro erro.
+INTROSPECT_USER_API_INACTIVE.useraction=Verifique a resposta inclu\u00edda na mensagem. Verifique se o terminal de introspec\u00e7\u00e3o de token correto foi utilizado. Verifique se o token \u00e9 v\u00e1lido e se pode passar por introspec\u00e7\u00e3o.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: A resposta da API do usu\u00e1rio indica que a solicita\u00e7\u00e3o da API do usu\u00e1rio n\u00e3o est\u00e1 autenticada. Verifique se o token de acesso que est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o da API do usu\u00e1rio \u00e9 v\u00e1lido e est\u00e1 associado a um usu\u00e1rio conhecido.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=O token de acesso que est\u00e1 na solicita\u00e7\u00e3o da API do usu\u00e1rio pode estar ausente, expirado, malformado ou pode n\u00e3o ser v\u00e1lido por outros motivos. O token pode n\u00e3o estar associado a um usu\u00e1rio conhecido para a API do usu\u00e1rio.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verifique se um token de acesso est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o da API do usu\u00e1rio. Certifique-se de que o token n\u00e3o esteja vencido ou malformado. Verifique se o usu\u00e1rio associado ao token de acesso \u00e9 conhecido para a API do usu\u00e1rio. 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

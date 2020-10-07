@@ -27,11 +27,13 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.confi
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RequestRetryCountingBean;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RetryTesterServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.WarRetryCountingBean;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -46,6 +48,7 @@ import componenttest.topology.utils.HttpUtils;
  * classloader instead. This avoids a situation where one bean in an application library jar would need to have a different config depending on which module called it.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class TestMultiModuleConfigLoad extends FATServletClient {
 
     private static final String SERVER_NAME = "FaultToleranceMultiModule";

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ SELECTION_PAGE_HEADER=Anmelden
 SELECTION_PAGE_ALTERNATE_TEXT=Oder
 
 SELECTION_PAGE_USERNAME=Benutzername
+
 SELECTION_PAGE_PASSWORD=Kennwort
 
 SELECTION_PAGE_SUBMIT=\u00dcbergeben
@@ -41,54 +42,97 @@ SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Der Wert f\u00fcr dieses Konfigu
 SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Stellen Sie sicher, dass der Wert f\u00fcr dieses Konfigurationsattribut nicht leer ist, oder entfernen Sie das Konfigurationsattribut, um den Standardwert zu verwenden.
 
 # 0=Exception message
-KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: Die Antwort von der Kubernetes-Benutzer-API kann nicht verarbeitet werden: {0}
-KUBERNETES_ERROR_GETTING_USER_INFO.explanation=Informationen zum authentifizierten Benutzer k\u00f6nnen nicht abgerufen werden, weil ein weiterer Fehler aufgetreten ist.
-KUBERNETES_ERROR_GETTING_USER_INFO.useraction=Wenn die Nachricht eine weitere Fehlernachricht enth\u00e4lt, sehen Sie sich die Benutzeraktion f\u00fcr diese Nachricht an. Suchen Sie andernfalls in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
+KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: The response from the Kubernetes user API cannot be processed: {0}
+KUBERNETES_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
+KUBERNETES_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
 
-KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: Das Zugriffstoken, das zum Abrufen von Benutzerinformationen aus der Kubernetes-API verwendet wird, fehlt. Vergewissern Sie sich, dass ein Zugriffstoken vom Tokenendpunkt des OAuth-Providers zur\u00fcckgegeben wurde.
-KUBERNETES_ACCESS_TOKEN_MISSING.explanation=Ein Zugriffstoken ist erforderlich, um Informationen zum authentifizierten Benutzer abzurufen. Der Tokenendpunkt des OAuth-Providers muss das Zugriffstoken zur\u00fcckgeben.
-KUBERNETES_ACCESS_TOKEN_MISSING.useraction=Vergewissern Sie sich, dass der Tokenendpunkt des OAuth-Providers das Zugriffstoken zur\u00fcckgegeben hat. 
+KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: The access token that is used to retrieve user information from the Kubernetes API is missing. Verify that an access token was returned from the token endpoint of the OAuth provider.
+KUBERNETES_ACCESS_TOKEN_MISSING.explanation=An access token is required to retrieve information about the authenticated user. The token endpoint of the OAuth provider must return the access token.
+KUBERNETES_ACCESS_TOKEN_MISSING.useraction=Verify that the token endpoint of the OAuth provider returned the access token.
+
 # 0=HTTP response code, 1=Response body
-KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: Die Kubernetes-Benutzer-API hat einen nicht erwarteten Antwortcode [{0}] zur\u00fcckgegeben. Vergewissern Sie sich, dass die Anforderung an die API alle erforderlichen Informationen enth\u00e4lt und dass das Kubernetes-Servicekonto-Token mit den richtigen Berechtigungen erstellt wurde. Die Antwort aus der API ist [{1}].
-KUBERNETES_USER_API_BAD_STATUS.explanation=Die Kubernetes-Benutzer-API hat nicht den erwarteten Statuscode zur\u00fcckgegeben.
-KUBERNETES_USER_API_BAD_STATUS.useraction=\u00dcberpr\u00fcfen Sie die in der Fehlernachricht enthaltene API-Antwort, um weitere Informationen zu erhalten. Vergewissern Sie sich, dass die Anforderung an die API alle erforderlichen Informationen enth\u00e4lt. Stellen Sie sicher, dass das Kubernetes-Servicekonto mit den richtigen Berechtigungen erstellt wurde.
+KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: The Kubernetes user API returned an unexpected [{0}] response code. Verify that the request to the API contains all of the required information and that the Kubernetes service account token was created with the correct permissions. The response from the API is [{1}].
+KUBERNETES_USER_API_BAD_STATUS.explanation=The Kubernetes user API did not return the expected status code.
+KUBERNETES_USER_API_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all of the required information. Ensure that the Kubernetes service account token was created with the correct permissions.
 
 # 0=JSON key string, 1=User API response string
-KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: In der Kubernetes-Benutzer-API-Antwort fehlt ein erwarteter Schl\u00fcssel: [{0}]. Die vollst\u00e4ndige Antwort ist [{1}].
-KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=Es wird erwartet, dass der in der Nachricht angegebene Schl\u00fcssel in der API-Antwort enthalten ist. Der Schl\u00fcssel fehlt m\u00f6glicherweise oder er befindet sich an einer nicht erwarteten Position.
-KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=\u00dcberpr\u00fcfen Sie die API-Antwort, um zu ermitteln, ob der Schl\u00fcssel in der Antwort fehlt.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: The Kubernetes user API response is missing an expected key: [{0}]. The full response is [{1}].
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=The key that is specified in the message is expected to be within the API response. The key might be missing, or it might be in an unexpected location.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=Check the API response to determine whether the key is missing from the response.
 
 # 0=Social login configuration ID
-ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: Die Social Login-Konfiguration [{0}] gibt an, dass ein Zugriffstoken in der Anforderung erforderlich ist, aber es ist kein Zugriffstoken vorhanden.
-ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=Die Social Login-Konfiguration, die in der Nachricht angegeben ist, setzt voraus, dass alle eingehenden Anforderungen ein Zugriffstoken enthalten m\u00fcssen.
-ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=Wenn der Headername eines Zugriffstokens in der Social Login-Konfiguration konfiguriert ist, vergewissern Sie sich, dass der Header in der Anforderung enthalten ist. Vergewissern Sie sich andernfalls, dass ein Berechtigungsheader in der Anforderung enthalten ist. Stellen Sie sicher, dass der Headerwert der Spezifikation des OAuth-Bearer-Tokens entspricht. Vergewissern Sie sich, dass der OAuth-Provider f\u00fcr die \u00dcbergabe eines Zugriffstokens konfiguriert wurde.
+ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: The social login configuration [{0}] specifies that an access token is required in the request, but an access token is not present.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=The social login configuration that is specified in the message requires that all incoming requests must contain an access token.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=If an access token header name is configured in the social login configuration, verify that the header is included in the request. Otherwise, verify that an Authorization header is included in the request. Ensure that the header value conforms to the OAuth bearer token specification. Verify that the OAuth provider is configured to pass an access token.
 
 # 0=Name of the configuration attribute that specifies the access token header name, 1=Social login configuration ID, 2=Custom access token header name
-CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: Der Wert f\u00fcr das Attribut [{0}] in der Social Login-Konfiguration [{1}] gibt an, dass ein Zugriffstoken im Anforderungsheader [{2}] erwartet wird. Es wurde jedoch kein Token in diesem Header gefunden.
-CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=Der in der Nachricht angegebene Header fehlt m\u00f6glicherweise in der Anforderung oder der Wert des Headers ist m\u00f6glicherweise leer.
-CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=Vergewissern Sie sich, dass der angegebene Header in der Anforderung vorhanden ist. Vergewissern Sie sich, dass der Wert des Headers der Spezifikation des OAuth-Bearer-Tokens entspricht.
-KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: Die Antwort von der Kubernetes-Benutzer-API ist null oder leer.
-KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=Die Antwort aus der Kubernetes-Benutzer-API kann nicht gelesen werden. Im Social Login-Feature ist ein Fehler aufgetreten, als versucht wurde, mit der Benutzer-API zu kommunizieren, oder der Hauptteil der Antwort aus der Benutzer-API ist leer.
-KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=Vergewissern Sie sich, dass die Antwort aus der Benutzer-API nicht leer ist und dass die Verbindung zur Benutzer-API erfolgreich hergestellt wurde. \u00dcberpr\u00fcfen Sie die Serverprotokolle, um zu ermitteln, ob ein Fehler aufgetreten ist, als das Social Login-Feature versucht hat, mit der Benutzer-API zu kommunizieren.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: The value for the [{0}] attribute in the social login configuration [{1}] indicates that an access token is expected to be found in the [{2}] request header. However, a token cannot be found in that header.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=The header that is specified in the message might be missing from the request, or the value of the header might be empty.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=Verify that the specified header is present in the request. Verify that the value of the header conforms to the OAuth bearer token specification.
+
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: The response from the Kubernetes user API is null or empty.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=The response from the Kubernetes user API cannot be read. The social login feature encountered an error when it tried to communicate with the user API, or the body of the response from the user API is empty.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=Verify that the response from the user API is not empty and that the connection to the user API was successful. Check the server logs to determine whether an error occurred when the social login feature tried to communicate with the user API.
+
 # 0=User API response string, 1=Exception message
-KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: Die Antwort aus der Kubernetes-Benutzer-API ist kein g\u00fcltiges JSON-Objekt. Die vollst\u00e4ndige Antwort ist {0}. {1}
-KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=Als Antwort aus der Kubernetes-Benutzer-API wird ein g\u00fcltiges JSON-Objekt erwartet, das Informationen \u00fcber den authentifizierten Benutzer enth\u00e4lt.
-KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Vergewissern Sie sich, dass der Benutzer-API-Wert in der Social Login-Konfiguration auf eine g\u00fcltige Kubernetes-Benutzer-API-URL gesetzt ist. Sehen Sie sich die Antwort aus der Benutzer-API an, um festzustellen, ob weitere Informationen enthalten sind.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: The response from the Kubernetes user API is not a valid JSON object. The full response is {0}. {1}
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=The response from the Kubernetes user API is expected to be a valid JSON object that contains information about the authenticated user.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verify that the user API value in the social login configuration is set to a valid Kubernetes user API URL. Check the response from the user API to see whether more information is included.
 
 # 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
-KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: Der Wert f\u00fcr den Schl\u00fcssel [{0}] in der Kubernetes-Benutzer-API-Antwort muss den Typ {1} haben, aber der Wert hat den Typ {2}. Die vollst\u00e4ndige Benutzer-API-Antwort ist [{3}].
-KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=Der Wert f\u00fcr den angegebenen Schl\u00fcssel hat nicht den richtigen Typ. Die Antwort der Benutzer-API ist m\u00f6glicherweise fehlerhaft oder die Benutzer-API hat eine Antwort mit einer nicht erwarteten Struktur zur\u00fcckgegeben.
-KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=\u00dcberpr\u00fcfen Sie die Struktur der Antwort aus der Benutzer-API. \u00dcberpr\u00fcfen Sie die Antwort aus der Benutzer-API, um festzustellen, ob ein Fehler aufgetreten ist.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: The value for the key [{0}] in the Kubernetes user API response is expected to be of type {1}, but the value is of type {2}. The full user API response is [{3}].
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The response from the user API might be malformed, or the user API returned a response with an unexpected structure.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Check the structure of the response from the user API. Check the response from the user API to see whether an error occurred.
 
 # 0=Error string from user API response
-KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: Die Kubernetes-Benutzer-API hat bei der Verarbeitung des Zugriffstokens einen Fehler festgestellt. Fehler: [{0}]
-KUBERNETES_USER_API_RESPONSE_ERROR.explanation=Die Antwort aus der Kubernetes-Benutzer-API enth\u00e4lt einen Fehler. Das Zugriffstoken ist m\u00f6glicherweise nicht g\u00fcltig oder es ist ein anderer Fehler bei der Verarbeitung des Tokens aufgetreten.
-KUBERNETES_USER_API_RESPONSE_ERROR.useraction=\u00dcberpr\u00fcfen Sie den in der Nachricht angezeigten Fehler. Stellen Sie sicher, dass das Zugriffstoken g\u00fcltig und nicht fehlerhaft ist.
+KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: The Kubernetes user API encountered an error while it was processing the access token. The error is [{0}]
+KUBERNETES_USER_API_RESPONSE_ERROR.explanation=The response from the Kubernetes user API contains an error. The access token might not be valid, or some other error occurred while processing the token.
+KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Check the error that is displayed in the message. Ensure that the access token is valid and is not malformed.
 
 # 0=Social login configuration ID, 1=Value of the userNameAttribute, 2=userNameAttribute, 3=Alternative key that will be used instead
-KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: Die Social Login-Konfiguration [{0}] gibt [{1}] als Wert f\u00fcr das Attribut [{2}] an, aber die Benutzer-API-Antwort enth\u00e4lt keinen Schl\u00fcssel [{1}]. Der Schl\u00fcssel [{3}] wird, sofern er in der BenutzerAPI-Antwort vorhanden ist, verwendet, um stattdessen den Benutzernamen zu bestimmen.
-KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=Die Benutzer-API-Antwort enth\u00e4lt keinen Schl\u00fcssel, der dem Wert des Konfigurationsattributs entspricht, das in der Nachricht angegeben ist. Das Social Login-Feature versucht stattdessen, einen anderen Schl\u00fcssel zu verwenden.
-KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Vergewissern Sie sich, dass das in der Nachricht angegebene Konfigurationsattribut ordnungsgem\u00e4\u00df konfiguriert wurde. Stellen Sie sicher, dass der Wert des Konfigurationsattributs dem Eintrag in der BenutzerAPI-Antwort entspricht, der als Benutzername verwendet werden soll.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: The social login configuration [{0}] specifies [{1}] as the value for the [{2}] attribute, but the user API response does not contain a [{1}] key. The [{3}] key, if present in the user API response, is used to determine the username instead.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=The user API response does not contain a key that corresponds to the value of the configuration attribute that is specified in the message. The social login feature attempts to use a different key instead.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verify that the configuration attribute that is specified in the message is configured correctly. Ensure that the value of the configuration attribute corresponds to the entry in the user API response that should be used as the username.
+
+# 0=Exception message
+ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS5382E: The following response from the user API cannot be processed: {0}
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Information about the service account cannot be obtained because another error occurred.
+ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
+
+# 0=HTTP response code, 1=Response body
+USER_API_RESPONSE_BAD_STATUS=CWWKS5383E: The user API returned an unexpected [{0}] response code. Verify that the request to the API contains all required information. The response from the API is [{1}].
+USER_API_RESPONSE_BAD_STATUS.explanation=The user API did not return the expected status code. The request might be missing information, or the request might not be authorized.
+USER_API_RESPONSE_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all required information. Verify that all tokens that are included in the request are valid.
+
+# 0=Response string, 1=Exception message
+RESPONSE_NOT_JSON=CWWKS5384E: The content of the response is not a valid JSON object. The full response is {0}. {1}
+RESPONSE_NOT_JSON.explanation=The response must be a valid JSON object.
+RESPONSE_NOT_JSON.useraction=Verify that request was sent to the expected target. Ensure that the intended target of the request is capable of returning JSON data. Check the response to see whether more information is included.
+
+# 0=JSON key string, 1=Response string
+JSON_MISSING_KEY=CWWKS5385E: The JSON object that is provided is missing an expected key: [{0}]. The full JSON object is [{1}].
+JSON_MISSING_KEY.explanation=The key that is specified in the message must be within the JSON data. The key might be missing, or it might be in an unexpected location.
+JSON_MISSING_KEY.useraction=Check the JSON data to determine whether the key is missing.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=JSON data
+JSON_ENTRY_WRONG_JSON_TYPE=CWWKS5386E: The value for the [{0}] key in the JSON data must be of type {1}, but the value is of type {2}. The JSON data is [{3}].
+JSON_ENTRY_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The JSON data might be malformed or might have an unexpected structure.
+JSON_ENTRY_WRONG_JSON_TYPE.useraction=Check the structure of the JSON data. Check the JSON data to see whether an error occurred.
+
+# 0=Exception message
+INTROSPECT_ERROR_GETTING_USER_INFO=CWWKS5387E: The response from the token introspection API cannot be processed: {0}
+INTROSPECT_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
+INTROSPECT_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
+
+# 0=User API response string
+INTROSPECT_USER_API_INACTIVE=CWWKS5388E: The token introspection request failed because the token that is included in the request is not valid. The full response is {0}.
+INTROSPECT_USER_API_INACTIVE.explanation=The authorization server did not issue the token, the resource owner revoked the token, the token is expired, or another error occurred.
+INTROSPECT_USER_API_INACTIVE.useraction=Check the response that is included in the message. Verify that the correct token introspection endpoint is used. Verify that the token is valid and that the token can be introspected.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: The user API response indicates that the user API request is not authenticated. Verify that the access token that is included in the user API request is valid and is associated with a known user.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=The access token that is in the user API request might be missing, expired, malformed, or otherwise not valid. The token might not be associated with a user that is known to the user API.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verify that an access token is included in the user API request. Ensure that the token is not expired or malformed. Verify that the user that is associated with the access token is known to the user API.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.
@@ -267,7 +311,6 @@ REDIRECT_NO_MATCHING_CONFIG.useraction=Vergewissern Sie sich, dass die Umleitung
 ERROR_PROCESSING_REDIRECT=CWWKS5434E: Im Social Login-Feature ist beim Verarbeiten der Umleitungsanforderung ein Fehler aufgetreten. {0}
 ERROR_PROCESSING_REDIRECT.explanation=Ein Social Media-Provider hat eine Anforderung an diesen Endpunkt umgeleitet, um den Authentifizierungsvorgang fortzusetzen oder um einen Benutzer zu authentifizieren. Die Anforderung kann jedoch aufgrund der in der Fehlernachricht genannten Ursache nicht abgeschlossen werden.
 ERROR_PROCESSING_REDIRECT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
-
 
 USERNAME_NOT_FOUND=CWWKS5435E: Der Benutzername konnte nicht aus dem Token extrahiert werden, das von der Social Media-Plattform abgerufen wurde.
 USERNAME_NOT_FOUND.explanation=Das Attribut, das den Benutzernamen definiert, variiert je nach Social Media-Plattform. Der f\u00fcr das Attribut userName konfigurierte Wert ist m\u00f6glicherweise falsch.
@@ -488,7 +531,7 @@ RESPONSE_STATUS_MISSING_OR_ERROR.explanation=Die Anforderung ist wahrscheinlich 
 RESPONSE_STATUS_MISSING_OR_ERROR.useraction=\u00dcberpr\u00fcfen Sie den Antwortstatuscode in der Nachricht, sofern vorhanden. Vergewissern Sie sich, dass alle erforderlichen Parameter und Header in der Anforderung enthalten sind.
 
 # 0=URL to which the request was submitted, 1=HTTP response status (e.g. 404 Not Found), 2=Error message
-RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: Die Anforderung an den Endpunkt [{0}] ist fehlgeschlagen. Der Antwortstatus ist [{1}]. Fehler: {2}
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: The request to the endpoint [{0}] failed. The response status is [{1}]. The error is: {2}
 RESPONSE_STATUS_UNSUCCESSFUL.explanation=Die Anforderung ist wahrscheinlich fehlgeschlagen, weil sie nicht berechtigt ist oder weil sie Informationen wie einen erforderlichen Anforderungsparameter oder Anforderungsheader nicht enth\u00e4lt. Die Anforderung wurde m\u00f6glicherweise an den falschen Endpunkt \u00fcbertragen.
 RESPONSE_STATUS_UNSUCCESSFUL.useraction=Vergewissern Sie sich, dass die Anforderung an den richtigen Endpunkt \u00fcbertragen wurde. Vergewissern Sie sich, dass alle erforderlichen Parameter und Header in der Anforderung enthalten sind.
 
@@ -558,6 +601,7 @@ USERAPI_ERROR_RESPONSE.useraction=Vergewissern Sie sich, dass der angegebene End
 USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Die Antwort des Benutzer-API-Endpunkts [{0}] kann nicht verarbeitet werden. Fehler: [{1}]
 USERAPI_RESP_PROCESS_ERR.explanation=Der angegebene Benutzer-API-Endpunkt hat zwar einen g\u00fcltigen Antwortstatus zur\u00fcckgegeben, aber in der Laufzeitumgebung ist bei der Verarbeitung des Antwortinhalts ein Fehler aufgetreten.
 USERAPI_RESP_PROCESS_ERR.useraction=Vergewissern Sie sich, der angegebene Endpunkt korrekt und dass der Antwortinhalt ordnungsgem\u00e4\u00df formatiert ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. 
+
 # 0=User API URL
 USERAPI_NULL_RESP_STR=CWWKS5493E: Der Antwortinhalt vom Benutzer-API-Endpunkt [{0}] ist nicht g\u00fcltig. 
 USERAPI_NULL_RESP_STR.explanation=Der angegebene Benutzer-API-Endpunkt hat keinen g\u00fcltigen Antwortstatus auf die Benutzer-API-Anforderung hin zur\u00fcckgegeben. 
@@ -566,7 +610,6 @@ USERAPI_NULL_RESP_STR.useraction=Vergewissern Sie sich, dass der angegebene Endp
 # do not translate CODE
 CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: Eine Social Login-Anforderung ist fehlgeschlagen, weil das CODE-Attribut der Anforderung null oder leer ist.
 CODE_PARAMETER_NULL_OR_EMPTY.explanation=Ein leeres oder fehlendes CODE-Attribut in der Social Login-Anforderung hat einen Fehler verursacht.
-
 CODE_PARAMETER_NULL_OR_EMPTY.useraction=Vergewissern Sie sich, dass die Social Login-Konfiguration f\u00fcr das CODE-Attribut korrekt ist und dass der ferne Service ordnungsgem\u00e4\u00df funktioniert.
 
 # 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI

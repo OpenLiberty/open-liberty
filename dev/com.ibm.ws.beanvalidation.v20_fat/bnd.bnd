@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 src: \
 	fat/src,\
@@ -26,6 +24,10 @@ src: \
 	test-applications/MultipleValidationXmlWeb.war/src
 
 fat.project: true
+
+# Declare additional tested features not present in the original server.xml's
+tested.features: \
+  beanvalidation-3.0, cdi-3.0, enterpriseBeansLite-4.0, el-4.0, servlet-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

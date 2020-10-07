@@ -19,11 +19,13 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArchive {
 
     private final ExtensionContainerInfo extensionContainerInfo;
+    private Set<String> extraExtensions = null;
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
-                                RuntimeFactory factory) throws CDIException {
+                                RuntimeFactory factory, Set<String> extraExtensions) throws CDIException {
         super(null, extensionContainerInfo, ArchiveType.RUNTIME_EXTENSION, extensionContainerInfo.getClassLoader(), factory);
         this.extensionContainerInfo = extensionContainerInfo;
+        this.extraExtensions = extraExtensions;
     }
 
     /** {@inheritDoc} */
@@ -48,5 +50,12 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     @Override
     public boolean isExtClassesOnly() {
         return extensionContainerInfo.isExtClassesOnly();
+    }
+
+    @Override
+    public Set<String> getExtensionClasses() {
+        Set<String> extensionClasses = super.getExtensionClasses();
+        extensionClasses.addAll(extraExtensions);
+        return extensionClasses;
     }
 }

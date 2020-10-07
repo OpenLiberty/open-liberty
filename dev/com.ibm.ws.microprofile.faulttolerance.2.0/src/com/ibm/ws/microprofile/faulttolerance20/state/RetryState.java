@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance20.state;
 
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 
 /**
@@ -86,6 +87,11 @@ public interface RetryState {
          * @return the TimeUnit used to express the result of {@link #getDelay()}
          */
         public TimeUnit getDelayUnit();
+
+        /**
+         * @return the RetryResultCategory for the retry attempt
+         */
+        public RetryResultCategory getCategory();
 
         /**
          * @return a string describing the result, for debugging and tracing purposes

@@ -11,11 +11,16 @@
 
 package com.ibm.ws.jpa;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -29,4 +34,8 @@ public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()); // Blocked by CDI
 }

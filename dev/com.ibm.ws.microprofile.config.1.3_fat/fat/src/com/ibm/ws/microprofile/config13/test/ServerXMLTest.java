@@ -17,11 +17,18 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
+import com.ibm.ws.microprofile.config13.duplicateInServerXML.web.DuplicateInServerXMLServlet;
+import com.ibm.ws.microprofile.config13.mapEnvVar.web.MapEnvVarServlet;
 import com.ibm.ws.microprofile.config13.serverXML.web.ServerXMLServlet;
+import com.ibm.ws.microprofile.config13.serverXMLWebApp.web.ServerXMLWebAppServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -40,24 +47,31 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ServerXMLTest extends FATServletClient {
 
-    public static final String APP_NAME = "serverXMLApp";
+    public static final String SERVER_XML_APP_NAME = "serverXMLApp";
+    public static final String DUPLICATE_IN_SERVER_XML_APP_NAME = "duplicateInServerXMLApp";
+    public static final String SERVER_XML_WEB_APP_NAME = "serverXMLWebApp";
+    public static final String MAP_ENV_VAR_APP_NAME = "mapEnvVarApp";
 
     @Server("ServerXMLServer")
-    @TestServlet(servlet = ServerXMLServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = DuplicateInServerXMLServlet.class, contextRoot = DUPLICATE_IN_SERVER_XML_APP_NAME),
+                    @TestServlet(servlet = ServerXMLServlet.class, contextRoot = SERVER_XML_APP_NAME),
+                    @TestServlet(servlet = ServerXMLWebAppServlet.class, contextRoot = SERVER_XML_WEB_APP_NAME),
+                    @TestServlet(servlet = MapEnvVarServlet.class, contextRoot = MAP_ENV_VAR_APP_NAME) })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig13("ServerXMLServer");
+    public static RepeatTests r = RepeatConfigActions.repeat("ServerXMLServer", Version.LATEST, Version.CONFIG13_EE7);
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.serverXML.*");
+        ShrinkHelper.defaultApp(server, SERVER_XML_APP_NAME, "com.ibm.ws.microprofile.config13.serverXML.*");
+        ShrinkHelper.defaultApp(server, DUPLICATE_IN_SERVER_XML_APP_NAME, "com.ibm.ws.microprofile.config13.duplicateInServerXML.*");
+        ShrinkHelper.defaultApp(server, SERVER_XML_WEB_APP_NAME, "com.ibm.ws.microprofile.config13.serverXMLWebApp.*");
+        ShrinkHelper.defaultApp(server, MAP_ENV_VAR_APP_NAME, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
 
         server.startServer();
     }

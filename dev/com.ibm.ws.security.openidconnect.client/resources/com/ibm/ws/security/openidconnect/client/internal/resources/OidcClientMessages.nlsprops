@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=None.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}].  Update the configuration so that [enforceHTTPS] attribute matches the target URL scheme. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}]. Update the configuration to use an HTTPS URL, or use the OpenID Connect Client feature and set enforceHTTPS to false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=The OpenID Connect client (relying party or resource server) requires SSL (HTTPS) but the OpenID Connect provider (OP) URL protocol specified in the OpenID Connect client configuration is not HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: 1) Ensure that OpenID Connect provider supports SSL. 2) If the OpenID Connector provider does not support SSL, set enforceHTTPS in the OpenID Connect client configuration to false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: First, ensure that the OpenID Connect provider supports SSL. If the OpenID Connector provider does not support SSL, use the OpenID Connect Client feature and set enforceHTTPS to false in the OpenID Connect Client feature configuration.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: The current state [{0}] for the OpenID Connect client [{2}] and the state parameter [{1}] in the response from the OpenID Connect provider do not match.  This condition is not allowed.
@@ -272,5 +273,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informational message. No ac
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: The required [{0}] configuration attribute is missing or empty and a default value is not provided. Verify that the attribute is configured or discovered from the provider, that it is not empty, and that it does not consist of only white space characters.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=The specified configuration attribute might be missing from the server configuration. If a value is specified, white space at the beginning and end of the value is removed when the value is processed, so the value in the configuration might be empty or consist of only white space characters. If the discovery endpoint is specified to get this attribute value from the provider, then the discovery might have a problem.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Ensure that the specified configuration attribute is configured, that it is not empty, and that it does not consist of only white space characters. If the discovery endpoint is configured to obtain this information, then make sure that there are no errors with the discovery request.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: More than one OpenID Connect client configuration specifies the same authentication filter [{0}]. This can cause indeterminate behavior.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=More than one OpenID Connect client configuration contains an authFilterRef attribute that refers to the same filter. Any of these clients might process a request that matches the filter, leading to indeterminate behavior.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Review the server.xml file and correct the configuration.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: More than one OpenID Connect client authentication filter matches a request to [{0}] URL. The matching filters were [{1}]. This can cause indeterminate behavior.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=More than one authentication filter matches an inbound request. Any client that uses one of these filters could process the request, leading to indeterminate behavior.  
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Review the server.xml file and correct the configuration.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

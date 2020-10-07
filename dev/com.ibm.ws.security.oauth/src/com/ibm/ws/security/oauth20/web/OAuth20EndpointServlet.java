@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,13 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.ejs.ras.TraceNLS;
 
+import io.openliberty.security.common.http.SupportedHttpMethodHandler.HttpMethod;
+import io.openliberty.security.oauth20.web.OAuthSupportedHttpMethodHandler;
+
 /**
  * Servlet implementation class OAuth20EndpointServlet
  */
+@SuppressWarnings("restriction")
 public class OAuth20EndpointServlet extends HttpServlet {
     private static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
 
@@ -43,6 +47,7 @@ public class OAuth20EndpointServlet extends HttpServlet {
         super();
     }
 
+    @Override
     public void init() {
         servletContext = getServletContext();
         bundleContext = (BundleContext) servletContext.getAttribute("osgi-bundlecontext");
@@ -50,46 +55,77 @@ public class OAuth20EndpointServlet extends HttpServlet {
     }
 
     /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        this.doPost(request, response);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.GET)) {
+            return;
+        }
+        handleRequest(request, response);
     }
 
     /**
-     * @see HttpServlet#doHead(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doHead(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doHead(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        this.doPost(request, response);
+    @Override
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.HEAD)) {
+            return;
+        }
+        handleRequest(request, response);
     }
 
     /**
-     * @see HttpServlet#doDelete(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doDelete(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doDelete(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        this.doPost(request, response);
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.DELETE)) {
+            return;
+        }
+        handleRequest(request, response);
     }
 
     /**
-     * @see HttpServlet#doPut(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doPut(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doPut(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        this.doPost(request, response);
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.PUT)) {
+            return;
+        }
+        handleRequest(request, response);
     }
 
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isValidHttpMethodForRequest(request, response, HttpMethod.POST)) {
+            return;
+        }
+        handleRequest(request, response);
+    }
+
+    @Override
+    protected void doTrace(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        OAuthSupportedHttpMethodHandler optionsRequestHandler = getOAuthSupportedHttpMethodHandler(request, response);
+        optionsRequestHandler.sendUnsupportedMethodResponse();
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        OAuthSupportedHttpMethodHandler optionsRequestHandler = getOAuthSupportedHttpMethodHandler(request, response);
+        optionsRequestHandler.sendHttpOptionsResponse();
+    }
+
+    OAuthSupportedHttpMethodHandler getOAuthSupportedHttpMethodHandler(HttpServletRequest request, HttpServletResponse response) {
+        return new OAuthSupportedHttpMethodHandler(request, response);
+    }
+
+    protected void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getOAuthEndpointServices();
         oauthEndpointServices.handleOAuthRequest(request, response, servletContext);
     }
@@ -107,4 +143,14 @@ public class OAuth20EndpointServlet extends HttpServlet {
         }
         return oauthEndpointServices;
     }
+
+    private boolean isValidHttpMethodForRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod requestMethod) throws IOException {
+        OAuthSupportedHttpMethodHandler optionsRequestHandler = getOAuthSupportedHttpMethodHandler(request, response);
+        if (!optionsRequestHandler.isValidHttpMethodForRequest(requestMethod)) {
+            optionsRequestHandler.sendUnsupportedMethodResponse();
+            return false;
+        }
+        return true;
+    }
+
 }

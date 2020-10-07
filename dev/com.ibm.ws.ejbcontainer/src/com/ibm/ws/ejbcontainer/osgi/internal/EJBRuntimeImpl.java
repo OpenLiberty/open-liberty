@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.osgi.internal;
+
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToJavaGlobal;
+import static com.ibm.ejs.container.ContainerConfigConstants.bindToServerRoot;
 
 import java.io.File;
 import java.io.IOException;
@@ -251,7 +254,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String BIND_TO_SERVER_ROOT = "bindToServerRoot";
     private static final String BIND_TO_JAVA_GLOBAL = "bindToJavaGlobal";
     private static final String DISABLE_SHORT_DEFAULT_BINDINGS = "disableShortDefaultBindings";
-    private static final String IGNORE_DUPLICATE_BINDINGS = "ignoreDuplicateEJBBindings";
     private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
 
     @Override
@@ -262,6 +264,12 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         EJBPersistentTimerRuntime ejbPersistentTimerRuntime = ejbPersistentTimerRuntimeServiceRef.getService();
         if (ejbPersistentTimerRuntime != null) {
             ejbPersistentTimerRuntime.serverStopping();
+        }
+
+        CountDownLatch remoteLatch = remoteFeatureLatch;
+        if (remoteLatch != null) {
+            remoteFeatureLatch = null;
+            remoteLatch.countDown();
         }
     }
 
@@ -386,7 +394,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
 
-        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
+        // TODO: #13338 remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
         boolean isBeta = false;
         try {
             final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
@@ -419,9 +427,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         // End of beta block ------------------------------------------------------------------------
 
         // Overwrite the JVM properties if config is set, otherwise we will use the JVM props or the JVM property defaults
-        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : ContainerProperties.BindToServerRoot;
-        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : ContainerProperties.BindToJavaGlobal;
-        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : ContainerProperties.IgnoreDuplicateEJBBindings;
+        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : System.getProperty(bindToServerRoot,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
+        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : System.getProperty(bindToJavaGlobal,
+                                                                                                                                                                "true").equalsIgnoreCase("true");
 
         OnError customBindingsOnError = OnError.WARN;
         try {
@@ -446,11 +455,15 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             // If they pass in * we will have an empty initialized list and then disable for all apps
 
             // If JVM prop has something set, merge them
-            if (ContainerProperties.DisableShortDefaultBindings != null) {
-                ContainerProperties.DisableShortDefaultBindings.addAll(DisableShortDefaultBindings);
-            } else {
-                ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+            ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+
+            if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+                ContainerProperties.DisableShortDefaultBindings.addAll(ContainerProperties.DisableShortDefaultBindingsFromJVM);
             }
+        } else if (ContainerProperties.DisableShortDefaultBindingsFromJVM != null) {
+            ContainerProperties.DisableShortDefaultBindings = ContainerProperties.DisableShortDefaultBindingsFromJVM;
+        } else {
+            ContainerProperties.DisableShortDefaultBindings = null;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -904,7 +917,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             NameSpaceBinder<?> binder = osgiMMD.systemModuleNameSpaceBinder;
             return binder != null ? binder : new SystemNameSpaceBinderImpl(ejbRemoteRuntimeServiceRef.getService());
         }
-        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef.getService());
+        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef);
     }
 
     @Override
@@ -1532,14 +1545,14 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected void setEJBRemoteRuntime(ServiceReference<EJBRemoteRuntime> ref) {
         this.ejbRemoteRuntimeServiceRef.setReference(ref);
 
-        // bind any Remote interfaces to COS Naming for beans already started
-        bindAllRemoteInterfacesToContextRoot();
-
         CountDownLatch remoteLatch = remoteFeatureLatch;
         if (remoteLatch != null) {
-            remoteLatch.countDown();
             remoteFeatureLatch = null;
+            remoteLatch.countDown();
         }
+
+        // bind any Remote interfaces to COS Naming for beans already started
+        bindAllRemoteInterfacesToContextRoot();
     }
 
     protected void unsetEJBRemoteRuntime(ServiceReference<EJBRemoteRuntime> ref) {
@@ -1556,7 +1569,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             try {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting 30 seconds for EJBRemoteRuntime");
-                remoteLatch.await(30, TimeUnit.SECONDS);
+                if (remoteLatch.await(30, TimeUnit.SECONDS) == false) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "EJBRemoteRuntime did not come up within 30 seconds");
+                }
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting for EJBRemoteRuntime failed: " + e);
@@ -1676,7 +1692,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
         // If the remote runtime hasn't come up yet, but remote is configured,
         // then create a latch to support a pause in starting remote EJBs.
-        if (ejbRemoteRuntimeServiceRef.getReference() == null) {
+        if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && featureName.startsWith("ejbRemote")) {
                 remoteFeatureLatch = new CountDownLatch(1);
@@ -1691,8 +1707,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (remoteLatch != null) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && featureName.startsWith("ejbRemote")) {
-                remoteLatch.countDown();
                 remoteFeatureLatch = null;
+                remoteLatch.countDown();
             }
         }
     }

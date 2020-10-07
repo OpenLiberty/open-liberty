@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ public class Logging extends ConfigElement {
     private String logDirectory;
     private boolean isoDateFormat;
     private String jsonFields;
+    private String consoleFormat;
+    private String jsonAccessLogFields;
 
     /**
      * @return the configured log directory
@@ -196,6 +198,40 @@ public class Logging extends ConfigElement {
      */
     public boolean getIsoDateFormat() {
         return this.isoDateFormat;
+    }
+
+    /**
+     * default="dev"; options= "dev", "simple", "json"
+     *
+     * @param consoleFormat the consoleFormat to set
+     */
+    @XmlAttribute(name = "consoleFormat")
+    public void setConsoleFormat(String consoleFormat) {
+        this.consoleFormat = ConfigElement.getValue(consoleFormat);
+    }
+
+    /**
+     * @return the consoleFormat
+     */
+    public String getConsoleFormat() {
+        return this.consoleFormat;
+    }
+
+    /**
+     * default="default"; options="logFormat"
+     *
+     * @param jsonAccessLogFields the value of jsonAccessLogFields configuration to set
+     */
+    @XmlAttribute(name = "jsonAccessLogFields")
+    public void setJsonAccessLogFields(String jsonAccessLogFields) {
+        this.jsonAccessLogFields = ConfigElement.getValue(jsonAccessLogFields);
+    }
+
+    /**
+     * @return the value of the jsonAccessLogFields configuration attribute
+     */
+    public String getJsonAccessLogFields() {
+        return this.jsonAccessLogFields;
     }
 
     @Override

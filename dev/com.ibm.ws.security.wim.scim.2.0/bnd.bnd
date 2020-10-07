@@ -16,9 +16,6 @@ Bundle-SymbolicName: com.ibm.ws.security.wim.scim.2.0
 Bundle-Description: SCIM 2.0; version=${bVersion}
 
 # Require Java 8
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-javac.source: 1.8
-javac.target: 1.8
 
 #
 # Eventually can move the websphere classes to an API project.
@@ -45,7 +42,7 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
 	com.ibm.ws.management.security;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core;version=latest

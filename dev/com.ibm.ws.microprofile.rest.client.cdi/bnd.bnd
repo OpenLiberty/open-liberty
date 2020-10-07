@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
 
 Bundle-Name: com.ibm.ws.microprofile.rest.client.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.rest.client.cdi
@@ -22,6 +20,7 @@ Export-Package: \
   com.ibm.ws.microprofile.rest.client.cdi
 
 Import-Package: \
+  !com.ibm.ws.microprofile.rest.client.cdi, \
   org.apache.cxf.common.classloader;version="[3.1,4)",\
   org.apache.cxf.microprofile.client;version="[3.1,4)",\
   org.apache.cxf.microprofile.client.cdi;version="[3.1,4)",\
@@ -39,7 +38,6 @@ Include-Resource: \
 
 -dsannotations: com.ibm.ws.microprofile.rest.client.cdi.LibertyRestClientExtension
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 app-resources= \
   META-INF/services/javax.enterprise.inject.spi.Extension

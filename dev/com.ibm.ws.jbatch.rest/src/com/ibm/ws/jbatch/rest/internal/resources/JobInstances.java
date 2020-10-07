@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.jbatch.rest.internal.resources;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,11 +23,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.batch.operations.BatchRuntimeException;
 import javax.batch.operations.JobSecurityException;
@@ -49,16 +55,22 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.jbatch.container.exception.JobInstanceSearchNotSupportedException;
 import com.ibm.jbatch.container.ws.BatchDispatcherException;
 import com.ibm.jbatch.container.ws.BatchJobNotLocalException;
+import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.ws.jbatch.rest.utils.PurgeStatus;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobOperator;
 import com.ibm.jbatch.container.ws.WSJobRepository;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jbatch.rest.utils.WSPurgeResponse;
 import com.ibm.ws.jbatch.rest.utils.WSSearchConstants;
 import com.ibm.ws.jbatch.rest.utils.WSSearchObject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.jbatch.joblog.JobExecutionLog;
 import com.ibm.ws.jbatch.joblog.JobInstanceLog;
+import com.ibm.ws.jbatch.joblog.RemotePartitionLog;
 import com.ibm.ws.jbatch.joblog.services.IJobLogManagerService;
 import com.ibm.ws.jbatch.rest.BatchManager;
 import com.ibm.ws.jbatch.rest.JPAQueryHelperImpl;
@@ -100,6 +112,8 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
                             RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true"
                 })
 public class JobInstances implements RESTHandler {
+	
+	private static final TraceComponent tc = Tr.register(JobInstances.class, "wsbatch", "com.ibm.ws.jbatch.rest.resources.RESTMessages");
 
     private WSJobRepository jobRepository;
 
@@ -114,6 +128,11 @@ public class JobInstances implements RESTHandler {
      * To access job logs.
      */
     private IJobLogManagerService jobLogManagerService;
+    
+    /**
+     * For checking whether jobexecutions ran locally.
+     */
+    private BatchLocationService batchLocationService;
 
     /**
      * DS injection
@@ -200,6 +219,14 @@ public class JobInstances implements RESTHandler {
         if (this.jobLogManagerService == jobLogManagerService) {
             this.jobLogManagerService = null;
         }
+    }
+    
+    /**
+     * DS injection
+     */
+    @Reference
+    protected void setBatchLocationService(BatchLocationService batchLocationService) {
+        this.batchLocationService = batchLocationService;
     }
 
     /**
@@ -337,18 +364,20 @@ public class JobInstances implements RESTHandler {
      */
     private class JobLogsHandler extends RequestHandler {
 
-        @FFDCIgnore(BatchJobNotLocalException.class)
         public void get(RESTRequest request, RESTResponse response) throws Exception {
 
             long jobInstanceId = getJobInstanceId(request);
 
             try {
                 JobInstanceLog jobInstanceLog = jobLogManagerService.getJobInstanceLog(jobInstanceId);
-                sendJobInstanceLog(jobInstanceLog, request, response);
+                
+                if (jobInstanceLog.areExecutionsLocal() || "true".equals(request.getParameter("localOnly"))) {
+                    sendJobInstanceLog(jobInstanceLog, request, response);
+                } else {
+                    handleJobLogsNotLocal(request, response, jobInstanceId);
+                }
             } catch (NoSuchJobInstanceException e) {
                 throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
-            } catch (BatchJobNotLocalException e) {
-                handleJobLogsNotLocalException(request, response, jobInstanceId);
             }
         }
 
@@ -360,28 +389,114 @@ public class JobInstances implements RESTHandler {
                                           RESTResponse response) throws IOException {
 
             if ("zip".equals(request.getParameter("type"))) {
+            	
+            	ZipOutputStream zipOutput = new ZipOutputStream(response.getOutputStream());
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType("application/zip");
-                response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobInstanceLog)));
+        		// Note: headers must be set *before* writing to the output stream
+        		response.setContentType("application/zip");
+        		response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobInstanceLog)));
 
-                ZipHelper.zipFilesToStream(jobInstanceLog.getJobLogFiles(),
-                                           jobInstanceLog.getInstanceLogRootDirs(),
-                                           response.getOutputStream());
+        		HashSet<String> partitionEndpointURLs = new HashSet<String>();
+
+        		for (JobExecutionLog jobExecutionLog : jobInstanceLog.getJobExecutionLogs()) {
+        			// If there are remote partition logs, fetch them now.
+        			// The localOnly flag is used to prevent cascading requests
+        			if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        					!("true".equals(request.getParameter("localOnly")))) {
+
+        				partitionEndpointURLs.addAll(jobExecutionLog.getRemotePartitionEndpointURLs());
+
+        			}
+        		}
+
+        		// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        		partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
+        		
+        		System.out.println("CGCG endpoint URLs:");
+
+        		for (String url : partitionEndpointURLs) {
+            		System.out.println("CGCG " + url);
+        			
+        			// Fetch the contents from the remote partition executor
+        			String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
+        					url,
+        					"type=zip&localOnly=true");
+        			try {
+        				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
+
+        				if (conn != null) {
+        					ZipInputStream zipInput = new ZipInputStream(conn.getInputStream());
+        					ZipHelper.copyZipEntries(zipInput, zipOutput);
+        				}
+        			} catch (Exception ex) {
+        				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
+        							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+        				}
+        			}
+        		}
+
+
+        		ZipHelper.zipFilesToStream(jobInstanceLog.getJobLogFiles(),
+        				jobInstanceLog.getInstanceLogRootDirs(),
+        				zipOutput);
 
             } else if ("text".equals(request.getParameter("type"))) {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType("text/plain; charset=UTF-8");
+            	// Note: headers must be set *before* writing to the output stream
+            	response.setContentType("text/plain; charset=UTF-8");
 
-                ZipHelper.aggregateFilesToStream(jobInstanceLog.getJobLogFiles(),
+            	ZipHelper.aggregateFilesToStream(jobInstanceLog.getJobLogFiles(),
                                                  jobInstanceLog.getInstanceLogRootDirs(),
                                                  response.getOutputStream());
+                
+        		HashSet<String> partitionEndpointURLs = new HashSet<String>();
 
+        		for (JobExecutionLog jobExecutionLog : jobInstanceLog.getJobExecutionLogs()) {
+        			// If there are remote partition logs, fetch them now.
+        			// The localOnly flag is used to prevent cascading requests
+        			if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        					!("true".equals(request.getParameter("localOnly")))) {
+
+        				partitionEndpointURLs.addAll(jobExecutionLog.getRemotePartitionEndpointURLs());
+        			}
+        		}
+
+        		// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        		partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
+
+        		System.out.println("CGCG endpoint URLs:");
+        		
+        		// Fetch the contents from the remote partition executors
+        		for (String url : partitionEndpointURLs) {
+            		System.out.println("CGCG " + url);
+        			
+        			String joblogUrl = BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceLog.getJobInstance().getInstanceId(),
+        					url,
+        					"type=text&localOnly=true");
+        			try {
+        				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
+
+        				// Copy job log text from the remote request
+        				if (conn != null) {
+        					byte[] buf = new byte[2048];
+        					int len;
+        					while ((len = conn.getInputStream().read(buf)) != -1) {
+        						response.getOutputStream().write(buf, 0, len);
+        					}
+        				}
+        			} catch (Exception ex) {
+        				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
+        							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+        				}
+        			}
+
+        		}
             } else {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            	// Note: headers must be set *before* writing to the output stream
+            	response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
 
                 BatchJSONHelper.writeJobInstanceLogLinks(jobInstanceLog,
                                                          BatchRequestUtil.getUrlRoot(request),
@@ -396,7 +511,7 @@ public class JobInstances implements RESTHandler {
          * code along with all jobexecution log links
          * @throws IOException
          */
-        protected void handleJobLogsNotLocalException(RESTRequest request,
+        protected void handleJobLogsNotLocal(RESTRequest request,
                                                       RESTResponse response,
                                                       long jobInstanceId) throws IOException {
 
@@ -404,7 +519,7 @@ public class JobInstances implements RESTHandler {
         			|| "text".equals(request.getParameter("type"))) {
         		//This will fail if all executions didn't run on the same endpoint.
         		String restUrl = findSingleJobExecutionEndpoint(jobInstanceId);
-
+        		
         		BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, request.getQueryString()),
         				"GET",
         				request,
@@ -647,7 +762,6 @@ public class JobInstances implements RESTHandler {
     /**
      * publish event only when purge is success
      */
-    @FFDCIgnore(BatchJobNotLocalException.class)
     protected void purgeJobInstance(RESTRequest request, RESTResponse response) throws Exception {
         long jobInstanceId = getJobInstanceId(request);
 
@@ -655,27 +769,40 @@ public class JobInstances implements RESTHandler {
 
         try {
 
-            if (!jobRepository.isJobInstancePurgeable(jobInstanceId)) {
+        	if (!jobRepository.isJobInstancePurgeable(jobInstanceId)) {
         		throw new RequestException(HttpURLConnection.HTTP_CONFLICT, "The specified job instance, " + jobInstanceId + ", cannot be purged because it has active job executions.");
-            }
+        	}
         } catch (NoSuchJobInstanceException e) {
-            throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
+        	throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
         }
 
         if (!purgeJobStoreOnly) { //Try to purge job logs and DB, or send a redirect if not local
 
         	boolean fileSuccess = false;
-
+        	
+        	JobInstanceLog instanceLog = null;
             try {
-            	fileSuccess = purgeJobLogFiles(jobInstanceId);
+            	instanceLog = jobLogManagerService.getJobInstanceLog(jobInstanceId);
+            } catch (NoSuchJobInstanceException e) {
+            	throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
+            }
 
-            } catch (BatchJobNotLocalException e) {
-            	// If executions exist on only one endpoint, redirect to that endpoint.
-            	List<String> restUrls = findJobExecutionEndpoints(jobInstanceId);
+            // If the local flag is set, or we have any local logs, purge those
+            if ("true".equals(request.getParameter("localOnly")) || instanceLog.areExecutionsLocal()) {
+            	fileSuccess = instanceLog.purge();
+            } 
+            
+            // If any logs exists on other endpoints, send requests to purge those
+            if (!instanceLog.areExecutionsLocal() || instanceLog.hasRemotePartitionLogs()){
+            	HashSet<String> restUrls = new HashSet<String>();
+            	restUrls.addAll(findJobExecutionEndpoints(jobInstanceId));
+    			restUrls.remove(batchLocationService.getBatchRestUrl());
 
-            	if (StringUtils.areEqual(restUrls)) {
+                // If executions exist on only one endpoint, redirect to that endpoint.
+            	if (restUrls.size() == 1) {
             		// This call will handle the SSL and redirect enabled checking
-	            	BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildPurgeUrlForJobInstance(jobInstanceId, restUrls.get(0)),
+	            	BatchRequestUtil.handleNonLocalRequest(
+	            			BatchRequestUtil.buildPurgeUrlForJobInstance(jobInstanceId, restUrls.iterator().next()),
 	        				"DELETE",
 	        				request,
 	        				response);
@@ -689,7 +816,7 @@ public class JobInstances implements RESTHandler {
             		for (String restUrl : restUrls) {
 
             			try {
-            				HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, ""),
+            				HttpURLConnection connection = BatchRequestUtil.sendRESTRequest(BatchRequestUtil.buildJoblogsUrlForJobInstance(jobInstanceId, restUrl, "localOnly=true"),
                 																		    "DELETE",
                 																		    request,
                 																		    null);
@@ -746,18 +873,6 @@ public class JobInstances implements RESTHandler {
                 response.sendError(HttpURLConnection.HTTP_INTERNAL_ERROR, "An error occurred while purging the job instance (" + jobInstanceId + "). Not all database entries were deleted.");
             }
         }
-    }
-
-    private boolean purgeJobLogFiles(long jobInstanceId) throws BatchJobNotLocalException {
-        JobInstanceLog instanceLog = null;
-        try {
-            instanceLog = jobLogManagerService.getJobInstanceLog(jobInstanceId);
-        } catch (NoSuchJobInstanceException e) {
-            throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
-        }
-        boolean fileSuccess = instanceLog.purge();
-
-        return fileSuccess;
     }
 
     /**
@@ -1079,7 +1194,7 @@ public class JobInstances implements RESTHandler {
      * @param jobInstanceId
      * @return
      */
-    @FFDCIgnore({ BatchJobNotLocalException.class, NoSuchJobInstanceException.class })
+    @FFDCIgnore(NoSuchJobInstanceException.class)
     protected WSPurgeResponse purgeJobInstance(boolean purgeJobStoreOnly, long jobInstanceId, RESTRequest request) throws Exception {
 
         WSPurgeResponse purgeResponse = new WSPurgeResponse(jobInstanceId, PurgeStatus.COMPLETED, "Successful purge.", null);
@@ -1101,11 +1216,20 @@ public class JobInstances implements RESTHandler {
         if (!purgeJobStoreOnly) { //Try to purge job logs and DB, or send a redirect if not local
 
             boolean fileSuccess = false;
+            
+            JobInstanceLog instanceLog = null;
+            try {
+            	instanceLog = jobLogManagerService.getJobInstanceLog(jobInstanceId);
+            } catch (NoSuchJobInstanceException e) {
+            	throw new BatchNoSuchJobInstanceException(e, jobInstanceId);
+            }
 
-        	try {
-                 fileSuccess = purgeJobLogFiles(jobInstanceId);
 
-            } catch (BatchJobNotLocalException e) {
+            if (instanceLog.areExecutionsLocal()) {
+            	
+                fileSuccess = instanceLog.purge();
+
+            } else {
             	// Send requests to all endpoints to delete their local job logs.
             	List<String> restUrls = findJobExecutionEndpoints(jobInstanceId);
             	String responses = "";
@@ -1209,8 +1333,13 @@ public class JobInstances implements RESTHandler {
         List<String> restUrls = new ArrayList<String>();
         for (JobExecution jobExecution : jobExecutions) {
             restUrls.add(((WSJobExecution) jobExecution).getRestUrl());
+            List<WSRemotablePartitionExecution> remotePartitions = jobRepository.getRemotablePartitionsForJobExecution(jobExecution.getExecutionId());
+            if (remotePartitions != null) {
+            	for (WSRemotablePartitionExecution partition : remotePartitions) {
+            		restUrls.add(partition.getRestUrl());
+            	}
+            }
         }
-
         return restUrls;
     }
 
@@ -1221,7 +1350,6 @@ public class JobInstances implements RESTHandler {
 
     	JobInstanceLog instanceLog = null;
     	try {
-
     		instanceLog = jobLogManagerService.getLocalJobInstanceLog(jobInstanceId);
     		instanceLog.purge();
 

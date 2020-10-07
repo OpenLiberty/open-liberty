@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.osgi.service.cm.Configuration;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.service.cm.ConfigurationListener;
@@ -107,6 +107,8 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
+
+import io.openliberty.security.oauth20.internal.config.OAuthEndpointSettings;
 
 @Component(configurationPid = "com.ibm.ws.security.oauth20.provider", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { OAuth20Provider.class, ConfigurationListener.class, ServerQuiesceListener.class }, immediate = false, property = { "service.vendor=IBM", "dataSourceFactory.target=(id=unbound)" })
 public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationListener, ServerQuiesceListener {
@@ -189,6 +191,9 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     protected static final String KEY_logoutRedirectURL = "logoutRedirectURL";
     protected static final String KEY_CACHE_ACCESSTOKEN = "accessTokenCacheEnabled";
     protected static final String KEY_REVOKE_ACCESSTOK_W_REFRESHTOK = "revokeAccessTokensWithRefreshTokens";
+    public static final String KEY_TRACK_OAUTH_CLIENTS = "trackOAuthClients";
+    public static final String KEY_OAUTH_ENDPOINT = "oauthEndpoint";
+    public static final String KEY_REFRESHED_ACCESS_TOKEN_LIMIT = "refreshedAccessTokenLimit";
 
     // TODO: Rational Jazz props. Determine if these can be move to OIDC config.
     protected static final String KEY_COVERAGE_MAP_SESSION_MAX_AGE = "coverageMapSessionMaxAge";
@@ -309,6 +314,7 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     @Sensitive
     private String internalClientSecret;
     private String clientSecretEncoding;
+    private long refreshedAccessTokenLimit = 100;
 
     // Store and custom related fields
     private boolean isCustomStore;
@@ -346,6 +352,8 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     private String tokenFormat;
     private boolean revokeAccessTokensWithRefreshTokens = true;
     private boolean ropcPreferUserSecurityName = false;
+    private boolean trackOAuthClients = false;
+    private OAuthEndpointSettings oauthEndpointSettings;
 
     // DS related methods
 
@@ -468,6 +476,9 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         appTokenOrPasswordLimit = (Long) properties.get(KEY_APP_TOKEN_OR_PASSWORD_LIMIT);
         clientSecretEncoding = getClientSecretEncodingFromConfig();
         ropcPreferUserSecurityName = (Boolean) properties.get(KEY_ROPC_PREFER_USERSECURITYNAME);
+        trackOAuthClients = (Boolean) properties.get(KEY_TRACK_OAUTH_CLIENTS);
+        oauthEndpointSettings = populateOAuthEndpointSettings(properties, KEY_OAUTH_ENDPOINT);
+        refreshedAccessTokenLimit = configUtils.getLongConfigAttribute(properties, KEY_REFRESHED_ACCESS_TOKEN_LIMIT, refreshedAccessTokenLimit);
 
         setUpInternalClient();
         // tolerate old jwtAccessToken attrib but if tokenFormat attrib is specified,
@@ -489,26 +500,39 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
         }
     }
 
-    // disallow hashing for < java8
     private String getAccessTokenEncodingFromConfig() {
-        String configValue = (String) properties.get(KEY_STORE_ACCESSTOKEN_ENCODING);
-        if (configValue != null && configValue.compareTo(OAuth20Constants.PLAIN_ENCODING) != 0 &&
-                (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6)) {
-            Tr.warning(tc, "JAVA8_REQUIRED_FOR_AT_HASHING", new Object[] { providerId, KEY_STORE_ACCESSTOKEN_ENCODING, configValue, KEY_STORE_ACCESSTOKEN_ENCODING });
-            configValue = OAuth20Constants.PLAIN_ENCODING;
-        }
-        return configValue;
+        return (String) properties.get(KEY_STORE_ACCESSTOKEN_ENCODING);
     }
 
-    // disallow hashing for < java8
     private String getClientSecretEncodingFromConfig() {
-        String configValue = (String) properties.get(KEY_CLIENT_SECRET_ENCODING);
-        if (configValue != null && configValue.compareTo(OAuth20Constants.XOR) != 0 &&
-                (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6)) {
-            Tr.warning(tc, "JAVA8_REQUIRED_FOR_AT_HASHING", new Object[] { providerId, KEY_CLIENT_SECRET_ENCODING, configValue, KEY_CLIENT_SECRET_ENCODING });
-            configValue = OAuth20Constants.XOR;
+        return (String) properties.get(KEY_CLIENT_SECRET_ENCODING);
+    }
+
+    private OAuthEndpointSettings populateOAuthEndpointSettings(Map<String, Object> configProps, String endpointSettingsElementName) {
+        OAuthEndpointSettings endpointSettings = null;
+        String[] endpointSettingsElementPids = configUtils.getStringArrayConfigAttribute(configProps, endpointSettingsElementName);
+        if (endpointSettingsElementPids != null && endpointSettingsElementPids.length > 0) {
+            endpointSettings = populateOAuthEndpointSettings(endpointSettingsElementPids);
         }
-        return configValue;
+        return endpointSettings;
+    }
+
+    private OAuthEndpointSettings populateOAuthEndpointSettings(String[] endpointSettingsElementPids) {
+        OAuthEndpointSettings endpointSettings = new OAuthEndpointSettings();
+        for (String elementPid : endpointSettingsElementPids) {
+            Configuration config = getConfigurationFromConfigAdmin(elementPid);
+            endpointSettings.addOAuthEndpointSettings(config);
+        }
+        return endpointSettings;
+    }
+
+    Configuration getConfigurationFromConfigAdmin(String elementPid) {
+        Configuration config = null;
+        try {
+            config = configAdmin.getConfiguration(elementPid, "");
+        } catch (IOException e) {
+        }
+        return config;
     }
 
     void setUpInternalClient() {
@@ -1696,6 +1720,16 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     }
 
     @Override
+    public long getRefreshedAccessTokenLimit() {
+        readLock.lock();
+        try {
+            return refreshedAccessTokenLimit;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    @Override
     public String getMediatorClassname() {
         readLock.lock();
         try {
@@ -2421,4 +2455,15 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
     public boolean isROPCPreferUserSecurityName() {
         return this.ropcPreferUserSecurityName;
     }
+
+    @Override
+    public boolean isTrackOAuthClients() {
+        return trackOAuthClients;
+    }
+
+    @Override
+    public OAuthEndpointSettings getOAuthEndpointSettings() {
+        return oauthEndpointSettings;
+    }
+
 }

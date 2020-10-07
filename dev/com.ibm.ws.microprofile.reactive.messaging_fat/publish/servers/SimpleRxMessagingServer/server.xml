@@ -18,5 +18,7 @@
         <feature>localConnector-1.0</feature>
         <feature>mpReactiveMessaging-1.0</feature>
         <feature>servlet-4.0</feature>
+        <feature>jsonb-1.0</feature>
+        <feature>concurrent-1.0</feature>
     </featureManager>
 </server>

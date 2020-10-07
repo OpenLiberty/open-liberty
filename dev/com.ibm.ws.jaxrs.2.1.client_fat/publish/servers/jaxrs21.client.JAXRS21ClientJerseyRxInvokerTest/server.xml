@@ -1,0 +1,15 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>jaxb-2.2</feature>
+    </featureManager>
+   
+  	<include location="../fatTestPorts.xml"/>
+    
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>       	
+
+</server>

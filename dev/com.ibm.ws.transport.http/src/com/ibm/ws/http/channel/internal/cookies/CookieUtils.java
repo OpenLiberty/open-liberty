@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,10 +30,9 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 public class CookieUtils {
 
     /** RAS tracing variable */
-    private static final TraceComponent tc =
-                    Tr.register(CookieUtils.class,
-                                HttpMessages.HTTP_TRACE_NAME,
-                                HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(CookieUtils.class,
+                                                         HttpMessages.HTTP_TRACE_NAME,
+                                                         HttpMessages.HTTP_BUNDLE);
 
     /** from RFC 2068, token special case characters */
     private static final String TSPECIALS = "\"()<>@,;:\\/[]?={} \t";
@@ -53,7 +52,7 @@ public class CookieUtils {
      * Return the value of the HTTP header this cookie translates into. If the
      * given header is not supported or is unknown, then a simple name=value
      * string will be returned.
-     * 
+     *
      * @param cookie The cookie object that needs to be serialized
      * @param hdr
      * @param httpOnly if set
@@ -71,7 +70,7 @@ public class CookieUtils {
      * Return the value of the HTTP header this cookie translates into. If the
      * given header is not supported or is unknown, then a simple name=value
      * string will be returned.
-     * 
+     *
      * @param cookie The cookie object that needs to be serialized
      * @param hdr
      * @return String -- the HTTP header value of this cookie.
@@ -130,7 +129,7 @@ public class CookieUtils {
     /**
      * Return true iff the string contains special characters that need to be
      * quoted.
-     * 
+     *
      * @param value
      * @return boolean
      */
@@ -162,7 +161,7 @@ public class CookieUtils {
     /**
      * Append the input value string to the given buffer, wrapping it with
      * quotes if need be.
-     * 
+     *
      * @param buff
      * @param value
      */
@@ -181,7 +180,7 @@ public class CookieUtils {
 
     /**
      * Convert the V0 Cookie into a Cookie header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -205,6 +204,7 @@ public class CookieUtils {
             buffer.append("; $Path=");
             buffer.append(value);
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created v0 Cookie: [" + buffer.toString() + "]");
         }
@@ -213,7 +213,7 @@ public class CookieUtils {
 
     /**
      * Convert the V1 Cookie into a Cookie header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -254,7 +254,7 @@ public class CookieUtils {
 
     /**
      * Convert the V1 Cookie into a Cookie2 header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -297,7 +297,7 @@ public class CookieUtils {
 
     /**
      * Convert the V0 Cookie into a Set-Cookie header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -377,6 +377,13 @@ public class CookieUtils {
             buffer.append("; HttpOnly");
         }
 
+        //check for optional samesite
+        value = cookie.getAttribute("samesite");
+        if (null != value && 0 != value.length()) {
+            buffer.append("; SameSite=");
+            buffer.append(value);
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created v0 Set-Cookie: [" + GenericUtils.nullOutPasswords(buffer.toString(), (byte) '&') + "]");
         }
@@ -385,7 +392,7 @@ public class CookieUtils {
 
     /**
      * Convert the V1 Cookie into a Set-Cookie header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -443,6 +450,13 @@ public class CookieUtils {
             buffer.append("; HttpOnly");
         }
 
+        //check for optional samesite
+        value = cookie.getAttribute("samesite");
+        if (null != value && 0 != value.length()) {
+            buffer.append("; SameSite=");
+            buffer.append(value);
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created v1 Set-Cookie: [" + buffer.toString() + "]");
         }
@@ -452,7 +466,7 @@ public class CookieUtils {
 
     /**
      * Convert the V1 Cookie into a Set-Cookie2 header string.
-     * 
+     *
      * @param cookie
      * @return the value of the header.
      */
@@ -523,6 +537,13 @@ public class CookieUtils {
 
         if (cookie.isHttpOnly()) {
             buffer.append("; HttpOnly");
+        }
+
+        //check for optional samesite
+        value = cookie.getAttribute("samesite");
+        if (null != value && 0 != value.length()) {
+            buffer.append("; SameSite=");
+            buffer.append(value);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

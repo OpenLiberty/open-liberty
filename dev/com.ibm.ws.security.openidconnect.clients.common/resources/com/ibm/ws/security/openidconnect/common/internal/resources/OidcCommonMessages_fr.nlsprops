@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=D\u00e9finissez l'attribut jwkEndpointUrl su
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] vu que le jeton est en dehors de sa plage valide. Cela peut \u00eatre d\u00fb au fait que l''heure en cours [{1}] est post\u00e9rieure \u00e0 l''heure d''expiration du jeton [{2}] ou l''heure du probl\u00e8me [{3}] est trop \u00e9loign\u00e9e de l''heure en cours [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par le client OpenID Connect [{0}] pour l''utilisateur [{1}] car le jeton n''est pas compris dans la plage valide. Cette erreur survient car l''heure en cours [{2}] est ult\u00e9rieure \u00e0 l''heure d''expiration du jeton [{3}] ou car l''heure d''\u00e9mission [{4}] est trop lointaine par rapport \u00e0 l''heure en cours [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Un jeton n'a pas pu \u00eatre valid\u00e9 vu que l'heure actuelle affich\u00e9e n'est pas comprise entre son heure d'\u00e9mission et son heure d'expiration.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Assurez-vous que les horloges syst\u00e8me du client OpenID Connect (partie utilisatrice ou RP) et du fournisseur OpenID Connect (OP) sont synchronis\u00e9s (si elles se trouvent sur deux syst\u00e8mes).
 
@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Le jeton ne peut pas co
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Vous devez obtenir un nouveau jeton ne contenant pas l'assertion sp\u00e9cifi\u00e9e ou modifier l'attribut de configuration indiqu\u00e9 pour lui permettre de figurer dans le jeton.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Le client OpenID Connect [{0}] inclut {1} dans les valeurs qui sont sp\u00e9cifi\u00e9es par l''attribut de configuration [{2}]. Les valeurs sp\u00e9cifi\u00e9es seront ignor\u00e9es.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La sp\u00e9cification OAuth 2.0 d\u00e9finit un ensemble de param\u00e8tres de demande r\u00e9serv\u00e9s qui doivent \u00eatre fournis par le client pour les demandes d'autorisation. Les valeurs de ces param\u00e8tres r\u00e9serv\u00e9s ne peuvent pas \u00eatre fournies par l'utilisateur.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Retirez les valeurs sp\u00e9cifi\u00e9es de la liste de valeurs d\u00e9finie dans la configuration du client OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Le client OpenID Connect [{0}] inclut {1} dans les valeurs qui sont sp\u00e9cifi\u00e9es par l''attribut de configuration [{2}]. Les valeurs sp\u00e9cifi\u00e9es seront ignor\u00e9es.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La sp\u00e9cification OAuth 2.0 d\u00e9finit un ensemble de param\u00e8tres de demande r\u00e9serv\u00e9s qui doivent \u00eatre fournis par le client pour les demandes d'autorisation. Les valeurs de ces param\u00e8tres r\u00e9serv\u00e9s ne peuvent pas \u00eatre fournies par l'utilisateur.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Retirez les valeurs sp\u00e9cifi\u00e9es de la liste de valeurs d\u00e9finie dans la configuration du client OpenID Connect.

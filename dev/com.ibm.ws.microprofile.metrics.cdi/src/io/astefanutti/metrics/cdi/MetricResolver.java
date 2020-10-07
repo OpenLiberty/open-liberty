@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,19 +53,19 @@ public class MetricResolver {
     @Inject
     protected MetricName metricName;
 
-    <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Counted.class);
     }
 
-    Of<Gauge> gauge(Class<?> topClass, Method method) {
+    public Of<Gauge> gauge(Class<?> topClass, Method method) {
         return resolverOf(topClass, method, Gauge.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Metered.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
+    public <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
         return resolverOf(bean, element, Timed.class);
     }
 
@@ -163,8 +163,6 @@ public class MetricResolver {
     }
 
     private boolean isMetricAbsolute(Annotation annotation) {
-        if (extension.getParameters().contains(MetricsParameter.useAbsoluteName))
-            return true;
 
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).absolute();
@@ -314,7 +312,8 @@ public class MetricResolver {
     @Vetoed
     protected static final class DoesNotHaveMetric<T extends Annotation> implements Of<T> {
 
-        private DoesNotHaveMetric() {}
+        private DoesNotHaveMetric() {
+        }
 
         @Override
         public boolean isPresent() {

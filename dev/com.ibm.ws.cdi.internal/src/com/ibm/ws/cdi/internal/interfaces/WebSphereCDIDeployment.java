@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
@@ -173,5 +174,12 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
      * @return the CDI instance for the current container
      */
     public CDI<Object> getCDI();
+
+    /**
+     * Provides additional extensions added by the WebSphereCDIExtensionMetaData SPI class
+     *
+     * @param extensions a set of additional CDI extension classes.
+     */
+    void registerSPIExtension(Set<Extension> extensions);
 
 }

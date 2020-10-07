@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2012,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>appSecurity-2.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>jca-1.7</feature>
+      <feature>jms-2.0</feature>
+      <feature>mdb-3.2</feature>
+      <feature>jsp-2.3</feature>
+    </featureManager>
+    
+    <include optional="true" location="../fatTestPorts.xml"/>
+    <variable name="onError" value="FAIL"/>
+    
+    <enterpriseApplication type="ear" id="enterpriseApp" name="enterpriseApp" location="enterpriseApp.ear" >
+      <resourceAdapter id="enterpriseRA">
+        <properties.enterpriseApp.enterpriseRA />
+      </resourceAdapter>
+    </enterpriseApplication>
+
+    <connectionFactory jndiName="eis/cf1">
+      <properties.enterpriseApp.loginModRA />
+      <jaasLoginContextEntry name="cf1login">
+        <loginModule className="com.ibm.test.jca.loginmodra.LMLoginModule" classProviderRef="enterpriseApp"/>
+      </jaasLoginContextEntry>
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/ds1">
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.enterpriseApp.enterpriseRA />
+    </connectionFactory>
+
+    <jaasLoginContextEntry id="ds1LoginContextEntry" name="ds1login">
+      <loginModule className="com.ibm.test.jca.enterprisera.EALoginModule" classProviderRef="enterpriseApp"/>
+    </jaasLoginContextEntry>
+
+    <activationSpec id="enterpriseApp/fvtweb/JCAEnterpriseAppMDB">
+      <properties.enterpriseApp.enterpriseRA />
+    </activationSpec>
+    
+    <adminObject jndiName="eis/map1">
+      <properties.enterpriseApp.enterpriseRA.Map tableName="MAP1" valueType="varchar(50)"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/map2">
+      <properties.enterpriseApp.enterpriseRA.Map tableName="MAP2" valueType="int"/>
+    </adminObject>
+    
+    <adminObject jndiName="eis/queue1">
+      <properties.enterpriseApp.enterpriseRA.Queue tableName="QUEUE1" />
+    </adminObject>
+
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.jdbc.odbc"/>
+    <javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/> <!-- required by Derby, which is packaged within the resource adapter that is embedded within the application -->
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="java.io.FilePermission" name="*" actions="read,write"/>
+    <javaPermission className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission className="javax.management.MBeanTrustPermission" name="register"/>
+
+    <!-- required by login modules within resource adapters that are embedded within the enterprise application -->
+    <javaPermission codebase="${server.config.dir}/apps/enterpriseApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/enterpriseApp.ear" className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.osgi.service.urlconversion.URLConverter;
 import org.jboss.jandex.Index;
 
 import com.ibm.websphere.ras.Tr;
@@ -52,20 +53,22 @@ public class ClassSourceImpl_MappedContainer
     public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
         String name,
-        Container container) throws ClassSource_Exception {
+        Container container,
+        URLConverter bundleEntryUrlConverter) throws ClassSource_Exception {
 
-        this(factory, internMap, name, container, NO_ENTRY_PREFIX); // throws ClassSource_Exception
+        this(factory, internMap, name, container, NO_ENTRY_PREFIX, bundleEntryUrlConverter); // throws ClassSource_Exception
     }
 
     @SuppressWarnings("unused")
 	public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
         String name,
-        Container container, String entryPrefix) throws ClassSource_Exception {
+        Container container, String entryPrefix, URLConverter bundleEntryUrlConverter) throws ClassSource_Exception {
 
         super(factory, internMap, entryPrefix, name, String.valueOf(container));
         // throws ClassSource_Exception
 
+        this.bundleEntryUrlConverter = bundleEntryUrlConverter;
         this.rootContainer = container;
         this.container = navigateFrom(container, entryPrefix);
     }
@@ -165,6 +168,7 @@ public class ClassSourceImpl_MappedContainer
     }
 
     protected final Container container;
+    private final URLConverter bundleEntryUrlConverter;
 
     @Override
     @Trivial
@@ -200,7 +204,7 @@ public class ClassSourceImpl_MappedContainer
 
         Container useRootContainer = getRootContainer();
 
-        String useStamp = UtilImpl_FileStamp.computeStamp(useRootContainer);
+        String useStamp = UtilImpl_FileStamp.computeStamp(bundleEntryUrlConverter, useRootContainer);
         if ( useStamp == null ) {
             useStamp = ClassSource.UNAVAILABLE_STAMP;
         }

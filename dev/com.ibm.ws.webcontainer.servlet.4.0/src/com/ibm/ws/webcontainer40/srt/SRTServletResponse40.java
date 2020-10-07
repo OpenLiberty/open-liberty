@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.websphere.servlet40.IResponse40;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer31.srt.SRTServletResponse31;
@@ -72,20 +73,30 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
      */
     @Override
     protected String getXPoweredbyHeader() {
-        return WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE40;
+        String xPoweredBy = WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE40;
+
+        // The Servlet 4.0 feature is transformed from javax->jakarta and therefore we need
+        // to add a check here to determine the proper X-Powered-By header value.
+        if (WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_50) {
+            xPoweredBy = WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE50;
+        }
+
+        return xPoweredBy;
     }
 
     @Override
     public void addCookie(Cookie cookie) {
+        String cookieName = cookie.getName();
+
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
-            logger.logp(Level.FINE, CLASS_NAME, "addCookie", "Adding cookie --> " + cookie.getName(), "[" + this + "]");
+            logger.logp(Level.FINE, CLASS_NAME, "addCookie", "Adding cookie --> " + cookieName, "[" + this + "]");
         }
         // d151464 - check the include flag
         WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) getRequest().getWebAppDispatcherContext();
         if (dispatchContext.isInclude() == true) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "addCookie", nls.getString("Illegal.from.included.servlet", "Illegal from included servlet"),
-                            "addCookie cookie --> " + cookie.getName()); //311717
+                            "addCookie cookie --> " + cookieName); //311717
         } else {
             if (!_ignoreStateErrors && isCommitted()) {
                 // log a warning (only the first time)...ignore headers set after response is committed
@@ -183,7 +194,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         return trailerFieldSupplier;
     }
 
-    @Override 
+    @Override
     public void closeResponseOutput(boolean releaseChannel) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "closeResponseOutput", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
@@ -204,7 +215,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         super.closeResponseOutput(releaseChannel);
     }
 
-    @Override 
+    @Override
     public void finish() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.entering(CLASS_NAME, "finish", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");

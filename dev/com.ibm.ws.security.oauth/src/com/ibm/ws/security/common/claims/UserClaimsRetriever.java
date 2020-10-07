@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,8 @@ public class UserClaimsRetriever {
 
     private static final TraceComponent tc = Tr.register(UserClaimsRetriever.class);
 
-    private AuthCacheService authCacheService;
-    private UserRegistry userRegistry;
+    private final AuthCacheService authCacheService;
+    private final UserRegistry userRegistry;
 
     /**
      * @param authCacheService
@@ -47,9 +47,9 @@ public class UserClaimsRetriever {
 
     /**
      * @param username
-     * @param groupIdentifier 
+     * @param groupIdentifier
      * @return a Map containing the user's claims
-     * @throws WSSecurityException 
+     * @throws WSSecurityException
      */
     public UserClaims getUserClaims(String username, String groupIdentifier) throws WSSecurityException {
         UserClaims userClaims = new UserClaims(username, groupIdentifier);
@@ -61,8 +61,7 @@ public class UserClaimsRetriever {
             subject = WSSubject.getRunAsSubject();
             if (subject != null && !isUnAuthenticated(subject, username)) {
                 realmName = getRealmName(subject);
-            }
-            else {
+            } else {
                 subject = null;
             }
         }
@@ -80,7 +79,7 @@ public class UserClaimsRetriever {
     /**
      * @param subject
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     String getRealmName(Subject subject) {
         WSCredential wsCredential = getWSCredential(subject);
@@ -88,7 +87,7 @@ public class UserClaimsRetriever {
             return wsCredential.getRealmName();
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "RealmName Exception:" + e.getClass().getName() + " MSG:" + e.getMessage());
+                Tr.debug(tc, "RealmName Exception:" + e.getClass().getName() + " MSG:" + e);
             }
         }
         return null;
@@ -107,7 +106,7 @@ public class UserClaimsRetriever {
             setClaims(userClaims, wsCredential.getUniqueSecurityName(), groups);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "There was an exception populating the user claims from the cached subject.", e.getMessage());
+                Tr.debug(tc, "There was an exception populating the user claims from the cached subject.", e);
             }
         }
     }
@@ -155,7 +154,7 @@ public class UserClaimsRetriever {
             setClaims(userClaims, userRegistry.getUniqueUserId(username), userRegistry.getGroupsForUser(username));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "There was an exception populating the user claims from the user registry.", e.getMessage());
+                Tr.debug(tc, "There was an exception populating the user claims from the user registry.", e);
             }
         }
     }

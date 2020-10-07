@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.annocache.util.Util_BidirectionalMap;
+import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 
 public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
@@ -40,10 +41,10 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     //
 
-    protected UtilImpl_BidirectionalMap(UtilImpl_Factory factory,
+    protected UtilImpl_BidirectionalMap(Util_Factory factory,
                                         String holderTag, String heldTag,
-                                        UtilImpl_InternMap holderInternMap,
-                                        UtilImpl_InternMap heldInternMap) {
+                                        Util_InternMap holderInternMap,
+                                        Util_InternMap heldInternMap) {
         super();
 
         String methodName = "<init>";
@@ -69,11 +70,11 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     //
 
-    protected final UtilImpl_Factory factory;
+    protected final Util_Factory factory;
 
     @Override
     @Trivial
-    public UtilImpl_Factory getFactory() {
+    public Util_Factory getFactory() {
         return factory;
     }
 
@@ -106,11 +107,11 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     //
 
-    protected final UtilImpl_InternMap holderInternMap;
+    protected final Util_InternMap holderInternMap;
 
     @Override
     @Trivial
-    public UtilImpl_InternMap getHolderInternMap() {
+    public Util_InternMap getHolderInternMap() {
         return holderInternMap;
     }
 
@@ -131,11 +132,11 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         return holderInternMap.intern(name, doForce);
     }
 
-    protected UtilImpl_InternMap heldInternMap;
+    protected Util_InternMap heldInternMap;
 
     @Override
     @Trivial
-    public UtilImpl_InternMap getHeldInternMap() {
+    public Util_InternMap getHeldInternMap() {
         return heldInternMap;
     }
 

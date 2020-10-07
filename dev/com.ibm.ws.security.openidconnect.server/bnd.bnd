@@ -34,13 +34,15 @@ instrument.classesExcludes: com/ibm/ws/security/openidconnect/server/internal/re
 
 Export-Package: \
         com.ibm.ws.security.openidconnect.server;provide:=true, \
-        com.ibm.ws.security.openidconnect.server.plugins;provide:=true
+        com.ibm.ws.security.openidconnect.server.plugins;provide:=true, \
+        io.openliberty.security.openidconnect.*
 
 Private-Package: \
         com.ibm.ws.security.openidconnect.server.internal.*, \
         com.ibm.ws.security.openidconnect.web
 
 Import-Package: \
+   !com.ibm.wsspi.security.oauth20, \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.websphere.ras, \
@@ -115,7 +117,6 @@ Include-Resource: \
     WEB-INF=resources/WEB-INF, \
     OSGI-INF=resources/OSGI-INF, \
     scripts=resources/scripts, \
-    resources/authzMgmt.jsp, \
     resources/clienttable.jsp, \
     resources/login.jsp, \
     resources/sessionMgmt.jsp, \
@@ -124,7 +125,6 @@ Include-Resource: \
     resources/end_session_logout.html, \
     resources/end_session_error.html, \
     WEB-CONTENT=resources/WEB-CONTENT, \
-    WEB-CONTENT/common/lib=lib/jquery/jquery-3.2.0, \
     WEB-CONTENT/common/fonts=lib/fonts
 
 -buildpath: \
@@ -182,7 +182,7 @@ Include-Resource: \
  	com.ibm.ws.crypto.passwordutil;version=latest,\
 	joda-time;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 

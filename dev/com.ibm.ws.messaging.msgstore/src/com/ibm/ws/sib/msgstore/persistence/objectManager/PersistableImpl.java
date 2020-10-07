@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore.persistence.objectManager;
 
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,10 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
 
     // Save the approx In Memory Size of the Item, if we know it
     private int _inMemoryByteSize;
+    
+    // Hold deletionLock while deleting or updating this metadata.
+    private class DeletionLock {};
+    private final DeletionLock deletionLock =  new DeletionLock();
 
     public PersistableImpl(long uniqueID, long containingStreamID, TupleTypeEnum tupleType)
     {
@@ -689,7 +693,7 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             SibTr.debug(this, tc, "MetaData=" + metaData);
         
-        synchronized (metaData) {
+        synchronized (deletionLock) {
             // If the Persistable has been deleted, do not attempt to update the RedeliveryCount.  
             if (metaData.getState() == ManagedObject.stateToBeDeleted | metaData.getState() == ManagedObject.stateDeleted ) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -779,7 +783,7 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
         }
 
         // Finally, we need to delete the item in the object store
-        synchronized (metaData) {
+        synchronized (deletionLock) {
             tran.delete(metaData);
         }
 

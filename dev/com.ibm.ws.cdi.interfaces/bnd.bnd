@@ -15,21 +15,19 @@ Bundle-Name: com.ibm.ws.cdi.interfaces
 Bundle-SymbolicName: com.ibm.ws.cdi.interfaces
 Bundle-Description:CDI Liberty Interfaces, version ${bVersion}
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
-
-javac.source: 1.7
-javac.target: 1.7
-
 Service-Component: \
  com.ibm.ws.cdi.interfaces.deserializationClassProvider;\
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="service.vendor=IBM,\
       packages=com.ibm.ws.cdi\
-        |com.ibm.ws.cdi.extension"
+        |com.ibm.ws.cdi.extension\
+        |io.openliberty.cdi.spi"
 
-Export-Package: com.ibm.ws.cdi, \
-                com.ibm.ws.cdi.extension
+Export-Package: \
+	com.ibm.ws.cdi,\
+	com.ibm.ws.cdi.extension,\
+	io.openliberty.cdi.spi
 
 Import-Package: \
  javax.enterprise.inject.spi; version="[1.1.0,3.0.0)", \
@@ -44,3 +42,5 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	org.eclipse.osgi
+
+jakartaeeMe: true

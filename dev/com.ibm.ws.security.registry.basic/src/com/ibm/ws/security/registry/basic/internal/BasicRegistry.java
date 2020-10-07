@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2018 IBM Corporation and others.
+ * Copyright (c) 2011,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,6 +139,7 @@ interface Member {
 
 @Component(configurationPid = "com.ibm.ws.security.registry.basic.config",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true,
            property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=Basic" })
 @DSExt.ConfigureWithInterfaces
 public class BasicRegistry implements UserRegistry {
@@ -159,6 +160,8 @@ public class BasicRegistry implements UserRegistry {
      * The {@link X509CertificateMapper} reference.
      */
     private final AtomicReference<X509CertificateMapper> iCertificateMapperRef = new AtomicReference<X509CertificateMapper>();
+
+    private static final String REGEX_IGNORE_CASE_CONTROL = "(?i)";
 
     private class State {
         final String realm;// = DEFAULT_REALM_NAME;
@@ -448,7 +451,7 @@ public class BasicRegistry implements UserRegistry {
     public SearchResult getUsers(String pattern, int limit) throws RegistryException {
         // support ignoreCaseForAuthentication for user lookup
         if (state.ignoreCaseForAuthentication) {
-            pattern = "(?i)" + pattern;
+            pattern = REGEX_IGNORE_CASE_CONTROL + pattern;
         }
         return searchMap(state.users, pattern, limit);
     }
@@ -459,13 +462,41 @@ public class BasicRegistry implements UserRegistry {
      * <ul>
      * <li>* -> .*</li>
      * <li>? -> .</li>
+     * <li>( -> \(</li>
+     * <li>) -> \)</li>
+     * <li>{ -> \{</li>
+     * <li>} -> \}</li>
      * </ul>
      *
      * @param pattern
      * @return regular expression
      */
     private String convertToRegex(String pattern) {
-        return pattern.replace("*", ".*");
+
+        /*
+         * Remove the ignore case control so we don't escape any parentheses in that control.
+         */
+        boolean ignoreCase = pattern.startsWith(REGEX_IGNORE_CASE_CONTROL);
+        if (ignoreCase) {
+            pattern = pattern.replace(REGEX_IGNORE_CASE_CONTROL, "");
+        }
+
+        /*
+         * Replace any * with .* and escape any characters that might have special meaning
+         * in a regular expression.
+         */
+        pattern = pattern.replace("*", ".*");
+        pattern = pattern.replace("(", "\\(").replace(")", "\\)");
+        pattern = pattern.replace("{", "\\{").replace("}", "\\}");
+
+        /*
+         * Add the ignore case control back on if we removed it.
+         */
+        if (ignoreCase) {
+            pattern = REGEX_IGNORE_CASE_CONTROL + pattern;
+        }
+
+        return pattern;
     }
 
     /**

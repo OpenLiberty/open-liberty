@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2012,2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: map context bundle
+Bundle-SymbolicName: map
+Bundle-Description: Test bundle that provides a per-thread "map" context
+
+# optional... 
+WS-TraceGroup: map
+
+Private-Package: test.map.internal.*
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=test-bundles/map/resources/OSGI-INF/metatype/metatype.xml
+
+Service-Component: \
+  test.map.context.provider;\
+    implementation:=test.map.internal.MapContextProvider;\
+    provide:='com.ibm.wsspi.threadcontext.ThreadContextProvider';\
+    configuration-policy:=ignore,\
+  test.map.service;\
+    implementation:=test.map.internal.MapService;\
+    provide:='java.util.Map';\
+    configuration-policy:=ignore

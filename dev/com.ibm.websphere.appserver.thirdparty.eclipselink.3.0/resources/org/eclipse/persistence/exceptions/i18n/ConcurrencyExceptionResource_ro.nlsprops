@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=A\u015fteptarea a fost \u00eentrerupt\u0103. {0}Mesaj: [{1}]
+
+2002=E\u015fuare la a\u015fteptare \u00een ServerSession.
+
+2003=E\u015fuare la a\u015fteptare \u00een ClientSession.
+
+2004=A fost \u00eencercat un semnal \u00eenainte de a\u015fteptare() \u00een ConcurrencyManager. Aceasta \u00eenseamn\u0103 \u00een mod normal c\u0103 o \u00eencercare a fost f\u0103cut\u0103 pentru comiterea {0} sau derularea \u00eenapoi a tranzac\u0163iei \u00eenainte de a fi \u00eenceput\u0103, sau derularea \u00eenapoi de dou\u0103 ori a tranzac\u0163iei.
+
+2005=E\u015fuare la a\u015fteptare \u00een Secven\u0163ionarea handler-ului de conexiune pentru DatabaseSession.
+
+2006=\u00cencercare de ob\u0163inere a valorilor de secven\u0163ionare printr-o singur\u0103 Conexiune({0}) simultan \u00een mai multe fire de execu\u0163ie
+
+2007=Num\u0103rul maxim de \u00eencerc\u0103ri de blocare obiect: {0} a fost dep\u0103\u015fit.  E\u015fuare la clonarea obiectului.
+
+2008=Num\u0103rul maxim de \u00eencerc\u0103ri de blocare obiect: {0} a fost dep\u0103\u015fit.  E\u015fuare la combinarea tranzac\u0163iei.
+
+2009=Num\u0103rul maxim de \u00eencerc\u0103ri de blocare obiect a fost dep\u0103\u015fit.  E\u015fuare la construirea obiectului. Firul de execu\u0163ie: {0} are o blocare asupra obiectului dar firul de execu\u0163ie: {1} construie\u015fte obiectul.
+2010=Blocarea a fost deja tranzi\u0163ionat\u0103 pentru o Blocare am\u00e2nat\u0103.  O a doua \u00eencercare de tranzi\u0163ie a bloc\u0103rii a fost solicitat\u0103 de firul de execu\u0163ie: {0} \u00een timpul combin\u0103rii.
+

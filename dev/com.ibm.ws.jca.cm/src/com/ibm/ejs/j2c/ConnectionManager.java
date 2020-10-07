@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -31,13 +32,18 @@ import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.security.auth.Subject;
+import javax.security.auth.kerberos.KerberosTicket;
 import javax.security.auth.login.LoginException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.ietf.jgss.GSSCredential;
+
 import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -49,6 +55,7 @@ import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
+import com.ibm.ws.jca.cm.handle.HandleList;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -105,6 +112,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean isJDBC;
     private transient int commitPriority = 0;
     private boolean localTranSupportSet = false;
+    private boolean issuedSpnegoRecoveryWarning = false;
 
     /**
      * The following is a variable which will tell us whether or not
@@ -136,10 +144,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean rrsTransactional;
 
     /**
-     * @param cfSvc connection factory service
+     * @param cfSvc     connection factory service
      * @param mcfXProps MCFExtendedProperties
-     * @param pm pool manager supplied by the lightweight server. Otherwise null.
-     * @param jxri J2CXAResourceInfo
+     * @param pm        pool manager supplied by the lightweight server. Otherwise null.
+     * @param jxri      J2CXAResourceInfo
      *
      * @pre jxri != null
      */
@@ -152,7 +160,6 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "<init>");
         }
-
         this.connectionFactorySvc = cfSvc;
         this._pm = pm;
         this.gConfigProps = gconfigProps;
@@ -268,7 +275,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method is called by a resource adapter ConnectionFactory to obtain a Connection each
      * time the application calls getConnection() on the resource adapter ConnectionFactory.
      *
-     * @param factory The managed connection factory for this connection.
+     * @param factory     The managed connection factory for this connection.
      * @param requestInfo The connection specific request info, i.e. userID, Password.
      *
      * @return The newly allocated connection (returned as type object per JCA spec).
@@ -516,7 +523,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(this, tc, "allocateConnection", rVal==null?" connection handle is null":Integer.toHexString(rVal.hashCode()));
+            Tr.exit(this, tc, "allocateConnection", rVal == null ? " connection handle is null" : Integer.toHexString(rVal.hashCode()));
         }
 
         return rVal;
@@ -528,8 +535,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * Used by: allocateConnection, reAssociate, and associateConnection.
      *
      * @param requestInfo The connection specific request info, i.e. userID, Password.
-     * @param subj The subject for this request. Can be null.
-     * @param uowCoord The current UOWCoordinator (transaction) for this request.
+     * @param subj        The subject for this request. Can be null.
+     * @param uowCoord    The current UOWCoordinator (transaction) for this request.
      *
      * @return A MCWrapper appropriate for the Current UOW, and enlisted
      *         as appropriate with the UOW.
@@ -710,7 +717,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method will setup required objects needed for participating in the current UOW
      * and enlist or register them with the appropriate UOW services.
      *
-     * @param mcWrapper The Managed Connection wrapper associated with this request.
+     * @param mcWrapper        The Managed Connection wrapper associated with this request.
      * @param originIsDeferred Deferred enlistment flag.
      */
 
@@ -1447,7 +1454,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      *      integrity of a managed connection and its pool when an inactive connection
      *      is closed.
      *
-     * @param connection The connection handle that is now closed.
+     * @param connection               The connection handle that is now closed.
      * @param managedConnectionFactory The factory that created the handle.
      */
     @Override
@@ -1618,9 +1625,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Returns the subject for container managed authentication.
      *
-     * @param requestInfo - connection request information
+     * @param requestInfo             - connection request information
      * @param mangedConnectionFactory - managed connection factory
-     * @param CM - connection manager
+     * @param CM                      - connection manager
      * @return subject for container managed authentication.
      * @throws ResourceException
      */
@@ -1659,6 +1666,29 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     ResourceException r = new ResourceException(e.getCause());
                     throw r;
                 }
+            } else if (subj == null) {
+                // Check to see if a SPNEGO subject is already passed in by the caller. If so, use it
+                Subject callerSubject = getCallerSubject();
+                if (callerSubject != null) {
+                    boolean isSpnegoSubject = callerSubject.getPrivateCredentials(KerberosTicket.class).size() > 0 ||
+                                              callerSubject.getPrivateCredentials(GSSCredential.class).size() > 0;
+                    if (isSpnegoSubject) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "Found SPNEGO Subject passed in as the caller subject, using it for authentication");
+                        subj = callerSubject;
+
+                        // User is attempting to use an XADataSource with SPNEGO authentication and no alternative recoveryAuthData configured
+                        // Warn the user that this configuration is not fully XA-capable since XA recovery with SPNEGO auth is not possible
+                        if (tc.isWarningEnabled() &&
+                            !issuedSpnegoRecoveryWarning &&
+                            connectionFactorySvc.getTransactionSupport() == TransactionSupportLevel.XATransaction &&
+                            connectionFactorySvc.getRecoveryAuthDataID() == null) {
+                            issuedSpnegoRecoveryWarning = true;
+                            String jndiName = connectionFactorySvc.getJNDIName();
+                            Tr.warning(tc, "SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W", jndiName != null ? jndiName : connectionFactorySvc.getID());
+                        }
+                    }
+                }
             }
 
             subj = this.securityHelper.finalizeSubject(subj, requestInfo, this.cmConfig);
@@ -1685,7 +1715,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Register XA resource information with the transaction manager.
      *
-     * @param tm the transaction manager.
+     * @param tm             the transaction manager.
      * @param xaResourceInfo information necessary for producing an XAResource object using the XAResourceFactory.
      * @param commitPriority priority to use when committing multiple XA resources.
      * @return the recovery ID (or -1 if an error occurs)
@@ -1750,5 +1780,30 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             }
         }
         return i;
+    }
+
+    private static Subject getCallerSubject() {
+        if (System.getSecurityManager() == null) {
+            try {
+                return WSSubject.getCallerSubject();
+            } catch (WSSecurityException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                return null;
+            }
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Subject>() {
+                @Override
+                public Subject run() {
+                    try {
+                        return WSSubject.getCallerSubject();
+                    } catch (WSSecurityException e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                        return null;
+                    }
+                }
+            });
+        }
     }
 }
