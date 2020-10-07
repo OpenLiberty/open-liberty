@@ -33,6 +33,7 @@ IBM-API-Package: jakarta.faces; type="spec", \
  org.apache.myfaces.shared.renderkit.html; type="third-party", \
  org.apache.myfaces.shared.renderkit.html.util; type="third-party"
 IBM-ShortName: faces-3.0
+WLP-AlsoKnownAs: jsf-3.0
 Subsystem-Name: Jakarta Server Faces 3.0
 -features=io.openliberty.jakarta.cdi-3.0, \
  io.openliberty.servlet.api-5.0, \
