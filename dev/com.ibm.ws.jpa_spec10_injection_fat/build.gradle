@@ -11,6 +11,7 @@
 
 configurations {
   hibernateJPA22
+  jpaFatTools
 }
 
 dependencies {
@@ -25,6 +26,8 @@ dependencies {
   
   hibernateJPA22 'org.dom4j:dom4j:2.1.1'
   hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
+  
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
 }
 
 task addhibernateJPA22(type: Copy) {
@@ -41,8 +44,17 @@ task addhibernateJPA22(type: Copy) {
   rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
 }
 
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')      
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
+
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addhibernateJPA22
   dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
 }

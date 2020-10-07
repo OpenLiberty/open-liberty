@@ -114,7 +114,7 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
     public void testScenario01(
                                TestExecutionContext testExecCtx,
                                TestExecutionResources testExecResources,
-                               Object managedComponentObject) {
+                               Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("QueryLockModeTestLogic.testScenario01(): Missing context and/or resources.  Cannot execute the test.");
@@ -4436,12 +4436,6 @@ public class QueryLockModeTestLogic extends AbstractTestLogic {
             }
 //            }
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("QueryLockModeTestLogic.testScenario01(): End");
         }
