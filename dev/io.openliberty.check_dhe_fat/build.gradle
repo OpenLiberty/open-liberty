@@ -1,0 +1,9 @@
+task copyCNFFiles (type: Copy) {
+  mustRunAfter jar
+  from ('../cnf/oss_ibm.maven')
+  into new File(autoFvtDir, '.')
+}
+
+addRequiredLibraries {
+	dependsOn copyCNFFiles
+}
