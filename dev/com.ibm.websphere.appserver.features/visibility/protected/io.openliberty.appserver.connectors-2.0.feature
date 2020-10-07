@@ -13,3 +13,4 @@ IBM-API-Package: jakarta.resource; type="spec", \
 -bundles=io.openliberty.jakarta.connectors.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.resource:jakarta.resource-api:2.0.0"
 kind=beta
 edition=base
+WLP-Activation-Type: parallel
