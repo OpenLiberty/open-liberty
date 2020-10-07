@@ -411,7 +411,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
 	 */
     public static void copyEntryWithinZip(String sourceEntry, 
     		                          String destinationEntry,
-    		                          String zipLocationOnDisk) {
+    		                          String zipLocationOnDisk) throws IOException {
 
     	LOG.info("sourceEntry: " + sourceEntry);
     	LOG.info("destinationEntry:  " + destinationEntry);
@@ -423,9 +423,6 @@ public abstract class AnnoCachingTest extends LoggingTest {
     		Path destPath = fs.getPath(destinationEntry);
     		
     		Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
     	}
     }
     
@@ -654,7 +651,7 @@ public abstract class AnnoCachingTest extends LoggingTest {
         	return;
         }
         
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[32768];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(sourceArchive));
         ZipEntry zipEntry = zis.getNextEntry();
                

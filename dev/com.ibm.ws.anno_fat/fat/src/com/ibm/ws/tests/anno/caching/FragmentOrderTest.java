@@ -37,7 +37,8 @@ public class FragmentOrderTest extends AnnoCachingTest {
     public static String backupEarPath;            // Path to a backup copy of the EAR
 
     /**
-     * Optionally updates the app, then depending on the start type, it eithe
+     * Optionally updates the app, then depending on the start type, it either starts the app
+     * or waits for start already in progress to finish.
      * 
      * @param altWebXml
      * @param startType
@@ -47,7 +48,7 @@ public class FragmentOrderTest extends AnnoCachingTest {
     	
     	if (!updateApp && (altWebXml != null) ) {
     		LOG.info("handleStart: ");
-    		throw new IllegalStateException("Don't need to update app, but altWebXml is supplied - Probably not what was intented: [" + altWebXml + "]");
+    		throw new IllegalStateException("Don't need to update app, but altWebXml is supplied - Probably not what was intended: [" + altWebXml + "]");
     		
     	} else if (updateApp && (altWebXml == null) ) {
     		LOG.info("handleStart: ");
@@ -136,7 +137,7 @@ public class FragmentOrderTest extends AnnoCachingTest {
      * @throws Exception
      */
     @Before
-    public void setup2() throws Exception {    
+    public void setupBeforeEach() throws Exception {    
     	expandEarToTemp(backupEarPath, tempExpandedEarPath, DELETE_IF_EXISTS);
     }
     	
