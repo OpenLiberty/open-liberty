@@ -14,12 +14,13 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 
@@ -47,16 +48,40 @@ import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
  * Note that serverXMLKey1 was listed three times and the last entry "won"
  *
  */
-public class AppPropertyConfigSource extends InternalConfigSource implements ConfigSource { //extends InternalConfigSource implements DynamicConfigSource {
+public class AppPropertyConfigSource extends InternalConfigSource {
 
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
+
     private final PrivilegedAction<String> getApplicationPidAction = new GetApplicationPidAction();
+
     private BundleContext bundleContext;
     private String applicationName;
     private String applicationPID;
 
-    public AppPropertyConfigSource() {
-        super(ServerXMLConstants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    public String getName() {
+        return Tr.formatMessage(tc, "server.xml.appproperties.config.source");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ServerXMLConstants.APP_PROPERTY_ORDINAL;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getValue(String key) {
+        return getProperties().get(key);
     }
 
     /** {@inheritDoc} */

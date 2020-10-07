@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,18 @@ public class SystemConfigSource extends InternalConfigSource implements StaticCo
 
     private static final TraceComponent tc = Tr.register(SystemConfigSource.class);
 
-    public SystemConfigSource() {
-        super(getSystemOrdinal(), Tr.formatMessage(tc, "system.properties.config.source"));
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    public String getName() {
+        return Tr.formatMessage(tc, "system.properties.config.source");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ConfigConstants.ORDINAL_SYSTEM_PROPERTIES;
     }
 
     /** {@inheritDoc} */
@@ -51,28 +61,6 @@ public class SystemConfigSource extends InternalConfigSource implements StaticCo
         }
 
         return props;
-    }
-
-    @Trivial
-    public static int getSystemOrdinal() {
-        String ordinalProp = getOrdinalSystemProperty();
-        int ordinal = ConfigConstants.ORDINAL_SYSTEM_PROPERTIES;
-        if (ordinalProp != null) {
-            ordinal = Integer.parseInt(ordinalProp);
-        }
-        return ordinal;
-    }
-
-    @Trivial
-    private static String getOrdinalSystemProperty() {
-        String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            @Trivial
-            public String run() {
-                return System.getProperty(ConfigConstants.ORDINAL_PROPERTY);
-            }
-        });
-        return prop;
     }
 
     @Trivial
