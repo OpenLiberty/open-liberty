@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.wlp.feature.tasks;
 
 import java.io.File;
@@ -80,6 +90,10 @@ public class FeatureBnd extends Task {
     private static final String SUBSYSTEM_TYPE = "Subsystem-Type";
     /**  */
     private static final String SUBSYSTEM_VERSION = "Subsystem-Version";
+    
+    /** If true, a conflict during feature resolution involving this feature disables all content. Default is true. */
+    private static final String WLP_DISABLE_ONCONFLICT = "WLP-DisableAllFeatures-OnConflict";
+    
     
     private static final FilenameFilter LI_FILES = new PrefixFilter("LI_");
     
@@ -396,6 +410,17 @@ public class FeatureBnd extends Task {
                 attributes.put("superseded", "true");
                 attributes.put("superseded-by", superseded);
                 builder.setSubsystemSymbolicName(p);
+                checkBuilder(builder);
+            }
+
+            // check  WLP_DISABLE_ONCONFLICT header for non auto-features
+            if (builder.getProperty(IBM_PROVISION_CAPABILITY) == null) {
+                String disableOnConflict = builder.getProperty(WLP_DISABLE_ONCONFLICT);
+                if (disableOnConflict != null)
+                    checkValue(suite, builder, WLP_DISABLE_ONCONFLICT, "true", "false");
+                else {
+                    builder.setProperty(WLP_DISABLE_ONCONFLICT, "true");
+                }
                 checkBuilder(builder);
             }
 

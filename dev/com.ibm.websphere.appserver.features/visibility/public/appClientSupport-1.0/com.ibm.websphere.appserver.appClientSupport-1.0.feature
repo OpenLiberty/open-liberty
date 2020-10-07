@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appClientSupport-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: appClientSupport-1.0
 Subsystem-Name: Application Client Support for Server 1.0

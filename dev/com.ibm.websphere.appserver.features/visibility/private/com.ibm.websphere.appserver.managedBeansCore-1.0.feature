@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.managedBeansCore-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: \
   com.ibm.ejs.container; type="internal", \
   javax.interceptor; type="spec"

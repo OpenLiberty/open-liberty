@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.wsspi.appserver.webBundleSecurity-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 -features=com.ibm.websphere.appserver.security-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \

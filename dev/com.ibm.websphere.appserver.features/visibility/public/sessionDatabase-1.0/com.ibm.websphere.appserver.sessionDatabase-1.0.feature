@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.sessionDatabase-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: sessionDatabase-1.0
 Manifest-Version: 1.0

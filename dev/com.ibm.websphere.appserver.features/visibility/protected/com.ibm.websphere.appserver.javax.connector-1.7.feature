@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.connector-1.7
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 singleton=true
 IBM-API-Package: javax.resource; type="spec", \

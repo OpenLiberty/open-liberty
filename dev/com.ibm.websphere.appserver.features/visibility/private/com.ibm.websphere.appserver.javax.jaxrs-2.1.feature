@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.jaxrs-2.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 IBM-App-ForceRestart: uninstall, \

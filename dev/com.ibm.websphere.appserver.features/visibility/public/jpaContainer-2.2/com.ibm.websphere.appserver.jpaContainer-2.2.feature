@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jpaContainer-2.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 kind=ga

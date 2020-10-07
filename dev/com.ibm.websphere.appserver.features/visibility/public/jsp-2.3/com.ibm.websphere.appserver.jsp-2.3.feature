@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsp-2.3
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \

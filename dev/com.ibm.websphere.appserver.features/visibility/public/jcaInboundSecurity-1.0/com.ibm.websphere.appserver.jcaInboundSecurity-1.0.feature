@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jcaInboundSecurity-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: javax.security.auth.message.callback; type="spec"
 IBM-ShortName: jcaInboundSecurity-1.0

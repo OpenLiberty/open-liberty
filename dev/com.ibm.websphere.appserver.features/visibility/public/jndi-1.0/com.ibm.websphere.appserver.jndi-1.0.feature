@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jndi-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: jndi-1.0
 IBM-Process-Types: server, \

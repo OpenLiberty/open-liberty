@@ -2,6 +2,7 @@
 IBM-ShortName: jsfContainer-2.2
 Subsystem-Name: JavaServer Faces Container 2.2
 symbolicName=com.ibm.websphere.appserver.jsfContainer-2.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
