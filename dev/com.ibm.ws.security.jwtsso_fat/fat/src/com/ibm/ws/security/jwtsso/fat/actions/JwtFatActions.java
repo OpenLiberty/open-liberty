@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwtsso.fat.utils;
+package com.ibm.ws.security.jwtsso.fat.actions;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -18,6 +18,8 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 public class JwtFatActions extends TestActions {
 
