@@ -16,6 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.cdi.beans.RequestScopedConfigFieldInjectionBean;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
+
+import componenttest.annotation.SkipForRepeat;
 
 @SuppressWarnings("serial")
 @WebServlet("/field")
@@ -71,23 +74,14 @@ public class FieldTestServlet extends AbstractBeanServlet {
     }
 
     @Test
-    public void testParent() throws Exception {
-        test("PARENT_KEY", "Child: parent");
-    }
-
-    @Test
     public void testDiscovered() throws Exception {
         test("DISCOVERED_KEY", "DISCOVERED_VALUE");
     }
 
     @Test
+    @SkipForRepeat(RepeatConfig20EE8.ID) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
     public void testNullWithDefault() throws Exception {
         test("NULL_WITH_DEFAULT_KEY", "null");
-    }
-
-    @Test
-    public void testAnimal() throws Exception {
-        test("ANIMAL_KEY", "A Black Dog called Bob");
     }
 
     @Test
@@ -96,21 +90,11 @@ public class FieldTestServlet extends AbstractBeanServlet {
     }
 
     /**
-     * This test is to test the PIZZA_KEY will be return a pizza value with null deliberately as no size is specified in the key. No default value should be used.
+     * This tests that Injecting the MISSING_KEY, which is not defined in a config source, will return the defined defaultValue for MISSING_KEY.
      */
     @Test
-    public void testPizza() throws Exception {
-        test("PIZZA_KEY", "null");
-    }
-
-    /**
-     * This test is to return null as the key is missing from the config source and the default value was set to "", which should be converted to a null value.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testPartialPizza() throws Exception {
-        test("PIZZA_MISSING_KEY", "null");
+    public void testMISSING_KEY_WITH_DEFAULT_VALUE() throws Exception {
+        test("MISSING_KEY", "DEFAULT_VALUE");
     }
 
     /**
@@ -122,16 +106,5 @@ public class FieldTestServlet extends AbstractBeanServlet {
     public void testGoodPizza() throws Exception {
         test("PIZZA_GOOD_KEY", "9 inch ham pizza");
     }
-
-    //TODO fix these
-//    @Test
-//    public void testRedCar() throws Exception {
-//        test("RED_CAR_KEY", "Car: Ford, Colour: RED");
-//    }
-//
-//    @Test
-//    public void testBlueCar() throws Exception {
-//        test("BLUE_CAR_KEY", "Car: VW, Colour: BLUE");
-//    }
 
 }

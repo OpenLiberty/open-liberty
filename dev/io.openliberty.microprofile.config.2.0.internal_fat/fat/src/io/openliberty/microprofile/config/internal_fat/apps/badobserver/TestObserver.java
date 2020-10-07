@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.badobserver;
+package io.openliberty.microprofile.config.internal_fat.apps.badObserver;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
@@ -19,6 +19,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class TestObserver {
 
+    // Should throw a deployment exception
     private static final void observerMethod(@Observes @Initialized(ApplicationScoped.class) final Object obj,
                                              @ConfigProperty(name = "DOESNOTEXIST") final String doesnotexist) {
         throw new RuntimeException("This method should not have been called");

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.customSources.test;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -35,5 +36,11 @@ public class HashMapConfigSource extends AbstractConfigSource implements ConfigS
         int ordinal = 100;
         HashMapConfigSource source = new HashMapConfigSource(properties, ordinal, id);
         return source;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }

@@ -17,10 +17,13 @@
 package com.ibm.ws.microprofile.appConfig.dynamicSources.test;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class DiscoveredSource4 implements org.eclipse.microprofile.config.spi.ConfigSource {
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+public class DiscoveredSource4 implements ConfigSource {
 
     public ConcurrentMap<String, String> props;
     public int ordinal;
@@ -80,5 +83,11 @@ public class DiscoveredSource4 implements org.eclipse.microprofile.config.spi.Co
     @Override
     public int getOrdinal() {
         return ordinal;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }

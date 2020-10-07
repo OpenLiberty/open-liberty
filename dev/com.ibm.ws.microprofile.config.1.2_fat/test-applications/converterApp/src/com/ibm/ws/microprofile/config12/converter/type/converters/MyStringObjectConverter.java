@@ -19,6 +19,11 @@ public class MyStringObjectConverter implements Converter<MyStringObject> {
     /** {@inheritDoc} */
     @Override
     public MyStringObject convert(String value) {
+
+        // From the MP Config spec, A Converter must "@return the converted value, or {@code null} if the value is empty"
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
         MyStringObject obj = new MyStringObject();
         obj.setValue(value);
         return obj;

@@ -48,7 +48,7 @@ public class StressTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("StressServer", Version.LATEST, Version.CONFIG13_EE7);
+    public static RepeatTests r = RepeatConfigActions.repeat("StressServer", Version.LATEST, Version.CONFIG13_EE7, Version.CONFIG14_EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {

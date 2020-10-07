@@ -15,9 +15,6 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
-
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -48,7 +45,7 @@ public class TypeConverterServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID)
+    //@SkipForRepeat(RepeatConfig20EE8.ID) // TODO: The SmallRye implementation may be wrong for this: https://github.com/smallrye/smallrye-config/issues/413
     public void optionalConverterTest() throws Exception {
         bean.optionalConverterTest();
     }

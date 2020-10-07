@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
@@ -23,9 +19,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -151,29 +145,5 @@ public class DefaultSourcesTestServlet extends FATServlet {
         Config config = builder.build();
 
         TestUtils.assertContains(config, "defaultSources.sysProps", "sysPropsValue");
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
-    public void defaultsGetConfigPathProcEnv() throws Exception {
-        Map<String, String> env = new HashMap<>(System.getenv());
-        Properties props = System.getProperties();
-
-        //Properties override environment variables.
-        for (Map.Entry<?, ?> entry : props.entrySet()) {
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            env.put(key, value);
-        }
-
-        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        builder.addDefaultSources();
-        Config config = builder.build();
-
-        TestUtils.assertContains(config, env);
     }
 }

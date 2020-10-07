@@ -25,13 +25,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
-import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -45,8 +42,9 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
     public static final String APP_NAME = "brokenCDIConfig";
 
+    // Don't repeat against versions greater than mpConfig 1.4 since the error messages changed. New similar tests are in io.openliberty.microprofile.config.2.0.internal_fat bucket
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("brokenCDIConfigServer", Version.LATEST, Version.CONFIG11_EE7);
+    public static RepeatTests r = RepeatConfigActions.repeat("brokenCDIConfigServer", Version.CONFIG11_EE7, Version.CONFIG14_EE8);
 
     @Server("brokenCDIConfigServer")
     public static LibertyServer server;
@@ -56,7 +54,9 @@ public class CDIBrokenInjectionTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.broken")
                                    .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                                   .addAsLibrary(SharedShrinkWrapApps.cdiConfigJar());
+                                   .addAsManifestResource(new File("test-applications/" + APP_NAME
+                                                                   + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter"),
+                                                          "services/org.eclipse.microprofile.config.spi.Converter");
 
         ShrinkHelper.exportDropinAppToServer(server, war);
 
@@ -88,7 +88,6 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testMethodUnnamed() throws Exception {
         List<String> errors = server.findStringsInLogs("ConfigUnnamedMethodInjectionBean.*setSimpleKey6.*The property name must be specified for Constructor and Method configuration property injection");
         assertNotNull("error not found", errors);
@@ -96,7 +95,6 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testConstructorUnnamed() throws Exception {
         List<String> errors = server.findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
         assertNotNull("error not found", errors);
@@ -104,17 +102,22 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server.findStringsInLogs("CWMCG5003E.*PIZZA_MISSING_PROP.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Pizza");
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*nonExistantKey.*CWMCG0015E: The property com.ibm.ws.microprofile.appConfig.cdi.broken.beans.MissingConfigPropertyBean.nonExistantKey was not found in the configuration.");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
-    public void testDogConverterMissing() throws Exception {
-        List<String> errors = server.findStringsInLogs("CWMCG5003E.*DOG_KEY.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Dog");
+    public void testNonExistantKeyWithCustomConverter() throws Exception {
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*undefinedKeyWithConverter.*CWMCG0015E: The property com.ibm.ws.microprofile.appConfig.cdi.broken.beans.MissingConfigPropertyBean.undefinedKeyWithConverter was not found in the configuration.");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testConverterMissing() throws Exception {
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*noConverterProp.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.broken.test.TypeWithNoConverter.");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }

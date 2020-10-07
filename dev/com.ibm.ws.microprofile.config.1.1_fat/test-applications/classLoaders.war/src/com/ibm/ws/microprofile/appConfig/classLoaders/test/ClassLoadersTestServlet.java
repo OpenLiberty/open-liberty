@@ -12,82 +12,17 @@ package com.ibm.ws.microprofile.appConfig.classLoaders.test;
 
 import static org.junit.Assert.fail;
 
-import java.net.URL;
-
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigBuilder;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
-
-import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/")
 public class ClassLoadersTestServlet extends FATServlet {
-    @Test
-    public void testUserClassLoaders() throws Exception {
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
-        b.addDefaultSources();
-        Config config = b.build();
-        try {
-            //customLocation should not be found in the default sources using the TCCL
-            TestUtils.assertNotContains(config, "customLocation");
-        } finally {
-            ConfigProviderResolver.instance().releaseConfig(config);
-        }
-
-        //this custom classloader inserts an extra resource in the results
-        ClassLoader cl = new CustomClassLoader();
-        b.forClassLoader(cl);
-        b.addDefaultSources();
-        Config config2 = b.build();
-
-        try {
-            TestUtils.assertContains(config2, "customLocation", "foundOK");
-        } finally {
-            ConfigProviderResolver.instance().releaseConfig(config2);
-        }
-
-        try {
-            config2.getPropertyNames();
-        } catch (IllegalStateException e) {
-            //expected
-            TestUtils.assertEquals("CWMCG0001E: Config is closed.", e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    @ExpectedFFDC({ "java.util.ServiceConfigurationError" })
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
-    public void testUserLoaderErrors() throws Exception {
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
-        b.addDiscoveredConverters();
-
-        URL[] urls = new URL[1];
-        urls[0] = (new java.io.File("/")).toURI().toURL();
-
-        ClassLoader cl = new CustomClassLoaderError(urls);
-        b.forClassLoader(cl);
-        try {
-            b.build();
-            TestUtils.fail("Exception not thrown");
-        } catch (RuntimeException e) {
-            TestUtils.assertEquals("CWMCG0012E: Unable to discover Converters. The exception is: java.util.ServiceConfigurationError: org.eclipse.microprofile.config.spi.Converter: Error locating configuration files.",
-                                   e.getMessage());
-        }
-    }
 
     /**
      *

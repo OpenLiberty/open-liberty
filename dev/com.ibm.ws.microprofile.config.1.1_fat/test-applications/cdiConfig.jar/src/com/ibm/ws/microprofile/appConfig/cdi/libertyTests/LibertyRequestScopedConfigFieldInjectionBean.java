@@ -8,19 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.appConfig.cdi.broken.web;
+package com.ibm.ws.microprofile.appConfig.cdi.libertyTests;
 
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
 
-import com.ibm.ws.microprofile.appConfig.cdi.broken.beans.ConfigUnnamedMethodInjectionBean;
-
-import componenttest.app.FATServlet;
-
-@SuppressWarnings("serial")
-@WebServlet("/methodUnnamed")
-public class MethodTestServlet extends FATServlet {
-
-    @Inject
-    ConfigUnnamedMethodInjectionBean configBean3;
-}
+@RequestScoped
+public class LibertyRequestScopedConfigFieldInjectionBean extends LibertyConfigFieldInjectionBean {}

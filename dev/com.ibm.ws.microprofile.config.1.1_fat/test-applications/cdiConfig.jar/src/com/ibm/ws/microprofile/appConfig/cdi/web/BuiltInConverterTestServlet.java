@@ -20,7 +20,7 @@ import org.junit.Test;
 import com.ibm.ws.microprofile.appConfig.cdi.beans.BuiltInConverterInjectionBean;
 
 @SuppressWarnings("serial")
-@WebServlet("/builtin")
+@WebServlet("/builtIn")
 public class BuiltInConverterTestServlet extends AbstractBeanServlet {
 
     @Inject
@@ -74,16 +74,6 @@ public class BuiltInConverterTestServlet extends AbstractBeanServlet {
     @Test
     public void testBigDecimal() throws Exception {
         test("BIG_DECIMAL_KEY", "899559405265203640297");
-    }
-
-    @Test
-    public void testAtomicInteger() throws Exception {
-        test("ATOMIC_INTEGER_KEY", "1");
-    }
-
-    @Test
-    public void testAtomicLong() throws Exception {
-        test("ATOMIC_LONG_KEY", "1");
     }
 
     @Test

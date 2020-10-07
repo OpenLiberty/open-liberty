@@ -22,6 +22,7 @@ import com.ibm.ws.microprofile.config.fat.tests.ClassLoaderCacheTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
+import com.ibm.ws.microprofile.config.fat.tests.LibertySpecificConfigTests;
 import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
 import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
@@ -29,12 +30,17 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 
 /**
  * Tests specific to appConfig
+ *
+ * BasicConfigTests repeats across all MP Config versions (EE8)
+ * the rest repeat against the lastest version of MP Config and then one other combination of MP Config and EE version
+ * the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
  */
 @RunWith(Suite.class)
 @SuiteClasses({
                 BasicConfigTests.class, //LITE - repeats across all MP Config versions (EE8)
-                CDIBrokenInjectionTest.class, //FULL - the rest repeat against the lastest version of MP Config and then one other combination of MP Config and EE version
-                ClassLoaderCacheTest.class, //FULL - the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
+                LibertySpecificConfigTests.class, //FULL
+                CDIBrokenInjectionTest.class, //FULL
+                ClassLoaderCacheTest.class, //FULL
                 ClassLoadersTest.class, //FULL
                 DefaultSourcesTest.class, //FULL
                 DynamicSourcesTest.class, //FULL

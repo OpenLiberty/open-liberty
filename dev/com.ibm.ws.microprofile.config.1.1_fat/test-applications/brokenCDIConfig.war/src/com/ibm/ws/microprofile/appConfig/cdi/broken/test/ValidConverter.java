@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.badobserver;
+package com.ibm.ws.microprofile.appConfig.cdi.broken.test;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import org.eclipse.microprofile.config.spi.Converter;
+import org.junit.Assert;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+public class ValidConverter implements Converter<TypeWithValidConverter> {
 
-@Dependent
-public class BadObserverBean {
-
-    @Inject
-    @ConfigProperty(defaultValue = "hello")
-    String property;
-
-    public void dummyTest() {
-        throw new RuntimeException("This test should not have been run");
+    /** {@inheritDoc} */
+    @Override
+    public TypeWithValidConverter convert(String value) {
+        Assert.fail(); // Should not use this converter- Config Property value is not defined.
+        return null;
     }
+
 }

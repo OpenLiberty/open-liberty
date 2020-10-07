@@ -51,10 +51,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     String key3;
 
     @Inject
-    @ConfigProperty(name = "PARENT_KEY")
-    Parent PARENT_KEY;
-
-    @Inject
     @ConfigProperty(name = "DISCOVERED_KEY", defaultValue = "NULL")
     String DISCOVERED_KEY;
 
@@ -65,10 +61,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     @Inject
     @ConfigProperty(name = "DOG_KEY")
     Dog DOG_KEY;
-
-    @Inject
-    @ConfigProperty(name = "DOG_KEY")
-    Animal ANIMAL_KEY;
 
     @Inject
     @ConfigProperty(name = "URL_KEY")
@@ -87,18 +79,11 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     String SYS_PROP;
 
     /**
-     * This PIZZA_NEW_KEY does not exist in the configure sources. The default value "" will be null, which will result to a null.
+     * The MISSING_KEY does not exist in the configure sources. The default value "DEFAULT_VALUE" will be used for MISSING_KEY_WITH_DEFAULT_VALUE.
      */
     @Inject
-    @ConfigProperty(name = "PIZZA_NEW_KEY", defaultValue = "")
-    Pizza PIZZA_MISSING_PROP;
-
-    /**
-     * The PIZZA_KEY does exist in the config source but it will result to null value on purpose. Even though the default value is good but it will not be used.
-     */
-    @Inject
-    @ConfigProperty(name = "PIZZA_KEY", defaultValue = "chicken;12")
-    Pizza PIZZA_EXISTING_PROP;
+    @ConfigProperty(name = "MISSING_KEY", defaultValue = "DEFAULT_VALUE")
+    String MISSING_KEY_WITH_DEFAULT_VALUE;
 
     /**
      * This is the sanity test to check PIZZA_GOOD_KEY will be resolved to a good Pizza. The default value is not used.
@@ -106,14 +91,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     @Inject
     @ConfigProperty(name = "PIZZA_GOOD_KEY", defaultValue = "")
     Pizza PIZZA_GOOD_PROP;
-
-//    @Inject
-//    @ConfigProperty(name = "BLUE_CAR_KEY")
-//    Car<Blue> BLUE_CAR_PROP;
-//
-//    @Inject
-//    @ConfigProperty(name = "RED_CAR_KEY")
-//    Car<Red> RED_CAR_PROP;
 
     public ConfigFieldInjectionBean() {
         System.out.println("xtor: ConfigFieldInjectionBean()");
@@ -153,14 +130,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
         return key3;
     }
 
-    /**
-     * @return the uRL_KEY
-     */
-    @Override
-    public Parent getPARENT_KEY() {
-        return PARENT_KEY;
-    }
-
     @Override
     public String getDISCOVERED_KEY() {
         return DISCOVERED_KEY;
@@ -174,11 +143,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     @Override
     public Dog getDOG_KEY() {
         return DOG_KEY;
-    }
-
-    @Override
-    public Animal getANIMAL_KEY() {
-        return ANIMAL_KEY;
     }
 
     @Override
@@ -203,13 +167,8 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     }
 
     @Override
-    public Pizza getPIZZA_KEY() {
-        return PIZZA_EXISTING_PROP;
-    }
-
-    @Override
-    public Pizza getPIZZA_MISSING_KEY() {
-        return PIZZA_MISSING_PROP;
+    public String getMISSING_KEY() {
+        return MISSING_KEY_WITH_DEFAULT_VALUE;
     }
 
     @Override
@@ -217,11 +176,23 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
         return PIZZA_GOOD_PROP;
     }
 
-//    public Car<Red> getRED_CAR_KEY() {
-//        return RED_CAR_PROP;
-//    }
-//
-//    public Car<Blue> getBLUE_CAR_KEY() {
-//        return BLUE_CAR_PROP;
-//    }
+    @Override
+    public Parent getPARENT_KEY() {
+        return null;
+    }
+
+    @Override
+    public Animal getANIMAL_KEY() {
+        return null;
+    }
+
+    @Override
+    public Pizza getPIZZA_KEY() {
+        return null;
+    }
+
+    @Override
+    public Pizza getPIZZA_MISSING_KEY() {
+        return null;
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,31 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.characterInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@Dependent
-public class CharacterInjectionBean {
+@RequestScoped
+public class MissingConfigPropertyBean {
 
     @Inject
-    @ConfigProperty(name = "char1")
-    private Character property1;
+    @ConfigProperty
+    String nonExistantKey;
 
     @Inject
-    @ConfigProperty(name = "char1")
-    private char property2;
+    @ConfigProperty
+    TypeWithValidConverter undefinedKeyWithConverter; // undefinedKey == nonExistantKey, just didn't want to mess with the Regex in the tests.
 
-    public void characterInjectionTest() {
-        assertEquals(new Character('a'), property1);
-    }
+    @Inject
+    @ConfigProperty(name = "noConverterKey")
+    TypeWithNoConverter noConverterProp;
 
-    public void charInjectionTest() {
-        assertEquals('a', property2);
-    }
 }

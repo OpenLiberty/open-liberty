@@ -13,30 +13,22 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/earlib.jar/src,\
-	test-applications/defaultSources.war/src,\
-	test-applications/types.war/src,\
-	test-applications/dynamicSources.war/src,\
-	test-applications/warVisibility.war/src,\
-	test-applications/stress.war/src,\
-	test-applications/sharedLibUser.jar/src,\
-	test-applications/customSources.war/src,\
-	test-applications/classLoaderCache.war/src,\
-        test-applications/classLoaders.war/src,\
-	test-applications/converterApp/src,\
-	test-applications/converterApp/resources,\
-	test-applications/converters.war/src,\
-	test-applications/testAppUtils.jar/src,\
-	test-applications/sharedLib.jar/src,\
-	test-applications/defaultSources.jar/src,\
-	test-applications/cdiConfig.war/src,\
-	test-applications/cdiConfig.war/resources,\
-	test-applications/sharedLibUser.war/src,\
 	test-applications/brokenCDIConfig.war/src,\
-	test-applications/brokenCDIConfig.war/resources,\
+	test-applications/cdiConfig.jar/src,\
+	test-applications/classLoaderCache.war/src,\
+	test-applications/classLoaders.war/src,\
+	test-applications/converterApp/src,\
+	test-applications/converters.war/src,\
+	test-applications/customSources.war/src,\
+	test-applications/defaultSources.jar/src,\
+	test-applications/dynamicSources.war/src,\
 	test-applications/ordForDefaults.war/src,\
+	test-applications/sharedLib.jar/src,\
+	test-applications/sharedLibUser.jar/src,\
 	test-applications/simultaneousRequests.war/src,\
-	test-applications/cdiConfig.jar/src
+	test-applications/stress.war/src,\
+	test-applications/testAppUtils.jar/src,\
+	test-applications/types.war/src
 
 	
 fat.project: true

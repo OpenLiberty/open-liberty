@@ -64,8 +64,9 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public static final String WARB1_NAME = WARB1 + ".war";
     public static final String WARB2_NAME = WARB2 + ".war";
 
+    // Don't repeat against versions greater than mpConfig 1.4 since SmallRye Config implementation doesn't have methods for accessing cache for ConfigProviderResolver. e.g. getConfigCacheSize()
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ClassLoaderCacheServer", Version.LATEST, Version.CONFIG12_EE7);
+    public static RepeatTests r = RepeatConfigActions.repeat("ClassLoaderCacheServer", Version.CONFIG12_EE7, Version.CONFIG14_EE8);
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;

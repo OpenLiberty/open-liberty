@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.appConfig.cdi.broken.web;
+package com.ibm.ws.microprofile.appConfig.cdi.libertyTests;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
-import com.ibm.ws.microprofile.appConfig.cdi.broken.beans.MissingConfigPropertyBean;
+import org.junit.Test;
+
 import com.ibm.ws.microprofile.appConfig.cdi.web.AbstractBeanServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/missingConfigProperty")
-public class MissingConfigPropertyTestServlet extends AbstractBeanServlet {
+@WebServlet("/libertyBuiltIn")
+public class LibertyBuiltInConverterTestServlet extends AbstractBeanServlet {
 
     @Inject
-    MissingConfigPropertyBean configBean;
+    LibertyBuiltInConverterInjectionBean configBean;
+
+    @Test
+    public void testAtomicInteger() throws Exception {
+        test("ATOMIC_INTEGER_KEY", "1");
+    }
+
+    @Test
+    public void testAtomicLong() throws Exception {
+        test("ATOMIC_LONG_KEY", "1");
+    }
 
     /** {@inheritDoc} */
     @Override
     public Object getBean() {
         return configBean;
     }
+
 }

@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -126,25 +125,6 @@ public class ConvertersTestServlet extends FATServlet {
     }
 
     /**
-     * Test support for different type and subclass converters
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testConverterSubclass() throws Exception {
-        System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
-        b.withConverters(new MakeSubclassConverter<>());
-        MySource source = new MySource("key1", "value1");
-        b.withSources(source);
-        Config config = b.build();
-        Child child = config.getValue("key1", Child.class);
-        if (!"value1".equals(child.getValue())) {
-            fail("FAILED" + child.getValue());
-        }
-    }
-
-    /**
      * Test support for discovered converters
      *
      * @throws Exception
@@ -205,41 +185,6 @@ public class ConvertersTestServlet extends FATServlet {
                 result.append("\n" + name + "=" + c.getValue(name, String.class));
             }
             fail(result.toString());
-        }
-    }
-
-    /**
-     * Test what happens when a converter raises an exception
-     *
-     * @throws Exception
-     */
-    @Test
-    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
-    public void testConverterExceptions() throws Exception {
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
-
-        System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
-        MySource s1 = new MySource();
-
-        s1.put("p1", "setting1=customV1,setting2=customV2");
-        s1.put("p2", "value1=customV3,value2=customV4");
-        s1.put("p3", "attr1=customV5,attr2=customV6");
-
-        b.withSources(s1);
-        b.addDefaultSources();
-
-        Converter<CustomPropertyObject1> c1 = new MyBadConverter();
-
-        b.withConverters(c1);
-
-        Config c = b.build();
-
-        try {
-            @SuppressWarnings("unused")
-            CustomPropertyObject1 p1 = c.getValue("p1", CustomPropertyObject1.class);
-            fail("FAILED: IllegalArgumentException not thrown");
-        } catch (IllegalArgumentException e) {
-            TestUtils.assertEquals("Converter throwing intentional exception", e.getMessage());
         }
     }
 

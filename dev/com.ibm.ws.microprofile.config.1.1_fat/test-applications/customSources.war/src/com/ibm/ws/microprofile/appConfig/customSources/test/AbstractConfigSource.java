@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.customSources.test;
 
+import java.util.Set;
+
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
@@ -41,6 +43,12 @@ public abstract class AbstractConfigSource implements ConfigSource {
     @Override
     public String getName() {
         return name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 
 }

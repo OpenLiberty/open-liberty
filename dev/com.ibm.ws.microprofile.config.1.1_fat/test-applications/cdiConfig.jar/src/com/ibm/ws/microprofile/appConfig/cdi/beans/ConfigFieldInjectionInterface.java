@@ -48,9 +48,12 @@ public interface ConfigFieldInjectionInterface {
 
     public URL getOPTIONAL_MISSING_KEY();
 
+    public String getMISSING_KEY();
+
     public Pizza getPIZZA_KEY();
 
     public Pizza getPIZZA_MISSING_KEY();
 
     public Pizza getPIZZA_GOOD_KEY();
+
 }

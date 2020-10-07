@@ -47,6 +47,7 @@ public class DynamicSourcesTest extends FATServletClient {
     @TestServlet(servlet = DynamicSourcesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    // Don't repeat against greater than mpConfig 1.4 since polling behaviour changed.
     @ClassRule
     public static RepeatTests r = RepeatConfigActions.repeat("DynamicSourcesServer", Version.CONFIG11_EE8);
 

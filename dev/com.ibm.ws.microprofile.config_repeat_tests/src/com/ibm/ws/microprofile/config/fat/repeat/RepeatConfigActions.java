@@ -50,7 +50,7 @@ public class RepeatConfigActions {
     }
 
     public static RepeatTests repeatAllConfigVersionsEE8(String server) {
-        return repeat(server, Version.CONFIG11_EE8, Version.CONFIG12_EE8, Version.CONFIG13_EE8, Version.CONFIG14_EE8); //2.0 will be added shortly
+        return repeat(server, Version.CONFIG11_EE8, Version.CONFIG12_EE8, Version.CONFIG13_EE8, Version.CONFIG14_EE8, Version.CONFIG20_EE8);
     }
 
     public static RepeatTests repeat(String server, Version firstVersion, Version... otherVersions) {

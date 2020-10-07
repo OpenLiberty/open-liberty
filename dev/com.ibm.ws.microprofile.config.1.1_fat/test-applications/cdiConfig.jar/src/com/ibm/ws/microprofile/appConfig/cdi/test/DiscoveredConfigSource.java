@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.appConfig.cdi.test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -52,6 +53,12 @@ public class DiscoveredConfigSource extends HashMap<String, String> implements C
     @Override
     public String getName() {
         return "DiscoveredConfigSource";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 
 }

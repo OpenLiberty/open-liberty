@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.customSources.test;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -45,6 +47,12 @@ public class NullSource implements ConfigSource {
     public String getName() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return Collections.<String> emptySet();
     }
 
 }

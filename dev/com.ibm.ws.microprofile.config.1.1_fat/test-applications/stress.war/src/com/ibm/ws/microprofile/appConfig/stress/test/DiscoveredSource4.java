@@ -16,10 +16,13 @@
 
 package com.ibm.ws.microprofile.appConfig.stress.test;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class DiscoveredSource4 implements org.eclipse.microprofile.config.spi.ConfigSource {
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+public class DiscoveredSource4 implements ConfigSource {
 
     public ConcurrentMap<String, String> props;
     public int ordinal;
@@ -78,5 +81,11 @@ public class DiscoveredSource4 implements org.eclipse.microprofile.config.spi.Co
     @Override
     public String getName() {
         return id;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }
