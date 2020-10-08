@@ -86,7 +86,6 @@ public class ConfigurationImpl extends AbstractJaegerAdapter<io.jaegertracing.Co
 
     @Override
     public Builder getTracerBuilder() {
-        getDelegate().getTracerBuilder();
-        return null;  //TODO FW
+        return new JaegerTracerBuilderImpl(getDelegate().getTracerBuilder());
     }
 }

@@ -42,7 +42,9 @@ src: src
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
+  io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest, \
+  io.openliberty.io.opentracing.opentracing-util.0.33.0;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
   io.jaegertracing:jaeger-core;version=0.34.0
+  
   

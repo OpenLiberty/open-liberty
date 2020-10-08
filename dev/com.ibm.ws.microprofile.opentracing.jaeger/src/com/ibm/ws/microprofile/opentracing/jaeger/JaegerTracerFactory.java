@@ -28,13 +28,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.CodecConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.ReporterConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SamplerConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SenderConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.LRCScopeManager;
 
 import io.opentracing.Tracer;
 
@@ -180,14 +180,15 @@ public class JaegerTracerFactory {
 //
 //            tracer = configuration.getTracer();
 
-            tracer = factory.newConfiguration(appName)
+            tracer = (Tracer) factory.newConfiguration(appName)
                             .withReporter(reporterConfiguration)
                             .withSampler(samplerConfiguration)
                             .withTracerTags(tracerTagsFromEnv())
                             .withCodec(codecConfiguration)
                             .getTracerBuilder()
-                            .withScopeManager(new LRC)
-                            .
+                            .withScopeManager(new LRCScopeManager())
+                            .build();
+
                     
             
             String dest = null;
