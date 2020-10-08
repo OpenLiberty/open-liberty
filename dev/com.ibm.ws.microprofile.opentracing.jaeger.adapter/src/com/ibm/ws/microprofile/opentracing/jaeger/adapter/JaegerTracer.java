@@ -8,5 +8,7 @@ public interface JaegerTracer extends JaegerAdapter {
         
         public Builder withScopeManager(ScopeManager scopeManager);
         
+        public io.opentracing.Tracer build();
+        
     }
 }
