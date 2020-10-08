@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
-    private static final int FEATURE_CACHE_VERSION = 2;
+    private static final int FEATURE_CACHE_VERSION = 3;
     private static final String EMPTY = "";
 
     /**
@@ -129,6 +129,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      */
     public String matchesAlternate(String featureName) {
         return alternateFeatureNameToPublicName.get(lowerFeature(featureName));
+    }
+
+    public boolean disableAllFeaturesOnConflict(String featureName) {
+        SubsystemFeatureDefinitionImpl feature = (SubsystemFeatureDefinitionImpl) getFeature(featureName);
+        if (feature != null) {
+            return feature.getImmutableAttributes().disableOnConflict;
+        }
+        return false;
     }
 
     /**
@@ -376,6 +384,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         out.writeBoolean(iAttr.hasApiPackages);
         out.writeBoolean(iAttr.hasSpiPackages);
         out.writeBoolean(iAttr.isSingleton);
+        out.writeBoolean(iAttr.disableOnConflict);
 
         out.writeInt(iAttr.processTypes.size());
         for (ProcessType type : iAttr.processTypes) {
@@ -453,6 +462,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         boolean hasApiPackages = in.readBoolean();
         boolean hasSpiPackages = in.readBoolean();
         boolean isSingleton = in.readBoolean();
+        boolean disableOnConflict = in.readBoolean();
 
         int processTypeNum = in.readInt();
         EnumSet<ProcessType> processTypes = EnumSet.noneOf(ProcessType.class);
@@ -467,7 +477,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
         return new ImmutableAttributes(repositoryType, symbolicName, shortName, altNames, featureVersion, visibility, appRestart,
                                        version, featureFile, lastModified, fileSize, isAutoFeature, hasApiServices, hasApiPackages,
-                                       hasSpiPackages, isSingleton, processTypes, activationType);
+                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType);
     }
 
     /**
