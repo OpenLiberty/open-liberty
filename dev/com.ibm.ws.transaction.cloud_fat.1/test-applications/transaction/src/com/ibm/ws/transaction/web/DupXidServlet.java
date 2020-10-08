@@ -24,8 +24,9 @@ import javax.transaction.Transaction;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
-import com.ibm.ws.cloudtx.ut.util.LastingXAResourceImpl;
 
 import componenttest.app.FATServlet;
 
@@ -88,11 +89,13 @@ public class DupXidServlet extends FATServlet {
 
             final Transaction tx = tm.getTransaction();
 
-            LastingXAResourceImpl xares1 = new LastingXAResourceImpl();
+            final LastingXAResourceImpl xares1 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
             xares1.setCommitAction(XAResourceImpl.DIE);
+            final LastingXAResourceImpl xares2 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
+            final LastingXAResourceImpl xares3 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
             tx.enlistResource(xares1);
-            tx.enlistResource(new LastingXAResourceImpl());
-            tx.enlistResource(new LastingXAResourceImpl());
+            tx.enlistResource(xares2);
+            tx.enlistResource(xares3);
 
             tm.commit();
         } catch (Exception e) {
@@ -111,11 +114,13 @@ public class DupXidServlet extends FATServlet {
 
             final Transaction tx = tm.getTransaction();
 
-            LastingXAResourceImpl xares1 = new LastingXAResourceImpl();
+            final LastingXAResourceImpl xares1 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
             xares1.setCommitAction(XAResourceImpl.DIE);
+            final LastingXAResourceImpl xares2 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
+            final LastingXAResourceImpl xares3 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
             tx.enlistResource(xares1);
-            tx.enlistResource(new LastingXAResourceImpl());
-            tx.enlistResource(new LastingXAResourceImpl());
+            tx.enlistResource(xares2);
+            tx.enlistResource(xares3);
 
             tm.commit();
         } catch (Exception e) {

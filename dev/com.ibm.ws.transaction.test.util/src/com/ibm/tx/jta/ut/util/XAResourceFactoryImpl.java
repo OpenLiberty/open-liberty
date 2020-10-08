@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,6 +130,10 @@ public class XAResourceFactoryImpl implements XAResourceFactory {
         return XAResourceImpl.getXAResourceImpl(((XAResourceInfoImpl) xaresinfo).getKey());
     }
 
+    public LastingXAResourceImpl getLastingXAResourceImpl() throws XAResourceNotAvailableException {
+        return LastingXAResourceImpl.getLastingXAResourceImpl();
+    }
+    
     public AbortableXAResourceImpl getAbortableXAResourceImpl(Serializable xaresinfo) throws XAResourceNotAvailableException {
         return AbortableXAResourceImpl.getAbortableXAResourceImpl(((XAResourceInfoImpl) xaresinfo).getKey());
     }
