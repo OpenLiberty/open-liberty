@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package com.ibm.ws.microprofile.config13.configOrdinalServerXMLWebApp.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.context.ApplicationScoped;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                HotAddMPConfig.class, //FULL
-                ServerXMLTest.class, //FULL
-                VariableServerXMLTest.class, //LITE
-                ConfigOrdinalServerXMLTest.class // FULL
-})
-public class FATSuite {
+/**
+ * A bean is needed so that CDI does any injection...
+ */
+@ApplicationScoped
+public class DummyBean {
 
 }
