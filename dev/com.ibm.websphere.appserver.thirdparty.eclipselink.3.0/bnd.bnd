@@ -113,7 +113,8 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.corba;${eclFullVersion}}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion}}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion}}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion}}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion}}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -123,11 +124,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.asm;version=${eclFullVersion},\
-    org.eclipse.persistence:org.eclipse.persistence.corba;version=${eclFullVersion},\
     org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion},\
     org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion},\
-    org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;version=${eclFullVersion},\
-    org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;version=${eclFullVersion},\
     jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
     com.ibm.websphere.org.osgi.core

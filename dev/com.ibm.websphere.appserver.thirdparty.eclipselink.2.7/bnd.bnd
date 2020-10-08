@@ -124,12 +124,8 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.antlr;version=${eclFullVersion};strategy=exact,\
-    org.eclipse.persistence:org.eclipse.persistence.asm;version=${eclFullVersion};strategy=exact,\
     org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
     org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
-    org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;version=${eclFullVersion};strategy=exact,\
-    org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;version=${eclFullVersion};strategy=exact,\
     javax.persistence:javax.persistence-api;version=2.2, \
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\

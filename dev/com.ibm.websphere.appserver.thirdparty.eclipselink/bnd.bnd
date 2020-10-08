@@ -17,10 +17,6 @@ eclHash=b093148
 eclFullVersion=${eclVersion}-${eclHash}
 eclPackageVersion=1.0.16
 
-eclAntlrVersion=3.5.2.v202005201612
-eclAsmVersion=8.0.1.v202008070940
-eclModelGenVersion=v20200807-b093148
-
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink
 Bundle-Description: EclipseLink JPA
 Bundle-Distributor: IBM
@@ -112,12 +108,12 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence.antlr;${eclAntlrVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;${eclAsmVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.core;${eclVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.jpql;${eclVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;${eclVersion}-${eclModelGenVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;${eclVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 publish.wlp.jar.suffix: dev/api/third-party
