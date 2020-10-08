@@ -11,6 +11,7 @@
 package componenttest.rules.repeater;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -45,6 +46,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     private static final Class<?> c = JakartaEE9Action.class;
 
     public static final String ID = "EE9_FEATURES";
+
+    private boolean transformServerConfig = false;
 
     // Point-in-time list of enabled JakartaEE9 features.
     // This list is of only the currently enabled features.
@@ -112,8 +115,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return "JakartaEE9 FAT repeat action";
     }
 
-    //
-
     @Override
     public JakartaEE9Action addFeature(String addFeature) {
         return (JakartaEE9Action) super.addFeature(addFeature);
@@ -164,7 +165,19 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return (JakartaEE9Action) super.forClients(clientNames);
     }
 
-    //
+    /**
+     * By default the JakartaEE9Action will perform a feature replacement on all server.xml files
+     * located in the /publish/* directories. By calling this method this action will also run all
+     * of these files through the transformer to replace javax package names with jakarta.
+     *
+     * Alternatively if you just want to transform a certain server.xml you can call the transformServer method
+     *
+     * @see JakartaEE9Action#transformServer(Path)
+     */
+    public JakartaEE9Action transformServerConfig() {
+        this.transformServerConfig = true;
+        return this;
+    }
 
     @Override
     public void setup() throws Exception {
@@ -177,8 +190,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         }
         ShrinkHelper.cleanAllExportedArchives();
 
-        // Transform server.xml's
         super.setup();
+
+        if (transformServerConfig)
+            for (File serverXml : super.getReplacementServers())
+                transformServer(serverXml.toPath());
     }
 
     public static boolean isActive() {
@@ -308,6 +324,99 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             }
         } catch (Exception e) {
             Log.info(c, m, "Unable to transform app at path: " + appPath);
+            Log.error(c, m, e);
+            throw new RuntimeException(e);
+        } finally {
+            System.setOut(originalOut);
+            System.setErr(originalErr);
+            Log.info(c, m, baos.toString());
+            try {
+                baos.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
+
+    /**
+     * Invoke the Jakarta transformer on a server.xml file
+     * to create a new transformed copy.
+     *
+     * A backup of the original server.xml is placed
+     * under "&lt;server&gt;/backup". The extension ".jakarta" is appended to
+     * name the initially transformed application. However,
+     * that application is renamed to the initial application name.
+     *
+     * @param appPath    The application path of file to be transformed to Jakarta
+     * @param newAppPath The application path of the transformed file (or <code>null<code>)
+     */
+    public static void transformServer(Path serverXmlPath) {
+        final String m = "transformServer";
+        Log.info(c, m, "Transforming server.xml: " + serverXmlPath);
+
+        // Capture stdout/stderr streams
+        final PrintStream originalOut = System.out;
+        final PrintStream originalErr = System.err;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+        System.setErr(ps);
+
+        try {
+            Class.forName("org.eclipse.transformer.jakarta.JakartaTransformer");
+        } catch (Throwable e) {
+            String mesg = "Unable to load the org.eclipse.transformer.jakarta.JakartaTransformer class. " +
+                          "Did you remember to include 'addRequiredLibraries.dependsOn addJakartaTransformer' in the FATs build.gradle file?";
+            Log.error(c, m, e, mesg);
+            throw new RuntimeException(mesg, e);
+        }
+
+        Path outputPath = serverXmlPath.resolveSibling(serverXmlPath.getFileName() + ".jakarta");
+        Path backupPath = serverXmlPath.getParent().resolve("backup");
+
+        try {
+            if (!Files.exists(backupPath)) {
+                Files.createDirectory(backupPath); // throws IOException
+            }
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to create backup directory.");
+            Log.error(c, m, e);
+            throw new RuntimeException(e);
+        }
+
+        String transformerRulesRoot = System.getProperty("user.dir") + "/autoFVT-templates/";
+        try {
+            // Invoke the jakarta transformer
+            String[] args = new String[4];
+
+            args[0] = serverXmlPath.toAbsolutePath().toString(); // input
+            args[1] = outputPath.toAbsolutePath().toString(); // output
+
+            // override jakarta default properties, which are
+            // packaged in the transformer jar
+            args[2] = "-tf";
+            args[3] = transformerRulesRoot + "jakarta-xml-master.properties";
+
+            // Note the use of 'com.ibm.ws.JakartaTransformer'.
+            // 'org.eclipse.transformer.Transformer' might also be used instead.
+
+            JakartaTransformer.main(args);
+
+            if (outputPath.toFile().exists()) {
+                if (backupPath != null) {
+                    Path backupAppPath = backupPath.resolve(serverXmlPath.getFileName());
+                    if (!Files.exists(backupAppPath)) {
+                        Files.createFile(backupAppPath);
+                    }
+                    // move original to backup
+                    Files.move(serverXmlPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
+                    // rename jakarta app to the original filename
+                    Files.move(outputPath, serverXmlPath);
+                }
+            } else {
+                throw new RuntimeException("Jakarta transformer failed for: " + serverXmlPath);
+            }
+        } catch (Exception e) {
+            Log.info(c, m, "Unable to transform app at path: " + serverXmlPath);
             Log.error(c, m, e);
             throw new RuntimeException(e);
         } finally {

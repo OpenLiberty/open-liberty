@@ -41,9 +41,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.context.ClassloaderContext;
 import com.ibm.websphere.simplicity.config.context.JEEMetadataContext;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -55,6 +55,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class DependantApplicationTest extends FATServletClient {
 
+    @Server("com.ibm.ws.jca.fat")
     public static LibertyServer server;
 
     private static final String fvtapp = "fvtapp";
@@ -90,7 +91,6 @@ public class DependantApplicationTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = FATSuite.getServer();
 
         // Build jars that will be in the RAR
         JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");

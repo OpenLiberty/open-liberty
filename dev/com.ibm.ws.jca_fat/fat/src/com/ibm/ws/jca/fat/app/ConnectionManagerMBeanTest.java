@@ -36,8 +36,8 @@ import com.ibm.websphere.simplicity.config.JMSConnectionFactory;
 import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jca.fat.FATSuite;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
@@ -46,6 +46,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class ConnectionManagerMBeanTest extends FATServletClient {
 
+    @Server("com.ibm.ws.jca.fat")
     public static LibertyServer server;
 
     private static ServerConfiguration originalServerConfig;
@@ -63,7 +64,6 @@ public class ConnectionManagerMBeanTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = FATSuite.getServer();
 
         // Build jars that will be in the RAR
         JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");
