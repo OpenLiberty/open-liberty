@@ -28,6 +28,7 @@ import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -37,6 +38,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 
 @Mode(TestMode.FULL)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES }) // Skipped temporarily to test PassivationBeanTests for sessionDatabase-1.0 feature
 public class BeanLifecycleTest extends LoggingTest {
 
     @ClassRule
