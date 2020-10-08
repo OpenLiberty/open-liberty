@@ -119,6 +119,7 @@ task copyServerFiles_sharedConfig {
  }
  
  task copy11TesBinaries {
+  dependsOn ':com.ibm.ws.security.mp.jwt.1.1_fat:autoFVT'
   doLast {
   
      /*
@@ -132,7 +133,7 @@ task copyServerFiles_sharedConfig {
  }
  
  task copyServerFiles { 
-
+ dependsOn ':com.ibm.ws.security.mp.jwt.1.1_fat:autoFVT'
  doLast {
 
   servers.each { server ->
