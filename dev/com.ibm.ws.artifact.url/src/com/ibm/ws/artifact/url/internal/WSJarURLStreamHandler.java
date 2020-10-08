@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2010 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,10 +187,10 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
             // not expect it to be present.
             String entry = ParserUtils.decode(path.substring(resourceDelimiterIndex + 2));
             // Since the URL we were passed may reference a file in a remote file system with
-            // a UNC based name (\\Myhost\Mypath), we must take care to construct a new "host agnostic" 
+            // a UNC based name (\\Myhost\Mypath), we must take care to construct a new "host agnostic"
             // URL so that when we call getPath() on it we get the whole path, irregardless of whether
-            // the resource is on a local or a remote file system. We will also now validate 
-            // our urlString has the proper "file" protocol prefix. 
+            // the resource is on a local or a remote file system. We will also now validate
+            // our urlString has the proper "file" protocol prefix.
             URL jarURL = constructUNCTolerantURL("file", urlString);
 
             conn = new WSJarURLConnectionImpl(url, jarURL.getPath(), entry, zipCache);
@@ -335,6 +335,7 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
         }
 
         //@Override - this is only an override in Java 7
+        @Override
         public long getContentLengthLong() {
             long length;
             ZipFileHandle zipFileHandle = null;
@@ -379,7 +380,7 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
         }
 
         @Override
-        public synchronized void close() throws IOException { // 578280 
+        public synchronized void close() throws IOException { // 578280
             if (zipFileHandle != null) { // 578280
                 try {
                     // D531229.1 - Always close the input stream even though
@@ -393,6 +394,20 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
             }
         }
 
+        /**
+         * finalize to close the file as a fail safe
+         * in case the file has not already been closed.
+         * You should not rely on finalize to close the file
+         * for you as it needs to wait for a garbage collection
+         */
+        @Override
+        protected void finalize() {
+            try {
+                close();
+            } catch (IOException ex) {
+                //will be auto ffdc'd.
+            }
+        }
     }
 
     // end 408408.2
@@ -402,24 +417,24 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
      * A method for constructing a purely path based URL from an input string that may
      * optionally contain UNC compliant host names. Examples of properly formatted urlString inputs
      * are as follows:
-     * 
+     *
      * Remote file system (UNC convention)
      * protocolPrefix://host/path
      * protocolPrefix:////host/path
-     * 
+     *
      * Local file system
      * protocolPrefix:/path
      * protocolPrefix:/C:/path
-     * 
+     *
      * The input urlString is validated such that it must begin with the protocolPrefix.
-     * 
+     *
      * Note: UNC paths are used by several OS platforms to map remote file systems. Using this
      * method guarantees that even if the pathComponent contains a UNC based host, the host
      * prefix of the path will be treated as path information and not interpreted as a host
      * component part of the URL returned by this method.
-     * 
+     *
      * @param protocolPrefix The String which is used verify the presence of the urlString protocol before it is removed.
-     * @param urlString A string which will be processed, parsed and used to construct a Hostless URL.
+     * @param urlString      A string which will be processed, parsed and used to construct a Hostless URL.
      * @return A URL that is constructed consisting of only path information (no implicit host information).
      * @throws IOException is Thrown if the input urlString does not begin with the specified protocolPrefix.
      */
@@ -433,7 +448,7 @@ public class WSJarURLStreamHandler extends AbstractURLStreamHandlerService { // 
 
         // By using this constructor we make sure the JDK does not attempt to interpret leading characters
         // as a host name. This assures that any embedded UNC encoded string prefixes are ignored and
-        // subsequent calls to getPath on this URL will always return the full path string (including the 
+        // subsequent calls to getPath on this URL will always return the full path string (including the
         // UNC host prefix).
         URL jarURL = Utils.newURL(urlProtocol, "", -1, urlPath);
         return jarURL;
