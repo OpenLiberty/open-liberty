@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,9 @@ import componenttest.app.FATServlet;
 public class LibertyClassLoadersTestServlet extends FATServlet {
 
     /**
-     * MP Config 2.0 does not throw exceptions for calling methods on released Configs
+     * mpConfig > 1.4 does not throw exceptions for calling methods on released Configs.
+     *
+     * @throws Exception
      */
     @Test
     public void testUserClassLoaders() throws Exception {
@@ -67,7 +69,7 @@ public class LibertyClassLoadersTestServlet extends FATServlet {
     }
 
     /**
-     * MP Config 2.0+ throws different error message. Test covered with testUserLoaderErrorsConfig20()
+     * mpConfig > 1.4 throws different error message. Test covered in 2.0 FAT bucket
      *
      * @throws Exception
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,22 +32,25 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
  * Tests specific to appConfig
  *
  * BasicConfigTests repeats across all MP Config versions (EE8)
- * the rest repeat against the lastest version of MP Config and then one other combination of MP Config and EE version
+ * the rest repeat against the lastest version of MP Config (where appropriate) and then one other combination of MP Config and EE version
  * the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
+ * some classes do not repeat against the latest due to functional changes between MP Config 1.4 -> 2.0
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicConfigTests.class, //LITE - repeats across all MP Config versions (EE8)
-                LibertySpecificConfigTests.class, //FULL
-                CDIBrokenInjectionTest.class, //FULL
-                ClassLoaderCacheTest.class, //FULL
+                BasicConfigTests.class, //LITE
                 ClassLoadersTest.class, //FULL
                 DefaultSourcesTest.class, //FULL
-                DynamicSourcesTest.class, //FULL
                 OrdinalsForDefaultsTest.class, //FULL
                 SimultaneousRequestsTest.class, //FULL
                 SharedLibTest.class, //FULL
-                StressTest.class //FULL
+                StressTest.class, //FULL
+
+                // The following don't repeat against mpConfig > 1.4. See classes for why.
+                LibertySpecificConfigTests.class, //FULL
+                CDIBrokenInjectionTest.class, //FULL
+                ClassLoaderCacheTest.class, //FULL
+                DynamicSourcesTest.class //FULL
 
 })
 

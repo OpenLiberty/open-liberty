@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class StressTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("StressServer", Version.LATEST, Version.CONFIG13_EE7, Version.CONFIG14_EE8);
+    public static RepeatTests r = RepeatConfigActions.repeat("StressServer", Version.CONFIG13_EE7, Version.LATEST);
 
     @BeforeClass
     public static void setUp() throws Exception {

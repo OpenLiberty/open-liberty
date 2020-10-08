@@ -13,32 +13,21 @@ package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
 public class ConfigUnnamedConstructorInjectionBean {
 
     private String SIMPLE_KEY4 = null;
-    private Config config = null;
 
     //this will fail
-
     @Inject
-    public ConfigUnnamedConstructorInjectionBean(@ConfigProperty String SIMPLE_KEY4, Config config) {
+    public ConfigUnnamedConstructorInjectionBean(@ConfigProperty String SIMPLE_KEY4) {
         this.SIMPLE_KEY4 = SIMPLE_KEY4;
-        this.config = config;
-    }
-
-    public ConfigUnnamedConstructorInjectionBean() {
     }
 
     public String getSIMPLE_KEY4() {
         return SIMPLE_KEY4;
-    }
-
-    public String getSIMPLE_KEY5() {
-        return config.getValue("SIMPLE_KEY5", String.class);
     }
 
 }

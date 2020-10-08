@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class LibertyConvertersTestServlet extends FATServlet {
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
 
     /**
-     * Test support for different type and subclass converters
+     * Test support for different type and subclass converters.
      *
      * Behaviour for subclass converters is not defined in the MicroProfile Config specification.
      *
@@ -57,12 +57,12 @@ public class LibertyConvertersTestServlet extends FATServlet {
     }
 
     /**
-     * Test what happens when a converter raises an exception
+     * Test what happens when a converter raises an exception.
      *
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC({ "java.lang.IllegalArgumentException" }) // FFDC only thrown in mpConfig <2.0
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" }) // FFDC only thrown in mpConfig < 2.0
     public void testConverterExceptions() throws Exception {
 
         ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();

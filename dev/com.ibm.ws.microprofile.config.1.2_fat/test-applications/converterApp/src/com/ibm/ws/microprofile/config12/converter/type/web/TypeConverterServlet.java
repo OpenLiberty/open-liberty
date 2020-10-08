@@ -45,7 +45,6 @@ public class TypeConverterServlet extends FATServlet {
     }
 
     @Test
-    //@SkipForRepeat(RepeatConfig20EE8.ID) // TODO: The SmallRye implementation may be wrong for this: https://github.com/smallrye/smallrye-config/issues/413
     public void optionalConverterTest() throws Exception {
         bean.optionalConverterTest();
     }

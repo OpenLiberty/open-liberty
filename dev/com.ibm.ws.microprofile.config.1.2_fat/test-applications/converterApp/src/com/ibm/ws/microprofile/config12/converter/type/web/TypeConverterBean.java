@@ -128,7 +128,6 @@ public class TypeConverterBean {
      */
     public void optionalConverterTest() throws Exception {
         assertNotNull(unknownOptional);
-        System.out.println("unknownOptional.isPresent(): " + unknownOptional.isPresent());
         if (unknownOptional.isPresent()) {
             fail("optional value should have been null but was (MyStringObject): " + unknownOptional.get().getValue());
         }

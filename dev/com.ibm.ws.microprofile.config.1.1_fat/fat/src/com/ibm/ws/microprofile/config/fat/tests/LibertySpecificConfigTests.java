@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,9 @@ import componenttest.topology.utils.FATServletClient;
 /**
  * These tests test Config functionality specific to Liberty's implementation (mpConfig 1.x) of MicroProfile Config specification.
  *
- * For mpConfig versions <2.0, Open Liberty implemented some extra pieces of functionality beyond the MicroProfile Config specification.
+ * For mpConfig < 2.0, Open Liberty implemented some extra pieces of functionality beyond the MicroProfile Config specification.
  *
- * In additon, some tests check for error messages defined by Liberty, and others check functionality which changed between mpConfig 1.4 -> 2.0.
+ * In addition, some tests check for error messages defined by Liberty, and others check functionality which changed between mpConfig 1.4 -> 2.0.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -59,7 +59,7 @@ public class LibertySpecificConfigTests extends FATServletClient {
     public static final String DEFAULT_SOURCES_APP_NAME = "defaultSources";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("CDILibertyConfigServer", Version.CONFIG11_EE7, Version.CONFIG14_EE8); // Don't repeat for mpConfig 2.0+
+    public static RepeatTests r = RepeatConfigActions.repeat("CDILibertyConfigServer", Version.CONFIG11_EE7, Version.CONFIG14_EE8); // Don't repeat for mpConfig > 1.4
 
     @Server(SERVER_NAME)
     @TestServlets({

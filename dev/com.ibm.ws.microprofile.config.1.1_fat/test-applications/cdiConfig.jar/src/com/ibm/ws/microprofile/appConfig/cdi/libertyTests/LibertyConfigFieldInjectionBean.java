@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class LibertyConfigFieldInjectionBean {
     /**
      * The PIZZA_KEY does exist in the config source but it will result to null value on purpose. Even though the default value is good but it will not be used.
      *
-     * The intended behaviour for this for mpConfig > 1.4 is still in discussion: https://github.com/eclipse/microprofile-config/issues/608.
+     * TODO: The intended behaviour for this for mpConfig > 1.4 is still in discussion: https://github.com/eclipse/microprofile-config/issues/608.
      *
      * Currently, mpConfig > 1.4 is throwing a "DeploymentException: SRCFG02004: Required property PIZZA_KEY not found".
      */

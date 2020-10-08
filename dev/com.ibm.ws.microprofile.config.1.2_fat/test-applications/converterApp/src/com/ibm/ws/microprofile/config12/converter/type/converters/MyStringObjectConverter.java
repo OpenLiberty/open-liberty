@@ -24,6 +24,7 @@ public class MyStringObjectConverter implements Converter<MyStringObject> {
         if (value == null || value.isEmpty()) {
             return null;
         }
+
         MyStringObject obj = new MyStringObject();
         obj.setValue(value);
         return obj;

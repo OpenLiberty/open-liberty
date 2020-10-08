@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class ConvertersTestServlet extends FATServlet {
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
 
     /**
-     * Test what happens when a converter raises an exception for mpConfig2.0 and above
+     * Test what happens when a converter raises an exception for mpConfig > 1.4.
      *
      * @throws Exception
      */

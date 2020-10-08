@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,11 +30,17 @@ public class LibertyFieldTestServlet extends AbstractBeanServlet {
         return configBean;
     }
 
+    /**
+     * Deriving converters from parent classes is extra functionality beyond the MP specification, hence don't test this against mpConfig > 1.4
+     */
     @Test
     public void testParent() throws Exception {
         test("PARENT_KEY", "Child: parent");
     }
 
+    /**
+     * Deriving converters from child classes is extra functionality beyond the MP specification, hence don't test this against mpConfig > 1.4
+     */
     @Test
     public void testAnimal() throws Exception {
         test("ANIMAL_KEY", "A Black Dog called Bob");
