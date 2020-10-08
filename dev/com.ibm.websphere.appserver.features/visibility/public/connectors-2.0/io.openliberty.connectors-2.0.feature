@@ -11,7 +11,7 @@ Subsystem-Category: JakartaEE9Application
  io.openliberty.connectors-2.0.internal, \
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=com.ibm.ws.app.manager.rar, \
+-bundles=com.ibm.ws.app.manager.rar.jakarta, \
  com.ibm.ws.jca.1.7.jakarta
 kind=beta
 edition=base

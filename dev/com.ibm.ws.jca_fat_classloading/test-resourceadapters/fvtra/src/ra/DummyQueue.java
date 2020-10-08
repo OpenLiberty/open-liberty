@@ -12,8 +12,8 @@ package ra;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 
 public class DummyQueue implements Queue {
 
