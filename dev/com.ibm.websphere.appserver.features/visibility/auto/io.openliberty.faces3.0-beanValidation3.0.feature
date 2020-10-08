@@ -8,3 +8,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jsf.beanvalidation.jakarta
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
