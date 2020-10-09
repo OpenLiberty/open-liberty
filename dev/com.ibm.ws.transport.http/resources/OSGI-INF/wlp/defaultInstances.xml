@@ -17,6 +17,8 @@
 	<compression id="defaultCompression" service.ranking="-1" />
 	
 	<samesite id="defaultSameSite" service.ranking="-1"/>
+	
+	<headers id="defaultHeaders" service.ranking="-1"/>
 
 	<httpEndpoint id="defaultHttpEndpoint" httpPort="9080" httpsPort="9443" />
 	
