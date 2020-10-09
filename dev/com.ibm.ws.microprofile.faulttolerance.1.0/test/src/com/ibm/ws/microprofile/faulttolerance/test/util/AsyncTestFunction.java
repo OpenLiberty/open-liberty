@@ -41,6 +41,11 @@ public class AsyncTestFunction implements Callable<Future<String>> {
         this.function = new TestFunction(callLength, wait, notify, context);
     }
 
+    public AsyncTestFunction(Duration callLength, CountDownLatch latch, CountDownLatch wait, CountDownLatch notify, String context) {
+        this.function = new TestFunction(callLength, wait, notify, context);
+        this.latch = latch;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Future<String> call() throws Exception {
