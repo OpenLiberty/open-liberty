@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Ocorreu um erro interno durante o pr
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: uma solicita\u00e7\u00e3o de conex\u00e3o para o recurso XA {0} foi feita usando a autentica\u00e7\u00e3o SPNEGO, mas nenhum alias de dados de autentica\u00e7\u00e3o de recupera\u00e7\u00e3o foi configurado. O recurso XA n\u00e3o pode participar da recupera\u00e7\u00e3o automatizada de XA, a menos que um alias de dados de autentica\u00e7\u00e3o de recupera\u00e7\u00e3o seja configurado.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=A recupera\u00e7\u00e3o XA \u00e9 um processo automatizado de segundo plano, mas a autentica\u00e7\u00e3o SPNEGO requer entrada manual do usu\u00e1rio. Como resultado, a autentica\u00e7\u00e3o SPNEGO n\u00e3o pode ser usada para a recupera\u00e7\u00e3o autom\u00e1tica de XA.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configure um alias de dados de autentica\u00e7\u00e3o de recupera\u00e7\u00e3o no recurso XA.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: MCWrapper {0} inv\u00e1lido a partir do  conjunto livre para o recurso {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Falha na tentativa de reverter o MCWrapper.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
