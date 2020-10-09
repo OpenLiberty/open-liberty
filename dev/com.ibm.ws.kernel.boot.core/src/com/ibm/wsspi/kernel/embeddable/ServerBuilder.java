@@ -239,11 +239,9 @@ public class ServerBuilder {
         }
 
         try {
-            @SuppressWarnings("unchecked")
-            Server server;
-            Class<? extends Server> clazz = (Class<? extends Server>) cl.loadClass("com.ibm.ws.kernel.boot.EmbeddedServerImpl");
-            Constructor<? extends Server> con = clazz.getConstructor(String.class, File.class, File.class, File.class, ServerEventListener.class, HashMap.class);
-            server = con.newInstance(serverName, userDir, outputDir, logDir, listener, productExtensions);
+            Class<?> clazz = cl.loadClass("com.ibm.ws.kernel.boot.EmbeddedServerImpl");
+            Constructor<?> con = clazz.getConstructor(String.class, File.class, File.class, File.class, ServerEventListener.class, HashMap.class);
+            Server server = (Server) con.newInstance(serverName, userDir, outputDir, logDir, listener, productExtensions);
 
             return server;
         } catch (ClassNotFoundException e) {

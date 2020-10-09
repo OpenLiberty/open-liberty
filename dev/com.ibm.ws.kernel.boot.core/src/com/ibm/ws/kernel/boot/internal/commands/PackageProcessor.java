@@ -17,8 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,26 +181,6 @@ public class PackageProcessor implements ArchiveProcessor {
         mf.write(new FileOutputStream(newMani));
 
         return newMani;
-    }
-
-    private Archive createArchive(final File file) throws IOException {
-
-        if (System.getSecurityManager() == null) {
-            return ArchiveFactory.create(file);
-        } else {
-            try {
-                return AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Archive>() {
-
-                    @Override
-                    public Archive run() throws IOException {
-                        return ArchiveFactory.create(file);
-                    }
-                });
-            } catch (PrivilegedActionException e) {
-                e.printStackTrace();
-                throw (IOException) e.getException();
-            }
-        }
     }
 
     public ReturnCode execute(boolean runtimeOnly) {
