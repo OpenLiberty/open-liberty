@@ -66,7 +66,9 @@ public class AutonomicalPolling1ServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server.stopServer("J2CA0027E", "J2CA0079E", "J2CA0088W", "DSRA0304E", "DSRA0302E");
+            server.stopServer(
+                    "CWWKC1505E", // task timed out, but will be retried
+                    "J2CA0027E", "J2CA0079E", "J2CA0088W", "DSRA0304E", "DSRA0302E");
         } finally {
             server.updateServerConfiguration(originalConfig);
         }
