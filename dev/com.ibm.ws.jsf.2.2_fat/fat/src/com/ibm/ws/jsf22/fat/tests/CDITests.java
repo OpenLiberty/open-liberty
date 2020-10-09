@@ -292,7 +292,7 @@ public class CDITests extends CDITestBase {
         // Restart the app so that preDestory gets called;
         // make sure we reset log offsets correctly
         jsfCDIServer.setMarkToEndOfLog();
-        jsfCDIServer.restartDropinsApplication("CDITests.war");
+        Assert.assertTrue("The CDITests.war application was not restarted.", jsfCDIServer.restartDropinsApplication("CDITests.war"));
         jsfCDIServer.resetLogOffsets();
 
         // Now check the preDestoys
