@@ -66,10 +66,11 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public static Logger log = Logger.getLogger(ProducerRestEndpoint.class.getName());
-    public static boolean PERF_LOGGING_ON = true;
+
+    private static boolean CONCURRENT_TEST_ON = false;
 
     public ProducerRestEndpoint() {
-        if (PERF_LOGGING_ON) {
+        if (CONCURRENT_TEST_ON) {
             readStreamParmsFromFile();
         }
     }
@@ -263,8 +264,8 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public static int SERVER_STREAM_MAX_STRESS_CONNECTIONS = 100;
     public static int SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
-    public static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1; //WDW 10;
+    public static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
+    public static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
 
     @POST
     @Path("/streamingA/server")
@@ -468,7 +469,7 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     public static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
     public static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
-    public static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 600;
+    public static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
     public static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
 
     public static CountDownLatch stressLatch = null;
