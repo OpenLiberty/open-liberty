@@ -212,7 +212,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      * @param copySystemStreams value to determine whether to copysystemstreams or not
      */
     public void setCopySystemStreams(boolean copySystemStreams) {
-        this.copySystemStreams = copySystemStreams;
+        ConsoleLogHandler.copySystemStreams = copySystemStreams;
     }
 
     /**
