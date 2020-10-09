@@ -12,6 +12,7 @@
 package com.ibm.ws.grpc.fat.streaming.service;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +27,8 @@ import io.grpc.stub.StreamObserver;
 @WebServlet(urlPatterns = { "/streaming" }, asyncSupported = true)
 public class StreamingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    protected static final Class<?> c = StreamingServlet.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     private static String responseString = "Response from Server: ";
 
@@ -77,7 +80,7 @@ public class StreamingServlet extends HttpServlet {
                     if (s.length() > 200) {
                         s = s.substring(0, 200);
                     }
-                    // System.out.println(s);
+                    // LOG.info(s);
                     responseString = responseString + s;
                 }
 
@@ -95,7 +98,7 @@ public class StreamingServlet extends HttpServlet {
                         s = s.substring(0, maxStringLength);
                         s = s + lastClientMessage;
                     }
-                    System.out.println(s);
+                    LOG.info(s);
 
                     StreamReply reply = StreamReply.newBuilder().setMessage(s).build();
                     responseObserver.onNext(reply);

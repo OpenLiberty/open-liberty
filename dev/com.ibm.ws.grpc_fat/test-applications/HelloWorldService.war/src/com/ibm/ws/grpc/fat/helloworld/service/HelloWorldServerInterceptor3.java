@@ -11,6 +11,8 @@
 
 package com.ibm.ws.grpc.fat.helloworld.service;
 
+import java.util.logging.Logger;
+
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCall.Listener;
@@ -19,14 +21,17 @@ import io.grpc.ServerInterceptor;
 
 public class HelloWorldServerInterceptor3 implements ServerInterceptor {
 
+    protected static final Class<?> c = HelloWorldServerInterceptor3.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
+
     @Override
     public <ReqT, RespT> Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
                                                       ServerCallHandler<ReqT, RespT> next) {
-        System.out.println(this.getClass().getCanonicalName() + " has been invoked!");
-        System.out.println("display headers:");
-        System.out.println(headers.toString());
-        System.out.println("display authority:");
-        System.out.println(call.getAuthority());
+        LOG.info(this.getClass().getCanonicalName() + " has been invoked!");
+        LOG.info("display headers:");
+        LOG.info(headers.toString());
+        LOG.info("display authority:");
+        LOG.info(call.getAuthority());
         return next.startCall(call, headers);
     }
 }
