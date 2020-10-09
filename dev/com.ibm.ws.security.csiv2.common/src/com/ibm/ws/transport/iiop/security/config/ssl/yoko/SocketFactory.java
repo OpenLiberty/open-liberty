@@ -36,12 +36,12 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.yoko.orb.OCI.IIOP.Util;
-import org.omg.CORBA.Policy;
-import org.omg.CORBA.TRANSIENT;
 import org.omg.CSIIOP.EstablishTrustInClient;
 import org.omg.CSIIOP.NoProtection;
 import org.omg.CSIIOP.TAG_CSI_SEC_MECH_LIST;
 import org.omg.CSIIOP.TransportAddress;
+import org.omg.CORBA.Policy;
+import org.omg.CORBA.TRANSIENT;
 import org.omg.IOP.TaggedComponent;
 
 import com.ibm.websphere.ras.Tr;
@@ -366,21 +366,33 @@ public class SocketFactory extends SocketFactoryHelper {
         try {
             String[] cipherSuites = sslConfig.getCipherSuites(sslConfigName, serverSocketFactory.getSupportedCipherSuites());
 
-            serverSocket.setEnabledCipherSuites(cipherSuites);
+            SSLParameters sslParameters = serverSocket.getSSLParameters();
+
+            //serverSocket.setEnabledCipherSuites(cipherSuites);
+            sslParameters.setCipherSuites(cipherSuites);
+
+            // set use cipher order on the ssl parameters
+            boolean enforceCipherOrder = sslConfig.getEnforceCipherOrder(sslConfigName);
+            sslParameters.setUseCipherSuitesOrder(enforceCipherOrder);
 
             // set the SSL protocol on the server socket
             String protocol = sslConfig.getSSLProtocol(sslConfigName);
-            if (protocol != null)
-                serverSocket.setEnabledProtocols(new String[] { protocol });
+            if (protocol != null) {
+                //serverSocket.setEnabledProtocols(new String[] { protocol });
+                sslParameters.setProtocols(new String[] { protocol });
+            }
 
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             boolean clientAuthSupported = ((options.supports & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             if (clientAuthRequired) {
-                serverSocket.setNeedClientAuth(true);
+                //serverSocket.setNeedClientAuth(true);
+                sslParameters.setNeedClientAuth(true);
             } else if (clientAuthSupported) {
-                serverSocket.setWantClientAuth(true);
+                //serverSocket.setWantClientAuth(true);
+                sslParameters.setWantClientAuth(true);
             } else {
-                serverSocket.setNeedClientAuth(false); //could set want with the same effect
+                //serverSocket.setNeedClientAuth(false); //could set want with the same effect
+                sslParameters.setNeedClientAuth(false);
             }
             serverSocket.setSoTimeout(60 * 1000);
 
