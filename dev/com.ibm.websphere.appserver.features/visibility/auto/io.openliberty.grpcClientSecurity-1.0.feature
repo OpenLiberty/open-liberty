@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ssl-1.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.grpc.1.0.internal.client.security
-kind=beta
+kind=ga
 edition=full
