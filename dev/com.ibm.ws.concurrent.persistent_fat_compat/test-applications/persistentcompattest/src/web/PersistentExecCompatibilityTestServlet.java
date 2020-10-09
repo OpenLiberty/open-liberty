@@ -29,6 +29,7 @@ import java.sql.ResultSetMetaData;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -69,11 +70,16 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     private static final long serialVersionUID = 8447513765214641067L;
 
     /**
+     * Time zone (Central time - Rochester, MN) in which the persistent timer data was originally captured.
+     */
+    private static final TimeZone CST = TimeZone.getTimeZone("CST");
+
+    /**
      * Dates for the tests to use.
      */
     private static final Date
-        OCTOBER_6_2020 = new Calendar.Builder().setDate(2020, 10, 6).build().getTime(),
-        DECEMBER_8_3030 = new Calendar.Builder().setDate(2030, 12, 8).build().getTime();
+        NOVEMBER_6_2020 = new Calendar.Builder().setTimeZone(CST).setDate(2020, 11-1, 6).build().getTime(),
+        JANUARY_8_3031 = new Calendar.Builder().setTimeZone(CST).setDate(2031, 1-1, 8).build().getTime();
 
     /**
      * Interval in milliseconds between polling for task results.
@@ -521,8 +527,8 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
         assertNotNull(timer);
 
         ScheduleExpression schedule = timer.getSchedule();
-        assertEquals(OCTOBER_6_2020, schedule.getStart());
-        assertEquals(DECEMBER_8_3030, schedule.getEnd());
+        assertEquals(NOVEMBER_6_2020, schedule.getStart());
+        assertEquals(JANUARY_8_3031, schedule.getEnd());
         assertEquals("0", schedule.getSecond());
         assertEquals("0", schedule.getMinute());
         assertEquals("19", schedule.getHour());
@@ -793,8 +799,8 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
         String name = "EJBTimerWithScheduleExpression-" + VNEXT;
         MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
         ScheduleExpression schedule = new ScheduleExpression()
-                .start(OCTOBER_6_2020)
-                .end(DECEMBER_8_3030)
+                .start(NOVEMBER_6_2020)
+                .end(JANUARY_8_3031)
                 .dayOfWeek("Mon-Fri")
                 .hour(19)
                 .month("Oct,Nov,Dec");
