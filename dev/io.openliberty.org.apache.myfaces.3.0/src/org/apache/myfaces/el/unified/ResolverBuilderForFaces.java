@@ -111,8 +111,7 @@ public class ResolverBuilderForFaces extends ResolverBuilderBase implements ELRe
 
             BeanManager beanManager = CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext());
-            // TODO JakartaFaces
-            //list.add(beanManager.getELResolver());
+            list.add(beanManager.getELResolver());
         }
         else
         {

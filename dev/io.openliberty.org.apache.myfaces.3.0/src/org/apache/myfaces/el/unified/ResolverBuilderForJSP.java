@@ -63,8 +63,7 @@ public class ResolverBuilderForJSP extends ResolverBuilderBase implements ELReso
             //Add CDI ELResolver instead.
             BeanManager beanManager = CDIUtils.getBeanManager(
                     FacesContext.getCurrentInstance().getExternalContext());
-            // TODO JakartaFaces
-            //list.add(beanManager.getELResolver());
+            list.add(beanManager.getELResolver());
         }
         else
         {        
