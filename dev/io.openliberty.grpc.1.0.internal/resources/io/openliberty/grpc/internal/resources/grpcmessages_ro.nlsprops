@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Verifica\u0163i numele de interceptor confi
 invalid.inbound.msg.size=CWWKT0203E: maxInboundMessageSize {0} nu este valid\u0103. Dimensiunile trebuie s\u0103 fie mai mari ca 0.
 invalid.inbound.msg.size.explanation=Valoarea configurat\u0103 pentru maxInboundMessageSize nu este valid\u0103.
 invalid.inbound.msg.size.useraction=Configura\u0163i o valoare valid\u0103 pentru maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: Cererea gRPC pentru {0} nu poate continua. R\u0103spunsul a fost deja comis.
+response.already.committed.explanation=Cererea gRPC nu este valid\u0103, deoarece r\u0103spunsul a fost comis \u00eenainte s\u0103 fi \u00eenceput metodele gRPC.
+response.already.committed.useraction=Analiza\u0163i istoricele pentru alte mesaje de avertisment sau de eroare anterioare acestui mesaj. Aceast\u0103 eroare ar putea ap\u0103rea din cauza unei erori de securitate anterioare.
+
+authentication.error=CWWKT0205E: Cererea de serviciu gRPC pentru {0} a e\u015fuat cu eroarea de autentificare {1}.
+authentication.error.explanation=Cererea gRPC nu a reu\u015fit autentificarea \u00eenainte s\u0103 fi \u00eenceput metodele gRPC.
+authentication.error.useraction=Analiza\u0163i istoricele pentru alte mesaje de avertisment sau de eroare anterioare acestui mesaj. Aceast\u0103 eroare ar putea ap\u0103rea din cauz\u0103 c\u0103 nu au fost furnizate acredit\u0103ri cu cererea sau au fost furnizate acredit\u0103ri care nu sunt valide.
+
+authorization.error=CWWKT0206E: Cererea de serviciu gRPC pentru {0} a e\u015fuat cu eroarea de autorizare {1}.
+authorization.error.explanation=Cererea gRPC nu a reu\u015fit autorizarea \u00eenainte s\u0103 fi \u00eenceput metodele gRPC.
+authorization.error.useraction=Analiza\u0163i istoricele pentru alte mesaje de avertisment sau de eroare anterioare acestui mesaj. Aceast\u0103 eroare ar putea ap\u0103rea din cauz\u0103 c\u0103 nu au fost furnizate acredit\u0103ri cu cererea sau au fost furnizate acredit\u0103ri care nu sunt valide.

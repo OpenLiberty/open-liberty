@@ -54,6 +54,12 @@ OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Stellen Sie sicher, dass die angegebe
 OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Fehler beim Parsen des OpenAPI-Dokuments f\u00fcr die folgende Anwendung: {0}.
 OPENAPI_FILE_PARSE_ERROR.explanation=Fehler beim Parsen des OpenAPI-Dokuments aus dem META-INF-Ordner.
 OPENAPI_FILE_PARSE_ERROR.useraction=Stellen Sie sicher, dass die Datei das richtige YAML-oder JSON-Format hat. 
+
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Die Anwendung {0} wurde verarbeitet, und es wurde ein OpenAPI-Dokument erstellt.
 OPENAPI_APPLICATION_PROCESSED.explanation=Das OpenAPI-Dokument f\u00fcr die angegebene Anwendung wurde generiert. Es kann an einem /openapi-Endpunkt angezeigt werden.
 OPENAPI_APPLICATION_PROCESSED.useraction=Es ist keine Aktion erforderlich. 
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Bei der Verarbeitung der Anwendung {0} ist ein Fehler aufgetreten und ein OpenAPI-Dokument wurde nicht generiert.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=W\u00e4hrend der Verarbeitung der Anwendung ist ein Laufzeitfehler aufgetreten.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Stellen Sie die Protokolle zusammen und wenden Sie sich an den IBM Service.
+  

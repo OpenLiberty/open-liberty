@@ -60,3 +60,8 @@ OPENAPI_FILE_PARSE_ERROR.useraction=Assurez-vous que le fichier est au format co
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: L''application {0} a \u00e9t\u00e9 trait\u00e9e et un document OpenAPI a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
 OPENAPI_APPLICATION_PROCESSED.explanation=Document OpenAPI g\u00e9n\u00e9r\u00e9 pour l'application sp\u00e9cifi\u00e9e. Il peut \u00eatre affich\u00e9 sur un noeud final /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Aucune action n'est requise.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Une erreur est survenue lors du traitement de l''application {0} et aucun document OpenAPI n''a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Une erreur d'ex\u00e9cution est survenue lors du traitement de l'application.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Rassemblez les journaux et contactez le support IBM.
+  

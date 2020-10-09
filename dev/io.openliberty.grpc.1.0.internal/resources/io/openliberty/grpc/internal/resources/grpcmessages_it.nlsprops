@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Verificare il nome intercettatore configura
 invalid.inbound.msg.size=CWWKT0203E: maxInboundMessageSize {0} non valido. Le dimensioni devono essere maggiori di 0.
 invalid.inbound.msg.size.explanation=Il valore configurato per maxInboundMessageSize non \u00e8 valido.
 invalid.inbound.msg.size.useraction=Configurare un valore valido per maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: La richiesta gRPC per {0} non pu\u00f2 proseguire. \u00c8 gi\u00e0 stato eseguito il commit della risposta.
+response.already.committed.explanation=La richiesta gRPC non \u00e8 valida perch\u00e9 il commit della risposta \u00e8 stato eseguito prima dell'avvio dei metodi gRPC.
+response.already.committed.useraction=Analizzare i log per altri messaggi di avvertenza o di errore prima di questo messaggio. Questo errore pu\u00f2 verificarsi a causa di un errore di sicurezza precedente.
+
+authentication.error=CWWKT0205E: La richiesta di servizio gRPC per {0} ha avuto esito negativo con l''errore di autenticazione {1}.
+authentication.error.explanation=La richiesta gRPC non \u00e8 riuscita ad eseguire l'autenticazione prima dell'avvio dei metodi gRPC.
+authentication.error.useraction=Analizzare i log per altri messaggi di avvertenza o di errore prima di questo messaggio. Questo errore pu\u00f2 verificarsi perch\u00e9 non sono state fornite credenziali con la richiesta o perch\u00e9 sono state fornite credenziali non valide.
+
+authorization.error=CWWKT0206E: La richiesta di servizio gRPC per {0} ha avuto esito negativo con l''errore di autorizzazione {1}.
+authorization.error.explanation=La richiesta gRPC non \u00e8 riuscita ad ottenere l'autorizzazione prima dell'avvio dei metodi gRPC.
+authorization.error.useraction=Analizzare i log per altri messaggi di avvertenza o di errore prima di questo messaggio. Questo errore pu\u00f2 verificarsi perch\u00e9 non sono state fornite credenziali con la richiesta o perch\u00e9 sono state fornite credenziali non valide.

@@ -59,4 +59,9 @@ OPENAPI_FILE_PARSE_ERROR.useraction=Assicurarsi che il file sia nel formato YAML
 
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: L''applicazione {0} \u00e8 stata elaborata ed \u00e8 stato prodotto un documento OpenAPI.
 OPENAPI_APPLICATION_PROCESSED.explanation=Documento OpenAPI per l'applicazione specificata generato. Pu\u00f2 essere visualizzato all'endpoint /openapi.
-OPENAPI_APPLICATION_PROCESSED.useraction=Non \u00e8 richiesta alcuna azione.
+OPENAPI_APPLICATION_PROCESSED.useraction=Nessuna azione richiesta.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Si \u00e8 verificato un errore durante l''elaborazione dell''applicazione {0} e non \u00e8 stato prodotto un documento OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Si \u00e8 verificato un errore di runtime durante l'elaborazione dell'applicazione.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Raccogliere i log e contattare il servizio IBM.
+  
