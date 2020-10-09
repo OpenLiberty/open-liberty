@@ -33,7 +33,7 @@ Private-Package: io.openliberty.jakarta.persistence.internal, \
    org.apache.geronimo.specs.jpa
 
 #Include-Resource: \
-#   @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0-RC1}!/about.html
+#   @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0-RC2}!/about.html
 
 instrument.disabled: true
 

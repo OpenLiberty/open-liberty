@@ -92,15 +92,16 @@ public class SimpleRotatingQueue<T> implements Queue<T> {
      * 
      */
     @Override
-    public <T> T[] toArray(T[] arr) {
+    public <X> X[] toArray(X[] arr) {
 
         if (arr == null) {
             return null;
         }
 
-        T[] retMe = (arr.length >= elements.length)
+        @SuppressWarnings("unchecked")
+        X[] retMe = (arr.length >= elements.length)
                         ? arr
-                        : (T[]) Array.newInstance(arr.getClass().getComponentType(), elements.length);
+                        : (X[]) Array.newInstance(arr.getClass().getComponentType(), elements.length);
 
         int currTailIndex;
         do {

@@ -67,7 +67,7 @@ public class SlowRequestTiming {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("TRAS0112W", "TRAS0113I", "CWWKG0083W");
+            server.stopServer("TRAS0112W", "TRAS0113I", "TRAS0114W", "TRAS0115W", "CWWKG0083W");
         }
     }
 

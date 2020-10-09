@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -20,4 +21,8 @@ public interface ConfigVariables {
     public Map<String, String> getUserDefinedVariables();
 
     public Map<String, String> getUserDefinedVariableDefaults();
+
+    public Collection<LibertyVariable> getAllLibertyVariables();
+
+    public String getServiceBindingRootDirectory();
 }

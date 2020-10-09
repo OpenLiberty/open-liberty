@@ -49,6 +49,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
     public static LibertyServer helloWorldTlsServer;
 
     private static final Set<String> clientAppName = Collections.singleton("HelloWorldClient");
+    private static final String TLS_DEFAULT = "grpc.server.tls.default.xml";
     private static final String TLS_MUTUAL_AUTH = "grpc.server.tls.mutual.auth.xml";
     private static final String TLS_INVALID_CLIENT_TRUST_STORE = "grpc.server.tls.invalid.trust.xml";
     private static final String TLS_OUTBOUND_FILTER = "grpc.server.tls.outbound.xml";
@@ -73,8 +74,11 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // SRVE0777E for testHelloWorldWithTlsInvalidClientTrustStore case
-        helloWorldTlsServer.stopServer("SRVE0777E");
+        // SRVE0777E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        // CWWKO0801E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        //     Unable to initialize SSL connection. Unauthorized access was denied or security settings have expired.
+        //     Exception is javax.net.ssl.SSLHandshakeException: Received fatal alert: certificate_unknown
+        helloWorldTlsServer.stopServer("SRVE0777E", "CWWKO0801E");
     }
 
     @Before
@@ -98,6 +102,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_DEFAULT, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -113,7 +118,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_MUTUAL_AUTH, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_MUTUAL_AUTH, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -130,7 +135,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
         Exception clientException = null;
 
         try {
@@ -154,7 +159,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_OUTBOUND_FILTER, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_OUTBOUND_FILTER, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }

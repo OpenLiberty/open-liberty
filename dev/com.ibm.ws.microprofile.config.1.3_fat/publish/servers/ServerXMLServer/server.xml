@@ -36,5 +36,11 @@
 		</appProperties>
 	</application>
 	
+	<webApplication location="serverXMLWebApp.war">
+		<appProperties>
+			<property name="serverXMLKey1" value="serverXMLValue1" />
+		</appProperties>
+	</webApplication>
+	
 	<application location="mapEnvVarApp.war"/>
 </server>

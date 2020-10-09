@@ -68,6 +68,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("wasJmsClient", "messagingClient");
         featureNameMapping.put("wasJmsServer", "messagingServer");
         featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
+        featureNameMapping.put("jsf", "faces");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -100,6 +101,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
+    private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
 
     public FeatureReplacementAction() {}
@@ -165,6 +167,28 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction addFeatures(Set<String> addFeatures) {
         addFeatures.forEach(this::addFeature);
+        return this;
+    }
+
+    /**
+     * Add features to the set to be added - these features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeatures the features to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeatures(Set<String> alwaysAddedFeatures) {
+        alwaysAddedFeatures.forEach(this::alwaysAddFeature);
+        return this;
+    }
+
+    /**
+     * Add a feature to the set to be added - this features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeature the feature to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeature(String alwaysAddedFeature) {
+        alwaysAddFeatures.add(alwaysAddedFeature);
         return this;
     }
 
@@ -399,6 +423,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     }
                 }
             }
+            alwaysAddFeatures.forEach(s -> features.add(s));
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {

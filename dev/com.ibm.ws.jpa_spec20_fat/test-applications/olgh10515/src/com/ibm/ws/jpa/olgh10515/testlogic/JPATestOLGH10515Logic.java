@@ -34,7 +34,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH10515Logic extends AbstractTestLogic {
 
     public void testJoinOnCollectionTable(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                          Object managedComponentObject) {
+                                          Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -104,11 +104,6 @@ public class JPATestOLGH10515Logic extends AbstractTestLogic {
                     tj.rollbackTransaction();
                 }
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

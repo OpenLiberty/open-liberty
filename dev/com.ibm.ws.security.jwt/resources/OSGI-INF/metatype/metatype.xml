@@ -26,14 +26,14 @@
          <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String" />
          <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="RS256">
              <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
-             <Option label="internal" value="RS384" />
-             <Option label="internal" value="RS512" />
+             <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+             <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
              <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
-             <Option label="internal" value="HS384" />
-             <Option label="internal" value="HS512" />
-             <Option label="internal" value="ES256" />
-             <Option label="internal" value="ES384" />
-             <Option label="internal" value="ES512" />
+             <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+             <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+             <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+             <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+             <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
          </AD>
 
          <AD id="sharedKey" name="%sharedKey" description="%sharedKey.desc" required="false" type="String" ibm:type="password" />
@@ -62,14 +62,14 @@
         <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="2147483647" />
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
-            <Option label="internal" value="RS384" />
-            <Option label="internal" value="RS512" />
+            <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+            <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
-            <Option label="internal" value="HS384" />
-            <Option label="internal" value="HS512" />
-            <Option label="internal" value="ES256" />
-            <Option label="internal" value="ES384" />
-            <Option label="internal" value="ES512" />
+            <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+            <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+            <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+            <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+            <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
         </AD>
         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
         <AD id="trustedAlias" name="%trustedAliasName" description="%trustedAliasName.desc" required="false" type="String" />

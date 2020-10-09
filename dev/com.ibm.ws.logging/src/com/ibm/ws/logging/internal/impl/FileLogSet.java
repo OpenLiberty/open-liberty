@@ -117,10 +117,10 @@ public class FileLogSet {
     /**
      * Updates the configuration for this set of logs.
      *
-     * @param directory the log directory
-     * @param fileName the file base name (e.g., "messages")
+     * @param directory     the log directory
+     * @param fileName      the file base name (e.g., "messages")
      * @param fileExtension the file extension (e.g., ".log")
-     * @param maxFiles the maximum number of files, or 0 for unlimited
+     * @param maxFiles      the maximum number of files, or 0 for unlimited
      * @return true if the directory, name, or extension changed
      */
     public boolean update(File directory, String fileName, String fileExtension, int maxFiles) {
@@ -247,7 +247,7 @@ public class FileLogSet {
      * file should be created by renaming the source file as the unique file.
      *
      * @param srcFile the file to rename, or null to create a new file
-     * @param show error message if showError is true
+     * @param show    error message if showError is true
      * @return the newly created file, or null if the could not be created
      * @throws IOException if an unexpected I/O error occurs
      */
@@ -344,6 +344,7 @@ public class FileLogSet {
         return -Collections.binarySearch(files, partialFileName, NaturalComparator.instance) - 1;
     }
 
+    @SuppressWarnings("resource")
     private boolean copyFileTo(File srcFile, File destFile) throws IOException {
         // bummer. We have to copy it.
         if (!destFile.createNewFile()) {
@@ -382,7 +383,7 @@ public class FileLogSet {
      * until the number is reduced to the maximum.
      *
      * @param index the index in the files list to insert the file
-     * @param file the file name
+     * @param file  the file name
      */
     private void addFile(int index, String file) {
         if (maxFiles > 0) {

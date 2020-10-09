@@ -21,6 +21,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
+
 import test.common.SharedLocationManager;
 import test.common.SharedOutputManager;
 

@@ -46,7 +46,6 @@ import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -1075,7 +1074,7 @@ public class H2StreamProcessor {
 
         if (direction == Constants.Direction.READ_IN) {
             if (frameType == FrameTypes.DATA) {
-                if (GrpcServletServices.grpcInUse == false) {
+                if (!h2HttpInboundLinkWrap.getIsGrpc()) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;
@@ -1086,7 +1085,7 @@ public class H2StreamProcessor {
                 } else {
                     if (passCount == 0) {
                         // latch so we don't overwrite the first data frame that comes in
-                        firstReadLatch = new CountDownLatch(2);
+                        firstReadLatch = new CountDownLatch(1);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "processOpen: first DATA frame read. using firstReadLatch of: " + firstReadLatch.hashCode());
                         }
@@ -1400,14 +1399,14 @@ public class H2StreamProcessor {
                 // As an HTTP/2 server, and not a client, this code should not receive a PUSH_PROMISE frame
                 throw new ProtocolException("PUSH_PROMISE Frame Received on server side");
 
-            //case PING:   PING frame is not stream based.
-            //      break;
+                //case PING:   PING frame is not stream based.
+                //      break;
 
-            //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
-            //      break;
+                //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
+                //      break;
 
-            // case SETTINGS:  Setting is not stream based.
-            //      break;
+                // case SETTINGS:  Setting is not stream based.
+                //      break;
 
             case WINDOW_UPDATE:
                 if (state == StreamState.IDLE && myID != 0) {
@@ -1819,7 +1818,7 @@ public class H2StreamProcessor {
     /**
      * Read the HTTP header and data bytes for this stream
      *
-     * @param numBytes       the number of bytes to read
+     * @param numBytes the number of bytes to read
      * @param requestBuffers an array of buffers to copy the read data into
      * @return this stream's VirtualConnection or null if too many bytes were requested
      */
@@ -1868,19 +1867,6 @@ public class H2StreamProcessor {
         }
         streamReadSize -= actualReadCount;
 
-//            streamReadSize = 0;
-//            readLatch = new CountDownLatch(1);
-//            for (WsByteBuffer buffer : ((ArrayList<WsByteBuffer>) streamReadReady.clone())) {
-//                streamReadReady.clear();
-//                if (buffer.hasRemaining()) {
-//                    moveDataIntoReadBufferArray(buffer.slice());
-//                }
-//            }
-
-        if (this.streamReadSize == 0) {
-            countDownFirstReadLatch();
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "read exit: " + streamId());
         }
@@ -1900,7 +1886,7 @@ public class H2StreamProcessor {
     /**
      * Read the http header and data bytes for this stream
      *
-     * @param numBytes       the number of bytes requested
+     * @param numBytes the number of bytes requested
      * @param requestBuffers an array of buffers to copy the read data into
      * @return the number of bytes that were actually copied into requestBuffers
      */

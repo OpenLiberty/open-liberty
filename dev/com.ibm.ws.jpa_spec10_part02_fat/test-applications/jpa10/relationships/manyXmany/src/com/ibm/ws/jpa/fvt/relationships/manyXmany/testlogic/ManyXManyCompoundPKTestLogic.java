@@ -48,7 +48,7 @@ public class ManyXManyCompoundPKTestLogic extends AbstractTestLogic {
     public void testManyXManyCompoundPK001(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -211,11 +211,6 @@ public class ManyXManyCompoundPKTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCompoundPKTestLogic.testManyXManyCompoundPK001(): End");
         }
@@ -224,7 +219,7 @@ public class ManyXManyCompoundPKTestLogic extends AbstractTestLogic {
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -267,11 +262,6 @@ public class ManyXManyCompoundPKTestLogic extends AbstractTestLogic {
             // //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXManyCompoundPKTestLogic.testTemplate(): End");
         }

@@ -163,7 +163,7 @@ public class JSF23WebSocketTests {
 
             // Now click the open button and get the resulted page.
             HtmlPage openPage = openButton.click();
-            webClient.waitForBackgroundJavaScript(5000);
+            webClient.waitForBackgroundJavaScript(10000);
 
             assertTrue(openPage.asText().contains("Called onopen listener"));
 
@@ -174,7 +174,7 @@ public class JSF23WebSocketTests {
 
             // Now click the close button and get the resulted page.
             HtmlPage closePage = closeButton.click();
-            webClient.waitForBackgroundJavaScript(5000);
+            webClient.waitForBackgroundJavaScript(10000);
 
             assertTrue(closePage.asText().contains("Called onclose listener"));
 

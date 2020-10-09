@@ -148,6 +148,23 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     /**
+     * This test simulates the process by which a homeserver can aggressively reclaim its logs while a peer is in the process
+     * of recovering those logs.
+     *
+     * The Cloud001 server is started and a servlet invoked to halt leaving an indoubt transaction. The Cloud002 server
+     * peer recovers the indoubt. But ownership of the transaction logs reverts to Cloud001 even as the Cloud002 server
+     * is recovering. Cloud002 should end its recovery processing quietly. Cloud001 is restarted and transaction recovery
+     * verified.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testDynamicCloudRecoveryInterruptedPeerRecovery() throws Exception {
+        dynamicTest(server1, server2, "InterruptedPeerRecovery", 2);
+    }
+
+    /**
      * This test verifies that a server that crashes with an indoubt transaction is able to immediately
      * recover the transaction on restart, where HADB Locking is enabled.
      *

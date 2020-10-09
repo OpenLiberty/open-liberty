@@ -34,6 +34,6 @@
 
 	<logging
 		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"
-		maxFileSize="40" maxFiles="20" traceFormat="BASIC" />
+		maxFileSize="400" maxFiles="20" traceFormat="BASIC" />
 
 </server>

@@ -449,12 +449,7 @@ public class ConsumerUtil {
 
         validateIssuer(config.getId(), issuer, jwtClaims.getIssuer());
 
-        List<String> allowedAudiences = getConfiguredAudiences(config);
-        if (!validateAudience(allowedAudiences, jwtClaims.getAudience())) {
-            String msg = Tr.formatMessage(tc, "JWT_AUDIENCE_NOT_TRUSTED",
-                    new Object[] { jwtClaims.getAudience(), config.getId(), allowedAudiences });
-            throw new InvalidClaimException(msg);
-        }
+        validateAudience(config, jwtClaims.getAudience());
 
         if (!validateAMRClaim(config.getAMRClaim(), getJwtAMRList(jwtClaims))) {
             String msg = Tr.formatMessage(tc, "JWT_AMR_CLAIM_NOT_VALID",
@@ -541,6 +536,17 @@ public class ConsumerUtil {
             }
         }
         return audiences;
+    }
+
+    void validateAudience(JwtConsumerConfig config, List<String> audiences) throws InvalidClaimException {
+        List<String> allowedAudiences = getConfiguredAudiences(config);
+        if (allowedAudiences == null && config.ignoreAudClaimIfNotConfigured()) {
+            return;
+        }
+        if (!validateAudience(allowedAudiences, audiences)) {
+            String msg = Tr.formatMessage(tc, "JWT_AUDIENCE_NOT_TRUSTED", new Object[] { audiences, config.getId(), allowedAudiences });
+            throw new InvalidClaimException(msg);
+        }
     }
 
     /**

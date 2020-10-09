@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jca-1.7
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: com.ibm.ws.jca.service; type="internal"

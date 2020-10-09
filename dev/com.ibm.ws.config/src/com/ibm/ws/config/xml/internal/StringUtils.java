@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-class StringUtils {
+public class StringUtils {
 
     /**
      * Replace non-alphanumeric characters in a string with underscores.

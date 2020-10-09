@@ -26,6 +26,7 @@ task addDerbyToSharedDir(type: Copy) {
 }
 
 task copyFAT {
+    dependsOn ':com.ibm.ws.transaction.core_fat.1:autoFVT'
     copy {
       from project(':com.ibm.ws.transaction.core_fat.1').file('fat/src/com/ibm/ws/transaction/test/tests')
       into new File('fat/src/com/ibm/ws/transaction/test/tests')
@@ -33,6 +34,7 @@ task copyFAT {
 }
 
 task copyCommonFiles {
+  dependsOn ':com.ibm.ws.transaction.core_fat.1:autoFVT'
   doLast {
     /*
      * Copy test application resources.

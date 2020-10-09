@@ -41,6 +41,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -58,7 +59,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -102,8 +103,9 @@ public class PersistentTimerCoreTest extends FATServletClient {
         // CWWKC1501W : testSLTimerServiceEJBTimeoutSessionContextCMT - PersistentExecutor rolled back a task
         // CWWKC1506E : testSLTimerServiceEJBTimeoutSessionContextCMT - Transaction is marked for rollback
         // CWWKG0032W : testMissedTimerActionBadValueNoFailover - Unexpected value [Blah]
+        // CWWKG0014E - intermittently caused by server.xml being momentarily missing during server reconfig
         if (server != null && server.isStarted()) {
-            server.stopServer(expectedFailures("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah"));
+            server.stopServer(expectedFailures("CNTR0333W", "CWWKC1500W", "CWWKC1501W", "CWWKC1506E", "CWWKG0032W.*Blah", "CWWKG0014E"));
         }
     }
 

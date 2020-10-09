@@ -42,6 +42,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -94,7 +95,7 @@ public class ApplicationStateHealthCheckTest {
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
                                     .removeFeature("mpHealth-2.0")
-                                    .forServers(SERVER_NAME, FAILS_TO_START_SERVER_NAME));
+                                    .forServers(SERVER_NAME));
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
@@ -125,9 +126,13 @@ public class ApplicationStateHealthCheckTest {
      * This test will first load an application that purposely fails to start.
      * It will then load a dropin that would like to reports UP on all health checks.
      * But since the pre-loaded app failed to start, readiness/overall reports DOWN and liveness remains unaltered.
+     *
+     * Note: Not repeated for mpHealth-3.0, since mpReactiveMessaging-1.0 uses mpConfig-1.4, which conflicts with mpConfig-2.0 from
+     * mpHealth-3.0. Will allow for mpHealth-3.x repetition, once mpReactiveMessaging starts using mpConfig-2.0.
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("mpHealth-3.0")
     @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException",
                     "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
                     "org.jboss.weld.exceptions.DeploymentException" })

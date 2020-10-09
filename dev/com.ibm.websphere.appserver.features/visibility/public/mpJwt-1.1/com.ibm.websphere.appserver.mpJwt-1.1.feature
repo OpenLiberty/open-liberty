@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpJwt-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: mpJwt-1.1
@@ -23,3 +24,4 @@ Subsystem-Name: MicroProfile JSON Web Token 1.1
   com.ibm.ws.security.mp.jwt.1.1.config
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

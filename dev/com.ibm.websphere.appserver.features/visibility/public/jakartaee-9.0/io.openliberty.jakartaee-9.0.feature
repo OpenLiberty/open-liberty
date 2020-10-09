@@ -12,10 +12,11 @@ Subsystem-Name: Jakarta EE Platform 9.0
  com.ibm.websphere.appserver.restConnector-2.0,\
  com.ibm.websphere.appserver.servlet-5.0,\
  com.ibm.websphere.appserver.transaction-2.0,\
- com.ibm.websphere.appserver.webProfile-9.0,\
  io.openliberty.enterpriseBeans-4.0,\
  io.openliberty.appClientSupport-2.0,\
+ io.openliberty.connectors-2.0,\
  io.openliberty.jacc-2.0,\
- io.openliberty.jaxb-3.0
+ io.openliberty.jaxb-3.0,\
+ io.openliberty.webProfile-9.0
 kind=beta
 edition=base

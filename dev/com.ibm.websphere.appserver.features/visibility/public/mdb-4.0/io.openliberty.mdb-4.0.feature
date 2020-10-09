@@ -18,3 +18,4 @@ Subsystem-Category: JakartaEE9Application
 Subsystem-Name: Message-Driven Beans 4.0
 kind=beta
 edition=base
+WLP-Activation-Type: parallel

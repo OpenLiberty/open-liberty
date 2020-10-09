@@ -588,10 +588,10 @@ public class RAAnnotationProcessor {
         }
 
         // Check for supported JCA versions
-        if ((!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
+        if ((!jcaVersion.equals("2.0")) && (!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
             && (!jcaVersion.equals("1.5") && (!jcaVersion.equals("1.0"))))
             throw new ResourceAdapterInternalException(Tr.formatMessage(tc, "J2CA9934.not.a.valid.option",
-                                                                        jcaVersion, "<version>, <spec-version>", "1.7, 1.6, 1.5, 1.0"));
+                                                                        jcaVersion, "<version>, <spec-version>", "2.0, 1.7, 1.6, 1.5, 1.0"));
 
         return jcaVersion;
     }

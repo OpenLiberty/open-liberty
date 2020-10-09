@@ -25,6 +25,8 @@ public class HelloWorldServerInterceptor3 implements ServerInterceptor {
         System.out.println(this.getClass().getCanonicalName() + " has been invoked!");
         System.out.println("display headers:");
         System.out.println(headers.toString());
+        System.out.println("display authority:");
+        System.out.println(call.getAuthority());
         return next.startCall(call, headers);
     }
 }

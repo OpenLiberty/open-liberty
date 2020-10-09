@@ -49,7 +49,7 @@ public class JCAClassLoadingTest extends FATServletClient {
         if (server.isStarted())
             server.stopServer();
 
-        server.setServerConfigurationFile(testName.getMethodName() + "_server.xml");
+        server.setServerConfigurationFile(getTestMethodSimpleName() + "_server.xml");
         if (validateAppStarted) {
             server.addInstalledAppForValidation(APP_NAME);
         } else {
@@ -112,7 +112,7 @@ public class JCAClassLoadingTest extends FATServletClient {
         restartWithNewConfig(false);
 
         String msg = server
-                        .waitForStringInLogUsingMark("J2CA7002E: An exception occurred while installing the resource adapter ATVInvalid_RA. The exception message is: java.lang.NoClassDefFoundError: javax.resource.spi.ResourceAdapter");
+                        .waitForStringInLogUsingMark("J2CA7002E: An exception occurred while installing the resource adapter ATVInvalid_RA. The exception message is: java.lang.NoClassDefFoundError: jakarta.resource.spi.ResourceAdapter");
         assertNotNull("Resource adapter lacks [spec] class loading api type visibility", msg);
 
         // put the app back on the server when we are done

@@ -45,6 +45,8 @@ import com.ibm.ws.config.xml.internal.EvaluationContext.NestedInfo;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.EntryAction;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;

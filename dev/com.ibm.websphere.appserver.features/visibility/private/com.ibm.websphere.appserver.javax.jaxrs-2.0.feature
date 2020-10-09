@@ -1,12 +1,13 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.jaxrs-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Java RESTful Services API 2.0
 -features=\
-  com.ibm.websphere.appserver.javax.servlet-3.1, \
+  io.openliberty.servlet.api-3.1, \
   com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
   com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=\

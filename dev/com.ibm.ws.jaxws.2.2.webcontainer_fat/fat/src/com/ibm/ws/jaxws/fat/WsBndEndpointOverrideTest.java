@@ -24,12 +24,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
+@SkipForRepeat("jaxws-2.3")
 public class WsBndEndpointOverrideTest extends WsBndEndpointOverrideTest_Lite {
 
     @Server("EJBinWarOverrideServer")

@@ -25,7 +25,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 class BaseConfiguration {
@@ -378,8 +380,8 @@ class BaseConfiguration {
     }
 
     @Sensitive
-    public Map<String, ConfigVariable> getVariables() {
-        HashMap<String, ConfigVariable> variableMap = new HashMap<String, ConfigVariable>();
+    public Map<String, LibertyVariable> getVariables() {
+        HashMap<String, LibertyVariable> variableMap = new HashMap<String, LibertyVariable>();
         for (Map.Entry<String, List<ConfigVariable>> entry : variables.entrySet()) {
             String variableName = entry.getKey();
             List<ConfigVariable> variableList = entry.getValue();

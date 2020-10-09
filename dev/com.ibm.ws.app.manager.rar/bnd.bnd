@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ bVersion=1.0
 Bundle-Name: WebSphere Connector Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.rar
 Bundle-Description: WebSphere Connector Support, version ${bVersion}
+
+jakartaeeMe: true
 
 Import-Package: \
   !com.ibm.ws.container.service.metadata, \
@@ -40,6 +42,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/rar/internal/resources/*.clas
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\

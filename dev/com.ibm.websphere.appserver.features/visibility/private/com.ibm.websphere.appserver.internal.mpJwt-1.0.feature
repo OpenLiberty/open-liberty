@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.mpJwt-1.0
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 IBM-API-Package: \
   org.eclipse.microprofile.jwt; type="stable", \

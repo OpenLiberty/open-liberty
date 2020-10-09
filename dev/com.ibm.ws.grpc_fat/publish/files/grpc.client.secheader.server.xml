@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>grpc-1.0</feature>
+        <feature>grpcClient-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <grpc target="*" serverInterceptors="com.ibm.ws.grpc.fat.helloworld.service.HelloWorldServerInterceptor3" />
+    <grpcClient host="*"
+                overrideAuthority="TestDomain123"
+                userAgent="Agent456"                  
+                clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" />
+    
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>

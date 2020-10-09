@@ -15,25 +15,25 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
     version="2.2">
 
-	<application>
-	<system-event-listener>
-		<system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PostPutFlashValueEventListener</system-event-listener-class>
-		<system-event-class>javax.faces.event.PostPutFlashValueEvent</system-event-class>    					
-	</system-event-listener> 
-	<system-event-listener>
-		<system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PostKeepFlashValueEventListener</system-event-listener-class>
-		<system-event-class>javax.faces.event.PostKeepFlashValueEvent</system-event-class>    					
-	</system-event-listener>
-	<system-event-listener>
-		<system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PreClearFlashEventListener</system-event-listener-class>
-		<system-event-class>javax.faces.event.PreClearFlashEvent</system-event-class>    					
-	</system-event-listener>
-	<system-event-listener>
-		<system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PreRemoveFlashValueEventListener</system-event-listener-class>
-		<system-event-class>javax.faces.event.PreRemoveFlashValueEvent</system-event-class>    					
-	</system-event-listener>	
-	</application>
-	<factory>
-		<flash-factory>com.ibm.ws.jsf22.fat.flashevents.factory.TestFlashFactory</flash-factory>
-	</factory>
+    <application>
+    <system-event-listener>
+        <system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PostPutFlashValueEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PostPutFlashValueEvent</system-event-class>
+    </system-event-listener>
+    <system-event-listener>
+        <system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PostKeepFlashValueEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PostKeepFlashValueEvent</system-event-class>
+    </system-event-listener>
+    <system-event-listener>
+        <system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PreClearFlashEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PreClearFlashEvent</system-event-class>
+    </system-event-listener>
+    <system-event-listener>
+        <system-event-listener-class>com.ibm.ws.jsf22.fat.flashevents.listener.PreRemoveFlashValueEventListener</system-event-listener-class>
+        <system-event-class>javax.faces.event.PreRemoveFlashValueEvent</system-event-class>
+    </system-event-listener>
+    </application>
+    <factory>
+        <flash-factory>com.ibm.ws.jsf22.fat.flashevents.factory.TestFlashFactory</flash-factory>
+    </factory>
 </faces-config>

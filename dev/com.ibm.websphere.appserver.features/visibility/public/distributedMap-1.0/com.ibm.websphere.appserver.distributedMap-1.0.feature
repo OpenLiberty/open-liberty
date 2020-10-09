@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.distributedMap-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: com.ibm.websphere.cache; type="ibm-api", \
  com.ibm.websphere.cache.exception; type="ibm-api", \

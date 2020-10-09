@@ -1276,6 +1276,13 @@ Party Code for which you are requesting the source code.
 XMLHTTPREQUEST [Esprima (node)]
 UNBOUNDID-LDAPSDK
 JBOSS RESTEASY
+NARAYANA-LRA
+ARJUNA
+LRA-SERVICE-BASE
+LRA-PROXY-API
+LRA-COORDINATOR
+NARAYANA-COMMON
+LRA-CLIENT
 
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
@@ -2573,6 +2580,116 @@ END OF OPEN LIBERTY NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Open Liberty @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TABLE OF CONTENTS
+
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
+SECTIONS:
+
+CC-BY-3.0  
+CC-BY-4.0  
+CC-BY-SA-4.0  
+GPL V2  
+SIL OPEN FONT LICENSE 1.1  
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
+
+SPDX-EXCEPTIONS
+(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
+GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
+SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
+
+INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
+(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+GNU GENERAL PUBLIC LICENSE, VERSION 2
+
+The Program includes some or all of the following licensed to you as
+Separately Licensed Code under the GNU General Public License. For copies
+of the source code for this software, send an email to alanl@us.ibm.com
+identifying the IBM product and the GPL-licensed program for which you
+are requesting the source code
+
+GETPIDS [Arjuna]
+
+END OF GNU GENERAL PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SIL OPEN FONT LICENSE 1.1
+
+The Program includes some or all of the following works licensed under
+the SIL OPEN FONT LICENSE 1.1
+
+FONT-AWESOME [weld]
+IBM PLEX
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
+modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
+
+1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
+
+2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
+copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
+or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
+
+3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
+written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
+
+4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
+to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
+
+5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
+under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
+
+TERMINATION & TERRITORY
+This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
+PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
+IN THE FONT SOFTWARE.
+
+
+END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+END OF OPEN LIBERTY NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Open Liberty @LIBERTY_VERSION@ DOCKER NOTICES AND INFORMATION 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2600,7 +2717,6 @@ RUBY WITHOUT SLC DISCLAIMER
 W3C
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 APACHE LICENSE 2.0
 
 The Program includes some or all of the following that IBM obtained
@@ -2720,6 +2836,22 @@ GENERICENTITY [JBoss RESTEasy]
 WIREMOCK-STANDALONE
 SMALLRYE-GRAPHQL
 SWAGGER-UI [OpenLiberty]
+STOMP-WEBSOCKET [Netty]
+PROTOC-GEN-VALIDATE [grpc-java]
+ERROR-PRONE,
+PERFMARK-API,
+ISTIO [grpc-java]
+OPENCENSUS-JAVA
+PYMOX [Protobuf]
+J2OBJC-ANNOTATIONS
+ENVOY [grpc-java]
+GRPC-JAVA
+JAVA-COMMON-PROTOS,
+UDPA [grpc-java]
+GOOGLEAPIS [grpc-java]
+OKHTTP [grpc-java]
+CHECKSTYLE [grpc-java]
+NETTY [grpc-java]
 
 Apache License
 Version 2.0, January 2004
@@ -2977,6 +3109,8 @@ Hamcrest  All rights reserved. )
 PUREJAVACRC32C [Commons-Codec] (Copyright (c) 2004-2006 Intel Corportation)
 STAX2-API (Copyright (c) 2006- Tatu Saloranta, tatu.saloranta@iki.fi)
 JCRAFT JSCH [Spring Framework] (Copyright (c) 2002-2015 Atsuhiko Yamanaka, JCraft,Inc.)
+PROTOBUF (Copyright 2008 Google Inc.)
+WEBSOCKET [Netty] (Copyright (c) 2011, Joe Walnes and contributors)
 CRYPTOJS [OpenLiberty] ((c) 2009-2013 by Jeff Mott)
 
 
@@ -3137,6 +3271,28 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
+
+dnsinfo [Netty]
+
+* Copyright (c) 2004-2006, 2008, 2009, 2011 Apple Inc. All rights
+reserved.
+ *
+ * @APPLE_LICENSE_HEADER_START@
+ *
+* This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this
+ * file.
+ *
+ * The Original Code and all software distributed under the License are
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
 
 JCraft
 
@@ -3623,6 +3779,13 @@ to alanl@us.ibm.com identifying the IBM Program and the Modifiable Third
 Party Code for which you are requesting the source code. 
 
 JBOSS RESTEASY
+NARAYANA-LRA
+ARJUNA
+LRA-SERVICE-BASE
+LRA-PROXY-API
+LRA-COORDINATOR
+NARAYANA-COMMON
+LRA-CLIENT
 
                   GNU LIBRARY GENERAL PUBLIC LICENSE
                        Version 2, June 1991
@@ -4591,6 +4754,11 @@ SERVE-STATIC(Copyright (c) 2010 Sencha Inc.Copyright (c) 2011 LearnBoostCopyrigh
 (c) 2011 TJ HolowaychukCopyright (c) 2014-2016 Douglas Christopher Wilson)
 STRING.PROTOTYPE.REPEAT (Copyright Mathias Bynens <http://mathiasbynens.be/>)
 WORKER-LOADER (No copyright)
+UTF-8 [Netty] (Copyright (c) 2008-2009 Bjoern Hoehrmann
+<bjoern@hoehrmann.de>), WEBSOCKET-CLIENTHANDLER [Netty] (Copyright (c)
+2009 Carl Bystršm), JSONCPP [Protobuf] (Copyright 2007-2010 Baptiste
+Lepilleur), NETTY.UTIL.INTERNAL.LOGGING [Netty] (Copyright (c) 2004-2011
+QOS.ch)
 PROMISE(Copyright (c) 2014 Forbes Lindesay)
 ARRAY-UNIQ (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 IS-DATE-OBJECT (Copyright (c) 2015 Jordan Harband)
@@ -5181,11 +5349,8 @@ END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF OPEN LIBERTY DOCKER NOTICES AND INFORMATION 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 TABLE OF CONTENTS
 
 THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
@@ -5194,102 +5359,8 @@ SECTIONS:
 CC-BY-3.0  
 CC-BY-4.0  
 CC-BY-SA-4.0  
-SIL OPEN FONT LICENSE 1.1  
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
-
-SPDX-EXCEPTIONS
-(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
-GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
-SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
-
-INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
-(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
-
-GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-SIL OPEN FONT LICENSE 1.1
-
-The Program includes some or all of the following works licensed under
-the SIL OPEN FONT LICENSE 1.1
-
-FONT-AWESOME [weld]
-IBM PLEX
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
-modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
-
-1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
-
-2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
-copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
-or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
-
-3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
-written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
-
-4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
-to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
-
-5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
-under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
-
-TERMINATION & TERRITORY
-This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
-
-DISCLAIMER
-THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
-PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
-IN THE FONT SOFTWARE.
-
-
-END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-END OF OPEN LIBERTY NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty @LIBERTY_VERSION@ DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-TABLE OF CONTENTS
-
-THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
-SECTIONS:
-
-CC-BY-3.0  
-CC-BY-4.0  
-CC-BY-SA-4.0  
-GPL V3  
+GPL V2 
+GPL V3 
 REDHAT UNIVERSAL BASE IMAGE v 7.6 (Maipo)
 SIL OPEN FONT LICENSE 1.1  
 
@@ -5330,6 +5401,19 @@ The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalco
 GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
 
 END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+GNU GENERAL PUBLIC LICENSE, VERSION 2
+
+The Program includes some or all of the following licensed to you as
+Separately Licensed Code under the GNU General Public License. For copies
+of the source code for this software, send an email to alanl@us.ibm.com
+identifying the IBM product and the GPL-licensed program for which you
+are requesting the source code
+
+GETPIDS [Arjuna]
+
+END OF GNU GENERAL PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 GNU GENERAL PUBLIC LICENSE, VERSION 3
@@ -5397,9 +5481,7 @@ IN THE FONT SOFTWARE.
 END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF OPEN LIBERTY DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+END OF OPEN LIBERTY DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF OPEN LIBERTY NOTICE FILE
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-

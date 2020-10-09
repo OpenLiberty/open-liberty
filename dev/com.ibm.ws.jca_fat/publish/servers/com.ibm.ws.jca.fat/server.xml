@@ -16,6 +16,7 @@
       <feature>jmsMdb-3.2</feature>
       <feature>jms-2.0</feature>
       <feature>concurrent-1.0</feature>
+      <feature>componenttest-1.0</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>

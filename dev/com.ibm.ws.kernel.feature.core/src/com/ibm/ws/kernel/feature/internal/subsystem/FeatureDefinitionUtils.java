@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,8 @@ public class FeatureDefinitionUtils {
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     public static final String IBM_PROCESS_TYPES = "IBM-Process-Types";
     public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
-    public static final String IBM_ALT_NAMES = "IBM-AlsoKnownAs";
+    public static final String IBM_ALT_NAMES = "WLP-AlsoKnownAs";
+    public static final String IBM_DISABLE_ALL_FEATURES_ON_CONFLICT = "WLP-DisableAllFeatures-OnConflict";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
@@ -119,6 +120,7 @@ public class FeatureDefinitionUtils {
         final boolean hasSpiPackages;
         final boolean hasApiServices;
         final boolean isSingleton;
+        final boolean disableOnConflict;
         final File featureFile;
         final long lastModified;
         final long length;
@@ -139,6 +141,7 @@ public class FeatureDefinitionUtils {
                             boolean hasApiPackages,
                             boolean hasSpiPackages,
                             boolean isSingleton,
+                            boolean disableOnConflict,
                             EnumSet<ProcessType> processType,
                             ActivationType activationType) {
 
@@ -159,6 +162,7 @@ public class FeatureDefinitionUtils {
             this.hasApiPackages = hasApiPackages;
             this.hasSpiPackages = hasSpiPackages;
             this.isSingleton = isSingleton;
+            this.disableOnConflict = disableOnConflict;
 
             this.featureFile = featureFile;
             this.lastModified = lastModified;
@@ -321,6 +325,8 @@ public class FeatureDefinitionUtils {
             activationType = activationTypeHeader == null ? ActivationType.SEQUENTIAL : ActivationType.fromString(activationTypeHeader);
         }
 
+        boolean disableOnConflict = Boolean.parseBoolean(details.getCachedRawHeader(IBM_DISABLE_ALL_FEATURES_ON_CONFLICT));
+
         ImmutableAttributes iAttr = new ImmutableAttributes(repoType,
                                                             symbolicName,
                                                             nullIfEmpty(shortName),
@@ -334,6 +340,7 @@ public class FeatureDefinitionUtils {
                                                             featureFile == null ? -1 : featureFile.length(),
                                                             isAutoFeature, hasApiServices,
                                                             hasApiPackages, hasSpiPackages, isSingleton,
+                                                            disableOnConflict,
                                                             processTypes,
                                                             activationType);
 

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package ejb.timers;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Schedule;
-import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
-import javax.ejb.Timer;
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Schedule;
+import jakarta.ejb.SessionContext;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Timer;
 
 /**
  * This class uses the @Schedule annotation.

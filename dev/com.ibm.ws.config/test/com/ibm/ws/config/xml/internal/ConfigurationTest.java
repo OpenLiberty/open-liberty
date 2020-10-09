@@ -31,7 +31,10 @@ import org.junit.Test;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
@@ -79,7 +82,7 @@ public class ConfigurationTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
@@ -370,7 +373,7 @@ public class ConfigurationTest {
         in.addVariable(anotherVariable);
         config.add(in);
 
-        ConfigVariable name = config.getVariables().get("name");
+        LibertyVariable name = config.getVariables().get("name");
         assertNotNull(name);
 
         // Last value should win when onConflict = REPLACE
@@ -389,7 +392,7 @@ public class ConfigurationTest {
         in.addVariable(anotherVariable);
         config.add(in);
 
-        ConfigVariable name = config.getVariables().get("name");
+        LibertyVariable name = config.getVariables().get("name");
         assertNotNull(name);
 
         // Last value should win when onConflict = REPLACE
@@ -408,7 +411,7 @@ public class ConfigurationTest {
         in.addVariable(anotherVariable);
         config.add(in);
 
-        ConfigVariable name = config.getVariables().get("name");
+        LibertyVariable name = config.getVariables().get("name");
         assertNotNull(name);
 
         // Last value will win because its behavior is MERGE
@@ -429,7 +432,7 @@ public class ConfigurationTest {
         in.addVariable(anotherVariable);
         config.add(in);
 
-        ConfigVariable name = config.getVariables().get("name");
+        LibertyVariable name = config.getVariables().get("name");
         assertNotNull(name);
 
         // First value should win

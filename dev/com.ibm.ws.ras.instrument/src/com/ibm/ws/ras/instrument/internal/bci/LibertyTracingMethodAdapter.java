@@ -12,18 +12,13 @@ package com.ibm.ws.ras.instrument.internal.bci;
 
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TRACE_COMPONENT_TYPE;
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TR_TYPE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 

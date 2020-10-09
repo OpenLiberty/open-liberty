@@ -1,6 +1,7 @@
 package io.openliberty.grpc.internal.client;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -46,9 +47,12 @@ public class LibertyHeaderPropagationSupport {
 			List<String> headerNames = Arrays.asList(headersToPropagate.split("\\s*,\\s*"));
 			if (!headerNames.isEmpty()) {
 				for (String headerName : headerNames) {
-					String headerValue = getThreadLocalRequestHeader(headerName);
-					if (headerValue != null) {
-						addHeader(headerName, headerValue, headerMap);
+					Enumeration<String> headerValues = getThreadLocalRequestHeaders(headerName);
+					if (headerValues != null) {
+						while (headerValues.hasMoreElements()) {
+							String headerValue = headerValues.nextElement();
+							addHeader(headerName, headerValue, headerMap);
+						}
 					}
 				}
 			}
@@ -56,22 +60,23 @@ public class LibertyHeaderPropagationSupport {
 	}
 
 	/**
-	 * Grab the request state ThreadLocal and return
+	 * Grab the request state ThreadLocal and return the requested values
 	 * 
-	 * @return the value of the requested header or null it could not be retrieved
+	 * @return the values of the requested header or null it could not be retrieved
 	 */
-	private static String getThreadLocalRequestHeader(String headerName) {
+	@SuppressWarnings("unchecked")
+	private static Enumeration<String> getThreadLocalRequestHeaders(String headerName) {
 		WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
-		String headerValue = null;
+		Enumeration<String> headerValues = null;
 		if (reqState != null) {
-			headerValue = reqState.getCurrentThreadsIExtendedRequest().getIRequest()
-					.getHeader(headerName.toLowerCase());
+			headerValues = reqState.getCurrentThreadsIExtendedRequest().getIRequest()
+					.getHeaders(headerName.toLowerCase());
 		}
-		return headerValue;
+		return headerValues;
 	}
 
 	/**
-	 * Add a header to the outbound headers
+	 * Add a header to the outbound headers. Duplicate values for the same header name are allowed.
 	 * 
 	 * @param token
 	 * @param headers

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpOpenAPI-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: mpOpenAPI-1.0
@@ -44,7 +45,7 @@ IBM-SPI-Package: \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.model,\
- com.ibm.ws.com.fasterxml.jackson.2.9.1
+ io.openliberty.com.fasterxml.jackson
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -19,8 +19,7 @@ src: \
 	test-applications/CDI/src,\
 	test-applications/TxSynchronization/src,\
     test-applications/olgh8820/src,\
-    test-applications/olgh10240/src,\
-	test-framework/src
+    test-applications/olgh10240/src
 
 fat.project: true
 tested.features: jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0, connectors-2.0, mdb-4.0, messagingserver-3.0, messagingclient-3.0
@@ -29,6 +28,7 @@ tested.features: jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBe
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
+	com.ibm.ws.jpa_testframework;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

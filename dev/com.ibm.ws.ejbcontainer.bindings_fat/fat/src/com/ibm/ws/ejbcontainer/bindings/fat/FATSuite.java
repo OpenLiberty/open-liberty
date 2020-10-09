@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.bindings.fat.tests.AmbiguousBindingsTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.BindToJavaGlobalTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.BindToServerRootTest;
 import com.ibm.ws.ejbcontainer.bindings.fat.tests.BindingNameTest;
@@ -31,6 +32,7 @@ import com.ibm.ws.ejbcontainer.bindings.fat.tests.SimpleBindingNameTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AmbiguousBindingsTest.class,
                 BindingNameTest.class,
                 BindToJavaGlobalTest.class,
                 BindToServerRootTest.class,

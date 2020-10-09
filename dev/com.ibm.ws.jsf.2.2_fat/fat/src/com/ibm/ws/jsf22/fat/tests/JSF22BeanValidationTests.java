@@ -31,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -73,21 +74,25 @@ public class JSF22BeanValidationTests {
      */
     @Test
     public void testBeanValidation11Enabled() throws Exception {
-        String methodName = "testBeanValidation11Enabled";
+        String msgToSearchFor = "MyFaces Bean Validation support enabled";
+        String msgToSearchForMyFaces30 = "MyFaces Core Bean Validation support enabled";
 
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            webClient.getPage(url);
 
             Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
-            Log.info(c, name.getMethodName(), "Looking for message \"MyFaces Bean Validation support enabled\" in the logs");
-
-            String logMessage = jsf22beanvalServer.waitForStringInLog("MyFaces Bean Validation support enabled");
-
+            String logMessage;
+            if (JakartaEE9Action.isActive()) {
+                Log.info(c, name.getMethodName(), "Looking for message " + msgToSearchForMyFaces30 + " in the logs");
+                logMessage = jsf22beanvalServer.waitForStringInLog(msgToSearchForMyFaces30);
+            } else {
+                Log.info(c, name.getMethodName(), "Looking for message " + msgToSearchFor + " in the logs");
+                logMessage = jsf22beanvalServer.waitForStringInLog(msgToSearchFor);
+            }
             Log.info(c, name.getMethodName(), "Message found in the logs : " + logMessage);
-
             Assert.assertNotNull("Correct message not found", logMessage);
         }
     }
@@ -107,8 +112,6 @@ public class JSF22BeanValidationTests {
      */
     @Test
     public void testValidationBeanTagBinding() throws Exception {
-        String methodName = "testValidationBeanTagBinding";
-
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsf22beanvalServer, contextRoot, "BeanValidation.jsf");

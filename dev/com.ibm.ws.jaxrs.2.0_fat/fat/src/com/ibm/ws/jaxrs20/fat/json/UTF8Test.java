@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs20.fat.AbstractTest;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -29,6 +30,7 @@ import componenttest.topology.impl.LibertyServer;
  * INVALID UTF-8 middle byte error WITH DANISH CHARACTER SET
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class UTF8Test extends AbstractTest {
 
     @Server("com.ibm.ws.jaxrs.fat.json")

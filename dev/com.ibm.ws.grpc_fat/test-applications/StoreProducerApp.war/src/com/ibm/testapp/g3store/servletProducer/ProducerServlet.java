@@ -47,17 +47,10 @@ import com.ibm.testapp.g3store.utilsProducer.ProducerUtils;
  *         This class API will be called from
  *
  */
-@WebServlet(urlPatterns = "/ProducerServlet")
+@WebServlet(urlPatterns = "/ProducerServlet", loadOnStartup = 1)
 public class ProducerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static Logger log = Logger.getLogger(ProducerServlet.class.getName());
-
-    ProducerGrpcServiceClientImpl helper = null;
-
-    @Override
-    public void init() throws ServletException {
-        helper = new ProducerGrpcServiceClientImpl();
-    }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -100,6 +93,7 @@ public class ProducerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String testToInvoke = request.getParameter("testName");
+        ProducerGrpcServiceClientImpl helper = new ProducerGrpcServiceClientImpl();
 
         if ("createApp".equalsIgnoreCase(testToInvoke)) {
             String m = testToInvoke;
@@ -243,7 +237,7 @@ public class ProducerServlet extends HttpServlet {
             try {
                 log.info(m + " ----------------------------------------------------------------");
                 log.info(m + " ------------" + m + "-START-----------------------");
-                twoWayStreamApp(helper, response, true);
+                twoWayStreamApp(helper, response, helper, true);
 
             } catch (Exception e) {
 
@@ -257,7 +251,7 @@ public class ProducerServlet extends HttpServlet {
             try {
                 log.info(m + " ----------------------------------------------------------------");
                 log.info(m + " ------------" + m + "-START-----------------------");
-                twoWayStreamApp(helper, response, false);
+                twoWayStreamApp(helper, response, helper, false);
 
             } catch (Exception e) {
 
@@ -334,14 +328,14 @@ public class ProducerServlet extends HttpServlet {
     public final static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
     public final static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
 
-    public static CountDownLatch stressLatch = null;
-
     /**
      * @param helper
      * @param response
      * @throws Exception
      */
     private void clientStreaming(ProducerGrpcServiceClientImpl helper, HttpServletResponse response) throws Exception {
+
+        CountDownLatch stressLatch = null;
 
         int numOfConnections = CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS;
         ClientStreamThread[] ta = new ClientStreamThread[CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS];
@@ -364,7 +358,7 @@ public class ProducerServlet extends HttpServlet {
 
         try {
             for (int i = 0; i < numOfConnections; i++) {
-                ta[i] = new ClientStreamThread(i);
+                ta[i] = new ClientStreamThread(i, helper, stressLatch);
                 Thread t = new Thread(ta[i]);
                 t.start();
                 if (CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
@@ -423,9 +417,13 @@ public class ProducerServlet extends HttpServlet {
 
         int id = -1;
         String result = "NotDone";
+        ProducerGrpcServiceClientImpl helper;
+        CountDownLatch stressLatch;
 
-        public ClientStreamThread(int in_id) {
+        public ClientStreamThread(int in_id, ProducerGrpcServiceClientImpl h, CountDownLatch latch) {
+            helper = h;
             id = in_id;
+            stressLatch = latch;
         }
 
         @Override
@@ -465,7 +463,7 @@ public class ProducerServlet extends HttpServlet {
         if (numOfConnections > SERVER_STREAM_MAX_STRESS_CONNECTIONS) {
             numOfConnections = SERVER_STREAM_MAX_STRESS_CONNECTIONS;
         }
-        stressLatch = new CountDownLatch(numOfConnections);
+        CountDownLatch stressLatch = new CountDownLatch(numOfConnections);
 
         // Get the input parameters from the REST request
         // Each parameter value will have to be transferred to the grpc request object
@@ -476,7 +474,7 @@ public class ProducerServlet extends HttpServlet {
 
         try {
             for (int i = 0; i < numOfConnections; i++) {
-                ta[i] = new ServerStreamThread(i);
+                ta[i] = new ServerStreamThread(i, helper, stressLatch);
                 Thread t = new Thread(ta[i]);
                 t.start();
                 if (SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
@@ -533,9 +531,13 @@ public class ProducerServlet extends HttpServlet {
 
         int id = -1;
         String result = "NotDone";
+        ProducerGrpcServiceClientImpl helper;
+        CountDownLatch stressLatch;
 
-        public ServerStreamThread(int in_id) {
+        public ServerStreamThread(int in_id, ProducerGrpcServiceClientImpl h, CountDownLatch latch) {
+            helper = h;
             id = in_id;
+            stressLatch = latch;
         }
 
         @Override
@@ -827,7 +829,8 @@ public class ProducerServlet extends HttpServlet {
      * @param asyncThread
      * @throws Exception
      */
-    private void twoWayStreamApp(ProducerGrpcServiceClientImpl helper2, HttpServletResponse response, boolean asyncThread) throws Exception {
+    private void twoWayStreamApp(ProducerGrpcServiceClientImpl helper2, HttpServletResponse response, ProducerGrpcServiceClientImpl helper,
+                                 boolean asyncThread) throws Exception {
 
         log.info("twoWayStreamApp(): request to run twoWayStreamApp test received by ProducerRestEndpoint.  asyncThread:  " + asyncThread);
         int numOfConnections = TWOWAY_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS;
@@ -838,14 +841,14 @@ public class ProducerServlet extends HttpServlet {
         if (numOfConnections > TWOWAY_STREAM_MAX_STRESS_CONNECTIONS) {
             numOfConnections = TWOWAY_STREAM_MAX_STRESS_CONNECTIONS;
         }
-        stressLatch = new CountDownLatch(numOfConnections);
+        CountDownLatch stressLatch = new CountDownLatch(numOfConnections);
 
         // create grpc client
         helper.startService_AsyncStub(ProducerUtils.getStoreServerHost(), ProducerUtils.getStoreServerPort());
 
         try {
             for (int i = 0; i < numOfConnections; i++) {
-                ta[i] = new TwoWayStreamThread(i, asyncThread);
+                ta[i] = new TwoWayStreamThread(i, asyncThread, helper, stressLatch);
                 Thread t = new Thread(ta[i]);
                 t.start();
                 if (TWOWAY_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
@@ -903,10 +906,14 @@ public class ProducerServlet extends HttpServlet {
         int id = -1;
         String result = "NotDone";
         boolean asyncFlag = false;
+        ProducerGrpcServiceClientImpl helper;
+        CountDownLatch stressLatch;
 
-        public TwoWayStreamThread(int in_id, boolean af) {
+        public TwoWayStreamThread(int in_id, boolean af, ProducerGrpcServiceClientImpl h, CountDownLatch latch) {
+            helper = h;
             id = in_id;
             asyncFlag = af;
+            stressLatch = latch;
         }
 
         @Override

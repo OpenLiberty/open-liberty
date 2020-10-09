@@ -25,7 +25,7 @@
         <file
             name="${server.config.dir}/jaegerLib/jaeger-thrift-1.2.0.jar" />
         <file
-            name="${server.config.dir}/jaegerLib/slf4j-api-1.7.28.jar" />
+            name="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar" />
         <file
             name="${server.config.dir}/jaegerLib/slf4j-simple-1.7.30.jar" />
         <file
@@ -38,7 +38,7 @@
     </library>
 
     <javaPermission
-        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.28.jar"
+        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar"
         className="java.security.AllPermission" />
 
     <javaPermission

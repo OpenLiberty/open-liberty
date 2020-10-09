@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -304,7 +305,7 @@ public final class ServletAdapter {
     }
 
     final byte[] buffer = new byte[4 * 1024];
-
+    
     @Override
     public void onDataAvailable() throws IOException {
       logger.log(FINEST, "[{0}] onDataAvailable: ENTRY", logId);
@@ -321,13 +322,11 @@ public final class ServletAdapter {
                 "[{0}] inbound data: length = {1}, bytes = {2}",
                 new Object[] {logId, length, ServletServerStream.toHexString(buffer, length)});
           }
-
-          byte[] copy = Arrays.copyOf(buffer, length);
+           byte[] copy = Arrays.copyOf(buffer, length);
           stream.transportState().runOnTransportThread(
               () -> stream.transportState().inboundDataReceived(ReadableBuffers.wrap(copy), false));
         }
       }
-
       logger.log(FINEST, "[{0}] onDataAvailable: EXIT", logId);
     }
 

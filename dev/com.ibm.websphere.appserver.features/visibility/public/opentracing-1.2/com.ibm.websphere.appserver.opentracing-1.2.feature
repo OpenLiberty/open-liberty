@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.opentracing-1.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \

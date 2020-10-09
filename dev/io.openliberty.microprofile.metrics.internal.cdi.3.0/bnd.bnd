@@ -52,7 +52,7 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	io.openliberty.microprofile.metrics.internal.3.0;version=latest,\
@@ -61,7 +61,7 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
     com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
     com.ibm.ws.microprofile.metrics.cdi.common,\
     com.ibm.ws.microprofile.metrics.common;version=latest

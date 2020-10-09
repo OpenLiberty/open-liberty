@@ -16,8 +16,7 @@ src: \
 	fat/src,\
 	test-applications/helpers/DatabaseManagement/src,\
 	test-applications/injection/src,\
-	test-applications/injection_dpu/src,\
-	test-framework/src
+	test-applications/injection_dpu/src
 
 fat.project: true
 tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0
@@ -25,6 +24,7 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, jpa-3.0
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
+	com.ibm.ws.jpa_testframework;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

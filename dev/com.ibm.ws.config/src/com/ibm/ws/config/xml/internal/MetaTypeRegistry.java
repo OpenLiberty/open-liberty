@@ -48,7 +48,7 @@ import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinitionImpl
  * Registry for MetaType information.
  */
 
-final class MetaTypeRegistry {
+public final class MetaTypeRegistry {
 
     private static final TraceComponent tc = Tr.register(MetaTypeRegistry.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 

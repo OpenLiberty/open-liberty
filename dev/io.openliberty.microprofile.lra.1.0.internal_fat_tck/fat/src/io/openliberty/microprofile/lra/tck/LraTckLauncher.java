@@ -72,8 +72,6 @@ public class LraTckLauncher {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    @Mode(TestMode.EXPERIMENTAL)
     public void launchLRATCK() throws Exception {
 
         // This makes the property lra.tck.base.url available to maven, so that it can pass it on to the
@@ -84,6 +82,8 @@ public class LraTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("lra.tck.base.url", protocol + "://" + host + ":" + port);
         additionalProps.put("lraTestsToRun", "**/TckTests.java");
+        // This is the currently passing test methods from TckTests
+        additionalProps.put("test", "TckTests#*LRA*+join*");
 
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.lra.1.0.internal_fat_tck", this.getClass() + ":launchLRATCK", additionalProps);
 

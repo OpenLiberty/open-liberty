@@ -1,0 +1,14 @@
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.io.smallrye.common; singleton:=true
+
+bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
+Build-Identifier: SNAPSHOT-${now}
+Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
+
+Export-Package: \
+ io.smallrye.common.*;version="1.4.0"
+
+Import-Package: \
+ !sun.misc,\
+ *

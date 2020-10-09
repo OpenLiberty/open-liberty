@@ -5,7 +5,7 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: com.ibm.ws.ejb.portable; type="internal"
 IBM-ShortName: enterpriseBeansRemote-4.0
-IBM-AlsoKnownAs: ejbRemote-4.0
+WLP-AlsoKnownAs: ejbRemote-4.0
 Subsystem-Name: Jakarta Enterprise Beans Remote 4.0
 -features=com.ibm.websphere.appserver.iioptransport-1.0, \
  io.openliberty.enterpriseBeansLite-4.0, \
@@ -14,3 +14,4 @@ Subsystem-Name: Jakarta Enterprise Beans Remote 4.0
 -files=clients/ejbRemotePortable.jakarta.jar
 kind=beta
 edition=base
+WLP-Activation-Type: parallel

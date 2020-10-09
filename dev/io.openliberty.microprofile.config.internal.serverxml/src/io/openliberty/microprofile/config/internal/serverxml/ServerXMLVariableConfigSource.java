@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -38,12 +39,18 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     private BundleContext bundleContext;
     private ConfigVariables configVariables;
 
-    public ServerXMLVariableConfigSource() {
-        this(ServerXMLConstants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    public String getName() {
+        return Tr.formatMessage(tc, "server.xml.variables.config.source");
     }
 
-    protected ServerXMLVariableConfigSource(int ordinal, String id) {
-        super(ordinal, id);
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ServerXMLConstants.SERVER_XML_VARIABLE_ORDINAL;
     }
 
     /** {@inheritDoc} */

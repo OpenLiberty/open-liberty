@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaspic-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: \
   javax.security.auth.message; type="spec", \

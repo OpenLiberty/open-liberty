@@ -231,13 +231,18 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request);
         }
-        taiRequestHelper.setMpConfigProperties(mpConfigUtil.getMpConfig(request));
         MicroProfileJwtTaiRequest mpJwtTaiRequest = taiRequestHelper.createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
+        updateTaiRequestWithMpConfigProps(request, mpJwtTaiRequest);
         boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    void updateTaiRequestWithMpConfigProps(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+        mpJwtTaiRequest.setMpConfigProps(mpConfigUtil.getMpConfig(request));
+        request.setAttribute(ATTRIBUTE_TAI_REQUEST, mpJwtTaiRequest);
     }
 
     /**
@@ -343,7 +348,6 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             Tr.entry(tc, methodName, request, response, mpJwtConfig);
         }
 
-        taiRequestHelper.setMpConfigProperties(mpConfigUtil.getMpConfig(request));
         String token = taiRequestHelper.getBearerToken(request, mpJwtConfig);
         if (token == null) {
             Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
@@ -381,7 +385,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (token != null) {
             // Create JWT from access token / id token
             try {
-                Map<String, String> mpCfg = mpConfigUtil.getMpConfig(req);
+                Map<String, String> mpCfg = taiRequestHelper.getMpConfigPropsFromRequestObject(req);
                 if (!mpCfg.isEmpty()) {
                     jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
                 } else {

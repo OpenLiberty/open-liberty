@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
 
 /*
  * (non-Javadoc)
- * 
+ *
  * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
  */
     @Override
@@ -88,12 +88,11 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
 
 /*
  * (non-Javadoc)
- * 
+ *
  * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
  */
     @Override
     public void describe(Diagnostics diag) {
-        // TODO Auto-generated method stub
 
         diag.describeIfSet("permissions", permissions);
 
@@ -101,13 +100,12 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
 
 /*
  * (non-Javadoc)
- * 
+ *
  * @see com.ibm.ws.javaee.dd.permissions.PermissionsConfig#getPermissions()
  */
     @SuppressWarnings("unchecked")
     @Override
     public List getPermissions() {
-        // TODO Auto-generated method stub
         if (this.permissions != null) {
             return this.permissions.getList();
         } else
@@ -116,45 +114,41 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getDeploymentDescriptorPath()
      */
     @Override
     public String getDeploymentDescriptorPath() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getComponentForId(java.lang.String)
      */
     @Override
     public Object getComponentForId(String id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getIdForComponent(java.lang.Object)
      */
     @Override
     public String getIdForComponent(Object ddComponent) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.javaee.ddmodel.DDParser.RootParsable#describe(java.lang.StringBuilder)
      */
     @Override
     public void describe(StringBuilder sb) {
-        // TODO Auto-generated method stub
 
     }
 }

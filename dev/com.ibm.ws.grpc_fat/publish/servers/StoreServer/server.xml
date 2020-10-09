@@ -133,14 +133,8 @@ and that access id must then exist in the role map -->
 	</application>
 		
 	<logging
-		traceSpecification="*=info=enabled
-		:io.openliberty.grpc*=all
-		:com.ibm.testapp.g3store*=all:io.grpc*=all"
-		maxFileSize="200" maxFiles="4" traceFormat="BASIC" />
+		traceSpecification="*=info=enabled:io.openliberty.grpc*=all:com.ibm.testapp.g3store*=all:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http*=all"
+		maxFileSize="400" maxFiles="20" traceFormat="BASIC" />
 		
-		
-		<!-- :com.ibm.ws.webcontainer*=all
-		:com.ibm.wsspi.webcontainer*=all
-		:com.ibm.ws.security*=all" -->
 
 </server>

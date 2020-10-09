@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Dynamic Server with limited configuration.">
+<server description="com.ibm.ws.security.registry.ldap.fat.regression">
 
 	<include location="../fatTestPorts.xml"/>
 

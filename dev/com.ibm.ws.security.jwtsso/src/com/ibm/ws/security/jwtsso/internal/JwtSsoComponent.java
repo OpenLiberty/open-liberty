@@ -284,6 +284,11 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		return null;
 	}
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
 	/** {@inheritDoc} */
 	@Override
 	public String getSignatureAlgorithm() {

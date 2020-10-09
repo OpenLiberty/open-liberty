@@ -83,7 +83,7 @@ public class ServiceSupportTests extends FATServletClient {
     }
 
     private void startBeerService(String address, int port) {
-        System.out.println("Connecting to beerService gRPC service at " + address + ":" + port);
+        LOG.info("startBeerService() : Connecting to beerService gRPC service at " + address + ":" + port);
         beerChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
     }
@@ -93,7 +93,7 @@ public class ServiceSupportTests extends FATServletClient {
     }
 
     private void startHelloWorldService(String address, int port) {
-        System.out.println("Connecting to helloWorld gRPC service at " + address + ":" + port);
+        LOG.info("startHelloWorldService() : Connecting to helloWorld gRPC service at " + address + ":" + port);
         worldChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         worldServiceBlockingStub = GreeterGrpc.newBlockingStub(worldChannel);
     }
@@ -141,7 +141,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
         LOG.info("testSingleWarWithGrpcService() : dropped the app in dropins.");
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -201,11 +201,13 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
         LOG.info("testMultipleGrpcServiceWars() : FavoriteBeerService grpc application has started.");
+
+        grpcServer.setMarkToEndOfLog();
 
         // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
         // to a new app HelloWorldService.war
@@ -214,7 +216,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "io.grpc.examples.helloworld");
 
         // Make sure the helloworld service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application HelloWorldService started", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*HelloWorldService|CWWKZ0003I.*HelloWorldService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "HelloWorldService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -271,7 +273,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }
@@ -286,15 +288,17 @@ public class ServiceSupportTests extends FATServletClient {
         BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer1);
         assertTrue(rsp.getDone());
 
+        grpcServer.setMarkToEndOfLog();
+
         // Add the same application to the dropins folder again so that it is updated
         ShrinkHelper.defaultDropinApp(grpcServer, fbs,
                                       "com.ibm.ws.grpc.fat.beer.service",
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
-            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
+            Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to update within " + APP_STARTUP_TIMEOUT + "ms");
         }
         LOG.info("testSingleWarUpdate() : FavoriteBeerService grpc application has started for the second time.");
 
@@ -395,7 +399,7 @@ public class ServiceSupportTests extends FATServletClient {
                                       "com.ibm.ws.grpc.fat.beer");
 
         // Make sure the beer service has started
-        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application FavoriteBeerService started", APP_STARTUP_TIMEOUT);
+        String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to start within " + APP_STARTUP_TIMEOUT + "ms");
         }

@@ -388,7 +388,7 @@ public interface ConfigConstants {
     String CONFIG_PROP_AUTHENTICATION = "authentication";
     String CONFIG_PROP_REFERAL = "referal";
     String CONFIG_PROP_REFERRAL = "referral";
-    String CONFIG_PROP_DEREFALIASES = "derefAlias";
+    String CONFIG_PROP_DEREFALIASES = "derefAliases";
     String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
     String CONFIG_PROP_CONNECTION_POOL = "connectionPool";
 

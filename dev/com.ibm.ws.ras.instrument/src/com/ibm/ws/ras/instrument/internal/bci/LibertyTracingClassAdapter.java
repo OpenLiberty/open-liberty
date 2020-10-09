@@ -17,11 +17,9 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.FieldInfo;
-import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
 /**
  * A <code>RasClassAdapter</code> implementation that generates calls to

@@ -20,7 +20,7 @@
     
     <include location="../fatTestCommon.xml"/>
     
-    <grpcClient host="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" authntoken="oauth" maxInboundMessageSize="32000" enableKeepAlive="true" keepAliveTime="120" keepAliveTimeout="360" />
+    <grpcClient host="*" clientInterceptors="com.ibm.ws.grpc.fat.helloworld.client.HelloWorldClientInterceptor" authntoken="oauth" maxInboundMessageSize="32000" keepAliveTime="120" keepAliveTimeout="360" />
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 </server>
