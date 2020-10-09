@@ -1,0 +1,9 @@
+IBM-Feature-Version: 2
+IBM-ShortName: modelB.FeatureB-1.0
+Subsystem-Name: ModelB FeatureB 1.0
+Subsystem-ManifestVersion: 1
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: test.compatible.modelB.eeCompatible-1.0; type="osgi.subsystem.feature"
+Subsystem-SymbolicName: test.compatible.modelB1.featureB-1.0; visibility:=public; singleton:=true
+Subsystem-Version: 1.0.0
+WLP-DisableAllFeatures-OnConflict: true
