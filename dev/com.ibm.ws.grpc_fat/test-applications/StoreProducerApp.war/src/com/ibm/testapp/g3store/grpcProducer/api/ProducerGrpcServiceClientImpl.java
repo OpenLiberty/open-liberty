@@ -497,18 +497,19 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         for (int i = 1; i <= numberOfMessages; i++) {
             if (i == 1) {
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT sending message 1 hc: " + clientStreamAX.hashCode());
+                }
                 nextMessage = firstMessage;
             } else if (i == numberOfMessages) {
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " last message. hc: " + clientStreamAX.hashCode());
-                nextMessage = firstMessage;
+                }
                 nextMessage = lastMessage;
             } else {
-                if (CONCURRENT_TEST_ON && ((i % 1000) == 0))
+                if (CONCURRENT_TEST_ON && ((i % 1000) == 0)) {
                     System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " hc: " + clientStreamAX.hashCode());
-                nextMessage = firstMessage;
+                }
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
                 nextMessage = nextMessage + sChars;
             }
@@ -517,9 +518,10 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
             readyLoopCount = 0;
             while (clientStreamAX.isReady() != true) {
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false, sleep "
                                        + CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC + " ms. hc: " + clientStreamAX.hashCode());
+                }
                 try {
                     Thread.sleep(CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC);
                 } catch (Exception x) {
@@ -531,8 +533,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             }
 
             if (readyLoopCount > readyLoopMax) {
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + clientStreamAX.hashCode());
+                }
                 break;
             }
 
@@ -548,7 +551,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait to send onCompleted for now
         try {
-            Thread.sleep(100);
+            Thread.sleep(500);
         } catch (Exception x) {
             // do nothing
         }
@@ -714,9 +717,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         public void onNext(StreamReplyA response) {
             messageCount++;
             if (firstServerStreamMessage == null) {
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT received message 1 hc: " + this.hashCode());
-
+                }
                 firstServerStreamMessage = response.toString();
                 lastServerStreamMessage = response.toString();
             } else {
@@ -736,17 +739,17 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             errorMessage = errorCaught.getMessage();
             log.info("grpcServerStreamApp: caught error from server service: " + errorMessage);
 
-            if (CONCURRENT_TEST_ON)
+            if (CONCURRENT_TEST_ON) {
                 System.out.println(qtf() + "grpcServerStreamApp: caught error from server service: " + errorMessage + " hc: " + this.hashCode());
-
+            }
             latch.countDown();
         }
 
         @Override
         public void onCompleted() {
-            if (CONCURRENT_TEST_ON)
+            if (CONCURRENT_TEST_ON) {
                 System.out.println(qtf() + " ServerStream: CLIENT received onCompleted. message count: " + messageCount + " hc: " + this.hashCode());
-
+            }
             log.info("grpcServerStreamApp: onCompleted called from server service");
             latch.countDown();
         }

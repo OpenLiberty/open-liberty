@@ -467,16 +467,18 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         @Override
         public void onError(Throwable t) {
             log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
-            if (CONCURRENT_TEST_ON)
+            if (CONCURRENT_TEST_ON) {
                 System.out.println(qtf() + " ClientStream: SERVER received onError: hc: " + responseObserver.hashCode() + " throwable: " + t);
+            }
         }
 
         @Override
         public void onCompleted() {
             log.info("clientStreamA: onComplete() called");
 
-            if (CONCURRENT_TEST_ON)
+            if (CONCURRENT_TEST_ON) {
                 System.out.println(qtf() + " ClientStream: SERVER received onCompleted hc: " + responseObserver.hashCode());
+            }
 
             String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
@@ -534,13 +536,15 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             if (i == 1) {
                 log.info("serverStreamA: sending first message");
                 nextMessage = firstMessage;
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: SERVER sending message 1 hc: " + responseObserver.hashCode());
+                }
             } else if (i == numberOfMessages) {
                 log.info("serverStreamA: sending last message. number of messages was: " + numberOfMessages);
                 nextMessage = lastMessage;
-                if (CONCURRENT_TEST_ON)
+                if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " last message. hc: " + responseObserver.hashCode());
+                }
             } else {
                 if (CONCURRENT_TEST_ON && (i % 1000) == 0) {
                     System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " hc: " + responseObserver.hashCode());
@@ -562,7 +566,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
         // wait to send onCompleted for now
         try {
-            Thread.sleep(10);
+            Thread.sleep(500);
         } catch (Exception x) {
             // do nothing
         }
