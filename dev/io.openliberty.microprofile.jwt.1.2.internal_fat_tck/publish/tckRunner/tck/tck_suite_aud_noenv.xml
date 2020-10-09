@@ -26,13 +26,11 @@
         </groups>
 		<classes>
 			<!-- MP JWT 1.1 tests - these all pass with empty server.xml and server.env, need audiences set -->
-
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationURLTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKTest" />			
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKSTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsBase64JWKTest" />			
- 
 			
 			<!-- Note: MP JWT 1.1 - This test is included in aud_noenv2 as it requires a different location URL setup -->
 			<!-- <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationURLTest" />  -->
@@ -52,25 +50,21 @@
             <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMLocationTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.ECPublicKeyAsPEMTest" />
 
-            <!-- MP JWT 1.2 tests - TokenAsCookieTest - Blocked Issue 13959; EmptyTokenTest - Blocked 14011
             <class name="org.eclipse.microprofile.jwt.tck.config.TokenAsCookieIgnoredTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.TokenAsCookieTest" />
-            --> 
 
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
-            <!-- 
+            <!-- EmptyTokenTest - Blocked 14011
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
             -->
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
        
-              
             <!-- MP JWT 1.2 - need to enable when JWE support is delivered 
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKSClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsPEMClasspathTest" />
             -->
-              
-	
+
 
 		</classes>
     </test>
