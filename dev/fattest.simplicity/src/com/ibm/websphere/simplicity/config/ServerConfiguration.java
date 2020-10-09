@@ -267,6 +267,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "samesite")
     private ConfigElementList<SameSite> samesites;
 
+    @XmlElement(name = "javaPermission")
+    private ConfigElementList<JavaPermission> javaPermissions;
+
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -766,10 +769,10 @@ public class ServerConfiguration implements Cloneable {
     /**
      * Removes all applications with a specific name
      *
-     * @param  name
-     *                  the name of the applications to remove
-     * @return      the removed applications (no longer bound to the server
-     *              configuration)
+     * @param name
+     * the name of the applications to remove
+     * @return the removed applications (no longer bound to the server
+     * configuration)
      */
     public ConfigElementList<Application> removeApplicationsByName(String name) {
         ConfigElementList<Application> installedApps = this.getApplications();
@@ -787,14 +790,14 @@ public class ServerConfiguration implements Cloneable {
      * Adds an application to the current config, or updates an application with
      * a specific name if it already exists
      *
-     * @param  name
-     *                  the name of the application
-     * @param  path
-     *                  the fully qualified path to the application archive on the
-     *                  liberty machine
-     * @param  type
-     *                  the type of the application (ear/war/etc)
-     * @return      the deployed application
+     * @param name
+     * the name of the application
+     * @param path
+     * the fully qualified path to the application archive on the
+     * liberty machine
+     * @param type
+     * the type of the application (ear/war/etc)
+     * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
         ConfigElementList<Application> apps = this.getApplications();
@@ -1096,8 +1099,8 @@ public class ServerConfiguration implements Cloneable {
      * which is currently deprecated. But this method is specific to Database rotation. If we start using the
      * fat.modify tag and modifiableConfigElement interface for other modification purposes this method can be un-deprecated
      *
-     * @param  element                  The config element to check.
-     * @param  modifiableConfigElements The list containing all modifiable elements.
+     * @param element The config element to check.
+     * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */
     @Deprecated
@@ -1131,9 +1134,9 @@ public class ServerConfiguration implements Cloneable {
      * configuration for a feature which is not part of the product, for example one
      * that is built and installed by a FAT bucket.
      *
-     * @param   tagName The tag name that should be removed.
+     * @param tagName The tag name that should be removed.
      *
-     * @returns         A list of the items that were removed.
+     * @returns A list of the items that were removed.
      */
     public List<Element> removeUnknownElement(String tagName) {
         List<Element> removedElements = new LinkedList<Element>();
@@ -1242,5 +1245,15 @@ public class ServerConfiguration implements Cloneable {
             this.acmeCA = new AcmeCA();
         }
         return this.acmeCA;
+    }
+
+    /**
+     * @return the javaPermission configurations for this server
+     */
+    public ConfigElementList<JavaPermission> getJavaPermissions() {
+        if (this.javaPermissions == null) {
+            this.javaPermissions = new ConfigElementList<JavaPermission>();
+        }
+        return this.javaPermissions;
     }
 }

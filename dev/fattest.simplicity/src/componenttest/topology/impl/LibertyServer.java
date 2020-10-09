@@ -3921,7 +3921,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected Properties getBootstrapProperties() {
+    public Properties getBootstrapProperties() {
         Properties props = new Properties();
 
         try {

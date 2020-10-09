@@ -198,6 +198,8 @@ public class JMSProducerTest_118073 {
     @Mode(TestMode.FULL)
     @Test
     public void testSetDeliveryMode_B_SecOff() throws Exception {
+        String methodName = "testSetDeliveryMode_B_SecOff";
+
         boolean testFailed = false;
 
         try {
@@ -235,6 +237,11 @@ public class JMSProducerTest_118073 {
     @Mode(TestMode.FULL)
     @Test
     public void testSetDeliveryMode_TCP_SecOff() throws Exception {
+        String methodName = "testSetDeliveryMode_TCP_SecOff";
+        String prefix = getClass().getSimpleName() + "." + methodName;
+
+        System.out.println(prefix + "ENTRY");
+
         boolean testFailed = false;
 
         try {
@@ -279,6 +286,8 @@ public class JMSProducerTest_118073 {
         } finally {
             ensureEngine();
             ensureClient();
+
+            System.out.println(prefix + "RETURN");
         }
     }
 

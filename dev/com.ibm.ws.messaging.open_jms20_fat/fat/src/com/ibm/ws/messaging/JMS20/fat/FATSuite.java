@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 import com.ibm.ws.messaging.JMS20.fat.ContextInject.JMSContextInjectTest;
 import com.ibm.ws.messaging.JMS20.fat.DurableUnshared.DurableUnsharedTest;
@@ -36,7 +40,13 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 
         DummyTest.class,
         LiteBucketSet1Test.class,
+
+        // Two test methods temporarily disabled for jakarta due to injection exceptions.
+        // See the LiteBucketSet2Test source for more information.
         LiteBucketSet2Test.class,
+
+        // Fully disabled for jakarta.  j2ee-management is not supported by jakarta, and
+        // is not compatible with the jakarta features used by the test class.
         JMSMBeanTest.class,
 
         JMSProducerTest_118071.class, //full
@@ -53,7 +63,10 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
         JMSProducer_Test118073.class, //full
 
         DurableUnsharedTest.class,
-        JMSContextInjectTest.class, //full // JMSContextTest
+
+        // Temporarily disabled for jakarta due to injection exceptions.
+        // See the JMSContextInjectTest source for more information.
+        JMSContextInjectTest.class, //full
 
 // xx JMSDCFTest.class,
         JMSDCFVarTest.class //full 2nd
@@ -61,5 +74,8 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 // xx JMSEjbJarXmlMdbTest.class, // MDBMDB
 })
 public class FATSuite {
-    // EMPTY
+    @ClassRule
+    public static RepeatTests repeater = RepeatTests
+        .withoutModification()
+        .andWith( new JakartaEE9Action() );
 }
