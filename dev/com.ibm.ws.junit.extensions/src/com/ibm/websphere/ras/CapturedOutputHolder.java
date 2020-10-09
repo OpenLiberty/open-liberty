@@ -22,9 +22,7 @@ import com.ibm.ws.logging.internal.impl.BaseTraceService;
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
 import com.ibm.ws.logging.internal.impl.RoutedMessageImpl;
 
-/**
- *
- */
+@SuppressWarnings("restriction")
 public class CapturedOutputHolder extends BaseTraceService {
 
     public static final String nl = System.getProperty("line.separator");
@@ -48,7 +46,6 @@ public class CapturedOutputHolder extends BaseTraceService {
     private final DelegateTrWriter traceDelegate = new DelegateTrWriter();
 
     public CapturedOutputHolder() {
-        super();
         /*
          * CaputuredOutputHolder is created frequently for Junits.
          * The Parent class BaseTraceSerivce creates a Timer object
