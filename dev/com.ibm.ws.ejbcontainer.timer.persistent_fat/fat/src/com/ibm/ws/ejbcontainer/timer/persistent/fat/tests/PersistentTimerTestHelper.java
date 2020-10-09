@@ -51,6 +51,14 @@ public class PersistentTimerTestHelper {
         ignoreList.add("DSRA0304E");
         ignoreList.add("DSRA0302E.*XA_RBROLLBACK");
 
+        // J2CA0027E: An exception occurred while invoking end on an XA Resource Adapter from DataSource
+        //            dataSource[DefaultDataSource], within transaction ID {XidImpl: formatId(57415344),
+        //            gtrid_length(36), bqual_length(54),
+        //
+        // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
+        // but transaction service has already been shutdown.
+        ignoreList.add("J2CA0027E");
+
         String[] stringArr = new String[ignoreList.size()];
         return ignoreList.toArray(stringArr);
     }
