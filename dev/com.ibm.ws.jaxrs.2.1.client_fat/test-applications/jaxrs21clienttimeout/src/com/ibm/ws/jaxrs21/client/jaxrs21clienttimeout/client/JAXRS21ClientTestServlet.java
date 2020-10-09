@@ -136,7 +136,7 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
             c = cb.build();
             long startTime = System.currentTimeMillis();
             try {
-                res = c.target("http://" + "10.255.255.1" + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
+                res = c.target("http://" + "192.168.0.0" + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
                         .get(String.class);
             } catch (Exception e2) {
                 e2.printStackTrace();

@@ -19,8 +19,6 @@
 
 package org.apache.cxf.jaxrs.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -96,7 +94,9 @@ import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.helpers.LoadingByteArrayOutputStream;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -793,13 +793,24 @@ public final class JAXRSUtils {
         return size1 == size2 ? 0 : size1 < size2 ? -1 : 1;
     }
     
-    public static int compareMethodParameters(Class<?>[] para1, Class<?>[] para2) {
-        int size1 = para1.length;
-        int size2 = para2.length;
+    public static int compareMethodParameters(Class<?>[] paraList1, Class<?>[] paraList2) {
+        int size1 = paraList1.length;
+        int size2 = paraList2.length;
         for (int i = 0; i < size1 && i < size2; i++) {
-            int result = para1[i].getName().compareTo(para2[i].getName());
-            if (result != 0) {
-                return result;
+            if (!paraList1[i].equals(paraList2[i])) {
+                // Handling the case when bridge / synthetic methods may be taken 
+                // into account (f.e. when service implements generic interfaces or
+                // extends the generic classes).
+                if (paraList1[i].isAssignableFrom(paraList2[i])) {
+                    return 1;
+                } else if (paraList2[i].isAssignableFrom(paraList1[i])) {
+                    return -1;
+                } else {
+                    int result = paraList1[i].getName().compareTo(paraList2[i].getName());
+                    if (result != 0) {
+                        return result;
+                    }
+                }
             }
         }
         return size1 == size2 ? 0 : size1 < size2 ? -1 : 1;
@@ -941,7 +952,6 @@ public final class JAXRSUtils {
             contentType = defaultCt == null ? MediaType.APPLICATION_OCTET_STREAM : defaultCt;
         }
 
-        // Liberty Change Start
         MessageContext mc = new MessageContextImpl(message);
         MediaType mt = mc.getHttpHeaders().getMediaType();
         
@@ -958,7 +968,6 @@ public final class JAXRSUtils {
                 is = new ReaderInputStream(reader);
             }
         }
-        // Liberty Change End
         
         return readFromMessageBody(parameterClass,
                                    parameterType,
@@ -1095,9 +1104,9 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
-                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
+                InputStream entityStream = copyAndGetEntityStream(m);
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(entityStream, enc); // Liberty change
+                String body = FormUtils.readBody(entityStream, enc);
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
@@ -1388,8 +1397,10 @@ public final class JAXRSUtils {
                     value = index < part.length() ? part.substring(index + 1) : "";
                 }
                 if (valueIsCollection) {
-                    for (String s : value.split(",")) {
-                        addStructuredPartToMap(queries, sep, name, s, decode, decodePlus);
+                    if (value != null) {
+                        for (String s : value.split(",")) {
+                            addStructuredPartToMap(queries, sep, name, s, decode, decodePlus);
+                        }
                     }
                 } else {
                     addStructuredPartToMap(queries, sep, name, value, decode, decodePlus);
@@ -1516,7 +1527,12 @@ public final class JAXRSUtils {
                                         final MultivaluedMap<String, Object> httpHeaders,
                                         Message message) throws WebApplicationException, IOException {
 
-        final OutputStream entityStream = message.getContent(OutputStream.class);
+        OutputStream entityStream = message.getContent(OutputStream.class);
+        if (entity.getClass().getName().equals(
+                "org.apache.cxf.jaxrs.reactivestreams.server.StreamingAsyncSubscriber$StreamingResponseImpl")) {
+            //cache the OutputStream when it's reactive response
+            entityStream = new CacheAndWriteOutputStream(entityStream);
+        }
         if (writers.size() > 1) {
             WriterInterceptor first = writers.remove(0);
             WriterInterceptorContext context = new WriterInterceptorContextImpl(entity, type, genericType, annotations, entityStream, message, writers);
@@ -1532,13 +1548,14 @@ public final class JAXRSUtils {
             }
             HttpUtils.convertHeaderValuesToString(httpHeaders, true);
             // Liberty change start
+            final OutputStream fEntityStream = entityStream;
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     @Override
                     public Boolean run() throws IOException, WebApplicationException {
                         writer.writeTo(entity, type, genericType, annotations, mediaType,
                                        httpHeaders,
-                                       entityStream);
+                                       fEntityStream);
                         return Boolean.TRUE;
                     }
                 });
@@ -2034,23 +2051,15 @@ public final class JAXRSUtils {
         return new JaxRsRuntimeException(ex);
     }
     
-    // Liberty change start
     // copy the input stream so that it is not inadvertently closed
     private static InputStream copyAndGetEntityStream(Message m) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream origInputStream = m.getContent(InputStream.class);
-        try {
-            IOUtils.copy(origInputStream, baos);
+        LoadingByteArrayOutputStream baos = new LoadingByteArrayOutputStream(); 
+        try (InputStream in = m.getContent(InputStream.class)) {
+            IOUtils.copy(in, baos);
         } catch (IOException e) {
             throw ExceptionUtils.toInternalServerErrorException(e, null);
-        } finally {
-            try {
-                origInputStream.close();
-            } catch (Throwable t) { /* AutoFFDC */ }
         }
-        final byte[] copiedBytes = baos.toByteArray();
-        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
-        return new ByteArrayInputStream(copiedBytes);
+        m.setContent(InputStream.class, baos.createInputStream());
+        return baos.createInputStream();
     }
-    // Liberty change end
 }
