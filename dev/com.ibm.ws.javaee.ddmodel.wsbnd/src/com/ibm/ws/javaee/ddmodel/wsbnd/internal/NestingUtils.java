@@ -21,9 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Copied from "com.ibm.ws.config.xml.internal.nester.Nester".  Referencing
- * the class creates an extra, unnecessary dependency.
- *
  * Utility for nesting configuration elements.  Elements are initially stored
  * in a flat table which expresses nesting relationships through the key values.
  * Key values are expected to have the form:
@@ -56,6 +53,17 @@ import java.util.regex.Pattern;
  * The third variation performs processing for multiple prefixes in parallel, placing
  * matches for each prefix in its own list, and answering a table mapping prefixes to
  * the matches for that prefix.
+ */
+
+/*
+ * See also:
+ *
+ *     open-liberty/dev/com.ibm.ws.config/src/
+ *         com/ibm/ws/config/xml/internal/nester/
+ *             Nester.java
+ *
+ * Which implements the same operations.  If any updates are made
+ * here, parallel updates should be made to Nester.
  */
 public class NestingUtils {
 
