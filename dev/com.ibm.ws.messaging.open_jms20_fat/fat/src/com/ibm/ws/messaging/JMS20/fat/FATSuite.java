@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 import com.ibm.ws.messaging.JMS20.fat.ContextInject.JMSContextInjectTest;
 import com.ibm.ws.messaging.JMS20.fat.DurableUnshared.DurableUnsharedTest;
@@ -35,31 +39,34 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 @SuiteClasses({
 
         DummyTest.class,
-        LiteBucketSet1Test.class,
-        LiteBucketSet2Test.class,
+            // LiteBucketSet1Test.class,
+            // LiteBucketSet2Test.class,
         JMSMBeanTest.class,
 
-        JMSProducerTest_118071.class, //full
-        JMSProducerTest_118073.class, //full
-        SharedSubscriptionTest_129623.class,
+            // JMSProducerTest_118071.class, //full
+            // JMSProducerTest_118073.class, //full
+            // SharedSubscriptionTest_129623.class,
 
-        JMSConsumerTest_118076.class, //full
-        JMSConsumerTest_118077.class, //full
-        JMSRedeliveryTest_120846.class,
+            // JMSConsumerTest_118076.class, //full
+            // JMSConsumerTest_118077.class, //full
+            // JMSRedeliveryTest_120846.class,
 
-        SharedSubscriptionWithMsgSelTest_129623.class,
-        SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-        SharedSubscriptionTest_129626.class, //full 2nd
-        JMSProducer_Test118073.class, //full
+            // SharedSubscriptionWithMsgSelTest_129623.class,
+            // SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+            // SharedSubscriptionTest_129626.class, //full 2nd
+            // JMSProducer_Test118073.class, //full
 
-        DurableUnsharedTest.class,
-        JMSContextInjectTest.class, //full // JMSContextTest
+            // DurableUnsharedTest.class,
+            // JMSContextInjectTest.class, //full // JMSContextTest
 
 // xx JMSDCFTest.class,
-        JMSDCFVarTest.class //full 2nd
+            // JMSDCFVarTest.class //full 2nd
 
 // xx JMSEjbJarXmlMdbTest.class, // MDBMDB
 })
 public class FATSuite {
-    // EMPTY
+    @ClassRule
+    public static RepeatTests repeater = RepeatTests
+        .withoutModification()
+        .andWith( new JakartaEE9Action() );
 }

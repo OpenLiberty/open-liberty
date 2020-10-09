@@ -32,6 +32,16 @@ src: \
 
 test.project: true
 
+tested.features:       \
+  wasJmsServer-1.0,    \
+  wasJmsClient-2.0,    \
+  jmsMdb-3.2,          \
+  jms-2.0,             \
+  messagingClient-3.0, \ # Jakarta EE9
+  messagingServer-3.0, \ # Jakarta EE9
+  mdb-4.0,             \ # Jakarta EE9
+  messaging-3.0        \ # Jakarta EE9
+
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
 # runtime.minimum.java.level: 1.8
