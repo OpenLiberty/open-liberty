@@ -4,7 +4,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
 Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
 
-# This needs to stay at 3.2.4 even though the bundle version is 3.3.0.
+# This needs to stay at 3.2.4 even though the bundle version is 3.4.1.
 # The reason is that the feature checker in WS-CD-Open has an ignore rule
 # for the case where org.apache.cxf.databinding is exported by both the
 # JAX-WS and JAX-RS features - it is correct to ignore this problem since
@@ -18,7 +18,7 @@ Bundle-Activator:  com.ibm.ws.cxf.core.NoOpActivator
 # (yes, unused rules cause failures...). So, without a co-delivery
 # (changing the OL code at the same time we change the WS-CD-Open code),
 # it is not possible to update the export version.
-exportVer=3.4.1
+exportVer=3.2.4
 
 #Export-Package: org.apache.cxf,\
 #  org.apache.cxf.attachment,\
