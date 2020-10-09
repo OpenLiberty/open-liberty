@@ -1,7 +1,6 @@
 package com.ibm.ws.kernel.boot;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public interface HelpActions {
