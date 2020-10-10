@@ -44,15 +44,12 @@ public class FFDCClassAdapter extends AbstractRasClassAdapter {
      */
     private boolean instrumented;
     
-    private ClassTraceInfo traceInfo;
-
     public FFDCClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
         super(visitor, classInfo);
     }
 
-    public FFDCClassAdapter(ClassVisitor visitor, ClassInfo classInfo, ClassTraceInfo info) {
+    public FFDCClassAdapter(ClassVisitor visitor, ClassInfo classInfo, ClassTraceInfo ignored) {
     	super(visitor, classInfo);
-    	traceInfo = info;
 	}
 
 	@Override
