@@ -13,6 +13,7 @@ package com.ibm.ws.grpc.fat.helloworld.client;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLException;
 import javax.servlet.ServletException;
@@ -31,10 +32,12 @@ import io.grpc.examples.helloworld.HelloRequest;
 public class HelloWorldClientServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    protected static final Class<?> c = HelloWorldClientServlet.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     private ManagedChannel createChannel(String address, int port, boolean useTls) throws SSLException {
-        System.out.println("connecting to helloworld gRPC service at " + address + ":" + port);
-        System.out.println("TLS enabled: " + useTls);
+        LOG.info("connecting to helloworld gRPC service at " + address + ":" + port);
+        LOG.info("TLS enabled: " + useTls);
 
         if (!useTls) {
             return ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
@@ -50,7 +53,7 @@ public class HelloWorldClientServlet extends HttpServlet {
             terminated = channel.awaitTermination(500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
         }
-        System.out.println("Channel has been closed: " + terminated);
+        LOG.info("Channel has been closed: " + terminated);
     }
 
     @Override
