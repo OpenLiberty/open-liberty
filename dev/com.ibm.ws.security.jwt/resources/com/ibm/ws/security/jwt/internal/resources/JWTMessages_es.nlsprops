@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,7 +137,7 @@ JWT_ISSUER_NOT_TRUSTED.useraction=Obtenga una nueva se\u00f1al de uno de los emi
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
 JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: La audiencia [{0}] de la JWT (JSON Web Token) proporcionada no figura como audiencia de confianza en la configuraci\u00f3n de JWT [{1}]. Las audiencias de confianza son [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=La configuraci\u00f3n del servidor especifica los emisores de confianza durante la validaci\u00f3n de JWT. La se\u00f1al proporcionada no est\u00e1 pensada para una audiencia de confianza, por lo tanto, no se puede validar la se\u00f1al.
-JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtenga una nueva se\u00f1al pensada para una de las audiencias de confianza especificadas en su configuraci\u00f3n de JWT, o a\u00f1ada a su configuraci\u00f3n de JWT la audiencia especificada en el mensaje como una audiencia de confianza.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtenga una nueva se\u00f1al pensada para una de las audiencias de confianza especificadas en su configuraci\u00f3n de JWT.
 
 # Do not translate "JSON Web Token", "JWT", "iat", "exp"
 # 0=iat date, 1=exp date
@@ -216,7 +216,7 @@ JWT_INVALID_KEY_ERR.explanation=Si utiliza el algoritmo de firma HS256, la clave
 JWT_INVALID_KEY_ERR.useraction=Si utiliza el algoritmo de firma HS256, aseg\u00farese de que se proporciona una serie no nula o no vac\u00eda como la clave de firma. Si utiliza el algoritmo de firma RS256, aseg\u00farese de que se proporciona una instancia no nula de una clase que implementa la interfaz java.security.interfaces.RSAPrivateKey como la clave de firma.
 
 # 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
-JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: El algoritmo de firma [{0}] proporcionado no es v\u00e1lido. El conjunto de algoritmos v\u00e1lidos es [{1}].
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: El algoritmo de firma [{0}] proporcionado  no es v\u00e1lido. El conjunto de algoritmos v\u00e1lidos es [{1}].
 JWT_INVALID_ALGORITHM_ERR.explanation=El algoritmo de firma proporcionado es nulo o no coincide con el conjunto de algoritmos necesarios especificados en el mensaje.
 JWT_INVALID_ALGORITHM_ERR.useraction=Verifique que el algoritmo de firma proporcionado coincide con el conjunto de algoritmo v\u00e1lido.
 
@@ -283,8 +283,8 @@ JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique qu\u00e9 certificado se va a ut
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: El API de filtro de solicitudes de cliente no ha propagado el token web JSON (JWT).
-JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=La API de filtro de solicitudes de cliente no ha obtenido una se\u00f1al JWT v\u00e1lida procedente del sujeto autenticado. La API no puede continuar con la propagaci\u00f3n de la se\u00f1al JWT porque la se\u00f1al no es v\u00e1lida.
-JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Aseg\u00farese de que sea satisfactorio el flujo de autenticaci\u00f3n que tiene lugar antes de la propagaci\u00f3n. Consulte los registros en busca de alg\u00fan error de autenticaci\u00f3n o autorizaci\u00f3n que pueda haber impedido la creaci\u00f3n de la se\u00f1al y su inclusi\u00f3n en el sujeto.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=El API de filtro de solicitudes de cliente no ha obtenido un token JWT v\u00e1lido procedente del sujeto autenticado. El API no puede continuar con la propagaci\u00f3n del token JWT porque el token no es v\u00e1lido.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Aseg\u00farese de que sea satisfactorio el flujo de autenticaci\u00f3n que tiene lugar antes de la propagaci\u00f3n. Consulte los registros en busca de alg\u00fan error de autenticaci\u00f3n o autorizaci\u00f3n que pueda haber impedido la creaci\u00f3n del token y su inclusi\u00f3n en el sujeto.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0: jwk url, 1:http status, 2: error message or the responding content
@@ -308,7 +308,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Aseg\u00farese de que la red est\u00e9 conf
 # 0=Issuer claim of the token, 1=JWT configuration ID
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: El emisor [{0}] del JSON Web Token (JWT) proporcionado no es de confianza porque la configuraci\u00f3n JWT [{1}] no especifica ning\u00fan emisor de confianza.
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configuraci\u00f3n del servidor especifica los emisores de confianza con la validaci\u00f3n de JWT. La configuraci\u00f3n de JWT no especifica ning\u00fan emisor de confianza, por lo tanto, no se puede validar la se\u00f1al.
-JWT_TRUSTED_ISSUERS_NULL.useraction=Aseg\u00farese que la configuraci\u00f3n JWT que se especifica en el mensaje, define como m\u00ednimo un emisor de confianza. Aseg\u00farese que el emisor de JWT coincide con un emisor especificado en la configuraci\u00f3n JWT.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Asegurese que la configuraci\u00f3n JWT que se especifica en el mensaje, define como m\u00ednimo un emisor de confianza. Aseg\u00farese que el emisor de JWT coincide con un emisor especificado en la configuraci\u00f3n JWT.
 
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=El punto final especificado requiere HTTPS, pero se ha utilizado HTTP en el URL de solicitud.
@@ -324,3 +324,8 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Especifique un algoritmo de fi
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: El AMR [{0}] de la JWT (JSON Web Token) proporcionada no figura como AMR de confianza en la configuraci\u00f3n de JWT [{1}]. Los AMR de confianza son [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=La configuraci\u00f3n del servidor especifica los AMR de confianza durante la validaci\u00f3n de JWT. La se\u00f1al proporcionada no est\u00e1 pensada para un AMR de confianza, por lo tanto, no se puede validar la se\u00f1al.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenga una nueva se\u00f1al para uno de los AMR de confianza especificados en su configuraci\u00f3n de JWT, o a\u00f1ada a su configuraci\u00f3n de JWT el AMR especificado en el mensaje como un AMR de confianza.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configuraci\u00f3n [{0}] especifica el algoritmo de firma {1}, pero dicho algoritmo s\u00f3lo est\u00e1 disponible en la edici\u00f3n beta. En su lugar se utiliza el algoritmo de firma {2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Es posible que el soporte para el algoritmo de firma especificado en el mensaje est\u00e9 incompleto, por lo tanto el algoritmo de firma s\u00f3lo se puede utilizar en la edici\u00f3n beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure un algoritmo de firma que est\u00e9 soportado o utilice la edici\u00f3n beta de este producto para utilizar el algoritmo de firma especificado en el mensaje.

@@ -322,6 +322,10 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Une erreur interne est survenue lors
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: Une demande de connexion pour la ressource XA {0} a \u00e9t\u00e9 \u00e9mise en utilisant l''authentification SPNEGO, mais aucun alias de donn\u00e9es d''authentification pour la r\u00e9cup\u00e9ration n''a \u00e9t\u00e9 configur\u00e9. La ressource XA ne peut pas participer \u00e0 la r\u00e9cup\u00e9ration XA automatis\u00e9e tant qu''un alias de donn\u00e9es d''authentification n''est pas configur\u00e9.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=La r\u00e9cup\u00e9ration XA est un processus d'arri\u00e8re-plan automatis\u00e9, mais l'authentification SPNEGO requiert une entr\u00e9e manuelle de la part de l'utilisateur. Par cons\u00e9quent, l'authentification SPNEGO ne peut pas \u00eatre utilis\u00e9e pour la r\u00e9cup\u00e9ration XA automatique.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configurez un alias de donn\u00e9es d'authentification de r\u00e9cup\u00e9ration sur la ressource XA.
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: El\u00e9ment MCWrapper non valide {0}  provenant du pool disponible pour la ressource {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=La tentative de r\u00e9servation d'un \u00e9l\u00e9ment MCWrapper a \u00e9chou\u00e9.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

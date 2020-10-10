@@ -60,3 +60,8 @@ OPENAPI_FILE_PARSE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplica\u0163ia {0} a fost procesat\u0103 \u015fi a fost produs un document OpenAPI.
 OPENAPI_APPLICATION_PROCESSED.explanation=S-a generat documentul OpenAPI pentru aplica\u0163ia specificat\u0103. Poate fi vizualizat la punctul final /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: A ap\u0103rut o eroare la procesarea aplica\u0163iei {0} \u015fi nu a fost produs un document OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A ap\u0103rut o eroare runtime la procesarea aplica\u0163iei.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Str\u00e2nge\u0163i fi\u015fierele istoric \u015fi contacta\u0163i IBM Service.
+  
