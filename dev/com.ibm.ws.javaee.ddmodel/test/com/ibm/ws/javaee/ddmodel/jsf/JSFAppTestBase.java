@@ -45,6 +45,7 @@ public class JSFAppTestBase extends DDTestBase {
         final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
         final Container container = mockery.mock(Container.class, "container" + mockId++);
+        @SuppressWarnings("unchecked")
         final ServiceReference<FacesVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {

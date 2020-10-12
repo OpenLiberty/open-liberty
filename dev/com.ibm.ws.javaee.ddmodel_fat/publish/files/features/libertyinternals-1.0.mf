@@ -1,0 +1,37 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: libertyinternals-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: ddmodel; version="[1,1.0.100)",
+ com.ibm.ws.javaee.ddmodel.wsbnd; version="[1.0.0,1.0.200)"
+
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: com.ibm.wsspi.artifact; type="internal",
+ com.ibm.wsspi.artifact.factory; type="internal",
+ com.ibm.wsspi.adaptable.module; type="internal",
+ com.ibm.ws.javaee.dd.app; type="internal",
+ com.ibm.ws.javaee.dd.appbnd; type="internal",
+ com.ibm.ws.javaee.dd.commonbnd; type="internal", 
+ com.ibm.ws.javaee.dd.managedbean; type="internal",
+ com.ibm.ws.javaee.dd.appext; type="internal",
+ com.ibm.ws.javaee.dd.jsf; type="internal",
+ com.ibm.ws.javaee.dd.web; type="internal",
+ com.ibm.ws.javaee.ddmodel.wsbnd; type="internal",
+ com.ibm.ws.javaee.dd.webbnd; type="internal",
+ com.ibm.ws.javaee.dd.webext; type="internal",
+ com.ibm.ws.javaee.dd.ejbbnd; type="internal",
+ com.ibm.ws.javaee.dd.ejbext; type="internal",
+ com.ibm.ws.javaee.ddmodel; type="internal",
+ com.ibm.ws.javaee.dd.app; type="internal",
+ com.ibm.ws.javaee.dd.appbnd; type="internal",
+ com.ibm.ws.javaee.dd.appext; type="internal",
+ com.ibm.ws.javaee.dd.jsf; type="internal",
+ com.ibm.ws.javaee.dd.web; type="internal",
+ com.ibm.ws.javaee.dd.web.common; type="internal",
+ com.ibm.ws.javaee.dd.common; type="internal",
+ com.ibm.wsspi.kernel.service.location; type="internal",
+ com.ibm.websphere.ras; type="internal",
+ org.osgi.framework; type="internal",
+ org.osgi.service.cm; type="internal",
+ com.ibm.ws.app.manager; type="internal",
+ com.ibm.ws.javaee.ddmodel.fat; type="internal"
+IBM-Feature-Version: 2
