@@ -8,3 +8,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.grpc.1.0.internal.client.security
 kind=ga
 edition=full
+WLP-Activation-Type: parallel
