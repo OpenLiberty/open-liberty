@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,18 @@ package com.ibm.ws.security.fat.common.jwt.utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.json.JsonUtil;
-
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
@@ -118,7 +118,7 @@ public class JWTApiApplicationUtils {
         logIt(pw, prefixMsg + JwtConstants.JWT_JSON + jString);
 
         if (jString != null) {
-            Map<String, Object> jObject = JsonUtil.parseJson(jString);
+            JsonObject jObject = Json.createReader(new StringReader(jString)).readObject();
             Set<String> jKeys = jObject.keySet();
             for (String key : jKeys) {
                 logIt(pw, prefixMsg + JwtConstants.JWT_JSON + JwtConstants.JWT_GETALLCLAIMS + JwtConstants.JWT_CLAIM_KEY + key + " "
@@ -132,6 +132,7 @@ public class JWTApiApplicationUtils {
     /**
      * Output the Base64-decoded header from the provided token. Each key and value within the header is individually output to
      * aid validation.
+     * NOTE: when we have a JWS, this method will log the JWS header values, when we have a JWE, it'll log the JWE header values
      *
      * @param prefixMsg
      * @param token
@@ -142,6 +143,7 @@ public class JWTApiApplicationUtils {
             logIt(pw, prefixMsg + null);
             return;
         }
+
         String tokenString = token.compact();
         String[] tokenParts = tokenString.split("\\.");
         if (tokenParts == null) {
@@ -152,11 +154,11 @@ public class JWTApiApplicationUtils {
         String decodedHeader = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
         logIt(pw, prefixMsg + JwtConstants.JWT_JSON + decodedHeader);
 
-        JSONObject headerInfo = JSONObject.parse(decodedHeader);
-        @SuppressWarnings("unchecked")
+        JsonObject headerInfo = Json.createReader(new StringReader(decodedHeader)).readObject();//JsonObject.parse(decodedHeader);
         Set<String> jKeys = headerInfo.keySet();
         for (String key : jKeys) {
             logIt(pw, prefixMsg + JwtConstants.JWT_TOKEN_HEADER_JSON + JwtConstants.JWT_CLAIM_KEY + key + " " + JwtConstants.JWT_CLAIM_VALUE + headerInfo.get(key));
         }
     }
+
 }

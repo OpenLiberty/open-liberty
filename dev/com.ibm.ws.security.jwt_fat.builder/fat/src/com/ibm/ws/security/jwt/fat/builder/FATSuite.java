@@ -18,7 +18,7 @@ import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        // // Ported list of tests (some already renamed)
+        // Ported list of tests (some already renamed)
         AlwaysRunAndPassTest.class,
 
         // Basic Functional tests

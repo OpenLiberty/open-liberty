@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,4 +21,5 @@ public class HeaderConstants {
     public static final String X509_TP = "x5t";
     public static final String X509_CERT = "x5c";
     public static final String CRITICAL = "crit";
+    public static final String ENCRYPTION = "enc";
 }
