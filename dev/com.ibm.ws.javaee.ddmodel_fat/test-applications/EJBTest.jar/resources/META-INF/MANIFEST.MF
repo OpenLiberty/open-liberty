@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Specification-Vendor: IBM Corp.
+Ant-Version: Apache Ant 1.6.5
+Implementation-Vendor: IBM Corp.
+Class-Path: 
+Created-By: 2.4 (IBM Corporation)
+Implementation-Version: 1.0
+Implementation-Title: EJBTest.jar
+Specification-Version: 1.0
+Specification-Title: EJBTest.jar
+

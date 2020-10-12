@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" version="2.1" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd">
+
+    <display-name>EJBTest</display-name>
+
+    <enterprise-beans>
+        <session id="TestBean">
+            <ejb-name>TestBean</ejb-name>
+            <home>ejbtest.ejb.ITestHome</home>
+            <remote>ejbtest.ejb.ITestRemote</remote>
+            <local-home>ejbtest.ejb.TestBeanLocalHome</local-home>
+            <local>ejbtest.ejb.TestBeanLocal</local>
+            <ejb-class>ejbtest.ejb.TestBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+    </enterprise-beans>
+
+</ejb-jar>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="Application_ID" version="5"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
+
+    <display-name>Deployment Descriptor FAT Enterprise Application</display-name>
+
+    <module>
+        <web>
+            <web-uri>ServletTest.war</web-uri>
+            <context-root>autoctx</context-root>
+        </web>
+    </module>
+
+    <module>
+        <web>
+            <web-uri>ServletTestNoBnd.war</web-uri>
+            <context-root>nobindings</context-root>
+        </web>
+    </module>
+
+    <module>
+        <ejb>EJBTest.jar</ejb>
+    </module>
+
+    <module>
+        <ejb>EJBTestNoBnd.jar</ejb>
+    </module>
+
+</application> 
