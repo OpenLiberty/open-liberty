@@ -21,7 +21,6 @@ Subsystem-Name: Java RESTful Services Client 3.0
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.injection-2.0, \
- com.ibm.websphere.appserver.jakartaMail-1.6, \
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.4, \
  com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
@@ -29,7 +28,8 @@ Subsystem-Name: Java RESTful Services Client 3.0
  io.openliberty.cdi-3.0, \
  io.openliberty.jakarta.restfulWS-3.0, \
  io.openliberty.jakarta.validation-3.0, \
- io.openliberty.jsonp-2.0
+ io.openliberty.jsonp-2.0, \
+ io.openliberty.mail-2.0
 # com.ibm.websphere.appserver.globalhandler-1.0, \ # hard dependency on javax.servlet, etc.
 # com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \ # not sure about these...
 # com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:=2.3, \
