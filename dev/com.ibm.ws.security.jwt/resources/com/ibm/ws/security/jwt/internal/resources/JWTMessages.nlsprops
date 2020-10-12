@@ -330,9 +330,10 @@ BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: The [{0}] configuration specifies the 
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Support for the signature algorithm that is specified in the message might be incomplete, so the signature algorithm can be used only in the beta edition.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure a signature algorithm that is supported, or use the beta edition of this product to use the signature algorithm that is specified in the message.
 
-#
-# CWWKS6056E is available
-#
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: The [{0}] JWT consumer encountered an error while extracting the JSON Web Signature (JWS) payload from the JSON Web Encryption (JWE) token. {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=The JWE token might be malformed or might be missing information. The key management key that is used to decrypt the JWE token might be missing or might not be capable of decrypting the token.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=See the error in the message for more information. Verify that the JWE is well formed. Verify that the JWT consumer configuration references the key management key that corresponds to the key that is used to encrypt the JWE token.
 
 #
 # CWWKS6057E is available
