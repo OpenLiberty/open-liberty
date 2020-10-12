@@ -10,18 +10,27 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-/**
- *
- */
 public class EERepeatTests {
 
     public static enum EEVersion {
         EE7, EE8, EE9, EE7_FULL, EE8_FULL, EE9_FULL
     }
 
-    public static FeatureReplacementAction getEEAction(EEVersion version, String serverName, String clientName) {
-        FeatureReplacementAction action = null;
-        switch (version) {
+    /**
+     * Answer the action for running a test on a specified server and client
+     * and using a specified EE version.
+     *
+     * Either the server name or the client name may be null.
+     *
+     * @param version The EE version to use to run the test.
+     * @param serverName The name of the server on which to run the test.
+     * @param clientName The name of the client on which to run the test.
+     */
+    public static FeatureReplacementAction getEEAction(
+        EEVersion version, String serverName, String clientName) {
+
+        FeatureReplacementAction action;
+        switch ( version ) {
             case EE7: {
                 action = FeatureReplacementAction.EE7_FEATURES();
                 break;
@@ -50,37 +59,57 @@ public class EERepeatTests {
                 throw new IllegalArgumentException("Unknown EE version: " + version);
             }
         }
-        if (serverName != null) {
+        if ( serverName != null ) {
             action = action.forServers(serverName);
         }
-        if (clientName != null) {
+        if ( clientName != null ) {
             action = action.forClients(clientName);
         }
         return action;
     }
 
     /**
-     * Convenience method to repeat EE versions.
+     * Convenience method to repeat EE versions of tests on a specified server.
      *
-     * Instead of
-     * <code>public static RepeatTests r =
-     * RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("myServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("myServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("myServer"));</code>
+     * Instead of:
+     * <code>public static RepeatTests r = RepeatTests
+     *     .with(FeatureReplacementAction.EE7_FEATURES().forServers("myServer"))
+     *     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("myServer"))
+     *     .andWith(FeatureReplacementAction.EE9_FEATURES().forServers("myServer"));
+     * </code>
      *
-     * Use
-     * <code>public static RepeatTests r = EERepeatTests.with("myServer", EE7, EE8, EE9);</code>
+     * Use:
+     * <code>
+     * public static RepeatTests r = EERepeatTests.with("myServer", EE7, EE8, EE9);
+     * </code>
      *
-     * @param  version
-     * @param  otherVersions
-     * @return
+     * @param serverName The name of the server on which to repeat the tests.
+     * @param version The first of one or more EE versions to run using the server.
+     * @param otherVersions Additional EE version to run using the server.
      */
-    public static RepeatTests with(String serverName, EEVersion version, EEVersion... otherVersions) {
+    public static RepeatTests with(
+        String serverName,
+        EEVersion version, EEVersion... otherVersions) {
+
         return with(serverName, FeatureReplacementAction.NO_CLIENTS, version, otherVersions);
     }
 
-    public static RepeatTests with(String serverName, String clientName, EEVersion version, EEVersion... otherVersions) {
-        RepeatTests r = RepeatTests.with(getEEAction(version, serverName, clientName));
-        for (EEVersion ver : otherVersions) {
-            r = r.andWith(getEEAction(ver, serverName, clientName));
+    /**
+     * Convenience method to repeat EE versions of tests on a specified server
+     * and using a specified client.
+     *
+     * @param serverName The name of the server on which to repeat the tests.
+     * @param clientName The name of the client on which to repeat the tests.
+     * @param version The first of one or more EE versions to run using the server.
+     * @param otherVersions Additional EE version to run using the server.
+     */
+    public static RepeatTests with(
+        String serverName, String clientName,
+        EEVersion version, EEVersion... otherVersions) {
+
+        RepeatTests r = RepeatTests.with( getEEAction(version, serverName, clientName) );
+        for ( EEVersion ver : otherVersions ) {
+            r = r.andWith( getEEAction(ver, serverName, clientName) );
         }
         return r;
     }

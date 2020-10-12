@@ -314,6 +314,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 if (!RepeatTestFilter.shouldRun(getTestClass().getJavaClass())) {
                     return;
                 }
+
                 try {
                     superStatement.evaluate();
                 } finally {

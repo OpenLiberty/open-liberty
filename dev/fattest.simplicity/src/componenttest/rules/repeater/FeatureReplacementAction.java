@@ -72,6 +72,51 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
+
+    //
+
+    /**
+     * Answer the canonical version of a feature name.
+     *
+     * All matching of features must use canonical feature names.
+     *
+     * Canonical feature names are safe to write to server
+     * configurations.
+     *
+     * This implementation converts the feature name to lower case:
+     * Liberty feature management is case insensitive.
+     *
+     * @param featureName A feature name.
+     *
+     * @return The canonical version of the feature name.
+     */
+    public static String canonicalFeature(String featureName) {
+        return featureName.toLowerCase();
+    }
+
+    /**
+     * Answer the canonical versions of feature names.
+     *
+     * All matching of features must use canonical feature names.
+     *
+     * Canonical feature names are safe to write to server
+     * configurations.
+     *
+     * This implementation converts the feature names to lower case.
+     * Liberty feature management is case insensitive.
+     *
+     * @param featureNames Feature names.
+     *
+     * @return The canonical versions of the feature names.
+     */
+    public static Set<String> canonicalFeatures(Set<String> featureNames) {
+        Set<String> canonicalNames = new HashSet<String>( featureNames.size() );
+        for ( String featureName : featureNames ) {
+            canonicalNames.add( canonicalFeature(featureName) );
+        }
+        return canonicalNames;
+    }
+
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
      */
@@ -99,12 +144,19 @@ public class FeatureReplacementAction implements RepeatTestAction {
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
+
     private final Set<String> removeFeatures = new HashSet<>();
+
     private final Set<String> addFeatures = new HashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
+
+    private final Map<String, Set<String>> conflictFeatures = new HashMap<String, Set<String>>();
+
     private TestMode testRunMode = TestMode.LITE;
 
-    public FeatureReplacementAction() {}
+    public FeatureReplacementAction() {
+        // EMPTY
+    }
 
     /**
      * Remove one feature and add one feature.
@@ -205,6 +257,56 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Add features to the feature conflict sets.
+     *
+     * The feature conflict mapping keys are features which are to be removed;
+     * values are sets of features which conflict with the key.
+     *
+     * Conflict detection is performed after adding and removing features, and must
+     * take this into account.  That usually means using post-replacement feature
+     * information in the conflict sets.
+     *
+     * @param removeFeatures Feature conflict mapping.
+     *
+     * @return This feature replacement action.
+     */
+    public FeatureReplacementAction addConflictFeatures(Map<String, Set<String>> newConflictFeatures) {
+        for ( Map.Entry<String, Set<String>> conflictEntry : newConflictFeatures.entrySet() ) {
+            addConflictFeatures( conflictEntry.getKey(), conflictEntry.getValue() );
+        }
+        return this;
+    }
+
+    /**
+     * Add a feature to the feature conflict sets.
+     *
+     * The feature conflict mapping keys are features which are to be removed;
+     * values are sets of features which conflict with the key.
+     *
+     * Conflict detection is performed after adding and removing features, and must
+     * take this into account.  That usually means using post-replacement feature
+     * information in the conflict sets.
+     *
+     * @param featureToRemove The feature which is to be removed if a conflict
+     *     is detected.
+     * @param conflicts Features which trigger the feature to be removed.
+     *
+     * @return This feature replacement action.
+     */
+    public FeatureReplacementAction addConflictFeatures(String featureToRemove, Set<String> conflicts) {
+        featureToRemove = canonicalFeature(featureToRemove);
+        conflicts = canonicalFeatures(conflicts);
+
+        Set<String> currentConflicts = conflictFeatures.get(featureToRemove);
+        if ( currentConflicts == null ) {
+            conflictFeatures.put(featureToRemove, conflicts);
+        } else {
+            currentConflicts.addAll(conflicts);
+        }
+        return this;
+    }
+
+    /**
      * Add a feature to the set to be added
      *
      * @param addFeature the feature to be added
@@ -222,7 +324,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param removeFeature the feature to be removed. Wildcards are supported.
      */
     public FeatureReplacementAction removeFeature(String removeFeature) {
-        this.removeFeatures.add(removeFeature.toLowerCase());
+        this.removeFeatures.add( canonicalFeature(removeFeature) );
         return this;
     }
 
@@ -386,14 +488,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
             ServerConfiguration serverConfig = isServerConfig ? ServerConfigurationFactory.fromFile(configFile) : null;
             ClientConfiguration clientConfig = isClientConfig ? ClientConfigurationFactory.fromFile(configFile) : null;
-            Set<String> features = isServerConfig ? //
-                            serverConfig.getFeatureManager().getFeatures() : //
-                            clientConfig.getFeatureManager().getFeatures();
-            // Convert feature set to all lowercase to prevent case sensitivity issues
-            Set<String> intermediateFeatures = new TreeSet<>(features);
+            Set<String> features = isServerConfig ?
+                serverConfig.getFeatureManager().getFeatures() :
+                clientConfig.getFeatureManager().getFeatures();
+
+            Set<String> canonicalFeatures = canonicalFeatures(features);
             features.clear();
-            for (String f : intermediateFeatures)
-                features.add(f.toLowerCase());
+            features.addAll(canonicalFeatures);
 
             Log.info(c, m, "Original features:  " + features);
             if (forceAddFeatures) {
@@ -424,6 +525,29 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 }
             }
             alwaysAddFeatures.forEach(s -> features.add(s));
+
+            Set<String> featuresToRemove = null;
+
+            for ( Map.Entry<String, Set<String>> conflictEntry : conflictFeatures.entrySet() ) {
+                String featureToRemove = conflictEntry.getKey();
+                Set<String> conflicts = conflictEntry.getValue();
+
+                boolean foundConflict = false;
+                for ( String feature : features ) {
+                    if ( conflicts.contains(feature) ) {
+                        if ( featuresToRemove == null ) {
+                            featuresToRemove = new HashSet<String>(1);
+                        }
+                        featuresToRemove.add(featureToRemove);
+                        Log.info(c, m, "Feature [ " + feature + " ] forces removal of incompatible feature [ " + featureToRemove + " ]");
+                    }
+                }
+            }
+
+            if ( featuresToRemove != null ) {
+                features.removeAll(featuresToRemove);
+            }
+
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
@@ -471,7 +595,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         String baseFeature = originalFeature.substring(0, dashOffset + 1);
         // "servlet-4.0".startsWith("servlet-")
         for (String replacementFeature : replacementFeatures) {
-            if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
+            if ( canonicalFeature(replacementFeature).startsWith( canonicalFeature(baseFeature) ) ) {
                 Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
                 return replacementFeature;
             }
@@ -504,7 +628,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         baseFeature += "-";
         // Re-check the features with the name changes
         for (String replacementFeature : replacementFeatures) {
-            if (replacementFeature.toLowerCase().contains(baseFeature.toLowerCase())) {
+            if ( canonicalFeature(replacementFeature).contains( canonicalFeature(baseFeature) ) ) {
                 Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
                 return replacementFeature;
             }

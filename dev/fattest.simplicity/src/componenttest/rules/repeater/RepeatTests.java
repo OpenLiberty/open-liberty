@@ -95,32 +95,42 @@ public class RepeatTests extends ExternalResource {
 
         @Override
         public void evaluate() throws Throwable {
-            final String m = "evaluate";
+            String m = "evaluate";
+
             ArrayList<Throwable> errors = new ArrayList<>();
 
+            Log.info(c, m, "===================================");
             Log.info(c, m, "All tests attempt to run " + actions.size() + " times:");
-            for (int i = 0; i < actions.size(); i++)
-                Log.info(c, m, "  [" + i + "] " + actions.get(i));
+            for ( int actionNo = 0; actionNo < actions.size(); actionNo++ ) {
+                Log.info(c, m, "  [ " + actionNo + " ] [ " + actions.get(actionNo) + " ]");
+            }
+            Log.info(c, m, "===================================");
 
-            for (RepeatTestAction action : actions) {
+            for ( RepeatTestAction action : actions ) {
                 try {
                     RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
-                    if (shouldRun(action)) {
+                    if ( shouldRun(action) ) {
                         Log.info(c, m, "===================================");
-                        Log.info(c, m, "");
-                        Log.info(c, m, "Running tests with action: " + action);
-                        Log.info(c, m, "");
+                        Log.info(c, m, "Running tests with action [ " + action + " ]");
                         Log.info(c, m, "===================================");
                         action.setup();
+                        Log.info(c, m, "===================================");
+                        Log.info(c, m, "Evalutating tests with action [ " + action + " ]");
+                        Log.info(c, m, "===================================");
                         statement.evaluate();
+                        Log.info(c, m, "===================================");
+                        Log.info(c, m, "Completed tests with action [ " + action + " ]");
+                        Log.info(c, m, "===================================");
                     } else {
                         Log.info(c, m, "===================================");
-                        Log.info(c, m, "");
-                        Log.info(c, m, "Skipping tests with action: " + action);
-                        Log.info(c, m, "");
+                        Log.info(c, m, "Skipping tests with action [ " + action + " ]");
                         Log.info(c, m, "===================================");
                     }
-                } catch (Throwable t) {
+                } catch ( Throwable t ) {
+                    Log.info(c, m, "===================================");
+                    Log.info(c, m, "Error running tests with action [ " + action + " ] [ " + t + " ]");
+                    Log.info(c, m, "===================================");
+
                     // Contrary to the javadoc for @ClassRule, a class statement may throw an exception
                     // Catch it to ensure we still run all repeats
                     errors.add(t);
@@ -132,10 +142,10 @@ public class RepeatTests extends ExternalResource {
 
         private static boolean shouldRun(RepeatTestAction action) {
             String repeatOnly = System.getProperty("fat.test.repeat.only");
-            if (repeatOnly == null) {
+            if ( repeatOnly == null ) {
                 return action.isEnabled();
             } else {
-                // Note: If the user has requested this specific action, we ignore the isEnabled() flag
+                // Ignore 'isEnabled()' since the user has requested this specific action.
                 return action.getID().equals(repeatOnly);
             }
         }

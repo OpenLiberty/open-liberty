@@ -3,7 +3,6 @@
   <featureManager>
     <feature>servlet-3.1</feature>
     <feature>j2eeManagement-1.1</feature>   
-
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
 
@@ -11,5 +10,9 @@
   </featureManager>
   
   <include location="../fatTestPorts.xml"/>
-  
+
+  <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
+  <javaPermission className="javax.management.MBeanPermission" name="*" actions="queryNames"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="*"/>
+
 </server>

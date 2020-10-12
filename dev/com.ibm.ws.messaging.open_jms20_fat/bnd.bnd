@@ -11,36 +11,36 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-src: \
+src:\
   fat/src,\
-  test-applications/DurableUnshared/src, \
-  test-applications/JMSConsumer_118076/src, \
-  test-applications/JMSConsumer_118077/src, \
-  test-applications/JMSContextInject/src, \
-  test-applications/JMSDCF/src, \
-  test-applications/JMSDCFVar/src, \
-  test-applications/JMSMBeans/src, \
-  test-applications/JMSProducer/src, \
-  test-applications/JMSProducer_118073/src, \
-  test-applications/JMSRedelivery_120846/src, \
-  test-applications/SharedSubscription/src, \
+  test-applications/DurableUnshared/src,\
+  test-applications/JMSConsumer_118076/src,\
+  test-applications/JMSConsumer_118077/src,\
+  test-applications/JMSContextInject/src,\
+  test-applications/JMSDCF/src,\
+  test-applications/JMSDCFVar/src,\
+  test-applications/JMSMBeans/src,\
+  test-applications/JMSProducer/src,\
+  test-applications/JMSProducer_118073/src,\
+  test-applications/JMSRedelivery_120846/src,\
+  test-applications/SharedSubscription/src,\
   test-applications/SharedSubscriptionWithMsgSel/src
 
-# test-applications/jmsmdb/src, \
-# test-applications/mdbapp/src, \
+# test-applications/jmsmdb/src,\
+# test-applications/mdbapp/src,\
 # test-applications/mdbapp1/src
 
 test.project: true
 
-tested.features:       \
-  wasJmsServer-1.0,    \
-  wasJmsClient-2.0,    \
-  jmsMdb-3.2,          \
-  jms-2.0,             \
-  messagingClient-3.0, \ # Jakarta EE9
-  messagingServer-3.0, \ # Jakarta EE9
-  mdb-4.0,             \ # Jakarta EE9
-  messaging-3.0        \ # Jakarta EE9
+tested.features:\
+  wasJmsServer-1.0,\
+  wasJmsClient-2.0,\
+  jmsMdb-3.2,\
+  jms-2.0,\
+  messagingClient-3.0,\
+  messagingServer-3.0,\
+  mdb-4.0,\
+  messaging-3.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -54,7 +54,7 @@ tested.features:       \
 #   fattest.simplicity
 #   componenttest-1.0
 
--buildpath: \
+-buildpath:\
   com.ibm.ws.logging;version=latest,\
   com.ibm.websphere.javaee.servlet.3.0;version=latest,\
   com.ibm.ws.security.registry_test.servlet;version=latest,\

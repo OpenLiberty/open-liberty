@@ -43,7 +43,7 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
             // LiteBucketSet2Test.class,
         JMSMBeanTest.class,
 
-            // JMSProducerTest_118071.class, //full
+        JMSProducerTest_118071.class, //full
             // JMSProducerTest_118073.class, //full
             // SharedSubscriptionTest_129623.class,
 

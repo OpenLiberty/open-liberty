@@ -11,21 +11,27 @@
 package componenttest.rules.repeater;
 
 public interface RepeatTestAction {
-
     /**
      * Invoked by the FAT framework to test if the action should be applied or not.
-     * If a RepeatTestAction is disabled, it ought to log a message indicating why.
+     *
+     * A RepeatTestAction which is disabled should log a message indicating why
+     * the test is disabled.
+     *
+     * @return True or false telling if this action should be applied.
      */
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * Invoked by the FAT framework to perform setup steps before repeating the tests.
+     *
+     * @throws Exception Thrown in case of an exceptional failure of the test setup.
      */
-    public void setup() throws Exception;
+    void setup() throws Exception;
 
     /**
-     * Used to identify the RepeatTestAction and used in conjunction with @SkipForRepat
+     * Used to identify the RepeatTestAction and used in conjunction with @SkipForRepeat.
+     *
+     * @return The identifier of this test action.
      */
-    public String getID();
-
+    String getID();
 }

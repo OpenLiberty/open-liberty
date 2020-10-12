@@ -19,7 +19,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.transformer.jakarta.JakartaTransformer;
@@ -44,6 +46,39 @@ import componenttest.topology.utils.FileUtils;
 public class JakartaEE9Action extends FeatureReplacementAction {
     private static final Class<?> c = JakartaEE9Action.class;
 
+    // Point-in-time list of pre-EE9 features combinations which are not supported.
+    //
+    // Key are pre-EE9 features which have conflicts.
+    // Values are the set of EE9 features which conflict with the key feature.
+    //
+    // When a feature conflict is detected, the conflicting pre-EE9 feature is removed
+    // and an informational message is issued to note the conflict.
+    //
+    // The list contains conflicts which occur only in current tests.
+    //
+    // Tests which depend on the feature which was removed will fail in the JakartaEE
+    // repeat, and must be annotated with "@SkipForRepeat(SkipForRepeat.EE9_FEATURES)"
+    // to prevent such tests from running in that repeat.
+    //
+    // "@SkipForRepeat(SkipForRepeat.EE9_FEATURES)" may be used both as a class annotation
+    // (which causes the entire class to be skipped) and may be used as a method annotation
+    // (which causes that method to be skipped). 
+
+    public static final Map<String, Set<String>> EE9_CONFLICT_FEATURES;
+
+    static {
+        Map<String, Set<String>> conflicts = new HashMap<String, Set<String>>();
+
+        Set<String> managementConflicts = new HashSet<String>();
+        managementConflicts.add("servlet-5.0");
+        managementConflicts.add("com.ibm.websphere.appserver.transaction-1.2");
+        managementConflicts.add("messagingClient-3.0");
+
+        conflicts.put("j2eeManagement-1.1", managementConflicts);
+
+        EE9_CONFLICT_FEATURES = conflicts;
+    }
+
     public static final String ID = "EE9_FEATURES";
 
     // Point-in-time list of enabled JakartaEE9 features.
@@ -53,56 +88,59 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     // features, which is necessary for the FATs to run.
 
     static final String[] EE9_FEATURES_ARRAY = {
-                                                 "appClientSupport-2.0",
-                                                 "jakartaee-9.0",
-                                                 "webProfile-9.0",
-                                                 "jakartaeeClient-9.0",
-                                                 "componenttest-2.0", // replaces "componenttest-1.0"
-                                                 "txtest-2.0",
-                                                 "appSecurity-4.0",
-                                                 "beanValidation-3.0",
-                                                 "cdi-3.0",
-                                                 "concurrent-2.0",
-                                                 "connectors-2.0",
-                                                 "el-4.0",
-                                                 "enterpriseBeans-4.0",
-                                                 "enterpriseBeansHome-4.0",
-                                                 "enterpriseBeansLite-4.0",
-                                                 "enterpriseBeansPersistentTimer-4.0",
-                                                 "enterpriseBeansRemote-4.0",
-                                                 "enterpriseBeansTest-2.0",
-                                                 "jacc-2.0",
-                                                 "jaspic-2.0",
-                                                 "javaMail-2.0",
-                                                 "jaxb-3.0",
-                                                 "jpa-3.0",
-                                                 "jsonp-2.0",
-                                                 "jsonb-2.0",
-                                                 "jsonpContainer-2.0",
-                                                 "jsonbContainer-2.0",
-                                                 "faces-3.0",
-                                                 "jsp-3.0",
-                                                 "managedBeans-2.0",
-                                                 "mdb-4.0",
-                                                 "messaging-3.0",
-                                                 "messagingClient-3.0",
-                                                 "messagingServer-3.0",
-                                                 "messagingSecurity-3.0",
-                                                 "restfulWS-3.0",
-                                                 "restfulWSClient-3.0",
-                                                 "servlet-5.0",
-                                                 "websocket-2.0"
+        "appClientSupport-2.0",
+        "jakartaee-9.0",
+        "webProfile-9.0",
+        "jakartaeeClient-9.0",
+        "componenttest-2.0", // replaces "componenttest-1.0"
+        "txtest-2.0",
+        "appSecurity-4.0",
+        "beanValidation-3.0",
+        "cdi-3.0",
+        "concurrent-2.0",
+        "connectors-2.0",
+        "el-4.0",
+        "enterpriseBeans-4.0",
+        "enterpriseBeansHome-4.0",
+        "enterpriseBeansLite-4.0",
+        "enterpriseBeansPersistentTimer-4.0",
+        "enterpriseBeansRemote-4.0",
+        "enterpriseBeansTest-2.0",
+        "jacc-2.0",
+        "jaspic-2.0",
+        "javaMail-2.0",
+        "jaxb-3.0",
+        "jpa-3.0",
+        "jsonp-2.0",
+        "jsonb-2.0",
+        "jsonpContainer-2.0",
+        "jsonbContainer-2.0",
+        "faces-3.0",
+        "jsp-3.0",
+        "managedBeans-2.0",
+        "mdb-4.0",
+        "messaging-3.0",
+        "messagingClient-3.0",
+        "messagingServer-3.0",
+        "messagingSecurity-3.0",
+        "restfulWS-3.0",
+        "restfulWSClient-3.0",
+        "servlet-5.0",
+        "websocket-2.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
     public JakartaEE9Action() {
-        // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super(EE9_FEATURE_SET);
-        removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
-        removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
-        removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
-        forceAddFeatures(false);
+        super(EE9_FEATURE_SET); // Operation on EE9 features ... 
+        removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET); // Don't operate on EE6,
+        removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET); // Don't operate on EE7,
+        removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET); // Don't operate on EE8.
+
+        forceAddFeatures(false); // Enable smart feature upgrade.
+
+        addConflictFeatures(JakartaEE9Action.EE9_CONFLICT_FEATURES); // Remove conflicting features.
+
         withID(ID);
     }
 
@@ -141,6 +179,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     @Override
     public JakartaEE9Action removeFeatures(Set<String> removeFeatures) {
         return (JakartaEE9Action) super.removeFeatures(removeFeatures);
+    }
+
+    @Override
+    public JakartaEE9Action addConflictFeatures(Map<String, Set<String>> newConflictFeatures) {
+        return (JakartaEE9Action) super.addConflictFeatures(newConflictFeatures);
     }
 
     @Override
