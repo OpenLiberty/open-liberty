@@ -36,10 +36,10 @@
 	          <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.PrimitiveInjectionTest" />
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RolesAllowedTest" />
 
- 			  <!-- MP JWT 1.2 JAXRS - needs investigation as fails when run with other tests   
+ 			  <!-- MP JWT 1.2 JAXRS tests   --> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.PrincipalInjectionTest" /> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ApplicationScopedInjectionTest" />
-              -->
+             
               
               <!--  MP JWT 1.2 JAXRS JWE tests  - Need to enable when JWE support is delivered
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedEncryptTest" />
