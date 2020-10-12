@@ -267,7 +267,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     @Override
     public void start(boolean waitForRecovery) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "start", waitForRecovery);
+            Tr.entry(tc, "start", new Object[] { waitForRecovery });
 
         // Get bundle context, for use by recovery in DS Service lookup.
         retrieveBundleContext();
@@ -300,8 +300,30 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         // If we are logging to an RDBMS, then we will start the TM which will spin off a thread
         // to perform recovery processing. Unfortunately, this latter thread, as part of
         // DataSource processing, will also attempt to start the TM as a result of registering
-        // ResourceInfo. This flag guards against that eventuality.
-        if (!_recoverDBLogStarted) {
+        // ResourceInfo. In this specific scenario we'd block on sync and hang recovery. The ThreadLocal
+        // stored in the RecoveryManager allows us to determine which thread we are on and skip
+        // the sync block if necessary. In other situations, where logs are stored in a database we
+        // require that other threads DO block and therefore follow the existing filesystem model, where
+        // recovery may be in progress but another thread wishes to start transactional work, determines
+        // the the TM state is not "active" and attempts to start recovery itself.
+        boolean skipRecovery = false;
+        if (_recoverDBLogStarted) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Tran Logging to an RDBMS, recoveryAgent is: " + _recoveryAgent);
+            if (_recoveryAgent != null) {
+                RecoveryManager rm = _recoveryAgent.getRecoveryManager();
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Have retrieved recoveryManager: " + rm);
+                if (rm != null) {
+                    if (rm.isReplayThread()) {
+                        Tr.debug(tc, "Thread on which replay will be done - skip recovery processing");
+                        skipRecovery = true;
+                    }
+                }
+            }
+        }
+
+        if (!skipRecovery) {
             synchronized (this) {
                 TMHelper.setTMService(this);
 
@@ -428,9 +450,11 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     }
                 } // eof if waitForRecovery
             } // eof synchronized block
-        } // eof if !_recoverDBLogStarted
-        else if (tc.isDebugEnabled())
-            Tr.debug(tc, "Tran Logging to an RDBMS and START processing is in progress");
+        } // eof if !skipRecovery
+        else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Tran Logging to an RDBMS and we determined that we should skip recovery");
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "startRecovery");
@@ -604,7 +628,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.entry(tc, "checkTMState");
         if (_state != TMService.TMStates.ACTIVE) {
             if (_state == TMService.TMStates.RECOVERING) {
-                // Check that the initial phase of recovery is complete
+                // A noop
             } else if (_state == TMService.TMStates.INACTIVE) {
                 try {
                     TMHelper.start();
