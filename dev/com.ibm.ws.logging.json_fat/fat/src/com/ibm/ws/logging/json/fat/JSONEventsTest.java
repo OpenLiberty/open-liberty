@@ -65,7 +65,6 @@ public abstract class JSONEventsTest {
 
         ArrayList<String> accessLogKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_queryString"));
 
-        getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "access");
 
         String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_accesslog\".*\\}", getLogFile());
@@ -84,7 +83,6 @@ public abstract class JSONEventsTest {
         // The 'message' key is sometimes included for JDK 15
         ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>(Arrays.asList("message"));
 
-        getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "ffdc1");
 
         String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_ffdc\".*\\}", getLogFile());
@@ -101,7 +99,6 @@ public abstract class JSONEventsTest {
 
         ArrayList<String> traceKeysOptionalList = new ArrayList<String>();
 
-        getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "trace");
 
         String line = getServer().waitForStringInLog("\\{.*\"ibm_className\":\"com.ibm.logs.TraceServlet\".*\\}", getLogFile());
@@ -112,7 +109,6 @@ public abstract class JSONEventsTest {
 
     @Test
     public void checkExtensions() throws Exception {
-        getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "extension");
 
         String line = getServer().waitForStringInLog("\\{.*\"module\":\"com.ibm.logs.ExtensionServlet\".*\\}", getLogFile());
