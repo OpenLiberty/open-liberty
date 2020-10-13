@@ -29,11 +29,13 @@
     <servlet>
         <servlet-name>WsocUpgradeServlet</servlet-name>
  	      <servlet-class>io.openliberty.wsoc.common.WsocUpgradeServlet</servlet-class>
+ 	      <load-on-startup>1</load-on-startup>
     </servlet>
     
    <servlet>
         <servlet-name>PathParamUpgradeServlet</servlet-name>
  	      <servlet-class>basic.war.PathParamUpgradeServlet</servlet-class>
+ 	      <load-on-startup>1</load-on-startup>
     </servlet>
     
     <filter> 
