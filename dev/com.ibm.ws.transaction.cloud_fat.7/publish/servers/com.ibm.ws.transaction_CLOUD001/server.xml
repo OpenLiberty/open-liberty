@@ -16,7 +16,6 @@
         <feature>jdbc-4.2</feature>
         <feature>jndi-1.0</feature>
         <feature>cdi-2.0</feature>
-        <feature>transportSecurity-1.0</feature>
         <feature>txtest-1.0</feature>
     </featureManager>
 
@@ -30,19 +29,13 @@
 
     <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false">
       <jdbcDriver libraryRef="PostgresLib" />
-      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
-                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}" />
     </dataSource>
 
     <dataSource id="jdbc/derby" jndiName="jdbc/derby" type="javax.sql.XADataSource">
       <jdbcDriver libraryRef="PostgresLib" />
-      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
-                             ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}" />
     </dataSource>
-    
-    <sslDefault outboundSSLRef="outboundConfig"/>
-    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore"/>
-    <keyStore id="outboundKeyStore" location="resources/security/outboundKeys.p12" password="liberty"/>
     
     <include location="../fatTestPorts.xml"/>
     
