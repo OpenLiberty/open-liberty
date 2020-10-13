@@ -53,6 +53,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     private static Class<?> c = LogstashSSLTest.class;
     public static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     private static String os = "";
+    private static boolean found_liberty_gc_at_startup = false;
 
     protected static boolean runTest = true;
 
@@ -77,6 +78,14 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         ShrinkHelper.defaultDropinApp(server, "LogstashApp", "com.ibm.logs");
 
         serverStart();
+
+        // GC events are usually emitted during server startup
+        if (!checkGcSpecialCase()) {
+            found_liberty_gc_at_startup = waitForStringInContainerOutput(LIBERTY_GC) != null;
+        }
+
+        assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
+        clearContainerOutput();
     }
 
     @Before
@@ -183,7 +192,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         for (int i = 1; i <= 10; i++) {
             createGCEvent();
         }
-        assertNotNull(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC));
+        assertTrue(LIBERTY_GC + " not found", waitForStringInContainerOutput(LIBERTY_GC) != null || found_liberty_gc_at_startup);
     }
 
     @Test
@@ -404,35 +413,35 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         waitForStringInContainerOutput("CWWKT0016I");
     }
 
-    private boolean checkGcSpecialCase() {
-        Log.info(c, testName, "checkGcSpecialCase");
+    private static boolean checkGcSpecialCase() {
+        String methodName = "checkGcSpecialCase";
         /**
          * Check if if belongs to the special case where build machine does not have Health centre installed, which prevents gc event to be produced
          * by checking 1. whether the operating system is Mac or linux 2. whether the machine is running IBM JDK
          * if both checks pass, this is the case
          **/
-        Log.info(c, testName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + System.getProperty("java.vendor"));
+        Log.info(c, methodName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + System.getProperty("java.vendor"));
         String JAVA_HOME = System.getenv("JAVA_HOME");
-        Log.info(c, testName, "JAVA_HOME: " + JAVA_HOME);
+        Log.info(c, methodName, "JAVA_HOME: " + JAVA_HOME);
         boolean healthCenterInstalled = false;
         if (JAVA_HOME == null) {
-            Log.info(c, testName, " unable to find JAVA_HOME variable");
+            Log.info(c, methodName, " unable to find JAVA_HOME variable");
         } else if (JAVA_HOME.endsWith("jre")) {
             if (new File(JAVA_HOME + "/lib/ext/healthcenter.jar").exists()) {
                 healthCenterInstalled = true;
-                Log.info(c, testName, " jar file for health center under path " + JAVA_HOME + "/lib/ext/healthcenter.jar");
+                Log.info(c, methodName, " jar file for health center under path " + JAVA_HOME + "/lib/ext/healthcenter.jar");
             }
-            Log.info(c, testName, " jar file for health center under path " + JAVA_HOME + "/lib/ext/healthcenter.jar exist:"
-                                  + new File(JAVA_HOME + "/lib/ext/healthcenter.jar").exists());
+            Log.info(c, methodName, " jar file for health center under path " + JAVA_HOME + "/lib/ext/healthcenter.jar exist:"
+                                    + new File(JAVA_HOME + "/lib/ext/healthcenter.jar").exists());
         } else if ((JAVA_HOME.endsWith("/bin")) || (JAVA_HOME.endsWith("\\bin"))) {
             healthCenterInstalled = findHealthCenterDirecotry(JAVA_HOME.substring(0, JAVA_HOME.length() - 4));
             if (!healthCenterInstalled) {
-                Log.info(c, testName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
+                Log.info(c, methodName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
             }
         } else {
             healthCenterInstalled = findHealthCenterDirecotry(JAVA_HOME);
             if (!healthCenterInstalled) {
-                Log.info(c, testName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
+                Log.info(c, methodName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
             }
         }
         if (os.toLowerCase().contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
@@ -442,7 +451,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         return false;
     }
 
-    private boolean findHealthCenterDirecotry(String directoryPath) {
+    private static boolean findHealthCenterDirecotry(String directoryPath) {
+        String methodName = "findHealthCenterDirecotry";
         boolean jarFileExist = false;
         File dirFile = new File(directoryPath);
         if (dirFile.exists()) {
@@ -455,13 +465,13 @@ public class LogstashSSLTest extends LogstashCollectorTest {
                     }
                 } else {
                     if (file.getAbsolutePath().contains("healthcenter.jar")) {
-                        Log.info(c, testName, " healthcetner.jar is found under path " + file.getAbsolutePath());
+                        Log.info(c, methodName, " healthcetner.jar is found under path " + file.getAbsolutePath());
                         return true;
                     }
                 }
             }
         } else {
-            Log.info(c, "findHealthCenterDirecotry", "directoryPath " + directoryPath + " does not exist");
+            Log.info(c, methodName, "directoryPath " + directoryPath + " does not exist");
         }
         return jarFileExist;
     }
