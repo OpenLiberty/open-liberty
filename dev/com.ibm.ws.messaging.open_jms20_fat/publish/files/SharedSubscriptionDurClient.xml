@@ -33,6 +33,12 @@
   <!-- Import from 'fatTestPorts.xml' -->
   <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
+  <!--
+  <logging
+      traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
+      maxFileSize="200"/>
+  -->
+
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 
@@ -94,25 +100,23 @@
     <properties.wasJms/>
   </jmsTopic>
 
-  <!-- MDBMDB
-  <jmsActivationSpec id="sharedsubscriptionwithmsgsel/ejb/FATTopic1MessageDrivenBean">
+  <jmsActivationSpec id="SharedSubscriptionWithMsgSel/TestTopic1">
     <properties.wasJms
-      destinationRef="jms/FAT_TOPIC"
-      destinationType="javax.jms.Topic"
-      subscriptionDurability="DurableShared"
-      clientId="cid1"
-      subscriptionName="DURSUB"/>
+        destinationRef="jms/FAT_TOPIC"
+        destinationType="javax.jms.Topic"
+        subscriptionDurability="DurableShared"
+        clientId="cid1"
+        subscriptionName="DURSUB"/>
   </jmsActivationSpec>
-  
-  <jmsActivationSpec id="sharedsubscriptionwithmsgsel/ejb/FATTopic2MessageDrivenBean">
+
+  <jmsActivationSpec id="SharedSubscriptionWithMsgSel/TestTopic2">
     <properties.wasJms
-      destinationRef="jms/FAT_TOPIC"
-      destinationType="javax.jms.Topic"
-      subscriptionDurability="DurableShared"
-      clientId="cid1"
-      subscriptionName="DURSUB"/>
+        destinationRef="jms/FAT_TOPIC"
+        destinationType="javax.jms.Topic"
+        subscriptionDurability="DurableShared"
+        clientId="cid1"
+        subscriptionName="DURSUB"/>
   </jmsActivationSpec>
-  -->
 
   <!--
     SharedSubscriptionServlet.java

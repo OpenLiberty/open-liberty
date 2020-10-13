@@ -10,22 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat.SharedSubscription;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -33,16 +28,12 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
 @Mode(TestMode.FULL)
 public class SharedSubscriptionWithMsgSelTest_129626 {
 
-    private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
+    private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
 
-    private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("SharedSubscriptionWithMsgSelClient");
+    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("SharedSubscriptionWithMsgSelClient");
 
     public int occurrencesInLog(String text) throws Exception {
         return TestUtils.occurrencesInLog(clientServer, "trace.log", text);
@@ -51,16 +42,11 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
 
-    // SharedSubscriptionWithMsgSel\src\
-    // sharedsubscriptionwithmsgsel\web\SharedSubscriptionWithMsgSelServlet.java
-
     private static final String subscriptionAppName = "SharedSubscriptionWithMsgSel";
     private static final String subscriptionContextRoot = "SharedSubscriptionWithMsgSel";
     private static final String[] subscriptionPackages = new String[] {
-        "sharedsubscriptionwithmsgsel.web",
-        "sharedsubscriptionwithmsgsel.ejb" };
-
-    //
+                                                                        "sharedsubscriptionwithmsgsel.web",
+                                                                        "sharedsubscriptionwithmsgsel.ejb" };
 
     // Relative to the server 'logs' folder.
     private static final String JMX_LOCAL_ADDRESS_REL_PATH = "state/com.ibm.ws.jmx.local.address";
@@ -69,7 +55,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         List<String> localAddressLines = TestUtils.readLines(libertyServer, JMX_LOCAL_ADDRESS_REL_PATH);
         // throws FileNotFoundException, IOException
 
-        if ( localAddressLines.isEmpty() ) {
+        if (localAddressLines.isEmpty()) {
             throw new IOException("Empty JMX local address file [ " + libertyServer.getLogsRoot() + " ] [ " + JMX_LOCAL_ADDRESS_REL_PATH + " ]");
         }
 
@@ -88,25 +74,25 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     }
 
     private static boolean runInServlet(String test) throws IOException {
-        return TestUtils.runInServlet( clientHostName, clientPort, subscriptionContextRoot, test, getLocalAddress() );
+        return TestUtils.runInServlet(clientHostName, clientPort, subscriptionContextRoot, test, getLocalAddress());
         // throws IOException
     }
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("SharedSubscriptionEngine.xml"); // JMSContext_Server.xml
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         TestUtils.addDropinsWebApp(clientServer, subscriptionAppName, subscriptionPackages);
         clientServer.setServerConfigurationFile("SharedSubscriptionNonDurClient.xml"); // JMSContext_Client.xml
 
         engineServer.startServer("SharedSubscriptionWithMsgSel_129626_Engine.log");
-        setLocalAddress( readLocalAddress(engineServer) ); // 'readLocalAddress' throws IOException
+        setLocalAddress(readLocalAddress(engineServer)); // 'readLocalAddress' throws IOException
         clientServer.startServer("SharedSubscriptionWithMsgSel_129626_Client.log");
     }
 
@@ -115,7 +101,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         engineServer.stopServer();
 
         engineServer.startServer("SharedSubscriptionWithMsgSel_129626_Engine.log");
-        setLocalAddress( readLocalAddress(engineServer) ); // 'readLocalAddress' throws IOException
+        setLocalAddress(readLocalAddress(engineServer)); // 'readLocalAddress' throws IOException
         clientServer.startServer("SharedSubscriptionWithMsgSel_129626_Client.log");
     }
 
@@ -123,13 +109,13 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     public static void tearDown() {
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -150,13 +136,13 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     public void testCreateSharedNonDurable_B_SecOff() throws Exception {
         boolean testFailed = false;
 
-        if ( !runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_create") ) {
+        if (!runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_create")) {
             testFailed = true;
         }
 
         // restartServers();
 
-        if ( !runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_consume") ) {
+        if (!runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_consume")) {
             testFailed = true;
         }
 
@@ -170,13 +156,13 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     public void testCreateSharedNonDurable_TCP_SecOff() throws Exception {
         boolean testFailed = false;
 
-        if ( !runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_create_TCP") ) {
+        if (!runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_create_TCP")) {
             testFailed = true;
         }
 
         // restartServers(); // throws Exception
 
-        if ( !runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_consume_TCP") ) {
+        if (!runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_consume_TCP")) {
             testFailed = true;
         }
 
@@ -280,7 +266,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     }
 
     @Mode(TestMode.FULL)
-    // @Test // TODO MDBMDB
+    @Test
     public void testMultiSharedNonDurableConsumer_SecOff() throws Exception {
         runInServlet("testBasicMDBTopic");
         Thread.sleep(1000);
@@ -288,7 +274,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         int count2 = occurrencesInLog("Received in MDB2: testBasicMDBTopic:");
 
         boolean testFailed = false;
-        if ( !((count1 > 1) && (count2 > 1) && (count1 + count2 == 20)) ) {
+        if (!((count1 > 1) && (count2 > 1) && (count1 + count2 == 20))) {
             testFailed = true;
         }
 
@@ -298,11 +284,11 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         int count4 = occurrencesInLog("Received in MDB2: testBasicMDBTopic_TCP:");
 
         boolean testFailed_TCP = false;
-        if ( !((count3 > 1) && (count4 > 1) && (count3 + count4 == 20)) ) {
+        if (!((count3 > 1) && (count4 > 1) && (count3 + count4 == 20))) {
             testFailed_TCP = true;
         }
 
-        assertFalse("testBasicMDBTopicNonDurable failed [ " + count1 + " ] [ " + count2 + " ]", testFailed);
-        assertFalse("testBasicMDBTopicNonDurable_TCP failed [ " + count3 + " ] [ " + count4 + " ]", testFailed_TCP);
+        assertFalse("testMultiSharedNonDurableConsumer_SecOff failed [ " + count1 + " ] [ " + count2 + " ]", testFailed);
+        assertFalse("testMultiSharedNonDurableConsumer_SecOff failed [ " + count3 + " ] [ " + count4 + " ]", testFailed_TCP);
     }
 }

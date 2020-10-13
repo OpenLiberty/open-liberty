@@ -49,6 +49,7 @@
     <topicSpace id="NewTopic2"/>
     <topicSpace id="NewTopic3"/>
     <topicSpace id="NewTopic4"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
   </messagingEngine>
 
 </server>

@@ -10,36 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat.JMSProducerTest;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
 @Mode(TestMode.FULL)
 public class JMSProducerTest_118073 {
 
-    private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("JMSProducerClient");
+    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("JMSProducerClient");
     private static boolean clientIsRunning = false;
 
     private static void ensureClient() throws Exception {
-        if ( !clientIsRunning ) {
+        if (!clientIsRunning) {
             System.out.println("Client server unexpectedly stopped; restarting");
             startClient();
         }
@@ -55,12 +47,11 @@ public class JMSProducerTest_118073 {
         clientIsRunning = false;
     }
 
-    private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("JMSProducerEngine");
+    private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("JMSProducerEngine");
     private static boolean engineIsRunning = false;
 
     private static void ensureEngine() throws Exception {
-        if ( !engineIsRunning ) {
+        if (!engineIsRunning) {
             System.out.println("Engine server unexpectedly stopped; restarting");
             startEngine();
         }
@@ -105,13 +96,13 @@ public class JMSProducerTest_118073 {
     public static void tearDown() {
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -198,8 +189,10 @@ public class JMSProducerTest_118073 {
     // Disabling it temporarily.
 
     // Bindings and Security off
-    // @Mode(TestMode.FULL)
-    @Test
+
+//TODO
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testSetDeliveryMode_B_SecOff() throws Exception {
         String methodName = "testSetDeliveryMode_B_SecOff";
 
@@ -211,7 +204,7 @@ public class JMSProducerTest_118073 {
             stopClient();
             startClient();
 
-            if ( !runInServlet("testBrowseDeliveryMode_persistent_B_SecOff") ) {
+            if (!runInServlet("testBrowseDeliveryMode_persistent_B_SecOff")) {
                 testFailed = true;
             }
 
@@ -222,7 +215,7 @@ public class JMSProducerTest_118073 {
             stopClient();
             startClient();
 
-            if ( !runInServlet("testBrowseDeliveryMode_nonpersistent_B_SecOff") ) {
+            if (!runInServlet("testBrowseDeliveryMode_nonpersistent_B_SecOff")) {
                 testFailed = true;
             }
 
@@ -238,8 +231,10 @@ public class JMSProducerTest_118073 {
     // Disabling it temporarily.
 
     // TCP and Security Off
-    // @Mode(TestMode.FULL)
-    @Test
+
+//TODO
+//    @Mode(TestMode.FULL)
+//    @Test
     public void testSetDeliveryMode_TCP_SecOff() throws Exception {
         String methodName = "testSetDeliveryMode_TCP_SecOff";
         String prefix = getClass().getSimpleName() + "." + methodName;
@@ -257,7 +252,7 @@ public class JMSProducerTest_118073 {
             startEngine();
             startClient();
 
-            if ( !runInServlet("testBrowseDeliveryMode_persistent_TCP_SecOff") ) {
+            if (!runInServlet("testBrowseDeliveryMode_persistent_TCP_SecOff")) {
                 testFailed = true;
             }
 
@@ -271,7 +266,7 @@ public class JMSProducerTest_118073 {
             startEngine();
             startClient();
 
-            if ( !runInServlet("testBrowseDeliveryMode_nonpersistent_TCP_SecOff") ) {
+            if (!runInServlet("testBrowseDeliveryMode_nonpersistent_TCP_SecOff")) {
                 testFailed = true;
             }
 
@@ -784,7 +779,7 @@ public class JMSProducerTest_118073 {
         assertTrue("Test testSetObjectProperty_Null_TCP_SecOff failed", testResult);
     }
 
-    // 118073_32_5 
+    // 118073_32_5
 
     // Bindings and Security Off
     @Mode(TestMode.FULL)
