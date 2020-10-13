@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -121,8 +122,11 @@ public class ClientConfigTests extends FATServletClient {
         }
 
         try {
+            /*
+             * SRVE8055E: An unexpected exception occurred flushing out the rest of the response data (for testMaxInboundMetadataSize)
+             */
             if (GrpcServerOnly != null && GrpcServerOnly.isStarted())
-                GrpcServerOnly.stopServer();
+                GrpcServerOnly.stopServer("SRVE8055E");
         } catch (Exception e) {
             if (excep == null)
                 excep = e;
@@ -611,6 +615,7 @@ public class ClientConfigTests extends FATServletClient {
      */
     @Test
     @ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @AllowedFFDC("java.io.IOException")
     public void testMaxInboundMetadataSize() throws Exception {
         LOG.info("ClientConfigTests : testMaxInboundMetadataSize() : test maxInboundMetadataSize.");
 
