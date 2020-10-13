@@ -295,8 +295,10 @@ public class TestConfiguration {
     public void setServerConfiguration(String newConfig, String application) throws Exception {
         if (isDifferentConfig(newConfig)) {
             updateServerConfig(newConfig);
-            waitForServerConfigurationUpdate();
-            waitForAppUpdate(application);
+            assertNotNull("Expected to see server configuration was successfully updated",
+                          waitForServerConfigurationUpdate());
+            assertNotNull("Expected to see application " +application+ " updated",
+                          waitForAppUpdate(application));
         }
     }
 
