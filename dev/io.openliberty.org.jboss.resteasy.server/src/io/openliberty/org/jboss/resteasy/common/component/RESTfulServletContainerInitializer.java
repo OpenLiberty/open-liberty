@@ -29,6 +29,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.restfulWS.config.ConfigImpl;
+
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
@@ -183,6 +188,10 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 builder.append(provider.getName());
             }
             reg.setInitParameter(ResteasyContextParameters.RESTEASY_SCANNED_PROVIDERS, builder.toString());
+        }
+        Config config = ResteasyConfigProvider.getInstance().getConfig();
+        if (config instanceof ConfigImpl) {
+            ((ConfigImpl)config).updateProperties(reg.getInitParameters());
         }
     }
 

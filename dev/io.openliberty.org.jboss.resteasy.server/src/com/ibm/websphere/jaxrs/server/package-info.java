@@ -8,17 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.client.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "RESTfulWS", messageBundle="io.openliberty.org.jboss.resteasy.server.nls.RESTfulWSServer")
+package com.ibm.websphere.jaxrs.server;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ClientFeatureTest.class,
-                SslTest.class
-})
-public class FATSuite {
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
