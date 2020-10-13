@@ -27,8 +27,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MaximumJavaLevel;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -47,7 +45,6 @@ public abstract class JSONEventsTest {
 
     @Test
     public void checkMessage() throws Exception {
-        final String method = "checkMessage";
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                          "ibm_sequence", "loglevel", "ibm_messageId", "module",
                                                                                          "ibm_threadId", "message"));
@@ -56,20 +53,11 @@ public abstract class JSONEventsTest {
 
         String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"CWWKF0011I\".*\\}", getLogFile());
         assertNotNull("Cannot find \"ibm_messageId\":\"CWWKF0011I\" from messages.log", line);
-        // Read JSON message
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
-        }
+        checkJsonMessage(line, messageKeysMandatoryList, messageKeysOptionalList);
     }
 
     @Test
     public void checkAccessLog() throws Exception {
-        final String method = "checkAccessLog";
-
         ArrayList<String> accessLogKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                            "ibm_sequence", "ibm_requestHost", "ibm_requestPort", "ibm_remoteHost",
                                                                                            "ibm_requestMethod", "ibm_uriPath", "ibm_requestProtocol", "ibm_elapsedTime",
@@ -83,28 +71,18 @@ public abstract class JSONEventsTest {
         String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_accesslog\".*\\}", getLogFile());
         assertNotNull("Cannot find \"type\":\"liberty_accesslog\" from messages.log", line);
 
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-
-        if (!checkJsonMessage(jsonObj, accessLogKeysMandatoryList, accessLogKeysOptionalList)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
-        }
-
+        checkJsonMessage(line, accessLogKeysMandatoryList, accessLogKeysOptionalList);
     }
 
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
-    @MaximumJavaLevel(javaLevel = 14)
     public void checkFfdc() throws Exception {
-        final String method = "checkFfdc";
-
         ArrayList<String> ffdcKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                       "ibm_sequence", "ibm_className", "ibm_exceptionName", "ibm_probeID",
                                                                                       "ibm_threadId", "ibm_stackTrace", "ibm_objectDetails"));
 
-        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>();
+        // The 'message' key is sometimes included for JDK 15
+        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>(Arrays.asList("message"));
 
         getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "ffdc1");
@@ -112,51 +90,11 @@ public abstract class JSONEventsTest {
         String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_ffdc\".*\\}", getLogFile());
         assertNotNull("Cannot find \"type\":\"liberty_ffdc\" from messages.log", line);
 
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-
-        if (!checkJsonMessage(jsonObj, ffdcKeysMandatoryList, ffdcKeysOptionalList)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
-        }
-
-    }
-
-    @Test
-    @ExpectedFFDC({ "java.lang.NullPointerException" })
-    @MinimumJavaLevel(javaLevel = 15)
-    public void checkFfdcJava15() throws Exception {
-        final String method = "checkFfdc";
-
-        //JDK 15 has message as an additional field in ffdc events
-        ArrayList<String> ffdcKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
-                                                                                      "ibm_sequence", "ibm_className", "ibm_exceptionName", "ibm_probeID",
-                                                                                      "ibm_threadId", "ibm_stackTrace", "ibm_objectDetails", "message"));
-
-        ArrayList<String> ffdcKeysOptionalList = new ArrayList<String>();
-
-        getServer().addInstalledAppForValidation(APP_NAME);
-        TestUtils.runApp(getServer(), "ffdc1");
-
-        String line = getServer().waitForStringInLog("\\{.*\"type\":\"liberty_ffdc\".*\\}", getLogFile());
-        assertNotNull("Cannot find \"type\":\"liberty_ffdc\" from messages.log", line);
-
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-
-        if (!checkJsonMessage(jsonObj, ffdcKeysMandatoryList, ffdcKeysOptionalList)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
-        }
-
+        checkJsonMessage(line, ffdcKeysMandatoryList, ffdcKeysOptionalList);
     }
 
     @Test
     public void checkTrace() throws Exception {
-        final String method = "checkTrace";
-
         ArrayList<String> traceKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
                                                                                        "ibm_sequence", "loglevel", "module", "ibm_methodName", "ibm_className",
                                                                                        "ibm_threadId", "message"));
@@ -169,20 +107,11 @@ public abstract class JSONEventsTest {
         String line = getServer().waitForStringInLog("\\{.*\"ibm_className\":\"com.ibm.logs.TraceServlet\".*\\}", getLogFile());
         assertNotNull("Cannot find \"ibm_className\":\"com.ibm.logs.TraceServlet\" from messages.log", line);
 
-        JsonReader reader = Json.createReader(new StringReader(line));
-        JsonObject jsonObj = reader.readObject();
-        reader.close();
-
-        if (!checkJsonMessage(jsonObj, traceKeysMandatoryList, traceKeysOptionalList)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
-        }
-
+        checkJsonMessage(line, traceKeysMandatoryList, traceKeysOptionalList);
     }
 
     @Test
     public void checkExtensions() throws Exception {
-        final String method = "checkExt";
         getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "extension");
 
@@ -190,20 +119,15 @@ public abstract class JSONEventsTest {
 
         assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log", line);
 
+        checkExtensions(line);
+    }
+
+    public void checkExtensions(String line) throws Exception {
+        final String method = "checkExtensions";
+
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();
         reader.close();
-
-        if (!checkExtensions(jsonObj)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more extension related errors");
-        }
-    }
-
-    public boolean checkExtensions(JsonObject jsonObj) throws Exception {
-        final String method = "checkExtensions";
-
-        boolean isValid = true;
 
         ArrayList<String> extensionKeysMandatoryList = new ArrayList<String>(Arrays.asList("ext_correctBooleanExtension_bool", "ext_correctBooleanExtension2_bool",
                                                                                            "ext_correctIntExtension_int", "ext_correctIntExtension2_int",
@@ -254,19 +178,21 @@ public abstract class JSONEventsTest {
         }
 
         if (extensionKeysMandatoryList.size() > 0) {
-            isValid = false;
-            Log.info(c, method, "Mandatory keys missing:" + extensionKeysMandatoryList.toString());
+            Log.info(c, method, "Mandatory keys missing: " + extensionKeysMandatoryList.toString());
+            Assert.fail("Mandatory keys missing: " + extensionKeysMandatoryList.toString() + ". Actual JSON was: " + line);
         }
         if (invalidFields.size() > 0) {
-            isValid = false;
-            Log.info(c, method, "Invalid keys found:" + invalidFields.toString());
+            Log.info(c, method, "Invalid keys found: " + invalidFields.toString());
+            Assert.fail("Invalid keys found: " + invalidFields.toString() + ". Actual JSON was: " + line);
         }
-
-        return isValid;
     }
 
-    private boolean checkJsonMessage(JsonObject jsonObj, ArrayList<String> mandatoryKeyList, ArrayList<String> optionalKeyList) {
+    private void checkJsonMessage(String line, ArrayList<String> mandatoryKeyList, ArrayList<String> optionalKeyList) {
         final String method = "checkJsonMessage";
+
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
 
         String value = null;
         ArrayList<String> invalidFields = new ArrayList<String>();
@@ -287,15 +213,13 @@ public abstract class JSONEventsTest {
                 invalidFields.add(key);
             }
         }
-        boolean isSucceeded = true;
         if (mandatoryKeyList.size() > 0) {
-            isSucceeded = false;
-            Log.info(c, method, "Mandatory keys missing:" + mandatoryKeyList.toString());
+            Log.info(c, method, "Mandatory keys missing: " + mandatoryKeyList.toString());
+            Assert.fail("Mandatory FFDC keys missing: " + mandatoryKeyList.toString() + ". Actual JSON was: " + line);
         }
         if (invalidFields.size() > 0) {
-            isSucceeded = false;
-            Log.info(c, method, "Invalid keys found:" + invalidFields.toString());
+            Log.info(c, method, "Invalid keys found: " + invalidFields.toString());
+            Assert.fail("Invalid FFDC keys found: " + invalidFields.toString() + ". Actual JSON was: " + line);
         }
-        return isSucceeded;
     }
 }
