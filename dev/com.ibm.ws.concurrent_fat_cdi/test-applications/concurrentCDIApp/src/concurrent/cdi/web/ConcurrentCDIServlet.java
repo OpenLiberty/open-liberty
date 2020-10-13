@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,27 +12,35 @@ package concurrent.cdi.web;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.InitialContext;
-import javax.servlet.annotation.WebServlet;
-import javax.transaction.TransactionSynchronizationRegistry;
-import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
-import componenttest.app.FATServlet;
-
 @SuppressWarnings("serial")
 @WebServlet("/*")
-public class ConcurrentCDIServlet extends FATServlet {
+public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Maximum number of milliseconds to wait for a task to finish.
@@ -74,6 +82,52 @@ public class ConcurrentCDIServlet extends FATServlet {
 
     @Inject
     private ManagedExecutorService injectedExec; // produced by ResourcesProducer.exec field
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String method = request.getParameter("testMethod");
+
+        System.out.println(">>> BEGIN: " + method);
+        System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
+        PrintWriter writer = response.getWriter();
+        if (method != null && method.length() > 0) {
+            try {
+                // Use reflection to try invoking various test method signatures:
+                // 1)  method(HttpServletRequest request, HttpServletResponse response)
+                // 2)  method()
+                // 3)  use custom method invocation by calling invokeTest(method, request, response)
+                try {
+                    Method mthd = getClass().getMethod(method, HttpServletRequest.class, HttpServletResponse.class);
+                    mthd.invoke(this, request, response);
+                } catch (NoSuchMethodException nsme) {
+                    Method mthd = getClass().getMethod(method, (Class<?>[]) null);
+                    mthd.invoke(this);
+                }
+
+                writer.println("SUCCESS");
+            } catch (Throwable t) {
+                if (t instanceof InvocationTargetException) {
+                    t = t.getCause();
+                }
+
+                System.out.println("ERROR: " + t);
+                StringWriter sw = new StringWriter();
+                t.printStackTrace(new PrintWriter(sw));
+                System.err.print(sw);
+
+                writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
+                t.printStackTrace(writer);
+            }
+        } else {
+            System.out.println("ERROR: expected testMethod parameter");
+            writer.println("ERROR: expected testMethod parameter");
+        }
+
+        writer.flush();
+        writer.close();
+
+        System.out.println("<<< END:   " + method);
+    }
 
     /**
      * Initialize the transaction service (including recovery logs) so it doesn't slow down our tests and cause timeouts.
