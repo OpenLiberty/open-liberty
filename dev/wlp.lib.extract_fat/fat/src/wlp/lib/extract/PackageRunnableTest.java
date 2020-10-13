@@ -38,12 +38,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 public class PackageRunnableTest {
+    protected static final Class<?> c = PackageRunnableTest.class;
+    protected static final String CLASS_NAME = c.getName();
+
     private static String serverName = "runnableTestServer";
     private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
     private static final File runnableJar = new File("publish/" + serverName + ".jar");
@@ -118,7 +123,7 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
 
@@ -148,7 +153,7 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
 
@@ -173,7 +178,7 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
 
@@ -202,7 +207,7 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
 
@@ -292,7 +297,7 @@ public class PackageRunnableTest {
 
             synchronized (proc) {
                 proc.wait(1000); // wait 1 second
-                System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
+                Log.info(c, "executeTheJar", "Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
             extractLoc = outputReader.extractLoc();
@@ -314,7 +319,7 @@ public class PackageRunnableTest {
             os.close();
         }
 
-        System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "executeTheJar", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
 
         return extractLoc;
@@ -365,7 +370,7 @@ public class PackageRunnableTest {
 
             synchronized (proc) {
                 proc.wait(1000); // wait 1 second
-                System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
+                Log.info(c, "extractAndExecuteMain", "Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
             count++;
@@ -375,17 +380,17 @@ public class PackageRunnableTest {
 
         outputReader.setIs(null);
         proc.destroy(); // ensure no process left behind
-        System.out.println("Removing WLP installation directory: " + extractAndRunDir.getAbsolutePath());
+        Log.info(c, "extractAndExecuteMain", "Removing WLP installation directory: " + extractAndRunDir.getAbsolutePath());
         if (extractAndRunDir.exists()) {
             deleteDir(extractAndRunDir);
-            System.out.println("WLP installation directory was removed.");
+            Log.info(c, "extractAndExecuteMain", "WLP installation directory was removed.");
         }
 
         if (os != null) {
             os.close();
         }
 
-        System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
     }
 
@@ -445,9 +450,9 @@ public class PackageRunnableTest {
 
         public void runInputStream() throws IOException {
 
-            System.out.println("runInputStream() - in.");
+            Log.info(c, "runInputStream", "runInputStream() - in.");
             if (is == null) {
-                System.out.println("runInputStream() - inputStream is null: skip.");
+                Log.info(c, "runInputStream", "runInputStream() - inputStream is null: skip.");
                 return;
             }
             PrintWriter pw = null;
@@ -461,7 +466,7 @@ public class PackageRunnableTest {
             while (!foundWatchFor && is != null && (line = br.readLine()) != null) {
                 if (pw != null)
                     pw.println("runInputStream() - readLine(): " + line);
-                System.out.println(line);
+                Log.info(c, "runInputStream", "line=" + line);
 
                 // Save off the extract location
                 if (line.contains(extract)) {
@@ -480,7 +485,7 @@ public class PackageRunnableTest {
             br.close();
             isr.close();
 
-            System.out.println("runInputStream() - exit.");
+            Log.info(c, "runInputStream", "runInputStream() - exit.");
             if (pw != null)
                 pw.flush();
         }
