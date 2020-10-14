@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -28,6 +29,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.grpc.fat.beer.service.Beer;
 import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
@@ -247,10 +249,14 @@ public class ServiceConfigTests extends FATServletClient {
 
         grpcServer.setMarkToEndOfLog();
 
-        // The helloworld service is already in dropins, add the beer service app and fire it up
-        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp("FavoriteBeerService",
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
+
         LOG.info("ServiceConfigTests : testServiceTargetWildcard() : dropped the beer app into dropins.");
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
@@ -346,9 +352,14 @@ public class ServiceConfigTests extends FATServletClient {
         BeerServiceBlockingStub beerServiceBlockingStub;
 
         // The helloworld app is already in dropins, add the beer service app and fire it up
-        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp("FavoriteBeerService",
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
+
         LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : dropped the beer app into dropins.");
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
