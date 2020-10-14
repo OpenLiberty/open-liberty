@@ -408,6 +408,8 @@ public class TestEnableDisableFeaturesTest {
         serverEDF11.setMarkToEndOfLog();
         serverEDF11.setServerConfigurationFile("server_noJDBC.xml");
         Assert.assertNotNull("CWWKF0008I NOT FOUND", serverEDF11.waitForStringInLogUsingMark("CWWKF0008I"));
+    	//This message ID indicates the Pub/Priv Rest Handler has been initialized
+    	Assert.assertNotNull("SRVE0242I NOT FOUND",serverEDF11.waitForStringInLogUsingMark("SRVE0242I.*(\\[/metrics\\])")); 
         Log.info(c, testName, "------- connectionpool metrics should not be available ------");
         checkStrings(getHttpsServlet("/metrics/vendor", serverEDF11), new String[] { "vendor_" },
                 new String[] { "vendor_connectionpool", "vendor_servlet", "{servlet=\"testJDBCApp\"}" });
