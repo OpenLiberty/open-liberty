@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=V\u00e9rifiez le nom de l'intercepteur conf
 invalid.inbound.msg.size=CWWKT0203E: La valeur maxInboundMessageSize {0} n''est pas valide. Les tailles doivent \u00eatre sup\u00e9rieures \u00e0 0.
 invalid.inbound.msg.size.explanation=La valeur configur\u00e9e pour maxInboundMessageSize n'est pas valide.
 invalid.inbound.msg.size.useraction=Configurez une valeur valide pour maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: La demande gRPC pour {0} ne peut pas continuer. La r\u00e9ponse a d\u00e9j\u00e0 \u00e9t\u00e9 valid\u00e9e.
+response.already.committed.explanation=La demande gRPC n'est pas valide car la r\u00e9ponse a \u00e9t\u00e9 valid\u00e9e avant le d\u00e9marrage des m\u00e9thodes gRPC.
+response.already.committed.useraction=Recherchez dans les journaux d'autres avertissements ou messages d'erreur \u00e9mis avant ce message. Cette erreur peut survenir suite \u00e0 une erreur de s\u00e9curit\u00e9.
+
+authentication.error=CWWKT0205E: La demande de service gRPC pour {0} a \u00e9chou\u00e9 avec l''erreur d''authentification {1}.
+authentication.error.explanation=La demande gRPC n'a pas pu s'authentifier avant le d\u00e9marrage des m\u00e9thodes gRPC.
+authentication.error.useraction=Recherchez dans les journaux d'autres avertissements ou messages d'erreur \u00e9mis avant ce message. Cette erreur peut survenir car aucune donn\u00e9e d'identification n'a \u00e9t\u00e9 fournie avec la demande ou car les donn\u00e9es d'identification qui ont \u00e9t\u00e9 fournies ne sont pas valides.
+
+authorization.error=CWWKT0206E: La demande de service gRPC pour {0} a \u00e9chou\u00e9 avec l''erreur d''autorisation {1}.
+authorization.error.explanation=La demande gRPC n'a pas pu \u00eatre autoris\u00e9e avant le d\u00e9marrage des m\u00e9thodes gRPC.
+authorization.error.useraction=Recherchez dans les journaux d'autres avertissements ou messages d'erreur \u00e9mis avant ce message. Cette erreur peut survenir car aucune donn\u00e9e d'identification n'a \u00e9t\u00e9 fournie avec la demande ou car les donn\u00e9es d'identification qui ont \u00e9t\u00e9 fournies ne sont pas valides.

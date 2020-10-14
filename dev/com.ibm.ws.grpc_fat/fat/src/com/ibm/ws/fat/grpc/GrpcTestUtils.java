@@ -70,7 +70,7 @@ public class GrpcTestUtils {
                                                 String serverXML,
                                                 Set<String> appName,
                                                 Logger logger) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        logger.info("Entered set server config with xml " + serverXML);
         if (originalServerXML == null || !originalServerXML.equals(serverXML)) {
             server.setMarkToEndOfLog();
             // Update server.xml
@@ -92,7 +92,7 @@ public class GrpcTestUtils {
                                               RemoteFile serverXML,
                                               Set<String> appName,
                                               Logger logger) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        logger.info("Entered set server config with xml " + serverXML);
         if (serverXML != null && serverXML.exists()) {
             server.setMarkToEndOfLog();
             // Update server.xml

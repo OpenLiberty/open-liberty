@@ -1,0 +1,53 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+// Global vars
+File downloadSrcDir = project.file('build/source')
+File downloadJavadocDir = project.file('build/javadoc')
+
+configurations {
+    sourceJar
+    javadocJar
+}
+
+dependencies {
+    sourceJar 'org.apache.myfaces.core:myfaces-api:3.0.0-RC1:sources'
+    javadocJar 'org.apache.myfaces.core:myfaces-api:3.0.0-RC1:javadoc'
+}
+
+task copySource(type: Copy) {
+    from configurations.sourceJar
+    into downloadSrcDir
+}
+
+task copyJavadoc(type: Copy) {
+    from configurations.javadocJar
+    into downloadJavadocDir
+}
+
+assemble {
+    dependsOn copySource
+    dependsOn copyJavadoc
+}
+
+task deleteJars(type:Delete) {
+    doLast {
+        println "deleteJars task, deleting " + downloadSrcDir
+        file(downloadSrcDir).deleteDir()
+
+        println "deleteJars task, deleting " + downloadJavadocDir
+        file(downloadJavadocDir).deleteDir()
+    }
+}
+
+clean {
+    dependsOn deleteJars
+}

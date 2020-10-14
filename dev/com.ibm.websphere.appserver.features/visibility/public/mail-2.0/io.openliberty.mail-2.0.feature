@@ -33,5 +33,5 @@ IBM-API-Package: \
   com.ibm.ws.javamail.config
 -jars=io.openliberty.jakarta.mail.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.mail:jakarta.mail-api:2.0.0", \
  io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.0"
-kind=noship
+kind=beta
 edition=core

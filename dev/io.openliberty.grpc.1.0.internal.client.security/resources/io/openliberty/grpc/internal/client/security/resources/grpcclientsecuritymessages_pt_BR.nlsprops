@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: O protocolo SSL {0} configurado em {1} n\u00e3o \u00e9 v\u00e1lido para o gRPC. O TLSv1.2 ou posterior deve ser usado.
+invalid.ssl.protocol.explanation=O protocolo SSL configurado n\u00e3o \u00e9 v\u00e1lido para o gRPC.
+invalid.ssl.protocol.useraction=Configure um valor de protocolo SSL do TLSv1.2 ou posterior.
+
+client.ssl.failed=CWWKT0306W: Uma conex\u00e3o SSL do cliente gRPC n\u00e3o foi criada com a refer\u00eancia SSL {0} devido a {1}.
+client.ssl.failed.explanation=A cria\u00e7\u00e3o do contexto SSL do cliente gRPC falhou.
+client.ssl.failed.useraction=Configure propriedades SSL v\u00e1lidas para o gRPC. 

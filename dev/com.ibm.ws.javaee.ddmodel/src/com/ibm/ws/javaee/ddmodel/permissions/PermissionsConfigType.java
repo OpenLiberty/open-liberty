@@ -19,9 +19,6 @@ import com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.TokenType;
 
-/**
- *
- */
 /*
  * <xsd:element name="permissions">
  * <xsd:complexType>
@@ -58,11 +55,6 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
         this.permissions.add(permission);
     }
 
-/*
- * (non-Javadoc)
- *
- * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
- */
     @Override
     public boolean handleChild(DDParser parser, String localName) throws ParseException {
         if ("permission".equals(localName)) {
@@ -86,24 +78,12 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
         return false;
     }
 
-/*
- * (non-Javadoc)
- *
- * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
- */
     @Override
     public void describe(Diagnostics diag) {
-
         diag.describeIfSet("permissions", permissions);
-
     }
-
-/*
- * (non-Javadoc)
- *
- * @see com.ibm.ws.javaee.dd.permissions.PermissionsConfig#getPermissions()
- */
-    @SuppressWarnings("unchecked")
+  
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public List getPermissions() {
         if (this.permissions != null) {
@@ -112,43 +92,23 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
             return Collections.emptyList();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getDeploymentDescriptorPath()
-     */
     @Override
     public String getDeploymentDescriptorPath() {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getComponentForId(java.lang.String)
-     */
     @Override
     public Object getComponentForId(String id) {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getIdForComponent(java.lang.Object)
-     */
     @Override
     public String getIdForComponent(Object ddComponent) {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.DDParser.RootParsable#describe(java.lang.StringBuilder)
-     */
     @Override
     public void describe(StringBuilder sb) {
-
+        // EMPTY
     }
 }

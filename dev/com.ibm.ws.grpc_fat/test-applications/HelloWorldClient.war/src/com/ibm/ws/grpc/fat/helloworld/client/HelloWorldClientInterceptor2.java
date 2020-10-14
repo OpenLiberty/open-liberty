@@ -11,6 +11,8 @@
 
 package com.ibm.ws.grpc.fat.helloworld.client;
 
+import java.util.logging.Logger;
+
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
@@ -19,11 +21,14 @@ import io.grpc.MethodDescriptor;
 
 public class HelloWorldClientInterceptor2 implements ClientInterceptor {
 
+    protected static final Class<?> c = HelloWorldClientInterceptor2.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
+
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(final MethodDescriptor<ReqT, RespT> methodDescriptor, final CallOptions callOptions,
                                                                final Channel channel) {
 
-        System.out.println(this.getClass().getCanonicalName() + " has been invoked!");
+        LOG.info(this.getClass().getCanonicalName() + " has been invoked!");
         return channel.newCall(methodDescriptor, callOptions);
     }
 

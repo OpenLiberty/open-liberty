@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.grpcservice;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
@@ -52,8 +54,14 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     private static String CLASSNAME = StoreProducerService.class.getName();
     private static Logger log = Logger.getLogger(CLASSNAME);
 
+    private static boolean CONCURRENT_TEST_ON = false;
+
     public StoreProducerService() {
         // this constructor is required to run the gRPC on Liberty server.
+
+        if (CONCURRENT_TEST_ON) {
+            readStreamParmsFromFile();
+        }
     }
 
     /**
@@ -435,10 +443,17 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 s = s.substring(0, 200);
             }
 
-            //print out first 10 messages
-            if (count < 10) {
-                count++;
+            //print out first first message
+            count++;
+            if (count == 1) {
                 log.info("clientStreamA: count: " + count + " received: " + s);
+            }
+
+            if (CONCURRENT_TEST_ON) {
+                if (count == 1)
+                    System.out.println(qtf() + " ClientStream: SERVER received message 1 hc: " + responseObserver.hashCode());
+                else if ((count % 1000) == 0)
+                    System.out.println(qtf() + " ClientStream: SERVER received message " + count + " hc: " + responseObserver.hashCode());
             }
 
             // If response is greater than 64K, let's take some off of it
@@ -452,11 +467,19 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         @Override
         public void onError(Throwable t) {
             log.log(Level.SEVERE, "Store: Encountered error in clientStreamA: ", t);
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ClientStream: SERVER received onError: hc: " + responseObserver.hashCode() + " throwable: " + t);
+            }
         }
 
         @Override
         public void onCompleted() {
             log.info("clientStreamA: onComplete() called");
+
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ClientStream: SERVER received onCompleted hc: " + responseObserver.hashCode());
+            }
+
             String s = responseString + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
             int maxStringLength = 32768 - lastClientMessage.length() - 1;
@@ -478,9 +501,9 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
     // -------------------------------------------------------------------------
 
-    public final static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
-    public final static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
-    public final static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 
     @Override
     public void serverStreamA(StreamRequestA req, StreamObserver<StreamReplyA> responseObserver) {
@@ -513,10 +536,19 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             if (i == 1) {
                 log.info("serverStreamA: sending first message");
                 nextMessage = firstMessage;
+                if (CONCURRENT_TEST_ON) {
+                    System.out.println(qtf() + " ServerStream: SERVER sending message 1 hc: " + responseObserver.hashCode());
+                }
             } else if (i == numberOfMessages) {
                 log.info("serverStreamA: sending last message. number of messages was: " + numberOfMessages);
                 nextMessage = lastMessage;
+                if (CONCURRENT_TEST_ON) {
+                    System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " last message. hc: " + responseObserver.hashCode());
+                }
             } else {
+                if (CONCURRENT_TEST_ON && (i % 1000) == 0) {
+                    System.out.println(qtf() + " ServerStream: SERVER sending message " + i + " hc: " + responseObserver.hashCode());
+                }
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left server at time: " + System.currentTimeMillis() + "--";
                 nextMessage = nextMessage + sChars;
             }
@@ -778,6 +810,49 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
 
             log.info("twoWayStreamAsyncThread: AsyncStreaming Thread: run() completed, countDown the latch");
             twoWayAsyncThreadLatch.countDown();
+        }
+    }
+
+    public String qtf() {
+        long time = System.currentTimeMillis() & 0xfffffff;
+        long msec = time % 1000;
+        long sec = time / 1000;
+        String result = sec + "." + msec;
+        return result;
+    }
+
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+
+                if (sCurrentLine.indexOf("SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION to: " + SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC to: " + SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_MESSAGE_SIZE") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_MESSAGE_SIZE = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_MESSAGE_SIZE to: " + SERVER_STREAM_MESSAGE_SIZE);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
         }
     }
 

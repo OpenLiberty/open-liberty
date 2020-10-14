@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,9 @@ public class HttpPublishingComponentImpl implements HttpPublishing {
 
     protected volatile WebserviceSecurity webServiceSecurity;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = HttpPublishing.WEBSERVICE_SECURITY_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = HttpPublishing.WEBSERVICE_SECURITY_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setWebserviceSecurity(WebserviceSecurity value) {
         this.webServiceSecurity = value;
@@ -50,11 +52,6 @@ public class HttpPublishingComponentImpl implements HttpPublishing {
         contextRoot = (java.lang.String) config.get(HttpPublishing.CONTEXT_ROOT_ATTRIBUTE_NAME);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing#getContextRoot()
-     */
     @Override
     public String getContextRoot() {
         if (delegate == null) {
@@ -64,11 +61,6 @@ public class HttpPublishingComponentImpl implements HttpPublishing {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing#getWebserviceSecurity()
-     */
     @Override
     public WebserviceSecurity getWebserviceSecurity() {
         if (delegate == null) {

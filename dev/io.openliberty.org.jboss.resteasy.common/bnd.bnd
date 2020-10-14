@@ -24,17 +24,7 @@ app-resources= \
 
 -cdiannotations:
 
--dsannotations: \
-  io.openliberty.org.jboss.resteasy.common.component.LibertyResteasyCdiExtension, \
-  io.openliberty.org.jboss.resteasy.common.component.ResteasyInjectionClassListCollaborator
--dsannotations-inherit: true
-
 Service-Component: \
-  io.openliberty.org.jboss.resteasy.servlet.initializer; \
-     implementation:=io.openliberty.org.jboss.resteasy.common.component.RESTfulServletContainerInitializer; \
-     provide:=javax.servlet.ServletContainerInitializer; \
-     immediate:=true;\
-     properties:="service.vendor=IBM", \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
      implementation:=org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl; \
      provide:=javax.ws.rs.client.ClientBuilder; \
@@ -47,12 +37,11 @@ Service-Component: \
     properties:="resources=${app-resources}"
 
 Export-Package: \
-  com.ibm.websphere.jaxrs.server;version=3.0.0;thread-local=true, \
   com.ibm.websphere.jaxrs20.multipart;version=3.0.0;thread-local=true, \
   com.ibm.ws.jaxrs20.providers.api, \
   com.ibm.ws.resteasy.cdi.component;version=4.5.8.Final;thread-context=true, \
   io.openliberty.restfulWS.client, \
-  io.openliberty.org.jboss.resteasy.common.cdi;thread-context=true, \
+  io.openliberty.restfulWS.config;thread-context=true, \
   io.openliberty.org.jboss.resteasy.common.client;thread-context=true, \
   io.openliberty.restfulWS.providers;thread-context=true, \
   org.jboss.resteasy.annotations.cache;version=4.5.8.Final, \
@@ -60,8 +49,6 @@ Export-Package: \
   org.jboss.resteasy.annotations.providers.img;version=4.5.8.Final, \
   org.jboss.resteasy.annotations;version=4.5.8.Final, \
   org.jboss.resteasy.api.validation;version=4.5.8.Final, \
-  org.jboss.resteasy.cdi;version=4.5.8.Final;thread-context=true, \
-  org.jboss.resteasy.cdi.i18n;version=4.5.8.Final, \
   org.jboss.resteasy.client.jaxrs.cache;version=4.5.8.Final, \
   org.jboss.resteasy.client.jaxrs.engines;version=4.5.8.Final, \
   org.jboss.resteasy.client.jaxrs.i18n;version=4.5.8.Final , \
@@ -90,8 +77,6 @@ Export-Package: \
   org.jboss.resteasy.plugins.server.resourcefactory;version=4.5.8.Final, \
   org.jboss.resteasy.plugins.server.servlet;version=4.5.8.Final, \
   org.jboss.resteasy.plugins.server;version=4.5.8.Final, \
-  org.jboss.resteasy.plugins.servlet.i18n;version=4.5.8.Final, \
-  org.jboss.resteasy.plugins.servlet;version=4.5.8.Final, \
   org.jboss.resteasy.plugins.touri;version=4.5.8.Final, \
   org.jboss.resteasy.resteasy_jaxrs.i18n;version=4.5.8.Final, \
   org.jboss.resteasy.specimpl;version=4.5.8.Final, \
@@ -143,7 +128,6 @@ DynamicImport-Package: \
 
 
 Private-Package: \
-  io.openliberty.org.jboss.resteasy.common.component, \
   org.apache.james.*
   
   instrument.ffdc: false
@@ -151,31 +135,26 @@ Private-Package: \
 
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-cdi;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-client;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-client-api;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-core;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-core-spi;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-multipart-provider;4.5.8.Final;EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;4.5.8.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-tracing-api;1.0.0.Final;EXACT}, \
   @${repo;org.apache.james:apache-mime4j-core;0.8.3;EXACT}, \
   @${repo;org.apache.james:apache-mime4j-dom;0.8.3;EXACT}, \
   @${repo;org.apache.james:apache-mime4j-storage;0.8.3;EXACT}, \
   @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
-  com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF
 
 -buildpath: \
-	org.jboss.resteasy:resteasy-cdi;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-client-api;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-client;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-core-spi;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-core;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version=4.5.8.Final,\
-	org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-tracing-api;strategy=exact;version=1.0.0.Final,\
 	com.ibm.ws.org.apache.commons.io,\
 	com.ibm.ws.org.apache.httpcomponents,\

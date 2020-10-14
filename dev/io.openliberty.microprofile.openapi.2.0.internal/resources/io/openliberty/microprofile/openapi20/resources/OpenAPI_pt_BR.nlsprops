@@ -59,4 +59,9 @@ OPENAPI_FILE_PARSE_ERROR.useraction=Certifique-se de que o arquivo esteja no for
 
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: O aplicativo {0} foi processado e um documento OpenAPI foi produzido.
 OPENAPI_APPLICATION_PROCESSED.explanation=Gerado o documento OpenAPI para o aplicativo especificado. Ele pode ser visualizado no terminal /openapi.
-OPENAPI_APPLICATION_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+OPENAPI_APPLICATION_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Ocorreu um erro ao processar o aplicativo {0} e um documento OpenAPI n\u00e3o foi produzido.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Ocorreu um erro de tempo de execu\u00e7\u00e3o ao processar o aplicativo.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Reunir logs e entrar em contato com o servi\u00e7o da IBM.
+  

@@ -88,45 +88,46 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     // features, which is necessary for the FATs to run.
 
     static final String[] EE9_FEATURES_ARRAY = {
-        "appClientSupport-2.0",
-        "jakartaee-9.0",
-        "webProfile-9.0",
-        "jakartaeeClient-9.0",
-        "componenttest-2.0", // replaces "componenttest-1.0"
-        "txtest-2.0",
-        "appSecurity-4.0",
-        "beanValidation-3.0",
-        "cdi-3.0",
-        "concurrent-2.0",
-        "connectors-2.0",
-        "el-4.0",
-        "enterpriseBeans-4.0",
-        "enterpriseBeansHome-4.0",
-        "enterpriseBeansLite-4.0",
-        "enterpriseBeansPersistentTimer-4.0",
-        "enterpriseBeansRemote-4.0",
-        "enterpriseBeansTest-2.0",
-        "jacc-2.0",
-        "jaspic-2.0",
-        "javaMail-2.0",
-        "jaxb-3.0",
-        "jpa-3.0",
-        "jsonp-2.0",
-        "jsonb-2.0",
-        "jsonpContainer-2.0",
-        "jsonbContainer-2.0",
-        "faces-3.0",
-        "jsp-3.0",
-        "managedBeans-2.0",
-        "mdb-4.0",
-        "messaging-3.0",
-        "messagingClient-3.0",
-        "messagingServer-3.0",
-        "messagingSecurity-3.0",
-        "restfulWS-3.0",
-        "restfulWSClient-3.0",
-        "servlet-5.0",
-        "websocket-2.0"
+                                                 "appClientSupport-2.0",
+                                                 "jakartaee-9.0",
+                                                 "webProfile-9.0",
+                                                 "jakartaeeClient-9.0",
+                                                 "componenttest-2.0", // replaces "componenttest-1.0"
+                                                 "txtest-2.0",
+                                                 "appSecurity-4.0",
+                                                 "beanValidation-3.0",
+                                                 "cdi-3.0",
+                                                 "concurrent-2.0",
+                                                 "connectors-2.0",
+                                                 "connectorsInboundSecurity-2.0",
+                                                 "el-4.0",
+                                                 "enterpriseBeans-4.0",
+                                                 "enterpriseBeansHome-4.0",
+                                                 "enterpriseBeansLite-4.0",
+                                                 "enterpriseBeansPersistentTimer-4.0",
+                                                 "enterpriseBeansRemote-4.0",
+                                                 "enterpriseBeansTest-2.0",
+                                                 "jacc-2.0",
+                                                 "jaspic-2.0",
+                                                 "javaMail-2.0",
+                                                 "jaxb-3.0",
+                                                 "jpa-3.0",
+                                                 "jsonp-2.0",
+                                                 "jsonb-2.0",
+                                                 "jsonpContainer-2.0",
+                                                 "jsonbContainer-2.0",
+                                                 "faces-3.0",
+                                                 "jsp-3.0",
+                                                 "managedBeans-2.0",
+                                                 "mdb-4.0",
+                                                 "messaging-3.0",
+                                                 "messagingClient-3.0",
+                                                 "messagingServer-3.0",
+                                                 "messagingSecurity-3.0",
+                                                 "restfulWS-3.0",
+                                                 "restfulWSClient-3.0",
+                                                 "servlet-5.0",
+                                                 "websocket-2.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
@@ -250,7 +251,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
-     * @param appPath    The application path of file to be transformed to Jakarta
+     * @param appPath The application path of file to be transformed to Jakarta
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -276,8 +276,8 @@ JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie, dass der in d
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Es kann nicht festgestellt werden, welches Unterzeichnerzertifikat im Truststore verwendet werden soll. F\u00fcgen Sie der JWT-Konsumentenkonfiguration das Attribut 'trustedAlias' bzw. der MP-JWT-Konfiguration das Attribut 'keyName' hinzu.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration angegeben werden, um festzulegen, welches Zertifikat verwendet werden soll.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie an, welches Zertifikat im Truststore verwendet werden soll, indem Sie den Aliasnamen des entsprechenden Unterzeichnerzertifikats entweder dem Attribut 'trustedAlias' der JWT-Konsumentenkonfiguration oder dem Attribut 'keyName' der MP-JWT-Konfiguration hinzuf\u00fcgen.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' in der MP-JWT-Konfiguration angegeben werden, um festzulegen, welches der Zertifikate verwendet werden soll.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie an, welches Zertifikat im Truststore verwendet werden soll, indem Sie den Alias des entsprechenden Unterzeichnerzertifikats im Attribut 'trustedAlias' der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' der MP-JWT-Konfiguration hinzuf\u00fcgen.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Die Filter-API f\u00fcr Clientanforderungen hat das JSON Web Token (JWT) nicht weitergegeben.
@@ -322,3 +322,8 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Geben Sie einen unterst\u00fct
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Der AMR [{0}] des bereitgestellten JWT (JSON Web Token) wird nicht als vertrauensw\u00fcrdiger AMR in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen AMRs sind [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=In der Serverkonfiguration wird angegeben, welche AMRs bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen AMRs bestimmt und deshalb kann das Token nicht validiert werden.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Rufen Sie ein neues Token f\u00fcr einen der vertrauensw\u00fcrdigen AMRs ab, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie den in der Nachricht angegebenen AMR als vertrauensw\u00fcrdigen AMR in Ihrer JWT-Konfiguration hinzu.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Die Konfiguration [{0}] gibt den Signaturalgorithmus {1} an. Dieser Algorithmus ist jedoch nur als Beta-Edition verf\u00fcgbar. Es wird stattdessen der Signaturalgorithmus {2} verwendet.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Es ist m\u00f6glicherweise f\u00fcr den in der Nachricht angegebenen Signaturalgorithmus keine vollst\u00e4ndige Unterst\u00fctzung vorhanden. Daher kann der Signaturalgorithmus nur in der Beta-Edition verwendet werden.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Konfigurieren Sie einen unterst\u00fctzten Signaturalgorithmus oder verwenden Sie die Beta-Edition dieses Produkts, um den in der Nachricht angegebenen Signaturalgorithmus zu verwenden.

@@ -28,9 +28,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jca.fat.FATSuite;
 
+import com.ibm.websphere.simplicity.config.JavaPermission;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -85,6 +90,25 @@ public class JCATest extends FATServletClient {
         fvtapp_ear.addAsModule(fvtweb_war);
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+
+        if (JakartaEE9Action.isActive()) {
+            /*
+             * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
+             */
+            ServerConfiguration clone = server.getServerConfiguration().clone();
+            clone.getJMSActivationSpecs().getById("FVTMessageDrivenBeanBindingOverride").getProperties_FAT1().get(0).setDestinationType("jakarta.jms.Topic");
+
+            for (JavaPermission perm : clone.getJavaPermissions()) {
+                if (perm.getSignedBy() != null && perm.getSignedBy().startsWith("javax.resource.spi")) {
+                    perm.setSignedBy(perm.getSignedBy().replace("javax.", "jakarta."));
+                }
+                if (perm.getName() != null && perm.getName().startsWith("javax.resource.spi")) {
+                    perm.setName(perm.getName().replace("javax.", "jakarta."));
+                }
+            }
+
+            server.updateServerConfiguration(clone);
+        }
 
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();

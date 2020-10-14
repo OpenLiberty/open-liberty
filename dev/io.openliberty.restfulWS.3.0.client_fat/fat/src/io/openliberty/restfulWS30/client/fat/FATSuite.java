@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ClientFeatureTest.class,
                 SslTest.class
 })
 public class FATSuite {

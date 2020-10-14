@@ -840,41 +840,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     }
 
     /**
-     * Finalize is invoked by the garbage collector when no more references to this object
-     * exist. If this ManagedConnection was never destroyed because handles were never closed
-     * by the application, notify all listeners with a connectionClosed ConnectionEvent, to
-     * give the connection manager an opportunity to avoid leaking connections.
-     * 
-     * @throws Throwable if something terrible happens.
-     * 
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "finalize"); 
-
-        super.finalize(); // no-op, only adding to make findbugs stop complaining.
-
-        if (numHandlesInUse > 0) {
-            // Cause cleanup to fail, to ensure the Connection Manager destroys the connection.
-            fatalErrorCount = -1;
-
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, 
-                         numHandlesInUse + " connection handles were left open by the application.");
-
-            cleaningUpHandles = false; 
-            while (numHandlesInUse > 0)
-                processConnectionClosedEvent(handlesInUse[0]);
-        }
-
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "finalize"); 
-    }
-
-    /**
      * @return the current value of the catalog property.
      */
     public final String getCatalog() throws SQLException 

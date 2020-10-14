@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: Protok\u00f3\u0142 SSL {0} skonfigurowany w {1} nie jest poprawny dla gRPC. Nale\u017cy u\u017cywa\u0107 protoko\u0142u TLS w wersji 1.2 lub nowszej.
+invalid.ssl.protocol.explanation=Skonfigurowany protok\u00f3\u0142 SSL nie jest poprawny dla gRPC.
+invalid.ssl.protocol.useraction=Jako protok\u00f3\u0142 SSL ustaw TLS w wersji 1.2 lub nowszej.
+
+client.ssl.failed=CWWKT0306W: Po\u0142\u0105czenie SSL z klientem gRPC nie zosta\u0142o utworzone (odwo\u0142anie do SSL: {0}) z nast\u0119puj\u0105cego powodu: {1}.
+client.ssl.failed.explanation=Tworzenie kontekstu SSL klienta gRPC nie powiod\u0142o si\u0119.
+client.ssl.failed.useraction=Skonfiguruj poprawne w\u0142a\u015bciwo\u015bci protoko\u0142u SSL dla gRPC.

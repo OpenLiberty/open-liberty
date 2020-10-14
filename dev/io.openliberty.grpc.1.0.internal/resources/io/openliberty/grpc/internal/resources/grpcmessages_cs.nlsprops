@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Ov\u011b\u0159te nakonfigurovan\u00fd n\u00
 invalid.inbound.msg.size=CWWKT0203E: Hodnota maxInboundMessageSize {0} nen\u00ed platn\u00e1. Velikosti mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e 0.
 invalid.inbound.msg.size.explanation=Nakonfigurovan\u00e1 hodnota pro maxInboundMessageSize nen\u00ed platn\u00e1.
 invalid.inbound.msg.size.useraction=Nakonfigurujte platnou hodnotu pro maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: Po\u017eadavek gRPC pro {0} nem\u016f\u017ee pokra\u010dovat. Odezva ji\u017e byla potvrzena.
+response.already.committed.explanation=Po\u017eadavek gRPC nen\u00ed platn\u00fd, proto\u017ee odezva byla potvrzena p\u0159ed spu\u0161t\u011bn\u00edm metod gRPC.
+response.already.committed.useraction=Analyzujte p\u0159ed touto zpr\u00e1vou protokoly pro dal\u0161\u00ed varov\u00e1n\u00ed nebo chybov\u00e9 zpr\u00e1vy. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt kv\u016fli p\u0159edchoz\u00ed chyb\u011b zabezpe\u010den\u00ed.
+
+authentication.error=CWWKT0205E: Po\u017eadavek na slu\u017ebu gRPC pro {0} se nezda\u0159il s chybou ov\u011b\u0159en\u00ed {1}.
+authentication.error.explanation=Po\u017eadavku gRPC se nezda\u0159ilo ov\u011b\u0159en\u00ed p\u0159ed spu\u0161t\u011bn\u00edm metod gRPC.
+authentication.error.useraction=Analyzujte p\u0159ed touto zpr\u00e1vou protokoly pro dal\u0161\u00ed varov\u00e1n\u00ed nebo chybov\u00e9 zpr\u00e1vy. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, proto\u017ee s po\u017eadavkem nebyla poskytnuta \u017e\u00e1dn\u00e1 pov\u011b\u0159en\u00ed nebo proto, \u017ee byla poskytnuta neplatn\u00e1 ov\u011b\u0159en\u00ed.
+
+authorization.error=CWWKT0206E: Po\u017eadavek na slu\u017ebu gRPC pro {0} se nezda\u0159il s chybou autorizace {1}.
+authorization.error.explanation=Po\u017eadavku gRPC se nezda\u0159ila autorizace p\u0159ed spu\u0161t\u011bn\u00edm metod gRPC.
+authorization.error.useraction=Analyzujte p\u0159ed touto zpr\u00e1vou protokoly pro dal\u0161\u00ed varov\u00e1n\u00ed nebo chybov\u00e9 zpr\u00e1vy. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, proto\u017ee s po\u017eadavkem nebyla poskytnuta \u017e\u00e1dn\u00e1 pov\u011b\u0159en\u00ed nebo proto, \u017ee byla poskytnuta neplatn\u00e1 ov\u011b\u0159en\u00ed.

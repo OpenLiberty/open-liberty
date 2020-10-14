@@ -52,6 +52,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import junit.framework.Assert;
 
 /**
  * General JSF 2.3 test cases the also require CDI.
@@ -275,69 +276,69 @@ public class JSF23CDIGeneralTests {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
             // restart the app and test again
-            jsf23CDIServer.restartDropinsApplication("ELImplicitObjectsViaCDI.war");
+            Assert.assertTrue("The ELImplicitObjectsViaCDI.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("ELImplicitObjectsViaCDI.war"));
             checkInjectableELImplicitObjects(webClient);
         }
     }
 
     private void checkInjectableELImplicitObjects(WebClient webClient) throws Exception {
 
-            // Add a message to the header map
-            webClient.addRequestHeader("headerMessage", "This is a test");
+        // Add a message to the header map
+        webClient.addRequestHeader("headerMessage", "This is a test");
 
-            // Construct the URL for the test
-            String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+        // Construct the URL for the test
+        String contextRoot = "ELImplicitObjectsViaCDI";
+        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-            HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
+        HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
-            // Verify that the page contains the expected messages.
-            assertTrue(testInjectableImplicitObjectsPage.asText().contains("JSF 2.3 EL implicit objects using CDI"));
+        // Verify that the page contains the expected messages.
+        assertTrue(testInjectableImplicitObjectsPage.asText().contains("JSF 2.3 EL implicit objects using CDI"));
 
-            // Get the form that we are dealing with
-            HtmlForm form = testInjectableImplicitObjectsPage.getFormByName("form1");
+        // Get the form that we are dealing with
+        HtmlForm form = testInjectableImplicitObjectsPage.getFormByName("form1");
 
-            // Get the button to click
-            HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
+        // Get the button to click
+        HtmlSubmitInput submitButton = form.getInputByName("form1:submitButton");
 
-            // Now click the button and get the resulting page.
-            HtmlPage resultPage = submitButton.click();
+        // Now click the button and get the resulting page.
+        HtmlPage resultPage = submitButton.click();
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), resultPage.asText());
-            Log.info(c, name.getMethodName(), resultPage.asXml());
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), resultPage.asText());
+        Log.info(c, name.getMethodName(), resultPage.asXml());
 
-            // Verify that the page contains the expected messages.
-            assertTrue(resultPage.asText().contains("FacesContext project stage: Production"));
-            assertTrue(resultPage.asText().contains("ServletContext context path: /ELImplicitObjectsViaCDI"));
-            assertTrue(resultPage.asText().contains("ExternalContext app context path: /ELImplicitObjectsViaCDI"));
-            assertTrue(resultPage.asText().contains("UIViewRoot viewId: /index.xhtml"));
-            assertTrue(resultPage.asText().contains("Flash isRedirect: false"));
-            assertTrue(resultPage.asText().contains("HttpSession isNew: false"));
-            assertTrue(resultPage.asText().contains("Application name from ApplicationMap: ELImplicitObjectsViaCDI"));
-            assertTrue(resultPage.asText().contains("Char set from SessionMap: UTF-8"));
-            assertTrue(resultPage.asText().contains("ViewMap isEmpty: true"));
-            assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
-            assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
-            assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
-            assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
-            assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
+        // Verify that the page contains the expected messages.
+        assertTrue(resultPage.asText().contains("FacesContext project stage: Production"));
+        assertTrue(resultPage.asText().contains("ServletContext context path: /ELImplicitObjectsViaCDI"));
+        assertTrue(resultPage.asText().contains("ExternalContext app context path: /ELImplicitObjectsViaCDI"));
+        assertTrue(resultPage.asText().contains("UIViewRoot viewId: /index.xhtml"));
+        assertTrue(resultPage.asText().contains("Flash isRedirect: false"));
+        assertTrue(resultPage.asText().contains("HttpSession isNew: false"));
+        assertTrue(resultPage.asText().contains("Application name from ApplicationMap: ELImplicitObjectsViaCDI"));
+        assertTrue(resultPage.asText().contains("Char set from SessionMap: UTF-8"));
+        assertTrue(resultPage.asText().contains("ViewMap isEmpty: true"));
+        assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
+        assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
+        assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
+        assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
+        assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
+        assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
 
-            if(JakartaEE9Action.isActive()){
-              assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
-              assertTrue(resultPage.asText()
-                              .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                        + "for scope type jakarta.faces.flow.FlowScoped")); // Expected exception
-              assertTrue(resultPage.asText().contains("Cookie object from CookieMap: jakarta.servlet.http.Cookie"));
+        if (JakartaEE9Action.isActive()) {
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: jakarta.faces"));
+            assertTrue(resultPage.asText()
+                            .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
+                                      + "for scope type jakarta.faces.flow.FlowScoped")); // Expected exception
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: jakarta.servlet.http.Cookie"));
 
-            } else {
-              assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
-              assertTrue(resultPage.asText()
-                              .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                        + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
-              assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
-            }
+        } else {
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
+            assertTrue(resultPage.asText()
+                            .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
+                                      + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
+        }
 
     }
 

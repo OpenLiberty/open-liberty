@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -26,12 +26,12 @@ JWT_BUILDER_CONFIG_MODIFIED.useraction=Aucune.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: Le service de noeud final JWT (JSON Web Token) est disponible.
-JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
 JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Aucune action n'est requise.
 
 # Do not translate "JSON Web Token", "JWT", "jwt-1.0"
 JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Une erreur de configuration s'est produite. Le service de noeud final JWT (JSON Web Token) n'est pas disponible. V\u00e9rifiez que la fonction jwt-1.0 a \u00e9t\u00e9 configur\u00e9e.
-JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Le service JWT (JSON Web Token) n'est pas disponible via l'annuaire de services OSGi.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Le service JWT (JSON Web Token) n'est pas disponible via le registre du service OSGi.
 JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Incluez la fonction jwt-1.0 dans votre configuration de serveur.
 
 # Do not translate "jwt-1.0"
@@ -48,7 +48,7 @@ JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspectez la configuration de serveu
 
 # 0=URL to which the request was directed, 1=Required attribute name
 JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: La demande achemin\u00e9e vers le noeud final [{0}] ne comporte pas d''attribut [{1}].
-JWT_REQUEST_ATTRIBUTE_MISSING.explanation=La demande n'a peut-\u00eatre pas \u00e9t\u00e9 prise en charge par le filtre appropri\u00e9 avant d'\u00eatre trait\u00e9e. Le filtre de demande cr\u00e9e l'attribut sp\u00e9cifi\u00e9 en se basant sur les informations donn\u00e9es dans la demande. Le filtre transmet ensuite cette demande pour qu'elle soit trait\u00e9e.
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=La demande n'a peut-\u00eatre pas \u00e9t\u00e9 trait\u00e9e par le filtre appropri\u00e9 avant d'\u00eatre trait\u00e9e. Le filtre de demande cr\u00e9era l'attribut sp\u00e9cifi\u00e9 en se basant sur les informations donn\u00e9es dans la demande. Le filtre transmet ensuite cette demande pour qu'elle soit trait\u00e9e.
 JWT_REQUEST_ATTRIBUTE_MISSING.useraction=V\u00e9rifiez que la demande a \u00e9t\u00e9 dirig\u00e9e vers le noeud final attendu.
 
 # Do not translate "JSON Web Token", "JWT", "JSON Web Key"
@@ -78,7 +78,7 @@ JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Assurez-vous de transmettre une mappe
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: Le service consommateur JWT (JSON Web Token) est disponible.
-JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
 JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Aucune action n'est requise.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -173,7 +173,7 @@ JWT_ALGORITHM_MISMATCH.useraction=Obtenez un nouveau jeton sign\u00e9 \u00e0 l'a
 # 0=Signature algorithm required for signing (e.g. RS256)
 JWT_MISSING_KEY=CWWKS6029E: Le jeton JWT (JSON Web Token) ne peut pas \u00eatre valid\u00e9 car une cl\u00e9 de signature est introuvable. L''algorithme de signature configur\u00e9 [{0}] a besoin d''une cl\u00e9 pour valider le jeton.
 JWT_MISSING_KEY.explanation=Si l'algorithme de signature HS256 est utilis\u00e9, il est possible qu'aucune cl\u00e9 partag\u00e9e ne soit sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT ou qu'une valeur vide soit sp\u00e9cifi\u00e9e. Si vous utilisez l'algorithme de signature RS256, il est possible que le service de magasin de cl\u00e9s ne soit pas disponible ou que le magasin de cl\u00e9s ne contienne aucune cl\u00e9 correspondant \u00e0 l'alias de confiance sp\u00e9cifi\u00e9 par la configuration de consommateur JWT.
-JWT_MISSING_KEY.useraction=V\u00e9rifiez dans les journaux du serveur si un message additionnel explique pourquoi une cl\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9e. Si l'algorithme de signature HS256 est utilis\u00e9, v\u00e9rifiez qu'une cl\u00e9 partag\u00e9e est sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT. Si vous utilisez l'algorithme de signature RS256, v\u00e9rifiez que le magasin de cl\u00e9s de confiance et l'alias de confiance de votre configuration de consommateur sont configur\u00e9s correctement.
+JWT_MISSING_KEY.useraction=V\u00e9rifiez dans les journaux du serveur si un message additionnel explique pourquoi une cl\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9e. Si l'algorithme de signature HS256 est utilis\u00e9, v\u00e9rifiez qu'une cl\u00e9 partag\u00e9e est sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT. Si vous utilisez l'algorithme de signature RS256, v\u00e9rifiez que le magasin de cl\u00e9s certifi\u00e9es et l'alias de confiance de votre configuration de consommateur sont configur\u00e9s correctement.
 
 # Do not translate "JSON Web Token", "JWT", "jwtConsumer"
 # 0=JWT config identifier ("id" attribute)
@@ -195,8 +195,8 @@ JWT_ERROR_GETTING_SHARED_KEY.useraction=Consultez l'action utilisateur \u00e0 en
 # Do not translate "JSON Web Token", "JWT"
 # 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
 JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: La cl\u00e9 publique correspondant \u00e0 l''alias [{0}] dans le magasin de cl\u00e9s certifi\u00e9es [{1}] n''a pas pu \u00eatre extraite. {2}
-JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Cette erreur peut \u00eatre due \u00e0 un probl\u00e8me lors de l'obtention du magasin de cl\u00e9s de confiance ou lors de la recherche d'une cl\u00e9 correspondant \u00e0 l'alias sp\u00e9cifi\u00e9 dans le message.
-JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Consultez l'action utilisateur \u00e0 engager pour l'erreur sp\u00e9cifi\u00e9e dans le message. V\u00e9rifiez que l'alias de confiance et le magasin de cl\u00e9s de confiance appropri\u00e9s sont configur\u00e9s dans la configuration de consommateur JWT (JSON Web Token).
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Cette erreur peut \u00eatre due \u00e0 un probl\u00e8me lors de l'obtention du magasin de cl\u00e9s certifi\u00e9es ou lors de la recherche d'une cl\u00e9 correspondant \u00e0 l'alias sp\u00e9cifi\u00e9 dans le message.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Consultez l'action utilisateur \u00e0 engager pour l'erreur sp\u00e9cifi\u00e9e dans le message. V\u00e9rifiez que l'alias de confiance et le magasin de cl\u00e9s certifi\u00e9es appropri\u00e9s sont configur\u00e9s dans la configuration de consommateur JWT (JSON Web Token).
 
 # Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
 # Do not translate "JSON Web Token", "JWT", "sharedKey"
@@ -206,8 +206,8 @@ JWT_MISSING_SHARED_KEY.useraction=V\u00e9rifiez qu'une valeur sharedKey non vide
 
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: Le service de magasin de cl\u00e9s de confiance n'est pas disponible. V\u00e9rifiez qu'une r\u00e9f\u00e9rence au magasin de cl\u00e9s de confiance est sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT.
-JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Aucun magasin de cl\u00e9s de confiance n'a \u00e9t\u00e9 configur\u00e9 ou bien celui configur\u00e9 n'a pas \u00e9t\u00e9 trait\u00e9 par le service de configuration.
-JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=V\u00e9rifiez qu'une r\u00e9f\u00e9rence au magasin de cl\u00e9s de confiance a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Aucun magasin de cl\u00e9s certifi\u00e9es n'a \u00e9t\u00e9 configur\u00e9 ou bien celui configur\u00e9 n'a pas \u00e9t\u00e9 trait\u00e9 par le service de configuration.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=V\u00e9rifiez qu'une r\u00e9f\u00e9rence au magasin de cl\u00e9s certifi\u00e9es a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans votre configuration de consommateur JWT.
 
 # 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
 # Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
@@ -223,8 +223,8 @@ JWT_INVALID_ALGORITHM_ERR.useraction=V\u00e9rifiez que l'algorithme de signature
 # Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
 # 0=JWT builder config ID
 JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: Le noeud final de validation JWK (JSON Web Key) ne peut pas \u00eatre utilis\u00e9 car la prise en charge de JWK n''est pas activ\u00e9e pour la configuration [{0}] de g\u00e9n\u00e9rateur JWT (JSON Web Token).
-JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=La prise en charge de JWK doit \u00eatre activ\u00e9e pour que l'utilisation du noeud final de validation JWK soit possible. Il se peut que l'attribut jwkEnabled n'ait pas \u00e9t\u00e9 configur\u00e9 dans la configuration du g\u00e9n\u00e9rateur JWT sp\u00e9cifi\u00e9 ou qu'il ait \u00e9t\u00e9 associ\u00e9 \u00e0 la valeur false.
-JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=V\u00e9rifiez que l'attribut jwkEnabled a pour valeur true pour la configuration de g\u00e9n\u00e9rateur JWT sp\u00e9cifi\u00e9e.
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=La prise en charge de JWK doit \u00eatre activ\u00e9e pour pouvoir utiliser le noeud final de validation JWK. Il se peut que l'attribut jwkEnabled n'ait pas \u00e9t\u00e9 configur\u00e9 dans la configuration du g\u00e9n\u00e9rateur JWT sp\u00e9cifi\u00e9 ou que la valeur false lui ait \u00e9t\u00e9 attribu\u00e9e.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=V\u00e9rifiez que la valeur true a \u00e9t\u00e9 affect\u00e9e \u00e0 l'attribut jwkEnabled pour la configuration du g\u00e9n\u00e9rateur JWT sp\u00e9cifi\u00e9.
 
 # Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
 # 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
@@ -236,7 +236,7 @@ JWK_ENDPOINT_WRONG_ALGORITHM.useraction=Modifiez la configuration de votre g\u00
 # 0=JWT consumer config ID, 1=JWT string
 JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: Le consommateur JWT (JSON Web Token) [{0}] ne peut pas cr\u00e9er un jeton car la cha\u00eene [{1}] soumise est Null ou vide.
 JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=Pour cr\u00e9er un objet JWT, vous devez soumettre une cha\u00eene de jeton cod\u00e9 correspondante.
-JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Sp\u00e9cifiez une cha\u00eene JWT cod\u00e9e correctement. La cha\u00eene doit respecter le format d\u00e9crit \u00e0 l'adresse https://tools.ietf.org/html/rfc7519#section-3, dans lequel la cha\u00eene est une s\u00e9quence cod\u00e9e en Base64 d'\u00e9l\u00e9ments d'URL s\u00e9curis\u00e9e s\u00e9par\u00e9s par des points ('.').
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Sp\u00e9cifiez une cha\u00eene JWT cod\u00e9e correctement. La cha\u00eene doit respecter le format d\u00e9crit sur https://tools.ietf.org/html/rfc7519#section-3, dans lequel la cha\u00eene est une s\u00e9quence cod\u00e9e en Base64 d'\u00e9l\u00e9ments d'URL s\u00e9curis\u00e9e s\u00e9par\u00e9s par des points ('.').
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Exception message, if present
@@ -271,8 +271,8 @@ JWT_DUP_JTI_ERR.useraction=Assurez-vous que l'\u00e9metteur du jeton fournisse u
 # Do not translate "JWT", "trustStoreRef" 
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Impossible d'extraire une cl\u00e9 de signature depuis le magasin de cl\u00e9s certifi\u00e9es. Aucun certificat de signataire n'existe dans le magasin de cl\u00e9s certifi\u00e9es sp\u00e9cifi\u00e9.
-JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Le magasin de cl\u00e9s de confiance sp\u00e9cifi\u00e9 par la configuration de consommateur JWT ne contient aucun certificat de signataire. Un certificat de signataire est requis pour valider le jeton JWT.
-JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=V\u00e9rifiez que le magasin de cl\u00e9s de confiance utilis\u00e9 par la configuration de consommateur JWT contient au moins un certificat de signataire. Le magasin de cl\u00e9s de confiance peut \u00eatre configur\u00e9 \u00e0 l'aide de l'attribut 'trustStoreRef' dans la configuration de consommateur JWT ou bien dans le cadre de la configuration SSL globale du serveur.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Le magasin de cl\u00e9s certifi\u00e9es sp\u00e9cifi\u00e9 par la configuration de consommateur JWT ne contient aucun certificat de signataire. Un certificat de signataire est requis pour valider le jeton JWT.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=V\u00e9rifiez que le magasin de cl\u00e9s certifi\u00e9es utilis\u00e9 par la configuration de consommateur JWT contient au moins un certificat de signataire. Le magasin de cl\u00e9s certifi\u00e9es peut \u00eatre configur\u00e9 \u00e0 l'aide de l'attribut 'trustStoreRef' dans la configuration de consommateur JWT ou bien dans le cadre de la configuration SSL globale du serveur.
 
 # Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
@@ -324,3 +324,8 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Sp\u00e9cifiez un algorithme d
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: L''AMR [{0}] du jeton Web JSON (JWT) n''est pas r\u00e9pertori\u00e9 en tant qu''AMR digne de confiance dans la configuration du jeton JWT [{1}]. Les AMR dignes de confiance sont les suivants : [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=La configuration du serveur sp\u00e9cifie les AMR qui sont dignes de confiance lors de la validation des jetons Web JSON (JWT). Le jeton fourni n'est pas pr\u00e9vu pour un AMR digne de confiance ; par cons\u00e9quent, il ne peut pas \u00eatre valid\u00e9.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenez un nouveau jeton pour l'un des AMR dignes de confiances sp\u00e9cifi\u00e9s dans votre configuration de jeton Web JSON (JWT) ou ajoutez l'AMR sp\u00e9cifi\u00e9 dans le message en tant qu'AMR digne de confiance dans votre configuration de jeton Web JSON (JWT).
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configuration [{0}] sp\u00e9cifie l''algorithme de signature {1}, mais celui-ci n''est disponible que dans l''\u00e9dition b\u00eata. L''algorithme de signature {2} est utilis\u00e9 \u00e0 la place.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Il se peut que la prise en charge de l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message soit incompl\u00e8te ; par cons\u00e9quent, l'algorithme de signature ne peut \u00eatre utilis\u00e9 que dans l'\u00e9dition b\u00eata.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configurez un algorithme de signature qui est pris en charge ou utilisez l'\u00e9dition b\u00eata de ce produit pour utiliser l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message.

@@ -41,6 +41,8 @@ import org.apache.cxf.message.Message;
 public class MPRestClientCallback<T> extends JaxrsClientCallback<T> {
 
     private final ExecutorService executor;
+    private Throwable exception;
+
     public MPRestClientCallback(InvocationCallback<T> handler,
                                 Message outMessage,
                                 Class<?> responseClass,
@@ -85,4 +87,9 @@ public class MPRestClientCallback<T> extends JaxrsClientCallback<T> {
         }, executor);
     }
 
+    @Override
+    public void handleException(Map<String, Object> ctx, Throwable ex) {
+        this.exception = ex;
+        super.handleException(ctx, ex);
+    }
 }

@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt az
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: Kapcsol\u00f3d\u00e1si k\u00e9r\u00e9s t\u00f6rt\u00e9nt a(z) {0} XA er\u0151forr\u00e1shoz SPNEGO hiteles\u00edt\u00e9s haszn\u00e1lat\u00e1val, de nem ker\u00fclt be\u00e1ll\u00edt\u00e1sra helyre\u00e1ll\u00edt\u00e1si hiteles\u00edt\u00e9siadat-\u00e1ln\u00e9v. Az XA er\u0151forr\u00e1s nem tud r\u00e9szt venni automatiz\u00e1lt XA helyre\u00e1ll\u00edt\u00e1sban, ha nincs helyre\u00e1ll\u00edt\u00e1si hiteles\u00edt\u00e9siadat-\u00e1ln\u00e9v be\u00e1ll\u00edtva.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=Az XA helyre\u00e1ll\u00edt\u00e1s egy automatiz\u00e1lt h\u00e1tt\u00e9rfeldolgoz\u00e1s, de a SPNEGO hiteles\u00edt\u00e9s manu\u00e1lis felhaszn\u00e1l\u00f3bevitelt ig\u00e9nyel. Ez\u00e9rt a SPNEGO hiteles\u00edt\u00e9s nem haszn\u00e1lhat\u00f3 automatikus XA helyre\u00e1ll\u00edt\u00e1s eset\u00e9n.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=\u00c1ll\u00edtson be egy helyre\u00e1ll\u00edt\u00e1si hiteles\u00edt\u00e9siadat-\u00e1lnevet az XA er\u0151forr\u00e1son.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: \u00c9rv\u00e9nytelen {0} MCWrapper a(z) {1} er\u0151forr\u00e1s szabad t\u00e1rol\u00f3j\u00e1b\u00f3l.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Az MCWrapper lefoglal\u00e1sa meghi\u00fasult.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

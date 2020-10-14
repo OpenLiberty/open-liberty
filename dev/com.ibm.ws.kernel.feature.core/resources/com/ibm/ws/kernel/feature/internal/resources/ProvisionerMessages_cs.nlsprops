@@ -222,6 +222,11 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Fu
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed Jakarta EE a Java EE. Funkce, kter\u00e9 podporuj\u00ed programovac\u00ed model Jakarta EE 9, jsou nekompatibiln\u00ed s funkcemi, kter\u00e9 podporuj\u00ed programovac\u00ed modely Java EE, v\u010detn\u011b Jakarta EE 8. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Uve\u010fte kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobily konflikt v souboru server.xml, a ujist\u011bte se, \u017ee soubor server.xml pou\u017e\u00edv\u00e1 bu\u010f funkce Jakarta EE, nebo Java EE, ale ne oboj\u00ed.
 
+#CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Existuj\u00edc\u00ed definice funkce, {1}, je mo\u017en\u00e1 shoda pro funkci {0}, kter\u00e1 nebyla nalezena. 
+MISSING_FEATURE_HAS_ALT_NAME.explanation=Spr\u00e1vce funkc\u00ed nem\u016f\u017ee naj\u00edt definici funkce ur\u010denou v konfiguraci serveru. Zadan\u00fd n\u00e1zev se m\u016f\u017ee shodovat s existuj\u00edc\u00ed definic\u00ed funkce.
+MISSING_FEATURE_HAS_ALT_NAME.useraction=M\u00edsto toho zva\u017ete ur\u010den\u00ed pojmenovan\u00e9 existuj\u00edc\u00ed definice funkce. 
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Funkce {0} ji\u017e existuje. Nebude p\u0159einstalov\u00e1na. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.

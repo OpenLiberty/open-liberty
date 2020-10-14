@@ -35,7 +35,7 @@ public class HttpSession extends ConfigElement {
     private String cookieSameSite;
     private Integer maxInMemorySessionCount;
     private Boolean allowOverflow;
-    private Integer invalidationTimeout;
+    private String invalidationTimeout;
     private Boolean securityIntegrationEnabled;
     private Integer idLength;
     private Boolean useContextRootAsCookiePath;
@@ -71,7 +71,7 @@ public class HttpSession extends ConfigElement {
     /**
      * @return the number of minutes before sessions become eligible for invalidation
      */
-    public Integer getInvalidationTimeout() {
+    public String getInvalidationTimeout() {
         return this.invalidationTimeout;
     }
 
@@ -79,7 +79,7 @@ public class HttpSession extends ConfigElement {
      * @param invalidationTimeout the number of minutes before sessions become eligible for invalidation
      */
     @XmlAttribute
-    public void setInvalidationTimeout(Integer invalidationTimeout) {
+    public void setInvalidationTimeout(String invalidationTimeout) {
         this.invalidationTimeout = invalidationTimeout;
     }
 
