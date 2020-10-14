@@ -117,8 +117,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.ssl;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
-    org.apache.httpcomponents:httpclient;version=4.5.5, \
-    org.apache.httpcomponents:httpcore;version=4.4.9, \
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.json4j;version=latest, \

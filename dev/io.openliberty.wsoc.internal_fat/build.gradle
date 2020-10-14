@@ -19,7 +19,7 @@ dependencies {
     'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-io:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-util:9.2.2.v20140723',
-    'org.apache.httpcomponents:httpclient:4.5.4',
+    project(':com.ibm.ws.org.apache.httpcomponents'),
     'commons-logging:commons-logging:1.1.3'
 }
 
