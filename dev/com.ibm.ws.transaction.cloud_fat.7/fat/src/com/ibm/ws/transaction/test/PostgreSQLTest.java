@@ -11,11 +11,12 @@
 package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
 import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import componenttest.topology.utils.FATServletClient;
 public class PostgreSQLTest extends FATServletClient {
     private static final Class<?> c = PostgreSQLTest.class;
 
+    private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
@@ -93,23 +95,25 @@ public class PostgreSQLTest extends FATServletClient {
         String jdbcURL = postgre.getJdbcUrl() + "?user=" + POSTGRES_USER + "&password=" + POSTGRES_PASS;
         Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);
 
+        server.resetStarted();
         server.addEnvVar("POSTGRES_HOST", host);
         server.addEnvVar("POSTGRES_PORT", port);
         server.addEnvVar("POSTGRES_DB", POSTGRES_DB);
         server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
         server.addEnvVar("POSTGRES_URL", jdbcURL);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @Before
+    public void before() throws Exception {
+        startServers(server1);
     }
 
     @After
     public void cleanup() throws Exception {
 
         server1.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E");
-        server2.stopServer();
 
         // Clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -138,9 +142,6 @@ public class PostgreSQLTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
 
-        setUp(server1);
-        server1.startServer();
-
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
 
@@ -159,7 +160,7 @@ public class PostgreSQLTest extends FATServletClient {
      */
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
-    public void testDBBaseRecovery() throws Exception {
+    public void testDBBaseRecovery() {
         final String method = "testDBBaseRecovery";
         StringBuilder sb = null;
         String id = "001";
@@ -169,24 +170,14 @@ public class PostgreSQLTest extends FATServletClient {
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        assertNotNull(server1.waitForStringInLog("Dump State:"), "server1 didn't crash properly");
+        Log.info(getClass(), method, server1.waitForStringInLog("Dump State:"));
 
         // Now re-start cloud1
-        setUp(server1);
-        ProgramOutput po = server1.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        startServers(server1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNotNull(server1.waitForStringInTrace("Performed recovery for cloud001"), "peer recovery failed");
+        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
     }
 
     /**
@@ -204,34 +195,22 @@ public class PostgreSQLTest extends FATServletClient {
         final String method = "testDBRecoveryTakeover";
         StringBuilder sb = null;
         String id = "001";
-        // Start Server1
-        setUp(server1);
-        server1.startServer();
 
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        assertNotNull(server1.waitForStringInLog("Dump State:"), "server1 didn't crash properly");
+        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog("Dump State:"));
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
-        setUp(server2);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        startServers(server2);
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        assertNotNull(server2.waitForStringInTrace("Performed recovery for cloud001"), "peer recovery failed");
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        server2.stopServer();
     }
 
     /**
@@ -257,56 +236,66 @@ public class PostgreSQLTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
 
-        // Start Server1
-        setUp(server1);
-        server1.startServer();
-
         try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
+            runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        assertNotNull(server1.waitForStringInLog("Dump State:"), "server1 didn't crash properly");
+        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog("Dump State:"));
 
-        // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
-        // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
+        // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
+        // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
-        // Now re-start cloud1 but we fully expect this to fail
+        // Now re-start server1 but we fully expect this to fail
         try {
             setUp(longLeaseLengthServer1);
             longLeaseLengthServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
             // Tolerate an exception here, as recovery is asynch and the "successful start" message
             // may have been produced by the main thread before the recovery thread had completed
-            Log.info(this.getClass(), method, "startServerExpectFailure threw exc: " + ex);
+            Log.info(getClass(), method, "startServerExpectFailure threw exc: " + ex);
         }
 
         // Server appears to have failed as expected. Check for log failure string
         if (longLeaseLengthServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
             Exception ex = new Exception("Recovery logs should have failed");
-            Log.error(this.getClass(), "recoveryTestCompeteForLock", ex);
+            Log.error(getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
 
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
-        setUp(server2);
-        ProgramOutput po = server2.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
-            Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-            Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-            Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-            Exception ex = new Exception("Could not restart the server");
-            Log.error(this.getClass(), "recoveryTest", ex);
-            throw ex;
-        }
+        startServers(server2);
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        assertNotNull(server2.waitForStringInTrace("Performed recovery for cloud001"), "peer recovery failed");
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        server2.stopServer();
+    }
+
+    private void startServers(LibertyServer... servers) {
+        final String method = "startServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
+            try {
+                setUp(server);
+                po = server.startServerAndValidate(false, false, false);
+                if (po.getReturnCode() != 0) {
+                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
+                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                }
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            }
+        }
     }
 }

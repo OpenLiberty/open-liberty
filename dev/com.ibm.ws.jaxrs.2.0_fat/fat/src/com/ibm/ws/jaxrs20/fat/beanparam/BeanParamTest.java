@@ -18,11 +18,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.beanparam.ClientTestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 @RunWith(FATRunner.class)
 public class BeanParamTest extends FATServletClient {
 

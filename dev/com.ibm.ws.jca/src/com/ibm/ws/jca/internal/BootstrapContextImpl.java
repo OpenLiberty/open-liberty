@@ -941,7 +941,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                     for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
                         if (resourceAdapterID.equals("wasJms") &&
                             ("com.ibm.ws.messaging.jms.1.1".equals(bundle.getSymbolicName()) ||
-                             "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName())))
+                             "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName()) ||
+                             "com.ibm.ws.messaging.jms.2.0.jakarta".equals(bundle.getSymbolicName())))
                             return bundle.loadClass(className);
                         else if (resourceAdapterID.equals("wmqJms") && "com.ibm.ws.messaging.jms.wmq".equals(bundle.getSymbolicName()))
                             return bundle.loadClass(className);
@@ -955,7 +956,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                                 for (Bundle bundle : componentContext.getBundleContext().getBundles()) {
                                     if (resourceAdapterID.equals("wasJms") &&
                                         ("com.ibm.ws.messaging.jms.1.1".equals(bundle.getSymbolicName()) ||
-                                         "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName())))
+                                         "com.ibm.ws.messaging.jms.2.0".equals(bundle.getSymbolicName()) ||
+                                         "com.ibm.ws.messaging.jms.2.0.jakarta".equals(bundle.getSymbolicName())))
                                         return bundle.loadClass(className);
                                     else if (resourceAdapterID.equals("wmqJms") && "com.ibm.ws.messaging.jms.wmq".equals(bundle.getSymbolicName()))
                                         return bundle.loadClass(className);

@@ -49,7 +49,9 @@ src: \
 fat.project: true
 
 # These features get added programmatically
-#tested.features:
+tested.features: jaxws-2.3, \
+  jaxb-2.3, \
+  servlet-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\

@@ -22,7 +22,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
     public void testPKJoin001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOnePKJoinTestLogic.testPKJoin001(): Missing context and/or resources.  Cannot execute the test.");
@@ -194,18 +194,13 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOnePKJoinTestLogic.testPKJoin001(): End");
         }
     }
 
     public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOnePKJoinTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
@@ -247,11 +242,6 @@ public class OneXOnePKJoinTestLogic extends AbstractTestLogic {
             cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOnePKJoinTestLogic.testTemplate(): End");
         }

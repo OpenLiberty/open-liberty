@@ -17,27 +17,27 @@ import com.ibm.ws.security.fat.common.MessageConstants;
 
 public class CommonWaitForAppChecks {
 
-    public static List<String> getSSLChannelReadyMsgs() throws Exception {
+    public static List<String> getSSLChannelReadyMsgs() {
         List<String> waitForMessages = new ArrayList<String>();
         return getSSLChannelReadyMsgs(waitForMessages);
     }
 
-    public static List<String> getSSLChannelReadyMsgs(List<String> waitForMessages) throws Exception {
+    public static List<String> getSSLChannelReadyMsgs(List<String> waitForMessages) {
         waitForMessages.add(MessageConstants.CWWKO0219I_SSL_CHANNEL_READY);
         return waitForMessages;
     }
 
-    public static List<String> getBasicSecurityReadyMsgs() throws Exception {
+    public static List<String> getBasicSecurityReadyMsgs() {
         List<String> waitForMessages = new ArrayList<String>();
         return getBasicSecurityReadyMsgs(waitForMessages);
     }
 
-    public static List<String> getBasicSecurityReadyMsgs(List<String> waitForMessages) throws Exception {
+    public static List<String> getBasicSecurityReadyMsgs(List<String> waitForMessages) {
         waitForMessages.add(MessageConstants.CWWKS0008I_SECURITY_SERVICE_READY);
         return waitForMessages;
     }
 
-    public static List<String> getSecurityReadyMsgs() throws Exception {
+    public static List<String> getSecurityReadyMsgs() {
         List<String> waitForMessages = new ArrayList<String>();
         return getBasicSecurityReadyMsgs(getSSLChannelReadyMsgs(waitForMessages));
     }

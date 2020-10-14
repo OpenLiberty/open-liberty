@@ -49,7 +49,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 9 POINTS
      */
     public void testManyXOneUni001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -195,11 +195,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni001(): End");
         }
@@ -221,7 +216,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * field used is marked with a column-name override in the JoinColumn annotation.
      */
     public void testManyXOneUni002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -367,11 +362,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni002(): End");
         }
@@ -404,7 +394,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 3 POINTS
      */
     public void testManyXOneUni003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -570,11 +560,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni003(): End");
         }
@@ -604,12 +589,12 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 1) UniEntityB(id=1)'s name field could be accessed while the entity
      * is not detached
      * 2) If UniEntityB(id=1)'s name field could NOT be accessed if the entity was
-     * never previously accessed before becomming a detached entity.
+     * never previously accessed before becoming a detached entity.
      *
      * 9 POINTS
      */
     public void testManyXOneUni004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -765,11 +750,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni004(): End");
         }
@@ -867,7 +847,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * Refresh:
      *
      * Refresh operations are, by default, not cascaded across entity relationships. Without the REFRESH cascade
-     * option, a refresh operation will stop at the soure tntity.
+     * option, a refresh operation will stop at the source entity.
      *
      * 1) Create Create UniEntityB(id=1)
      * 2) Create new UniEntityA(id=1), setting defaultRelationship to UniEntityB(id=1).
@@ -880,7 +860,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 29 POINTS
      */
     public void testManyXOneUni005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1477,11 +1457,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni005(): End");
         }
@@ -1552,7 +1527,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 32 POINTS
      */
     public void testManyXOneUni006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2078,11 +2053,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni006(): End");
         }
@@ -2113,7 +2083,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 6 POINTS
      */
     public void testManyXOneUni007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2255,11 +2225,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni007(): End");
         }
@@ -2284,7 +2249,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 4 POINTS
      */
     public void testManyXOneUni008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2444,11 +2409,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni008(): End");
         }
@@ -2476,7 +2436,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 12 POINTS
      */
     public void testManyXOneUni009(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2658,11 +2618,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni009(): End");
         }
@@ -2690,7 +2645,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      * 10 POINTS
      */
     public void testManyXOneUni010(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2861,11 +2816,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testManyXOneUni010(): End");
         }
@@ -2885,7 +2835,7 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3093,18 +3043,13 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
                               entityA2_defaultRelationship);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testCardinality001(): End");
         }
     }
 
     public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3147,11 +3092,6 @@ public class ManyXOneUnidirectionalTestLogic extends AbstractTestLogic {
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneUnidirectionalTestLogic.testTemplate(): End");
         }

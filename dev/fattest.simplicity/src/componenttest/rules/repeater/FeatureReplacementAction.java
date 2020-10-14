@@ -51,7 +51,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static final Map<String, String> featuresWithNameChangeOnEE9;
 
     static {
-        Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        Map<String, String> featureNameMapping = new HashMap<String, String>(20);
         featureNameMapping.put("ejb", "enterpriseBeans");
         featureNameMapping.put("ejbHome", "enterpriseBeansHome");
         featureNameMapping.put("ejbLite", "enterpriseBeansLite");
@@ -63,7 +63,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jaxrs", "restfulWS");
         featureNameMapping.put("jaxrsClient", "restfulWSClient");
         featureNameMapping.put("jca", "connectors");
+        featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
         featureNameMapping.put("jmsMdb", "mdb");
+        featureNameMapping.put("jms", "messaging");
+        featureNameMapping.put("wasJmsClient", "messagingClient");
+        featureNameMapping.put("wasJmsServer", "messagingServer");
+        featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
+        featureNameMapping.put("jsf", "faces");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -96,6 +102,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
+    private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
 
     public FeatureReplacementAction() {}
@@ -106,7 +113,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature    the feature to add
+     * @param addFeature the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -119,7 +126,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures    the features to add
+     * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -161,6 +168,28 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction addFeatures(Set<String> addFeatures) {
         addFeatures.forEach(this::addFeature);
+        return this;
+    }
+
+    /**
+     * Add features to the set to be added - these features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeatures the features to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeatures(Set<String> alwaysAddedFeatures) {
+        alwaysAddedFeatures.forEach(this::alwaysAddFeature);
+        return this;
+    }
+
+    /**
+     * Add a feature to the set to be added - this features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeature the feature to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeature(String alwaysAddedFeature) {
+        alwaysAddFeatures.add(alwaysAddedFeature);
         return this;
     }
 
@@ -395,6 +424,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     }
                 }
             }
+            alwaysAddFeatures.forEach(s -> features.add(s));
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
@@ -427,10 +457,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Feature names are required to have a '-', for example, "servlet-3.1". Null
      * is answered for feature names which do not have a '-'.
      *
-     * @param  originalFeature     The feature name which is to be replaced.
-     * @param  replacementFeatures Table of replacement features.
+     * @param originalFeature The feature name which is to be replaced.
+     * @param replacementFeatures Table of replacement features.
      *
-     * @return                     The replacement feature name. Null if no replacement is available.
+     * @return The replacement feature name. Null if no replacement is available.
      */
     private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
         String methodName = "getReplacementFeature";

@@ -28,9 +28,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
     OpentracingTCKLauncher.class,
-// Temporary comment this out until MicroProfile-4.0 is available
+// Temporary comment this out until MicroProfile-4.0 is available ... including MP Rest Client 2.0
 //    OpentracingTCKLauncherMicroProfile.class,
-    OpentracingRestClientTCKLauncher.class
+    // OpentracingRestClientTCKLauncher.class //Disabled until MP Rest Client 2.0 is available
 })
 public class FATSuite {
     private static final String FEATURE_NAME = "io.openliberty.opentracing.mock-2.0.mf";

@@ -23,6 +23,7 @@ src: \
   test-applications/client/src,\
   test-applications/context/src,\
   test-applications/contextresolver/src,\
+  test-applications/customsecuritycontext/src,\
   test-applications/exceptionMappingWithOT/src,\
   test-applications/extraproviders/src,\
   test-applications/getCgetS/src,\
@@ -63,6 +64,7 @@ fat.project: true
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
+  restfulWS-3.0,\
   appsecurity-3.0
 
 -buildpath: \

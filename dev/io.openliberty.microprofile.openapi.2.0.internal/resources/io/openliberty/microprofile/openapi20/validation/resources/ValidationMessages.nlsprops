@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=Message: {0}, Location: {1}
+
+callbackURLTemplateEmpty=The URL template of Callback Object is empty and is not a valid URL
+callbackInvalidSubstitutionVariables=The Callback Object contains invalid substitution variables: \"{0}\"
+callbackMustBeRuntimeExpression=The Callback Object must contain a valid runtime expression as defined in the OpenAPI Specification. The \"{0}\" value specified for the runtime expression is not valid
+callbackInvalidURL=The Callback Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+callbackInvalidPathItem=The Callback Object must contain a valid path item. The path item value associated with \"{0}\" key is not a valid value
+
+contactInvalidURL=The Contact Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+contactInvalidEmail=The Contact Object must contain a valid email address. The \"{0}\" value specified for the email address is not valid
+
+exampleOnlyValueOrExternalValue=The \"{0}\" Example Object specifies both \"value\" and \"externalValue\" fields. Specify only one field
+
+externalDocumentationInvalidURL=The External Documentation Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+infoTermsOfServiceInvalidURL=The Info Object must contain a valid URL. The \"{0}\" value specified for \"termsOfService\" field is not a valid URL
+invalidUrl=The \"{0}\" Object must contain a valid URL. The \"{1}\" value specified for the URL is not valid
+invalidUri=The \"{0}\" value specified for the URI is not valid. Value must be in the form of an absolute URI
+
+invalidExtensionName=The name of \"{0}\" extension must begin with \"x-\"
+
+headerExampleOrExamples=The \"{0}\" Header Object cannot have both \"examples\" and \"example\" fields. Specify only one field
+headerSchemaAndContent=The \"{0}\" Header Object must contain either a schema property or a content property, but it cannot contain both
+headerSchemaOrContent=The \"{0}\" Header Object must contain either a schema property or a content property
+headerContentMap=The \"content\" map within the \"{0}\" Header Object must contain only one entry
+
+licenseInvalidURL=The License Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+linkOperationRefInvalidOrMissing=The \"{0}\" Link Object specified a relative \"operationRef\" field with \"{1}\" value that points to an invalid Operation Object
+linkOperationRefAndId=The \"{0}\" Link Object defines \"operationRef\" field and \"operationId\" field, which are mutually exclusive
+linkOperationIdInvalid=The Link Object specified an \"operationId\" field with \"{0}\" value which points to an Operation Object that does not exist
+linkMustSpecifyOperationRefOrId=The \"{0}\" Link Object must be identified using either an \"operationRef\" or \"operationId\"
+
+mediaTypeExampleOrExamples=The MediaType Object cannot have both \"examples\" and \"example\" fields. Specify only one field
+mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaType Object does not exist in the schema as a property
+mediaTypeEmptySchema=The encoding property specified cannot be validated because the corresponding schema property is null
+
+oAuthFlowInvalidURL=The OAuth Flow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+nonApplicableField=The \"{0}\" field is not applicable for \"{1}\" of \"{2}\" type
+nonApplicableFieldWithValue=The \"{0}\" field with \"{1}\" value is not applicable for \"{2}\" of \"{3}\" type
+
+nullOrEmptyKeyInMap=The map contains an invalid key. A map should not have empty or null keys
+nullValueInMap=The map specifies an invalid value for the \"{0}\" key. A map should not have null values
+
+openAPIVersionInvalid=The OpenAPI Object must contain a valid OpenAPI specification version. The \"{0}\" value specified for the OpenAPI specification version is not valid
+openAPITagIsNotUnique=The OpenAPI Object must contain unique tag names. The \"{0}\" tag name is not unique
+
+operationIdsMustBeUnique=More than one Operation Objects with \"{0}\" value for \"operationId\" field was found. The \"operationId\" must be unique among all operations described in the API
+
+parameterInFieldInvalid=The \"{0}\" value specified for the \"in\" field of the \"{1}\" Parameter Object is invalid. Possible values are \"query\", \"header\", \"path\" or \"cookie\"
+parameterExampleOrExamples=The \"{0}\" Parameter Object specifies both an \"example\" field and an \"examples\" field. Specify only one field
+parameterSchemaOrContent=The \"{0}\" Parameter Object does not contain a \"schema\" property or a \"content\" property
+parameterSchemaAndContent=The \"{0}\" Parameter Object must not contain a \"schema\" property and a \"content\" property
+parameterContentMapMustNotBeEmpty=The \"content\" map within the \"{0}\" Parameter Object must contain only one entry
+
+pathItemInvalidRef=The Path Item Object has an invalid $ref \"{0}\" value for \"{1}\" path item. A reference to a path item must be external
+pathItemRequiredField=The Path Item Object must contain a valid path. The \"{0}\" path parameter from the \"{1}\" path does not contain the \"required\" field or its value is not \"true\"
+pathItemDuplicate=The Path Item Object must contain a valid path. The \"{0}\" path defines a duplicated \"{1}\" parameter at path-level: \"{2}\"
+pathItemParameterNotDeclaredSingle=The Path Item Object must contain a valid path. The \"{0}\" path defines \"{1}\" path parameter that is not declared
+pathItemParameterNotDeclaredMultiple=The Path Item Object must contain a valid path. The \"{0}\" path defines \"{1}\" path parameters that are not declared: \"{2}\"
+pathItemOperationRequiredField=The Path Item Object must contain a valid path. The \"{0}\" path parameter from the \"{1}\" operation of the path \"{2}\" does not contain the \"required\" field or its value is not \"true\"
+pathItemOperationDuplicate=The Path Item Object must contain a valid path. The \"{0}\" operation from the \"{1}\" path defines a duplicated \"{2}\" parameter: \"{3}\"
+pathItemOperationNullParameter=The Path Item Object must contain a valid path. The list of parameters from the \"{0}\" operation from the \"{1}\" path contains a null parameter
+pathItemOperationParameterNotDeclaredSingle=The Path Item Object must contain a valid path. The \"{0}\" operation from the \"{1}\" path defines one path parameter that is not declared: \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=The Path Item Object must contain a valid path. The \"{0}\" operation from the \"{1}\" path defines \"{2}\" path parameters that are not declared: \"{3}\"
+pathItemOperationNoPathParameterDeclared=The Path Item Object must contain a valid path. The \"{0}\" operation of the \"{1}\" path does not define a path parameter that is declared: \"{2}\"
+pathItemInvalidFormat=The Path Item Object must contain a valid path. The format of the \"{0}\" path is invalid
+
+pathsRequiresSlash=The Paths Object contains an invalid path. The \"{0}\" path value does not begin with a slash
+
+referenceExternalOrExtension=The \"{0}\" value is an external reference or an extension. No validation available
+referenceNotPartOfModel=The \"{0}\" reference value is not defined within the Components Object
+referenceNotValid=The \"{0}\" reference value is invalid
+referenceNotValidFormat=The \"{0}\" reference value is not in a valid format
+referenceNull=The reference value is null
+referenceToObjectInvalid=The \"{0}\" value is an invalid reference
+
+responseMustContainOneCode=The Responses Object must contain at least one response code
+responseShouldContainSuccess=The Responses Object should contain at least one response code for a successful operation
+
+securityRequirementNotDeclared=The \"{0}\" name provided for the Security Requirement Object does not correspond to a declared security scheme
+securityRequirementScopeNamesRequired=The \"{0}\" Security Requirement Object should specify be a list of scope names required for execution
+securityRequirementFieldNotEmpty=The \"{0}\" field of Security Requirement Object should be empty, but is: \"{1}\"
+securityRequirementIsEmpty=The Security Requirement Object must not be empty
+
+securitySchemeInFieldInvalid=The \"{0}\" Security Scheme Object is invalid. The value of its \"in\" field is \"{1}\", but must be one of (\"query\", \"header\", \"cookie\")
+securitySchemeInvalidURL=The Security Scheme Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+schemaTypeArrayNullItems=The Schema Object of \"array\" type must have \"items\" property defined
+schemaReadOnlyOrWriteOnly=The Schema Object must not have both \"readOnly\" and \"writeOnly\" fields set to true
+schemaMultipleOfLessThanOne=The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero
+schemaPropertyLessThanZero=The \"{0}\" property of the Schema Object must be greater than or equal to zero
+schemaTypeDoesNotMatchProperty=The \"{0}\" property is not appropriate for the Schema Object of \"{1}\" type
+
+keyNotARegex=The \"{0}\" name declared within the Components Object is invalid. It must match the regular expression as defined by the OpenAPI Specification
+
+serverVariableNotDefined=The \"{0}\" variable in the Server Object is not defined
+serverInvalidURL=The Server Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+requiredFieldMissing=Required \"{0}\" field is missing or is set to an invalid value

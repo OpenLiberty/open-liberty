@@ -1,6 +1,7 @@
 package io.openliberty.grpc.internal.client;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -27,22 +28,31 @@ public class LibertyHeaderPropagationSupport {
 	 * @param headerMap
 	 */
 	@SuppressWarnings("rawtypes")
-	public static void handleHeaderPropagation(MethodDescriptor method, Metadata headerMap) {
+	public static void handleHeaderPropagation(String host, MethodDescriptor method, Metadata headerMap) {
 
-		String headersToPropagate = GrpcClientConfigHolder.getHeaderPropagationSupport(method.getFullMethodName());
+		String headersToPropagate = GrpcClientConfigHolder.getHeaderPropagationSupport(host, method.getFullMethodName());
+		if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+			Tr.debug(tc, "checking header propagation for " + host + "$" + method.getFullMethodName());
+		}
 
 		if (headersToPropagate == null || headersToPropagate.isEmpty()) {
-			if (tc.isDebugEnabled()) {
-				Tr.debug(tc, "no header propagation configured");
+			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+				Tr.debug(tc, "no header propagation configured for " + host + "/" + method.getFullMethodName());
 			}
 			return;
 		} else {
+			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+				Tr.debug(tc, "propagating headers: " + headersToPropagate);
+			}
 			List<String> headerNames = Arrays.asList(headersToPropagate.split("\\s*,\\s*"));
 			if (!headerNames.isEmpty()) {
 				for (String headerName : headerNames) {
-					String headerValue = getThreadLocalRequestHeader(headerName);
-					if (headerValue != null) {
-						addHeader(headerName, headerValue, headerMap);
+					Enumeration<String> headerValues = getThreadLocalRequestHeaders(headerName);
+					if (headerValues != null) {
+						while (headerValues.hasMoreElements()) {
+							String headerValue = headerValues.nextElement();
+							addHeader(headerName, headerValue, headerMap);
+						}
 					}
 				}
 			}
@@ -50,22 +60,23 @@ public class LibertyHeaderPropagationSupport {
 	}
 
 	/**
-	 * Grab the request state ThreadLocal and return
+	 * Grab the request state ThreadLocal and return the requested values
 	 * 
-	 * @return the value of the requested header or null it could not be retrieved
+	 * @return the values of the requested header or null it could not be retrieved
 	 */
-	private static String getThreadLocalRequestHeader(String headerName) {
+	@SuppressWarnings("unchecked")
+	private static Enumeration<String> getThreadLocalRequestHeaders(String headerName) {
 		WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
-		String headerValue = null;
+		Enumeration<String> headerValues = null;
 		if (reqState != null) {
-			headerValue = reqState.getCurrentThreadsIExtendedRequest().getIRequest()
-					.getHeader(headerName.toLowerCase());
+			headerValues = reqState.getCurrentThreadsIExtendedRequest().getIRequest()
+					.getHeaders(headerName.toLowerCase());
 		}
-		return headerValue;
+		return headerValues;
 	}
 
 	/**
-	 * Add a header to the outbound headers
+	 * Add a header to the outbound headers. Duplicate values for the same header name are allowed.
 	 * 
 	 * @param token
 	 * @param headers
@@ -73,8 +84,8 @@ public class LibertyHeaderPropagationSupport {
 	private static void addHeader(String headerName, String headerValue, Metadata headers) {
 		Metadata.Key<String> key = Metadata.Key.of(headerName, Metadata.ASCII_STRING_MARSHALLER);
 		headers.put(key, headerValue);
-		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Authorization header with Bearer token is added successfully");
+		if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+			Tr.debug(tc, "addHeader " + headerName + " with value " + headerValue);
 		}
 	}
 }

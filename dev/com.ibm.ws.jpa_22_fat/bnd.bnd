@@ -24,10 +24,11 @@ src: \
 	test-applications/jpa22/jpa22timeapi/src,\
 	test-applications/jpadefaultdatasource/src,\
 	test-applications/ejbpassivation/src,\
+	test-applications/APARs/OLGH14192/src,\
 	test-framework/src
 
 fat.project: true
-tested.features: el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0
+tested.features: el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterprisebeanslite-4.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -39,4 +40,5 @@ tested.features: el-3.0, jpa-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.websphere.appserver.thirdparty.eclipselink.2.7;version=latest

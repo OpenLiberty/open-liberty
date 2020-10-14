@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeClient-8.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: javaeeClient-8.0

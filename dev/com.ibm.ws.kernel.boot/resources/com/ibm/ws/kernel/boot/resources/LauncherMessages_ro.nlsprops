@@ -702,6 +702,10 @@ error.missing.version.files=CWWKE0952E: Nu pot fi citite informa\u0163iile privi
 error.missing.version.files.explanation=Directorul care con\u0163ine fi\u015fiere cu informa\u0163ii privind versiunea nu exist\u0103 sau nu poate fi citit de utilizatorul curent.
 error.missing.version.files.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u0103 \u015fi poate fi citit de utilizatorul curent. 
 
+warning.earlyRelease=CWWKE0953W: Aceast\u0103 versiune de {0} este o versiune de edi\u0163ie timpurie nesuportat\u0103.
+warning.earlyRelease.explanation=Noile caracteristici care nu sunt testate complet sunt puse la dispozi\u0163ie \u00een edi\u0163iile timpurii pentru a solicita reac\u0163ii (feedback) \u00eenainte de a fi incluse \u00eentr-o edi\u0163ie suportat\u0103.
+warning.earlyRelease.useraction=Nu utiliza\u0163i o edi\u0163ie timpurie pe sistemele de produc\u0163ie, deoarece versiunile timpurii nu sunt suportate.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

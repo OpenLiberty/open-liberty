@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.ejbRemoteClient-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 -features=com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.ejbCore-1.0, \

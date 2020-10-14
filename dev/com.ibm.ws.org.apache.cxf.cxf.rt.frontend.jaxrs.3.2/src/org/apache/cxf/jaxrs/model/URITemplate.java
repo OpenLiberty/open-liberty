@@ -107,7 +107,7 @@ public final class URITemplate {
         literals = literalChars.toString();
 
         int endPos = patternBuilder.length() - 1;
-        boolean endsWithSlash = (endPos >= 0) ? patternBuilder.charAt(endPos) == '/' : false;
+        boolean endsWithSlash = (endPos >= 0) && patternBuilder.charAt(endPos) == '/';
         if (endsWithSlash) {
             patternBuilder.deleteCharAt(endPos);
         }

@@ -24,9 +24,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.config.ConfigValidationException;
-import com.ibm.ws.config.xml.internal.ConfigVariableRegistry;
 import com.ibm.ws.config.xml.internal.ServerConfiguration;
 import com.ibm.ws.config.xml.internal.XMLConfigParser;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -151,7 +151,7 @@ public class XMLConfigValidatorTest {
 
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(libertyLocation, new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null));
+        configParser = new XMLConfigParser(libertyLocation, new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, libertyLocation));
     }
 
     /**

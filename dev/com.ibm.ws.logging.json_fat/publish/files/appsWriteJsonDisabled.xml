@@ -10,14 +10,14 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
-	<logging consoleLogLevel="ERROR" consoleFormat="json" messageFormat="json"/>
+	<logging consoleFormat="json" messageFormat="json" appsWriteJson="false"/>
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
 	   <feature>jsp-2.2</feature>
     </featureManager>
     
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+     <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
         <accessLogging enabled="true"  filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log" logFormat="%h %u %t &quot;%r&quot; %s %b %D %{User-agent}i"/>
     </httpEndpoint>
 

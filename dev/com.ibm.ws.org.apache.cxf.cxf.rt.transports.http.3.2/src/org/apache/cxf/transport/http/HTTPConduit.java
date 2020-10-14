@@ -514,14 +514,12 @@ public abstract class HTTPConduit
         setupConnection(message, currentAddress, csPolicy);
 
         // If the HTTP_REQUEST_METHOD is not set, the default is "POST".
-        //Liberty code change start
         String httpRequestMethod =
-            (String)((MessageImpl) message).getHttpRequestMethod();
+            (String)message.get(Message.HTTP_REQUEST_METHOD);
         if (httpRequestMethod == null) {
             httpRequestMethod = "POST";
-            ((MessageImpl) message).setHttpRequestMethod("POST");
+            message.put(Message.HTTP_REQUEST_METHOD, "POST");
         }
-        //Liberty code change end
 
         boolean isChunking = false;
         int chunkThreshold = 0;
@@ -714,26 +712,23 @@ public abstract class HTTPConduit
      * @throws MalformedURLException
      * @throws URISyntaxException
      */
-    private Address setupAddress(Message m) throws URISyntaxException {
-        //Liberty code change start
-        MessageImpl message = (MessageImpl) m;
-        String result = (String)message.getEndpointAddress();
-        String pathInfo = (String)message.getPathInfo();
-        String queryString = (String) message.getQueryString();
+    private Address setupAddress(Message message) throws URISyntaxException {
+        String result = (String)message.get(Message.ENDPOINT_ADDRESS);
+        String pathInfo = (String)message.get(Message.PATH_INFO);
+        String queryString = (String)message.get(Message.QUERY_STRING);
         setAndGetDefaultAddress();
         if (result == null) {
             if (pathInfo == null && queryString == null) {
                 if (defaultAddress != null) {
-                    message.setEndpointAddress(defaultAddress.getString());
+                    message.put(Message.ENDPOINT_ADDRESS, defaultAddress.getString());
                 }
                 return defaultAddress;
             }
             if (defaultAddress != null) {
                 result = defaultAddress.getString();
-                message.setEndpointAddress(result);
+                message.put(Message.ENDPOINT_ADDRESS, result);
             }
         }
-        //Liberty code change end
 
         // REVISIT: is this really correct?
         if (null != pathInfo && !result.endsWith(pathInfo)) {
@@ -1081,9 +1076,7 @@ public abstract class HTTPConduit
          */
         @Override
         @FFDCIgnore(IOException.class)
-        public void onMessage(Message message) {
-            //Liberty code change start
-            MessageImpl inMessage = (MessageImpl) message;
+        public void onMessage(Message inMessage) {
             // disposable exchange, swapped with real Exchange on correlation
             inMessage.setExchange(new ExchangeImpl());
             inMessage.getExchange().put(Bus.class, bus);
@@ -1091,13 +1084,12 @@ public abstract class HTTPConduit
             // REVISIT: how to get response headers?
             //inMessage.put(Message.PROTOCOL_HEADERS, req.getXXX());
             Headers.getSetProtocolHeaders(inMessage);
-            inMessage.setResponseCode(HttpURLConnection.HTTP_OK);
+            inMessage.put(Message.RESPONSE_CODE, HttpURLConnection.HTTP_OK);
 
             // remove server-specific properties
-            inMessage.removeHttpRequest();
-            inMessage.removeHttpResponse();
+            inMessage.remove(AbstractHTTPDestination.HTTP_REQUEST);
+            inMessage.remove(AbstractHTTPDestination.HTTP_RESPONSE);
             inMessage.remove(Message.ASYNC_POST_RESPONSE_DISPATCH);
-            //Liberty code change end
 
             //cache this inputstream since it's defer to use in case of async
             try {
@@ -1370,9 +1362,7 @@ public abstract class HTTPConduit
             }
         }
         protected String getMethod() {
-            //Liberty code change start
-            return (String)((MessageImpl) outMessage).getHttpRequestMethod();
-            //Liberty code change end
+            return (String)outMessage.get(Message.HTTP_REQUEST_METHOD);
         }
 
 
@@ -1516,6 +1506,7 @@ public abstract class HTTPConduit
             case HttpURLConnection.HTTP_MOVED_TEMP:
             case HttpURLConnection.HTTP_SEE_OTHER:
             case 307:
+            case 308:
                 return redirectRetransmit();
             case HttpURLConnection.HTTP_UNAUTHORIZED:
             case HttpURLConnection.HTTP_PROXY_AUTH:
@@ -1664,7 +1655,7 @@ public abstract class HTTPConduit
             }
             if (exchange != null) {
                 exchange.put(Message.RESPONSE_CODE, rc);
-                if (rc == 404 || rc == 503) {
+                if (rc == 404 || rc == 503 || rc == 429) {
                     exchange.put("org.apache.cxf.transport.service_not_available", true);
                 }
             }
@@ -1691,19 +1682,19 @@ public abstract class HTTPConduit
             InputStream in = null;
             // oneway or decoupled twoway calls may expect HTTP 202 with no content
 
-            //Liberty code change start
-            MessageImpl inMessage = new MessageImpl();
+            Message inMessage = new MessageImpl();
             inMessage.setExchange(exchange);
             updateResponseHeaders(inMessage);
-            inMessage.setResponseCode(responseCode);
-            //Liberty code change end
+            inMessage.put(Message.RESPONSE_CODE, responseCode);
             if (MessageUtils.getContextualBoolean(outMessage, SET_HTTP_RESPONSE_MESSAGE, false)) {
                 inMessage.put(HTTP_RESPONSE_MESSAGE, getResponseMessage());
             }
             propagateConduit(exchange, inMessage);
 
-            if (!doProcessResponse(outMessage, responseCode)
-                || HttpURLConnection.HTTP_ACCEPTED == responseCode) {
+            if ((!doProcessResponse(outMessage, responseCode)
+                || HttpURLConnection.HTTP_ACCEPTED == responseCode)
+                && MessageUtils.getContextualBoolean(outMessage, 
+                    Message.PROCESS_202_RESPONSE_ONEWAY_OR_PARTIAL, true)) {
                 in = getPartialResponse();
                 if (in == null
                     || !MessageUtils.getContextualBoolean(outMessage, Message.PROCESS_ONEWAY_RESPONSE, false)) {
@@ -1745,9 +1736,7 @@ public abstract class HTTPConduit
                 LOG.log(Level.WARNING, m);
                 throw new IOException(m);
             }
-            //Liberty code change start
-            ((MessageImpl) inMessage).setEncoding(normalizedEncoding);
-            //Liberty code change end
+            inMessage.put(Message.ENCODING, normalizedEncoding);
             if (in == null) {
                 in = getInputStream();
             }
@@ -2000,7 +1989,7 @@ public abstract class HTTPConduit
         // retransmit, it means we have already supplied information
         // which must have been wrong, or we wouldn't be here again.
         // Otherwise, the server may be 401 looping us around the realms.
-        if (authURLs.contains(currentURL.toString() + realm)) {
+        if (!authURLs.add(currentURL.toString() + realm)) {
             String logMessage = "Authorization loop detected on Conduit \""
                 + conduitName
                 + "\" on URL \""
@@ -2014,7 +2003,5 @@ public abstract class HTTPConduit
 
             throw new IOException(logMessage);
         }
-        // Register that we have been here before we go.
-        authURLs.add(currentURL.toString() + realm);
     }
 }

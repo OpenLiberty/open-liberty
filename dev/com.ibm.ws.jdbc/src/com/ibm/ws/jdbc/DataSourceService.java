@@ -818,9 +818,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                         throw new SQLFeatureNotSupportedException(ConnectorService.getMessage("CARDINALITY_ERROR_J2CA8040", DATASOURCE, id, PropertyService.PROPERTIES));
                 } else {
                     if (value instanceof Long)
-                        if (PropertyService.DURATION_S_INT_PROPS.contains(key) || PropertyService.DURATION_MS_INT_PROPS.contains(key))
-                            value = ((Long) value).intValue(); // duration type: convert Long --> Integer
-                        else if (PropertyService.DURATION_MIXED_PROPS.contains(key))
+                        if (PropertyService.DURATION_MIXED_PROPS.contains(key))
                             value = ((Long) value).toString(); // figure it out later by introspection
 
                     if (PropertyService.isPassword(key)) {

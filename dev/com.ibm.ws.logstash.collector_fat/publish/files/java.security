@@ -1,3 +1,0 @@
-#Overwrite JDK security setting only during running logstash FAT suite
-jdk.tls.disabledAlgorithms=SSLv3, RC4, MD5withRSA, DH keySize < 768, \
-    EC keySize < 224

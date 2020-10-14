@@ -10,15 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.app;
 
-import static org.junit.Assert.fail;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -32,14 +26,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jca.fat.FATSuite;
+
+import com.ibm.websphere.simplicity.config.JavaPermission;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import web.JCAFVTServlet;
 
 /**
  * General tests that don't involve updating configuration while the server is running.
@@ -50,46 +48,20 @@ public class JCATest extends FATServletClient {
     private static final String fvtapp = "fvtapp";
     private static final String fvtweb = "fvtweb";
 
-    @Server("com.ibm.ws.jca.fat")
-    @TestServlet(servlet = JCAFVTServlet.class, path = fvtweb)
     public static LibertyServer server;
 
-    /**
-     * Utility method to run a test on JCAFVTServlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
-     */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
+    private void runTest() throws Exception {
+        runTest(server, fvtweb, getTestMethodSimpleName());
+    }
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } finally {
-            con.disconnect();
-        }
+    private void runTest(String testName) throws Exception {
+        runTest(server, fvtweb, testName);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server = FATSuite.getServer();
+
         // Build jars that will be in the RAR
         JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");
         JCAFAT1_jar.addPackage("fat.jca.resourceadapter.jar1");
@@ -119,6 +91,25 @@ public class JCATest extends FATServletClient {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
+        if (JakartaEE9Action.isActive()) {
+            /*
+             * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
+             */
+            ServerConfiguration clone = server.getServerConfiguration().clone();
+            clone.getJMSActivationSpecs().getById("FVTMessageDrivenBeanBindingOverride").getProperties_FAT1().get(0).setDestinationType("jakarta.jms.Topic");
+
+            for (JavaPermission perm : clone.getJavaPermissions()) {
+                if (perm.getSignedBy() != null && perm.getSignedBy().startsWith("javax.resource.spi")) {
+                    perm.setSignedBy(perm.getSignedBy().replace("javax.", "jakarta."));
+                }
+                if (perm.getName() != null && perm.getName().startsWith("javax.resource.spi")) {
+                    perm.setName(perm.getName().replace("javax.", "jakarta."));
+                }
+            }
+
+            server.updateServerConfiguration(clone);
+        }
+
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();
     }
@@ -134,27 +125,28 @@ public class JCATest extends FATServletClient {
 
     @Test
     public void testActivationSpec() throws Exception {
-        runInServlet("testActivationSpec", fvtweb);
+        runTest();
     }
 
     @Test
     public void testActivationSpecBindings() throws Exception {
-        runInServlet("testActivationSpecBindings", fvtweb);
+        runTest();
     }
 
     @Test
     public void testDestinations() throws Exception {
-        runInServlet("testDestinations", fvtweb);
+        runTest();
     }
 
     @Test
+    @SkipForRepeat(EE9_FEATURES) //Transformer does not seem to transform jars inside of jars
     public void testLoginModuleInJarInJarInRar() throws Exception {
-        runInServlet("testLoginModuleInJarInJarInRar", fvtweb);
+        runTest();
     }
 
     @Test
     public void testLoginModuleInJarInRar() throws Exception {
-        runInServlet("testLoginModuleInJarInRar", fvtweb);
+        runTest();
     }
 
     /**
@@ -164,8 +156,8 @@ public class JCATest extends FATServletClient {
      */
     @Test
     public void testMissingCloseInServlet() throws Exception {
-        runInServlet("testMissingCloseInServlet", fvtweb);
-        runInServlet("testMissingCloseInServlet", fvtweb);
+        runTest();
+        runTest();
     }
 
     @AllowedFFDC({
@@ -174,7 +166,7 @@ public class JCATest extends FATServletClient {
     })
     @Test
     public void testEnableSharingForDirectLookupsFalse() throws Exception {
-        runInServlet("testEnableSharingForDirectLookupsFalse", fvtweb);
+        runTest();
     }
 
 }

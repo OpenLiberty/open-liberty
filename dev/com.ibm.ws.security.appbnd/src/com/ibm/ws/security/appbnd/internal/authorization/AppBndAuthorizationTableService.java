@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,14 @@
 package com.ibm.ws.security.appbnd.internal.authorization;
 
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -45,12 +41,11 @@ import com.ibm.ws.javaee.dd.appbnd.User;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.SecurityService;
-import com.ibm.ws.security.appbnd.internal.delegation.DefaultDelegationProvider;
 import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
 import com.ibm.ws.security.authorization.builtin.BaseAuthorizationTableService;
-import com.ibm.ws.security.delegation.DelegationProvider;
+import com.ibm.ws.security.delegation.DefaultDelegationProvider;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -77,11 +72,10 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     private static final TraceComponent tc = Tr.register(AppBndAuthorizationTableService.class);
 
     static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
+    static final String KEY_DEFAULT_DELEGATION_PROVIDER_SERVICE = "defaultDelegationProviderService";
     private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
-
-
-    private volatile DefaultDelegationProvider defaultDelegationProvider = null;
-    private ServiceRegistration<DelegationProvider> defaultDelegationProviderReg;
+    private final AtomicServiceReference<DefaultDelegationProvider> defaultDelegationProviderServiceRef = new AtomicServiceReference<DefaultDelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER_SERVICE);
+    DefaultDelegationProvider defaultDelegationProvider = null;
 
     /**
      * Invalid access ID used to indicate an attempt was made to compute the
@@ -111,6 +105,17 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
 
     protected void unsetIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
         identityStoreHandlerServiceRef.unsetReference(reference);
+    }
+
+    @Reference(service = DefaultDelegationProvider.class, name = KEY_DEFAULT_DELEGATION_PROVIDER_SERVICE,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
+    public void setDefaultDelegationProvider(ServiceReference<DefaultDelegationProvider> ref) {
+        defaultDelegationProviderServiceRef.setReference(ref);
+    }
+
+    public void unsetDefaultDelegationProvider(ServiceReference<DefaultDelegationProvider> ref) {
+        defaultDelegationProviderServiceRef.unsetReference(ref);
     }
 
     private static final class AuthzInfo {
@@ -157,37 +162,18 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
         }
     }
 
-    /**
-     * Register the webcontainer's default delegation provider.
-     *
-     * @param cc
-     */
-    private void registerDefaultDelegationProvider(ComponentContext cc) {
-        defaultDelegationProvider = new DefaultDelegationProvider();
-        defaultDelegationProvider.setSecurityService(securityServiceRef.getService());
-        defaultDelegationProvider.setIdentityStoreHandlerService(identityStoreHandlerServiceRef);
-        BundleContext bc = cc.getBundleContext();
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("type", "defaultProvider");
-        defaultDelegationProviderReg = bc.registerService(DelegationProvider.class,
-                                                          defaultDelegationProvider,
-                                                          props);
-    }
-
     @Override
     protected void activate(ComponentContext cc) {
         super.activate(cc);
         identityStoreHandlerServiceRef.activate(cc);
-        registerDefaultDelegationProvider(cc);
+        defaultDelegationProviderServiceRef.activate(cc);
     }
 
     @Override
     protected void deactivate(ComponentContext cc) {
         super.deactivate(cc);
         identityStoreHandlerServiceRef.deactivate(cc);
-        if (defaultDelegationProviderReg != null) {
-            defaultDelegationProviderReg.unregister();
-        }
+        defaultDelegationProviderServiceRef.deactivate(cc);
     }
 
     /**
@@ -232,8 +218,9 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                                                                          new Object[] { appName },
                                                                          "CWWKS9110E: Multiple applications have the name {0}. Security authorization policies requires that names be unique."));
             }
-
-            defaultDelegationProvider.createAppToSecurityRolesMapping(appName, securityRoles);
+            defaultDelegationProvider = defaultDelegationProviderServiceRef.getService();
+            if (defaultDelegationProvider != null)
+                defaultDelegationProvider.createAppToSecurityRolesMapping(appName, securityRoles);
         } catch (UnableToAdaptException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "There was a problem setting the security meta data for application " + appName + ".", e);
@@ -246,7 +233,9 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
         String appName = event.getMetaData().getJ2EEName().getApplication();
         removeTable(appName);
-        defaultDelegationProvider.removeRoleToRunAsMapping(appName);
+        defaultDelegationProvider = defaultDelegationProviderServiceRef.getService();
+        if (defaultDelegationProvider != null)
+            defaultDelegationProvider.removeRoleToRunAsMapping(appName);
     }
 
     /**

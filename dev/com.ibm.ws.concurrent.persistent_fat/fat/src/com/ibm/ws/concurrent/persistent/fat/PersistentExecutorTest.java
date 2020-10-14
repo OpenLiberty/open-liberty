@@ -20,6 +20,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -32,6 +33,10 @@ import componenttest.topology.utils.FATServletClient;
 
 import web.SchedulerFATServlet;
 
+@AllowedFFDC({
+    "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+    "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+    })
 @RunWith(FATRunner.class)
 public class PersistentExecutorTest extends FATServletClient {
 

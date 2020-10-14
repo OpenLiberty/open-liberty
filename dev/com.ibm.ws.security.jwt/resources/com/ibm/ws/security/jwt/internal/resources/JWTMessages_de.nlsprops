@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -311,3 +311,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Stellen Sie sicher, dass in der in der Nachr
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Das HTTP-Schema wird am angegebenen Endpunkt {0} verwendet. Es ist aber HTTPS erforderlich.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=F\u00fcr den angegebenen Endpunkt ist HTTPS erforderlich, in der Anforderungs-URL wurde jedoch HTTP verwendet.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=\u00dcberpr\u00fcfen Sie die Anforderungs-URL und stellen Sie sicher, dass HTTPS verwendet wird, oder \u00e4ndern Sie die Konfiguration so, dass HTTPS nicht erforderlich ist.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Der Signaturalgorithmus [{0}], der \u00fcber die MicroProfile-Config-Eigenschaften angegeben wurde, wird nicht unterst\u00fctzt. Der Signaturalgorithmus [{1}] wird verwendet.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Es werden nur bestimmte RSA-, Elliptical-Curve- und HMAC-Signaturalgorithmen unterst\u00fctzt. Der Signaturalgorithmus, der \u00fcber die MicroProfile-Config-Eigenschaften angegeben wurde, ist keiner der unterst\u00fctzten Signaturalgorithmen.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Geben Sie einen unterst\u00fctzten Signaturalgorithmus in den MicroProfile-Config-Eigenschaften an. Zu den unterst\u00fctzten Signaturalgorithmen geh\u00f6ren ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 und HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Der AMR [{0}] des bereitgestellten JWT (JSON Web Token) wird nicht als vertrauensw\u00fcrdiger AMR in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen AMRs sind [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=In der Serverkonfiguration wird angegeben, welche AMRs bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen AMRs bestimmt und deshalb kann das Token nicht validiert werden.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Rufen Sie ein neues Token f\u00fcr einen der vertrauensw\u00fcrdigen AMRs ab, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie den in der Nachricht angegebenen AMR als vertrauensw\u00fcrdigen AMR in Ihrer JWT-Konfiguration hinzu.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Die Konfiguration [{0}] gibt den Signaturalgorithmus {1} an. Dieser Algorithmus ist jedoch nur als Beta-Edition verf\u00fcgbar. Es wird stattdessen der Signaturalgorithmus {2} verwendet.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Es ist m\u00f6glicherweise f\u00fcr den in der Nachricht angegebenen Signaturalgorithmus keine vollst\u00e4ndige Unterst\u00fctzung vorhanden. Daher kann der Signaturalgorithmus nur in der Beta-Edition verwendet werden.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Konfigurieren Sie einen unterst\u00fctzten Signaturalgorithmus oder verwenden Sie die Beta-Edition dieses Produkts, um den in der Nachricht angegebenen Signaturalgorithmus zu verwenden.

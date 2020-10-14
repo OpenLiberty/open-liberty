@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.openid-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: openid-2.0
 Subsystem-Name: OpenID 2.0

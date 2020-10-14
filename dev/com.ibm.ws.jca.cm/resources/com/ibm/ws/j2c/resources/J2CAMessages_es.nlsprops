@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Se ha producido un error interno dur
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: Se ha realizado una solicitud de conexi\u00f3n para el recurso de XA {0} utilizando la autenticaci\u00f3n SPNEGO, pero no se ha configurado ning\u00fan alias de datos de autenticaci\u00f3n de recuperaci\u00f3n. El recurso de XA no puede participar en la recuperaci\u00f3n XA automatizada a menos que se configure un alias de datos de autenticaci\u00f3n de recuperaci\u00f3n.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=La recuperaci\u00f3n XA es un proceso en segundo plano automatizado, pero la autenticaci\u00f3n SPNEGO necesita entrada de usuario manual. Como resultado, la autenticaci\u00f3n SPNEGO no se puede utilizar para la recuperaci\u00f3n de XA autom\u00e1tica.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configure un alias de datos de autenticaci\u00f3n de recuperaci\u00f3n en el recurso de XA.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: MCWrapper {0} no v\u00e1lido de la agrupaci\u00f3n libre para el recurso {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Se ha producido un error al intentar reservar un MCWrapper.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

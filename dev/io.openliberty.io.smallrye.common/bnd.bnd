@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+-include= jar:${fileuri;${repo;io.smallrye.common:smallrye-common-annotation;1.4.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-expression;1.4.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-constraint;1.4.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-function;1.4.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-classloader;1.4.0}}!/META-INF/MANIFEST.MF,\
+              bnd.overrides
+
+-includeresource: \
+  @${repo;io.smallrye.common:smallrye-common-annotation;1.4.0},\
+  @${repo;io.smallrye.common:smallrye-common-expression;1.4.0},\
+  @${repo;io.smallrye.common:smallrye-common-constraint;1.4.0},\
+  @${repo;io.smallrye.common:smallrye-common-function;1.4.0},\
+  @${repo;io.smallrye.common:smallrye-common-classloader;1.4.0},\
+
+-buildpath: \
+  io.smallrye.common:smallrye-common-annotation;version=1.4.0, \
+  io.smallrye.common:smallrye-common-expression;version=1.4.0, \
+  io.smallrye.common:smallrye-common-constraint;version=1.4.0, \
+  io.smallrye.common:smallrye-common-function;version=1.4.0, \
+  io.smallrye.common:smallrye-common-classloader;version=1.4.0

@@ -46,7 +46,7 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
     public void testManyXOneCompoundPK001(
                                           TestExecutionContext testExecCtx,
                                           TestExecutionResources testExecResources,
-                                          Object managedComponentObject) {
+                                          Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -201,11 +201,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneCompoundPKTestLogic.testManyXOneCompoundPK001(): End");
         }
@@ -214,7 +209,7 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -257,11 +252,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
             //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("ManyXOneCompoundPKTestLogic.testTemplate(): End");
         }

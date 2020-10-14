@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -17,7 +18,9 @@ import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -30,7 +33,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @RunWith(FATRunner.class)
 public class EECompatibilityTest {
-
+    @Rule
+    public TestName name = new TestName();
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.feature.compatibility");
 
     @BeforeClass
@@ -65,6 +69,7 @@ public class EECompatibilityTest {
 
     static final String RESOLUTION_ERROR = "CWWKE0702E.*";
     static final String INSTALLED_FEATURES = "CWWKF0012I.*";
+    static final String NO_FEATURES = "CWWKF0046W.*";
 
     private static String msg;
     private static long shortTimeOut = 5 * 1000;
@@ -104,25 +109,23 @@ public class EECompatibilityTest {
                    msg == null);
         msg = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, shortTimeOut);
         assertTrue("The server should not install the conflicting features servlet-4.0 nor servlet-3.1 , but it did: " + msg,
-                   msg != null || !msg.contains("servlet-4.0") && !msg.contains("servlet-3.1"));
+                   msg != null && !msg.contains("servlet-4.0") && !msg.contains("servlet-3.1"));
         server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
     }
 
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingRootFeaturesEE9and8() throws Exception {
         server.changeFeatures(Arrays.asList("servlet-5.0", "servlet-4.0"));
-        server.startServer();
+        server.startServer(name.getMethodName() + ".log", true, true, false);
         msg = server.waitForStringInLogUsingMark(CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report a singleton conflict for the root (i.e. configured) features, but it did not: msg=" + msg,
                    msg != null && msg.contains("servlet-5.0") && msg.contains("servlet-4.0"));
         msg = server.waitForStringInLogUsingMark(EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should not report an EE compatibility conflict for the root features, but it did: msg=" + msg,
                    msg == null);
-        msg = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, shortTimeOut);
-        assertTrue("The server should not install the conflicting features servlet-5.0 nor servlet-4.0 , but it did: " + msg,
-                   msg != null || !msg.contains("servlet-5.0") && !msg.contains("servlet-4.0"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
+        assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
+        server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }
 
     @Test
@@ -136,7 +139,7 @@ public class EECompatibilityTest {
                    msg != null && msg.contains("jsfContainer-2.3") && msg.contains("jsp-2.2"));
         msg = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, shortTimeOut);
         assertTrue("The server should not install conflicting features jsp-2.3 nor jsp-2.2, but it did: " + msg,
-                   msg != null || !msg.contains("jsp-2.3") && !msg.contains("jsp-2.2"));
+                   msg != null && !msg.contains("jsp-2.3") && !msg.contains("jsp-2.2"));
         server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
     }
 
@@ -163,61 +166,59 @@ public class EECompatibilityTest {
     }
 
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingEeCompatibleFeaturesEE9andJakartaEE8() throws Exception {
         // This configuration requires you add many, many features to the
         // tested.features property in the bnd.bnd file
         server.changeFeatures(Arrays.asList("servlet-5.0", "jakartaee-8.0"));
-        server.startServer();
+        server.startServer(name.getMethodName() + ".log", true, true, false);
         msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         // Note that feature jakartaee-8.0 is actually ee8 compatible, so we expect
         // some Java EE feature to conflict.
         assertTrue("The feature manager should report an EE compatibility conflict for the configured servlet-5.0(EE9) and a dependent feature of jakartaee-8.0(EE8), but it did not: msg="
                    + msg, msg != null && msg.contains("servlet-5.0") && msg.contains("Jakarta EE 9") && msg.contains("Java EE"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR + "|" + "CWWKG0059E.*");
+        assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
+        server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }
 
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingHelperFeaturesJakartaEE9and8() throws Exception {
         server.changeFeatures(Arrays.asList("jakartaee-9.0", "jakartaee-8.0"));
-        server.startServer();
+        server.startServer(name.getMethodName() + ".log", true, true, false);
         // The server reports a singleton conflict and installs neither helper feature!
-        msg = server.waitForStringInLogUsingMark(CONFLICT, shortTimeOut);
+        msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report a singleton conflict for the incompatible jakartaee helper features, but it did not: msg="
-                   + msg, msg != null && msg.contains("jakartaee-9.0") && msg.contains("jakartaee-8.0"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
+                   + msg, msg != null && msg.contains("jakartaee-9.0") && msg.contains("Jakarta EE 9") && msg.contains("Java EE"));
+        assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
+        server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }
 
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingEeCompatibleFeaturesEE9and8() throws Exception {
         // These configuration causes one conflict, only: the ee conflict
         server.changeFeatures(Arrays.asList("jpaContainer-3.0", "jsf-2.3")); // Conflict: -->ee9, -->ee8
-        server.startServer();
+        server.startServer(name.getMethodName() + ".log", true, true, false);
         msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report an EE compatibility conflict for the configured jpaContainer-3.0 (jakarta) and jsf-2.3 (javaee) features, but it did not: msg="
                    + msg, msg != null && msg.contains("jpaContainer-3.0") && msg.contains("jsf-2.3"));
-        msg = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, shortTimeOut);
-        assertTrue("The server should not install the conflicting features jpaContainer-3.0 nor jsf-2.3 , but it did: " + msg,
-                   msg != null && !msg.contains("jpaContainer-3.0") && !msg.contains("jsf-2.3"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
+        assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
+        server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }
 
     // Re-purpose this test and NewEe features for early
     // development on new EE versions
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingEeCompatibleFeaturesNewEEand8() throws Exception {
         // This configuration causes more than one conflict, including the ee conflict.
         server.changeFeatures(Arrays.asList("needsNewEe-1.0", "jsf-2.3")); // Conflict: -->newEe-1.0-->ee9, jsf-2.3-->ee8
-        server.startServer();
+        server.startServer(name.getMethodName() + ".log", true, true, false);
         msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report an EE compatibility conflict for the configured jakarta and javaee features, but it did not: msg=" + msg,
                    msg != null && msg.contains("newEe-1.0") && msg.contains("jsf-2.3"));
-        msg = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, shortTimeOut);
-        assertTrue("The server should not install the conflicting features newEe-1.0 nor jsf-2.3 , but it did: " + msg,
-                   msg != null && !msg.contains("newEe-1.0") && !msg.contains("jsf-2.3"));
-        server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
+        assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
+        server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }
 }

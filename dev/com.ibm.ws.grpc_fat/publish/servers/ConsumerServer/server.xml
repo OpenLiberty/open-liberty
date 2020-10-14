@@ -91,15 +91,11 @@
 		issuer="testIssuerBad"
 		 />
 		
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
-	<grpcTarget target="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
+	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
 	
-	<!-- <grpcTarget target="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
-
-
-		
-
+	<!-- <grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
 </server>

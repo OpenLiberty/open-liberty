@@ -18,10 +18,10 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
-FEATURE_REGISTERED=CWPMI2009I: Indicii de m\u0103surare ai monitoriz\u0103rii pot fi extra\u015fi cu mpMetrics.
-FEATURE_REGISTERED.explanation=Caracteristicile monitor-1.0 \u015fi mpMetrics-3.0 sunt activate \u015fi monitorizeaz\u0103 indicii de m\u0103surare care pot fi extra\u015fi cu mpMetrics.
+FEATURE_REGISTERED=CWPMI2003I: Indicii de m\u0103surare ai monitoriz\u0103rii pot fi extra\u015fi cu mpMetrics.
+FEATURE_REGISTERED.explanation=Caracteristica Performance Monitoring \u015fi o caracteristic\u0103 MicroProfile Metrics sunt activate. Indicii de m\u0103surare de monitorizare pot fi extra\u015fi prin MicroProfile Metrics.
 FEATURE_REGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
 
-FEATURE_UNREGISTERED=CWPMI2010I: To\u0163i indicii de m\u0103surare ai monitoriz\u0103rii au fost de-\u00eenregistra\u0163i de la mpMetrics.
-FEATURE_UNREGISTERED.explanation=Caracteristica monitor-1.0, caracteristica mpMetrics-3.0 sau am\u00e2ndou\u0103 au fost \u00eenl\u0103turate de pe server \u015fi to\u0163i indicii de m\u0103surare pentru monitorizare nu mai sunt \u00eenregistra\u0163i la mpMetrics.
+FEATURE_UNREGISTERED=CWPMI2004I: To\u0163i indicii de m\u0103surare ai monitoriz\u0103rii au fost de-\u00eenregistra\u0163i de la mpMetrics.
+FEATURE_UNREGISTERED.explanation=Caracteristica Performance Monitoring, caracteristica MicroProfile Metrics sau ambele caracteristici au fost \u00eenl\u0103turate de pe server. Tuturor indicilor de m\u0103surare de monitorizare li s-a anulat \u00eenregistrarea de la MicroProfile Metrics.
 FEATURE_UNREGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.

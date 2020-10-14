@@ -69,7 +69,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
         System.out.println("NYTRACE: DualServerPeerLockingTest.setUp called");
-        servletName = "transaction/Simple2PCCloudServlet";
+        servletName = APP_NAME + "/Simple2PCCloudServlet";
         cloud1RecoveryIdentity = "cloud001";
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
         // Include the 'app1.web' package and all of it's java classes and sub-packages
@@ -83,6 +83,15 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         ShrinkHelper.defaultApp(longPeerStaleTimeServer2, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
+
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        defaultAttributesServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        defaultAttributesServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        longPeerStaleTimeServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        longPeerStaleTimeServer2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        peerLockingDisabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        peerLockingEnabledServer1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     @AfterClass
@@ -136,6 +145,23 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     @Mode(TestMode.LITE)
     public void testDefaultAttributesCloudRecovery007() throws Exception {
         dynamicTest(defaultAttributesServer1, defaultAttributesServer2, 7, 2);
+    }
+
+    /**
+     * This test simulates the process by which a homeserver can aggressively reclaim its logs while a peer is in the process
+     * of recovering those logs.
+     *
+     * The Cloud001 server is started and a servlet invoked to halt leaving an indoubt transaction. The Cloud002 server
+     * peer recovers the indoubt. But ownership of the transaction logs reverts to Cloud001 even as the Cloud002 server
+     * is recovering. Cloud002 should end its recovery processing quietly. Cloud001 is restarted and transaction recovery
+     * verified.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testDynamicCloudRecoveryInterruptedPeerRecovery() throws Exception {
+        dynamicTest(server1, server2, "InterruptedPeerRecovery", 2);
     }
 
     /**

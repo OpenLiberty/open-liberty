@@ -28,176 +28,119 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
+
 public class JMSRedeliveryTest_120846 {
 
-    private static LibertyServer server = LibertyServerFactory
-                    .getLibertyServer("TestServer");
+    private static final LibertyServer engineServer =
+        LibertyServerFactory.getLibertyServer("RedeliveryEngine");
 
-    private static LibertyServer server1 = LibertyServerFactory
-                    .getLibertyServer("TestServer1");
+    private static final LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("RedeliveryClient");
 
-    private static final int PORT = server.getHttpDefaultPort();
-    private static final String HOST = server.getHostname();
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
-    private boolean val = false;
-
+    private static final String redeliveryAppName = "JMSRedelivery_120846";
+    private static final String redeliveryContextRoot = "JMSRedelivery_120846";
+    private static final String[] redeliveryPackages = new String[] { "jmsredelivery_120846.web" };
+    
     private boolean runInServlet(String test) throws IOException {
-
-        boolean result = false;
-
-        URL url = new URL("http://" + HOST + ":" + PORT + "/JMSRedelivery_120846?test="
-                          + test);
-        System.out.println("The Servlet URL is : " + url.toString());
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-            con.connect();
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String sep = System.lineSeparator();
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                            .readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0) {
-                org.junit.Assert.fail("Missing success message in output. "
-                                      + lines);
-                result = false;
-            }
-            else
-                result = true;
-
-            return result;
-        } finally {
-            con.disconnect();
-        }
+        return TestUtils.runInServlet(clientHostName, clientPort, redeliveryContextRoot, test); // throws IOException
     }
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        engineServer.setServerConfigurationFile("RedeliveryEngine.xml");
 
-        server.copyFileToLibertyInstallRoot("lib/features",
-                                            "features/testjmsinternals-1.0.mf");
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        TestUtils.addDropinsWebApp(clientServer, redeliveryAppName, redeliveryPackages);
+        clientServer.setServerConfigurationFile("RedeliveryClient.xml");
 
-        server1.setServerConfigurationFile("JMSContext_Server.xml");
-        server1.startServer("JMSRedelivery_120846_Server.log");
-
-        server.setServerConfigurationFile("JMSContext_Client.xml");
-        server.startServer("JMSRedelivery_120846_Client.log");
-
+        engineServer.startServer("JMSRedelivery_120846_Engine.log");
+        clientServer.startServer("JMSRedelivery_120846_Client.log");
     }
 
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping server");
-            server.stopServer();
-            server1.stopServer();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+            clientServer.stopServer();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            engineServer.stopServer();
+        } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
 
-    //When a client receives a message the mandatory JMS-defined message property JMSXDeliveryCount will be set to the number of times the message has been delivered. The first time a message is received it will be set to 1
+    // When a client receives a message the mandatory JMS-defined
+    // message property JMSXDeliveryCount will be set to the number of
+    // times the message has been delivered. The first time a message
+    // is received it will be set to 1
+
     @Test
     public void testInitialJMSXDeliveryCount_B_SecOff() throws Exception {
-
-        val = runInServlet("testInitialJMSXDeliveryCount_B_SecOff");
-        assertTrue("testInitialJMSXDeliveryCount_B_SecOff failed", val);
+        boolean testResult = runInServlet("testInitialJMSXDeliveryCount_B_SecOff");
+        assertTrue("testInitialJMSXDeliveryCount_B_SecOff failed", testResult);
     }
 
     @Test
     public void testInitialJMSXDeliveryCount_TcpIp_SecOff() throws Exception {
-
-        val = runInServlet("testInitialJMSXDeliveryCount_TcpIp_SecOff");
-        assertTrue("testInitialJMSXDeliveryCount_TcpIp_SecOff failed", val);
-
+        boolean testResult = runInServlet("testInitialJMSXDeliveryCount_TcpIp_SecOff");
+        assertTrue("testInitialJMSXDeliveryCount_TcpIp_SecOff failed", testResult);
     }
 
-    //Test with message redelivery : value of 2 or more means the message has been redelivered
-    //If the JMSRedelivered message header value is set then the JMSXDeliveryCount property must always be 2 or more.
-    //Test with duplicate delivery of messages
+    // Test with message redelivery : value of 2 or more means the
+    // message has been redelivered.
+
+    // If the JMSRedelivered message header value is set then the
+    // JMSXDeliveryCount property must always be 2 or more.
+
+    // Test with duplicate delivery of messages.
+
     @Mode(TestMode.FULL)
-//    @ExpectedFFDC(value = { "java.lang.reflect.InvocationTargetException",
-//                           "java.lang.RuntimeException",
-//                           "com.ibm.ejs.container.UnknownLocalException" })
-    @Test
-    public void testRDC_BindingsAndTcpIp_SecOff() throws Exception {
-
-        server1.stopServer();
-        server.stopServer();
-
-        server.setServerConfigurationFile("120846_Bindings.xml");
-
-        server1.startServer();
-        server.startServer();
-
-        val = runInServlet("testRDC_B");
-
-        assertTrue("testRDC_B failed", val);
-
-        val = runInServlet("testMaxRDC_B");
-
-        assertTrue("testMaxRDC_B failed", val);
-
-        server1.stopServer();
-        server.stopServer();
-
-        server.setServerConfigurationFile("120846_TcpIp.xml");
-
-        server1.startServer();
-        server.startServer();
-
-        val = runInServlet("testRDC_TcpIp");
-
-        assertTrue("testRDC_TcpIp failed", val);
-
-        val = runInServlet("testMaxRDC_TcpIp");
-
-        assertTrue("testMaxRDC_TcpIp failed", val);
-
-        server.stopServer();
-        server1.stopServer();
-
-        server.setServerConfigurationFile("JMSContext_Client.xml");
-
-        server1.startServer();
-        server.startServer();
-
+    // @Test MDBMDB
+    public void testRDC_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testRDC_B");
+        assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_B failed", testResult);
     }
 
-    //Test to validate targetTransportChains
+    @Mode(TestMode.FULL)
+    @Test
+    public void testMaxRDC_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testMaxRDC_B");
+        assertTrue("testRDC_BindingsAndTcpIp_SecOff.testMaxRDC_B failed", testResult);
+    }
+
+
+    @Mode(TestMode.FULL)
+    // @Test MDBMDB
+    public void testRDC_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testRDC_TCP");
+        assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_TCP failed", testResult);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testMaxRDC_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testMaxRDC_TCP");
+        assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRMaxRDC_TCP failed", testResult);
+    }
+
+    // Validate targetTransportChains
+
     @Mode(TestMode.FULL)
     @Test
     public void testTargetTransportChainTcpIp_SecOff() throws Exception {
-
-        server1.stopServer();
-        server.stopServer();
-
-        server.setServerConfigurationFile("185047_Bindings.xml");
-
-        server1.startServer();
-        server.startServer();
-
-        val = runInServlet("testTargetChain_B");
-
-        assertTrue("testTargetChain_B failed", val);
-
-        server.stopServer();
-        server1.stopServer();
-
-        server.setServerConfigurationFile("JMSContext_Client.xml");
-
-        server1.startServer();
-        server.startServer();
-
+        boolean testResult = runInServlet("testTargetChain_B");
+        assertTrue("testTargetTransportChainTcpIp_SecOff failed", testResult);
     }
-
 }

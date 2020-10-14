@@ -20,6 +20,8 @@ import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.internal.EvaluationContext.NestedInfo;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**

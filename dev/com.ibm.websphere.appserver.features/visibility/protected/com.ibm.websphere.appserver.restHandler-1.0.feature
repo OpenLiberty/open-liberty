@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.restHandler-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-App-ForceRestart: uninstall, \
  install

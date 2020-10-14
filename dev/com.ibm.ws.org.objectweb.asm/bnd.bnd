@@ -8,16 +8,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.objectweb.asm;8.0.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.tree.analysis;8.0.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.commons;8.0.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.tree;8.0.1}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.objectweb.asm.util;8.0.1}}!/META-INF/MANIFEST.MF,\
+-include= jar:${fileuri;${repo;org.objectweb.asm;9.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.tree.analysis;9.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.commons;9.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.tree;9.0}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.objectweb.asm.util;9.0}}!/META-INF/MANIFEST.MF,\
           bnd.overrides
 
 instrument.disabled: true
 
-asmVersion=8.0.1
+asmVersion=9.0
 
 -buildpath: \
 	org.objectweb.asm;version=${asmVersion},\

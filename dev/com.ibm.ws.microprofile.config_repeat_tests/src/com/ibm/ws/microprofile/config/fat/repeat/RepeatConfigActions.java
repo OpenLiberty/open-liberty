@@ -43,7 +43,7 @@ public class RepeatConfigActions {
             case CONFIG20_EE8:
                 return new RepeatConfig20EE8(server);
             case LATEST:
-                return new RepeatConfig14EE8(server); //currently the latest version is 1.4 (EE8). Will update to 2.0 when that reaches a beta standard.
+                return new RepeatConfig20EE8(server); //currently the latest version is 1.4 (EE8). Will update to 2.0 when that reaches a beta standard.
             default:
                 throw new RuntimeException("Unknown version: " + version);
         }

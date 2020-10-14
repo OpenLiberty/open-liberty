@@ -17,14 +17,11 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -33,9 +30,6 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
  * An abstract class that defines the common functionality of a json handler services
  */
 public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
-
-    private static final TraceComponent tc = Tr.register(JsonLogHandler.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-
     protected String serverHostName = null;
     protected String serverName = null;
     protected String wlpUserDir = null;
@@ -248,7 +242,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
      * @param appsWriteJson Allow apps to write JSON to System.out/System.err
      */
     public void setAppsWriteJson(boolean appsWriteJson) {
-        this.appsWriteJson = appsWriteJson;
+        JsonLogHandler.appsWriteJson = appsWriteJson;
     }
 
 }

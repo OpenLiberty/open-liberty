@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2015 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import javax.transaction.UserTransaction;
 
 import com.ibm.ejs.container.activator.ActivationStrategy;
 import com.ibm.ejs.container.util.EJSPlatformHelper;
-import com.ibm.ejs.container.util.ExceptionUtil;
 import com.ibm.ejs.csi.NullSecurityCollaborator;
 import com.ibm.ejs.j2c.HandleList;
 import com.ibm.ejs.j2c.HandleListInterface;
@@ -81,8 +80,7 @@ import com.ibm.wsspi.injectionengine.InjectionTargetContext;
  * However, the identity associated with the <code>BeanO</code> may change
  * over time. <p>
  */
-public abstract class BeanO
-                implements EJBContextExtension, // LI3492-2
+public abstract class BeanO implements EJBContextExtension, // LI3492-2
                 TimerService, // LI2281.07
                 InjectionTargetContext, // F49213.1
                 BeanInstanceInfo //LIDB2617.11
@@ -172,8 +170,7 @@ public abstract class BeanO
      * Create a new <code>BeanO</code> instance. <p>
      */
 
-    public BeanO(EJSContainer c, EJSHome h)
-    {
+    public BeanO(EJSContainer c, EJSHome h) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "BeanO");
@@ -197,8 +194,7 @@ public abstract class BeanO
     } // BeanO
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getSimpleName() + '(' + beanId + ", " + getStateName(state) + ')';
     }
 
@@ -215,7 +211,7 @@ public abstract class BeanO
      * @throws InvocationTargetException if the bean instance cannot be created
      */
     abstract void initialize(boolean reactivate) // d623673.1
-    throws RemoteException, InvocationTargetException;
+                    throws RemoteException, InvocationTargetException;
 
     /**
      * Returns the name for the specified bean state.
@@ -231,8 +227,7 @@ public abstract class BeanO
      * @param oldState the old state <p>
      * @param newState the new state <p>
      */
-    protected final synchronized void setState(int newState)
-    {
+    protected final synchronized void setState(int newState) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && // d527372
             TEBeanLifeCycleInfo.isTraceEnabled())
@@ -251,15 +246,13 @@ public abstract class BeanO
      * @param oldState the old state <p>
      * @param newState the new state <p>
      */
-    protected final synchronized void setState(int oldState, int newState)
-                    throws InvalidBeanOStateException, BeanNotReentrantException // LIDB2775-23.7
+    protected final synchronized void setState(int oldState, int newState) throws InvalidBeanOStateException, BeanNotReentrantException // LIDB2775-23.7
     {
         //------------------------------------------------------------------------
         // Inlined assertState(oldState); for performance.               d154342.6
         //------------------------------------------------------------------------
         if (state != oldState) {
-            throw new InvalidBeanOStateException(getStateName(state),
-                            getStateName(oldState));
+            throw new InvalidBeanOStateException(getStateName(state), getStateName(oldState));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && // d527372
@@ -279,15 +272,12 @@ public abstract class BeanO
      * @param expected an <code>int</code> specifying the expected state <p>
      *
      * @exception InvalidBeanOStateException thrown if
-     *                the current state of this <code>BeanO</code> is not equal
-     *                to the expected state <p>
+     *                                           the current state of this <code>BeanO</code> is not equal
+     *                                           to the expected state <p>
      */
-    public final void assertState(int expected)
-                    throws InvalidBeanOStateException
-    {
+    public final void assertState(int expected) throws InvalidBeanOStateException {
         if (state != expected) {
-            throw new InvalidBeanOStateException(getStateName(state),
-                            getStateName(expected));
+            throw new InvalidBeanOStateException(getStateName(state), getStateName(expected));
         }
     } // assertState
 
@@ -336,8 +326,7 @@ public abstract class BeanO
      * <code>BeanO</code> is not in the CREATING state. <p>
      */
 
-    public abstract EnterpriseBean getEnterpriseBean()
-                    throws RemoteException;
+    public abstract EnterpriseBean getEnterpriseBean() throws RemoteException;
 
     /**
      * Returns an array of Interceptor instances when ivCallbackKind is set to
@@ -368,10 +357,8 @@ public abstract class BeanO
      *         this BeanO.
      **/
     // d199233
-    public final ActivationStrategy getActivationStrategy()
-    {
-        if (ivActivationStrategy == null)
-        {
+    public final ActivationStrategy getActivationStrategy() {
+        if (ivActivationStrategy == null) {
             if (home == null)
                 ivActivationStrategy = EJSContainer.homeOfHomes.getActivationStrategy();
             else
@@ -402,12 +389,12 @@ public abstract class BeanO
      * This method is called with thread contexts established. <p>
      *
      * @param id the <code>BeanId</code> to use when activating this
-     *            <code>BeanO</code>.
+     *               <code>BeanO</code>.
      * @param tx the current <code>ContainerTx</code> when this instance is being
-     *            activated.
+     *               activated.
      */
     public abstract void activate(BeanId id, ContainerTx tx) // d114677 d139352-2
-    throws RemoteException;
+                    throws RemoteException;
 
     /**
      * Indicates the <code>BeanO</code> is about to be used for
@@ -431,17 +418,16 @@ public abstract class BeanO
      * moved to the ACTIVE state. <p>
      *
      * @param supportEjbPostCreateChanges indicates if ejb field changes
-     *            in ejbPostCreate will be persisted to the database <p>
+     *                                        in ejbPostCreate will be persisted to the database <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     public abstract void postCreate(boolean supportEjbPostCreateChanges) // d142250
-    throws CreateException,
-                    RemoteException;
+                    throws CreateException, RemoteException;
 
     /**
      * Completes the creation of this <code>BeanO</code> instance. <p>
@@ -450,10 +436,7 @@ public abstract class BeanO
      * <code>ejbPostCreate</code> have been called. <p>
      */
     // d142250
-    public void afterPostCreate()
-                    throws CreateException,
-                    RemoteException
-    {
+    public void afterPostCreate() throws CreateException, RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "afterPostCreate : no implementation");
 
@@ -469,9 +452,7 @@ public abstract class BeanO
      * considered to now be in the 'READY' state. <p>
      */
     // d142250
-    public void afterPostCreateCompletion()
-                    throws CreateException
-    {
+    public void afterPostCreateCompletion() throws CreateException {
         // Most bean types don't need to do anything here.
         return;
     }
@@ -482,44 +463,43 @@ public abstract class BeanO
      * This method is called with thread contexts established. <p>
      *
      * @param tx the <code>ContainerTx</code> this instance is being
-     *            enlisted in.
+     *               enlisted in.
      *
      * @return true if a reference must be taken on the BeanO, otherwise false.
      */
     public abstract boolean enlist(ContainerTx tx) // d114677
-    throws RemoteException;
+                    throws RemoteException;
 
     /**
      * Retrieve this <code>BeanO's</code> associated enterprise bean, and
      * inform this <code>BeanO</code> that a method is about to be
      * invoked on its associated enterprise bean. <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance associated
-     *            with the pre/postInvoke, which contains an indication of
-     *            which method is being invoked on this <code>BeanO</code>.
+     * @param s  the <code>EJSDeployedSupport</code> instance associated
+     *               with the pre/postInvoke, which contains an indication of
+     *               which method is being invoked on this <code>BeanO</code>.
      * @param tx the <code>ContainerTx</code> for the transaction which
-     *            this method is being invoked in.
+     *               this method is being invoked in.
      *
      * @return the Enterprise Bean instance the method will be invoke on.
      */
     // Chanced EnterpriseBean to Object. d366807.1
     public abstract Object preInvoke(EJSDeployedSupport s,
                                      ContainerTx tx) // d139352-2
-    throws RemoteException;
+                    throws RemoteException;
 
     /**
      * Inform this <code>BeanO</code> that a method invocation has
      * completed on its associated enterprise bean. <p>
      *
      * @param id an <code>int</code> indicating which method was being
-     *            invoked on this <code>BeanO</code> <p>
+     *               invoked on this <code>BeanO</code> <p>
      *
-     * @param s the <code>EJSDeployedSupport</code> instance associated
-     *            with the pre, postInvoke <p>
+     * @param s  the <code>EJSDeployedSupport</code> instance associated
+     *               with the pre, postInvoke <p>
      */
 
-    public abstract void postInvoke(int id, EJSDeployedSupport s)
-                    throws RemoteException;
+    public abstract void postInvoke(int id, EJSDeployedSupport s) throws RemoteException;
 
     /**
      * Inform this <code>BeanO</code> that a method invocation and any
@@ -529,9 +509,7 @@ public abstract class BeanO
      * This method will only be called on stateless and message-driven beans.
      * This method will not be called on home beans.
      */
-    public void returnToPool()
-                    throws RemoteException
-    {
+    public void returnToPool() throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
@@ -542,8 +520,7 @@ public abstract class BeanO
      * <p>This method is NOT called with thread contexts established.
      */
 
-    public abstract void commit(ContainerTx tx)
-                    throws RemoteException;
+    public abstract void commit(ContainerTx tx) throws RemoteException;
 
     /**
      * Inform this <code>BeanO</code> that the transaction it was
@@ -552,8 +529,7 @@ public abstract class BeanO
      * <p>This method is NOT called with thread contexts established.
      */
 
-    public abstract void rollback(ContainerTx tx)
-                    throws RemoteException;
+    public abstract void rollback(ContainerTx tx) throws RemoteException;
 
     /**
      * Ask this <code>BeanO</code> to write its associated enterprise
@@ -564,8 +540,7 @@ public abstract class BeanO
      * established only. <p>
      */
 
-    public abstract void store()
-                    throws RemoteException;
+    public abstract void store() throws RemoteException;
 
     /**
      * Ask this <code>BeanO</code> to passivate its associated enterprise
@@ -574,8 +549,7 @@ public abstract class BeanO
      * <p>This method is NOT called with thread contexts established.
      */
 
-    public abstract void passivate()
-                    throws RemoteException;
+    public abstract void passivate() throws RemoteException;
 
     /**
      * Remove this <code>BeanO</code> instance because the user has
@@ -590,9 +564,7 @@ public abstract class BeanO
      * @see #destroy
      */
 
-    public abstract void remove()
-                    throws RemoteException,
-                    RemoveException;
+    public abstract void remove() throws RemoteException, RemoveException;
 
     public abstract void discard();
 
@@ -601,8 +573,7 @@ public abstract class BeanO
      * with is about to complete. <p>
      */
 
-    public abstract void beforeCompletion()
-                    throws RemoteException;
+    public abstract void beforeCompletion() throws RemoteException;
 
     /**
      * Ask this <code>BeanO</code> whether or not it has been removed
@@ -643,11 +614,10 @@ public abstract class BeanO
      * getTimerServcie() must provide its own checking. <p>
      *
      * @exception IllegalStateException If this instance is in a state that does
-     *                not allow timer service method operations.
+     *                                      not allow timer service method operations.
      **/
     // LI2281.07
-    public abstract void checkTimerServiceAccess()
-                    throws IllegalStateException;
+    public abstract void checkTimerServiceAccess() throws IllegalStateException;
 
     // --------------------------------------------------------------------------
     //
@@ -661,16 +631,13 @@ public abstract class BeanO
      */
     @Override
     @Deprecated
-    public java.security.Identity getCallerIdentity()
-    {
+    public java.security.Identity getCallerIdentity() {
         EJSDeployedSupport s = EJSContainer.getMethodContext();
 
         // Method not allowed from ejbTimeout.                           LI2281.07
-        if (s != null && s.methodInfo.ivInterface == MethodInterface.TIMED_OBJECT)
-        {
-            IllegalStateException ise =
-                            new IllegalStateException("getCallerIdentity() not " +
-                                                      "allowed from ejbTimeout");
+        if (s != null && s.methodInfo.ivInterface == MethodInterface.TIMED_OBJECT) {
+            IllegalStateException ise = new IllegalStateException("getCallerIdentity() not " +
+                                                                  "allowed from ejbTimeout");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getCallerIdentity: " + ise);
@@ -679,8 +646,7 @@ public abstract class BeanO
         }
 
         EJBSecurityCollaborator<?> securityCollaborator = container.ivSecurityCollaborator;
-        if (securityCollaborator == null)
-        {
+        if (securityCollaborator == null) {
             return null; // d740575
         }
 
@@ -688,8 +654,7 @@ public abstract class BeanO
     } // getCallerIdentity
 
     @Deprecated
-    private <T> java.security.Identity getCallerIdentity(EJBSecurityCollaborator<T> collaborator, EJSDeployedSupport s)
-    {
+    private <T> java.security.Identity getCallerIdentity(EJBSecurityCollaborator<T> collaborator, EJSDeployedSupport s) {
         @SuppressWarnings("unchecked")
         T uncheckedCookie = s == null ? null : (T) s.securityCookie;
         return collaborator.getCallerIdentity(home.beanMetaData, s, uncheckedCookie);
@@ -699,19 +664,16 @@ public abstract class BeanO
      * Not implemented yet
      */
     @Override
-    public Principal getCallerPrincipal()
-    {
+    public Principal getCallerPrincipal() {
         EJBSecurityCollaborator<?> securityCollaborator = container.ivSecurityCollaborator;
-        if (securityCollaborator == null)
-        {
+        if (securityCollaborator == null) {
             return NullSecurityCollaborator.UNAUTHENTICATED;
         }
 
         return getCallerPrincipal(securityCollaborator, EJSContainer.getMethodContext());
     }
 
-    private <T> Principal getCallerPrincipal(EJBSecurityCollaborator<T> collaborator, EJSDeployedSupport s)
-    {
+    private <T> Principal getCallerPrincipal(EJBSecurityCollaborator<T> collaborator, EJSDeployedSupport s) {
         @SuppressWarnings("unchecked")
         T uncheckedCookie = s == null ? null : (T) s.securityCookie;
         return collaborator.getCallerPrincipal(home.beanMetaData, s, uncheckedCookie);
@@ -722,10 +684,8 @@ public abstract class BeanO
      * this <code>BeanO</code>. <p>
      */
     @Override
-    public EJBHome getEJBHome()
-    {
-        try
-        {
+    public EJBHome getEJBHome() {
+        try {
             EJSWrapper wrapper = home.getWrapper().getRemoteWrapper();
             Object wrapperRef = container.getEJBRuntime().getRemoteReference(wrapper);
 
@@ -748,9 +708,7 @@ public abstract class BeanO
             FFDCFilter.processException(ex, CLASS_NAME + ".getEJBHome", "522", this);
             ContainerEJBException ex2 = new ContainerEJBException("Failed to get the wrapper for home.", ex);
 
-            Tr.error(tc
-                     , "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E"
-                     , new Object[] { ex, ex2.toString() }); // d194031
+            Tr.error(tc, "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E", new Object[] { ex, ex2.toString() }); // d194031
 
             throw ex2;
 
@@ -765,8 +723,7 @@ public abstract class BeanO
      * this <code>BeanO</code>. <p>
      */
     @Override
-    public EJBLocalHome getEJBLocalHome()
-    {
+    public EJBLocalHome getEJBLocalHome() {
         EJSWrapperCommon wCommon = null; // d116480
         try {
             wCommon = home.getWrapper(); // d116337
@@ -800,8 +757,7 @@ public abstract class BeanO
      */
 
     @Override
-    public synchronized UserTransaction getUserTransaction()
-    {
+    public synchronized UserTransaction getUserTransaction() {
 
         // Only TX_BEAN_MANAGED beans are allowed to call this method
 
@@ -835,20 +791,18 @@ public abstract class BeanO
      *
      * @param roleName is the name of the role to check.
      *
-     * @param bean instance if isCallerInRole is called from a business
-     *            method rather than from a container callback method (e.g. subclass
-     *            BeanO state indicates in a business method). If not in a
-     *            business method, then a null reference must be passed.
+     * @param bean     instance if isCallerInRole is called from a business
+     *                     method rather than from a container callback method (e.g. subclass
+     *                     BeanO state indicates in a business method). If not in a
+     *                     business method, then a null reference must be passed.
      *
      * @return boolean true if caller has specified role.
      */
     //LIDB2617.11 - added entire method.
     // Chanced EnterpriseBean to Object.                                d366807.1
-    public boolean isCallerInRole(String roleName, Object bean)
-    {
+    public boolean isCallerInRole(String roleName, Object bean) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCallerInRole, role = " + roleName
                          + " EJB = " + bean); //182011
         }
@@ -866,23 +820,19 @@ public abstract class BeanO
             // ensure pre EJB 3 applications see no behavior change. For EJB 3 modules
             // or later, return true so that we are consistent with web container.
             BeanMetaData bmd = home.beanMetaData;
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCallerInRole called with security disabled for EJB module version = "
                              + bmd.ivModuleVersion);
             }
             inRole = (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0);
-        }
-        else //d444696.2
+        } else //d444696.2
         {
             // Pass null EJSDeployedSupport for callback methods.            d739835
             EJSDeployedSupport s = bean == null ? null : EJSContainer.getMethodContext();
 
-            try
-            {
+            try {
                 inRole = isCallerInRole(securityCollaborator, roleName, s);
-            } catch (RuntimeException ex)
-            {
+            } catch (RuntimeException ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".isCallerInRole", "982", this);
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "isCallerInRole collaborator throwing", ex);
@@ -897,8 +847,7 @@ public abstract class BeanO
         return inRole; //d444696.2
     }
 
-    private <T> boolean isCallerInRole(EJBSecurityCollaborator<T> collaborator, String roleName, EJSDeployedSupport s)
-    {
+    private <T> boolean isCallerInRole(EJBSecurityCollaborator<T> collaborator, String roleName, EJSDeployedSupport s) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         // Security is enabled, so we need to invoke SecurityCollaborator to
@@ -913,12 +862,10 @@ public abstract class BeanO
 
         // If no links exist then the Map will be null     //428146
         BeanMetaData bmd = home.beanMetaData;
-        if (bmd.ivRoleLinkMap != null)
-        {
+        if (bmd.ivRoleLinkMap != null) {
             String tempRoleLink = home.beanMetaData.ivRoleLinkMap.get(roleName);
             // TODO - Don't insert empty string into the Map.
-            if (!"".equals(tempRoleLink))
-            {
+            if (!"".equals(tempRoleLink)) {
                 roleLink = tempRoleLink;
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "Role Link Found = " + roleLink);
@@ -940,8 +887,7 @@ public abstract class BeanO
      * NotSupported, Never, or Supports transaction attribute. <p>
      */
     @Override
-    public boolean getRollbackOnly()
-    {
+    public boolean getRollbackOnly() {
         boolean rollbackOnly = false;
         ContainerTx tx = null;
         IllegalStateException ise = null;
@@ -960,8 +906,7 @@ public abstract class BeanO
         // then the method is either NotSupported, Never, or Supports
         // (without an inherited global tran), so throw the exception
         // required by the EJB Specification.
-        if (tx == null || !tx.isTransactionGlobal())
-        {
+        if (tx == null || !tx.isTransactionGlobal()) {
             ise = new IllegalStateException("getRollbackOnly can not be called " +
                                             "without a Transaction Context");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -978,11 +923,9 @@ public abstract class BeanO
 
         // During commit processing, from a java client or timer, there may not
         // be a method context so, no need to check for Supports.          d177348
-        if (methodContext != null)
-        {
+        if (methodContext != null) {
             EJBMethodInfoImpl methodInfo = methodContext.methodInfo;
-            if (methodInfo.getTransactionAttribute() == TransactionAttribute.TX_SUPPORTS)
-            {
+            if (methodInfo.getTransactionAttribute() == TransactionAttribute.TX_SUPPORTS) {
                 ise = new IllegalStateException("getRollbackOnly can not be called " +
                                                 "from a TX SUPPORTS method");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1013,8 +956,7 @@ public abstract class BeanO
      * NotSupported, Never, or Supports transaction attribute. <p>
      */
     @Override
-    public void setRollbackOnly()
-    {
+    public void setRollbackOnly() {
         ContainerTx tx = null;
         IllegalStateException ise = null;
 
@@ -1035,8 +977,7 @@ public abstract class BeanO
         // then the method is either NotSupported, Never, or Supports
         // (without an inherited global tran), so throw the exception
         // required by the EJB Specification.
-        if (tx == null || !tx.isTransactionGlobal())
-        {
+        if (tx == null || !tx.isTransactionGlobal()) {
             ise = new IllegalStateException("setRollbackOnly can not be called " +
                                             "without a Transaction Context");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1053,12 +994,10 @@ public abstract class BeanO
 
         // During commit processing, from a java client or timer, there may not
         // be a method context so, no need to check for Supports.          d177348
-        if (methodContext != null)
-        {
+        if (methodContext != null) {
             // d161124 setRollbackOnly can not be called from supports methods
             EJBMethodInfoImpl methodInfo = methodContext.methodInfo;
-            if (methodInfo.getTransactionAttribute() == TransactionAttribute.TX_SUPPORTS)
-            {
+            if (methodInfo.getTransactionAttribute() == TransactionAttribute.TX_SUPPORTS) {
                 ise = new IllegalStateException("setRollbackOnly can not be called " +
                                                 "from a TX SUPPORTS method");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1072,8 +1011,7 @@ public abstract class BeanO
             // transaction, then this needs to be recorded, so that
             // postInvoke can avoid throwing an exception if the bean does
             // not throw an exception; per the EJB Spec.                    d186801
-            if (tx.beganInThisScope())
-            {
+            if (tx.beganInThisScope()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "setRollbackOnly called by beginner");
                 methodContext.ivBeginnerSetRollbackOnly = true;
@@ -1089,19 +1027,16 @@ public abstract class BeanO
      * @return The EJB Timer Service.
      *
      * @exception IllegalStateException The Container throws the exception
-     *                if the instance is not allowed to use this method (e.g. if the bean
-     *                is a stateful session bean)
+     *                                      if the instance is not allowed to use this method (e.g. if the bean
+     *                                      is a stateful session bean)
      **/
     // LI2281
     @Override
-    public TimerService getTimerService()
-                    throws IllegalStateException
-    {
+    public TimerService getTimerService() throws IllegalStateException {
         // The BeanO is the Timer Service object. That is how the specific
         // bean instance is tied to any created Timers. Subclasses must
         // override to check for IllegalStateException situations.
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             // EJB Spec does allow the timer service to be obtained even if the
             // bean does not have timers, but add a trace point, as that is an odd
             // thing to do...
@@ -1122,13 +1057,12 @@ public abstract class BeanO
      * @param name Name of the entry (relative to java:comp/env).
      *
      * @throws IllegalArgumentException - The Container throws the exception
-     *             if the given name does not match an entry within the
-     *             component's environment.
+     *                                      if the given name does not match an entry within the
+     *                                      component's environment.
      **/
     // New for EJB 3.0    d366807.1
     @Override
-    public Object lookup(String name)
-    {
+    public Object lookup(String name) {
         // Note: this context method is allowed from all bean methods,
         //       except the constructor... which has not way to access
         //       the context.  Therefore, no 'state' checking needs
@@ -1160,27 +1094,21 @@ public abstract class BeanO
 
         InjectionBinding<?> binding = home.beanMetaData.ivJavaColonCompEnvMap.get(lookupName);
 
-        if (binding != null)
-        {
-            try
-            {
+        if (binding != null) {
+            try {
                 result = binding.getInjectionObject();
-            } catch (InjectionException ex)
-            {
+            } catch (InjectionException ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".lookup",
                                             "1342", this);
-                IllegalArgumentException iae = new IllegalArgumentException
-                                ("Failure occurred obtaining object for " + name +
-                                 " reference defined for " + home.beanMetaData.j2eeName, ex);
+                IllegalArgumentException iae = new IllegalArgumentException("Failure occurred obtaining object for " + name +
+                                                                            " reference defined for " + home.beanMetaData.j2eeName, ex);
 
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "lookup: " + iae);
 
                 throw iae;
             }
-        }
-        else
-        {
+        } else {
             result = container.getEJBRuntime().javaColonLookup(name, home);
         }
 
@@ -1198,8 +1126,7 @@ public abstract class BeanO
      **/
     // F743-21028
     @Override
-    public Map<String, Object> getContextData()
-    {
+    public Map<String, Object> getContextData() {
         return EJSContainer.getThreadData().getContextData(); // d644886
     }
 
@@ -1213,31 +1140,26 @@ public abstract class BeanO
      * Create a single-action timer that expires after a specified duration. <p>
      *
      * @param duration The number of milliseconds that must elapse before
-     *            the timer expires.
-     * @param info Application information to be delivered along with the
-     *            timer expiration notification. This can be null.
+     *                     the timer expires.
+     * @param info     Application information to be delivered along with the
+     *                     timer expiration notification. This can be null.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If duration is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     // LI2281.07
     @Override
-    public Timer createTimer(long duration, Serializable info)
-                    throws IllegalArgumentException,
-                    IllegalStateException,
-                    EJBException
-    {
+    public Timer createTimer(long duration, Serializable info) throws IllegalArgumentException, IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createTimer: " + duration + ": " + info, this);
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -1254,8 +1176,7 @@ public abstract class BeanO
         checkTimerServiceAccess();
 
         // Make sure the arguments are valid....
-        if (duration < 0)
-        {
+        if (duration < 0) {
             IllegalArgumentException iae;
 
             iae = new IllegalArgumentException("TimerService: duration not " +
@@ -1285,43 +1206,39 @@ public abstract class BeanO
      * duration, and whose subsequent expirations occur after a specified
      * interval. <p>
      *
-     * @param initialDuration The number of milliseconds that must elapse
-     *            before the first timer expiration notification.
+     * @param initialDuration  The number of milliseconds that must elapse
+     *                             before the first timer expiration notification.
      * @param intervalDuration The number of milliseconds that must elapse
-     *            between timer expiration notifications.
-     *            Expiration notifications are scheduled relative
-     *            to the time of the first expiration. If expiration
-     *            is delayed(e.g. due to the interleaving of other
-     *            method calls on the bean) two or more expiration
-     *            notifications may occur in close succession to
-     *            "catch up".
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     *                             between timer expiration notifications.
+     *                             Expiration notifications are scheduled relative
+     *                             to the time of the first expiration. If expiration
+     *                             is delayed(e.g. due to the interleaving of other
+     *                             method calls on the bean) two or more expiration
+     *                             notifications may occur in close succession to
+     *                             "catch up".
+     * @param info             Application information to be delivered along with the timer
+     *                             expiration notification. This can be null.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If initialDuration is negative, or
-     *                intervalDuration is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         intervalDuration is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     // LI2281.07
     @Override
     public Timer createTimer(long initialDuration, long intervalDuration,
-                             Serializable info)
-                    throws IllegalArgumentException,
-                    IllegalStateException,
-                    EJBException
-    {
+                             Serializable info) throws IllegalArgumentException, IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createTimer: " + initialDuration + ", " +
-                         intervalDuration + ": " + info, this);
+                         intervalDuration + ": " + info,
+                     this);
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -1340,19 +1257,15 @@ public abstract class BeanO
         IllegalArgumentException iae = null;
 
         // Make sure the arguments are valid....
-        if (initialDuration < 0)
-        {
+        if (initialDuration < 0) {
             iae = new IllegalArgumentException("TimerService: initialDuration not " +
                                                "a valid value: " + initialDuration);
-        }
-        else if (intervalDuration < 0)
-        {
+        } else if (intervalDuration < 0) {
             iae = new IllegalArgumentException("TimerService: intervalDuration not " +
                                                "a valid value: " + intervalDuration);
         }
 
-        if (iae != null)
-        {
+        if (iae != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "createTimer: " + iae);
 
@@ -1377,31 +1290,26 @@ public abstract class BeanO
      * Create a single-action timer that expires at a given point in time. <p>
      *
      * @param expiration The point in time at which the timer must expire.
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     * @param info       Application information to be delivered along with the timer
+     *                       expiration notification. This can be null.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If expiration is null, or
-     *                expiration.getTime() is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         expiration.getTime() is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     // LI2281.07
     @Override
-    public Timer createTimer(Date expiration, Serializable info)
-                    throws IllegalArgumentException,
-                    IllegalStateException,
-                    EJBException
-    {
+    public Timer createTimer(Date expiration, Serializable info) throws IllegalArgumentException, IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createTimer: " + expiration + ": " + info, this);
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -1419,8 +1327,7 @@ public abstract class BeanO
 
         // Make sure the arguments are valid....
         if (expiration == null ||
-            expiration.getTime() < 0)
-        {
+            expiration.getTime() < 0) {
             IllegalArgumentException iae;
 
             iae = new IllegalArgumentException("TimerService: expiration not " +
@@ -1447,43 +1354,39 @@ public abstract class BeanO
      * specified interval. <p>
      *
      * @param initialExpiration The point in time at which the first timer
-     *            expiration must occur.
-     * @param intervalDuration The number of milliseconds that must elapse
-     *            between timer expiration notifications.
-     *            Expiration notifications are scheduled relative
-     *            to the time of the first expiration. If expiration
-     *            is delayed(e.g. due to the interleaving of other
-     *            method calls on the bean) two or more expiration
-     *            notifications may occur in close succession to
-     *            "catch up".
-     * @param info Application information to be delivered along with the timer
-     *            expiration notification. This can be null.
+     *                              expiration must occur.
+     * @param intervalDuration  The number of milliseconds that must elapse
+     *                              between timer expiration notifications.
+     *                              Expiration notifications are scheduled relative
+     *                              to the time of the first expiration. If expiration
+     *                              is delayed(e.g. due to the interleaving of other
+     *                              method calls on the bean) two or more expiration
+     *                              notifications may occur in close succession to
+     *                              "catch up".
+     * @param info              Application information to be delivered along with the timer
+     *                              expiration notification. This can be null.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If initialExpiration is null, or
-     *                initialExpiration.getTime() is negative, or intervalDuration
-     *                is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         initialExpiration.getTime() is negative, or intervalDuration
+     *                                         is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     // LI2281.07
     @Override
     public Timer createTimer(Date initialExpiration, long intervalDuration,
-                             Serializable info)
-                    throws IllegalArgumentException,
-                    IllegalStateException,
-                    EJBException
-    {
+                             Serializable info) throws IllegalArgumentException, IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createTimer: " + initialExpiration + ", " +
-                         intervalDuration + ": " + info, this);
+                         intervalDuration + ": " + info,
+                     this);
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -1503,19 +1406,15 @@ public abstract class BeanO
 
         // Make sure the arguments are valid....
         if (initialExpiration == null ||
-            initialExpiration.getTime() < 0)
-        {
+            initialExpiration.getTime() < 0) {
             iae = new IllegalArgumentException("TimerService: initialExpiration not " +
                                                "a valid value: " + initialExpiration);
-        }
-        else if (intervalDuration < 0)
-        {
+        } else if (intervalDuration < 0) {
             iae = new IllegalArgumentException("TimerService: intervalDuration not " +
                                                "a valid value: " + intervalDuration);
         }
 
-        if (iae != null)
-        {
+        if (iae != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "createTimer: " + iae);
 
@@ -1539,15 +1438,13 @@ public abstract class BeanO
      *         may return an empty collection.
      *
      * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                      instance is in a state that does not allow access to this method.
+     * @exception EJBException          If this method fails due to a system-level failure.
      **/
     // LI2281.07
     @Override
     public Collection<Timer> getTimers() // F743-425.1
-    throws IllegalStateException,
-                    EJBException
-    {
+                    throws IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // F743-425.CodRev
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1587,11 +1484,10 @@ public abstract class BeanO
      * @return a collection of javax.ejb.Timer objects.
      *
      * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                      instance is in a state that does not allow access to this method.
+     * @exception EJBException          If this method fails due to a system-level failure.
      **/
-    public Collection<Timer> getAllTimers() throws IllegalStateException, EJBException
-    {
+    public Collection<Timer> getAllTimers() throws IllegalStateException, EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getAllTimers: " + this);
@@ -1622,12 +1518,10 @@ public abstract class BeanO
      * been modified in the current transaction. <p>
      *
      * @exception RemoteException is thrown if an error occurs while trying
-     *                to flush the EJB cache.
+     *                                to flush the EJB cache.
      */
     @Deprecated
-    public void flush()
-                    throws RemoteException
-    {
+    public void flush() throws RemoteException {
         container.flush();
     } // flush
 
@@ -1638,73 +1532,6 @@ public abstract class BeanO
     // --------------------------------------------------------------------------
 
     /**
-     * Flush the persistent state of all entity EJB instances that have
-     * been modified in the current transaction. <p>
-     *
-     * See EJBContextExtension.flushCache() for details. <p>
-     */
-    // LI3492-2
-    @Override
-    public void flushCache()
-    {
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "flushCache : " + this);
-
-        IllegalStateException ise = null;
-        ContainerTx tx = container.getCurrentContainerTx();
-
-        try
-        {
-            if (tx == null)
-            {
-                ise = new IllegalStateException("flushCache can not be called " +
-                                                "without a Transaction Context");
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "flushCache : " + ise);
-
-                throw ise;
-            }
-            else if (tx.getGlobalRollbackOnly())
-            {
-                ise = new IllegalStateException("flushCache can not be called with " +
-                                                "transaction marked rollback only");
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "flushCache : " + ise);
-
-                throw ise;
-            }
-
-            // Perform the actual flush function...
-            tx.flush();
-
-            if (isTraceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "flushCache : successful");
-        } catch (Throwable ex) // d259882
-        {
-            FFDCFilter.processException(ex, CLASS_NAME + ".flushCache",
-                                        "1708", this);
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(tc, "flushCache : " + ex);
-
-            // If something went wrong flushing the beans out to storage, then
-            // a bean will have been discarded, and the transaction must be
-            // rolled back.                                                 d259882
-            if (tx != null)
-                tx.setRollbackOnly();
-
-            // Convert (possibly nesting) any exception in an EJBException,
-            // removing any Container specific exceptions.                  d259882
-            EJBException ejbex = ExceptionUtil.EJBException(ex);
-
-            if (isTraceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "flushCache : " + ejbex);
-
-            throw ejbex;
-        }
-    } // flushCache
-
-    /**
      * Returns true when the current thread is associated with a global
      * transaction; otherwise, returns false. <p>
      *
@@ -1712,8 +1539,7 @@ public abstract class BeanO
      * See EJBContextExtension.isTransactionGlobal() for details. <p>
      **/
     @Override
-    public boolean isTransactionGlobal()
-    {
+    public boolean isTransactionGlobal() {
         ContainerTx tx = container.getCurrentContainerTx();
         boolean isGlobal = (tx == null) ? false : tx.isTransactionGlobal();
 
@@ -1730,8 +1556,7 @@ public abstract class BeanO
     // --------------------------------------------------------------------------
 
     @Override
-    public <T> T getInjectionTargetContextData(Class<T> data)
-    {
+    public <T> T getInjectionTargetContextData(Class<T> data) {
         if (data.isAssignableFrom(getClass()))
             return data.cast(this);
 
@@ -1749,8 +1574,7 @@ public abstract class BeanO
      * Obtains the InjectionEngine for the current EJB Runtime.
      */
     // F73338
-    InjectionEngine getInjectionEngine()
-    {
+    InjectionEngine getInjectionEngine() {
         return container.getEJBRuntime().getInjectionEngine();
     }
 
@@ -1759,12 +1583,11 @@ public abstract class BeanO
      * if the bean does not have a handle list yet.
      *
      * @param create true if a handle list should be created if the bean does
-     *            not already have a handle list
+     *                   not already have a handle list
      */
     HandleList getHandleList(boolean create) // d662032
     {
-        if (connectionHandleList == null && create)
-        {
+        if (connectionHandleList == null && create) {
             connectionHandleList = new HandleList();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getHandleList: created " + connectionHandleList);
@@ -1780,25 +1603,19 @@ public abstract class BeanO
      * @return the handle list to push onto the thread stack
      */
     HandleListInterface reAssociateHandleList() // d662032
-    throws CSIException
-    {
+                    throws CSIException {
         HandleListInterface hl;
 
-        if (connectionHandleList == null)
-        {
+        if (connectionHandleList == null) {
             hl = HandleListProxy.INSTANCE;
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "reAssociateHandleList: " + connectionHandleList);
             hl = connectionHandleList;
 
-            try
-            {
+            try {
                 hl.reAssociate();
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new CSIException("", ex);
             }
         }
@@ -1811,17 +1628,14 @@ public abstract class BeanO
      */
     void parkHandleList() // d662032
     {
-        if (connectionHandleList != null)
-        {
+        if (connectionHandleList != null) {
             final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "parkHandleList: " + connectionHandleList);
 
-            try
-            {
+            try {
                 connectionHandleList.parkHandle();
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "parkHandleList: exception", ex);
             }
@@ -1833,8 +1647,7 @@ public abstract class BeanO
      */
     protected final void destroyHandleList() // d662032
     {
-        if (connectionHandleList != null)
-        {
+        if (connectionHandleList != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "destroyHandleList: destroying " + connectionHandleList);
             connectionHandleList.componentDestroyed();
@@ -1847,8 +1660,7 @@ public abstract class BeanO
      * This method was added so that the Activator has and interface to get the
      * state
      */
-    public synchronized int getState()
-    {
+    public synchronized int getState() {
         return state;
     }
 
@@ -1862,14 +1674,12 @@ public abstract class BeanO
      */
     // d126506
     public abstract void ensurePersistentState(ContainerTx tx) // d139352-2
-    throws RemoteException;
+                    throws RemoteException;
 
     // LIDB2775-23.1
 
-    protected BeanOCallDispatchToken callDispatchEventListeners
-                    (int dispatchEventCode,
-                     BeanOCallDispatchToken token)
-    {
+    protected BeanOCallDispatchToken callDispatchEventListeners(int dispatchEventCode,
+                                                                BeanOCallDispatchToken token) {
         DispatchEventListenerManager dispatchEventListenerManager = container.ivDispatchEventListenerManager; // d646413.2
         DispatchEventListenerCookie[] dispatchEventListenerCookies = null;
         EJBMethodMetaData methodMetaData = null;
@@ -1911,8 +1721,7 @@ public abstract class BeanO
                     dispatchEventListenerCookies = s.ivDispatchEventListenerCookies; // @MD11200.6A
                 }
 
-                if (dispatchEventListenerCookies == null)
-                {
+                if (dispatchEventListenerCookies == null) {
                     // create new cookie array - @MD11200.6A
                     dispatchEventListenerCookies = dispatchEventListenerManager.getNewDispatchEventListenerCookieArray(); // @MD11200.6A
                     doBeforeDispatch = true; // must drive beforeDispatch to collect cookies from event listeners - // @MD11200.6A
@@ -1963,8 +1772,7 @@ public abstract class BeanO
      * DispatchEventListeners.
      */
 
-    private EJBMethodMetaData buildTempEJBMethodMetaData(int dispatchEventCode, BeanMetaData bmd)
-    {
+    private EJBMethodMetaData buildTempEJBMethodMetaData(int dispatchEventCode, BeanMetaData bmd) {
         String methName = "";
         String methSig = "";
         switch (dispatchEventCode) {
@@ -2001,45 +1809,43 @@ public abstract class BeanO
      * Create a calendar-based timer based on the input schedule expression.
      *
      * @param schedule A schedule expression describing the timeouts for this
-     *            timer.
+     *                     timer.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If Schedule represents an invalid
-     *                schedule expression.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this
-     *                method.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                         schedule expression.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this
+     *                                         method.
+     * @exception EJBException             If this method could not complete due to a
+     *                                         system-level failure.
      */
     @Override
-    public Timer createCalendarTimer(ScheduleExpression schedule)
-    {
+    public Timer createCalendarTimer(ScheduleExpression schedule) {
         return createCalendarTimer(schedule, null); // F743-500
     }
 
     /**
      * Create a calendar-based timer based on the input schedule expression.
      *
-     * @param schedule A schedule expression describing the timeouts for this
-     *            timer.
+     * @param schedule    A schedule expression describing the timeouts for this
+     *                        timer.
      * @param timerConfig Timer configuration.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If Schedule represents an invalid
-     *                schedule expression.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this
-     *                method.
-     * @exception EJBException If this method could not complete due to a
-     *                system-level failure.
+     *                                         schedule expression.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this
+     *                                         method.
+     * @exception EJBException             If this method could not complete due to a
+     *                                         system-level failure.
      */
     // F7437591.codRev
     @Override
-    public Timer createCalendarTimer(ScheduleExpression schedule, TimerConfig timerConfig)
-    {
+    public Timer createCalendarTimer(ScheduleExpression schedule, TimerConfig timerConfig) {
         Serializable info = timerConfig == null ? null : timerConfig.getInfo();
         boolean persistent = timerConfig == null || timerConfig.isPersistent();
 
@@ -2048,10 +1854,8 @@ public abstract class BeanO
             Tr.entry(tc, "createCalendarTimer: " + persistent, this);
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
-            IllegalStateException ise = new IllegalStateException(
-                            "Timer Service: Bean does not implement TimedObject: " + beanId);
+        if (!home.beanMetaData.isTimedObject) {
+            IllegalStateException ise = new IllegalStateException("Timer Service: Bean does not implement TimedObject: " + beanId);
 
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createCalendarTimer: " + ise);
@@ -2060,8 +1864,7 @@ public abstract class BeanO
 
         if (home.beanMetaData.isEntityBean()) // d595255
         {
-            IllegalStateException ise = new IllegalStateException(
-                            "Timer Service: Entity beans cannot use calendar-based timers: " + beanId);
+            IllegalStateException ise = new IllegalStateException("Timer Service: Entity beans cannot use calendar-based timers: " + beanId);
 
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createCalendarTimer: " + ise);
@@ -2073,10 +1876,8 @@ public abstract class BeanO
         checkTimerServiceAccess();
 
         // Make sure the arguments are valid....
-        if (schedule == null)
-        {
-            IllegalArgumentException ise = new IllegalArgumentException(
-                            "TimerService: schedule not a valid value: null");
+        if (schedule == null) {
+            IllegalArgumentException ise = new IllegalArgumentException("TimerService: schedule not a valid value: null");
 
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createCalendarTimer: " + ise);
@@ -2096,32 +1897,31 @@ public abstract class BeanO
      * specified interval. <p>
      *
      * @param initialExpiration The point in time at which the first timer
-     *            expiration must occur.
-     * @param intervalDuration The number of milliseconds that must elapse
-     *            between timer expiration notifications.
-     *            Expiration notifications are scheduled relative
-     *            to the time of the first expiration. If expiration
-     *            is delayed(e.g. due to the interleaving of other
-     *            method calls on the bean) two or more expiration
-     *            notifications may occur in close succession to
-     *            "catch up".
-     * @param timerConfig Wrapper of application information to be delivered along with the timer
-     *            expiration notification. Has indication of persistent vs NP.
+     *                              expiration must occur.
+     * @param intervalDuration  The number of milliseconds that must elapse
+     *                              between timer expiration notifications.
+     *                              Expiration notifications are scheduled relative
+     *                              to the time of the first expiration. If expiration
+     *                              is delayed(e.g. due to the interleaving of other
+     *                              method calls on the bean) two or more expiration
+     *                              notifications may occur in close succession to
+     *                              "catch up".
+     * @param timerConfig       Wrapper of application information to be delivered along with the timer
+     *                              expiration notification. Has indication of persistent vs NP.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If initialExpiration is null, or
-     *                initialExpiration.getTime() is negative, or intervalDuration
-     *                is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         initialExpiration.getTime() is negative, or intervalDuration
+     *                                         is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     @Override
     public Timer createIntervalTimer(Date initialExpiration,
                                      long intervalDuration,
-                                     TimerConfig timerConfig)
-                    throws IllegalArgumentException, IllegalStateException, EJBException {
+                                     TimerConfig timerConfig) throws IllegalArgumentException, IllegalStateException, EJBException {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // F743-425.CodRev
 
@@ -2130,7 +1930,8 @@ public abstract class BeanO
 
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "createIntervalTimer: " + initialExpiration + ", " +
-                         intervalDuration + ": " + info + ", " + persistent, this); // F743-425.1
+                         intervalDuration + ": " + info + ", " + persistent,
+                     this); // F743-425.1
         }
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
@@ -2157,19 +1958,15 @@ public abstract class BeanO
 
         // Make sure the arguments are valid....
         if (initialExpiration == null ||
-            initialExpiration.getTime() < 0)
-        {
+            initialExpiration.getTime() < 0) {
             iae = new IllegalArgumentException("TimerService: initialExpiration not " +
                                                "a valid value: " + initialExpiration);
-        }
-        else if (intervalDuration < 0)
-        {
+        } else if (intervalDuration < 0) {
             iae = new IllegalArgumentException("TimerService: intervalDuration not " +
                                                "a valid value: " + intervalDuration);
         }
 
-        if (iae != null)
-        {
+        if (iae != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "createIntervalTimer: " + iae); // F743-425.1
 
@@ -2189,32 +1986,31 @@ public abstract class BeanO
      * duration, and whose subsequent expirations occur after a specified
      * interval. <p>
      *
-     * @param initialDuration The number of milliseconds that must elapse
-     *            before the first timer expiration notification.
+     * @param initialDuration  The number of milliseconds that must elapse
+     *                             before the first timer expiration notification.
      * @param intervalDuration The number of milliseconds that must elapse
-     *            between timer expiration notifications.
-     *            Expiration notifications are scheduled relative
-     *            to the time of the first expiration. If expiration
-     *            is delayed(e.g. due to the interleaving of other
-     *            method calls on the bean) two or more expiration
-     *            notifications may occur in close succession to
-     *            "catch up".
-     * @param timerConfig Wrapper of application information to be delivered along with the timer
-     *            expiration notification. Has indication of persistent vs NP.
+     *                             between timer expiration notifications.
+     *                             Expiration notifications are scheduled relative
+     *                             to the time of the first expiration. If expiration
+     *                             is delayed(e.g. due to the interleaving of other
+     *                             method calls on the bean) two or more expiration
+     *                             notifications may occur in close succession to
+     *                             "catch up".
+     * @param timerConfig      Wrapper of application information to be delivered along with the timer
+     *                             expiration notification. Has indication of persistent vs NP.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If initialDuration is negative, or
-     *                intervalDuration is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         intervalDuration is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     @Override
     public Timer createIntervalTimer(long initialDuration,
                                      long intervalDuration,
-                                     TimerConfig timerConfig)
-                    throws IllegalArgumentException, IllegalStateException, EJBException {
+                                     TimerConfig timerConfig) throws IllegalArgumentException, IllegalStateException, EJBException {
 
         boolean persistent = (timerConfig == null ? true : timerConfig.isPersistent());
         Serializable info = (timerConfig == null ? (Serializable) null : timerConfig.getInfo());
@@ -2222,12 +2018,12 @@ public abstract class BeanO
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "createIntervalTimer: " + initialDuration + ", " + // F743-425.1
-                         intervalDuration + ": " + info, this);
+                         intervalDuration + ": " + info,
+                     this);
         }
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -2246,19 +2042,15 @@ public abstract class BeanO
         IllegalArgumentException iae = null;
 
         // Make sure the arguments are valid....
-        if (initialDuration < 0)
-        {
+        if (initialDuration < 0) {
             iae = new IllegalArgumentException("TimerService: initialDuration not " +
                                                "a valid value: " + initialDuration);
-        }
-        else if (intervalDuration < 0)
-        {
+        } else if (intervalDuration < 0) {
             iae = new IllegalArgumentException("TimerService: intervalDuration not " +
                                                "a valid value: " + intervalDuration);
         }
 
-        if (iae != null)
-        {
+        if (iae != null) {
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "createIntervalTimer: " + iae); // F743-425.1
             }
@@ -2283,21 +2075,20 @@ public abstract class BeanO
     /**
      * Create a single-action timer that expires at a given point in time. <p>
      *
-     * @param expiration The point in time at which the timer must expire.
+     * @param expiration  The point in time at which the timer must expire.
      * @param timerConfig Wrapper of application information to be delivered along with the timer
-     *            expiration notification. Has indication of persistent vs NP.
+     *                        expiration notification. Has indication of persistent vs NP.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If expiration is null, or
-     *                expiration.getTime() is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     *                                         expiration.getTime() is negative.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     @Override
-    public Timer createSingleActionTimer(Date expiration, TimerConfig timerConfig)
-                    throws IllegalArgumentException, IllegalStateException, EJBException {
+    public Timer createSingleActionTimer(Date expiration, TimerConfig timerConfig) throws IllegalArgumentException, IllegalStateException, EJBException {
 
         boolean persistent = (timerConfig == null ? true : timerConfig.isPersistent());
         Serializable info = (timerConfig == null ? (Serializable) null : timerConfig.getInfo());
@@ -2308,8 +2099,7 @@ public abstract class BeanO
         }
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -2327,8 +2117,7 @@ public abstract class BeanO
 
         // Make sure the arguments are valid....
         if (expiration == null ||
-            expiration.getTime() < 0)
-        {
+            expiration.getTime() < 0) {
             IllegalArgumentException iae;
 
             iae = new IllegalArgumentException("TimerService: expiration not " +
@@ -2352,21 +2141,20 @@ public abstract class BeanO
     /**
      * Create a single-action timer that expires after a specified duration. <p>
      *
-     * @param duration The number of milliseconds that must elapse before
-     *            the timer expires.
+     * @param duration    The number of milliseconds that must elapse before
+     *                        the timer expires.
      * @param timerConfig Wrapper of application information to be delivered along with the timer
-     *            expiration notification. Has indication of persistent vs NP.
+     *                        expiration notification. Has indication of persistent vs NP.
      *
      * @return The newly created Timer.
      *
      * @exception IllegalArgumentException If duration is negative.
-     * @exception IllegalStateException If this method is invoked while the
-     *                instance is in a state that does not allow access to this method.
-     * @exception EJBException If this method fails due to a system-level failure.
+     * @exception IllegalStateException    If this method is invoked while the
+     *                                         instance is in a state that does not allow access to this method.
+     * @exception EJBException             If this method fails due to a system-level failure.
      **/
     @Override
-    public Timer createSingleActionTimer(long duration, TimerConfig timerConfig)
-                    throws IllegalArgumentException, IllegalStateException, EJBException {
+    public Timer createSingleActionTimer(long duration, TimerConfig timerConfig) throws IllegalArgumentException, IllegalStateException, EJBException {
 
         boolean persistent = (timerConfig == null ? true : timerConfig.isPersistent());
         Serializable info = (timerConfig == null ? (Serializable) null : timerConfig.getInfo());
@@ -2377,8 +2165,7 @@ public abstract class BeanO
         }
 
         // Bean must implement TimedObject interface or have a timeout method to create a timer.
-        if (!home.beanMetaData.isTimedObject)
-        {
+        if (!home.beanMetaData.isTimedObject) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Timer Service: Bean does not " +
@@ -2395,8 +2182,7 @@ public abstract class BeanO
         checkTimerServiceAccess();
 
         // Make sure the arguments are valid....
-        if (duration < 0)
-        {
+        if (duration < 0) {
             IllegalArgumentException iae;
 
             iae = new IllegalArgumentException("TimerService: duration not " +

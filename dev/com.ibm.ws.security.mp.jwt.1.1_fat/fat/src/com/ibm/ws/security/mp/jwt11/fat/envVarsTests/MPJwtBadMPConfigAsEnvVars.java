@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtMPConfigTests;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MPConfigSettings;
+import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-public class MPJwtBadMPConfigAsEnvVars extends MPJwtMPConfigTests {
+public class MPJwtBadMPConfigAsEnvVars extends MPJwt11MPConfigTests {
 
     public static Class<?> thisClass = MPJwtBadMPConfigAsEnvVars.class;
 
@@ -49,7 +49,7 @@ public class MPJwtBadMPConfigAsEnvVars extends MPJwtMPConfigTests {
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
-        MPConfigSettings mpConfigSettings = new MPConfigSettings("badKeyLocation", "badPublicKey", "badIssuer", MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings("badKeyLocation", "badPublicKey", "badIssuer", MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.ENV_VAR);
 
     }
@@ -66,7 +66,7 @@ public class MPJwtBadMPConfigAsEnvVars extends MPJwtMPConfigTests {
     public void MPJwtBadMPConfigAsEnvVars_GoodMpJwtConfigSpecifiedInServerXml() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_goodServerXmlConfig.xml");
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
@@ -82,7 +82,7 @@ public class MPJwtBadMPConfigAsEnvVars extends MPJwtMPConfigTests {
     @Test
     public void MPJwtBadMPConfigAsEnvVars_MpJwtConfigNotSpecifiedInServerXml() throws Exception {
 
-        standardTestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
                          MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP,
                          setBadIssuerExpectations(resourceServer));
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=W konfiguracji znacznika JWT podanej w komun
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: U\u017cyto schematu HTTP w okre\u015blonym punkcie ko\u0144cowym: {0}. Wymagany jest protok\u00f3\u0142 HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Podany punkt ko\u0144cowy wymaga protoko\u0142u HTTPS, ale w adresie URL \u017c\u0105dania u\u017cyto protoko\u0142u HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Sprawd\u017a adres URL \u017c\u0105dania i upewnij si\u0119, \u017ce u\u017cywany jest w nim protok\u00f3\u0142 HTTPS, lub zmie\u0144 konfiguracj\u0119, tak aby protok\u00f3\u0142 HTTPS nie by\u0142 wymagany. 
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algorytm podpisu [{0}] okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile nie jest obs\u0142ugiwany. U\u017cywany b\u0119dzie algorytm podpisu [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Obs\u0142ugiwany jest tylko okre\u015blony zestaw algorytm\u00f3w podpisu RSA, Elliptical Curve i HMAC. Algorytm podpisu okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile nie jest \u017cadnym z obs\u0142ugiwanych algorytm\u00f3w podpisu.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Okre\u015bl obs\u0142ugiwany algorytm podpisu we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile. Obs\u0142ugiwane algorytmy podpisu to ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 i HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Warto\u015b\u0107 AMR [{0}] podanego znacznika JSON web token (JWT) nie znajduje si\u0119 na li\u015bcie zaufanych warto\u015bci AMR w konfiguracji znacznika JWT [{1}]. Zaufane warto\u015bci AMR to [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=Konfiguracja serwera okre\u015bla, kt\u00f3re warto\u015bci AMR maj\u0105 by\u0107 traktowane jako zaufane podczas sprawdzania poprawno\u015bci znacznik\u00f3w JWT. Podany znacznik nie jest przeznaczony dla zaufanej warto\u015bci AMR, zatem nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Pobierz nowy znacznik dla jednej z zaufanych warto\u015bci AMR okre\u015blonych w konfiguracji znacznika JWT lub dodaj warto\u015b\u0107 AMR okre\u015blon\u0105 w komunikacie jako zaufan\u0105 w konfiguracji znacznika JWT.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Konfiguracja [{0}] okre\u015bla algorytm podpisu {1}, ale ten algorytm jest dost\u0119pny tylko w edycji beta. Zamiast tego u\u017cywany jest algorytm podpisu{2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Obs\u0142uga algorytmu podpisu wskazanego w komunikacie jest potencjalnie niepe\u0142na, dlatego tego algorytmu mo\u017cna u\u017cywa\u0107 wy\u0142\u0105cznie w edycji beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Skonfiguruj obs\u0142ugiwany algorytm podpisu lub u\u017cyj edycji beta tego produktu, je\u015bli chcesz korzysta\u0107 z algorytmu podpisu wskazanego w komunikacie.

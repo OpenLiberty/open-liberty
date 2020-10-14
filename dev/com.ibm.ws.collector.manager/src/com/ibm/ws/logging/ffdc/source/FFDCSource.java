@@ -120,14 +120,10 @@ public class FFDCSource implements Source {
 
                 long timeStampVal = in.getTimeStamp();
                 ffdcData.setDatetime(timeStampVal);
-                ffdcData.setDateOfFirstOccurence(in.getDateOfFirstOccurrence().getTime());
-                ffdcData.setCount(countVal);
                 ffdcData.setMessage(th.getMessage());
                 ffdcData.setClassName(in.getSourceId());
-                ffdcData.setLabel(in.getLabel());
                 ffdcData.setExceptionName(in.getExceptionName());
                 ffdcData.setProbeId(in.getProbeId());
-                ffdcData.setSourceId(in.getSourceId());
                 ffdcData.setThreadId(in.getThreadId());
                 ffdcData.setStacktrace(getStackTraceAsString(th));
                 ffdcData.setObjectDetails(getCallerDetails(in));

@@ -1,0 +1,67 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: P\u0159i ov\u011b\u0159en\u00ed dokumentu OpenAPI do\u0161lo k n\u00e1sleduj\u00edc\u00edm chyb\u00e1m:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Dokument OpenAPI je neplatn\u00fd.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Zadejte platn\u00fd dokument OpenAPI, kter\u00fd \u0159e\u0161\u00ed nahl\u00e1\u0161enou chybu.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: P\u0159i ov\u011b\u0159en\u00ed dokumentu OpenAPI do\u0161lo k n\u00e1sleduj\u00edc\u00edm varov\u00e1n\u00edm:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Dokument OpenAPI obsahuje data, kter\u00e1 nejsou v doporu\u010den\u00e9m form\u00e1tu.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Zadejte platn\u00fd dokument OpenAPI, kter\u00fd \u0159e\u0161\u00ed nahl\u00e1\u0161en\u00e9 varov\u00e1n\u00ed.
+
+CSS_NOT_PROCESSED=CWWKO1652W: Server nem\u016f\u017ee p\u0159e\u010d\u00edst uveden\u00fd dokument CSS {0} v d\u016fsledku {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Dokument CSS nelze zpracovat kv\u016fli platn\u00e9 chyb\u011b.
+CSS_NOT_PROCESSED.useraction=Poskytn\u011bte platn\u00fd dokument CSS.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: Hodnota zadan\u00e1 pro vlastnost {0} nen\u00ed podporov\u00e1na. Hodnota mus\u00ed b\u00fdt {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Hodnota uveden\u00e9 vlastnosti je bu\u010f neplatn\u00e1, nebo ji r\u00e1mec OpenAPI nepodporuje.
+UNSUPPORTED_CSS_VALUE.useraction=Zadejte platnou hodnotu vlastnosti ve vlastn\u00edm souboru CSS pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: Obr\u00e1zek pozad\u00ed zadan\u00fd v {0} bu\u010f neexistuje, nebo je neplatn\u00fd.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Obr\u00e1zek pozad\u00ed bu\u010f neexistuje, nebo je neplatn\u00fd.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Poskytn\u011bte platn\u00fd obr\u00e1zek.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: Vlastn\u00ed soubor CSS {0} poskytnut\u00fd pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI nebyl zpracov\u00e1n. Server obnov\u00ed platn\u00e9 hodnoty pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI. P\u0159\u00ed\u010dina={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Server nem\u016f\u017ee zpracovat vlastn\u00ed soubor CSS. Server obnov\u00ed platn\u00e9 hodnoty pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Poskytn\u011bte platn\u00fd vlastn\u00ed soubor CSS pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI spolu se v\u0161emi z\u00e1vislostmi.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: Server p\u0159e\u010detl uveden\u00fd dokument CSS {0}, ale nepoda\u0159ilo se mu naj\u00edt \u010d\u00e1st <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Uveden\u00fd dokument CSS neobsahuje < .swagger-ui .headerbar >, nebo nen\u00ed form\u00e1tov\u00e1n tak, aby spl\u0148oval omezen\u00ed po\u017eadovan\u00e1 serverem.
+CSS_SECTION_NOT_FOUND.useraction=Poskytn\u011bte platn\u00fd soubor CSS, kter\u00fd obsahuje \u010d\u00e1st <.swagger-ui .headerbar > v po\u017eadovan\u00e9m form\u00e1tu.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Nezda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu filtru OpenAPI: {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=Ur\u010denou t\u0159\u00eddu filtru OpenAPI nelze naj\u00edt nebo na\u010d\u00edst.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Ujist\u011bte se, \u017ee uveden\u00e1 t\u0159\u00edda existuje a implementuje rozhran\u00ed OASFilter.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Nezda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu \u010dte\u010dky modelu OpenAPI: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Ur\u010denou t\u0159\u00eddu \u010dte\u010dky modelu OpenAPI nelze naj\u00edt nebo na\u010d\u00edst.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Ujist\u011bte se, \u017ee uveden\u00e1 t\u0159\u00edda existuje a implementuje rozhran\u00ed OASModelReader.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Nezda\u0159ilo se zanalyzovat dokument OpenAPI pro aplikaci: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Nezda\u0159ila se zanalyzovat dokument OpenAPI ze slo\u017eky META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Ujist\u011bte se, \u017ee soubor je ve spr\u00e1vn\u00e9m form\u00e1tu YAML nebo JSON.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplikace {0} byla zpracov\u00e1na a byl vytvo\u0159en dokument OpenAPI.
+OPENAPI_APPLICATION_PROCESSED.explanation=Vygenerovan\u00fd dokument OpenAPI pro uvedenou aplikaci. Lze jej zobrazit v koncov\u00e9m bodu /openapi.
+OPENAPI_APPLICATION_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed aplikace {0} a nebyl vytvo\u0159en dokument OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed aplikace do\u0161lo k b\u011bhov\u00e9 chyb\u011b.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+  

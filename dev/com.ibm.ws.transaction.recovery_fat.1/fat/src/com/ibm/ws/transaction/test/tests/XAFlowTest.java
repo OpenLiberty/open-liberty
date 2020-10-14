@@ -27,12 +27,12 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.XAFlowServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -82,6 +82,8 @@ public class XAFlowTest extends FATServletClient {
         server.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.tx.test.impl.jar");
         assertTrue("Failed to install xaflow-1.0 bundle",
                    server.fileExistsInLibertyInstallRoot("lib/com.ibm.ws.tx.test.impl.jar"));
+
+        server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
 

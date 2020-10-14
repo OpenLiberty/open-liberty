@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=Message : {0}, Emplacement : {1}
+
+callbackURLTemplateEmpty=Le mod\u00e8le d'URL de l'objet Rappel est vide ou n'est pas une URL valide.
+callbackInvalidSubstitutionVariables=L''objet Rappel contient des variables de substitution non valides : \"{0}\".
+callbackMustBeRuntimeExpression=L''objet Rappel doit contenir une expression d''ex\u00e9cution valide comme d\u00e9fini dans la sp\u00e9cification OpenAPI. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''expression d''ex\u00e9cution n''est pas valide.
+callbackInvalidURL=L''objet Rappel doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+callbackInvalidPathItem=L''objet Rappel doit contenir un \u00e9l\u00e9ment de chemin valide. La valeur de l''\u00e9l\u00e9ment de chemin associ\u00e9e \u00e0 la cl\u00e9 \"{0}\" n''est pas une valeur valide.
+
+contactInvalidURL=L''objet Contact doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+contactInvalidEmail=L''objet Contact doit contenir une adresse \u00e9lectronique valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''adresse \u00e9lectronique n''est pas valide.
+
+exampleOnlyValueOrExternalValue=L''objet Exemple \"{0}\" sp\u00e9cifie la zone \"value\" ainsi que la zone \"externalValue\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
+
+externalDocumentationInvalidURL=L''objet Documentation externe doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
+infoTermsOfServiceInvalidURL=L''objet Info doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour la zone \"termsOfService\" n''est pas une URL valide.
+invalidUrl=L''objet \"{0}\" doit contenir une URL valide. La valeur \"{1}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+invalidUri=La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URI n''est pas valide. Il doit s''agir d''un URI absolu.
+
+invalidExtensionName=Le nom de l''extension \"{0}\" doit commencer par \"x-\"
+
+headerExampleOrExamples=L''objet En-t\u00eate \"{0}\" ne peut pas comporter \u00e0 la fois la zone \"examples\" et la zone \"example\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
+headerSchemaAndContent=L''objet En-t\u00eate \"{0}\" doit contenir une propri\u00e9t\u00e9 de sch\u00e9ma ou une propri\u00e9t\u00e9 de contenu, mais il ne peut pas contenir les deux.
+headerSchemaOrContent=L''objet En-t\u00eate \"{0}\" doit contenir une propri\u00e9t\u00e9 de sch\u00e9ma ou une propri\u00e9t\u00e9 de contenu.
+headerContentMap=La mappe \"content\" dans l''objet En-t\u00eate \"{0}\" ne doit contenir qu''une seule entr\u00e9e.
+
+licenseInvalidURL=L''objet Licence doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
+linkOperationRefInvalidOrMissing=L''objet Lien \"{0}\" sp\u00e9cifie une zone \"operationRef\" relative associ\u00e9e \u00e0 la valeur \"{1}\", qui d\u00e9signe un objet Op\u00e9ration non valide.
+linkOperationRefAndId=L''objet Lien \"{0}\" d\u00e9finit la zone \"operationRef\" et la zone \"operationId\", qui s''excluent mutuellement.
+linkOperationIdInvalid=L''objet Lien sp\u00e9cifie une zone \"operationId\" associ\u00e9e \u00e0 la valeur \"{0}\", qui d\u00e9signe un objet Op\u00e9ration qui n''existe pas.
+linkMustSpecifyOperationRefOrId=L''objet Lien \"{0}\" doit \u00eatre identifi\u00e9 avec une zone \"operationRef\" ou \"operationId\".
+
+mediaTypeExampleOrExamples=L'objet Type de support ne peut pas comporter \u00e0 la fois la zone \"examples\" et la zone \"example\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
+mediaTypeEncodingProperty=La propri\u00e9t\u00e9 de codage \"{0}\" sp\u00e9cifi\u00e9e dans l''objet Type de support n''existe pas dans le sch\u00e9ma en tant que propri\u00e9t\u00e9.
+mediaTypeEmptySchema=La propri\u00e9t\u00e9 de codage sp\u00e9cifi\u00e9e ne peut pas \u00eatre valid\u00e9e car la propri\u00e9t\u00e9 de sch\u00e9ma correspondante a pour valeur null.
+
+oAuthFlowInvalidURL=L''objet Flux OAuth doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
+nonApplicableField=La zone \"{0}\" n''est pas applicable pour \"{1}\" de type \"{2}\"
+nonApplicableFieldWithValue=La zone \"{0}\" associ\u00e9e \u00e0 la valeur \"{1}\" n''est pas applicable pour \"{2}\" de type \"{3}\"
+
+nullOrEmptyKeyInMap=La mappe contient une cl\u00e9 non valide. Une mappe ne doit pas contenir de cl\u00e9 vide ou non valide.
+nullValueInMap=La mappe sp\u00e9cifie une valeur non valide pour la cl\u00e9 \"{0}\". Une mappe ne doit pas contenir de valeurs null.
+
+openAPIVersionInvalid=L''objet OpenAPI doit contenir une version de sp\u00e9cification OpenAPI valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour la version de sp\u00e9cification OpenAPI n''est pas valide.
+openAPITagIsNotUnique=L''objet OpenAPI doit contenir des noms de balise uniques. Le nom de balise \"{0}\" n''est pas unique.
+
+operationIdsMustBeUnique=Plusieurs objets Op\u00e9ration dont la zone \"operationId\" comporte la valeur \"{0}\" ont \u00e9t\u00e9 trouv\u00e9s. \"operationId\" doit \u00eatre unique pour chaque op\u00e9ration d\u00e9crite dans l''API.
+
+parameterInFieldInvalid=La valeur \"{0}\" sp\u00e9cifi\u00e9e pour la zone \"in\" dans l''objet Param\u00e8tre \"{1}\" n''est pas valide. Les valeurs admises sont \"query\", \"header\", \"path\" et \"cookie\".
+parameterExampleOrExamples=L''objet Param\u00e8tre \"{0}\" sp\u00e9cifie une zone \"example\" et une zone \"examples\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
+parameterSchemaOrContent=L''objet Param\u00e8tre \"{0}\" ne contient pas de propri\u00e9t\u00e9 \"schema\" ni de propri\u00e9t\u00e9 \"content\".
+parameterSchemaAndContent=L''objet Param\u00e8tre \"{0}\" ne doit pas contenir de propri\u00e9t\u00e9 \"schema\" ni de propri\u00e9t\u00e9 \"content\".
+parameterContentMapMustNotBeEmpty=La mappe \"content\" dans l''objet Param\u00e8tre \"{0}\" ne doit contenir qu''une seule entr\u00e9e.
+
+pathItemInvalidRef=L''objet El\u00e9ment de chemin contient une valeur $ref \"{0}\" non valide pour l''\u00e9l\u00e9ment de chemin \"{1}\". Toute r\u00e9f\u00e9rence \u00e0 un \u00e9l\u00e9ment de chemin doit \u00eatre externe.
+pathItemRequiredField=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le param\u00e8tre de chemin \"{0}\" du chemin \"{1}\" ne contient pas la zone \"required\" ou sa valeur est diff\u00e9rente de \"true\"
+pathItemDuplicate=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le chemin \"{0}\" d\u00e9finit un param\u00e8tre \"{1}\" dupliqu\u00e9 au niveau du chemin : \"{2}\"
+pathItemParameterNotDeclaredSingle=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le chemin \"{0}\" d\u00e9finit un param\u00e8tre de chemin \"{1}\" qui n''est pas d\u00e9clar\u00e9.
+pathItemParameterNotDeclaredMultiple=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le chemin \"{0}\" d\u00e9finit des param\u00e8tres de chemin \"{1}\" qui ne sont pas d\u00e9clar\u00e9s : \"{2}\"
+pathItemOperationRequiredField=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le param\u00e8tre de chemin \"{0}\" de l''op\u00e9ration \"{1}\" du chemin \"{2}\" ne contient pas la zone \"required\" ou sa valeur est diff\u00e9rente de \"true\".
+pathItemOperationDuplicate=L''objet El\u00e9ment de chemin doit contenir un chemin valide. L''op\u00e9ration \"{0}\" du chemin \"{1}\" d\u00e9finit un param\u00e8tre \"{2}\" dupliqu\u00e9 : \"{3}\"
+pathItemOperationNullParameter=L''objet El\u00e9ment de chemin doit contenir un chemin valide. La liste des param\u00e8tres de l''op\u00e9ration \"{0}\" du chemin \"{1}\" contient un param\u00e8tre null.
+pathItemOperationParameterNotDeclaredSingle=L''objet El\u00e9ment de chemin doit contenir un chemin valide. L''op\u00e9ration \"{0}\" du chemin \"{1}\" d\u00e9finit un param\u00e8tre de chemin qui n''est pas d\u00e9clar\u00e9 : \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=L''objet El\u00e9ment de chemin doit contenir un chemin valide. L''op\u00e9ration \"{0}\" du chemin \"{1}\" d\u00e9finit des param\u00e8tres de chemin \"{2}\" qui ne sont pas d\u00e9clar\u00e9s : \"{3}\"
+pathItemOperationNoPathParameterDeclared=L''objet El\u00e9ment de chemin doit contenir un chemin valide. L''op\u00e9ration \"{0}\" du chemin \"{1}\" ne d\u00e9finit pas de param\u00e8tre de chemin d\u00e9clar\u00e9 : \"{2}\"
+pathItemInvalidFormat=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le format du chemin \"{0}\" n''est pas valide.
+
+pathsRequiresSlash=L''objet Chemins contient un chemin non valide. La valeur de chemin \"{0}\" ne commence pas par une barre oblique.
+
+referenceExternalOrExtension=La valeur \"{0}\" est une r\u00e9f\u00e9rence externe ou une extension. Aucune validation n''est disponible.
+referenceNotPartOfModel=La valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas d\u00e9finie dans l''objet Composants.
+referenceNotValid=La valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas valide.
+referenceNotValidFormat=Le format de la valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas valide.
+referenceNull=La valeur de r\u00e9f\u00e9rence est null.
+referenceToObjectInvalid=La valeur \"{0}\" n''est pas une r\u00e9f\u00e9rence valide.
+
+responseMustContainOneCode=L'objet R\u00e9ponses doit contenir au moins un code de r\u00e9ponse.
+responseShouldContainSuccess=L'objet R\u00e9ponses doit contenir au moins un code de r\u00e9ponse pour la r\u00e9ussite de l'op\u00e9ration.
+
+securityRequirementNotDeclared=Le nom \"{0}\" fourni pour l''objet Exigence de s\u00e9curit\u00e9 ne correspond pas \u00e0 un sch\u00e9ma de s\u00e9curit\u00e9 d\u00e9clar\u00e9.
+securityRequirementScopeNamesRequired=L''objet Exigence de s\u00e9curit\u00e9 \"{0}\" doit sp\u00e9cifier la liste des noms de port\u00e9e requis pour l''ex\u00e9cution.
+securityRequirementFieldNotEmpty=La zone \"{0}\" de l''objet Exigence de s\u00e9curit\u00e9 a pour valeur \"{1}\" alors qu''elle doit \u00eatre vide.
+securityRequirementIsEmpty=L'objet Exigence de s\u00e9curit\u00e9 ne doit pas \u00eatre vide.
+
+securitySchemeInFieldInvalid=L''objet Sch\u00e9ma de s\u00e9curit\u00e9 \"{0}\" n''est pas valide. La valeur de sa zone \"in\" est \"{1}\", mais elle devrait \u00eatre \"query\", \"header\" ou \"cookie\".
+securitySchemeInvalidURL=L''objet Sch\u00e9ma de s\u00e9curit\u00e9 doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
+schemaTypeArrayNullItems=La propri\u00e9t\u00e9 \"items\" doit \u00eatre d\u00e9finie pour l'objet Sch\u00e9ma de type \"array\".
+schemaReadOnlyOrWriteOnly=Les zones \"readOnly\" et \"writeOnly\" de l'objet Sch\u00e9ma ne peuvent pas toutes les deux comporter la valeur true.
+schemaMultipleOfLessThanOne=La propri\u00e9t\u00e9 \"multipleOf\" de l'objet Sch\u00e9ma doit avoir pour valeur un nombre strictement sup\u00e9rieur \u00e0 z\u00e9ro.
+schemaPropertyLessThanZero=La valeur de la propri\u00e9t\u00e9 \"{0}\" de l''objet Sch\u00e9ma doit \u00eatre sup\u00e9rieure ou \u00e9gale \u00e0 z\u00e9ro.
+schemaTypeDoesNotMatchProperty=La propri\u00e9t\u00e9 \"{0}\" n''est pas appropri\u00e9e pour l''objet Sch\u00e9ma de type \"{1}\".
+
+keyNotARegex=Le nom \"{0}\" d\u00e9clar\u00e9 dans l''objet Composants n''est pas valide. Il doit correspondre \u00e0 l''expression r\u00e9guli\u00e8re comme d\u00e9fini par la sp\u00e9cification OpenAPI.
+
+serverVariableNotDefined=La variable \"{0}\" dans l''objet Serveur n''est pas d\u00e9finie.
+serverInvalidURL=L''objet Serveur doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
+requiredFieldMissing=La zone requise \"{0}\" manque ou est associ\u00e9e \u00e0 une valeur non valide.

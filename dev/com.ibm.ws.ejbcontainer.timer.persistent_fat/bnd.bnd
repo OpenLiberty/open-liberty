@@ -29,7 +29,13 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-3.1, ejbLite-3.2, servlet-4.0
+	ejbLite-3.2, \
+	enterpriseBeansHome-4.0, \
+	enterpriseBeansLite-4.0, \
+	enterpriseBeansPersistentTimer-4.0, \
+	servlet-3.1, \
+	servlet-4.0, \
+	servlet-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
@@ -37,4 +43,6 @@ tested.features: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
-	com.ibm.ws.jaxrpc.stub;version=latest
+	com.ibm.ws.jaxrpc.stub;version=latest, \
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
+	

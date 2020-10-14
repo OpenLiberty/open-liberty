@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appSecurity-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: appSecurity-2.0
 Subsystem-Name: Application Security 2.0

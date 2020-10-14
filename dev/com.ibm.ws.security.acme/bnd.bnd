@@ -22,7 +22,7 @@ Bundle-Name: ACME support
 Bundle-SymbolicName: com.ibm.ws.security.acme
 Bundle-Description: This feature adds support for ACME and LetsEncrypt (and other CA providers).
 
-WS-TraceGroup: ACME
+WS-TraceGroup: ACMECA
 
 
 Web-ContextPath: /.well-known/acme-challenge

@@ -53,13 +53,14 @@ public class SingleRecoveryTest {
 			server.stopServer();
 		}
 
-    ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
-    ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
+		ShrinkHelper.defaultDropinApp(server, "recoveryClient", "com.ibm.ws.wsat.fat.client.recovery.*");
+		ShrinkHelper.defaultDropinApp(server, "recoveryServer", "com.ibm.ws.wsat.fat.server.*");
 
 		if (server != null && !server.isStarted()) {
-			server.setServerStartTimeout(600000);
 			server.startServer(true);
 		}
+
+		server.setServerStartTimeout(600000);
 	}
 
 	@AfterClass

@@ -11,24 +11,45 @@
 <suite name="microprofile-config-2.0-tck" verbose="2"
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config20.tck">
+        <!-- <classes>
+            <class name="org.eclipse.microprofile.config.tck.PropertyExpressionsTest"/>
+        </classes>-->
         <method-selectors>
             <method-selector>
                 <script language="beanshell">
                      <![CDATA[
-                     // ConfigProviderTest
-                     !method.getName().startsWith("testInjectedConfigSerializable") &&
-                     
-                     // EmptyValuesTest
-                     !method.getName().startsWith("testEmptyStringValues") &&
-                     !method.getName().startsWith("testEmptyStringProgrammaticLookup") &&
-                     !method.getName().startsWith("testEmptyStringPropertyFromConfigFile") &&
-                     
-                     // ConfigProviderTest
-                     // Currently fails due to a bug: https://github.com/eclipse/microprofile-config/issues/563
-                     // This test should be added back to the test set when the TCK version is upated to incllude the fix
-                     !method.getName().startsWith("testEnvironmentConfigSource")
+                     !method.getName().equals("escape")
+                     !method.getName().equals("noExpressionComposed")
+                     !method.getName().equals("multipleExpansions")
+                     !method.getName().equals("infiniteExpansion")
+                     !method.getName().equals("composedExpressions")
+                     !method.getName().equals("defaultExpressionEmpty")
+                     !method.getName().equals("defaultExpressionComposedEmpty")
+                     !method.getName().equals("simpleExpression")
+                     !method.getName().equals("expressionMissing")
+                     !method.getName().equals("arrayEscapes")
+                     !method.getName().equals("defaultExpressionComposed")
+                     !method.getName().equals("noExpression")
+                     !method.getName().equals("escapeBraces")
+                     !method.getName().equals("multipleExpressions")
+                     !method.getName().equals("defaultExpression")
+                     !method.getName().equals("testInjectedConfigSerializable")
+                     !method.getName().equals("testConfigProfileWithDev")
+                     !method.getName().equals("testConfigPropertiesDefaultOnBean")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBean")
+                     !method.getName().equals("testConfigPropertiesWithPrefix")
+                     !method.getName().equals("testNoConfigPropertiesAnnotationInjection")
+                     !method.getName().equals("testConfigPropertiesWithoutPrefix")
+                     !method.getName().equals("testConfigPropertiesPlainInjection")
+                     !method.getName().equals("testConfigPropertiesNoPrefixOnBeanThenSupplyPrefix")
+                     !method.getName().equals("expression")
+                     !method.getName().equals("expressionNoDefault")
+                     !method.getName().equals("configValueInjection")
+                     !method.getName().equals("configValue")
+                     !method.getName().equals("configValueEmpty")
+                     !method.getName().equals("test")
                 ]]>
-                </script>
+                </script>    
             </method-selector>
         </method-selectors>
         <packages>

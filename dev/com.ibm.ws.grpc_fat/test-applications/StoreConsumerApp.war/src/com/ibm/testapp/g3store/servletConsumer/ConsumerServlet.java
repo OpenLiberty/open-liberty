@@ -11,8 +11,9 @@
 package com.ibm.testapp.g3store.servletConsumer;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -22,51 +23,61 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.testapp.g3store.exception.InvalidArgException;
-import com.ibm.testapp.g3store.exception.NotFoundException;
 import com.ibm.testapp.g3store.exception.UnauthException;
 import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
+import com.ibm.testapp.g3store.restConsumer.model.AppNamewPriceListPOJO;
+import com.ibm.testapp.g3store.restConsumer.model.PriceModel;
+import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
 /**
  * Servlet implementation class ConsumerServlet
  */
-@WebServlet("/ConsumerServlet")
+@WebServlet(urlPatterns = "/ConsumerServlet", loadOnStartup = 1)
 public class ConsumerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private static Logger log = Logger.getLogger(ConsumerServlet.class.getName());
+    protected static final Class<?> c = ConsumerServlet.class;
+
+    private static final Logger log = Logger.getLogger(c.getName());
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ConsumerServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // get the values from the request
+        // set response headers
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
 
-        String address = request.getParameter("address");
-        String port = request.getParameter("port");
-
-        // call the API which will further call gRPC
-
-        List<String> list = getAllAppNames(address, Integer.parseInt(port));
-
-        // or
-
-        String appName = request.getParameter("appName");
-
-        String structure = getAppInfo(appName, address, Integer.parseInt(port));
-
-        // TODO Auto-generated method stub
-        response.getWriter().append("Served at: ").append(request.getContextPath());
+        // create HTML form
+        PrintWriter writer = response.getWriter();
+        writer.append("<!DOCTYPE html>\r\n")
+                        .append("<html>\r\n")
+                        .append("               <head>\r\n")
+                        .append("                       <title>Store Consumer Client</title>\r\n")
+                        .append("               </head>\r\n")
+                        .append("               <body>\r\n")
+                        .append("                       <h3>gRPC Store Consumer client</h3>\r\n")
+                        .append("                       <form action=\"ConsumerServlet\" method=\"POST\" name=\"form1\">\r\n")
+                        .append("                               Enter the test Name: \r\n")
+                        .append("                               <input type=\"text\" name=\"testName\" />\r\n\r\n")
+                        .append("                               <br/>")
+                        .append("                               Enter the app name: \r\n")
+                        .append("                               <input type=\"text\" value=\"defaultApp\" name=\"appName\" />\r\n\r\n")
+                        .append("                               <br/>")
+                        .append("                               <br/>")
+                        .append("                               <input type=\"submit\" value=\"Submit\" name=\"submit\" />\r\n")
+                        .append("                       </form>\r\n")
+                        .append("               </body>\r\n")
+                        .append("</html>\r\n");
     }
 
     /**
@@ -75,76 +86,152 @@ public class ConsumerServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
+        // get the values from the request
+
+        ConsumerGrpcServiceClientImpl consumerhelper = new ConsumerGrpcServiceClientImpl();
+
+        String testToInvoke = request.getParameter("testName");
+
+        if ("getAppInfo".equalsIgnoreCase(testToInvoke)) {
+            String m = testToInvoke;
+            try {
+                log.info(m + " ----------------------------------------------------------------");
+                log.info(m + " ------------" + m + "-START-----------------------");
+                String appName = request.getParameter("appName");
+                this.getAppInfo(consumerhelper, response, appName, testToInvoke);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                log.info(m + " ----------------------------------------------------------------");
+                log.info(m + " ------------" + m + "-FINISH-----------------------");
+            }
+
+        }
+
+        else if ("getAppPrice".equalsIgnoreCase(testToInvoke)) {
+            String m = testToInvoke;
+            try {
+                log.info(m + " ----------------------------------------------------------------");
+                log.info(m + " ------------" + m + "-START-----------------------");
+                String appName = request.getParameter("appName");
+                this.getAppPrice(consumerhelper, response, appName, testToInvoke);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                log.info(m + " ----------------------------------------------------------------");
+                log.info(m + " ------------" + m + "-FINISH-----------------------");
+            }
+
+        }
+
     }
 
     /**
-     * @param address
-     * @param port
-     * @return
-     */
-    private List<String> getAllAppNames(String address, int port) {
-
-        String m = "getAllAppNames";
-
-        if (log.isLoggable(Level.FINE)) {
-            log.finest("ConsumerServlet: getAllAppNames: Received request to get AppNames");
-        }
-
-        ConsumerGrpcServiceClientImpl helper = new ConsumerGrpcServiceClientImpl();
-
-        // start service
-        helper.startService_BlockingStub(address, port);
-
-        // get the value from RPC
-        List<String> nameList = null;
-        try {
-            nameList = helper.getAllAppNameList(m);
-        } catch (NotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-        } catch (UnauthException e) {
-            e.printStackTrace();
-        }
-        // stop service
-        helper.stopService();
-
-        return nameList;
-
-    }
-
-    /**
+     * @param consumerhelper2
+     * @param response
      * @param appName
-     * @param address
-     * @param port
-     * @return
+     * @param testToInvoke
      */
-    private String getAppInfo(String appName, String address, int port) {
-
-        if (log.isLoggable(Level.FINE)) {
-            log.finest("ConsumerServlet: getAppInfo: Received request to get app info");
-        }
-
-        ConsumerGrpcServiceClientImpl helper = new ConsumerGrpcServiceClientImpl();
-
-        // start service
-        helper.startService_BlockingStub(address, port);
-
-        String appStruct = null;
+    private void getAppPrice(ConsumerGrpcServiceClientImpl consumerhelper2, HttpServletResponse response, String appName, String testToInvoke) throws Exception {
+        final String m = testToInvoke;
         try {
-            appStruct = helper.getAppJSONStructure(appName, "getAppInfo");
-        } catch (InvalidArgException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (UnauthException e) {
-            e.printStackTrace();
+
+            // create grpc client
+            consumerhelper2.startService_AsyncStub(ConsumerUtils.getStoreServerHost(), ConsumerUtils.getStoreServerPort());
+
+            log.info(m + " ------------------------------------------------------------");
+            log.info(m + " ----- get price for the app to test bidi grpc streaming: " + appName);
+
+            //call the gRPC API and get response
+            List<AppNamewPriceListPOJO> listOfAppNames_w_PriceList = consumerhelper2.getAppswPrices(Arrays.asList(appName));
+            String priceType = null;
+            double price = -1;
+
+            if (listOfAppNames_w_PriceList != null) {
+                for (int i = 0; i < listOfAppNames_w_PriceList.size(); i++) {
+                    List<PriceModel> pricelist = listOfAppNames_w_PriceList.get(i).getPrices();
+                    if (pricelist != null) {
+                        for (int j = 0; j < pricelist.size(); j++) {
+                            price = pricelist.get(j).getSellingPrice();
+                            priceType = pricelist.get(j).getPurchaseType().name();
+                            log.info(m + " -----ptype=" + priceType + " price: " + price);
+                        }
+                    }
+                }
+            }
+
+            // create HTML response
+            response.setContentType("text/html");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter writer = response.getWriter();
+            writer.append("<!DOCTYPE html>\r\n")
+                            .append("<html>\r\n")
+                            .append("               <head>\r\n")
+                            .append("                       <title>Get App response message</title>\r\n")
+                            .append("               </head>\r\n")
+                            .append("               <body>\r\n");
+            if (price > 0) {
+                writer.append("<h3>getAppPrice: </h3>\r\n");
+                writer.append(Double.toString(price) + " " + priceType);
+            } else {
+                writer.append("<h3>getAppPrice: </h3>\r\n");
+                writer.append("no app registered for name \"" + appName + "\"");
+            }
+
+        } catch (Exception e) {
+            log.info(m + " " + e.getMessage());
+            throw e;
+
+        } finally {
+            // stop the grpc service
+            consumerhelper2.stopService();
         }
 
-        // this String is in JSON format
+    }
 
-        return appStruct;
+    /**
+     * @param consumerhelper2
+     * @param response
+     * @throws IOException
+     */
+    private void getAppInfo(ConsumerGrpcServiceClientImpl consumerhelper2, HttpServletResponse response, String appNameInput, String testToInvoke) throws Exception {
+
+        String appInfo_JSONString = null;
+        try {
+            // create grpc client
+            consumerhelper2.startService_BlockingStub(ConsumerUtils.getStoreServerHost(), ConsumerUtils.getStoreServerPort());
+
+            appInfo_JSONString = consumerhelper2.getAppJSONStructure(appNameInput, testToInvoke);
+
+            log.info(testToInvoke + ": request to get appInfo has been completed by Consumer Servlet " + appInfo_JSONString);
+        } catch (InvalidArgException e) {
+            throw e;
+        } catch (UnauthException e) {
+            appInfo_JSONString = e.getMessage();
+        } finally {
+            // stop the grpc service
+            consumerhelper2.stopService();
+        }
+
+        // create HTML response
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.append("<!DOCTYPE html>\r\n")
+                        .append("<html>\r\n")
+                        .append("               <head>\r\n")
+                        .append("                       <title>Get App response message</title>\r\n")
+                        .append("               </head>\r\n")
+                        .append("               <body>\r\n");
+        if (appInfo_JSONString != null) {
+
+            writer.append("<h3>getAppInfo: </h3>\r\n");
+            writer.append(appInfo_JSONString);
+        } else {
+            writer.append("<h3>FAILED </h3>\r\n");
+        }
 
     }
 

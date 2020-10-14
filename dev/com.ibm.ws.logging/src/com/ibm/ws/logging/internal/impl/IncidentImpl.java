@@ -380,6 +380,8 @@ public class IncidentImpl implements Incident {
         }
 
         StringBuilder sb = new StringBuilder();
+
+        @SuppressWarnings("resource")
         Formatter formatter = new Formatter(sb, Locale.US);
 
         formatter.format("%6d %6d %27s %27s",

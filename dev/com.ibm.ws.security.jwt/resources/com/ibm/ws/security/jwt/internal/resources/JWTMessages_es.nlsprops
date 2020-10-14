@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Asegurese que la configuraci\u00f3n JWT que 
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=El punto final especificado requiere HTTPS, pero se ha utilizado HTTP en el URL de solicitud.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Compruebe el URL de solicitud y aseg\u00farese de que utiliza HTTPS o cambie la configuraci\u00f3n para que no sea necesario HTTPS.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: El algoritmo de firma [{0}] que se especifica en las propiedades de configuraci\u00f3n de MicroProfile no est\u00e1 soportado. Se utilizar\u00e1 el algoritmo de firma [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Solo se da soporte a un conjunto determinado de algoritmos de firma RSA, Elliptical Curve y HMAC. El algoritmo de firma que se especifica en las propiedades de configuraci\u00f3n de MicroProfile no es uno de los algoritmos de firma soportados.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Especifique un algoritmo de firma soportado en las propiedades de configuraci\u00f3n de MicroProfile. Los algoritmos de firma admitidos incluyen ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 y HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: El AMR [{0}] de la JWT (JSON Web Token) proporcionada no figura como AMR de confianza en la configuraci\u00f3n de JWT [{1}]. Los AMR de confianza son [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=La configuraci\u00f3n del servidor especifica los AMR de confianza durante la validaci\u00f3n de JWT. La se\u00f1al proporcionada no est\u00e1 pensada para un AMR de confianza, por lo tanto, no se puede validar la se\u00f1al.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenga una nueva se\u00f1al para uno de los AMR de confianza especificados en su configuraci\u00f3n de JWT, o a\u00f1ada a su configuraci\u00f3n de JWT el AMR especificado en el mensaje como un AMR de confianza.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configuraci\u00f3n [{0}] especifica el algoritmo de firma {1}, pero dicho algoritmo s\u00f3lo est\u00e1 disponible en la edici\u00f3n beta. En su lugar se utiliza el algoritmo de firma {2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Es posible que el soporte para el algoritmo de firma especificado en el mensaje est\u00e9 incompleto, por lo tanto el algoritmo de firma s\u00f3lo se puede utilizar en la edici\u00f3n beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure un algoritmo de firma que est\u00e9 soportado o utilice la edici\u00f3n beta de este producto para utilizar el algoritmo de firma especificado en el mensaje.

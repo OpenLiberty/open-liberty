@@ -11,14 +11,18 @@
 package com.ibm.ws.messaging.JMS20.fat.SharedSubscription;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,70 +34,97 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
+
 public class SharedSubscriptionTest_129623 {
 
-    private static LibertyServer server = LibertyServerFactory
-                    .getLibertyServer("TestServer");
+    private static LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("SharedSubscriptionClient");
 
-    private static LibertyServer server1 = LibertyServerFactory
-                    .getLibertyServer("TestServer1");
+    private static LibertyServer engineServer =
+        LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
 
-    private static final int PORT = server.getHttpDefaultPort();
-    private static final String HOST = server.getHostname();
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
-    private static boolean testResult = false;
+    private static final String subscriptionAppName = "SharedSubscription";
+    private static final String subscriptionContextRoot = "SharedSubscription";
+    private static final String[] subscriptionPackages = new String[] {
+        "sharedsubscription.web",
+        "sharedsubscription.ejb" };
 
-    private boolean runInServlet(String test) throws IOException {
-        boolean result = false;
-        System.out.println(" Ending : " + test);
-        URL url = new URL("http://" + HOST + ":" + PORT
-                          + "/SharedSubscription?test=" + test);
-        System.out.println("The Servlet URL is : " + url.toString());
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-            con.connect();
+    //
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String sep = System.lineSeparator();
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                            .readLine())
-                lines.append(line).append(sep);
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0) {
-                org.junit.Assert.fail("Missing success message in output. "
-                                      + lines);
-                result = false;
-            }
+    //
 
-            else
-                result = true;
+    // Relative to the server 'logs' folder.
+    private static final String JMX_LOCAL_ADDRESS_REL_PATH = "state/com.ibm.ws.jmx.local.address";
 
-            return result;
-        } finally {
-            con.disconnect();
+    private static String readLocalAddress(LibertyServer libertyServer) throws FileNotFoundException, IOException {
+        List<String> localAddressLines = TestUtils.readLines(libertyServer, JMX_LOCAL_ADDRESS_REL_PATH);
+        // throws FileNotFoundException, IOException
+
+        if ( localAddressLines.isEmpty() ) {
+            throw new IOException("Empty JMX local address file [ " + libertyServer.getLogsRoot() + " ] [ " + JMX_LOCAL_ADDRESS_REL_PATH + " ]");
         }
+
+        return localAddressLines.get(0);
     }
+
+    private static String localAddress;
+
+    private static void setLocalAddress(String localAddress) {
+        System.out.println("Local address [ " + localAddress + " ]");
+        SharedSubscriptionTest_129623.localAddress = localAddress;
+    }
+
+    private static String getLocalAddress() {
+        return localAddress;
+    }
+
+    private static boolean runInServlet(String test) throws IOException {
+        return TestUtils.runInServlet( clientHostName, clientPort, subscriptionContextRoot, test, getLocalAddress() );
+        // throws IOException
+    }
+
+    //
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        engineServer.setServerConfigurationFile("SharedSubscriptionEngine.xml");
 
-        server.copyFileToLibertyInstallRoot("lib/features",
-                                            "features/testjmsinternals-1.0.mf");
-        server1.copyFileToLibertyInstallRoot("lib/features",
-                                             "features/testjmsinternals-1.0.mf");
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        clientServer.setServerConfigurationFile("SharedSubscriptionClient.xml");
+        TestUtils.addDropinsWebApp(clientServer, subscriptionAppName, subscriptionPackages);
 
-        server.setServerConfigurationFile("JMSContext.xml");
-        server1.setServerConfigurationFile("TestServer1.xml");
+        engineServer.startServer("SharedSubscriptionEngine_129623.log");
+        clientServer.startServer("SharedSubscriptionClient_129623.log");
 
-        server.startServer("SharedSubscriptionTestClient_129623.log");
-        server1.startServer("SharedSubscriptionTestServer_129623.log");
+        setLocalAddress( readLocalAddress(engineServer) );
+        // 'readLocalAddress' throws IOException
     }
+
+    @org.junit.AfterClass
+    public static void tearDown() {
+        try {
+            clientServer.stopServer();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        try {
+            engineServer.stopServer();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    //
 
     // 129623_1 JMSConsumer createSharedDurableConsumer(Topic topic,String name)
     // 129623_1_1 Creates a shared durable subscription on the specified topic
@@ -106,59 +137,89 @@ public class SharedSubscriptionTest_129623 {
     // until they are delivered to, and acknowledged by, a consumer on this
     // durable subscription or until they have expired.
     // Bindings and Security Off
+
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableExpiry_B_SecOff() throws Exception {
+        List<String> testFailures = new ArrayList<String>();
 
-        boolean val1 = false;
-        boolean val2 = false;
-        boolean val3 = false;
-        boolean val4 = false;
+        String testName1 = "testCreateSharedDurableConsumer_create_B_SecOff";
+        if ( !runInServlet(testName1) ) {
+            testFailures.add(testName1);
+        }
+        String testName2 = "testCreateSharedDurableConsumer_create_Expiry_B_SecOff";
+        if ( !runInServlet(testName2) ) {
+            testFailures.add(testName2);
+        }
 
-        val1 = runInServlet("testCreateSharedDurableConsumer_create_B_SecOff");
-        val2 = runInServlet("testCreateSharedDurableConsumer_create_Expiry_B_SecOff");
-        server.stopServer();
-        Thread.sleep(1000);
-        server.startServer("SharedSubscriptionTestClient_129623.log");
+        String testName3 = "testCreateSharedDurableConsumer_consume_B_SecOff";
+        if ( !runInServlet(testName3) ) {
+             testFailures.add(testName3);
+        }
+        String testName4 = "testCreateSharedDurableConsumer_consume_Expiry_B_SecOff";
+        if ( !runInServlet(testName4) ) {
+            testFailures.add(testName4);
+        }
 
-        val3 = runInServlet("testCreateSharedDurableConsumer_consume_B_SecOff");
-        val4 = runInServlet("testCreateSharedDurableConsumer_consume_Expiry_B_SecOff");
+        if ( !testFailures.isEmpty() ) {
+            assertTrue(
+               "testCreateSharedDurableExpiry_B_SecOff failures: [ " + printString(testFailures) + " ]",
+                testFailures.isEmpty() );
+        }
+    }
 
-        if (val1 == true && val2 == true && val3 == true && val4 == true)
-            testResult = true;
+    private String printString(List<String> storage) {
+        int numElements = storage.size();
+        if ( numElements == 0 ) {
+            return "{ **NONE** }";
+        } else {
+            StringBuilder printBuffer = new StringBuilder();
 
-        assertTrue("testCreateSharedDurableExpiry_B_SecOff failed", testResult);
+            printBuffer.append("{ ");
+            printBuffer.append( storage.get(0) );
 
+            for ( int elementNo = 1; elementNo < numElements; elementNo++ ) {
+                printBuffer.append(", ");
+                printBuffer.append( storage.get(elementNo) );
+            }
+
+            printBuffer.append(" }");
+
+            return printBuffer.toString();
+        }
     }
 
     // TCP and Security Off
+
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableExpiry_TCP_SecOff() throws Exception {
+        List<String> testFailures = new ArrayList<String>();
 
-        boolean val1 = false;
-        boolean val2 = false;
-        boolean val3 = false;
-        boolean val4 = false;
+        String testName1 = "testCreateSharedDurableConsumer_create_TCP_SecOff";
+        if ( !runInServlet(testName1) ) {
+            testFailures.add(testName1);
+        }
+        String testName2 = "testCreateSharedDurableConsumer_create_Expiry_TCP_SecOff";
+        if ( !runInServlet(testName2) ) {
+            testFailures.add(testName2);
+        }
 
-        val1 = runInServlet("testCreateSharedDurableConsumer_create_TCP_SecOff");
+        String testName3 = "testCreateSharedDurableConsumer_consume_TCP_SecOff";
+        if ( !runInServlet(testName3) ) {
+            testFailures.add(testName3);
+        }
 
-        val2 = runInServlet("testCreateSharedDurableConsumer_create_Expiry_TCP_SecOff");
+        String testName4 = "testCreateSharedDurableConsumer_consume_Expiry_TCP_SecOff";
+        if ( !runInServlet(testName4) ) {
+            testFailures.add(testName4);
+        }
 
-        server.stopServer();
-        server1.stopServer();
-        Thread.sleep(1000);
-        server.startServer("SharedSubscriptionTestClient_129623.log");
-        server1.startServer("SharedSubscriptionTestServer_129623.log");
-
-        val3 = runInServlet("testCreateSharedDurableConsumer_consume_TCP_SecOff");
-
-        val4 = runInServlet("testCreateSharedDurableConsumer_consume_Expiry_TCP_SecOff");
-
-        if (val1 == true && val2 == true && val3 == true && val4 == true)
-            testResult = true;
-
-        assertTrue("testCreateSharedDurableExpiry_TCP_SecOff failed", testResult);
+        if ( !testFailures.isEmpty() ) {
+            assertTrue(
+                "testCreateSharedDurableExpiry_TCP_SecOff failures: [ " + printString(testFailures) + " ]",
+                testFailures.isEmpty() );
+        }
     }
 
     // 129623_1_4 A durable subscription will continue to accumulate messages
@@ -166,23 +227,16 @@ public class SharedSubscriptionTest_129623 {
     // Bindings and Security Off
 
     @Test
-    public void testCreateSharedDurableConsumer_unsubscribe_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_unsubscribe_B_SecOff");
-
+    public void testCreateSharedDurableConsumer_unsubscribe_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_unsubscribe_B_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_unsubscribe_B_SecOff failed", testResult);
-
     }
 
     // TCP and Sec Off
 
     @Test
-    public void testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff");
-
+    public void testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff failed", testResult);
     }
 
@@ -197,143 +251,99 @@ public class SharedSubscriptionTest_129623 {
     // Bindings and Sec Off
 
     // @Mode(TestMode.FULL)
-    ////@Test
+    // @Test BNDBND
     public void testMultiSharedDurConsumer_B_SecOff() throws Exception {
-
-        server.stopServer();
-
-        server.setServerConfigurationFile("topicMDB_server.xml");
-
-        server.startServer();
-
-        String changedMessageFromLog = server.waitForStringInLog(
-                                                                 "CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-                      "Could not find the server start info message in the new file",
-                      changedMessageFromLog);
-
         runInServlet("testBasicMDBTopic");
 
-        server.setMarkToEndOfLog();
-        String msg = null;
-        int count1 = 0;
-        int count2 = 0;
-        int i = 0;
-        do {
-            // msg =
-            // server.waitForStringInLog("Received in MDB1: testBasicMDBTopic:",
-            // server.getMatchingLogFile("trace.log"));
-            if (i == 0)
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB1: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            else
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB1: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            if (msg != null) {
-                count1++;
-                i++;
-            }
-        } while (msg != null);
-        i = 0;
-        do {
-            if (i == 0)
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB2: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            else
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB2: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            if (msg != null) {
-                count2++;
-                i++;
-            }
-        } while (msg != null);
-        System.out.println("Number of messages received on MDB1 is " + count1
-                           + " and number of messages received on MDB2 is " + count2);
+        clientServer.setMarkToEndOfLog();
 
-        boolean output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
+        int count1 = 0;
+        String msg1;
+        do {
+            msg1 = clientServer.waitForStringInLogUsingMark(
+                "Received in MDB1: testBasicMDBTopic:",
+                clientServer.getMatchingLogFile("trace.log") );
+            if ( msg1 != null ) {
+                count1++;
+            }
+        } while ( msg1 != null );
+        System.out.println("Messages received on MDB1 [ " + count1 + " ]");
+
+        int count2 = 0;
+        String msg2;
+        do {
+            msg2 = clientServer.waitForStringInLogUsingMark(
+                "Received in MDB2: testBasicMDBTopic:",
+                clientServer.getMatchingLogFile("trace.log") );
+            if ( msg2 != null ) {
+                count2++;
+            }
+        } while ( msg2 != null );
+        System.out.println("Messages received on MDB2 [ " + count2 + " ]");
+
+        boolean testFailed = false;
+        if ( (count1 > 2) || (count2 > 2) || (count1 + count2 != 3) ) {
+            testFailed = true;
         }
 
-        assertTrue("output value is false", output);
-
-        server.stopServer();
-        server.setServerConfigurationFile("JMSContext.xml");
-        server.startServer();
-
+        if ( testFailed ) {
+            assertFalse(
+                "testMultiSharedDurConsumer_B_SecOff failed;" +
+                    " MDB1 messages [ " + count1 + " ];" +
+                    " MDB2 messages [ " + count2 + " ]",
+                testFailed );
+        }
     }
 
     // TCP and SecurityOff
     // @Mode(TestMode.FULL)
-    ////@Test
+    // @Test BNDBND
     public void testMultiSharedDurConsumer_TCP_SecOff() throws Exception {
-        server1.stopServer();
-        server1.setServerConfigurationFile("topicMDBServer.xml");
-        server1.startServer();
-
-        server.stopServer();
-        server.setServerConfigurationFile("topicMDB_TcpIp_server.xml");
-        server.startServer();
-
         runInServlet("testBasicMDBTopic_TCP");
-        server.setMarkToEndOfLog();
-        String msg = null;
-        int count1 = 0;
-        int count2 = 0;
-        int i = 0;
-        do {
-            msg = server.waitForStringInLog(
-                                            "Received in MDB1: testBasicMDBTopic:",
-                                            server.getMatchingLogFile("trace.log"));
-            if (i == 0)
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB1: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            else
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB1: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            if (msg != null) {
-                count1++;
-                i++;
-            }
-        } while (msg != null);
-        i = 0;
-        do {
-            if (i == 0)
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB2: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            else
-                msg = server.waitForStringInLogUsingMark(
-                                                         "Received in MDB2: testBasicMDBTopic:",
-                                                         server.getMatchingLogFile("trace.log"));
-            if (msg != null) {
-                count2++;
-                i++;
-            }
-        } while (msg != null);
-        System.out.println("Number of messages received on MDB1 is " + count1
-                           + " and number of messages received on MDB2 is " + count2);
 
-        boolean output = false;
-        if (count1 <= 2 && count2 <= 2 && (count1 + count2 == 3)) {
-            output = true;
+        clientServer.setMarkToEndOfLog();
+
+        int count1 = 0;
+        String msg1;
+        do {
+            String discardedMsg = clientServer.waitForStringInLog(
+                "Received in MDB1: testBasicMDBTopic:",
+                clientServer.getMatchingLogFile("trace.log"));
+            msg1 = clientServer.waitForStringInLogUsingMark(
+                 "Received in MDB1: testBasicMDBTopic:",
+                 clientServer.getMatchingLogFile("trace.log"));
+
+            if ( msg1 != null ) {
+                count1++;
+            }
+        } while ( msg1 != null );
+        System.out.println("Messages received on MDB1 [ " + count1 + " ]");
+
+        int count2 = 0;
+        String msg2;
+        do {
+            msg2 = clientServer.waitForStringInLogUsingMark(
+                "Received in MDB2: testBasicMDBTopic:",
+                clientServer.getMatchingLogFile("trace.log"));
+
+            if ( msg2 != null ) {
+                count2++;
+            }
+        } while ( msg2 != null );
+        System.out.println("Messages received on MDB2 [ " + count2 + " ]");
+
+        boolean testFailed = false;
+        if ( (count1 > 2) || (count2 > 2) || (count1 + count2 != 3) ) {
+            testFailed = true;
         }
 
-        assertTrue("output value is false", output);
-
-        server1.stopServer();
-        server.stopServer();
-        server.setServerConfigurationFile("JMSContext.xml");
-        server1.setServerConfigurationFile("TestServer1.xml");
-
-        server.startServer();
-        server1.startServer();
+        if ( testFailed ) {
+            assertFalse(
+                "testMultiSharedDurConsumer_TCP_SecOff" +
+                    " MDB1 messages [ " + count1 + " ];" +
+                    " MDB2 messages [ " + count2 + " ]",
+                testFailed );
+        }
     }
 
     // 129623_1_7 If a shared durable subscription already exists with the same
@@ -343,24 +353,17 @@ public class SharedSubscriptionTest_129623 {
     // Bindings and SecOff
 
     @Test
-    public void testCreateSharedDurableConsumer_2Subscribers_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers_B_SecOff");
-
+    public void testCreateSharedDurableConsumer_2Subscribers_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers_B_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_2Subscribers_B_SecOff failed", testResult);
-
     }
 
     // TCP and SecOff
+
     @Test
-    public void testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff");
-
+    public void testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff failed", testResult);
-
     }
 
     // 129623_1_8 If a shared durable subscription already exists with the same
@@ -370,24 +373,16 @@ public class SharedSubscriptionTest_129623 {
     // (deleting) the old one and creating a new one.
 
     @Test
-    public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff");
+    public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed", testResult);
-
     }
 
     @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
     @Test
-    public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff");
-
-        assertNotNull("Test testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff failed",
-                      testResult);
-
+    public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff");
+        assertNotNull("Test testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff failed", testResult);
     }
 
     // 129623_1_9 If a shared durable subscription already exists with the same
@@ -399,25 +394,19 @@ public class SharedSubscriptionTest_129623 {
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumer_JRException_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_JRException_B_SecOff");
-
+    public void testCreateSharedDurableConsumer_JRException_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_JRException_B_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_JRException_B_SecOff failed", testResult);
-
     }
 
     // TCP and Sec Off
+
     @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
     @Mode(TestMode.FULL)
-//    @Test
-    public void testCreateSharedDurableConsumer_JRException_TCP_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testCreateSharedDurableConsumer_JRException_TCP_SecOff");
-
+    // @Test
+    public void testCreateSharedDurableConsumer_JRException_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_JRException_TCP_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_JRException_TCP_SecOff failed", testResult);
-
     }
 
     // 129623_1_10 A shared durable subscription and an unshared durable
@@ -428,117 +417,70 @@ public class SharedSubscriptionTest_129623 {
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableUndurableConsumer_JRException_B_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testCreateSharedDurableUndurableConsumer_JRException_B_SecOff");
-
-        assertTrue("Test testCreateSharedDurableUndurableConsumer_JRException_B_SecOff failed",
-                   testResult);
-
+    public void testCreateSharedDurableUndurableConsumer_JRException_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumer_JRException_B_SecOff");
+        assertTrue("Test testCreateSharedDurableUndurableConsumer_JRException_B_SecOff failed", testResult);
     }
 
-    // TCP and Sec Off
     @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
-//    @Test
-    public void testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff");
-
-        assertTrue("Test testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff failed",
-                   testResult);
-
+    // @Test
+    public void testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff");
+        assertTrue("Test testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff failed", testResult);
     }
 
-    // 129623_1_12 InvalidDestinationRuntimeException - if an invalid topic is
-    // specified.
+    // 129623_1_12 InvalidDestinationRuntimeException - if an invalid topic is specified.
 
     // Bindings and Security Off
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumer_InvalidDestination_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_InvalidDestination_B_SecOff");
-
-        assertTrue(
-                   "Test testCreateSharedDurableConsumer_InvalidDestination_B_SecOff failed",
-                   testResult);
-
+    public void testCreateSharedDurableConsumer_InvalidDestination_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_InvalidDestination_B_SecOff");
+        assertTrue("Test testCreateSharedDurableConsumer_InvalidDestination_B_SecOff failed", testResult);
     }
 
     // TCP and Sec Off
 
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff");
-
-        assertTrue("Test testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff failed",
-                   testResult);
+    public void testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff");
+        assertTrue("Test testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff failed", testResult);
 
     }
 
     // 129623_1_13 Case where name is null and empty string
 
-    // Bindings and Security Off
-
     @Mode(TestMode.FULL)
     @Test
-    public void testCreateSharedDurableConsumer_Null_B_SecOff()
-                    throws Exception {
-
-        testResult = runInServlet("testCreateSharedDurableConsumer_Null_B_SecOff");
-
+    public void testCreateSharedDurableConsumer_Null_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_Null_B_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_Null_B_SecOff failed", testResult);
-
     }
 
     // TCP and Sec Off
 
-    //  @Test
-    public void testCreateSharedDurableConsumer_Null_TCP_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testCreateSharedDurableConsumer_Null_TCP_SecOff");
-
+    // @Test
+    public void testCreateSharedDurableConsumer_Null_TCP_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedDurableConsumer_Null_TCP_SecOff");
         assertTrue("Test testCreateSharedDurableConsumer_Null_TCP_SecOff failed", testResult);
-
     }
 
-    //Defect 174691
-    @Test
-    public void testCreateSharedConsumer_Qsession_B_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testCreateSharedConsumer_Qsession_B_SecOff");
+    // Defect 174691
 
+    @Test
+    public void testCreateSharedConsumer_Qsession_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testCreateSharedConsumer_Qsession_B_SecOff");
         assertTrue("Test testCreateSharedConsumer_Qsession_B_SecOff failed", testResult);
-
     }
 
-    //Defect 174713
+    // Defect 174713
+
     @Test
-    public void testUnsubscribeInvalidSID_Tsession_B_SecOff()
-                    throws Exception {
-        testResult = runInServlet("testUnsubscribeInvalidSID_Tsession_B_SecOff");
-
+    public void testUnsubscribeInvalidSID_Tsession_B_SecOff() throws Exception {
+        boolean testResult = runInServlet("testUnsubscribeInvalidSID_Tsession_B_SecOff");
         assertTrue("Test testUnsubscribeInvalidSID_Tsession_B_SecOff failed", testResult);
-
     }
-
-    @org.junit.AfterClass
-    public static void tearDown() {
-        try {
-            System.out.println("Stopping server");
-            server.stopServer();
-            server1.stopServer();
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
 }

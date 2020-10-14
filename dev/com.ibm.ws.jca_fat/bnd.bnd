@@ -14,14 +14,18 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-resourceadapters/fvt-resourceadapter/src,\
-	test-applications/fvtweb/src
+	test-resourceadapters/adapter.regr/src,\
+	test-applications/fvtweb/src,\
+	test-applications/fvtweb_regr/src
 
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
+#Java EE 8 Features 
+#Jakarta EE 9 Features 
 tested.features:\
-	appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0
+	appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0, beanvalidation-2.0, \
+        el-4.0, appsecurity-4.0, mdb-4.0, servlet-5.0, concurrent-2.0, cdi-3.0, connectors-2.0, messaging-3.0, jaxb-3.0, beanvalidation-3.0, enterprisebeanslite-4.0, connectorsinboundsecurity-2.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -33,5 +37,12 @@ tested.features:\
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.logging,\
-	com.ibm.ws.security.jaas.common;version=latest
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+        io.openliberty.jakarta.messaging.3.0;version=latest,\
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.ws.jdbc;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	org.hamcrest:hamcrest-all;version=1.3,\
+	com.ibm.ws.jca.cm;version=latest
+	

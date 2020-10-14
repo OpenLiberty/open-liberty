@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=V pr\u016fb\u011bhu zpracov\u00e1n\u
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: Po\u017eadavek na p\u0159ipojen\u00ed pro prost\u0159edek XA {0} byl proveden pomoc\u00ed ov\u011b\u0159en\u00ed SPNEGO, ale nebyl nakonfigurov\u00e1n alias dat ov\u011b\u0159ov\u00e1n\u00ed obnovy. Prost\u0159edek XA se nem\u016f\u017ee \u00fa\u010dastnit automatizovan\u00e9 obnovy XA, pokud nen\u00ed nakonfigurov\u00e1n alias dat ov\u011b\u0159ov\u00e1n\u00ed obnovy.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=Obnova XA je automatizovan\u00fd proces na pozad\u00ed, ale ov\u011b\u0159ov\u00e1n\u00ed SPNEGO vy\u017eaduje ru\u010dn\u00ed u\u017eivatelsk\u00fd vstup. Ve v\u00fdsledku nelze pou\u017e\u00edt ov\u011b\u0159en\u00ed SPNEGO pro automatickou obnovu XA.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Nakonfigurujte alias dat ov\u011b\u0159ov\u00e1n\u00ed obnovy v prost\u0159edku XA.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Neplatn\u00fd objekt MCWrapper {0} voln\u00e9ho fondu pro prost\u0159edek {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Pokus o vyhrazen\u00ed objektu MCWrapper se nezda\u0159il.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

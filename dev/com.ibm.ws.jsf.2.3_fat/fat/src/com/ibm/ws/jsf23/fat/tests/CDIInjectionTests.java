@@ -30,6 +30,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -171,7 +172,12 @@ public class CDIInjectionTests extends CDITestBase {
     @Test
     public void testInjectionProvider() throws Exception {
         String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
+
         String msgToSearchFor2 = "MyFaces CDI support enabled";
+
+        if (JakartaEE9Action.isActive()) {
+            msgToSearchFor2 = "MyFaces Core CDI support enabled";
+        }
 
         this.verifyResponse("CDIInjectionTests", "index.xhtml", "Hello Worldy world", jsf23CDIServer);
 
@@ -303,8 +309,9 @@ public class CDIInjectionTests extends CDITestBase {
         // Restart the app so that preDestory gets called;
         // make sure we reset log offsets correctly
         jsf23CDIServer.setMarkToEndOfLog();
-        jsf23CDIServer.restartDropinsApplication("CDIInjectionTests.war");
-        jsf23CDIServer.restartDropinsApplication("ActionListenerInjection.war");
+        Assert.assertTrue("The CDIInjectionTests.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("CDIInjectionTests.war"));
+        Assert.assertTrue("The ActionListenerInjection.war application was not restarted.", jsf23CDIServer.restartDropinsApplication("ActionListenerInjection.war"));
+
         jsf23CDIServer.resetLogOffsets();
 
         // Now check the preDestoys

@@ -100,8 +100,7 @@ public class CommonSecurityFat {
                     Log.info(thisClass, "restoreTestServers", "Restore of server: " + server.getServerName() + " has been skipped");
                 } else {
                     Log.info(thisClass, "restoreTestServers", "Restoring server: " + server.getServerName());
-                    server.restoreServerConfiguration();
-                    server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
+                    server.restoreServerConfigurationAndWaitForApps();
                 }
             } catch (Exception e) {
                 e.printStackTrace(System.out);

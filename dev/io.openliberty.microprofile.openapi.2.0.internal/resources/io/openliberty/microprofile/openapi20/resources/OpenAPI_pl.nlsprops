@@ -1,0 +1,67 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Podczas sprawdzania poprawno\u015bci dokumentu OpenAPI zosta\u0142y zwr\u00f3cone nast\u0119puj\u0105ce b\u0142\u0119dy:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Dokument OpenAPI jest niepoprawny.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Podaj poprawny dokument OpenAPI, w kt\u00f3rym zosta\u0142y usuni\u0119te zg\u0142oszone b\u0142\u0119dy.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Podczas sprawdzania poprawno\u015bci dokumentu OpenAPI zosta\u0142y zwr\u00f3cone nast\u0119puj\u0105ce ostrze\u017cenia:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Dokument OpenAPI zawiera dane w formacie innym, ni\u017c zalecany.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Podaj poprawny dokument OpenAPI, w kt\u00f3rym zosta\u0142y usuni\u0119te zg\u0142oszone ostrze\u017cenia.
+
+CSS_NOT_PROCESSED=CWWKO1652W: Serwer nie mo\u017ce odczyta\u0107 okre\u015blonego dokumentu CSS {0} z powodu b\u0142\u0119du {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Dokument CSS nie mo\u017ce zosta\u0107 przetworzony z powodu b\u0142\u0119du.
+CSS_NOT_PROCESSED.useraction=Podaj poprawny dokument CSS.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci {0} nie jest obs\u0142ugiwana. Wymagana warto\u015b\u0107: {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Warto\u015b\u0107 wskazanej w\u0142a\u015bciwo\u015bci jest niepoprawna lub nie jest obs\u0142ugiwana przez \u015brodowisko OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=W niestandardowym pliku CSS interfejsu u\u017cytkownika \u015brodowiska OpenAPI podaj poprawn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: Obraz t\u0142a podany w pliku {0} nie istnieje lub jest niepoprawny.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Obraz t\u0142a nie istnieje lub jest niepoprawny.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Podaj poprawny obraz.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: Nie przetworzono niestandardowego pliku CSS {0} podanego dla interfejsu u\u017cytkownika \u015brodowiska OpenAPI. Serwer odtworzy warto\u015bci domy\u015blne interfejsu u\u017cytkownika \u015brodowiska OpenAPI. Przyczyna: {1} \u2013 {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Serwer nie mo\u017ce przetworzy\u0107 niestandardowego pliku CSS. Serwer odtworzy warto\u015bci domy\u015blne interfejsu u\u017cytkownika \u015brodowiska OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Podaj poprawny niestandardowy plik CSS dla interfejsu u\u017cytkownika \u015brodowiska OpenAPI razem ze wszystkimi zale\u017cno\u015bciami.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: Serwer dokona\u0142 odczytu z podanego dokumentu CSS {0}, ale nie m\u00f3g\u0142 znale\u017a\u0107 elementu <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Podany dokument CSS nie zawiera elementu <.swagger-ui .headerbar > lub nie jest sformatowany zgodnie z ograniczeniami wymaganymi przez serwer.
+CSS_SECTION_NOT_FOUND.useraction=Podaj poprawny plik CSS zawieraj\u0105cy element <.swagger-ui .headerbar > w wymaganym formacie.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Nie powiod\u0142o si\u0119 za\u0142adowanie klasy filtru OpenAPI: {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=Nie mo\u017cna znale\u017a\u0107 lub za\u0142adowa\u0107 podanej klasy filtru OpenAPI.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Upewnij si\u0119, \u017ce podana klasa istnieje i implementuje interfejs OASFilter.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Nie powiod\u0142o si\u0119 za\u0142adowanie klasy czytnika modelu OpenAPI: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Nie mo\u017cna znale\u017a\u0107 lub za\u0142adowa\u0107 podanej klasy czytnika modelu OpenAPI.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Upewnij si\u0119, \u017ce podana klasa istnieje i implementuje interfejs OASModelReader.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania dokumentu OpenAPI aplikacji: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania dokumentu OpenAPI z folderu META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Upewnij si\u0119, \u017ce ten plik ma poprawny format YAML lub JSON.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplikacja {0} zosta\u0142a przetworzona i zosta\u0142 utworzony dokument OpenAPI.
+OPENAPI_APPLICATION_PROCESSED.explanation=Wygenerowano dokument OpenAPI dla okre\u015blonej aplikacji. Mo\u017cna go wy\u015bwietli\u0107 w punkcie ko\u0144cowym /openapi.
+OPENAPI_APPLICATION_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania aplikacji {0} i nie przedstawiono dokumentu OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Podczas przetwarzania aplikacji wyst\u0105pi\u0142 b\u0142\u0105d.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Zbierz dzienniki i skontaktuj si\u0119 z Serwisem IBM.
+  

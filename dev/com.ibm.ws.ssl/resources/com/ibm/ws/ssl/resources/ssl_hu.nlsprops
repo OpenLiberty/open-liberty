@@ -28,23 +28,23 @@
 
 # -------------------------------------------------------------------------------------------------
 ssl.init.startinit.CWPKI0001I=CWPKI0001I: Az SSL szolg\u00e1ltat\u00e1s inicializ\u00e1lja a konfigur\u00e1ci\u00f3t.
-ssl.init.startinit.CWPKI0001I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.startinit.CWPKI0001I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.startinit.CWPKI0001I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: Az SSL szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa sikeresen befejez\u0151d\u00f6tt.
-ssl.init.startcomplete.CWPKI0002I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.startcomplete.CWPKI0002I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.startcomplete.CWPKI0002I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstart.CWPKI0003I=CWPKI0003I: Az SSL szolg\u00e1ltat\u00e1s elindul.
-ssl.init.svcstart.CWPKI0003I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.svcstart.CWPKI0003I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.svcstart.CWPKI0003I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: Az SSL szolg\u00e1ltat\u00e1s sikeresen elindult.
-ssl.init.svcstartcomplete.CWPKI0004I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.svcstartcomplete.CWPKI0004I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.svcstartcomplete.CWPKI0004I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.startfail.CWPKI0005I=CWPKI0005I: Az SSL szolg\u00e1ltat\u00e1s inicializ\u00e1l\u00e1sa nem siker\u00fclt.
-ssl.init.startfail.CWPKI0005I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.startfail.CWPKI0005I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.startfail.CWPKI0005I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} mBean l\u00e9trehoz\u00e1s\u00e1ra vagy bejegyz\u00e9s\u00e9re tett k\u00eds\u00e9rlet k\u00f6zben. Kiv\u00e9tel: {1}
@@ -52,7 +52,7 @@ ssl.init.mbeanerror.CWPKI0006E.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\
 ssl.init.mbeanerror.CWPKI0006E.useraction=Probl\u00e9ma mer\u00fclhetett fel a konfigur\u00e1ci\u00f3val kapcsolatban.  A kiv\u00e9tel tartalmazhat r\u00e9szleteket.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstartfail.CWPKI0007I=CWPKI0007I: Az SSL szolg\u00e1ltat\u00e1s elind\u00edt\u00e1sa nem siker\u00fclt.
-ssl.init.svcstartfail.CWPKI0007I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.svcstartfail.CWPKI0007I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.svcstartfail.CWPKI0007I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: Hiba t\u00f6rt\u00e9nt az SSL inicializ\u00e1l\u00e1sa sor\u00e1n. Kiv\u00e9tel: {0}
@@ -74,7 +74,7 @@ ssl.loadresource.error.CWPKI0011E.explanation=A megadott er\u0151forr\u00e1s nem
 ssl.loadresource.error.CWPKI0011E.useraction=Keressen az er\u0151forr\u00e1ssal kapcsolatos konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1kat.
 # -------------------------------------------------------------------------------------------------
 ssl.fips.enabled.CWPKI0012I=CWPKI0012I: A FIPS enged\u00e9lyezett. A kiszolg\u00e1l\u00f3 FIPS m\u00f3dban fut, az IBMJCEFIPS szolg\u00e1ltat\u00f3 haszn\u00e1lat\u00e1val.
-ssl.fips.enabled.CWPKI0012I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.fips.enabled.CWPKI0012I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.fips.enabled.CWPKI0012I.useraction=Nincs teend\u0151.
 #--------------------------------------------------------------------------------------------------
 ssl.checkProviderList.warning.CWPKI0013W=CWPKI0013W: A FIPS enged\u00e9lyezve van, de az IBMJCEFIPS szolg\u00e1ltat\u00f3 nem akt\u00edv a java.security f\u00e1jlban. A f\u00e1jlt m\u00f3dos\u00edtani kell, hogy tartalmazza az IBMJCEFIPS szolg\u00e1ltat\u00f3t a szolg\u00e1ltat\u00f3list\u00e1ban az IBMJCE szolg\u00e1ltat\u00f3 el\u0151tt.
@@ -82,7 +82,7 @@ ssl.checkProviderList.warning.CWPKI0013W.explanation=Amikor a kiszolg\u00e1l\u00
 ssl.checkProviderList.warning.CWPKI0013W.useraction=A FIPS algoritmusok haszn\u00e1lat\u00e1nak biztos\u00edt\u00e1s\u00e1hoz az \u00f6sszes WebSphere Application Server folyamatt\u00edpus eset\u00e9n, vegye ki a megjegyz\u00e9sb\u0151l az IBMJCEFIPS szolg\u00e1ltat\u00f3t a java.security f\u00e1jlban, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az IBMJCE el\u0151tt van, \u00e9s sz\u00e1mozza \u00fajra a szolg\u00e1ltat\u00f3i list\u00e1t a megfelel\u0151 sorrendben.
 # -------------------------------------------------------------------------------------------------
 ssl.init.ssldm.init.CWPKI0014I=CWPKI0014I: Az SSL \u00f6sszetev\u0151 {0} FFDC diagnosztikai modulj\u00e1nak bejegyz\u00e9se siker\u00fclt: {1}
-ssl.init.ssldm.init.CWPKI0014I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.init.ssldm.init.CWPKI0014I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.init.ssldm.init.CWPKI0014I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: Hiba t\u00f6rt\u00e9nt az SSL \u00f6sszetev\u0151 le\u00e1ll\u00edt\u00e1sa sor\u00e1n. Kiv\u00e9tel: {0}
@@ -237,8 +237,8 @@ ssl.trustmanager.signer.prompt.CWPKI0100I=*** SSL AL\u00c1\u00cdR\u00d3CSERE FEL
 ssl.trustmanager.signer.prompt.CWPKI0101I=A c\u00e9lhosztr\u00f3l az SSL al\u00e1\u00edr\u00f3 nem tal\u00e1lhat\u00f3 a(z) {0} tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban.\n\
 \n\
 Itt l\u00e1that\u00f3k az al\u00e1\u00edr\u00f3 inform\u00e1ci\u00f3i (ellen\u0151rizze a kivonat \u00e9rt\u00e9kek egyez\u00e9s\u00e9t a kiszolg\u00e1l\u00f3n megjelen\u00edtettel): 
-ssl.trustmanager.signer.prompt.CWPKI0102I=  T\u00e1rgy megk\u00fcl\u00f6nb\u00f6ztetett neve:    
-ssl.trustmanager.signer.prompt.CWPKI0103I=  Kibocs\u00e1t\u00f3 megk\u00fcl\u00f6nb\u00f6ztetett neve:     
+ssl.trustmanager.signer.prompt.CWPKI0102I=  T\u00e1rgy megk\u00fcl\u00f6nb\u00f6ztetett neve: 
+ssl.trustmanager.signer.prompt.CWPKI0103I=  Kibocs\u00e1t\u00f3 megk\u00fcl\u00f6nb\u00f6ztetett neve: 
 ssl.trustmanager.signer.prompt.CWPKI0104I=  Sorozatsz\u00e1m: 
 ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 kivonat:  
 ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5 kivonat:    
@@ -251,7 +251,7 @@ ssl.trustmanager.signer.prompt.answer.yes=i
 ssl.trustmanager.signer.prompt.answer.no=n
 ssl.trustmanager.signer.prompt.answer.full.yes=igen
 ssl.trustmanager.signer.prompt.CWPKI0108I=Lehet, hogy \u00fajra kell pr\u00f3b\u00e1lkozni a k\u00e9relemmel, ha a szoftvercsatorna t\u00fall\u00e9pi az id\u0151korl\u00e1tot a felsz\u00f3l\u00edt\u00e1s v\u00e1lasz\u00e1ra v\u00e1rva.  Ha \u00fajra kell pr\u00f3b\u00e1lkozni, vegye figyelembe, hogy a felsz\u00f3l\u00edt\u00e1s nem jelenik meg \u00fajra, ha az (i) \u00e9rt\u00e9ket \u00edrja be, ami azt jelzi, hogy az al\u00e1\u00edr\u00f3 m\u00e1r hozz\u00e1 van adva a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3hoz.
-ssl.trustmanager.signer.prompt.CWPKI0109I=  Lej\u00e1rat:       
+ssl.trustmanager.signer.prompt.CWPKI0109I=  Lej\u00e1rat: 
 
 ################################################################################
 # Range 200-299 reserved for KeySet Messages
@@ -285,11 +285,11 @@ ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Haszn\u00e1lja a -listRemoteKe
 \n\
 Haszn\u00e1lat: retrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n\
 \        param\u00e9terek [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
-ssl.signer.retrieval.usage.CWPKI0300I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.retrieval.usage.CWPKI0300I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: A nyomk\u00f6vet\u00e9si m\u00f3d be van kapcsolva.
-ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: A rendszer nem tudja \u00edrni a k\u00f6vetkez\u0151 helyen tal\u00e1lhat\u00f3 napl\u00f3f\u00e1jlt: {0}
@@ -297,7 +297,7 @@ ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=Probl\u00e9ma t\u00f6r
 ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=M\u00f3dos\u00edtsa a napl\u00f3f\u00e1jl el\u00e9r\u00e9si \u00fatvonal\u00e1t, vagy gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl nincs haszn\u00e1latban.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: A nyomk\u00f6vet\u00e9st a k\u00f6vetkez\u0151 helyen napl\u00f3zza a rendszer: {0}
-ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: A(z) {0} n\u00e9vk\u00e9nt megadott <remoteKeyStoreName> nem tal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3n.
@@ -309,19 +309,19 @@ ssl.signer.alias.not.found.CWPKI0305E.explanation=A megadott \u00e1ln\u00e9v nem
 ssl.signer.alias.not.found.CWPKI0305E.useraction=Adja ki a -listRemoteKeyStoreNames parancsot a nevek list\u00e1j\u00e1nak lek\u00e9rdez\u00e9s\u00e9hez.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: A k\u00f6vetkez\u0151 t\u00e1voli kulcst\u00e1rol\u00f3k l\u00e9teznek a megadott kiszolg\u00e1l\u00f3n: {0}
-ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: A k\u00f6vetkez\u0151 helyi kulcst\u00e1rol\u00f3k l\u00e9teznek az \u00fcgyf\u00e9len: {0}
-ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: A rendszer hozz\u00e1adja a(z) {0} al\u00e1\u00edr\u00f3\u00e1lnevet a(z) {1} helyi kulcst\u00e1rol\u00f3hoz a k\u00f6vetkez\u0151 SHA kivonattal: {2}
-ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: A t\u00e1voli kulcst\u00e1rol\u00f3kb\u00f3l sz\u00e1rmaz\u00f3 al\u00e1\u00edr\u00f3k m\u00e1r l\u00e9teznek a helyi kulcst\u00e1rol\u00f3ban.
-ssl.signer.no.signers.added.CWPKI0309I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.signer.no.signers.added.CWPKI0309I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.no.signers.added.CWPKI0309I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: A(z) {0} n\u00e9vk\u00e9nt megadott <localKeyStoreName> nem tal\u00e1lhat\u00f3 az \u00fcgyf\u00e9len.
@@ -357,7 +357,7 @@ ssl.ca.client.usage.explanation=A parancsf\u00e1jl v\u00e9grehajt\u00e1s\u00e1ho
 ssl.ca.client.usage.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.tracemodeon=CWPKI0401I: A nyomk\u00f6vet\u00e9si m\u00f3d be van kapcsolva.
-ssl.ca.client.tracemodeon.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.client.tracemodeon.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.client.tracemodeon.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.error=CWPKI0402E: A rendszer nem tudja \u00edrni a k\u00f6vetkez\u0151 helyen tal\u00e1lhat\u00f3 napl\u00f3f\u00e1jlt: {0}
@@ -365,7 +365,7 @@ ssl.ca.client.logfile.error.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt a megado
 ssl.ca.client.logfile.error.useraction=M\u00f3dos\u00edtsa a napl\u00f3f\u00e1jl \u00fatvonal\u00e1t a helyes napl\u00f3f\u00e1jlra, vagy gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl nincs haszn\u00e1latban.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.location=CWPKI0403I: A nyomk\u00f6vet\u00e9st a k\u00f6vetkez\u0151 helyen napl\u00f3zza a rendszer: {0}
-ssl.ca.client.logfile.location.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.client.logfile.location.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.client.logfile.location.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option=CWPKI0404W: A k\u00f6vetkez\u0151 param\u00e9ter \u00e9rv\u00e9nytelen: {0}
@@ -437,11 +437,11 @@ ssl.ca.client.receive.failed.explanation=A tan\u00fas\u00edtv\u00e1nyhat\u00f3s\
 ssl.ca.client.receive.failed.useraction=Ellen\u0151rizze a kulcst\u00e1rol\u00f3 t\u00e1rol\u00e1s\u00e1val kapcsolatos kor\u00e1bbi hiba\u00fczeneteket, jav\u00edtsa a felmer\u00fcl\u0151 probl\u00e9m\u00e1kat, majd pr\u00f3b\u00e1lkozzon \u00fajra a tan\u00fas\u00edtv\u00e1ny k\u00e9r\u00e9s\u00e9vel. 
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.created=CWPKI0421I: A(z) {0} \u00e1ln\u00e9vvel rendelkez\u0151 PKCS10 tan\u00fas\u00edtv\u00e1nyk\u00e9relem sikeresen l\u00e9trej\u00f6tt.  A k\u00e9r\u00e9s a k\u00f6vetkez\u0151 f\u00e1jlban ker\u00fclt t\u00e1rol\u00e1sra: {1} 
-ssl.ca.client.pkcs10.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.client.pkcs10.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.client.pkcs10.request.created.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.sending=CWPKI0422I: A rendszer el\u0151\u00e1ll\u00edt egy PKCS10 tan\u00fas\u00edtv\u00e1nyk\u00e9relmet.
-ssl.ca.client.pkcs10.request.sending.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.client.pkcs10.request.sending.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.client.pkcs10.request.sending.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.failed=CWPKI0423E: A PKCS10 tan\u00fas\u00edtv\u00e1nyk\u00e9relem a k\u00f6vetkez\u0151 hiba miatt nem hozhat\u00f3 l\u00e9tre: {0}
@@ -489,7 +489,7 @@ ssl.ca.cmp.impl.tempfile.error.explanation= Az ideiglenes f\u00e1jl \u00edr\u00e
 ssl.ca.cmp.impl.tempfile.error.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ideiglenes f\u00e1jl el\u00e9r\u00e9si \u00fatvonala l\u00e9tezik, \u00edrhat\u00f3 \u00e9s rendelkezik el\u00e9rhet\u0151 hellyel.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.request.created=CWPKI0455I: Tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g (CA) \u00e1ltal al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny k\u00e9r\u00e9se.
-ssl.ca.cmp.impl.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.cmp.impl.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.cmp.impl.request.created.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.create.error=CWPKI0456E: Kiv\u00e9tel t\u00f6rt\u00e9nt a tan\u00fas\u00edtv\u00e1ny k\u00e9relmez\u00e9sekor: {0}
@@ -509,11 +509,11 @@ ssl.ca.cmp.impl.invalid.certificate.chain.explanation=Nem \u00e9rhet\u0151 el \u
 ssl.ca.cmp.impl.invalid.certificate.chain.useraction=Ellen\u0151rizze, hogy a megval\u00f3s\u00edt\u00e1snak \u00e9rv\u00e9nyes tan\u00fas\u00edtv\u00e1nyl\u00e1nc lett-e \u00e1tadva.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: Tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g (CA) \u00e1ltal al\u00e1\u00edrt tan\u00fas\u00edtv\u00e1ny visszavon\u00e1sa.
-ssl.ca.cmp.impl.revoke.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.cmp.impl.revoke.request.created.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.cmp.impl.revoke.request.created.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: A megval\u00f3s\u00edt\u00e1s nem t\u00e1mogatja a(z) {0} m\u0171veletet.
-ssl.ca.cmp.impl.action.not.supported.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.cmp.impl.action.not.supported.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.cmp.impl.action.not.supported.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: Tan\u00fas\u00edtv\u00e1ny-visszavon\u00e1si k\u00e9relem lett kezdem\u00e9nyezve a(z) {0} tan\u00fas\u00edtv\u00e1ny\u00e1ln\u00e9vre vonatkoz\u00f3an. Ok: {1}
@@ -521,7 +521,7 @@ ssl.ca.cmp.impl.revoke.request.processed.explanation=Tan\u00fas\u00edtv\u00e1nyh
 ssl.ca.cmp.impl.revoke.request.processed.useraction=Ellen\u0151rizze a k\u00fcls\u0151 tan\u00fas\u00edtv\u00e1nyhat\u00f3s\u00e1g (CA) seg\u00edts\u00e9g\u00e9vel, hogy a tan\u00fas\u00edtv\u00e1ny visszavon\u00e1sa sikeres volt-e.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received=CWPKI0463I: A tan\u00fas\u00edtv\u00e1nyt a rendszer fogadta, \u00e9s a(z) {0} kulcst\u00e1rol\u00f3ban {1} \u00e1ln\u00e9ven lett elmentve.
-ssl.ca.cmp.impl.certificate.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.ca.cmp.impl.certificate.received.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.ca.cmp.impl.certificate.received.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received.header=*** TAN\u00daS\u00cdTV\u00c1NY ***
@@ -559,6 +559,7 @@ ssl.create.certificate.end.useraction=Nincs teend\u0151.
 ssl.create.certificate.error=CWPKI0804E: SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehoz\u00e1si hiba. {0}
 ssl.create.certificate.error.explanation=Az SSL tan\u00fas\u00edtv\u00e1nyt nem lehet l\u00e9trehozni a megadott helyen.
 ssl.create.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151. A kulcsok el\u0151\u00e1ll\u00edt\u00e1s\u00e1val vagy bet\u00f6lt\u00e9s\u00e9vel kapcsolatos tov\u00e1bbi hib\u00e1k\u00e9rt tekintse \u00e1t az FFDC napl\u00f3kat.
+
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nem lehet l\u00e9trehozni az SSL kulcsf\u00e1jlt: {0}
 ssl.create.certificate.error.reason2=A hiba a k\u00f6vetkez\u0151: {0}
@@ -584,7 +585,7 @@ ssl.config.not.used.CWPKI0809W.explanation=A kulcst\u00e1rol\u00f3 f\u00e1jl nem
 ssl.config.not.used.CWPKI0809W.useraction=H\u00e1r\u00edtsa el a kulcst\u00e1rol\u00f3 konfigur\u00e1ci\u00f3 probl\u00e9m\u00e1j\u00e1t.
 #--------------------------------------------------------------------------------------------------
 ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: A(z) {0} kulcst\u00e1rol\u00f3 csak olvashat\u00f3, \u00e9s a tan\u00fas\u00edtv\u00e1ny nem ker\u00fcl be\u00edr\u00e1sra a kulcst\u00e1rol\u00f3 f\u00e1jlba.  A megb\u00edzhat\u00f3s\u00e1g csak ehhez a kapcsolathoz ker\u00fcl elfogad\u00e1sra. 
-ssl.keystore.readonly.CWPKI0810I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+ssl.keystore.readonly.CWPKI0810I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.keystore.readonly.CWPKI0810I.useraction=Nincs teend\u0151.
 #--------------------------------------------------------------------------------------------------
 ssl.keystore.modified.CWPKI0811I=CWPKI0811I: A(z) {0} kulcst\u00e1rol\u00f3f\u00e1jl m\u00f3dos\u00edtva lett.  A kulcst\u00e1rol\u00f3f\u00e1jl \u00fajrat\u00f6lt\u00e9sre ker\u00fcl, hogy a friss\u00edtett kulcst\u00e1rol\u00f3f\u00e1jl ker\u00fclhessen felhaszn\u00e1l\u00e1sra.
@@ -599,7 +600,7 @@ ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Hiba t\u00f6rt\u00e9nt a kulcs
 ssl.unrecoverablekey.error.CWPKI0813E.explanation=Hiba t\u00f6rt\u00e9nt a kulcskezel\u0151 inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Nem hozhat\u00f3 l\u00e9tre SSLContext, ha a priv\u00e1t kulcs jelsz\u00f3 helytelen vagy ha egy kulcst\u00e1rol\u00f3 t\u00f6bb kulccsal rendelkezik k\u00fcl\u00f6nb\u00f6z\u0151 jelszavakkal. 
 ssl.unrecoverablekey.error.CWPKI0813E.useraction=Miel\u0151tt a kulcst\u00e1rol\u00f3t SSL-kapcsolatokhoz haszn\u00e1ln\u00e1, gondoskodjon a priv\u00e1t kulcs jelsz\u00f3 helyess\u00e9g\u00e9r\u0151l, \u00e9s hogy a kulcst\u00e1rol\u00f3 ne rendelkezzen t\u00f6bb kulccsal k\u00fcl\u00f6nb\u00f6z\u0151 jelszavakkal.
 #--------------------------------------------------------------------------------------------------
-ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Hiba t\u00f6rt\u00e9nt a(z) [{0}] hardver kulcst\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n.  Ellen\u0151rizze a(z) {1} hardver konfigur\u00e1ci\u00f3s f\u00e1jlt, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatumok helyesen vannak be\u00e1ll\u00edtva. A szolg\u00e1ltat\u00f3 \u00e1ltal visszaadott kiv\u00e9tel: {2}.
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Hiba t\u00f6rt\u00e9nt a(z) [{0}] hardver kulcst\u00e1rol\u00f3 inicializ\u00e1l\u00e1sa sor\u00e1n.  Ellen\u0151rizze a(z) {1} hardver konfigur\u00e1ci\u00f3s f\u00e1jlt, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatumok helyesen vannak be\u00e1ll\u00edtva.  A szolg\u00e1ltat\u00f3 \u00e1ltal visszaadott kiv\u00e9tel: {2}.
 ssl.hwkeystore.load.error.CWPKI0814E.explanation=Probl\u00e9ma van a hardver konfigur\u00e1ci\u00f3val, amely megakad\u00e1lyozza a kulcst\u00e1rol\u00f3 haszn\u00e1lat\u00e1t.  Ha egy SSL konfigur\u00e1ci\u00f3 hivatkozik az adott kulcst\u00e1rol\u00f3ra, akkor az nem lesz haszn\u00e1lhat\u00f3.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hardver konfigur\u00e1ci\u00f3s f\u00e1jl tartalmazza a sz\u00fcks\u00e9ges attrib\u00fatumokat, nevet \u00e9s f\u00fcggv\u00e9nyt\u00e1rt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1ci\u00f3s f\u00e1jlban szerepl\u0151 egy\u00e9b attrib\u00fatumok k\u00f6vetik a hardvereszk\u00f6z specifik\u00e1ci\u00f3j\u00e1t.
 #--------------------------------------------------------------------------------------------------
@@ -640,8 +641,7 @@ key.p12 f\u00e1jl egyar\u00e1nt meg van adva az alap\u00e9rtelmezett kulcst\u00e
 alkalmaz\u00e1sra alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nt.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Ha a key.p12 \
 f\u00e1jlt k\u00edv\u00e1nja alap\u00e9rtelmezett kulcst\u00e1rol\u00f3v\u00e1 tenni, m\u00f3dos\u00edtsa a kulcst\u00e1rol\u00f3 konfigur\u00e1ci\u00f3t \u00fagy, hogy \
-az a key.p12 hely\u00e9t hat\u00e1rozza meg, vagy t\u00e1vol\u00edtsa el a key.jks f\u00e1jlt a konfigur\u00e1ci\u00f3b\u00f3l. \
-A key.jks f\u00e1jl alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nti alkalmaz\u00e1s\u00e1hoz nincs sz\u00fcks\u00e9g m\u00f3dos\u00edt\u00e1sra. 
+az a key.p12 hely\u00e9t hat\u00e1rozza meg, vagy t\u00e1vol\u00edtsa el a key.jks f\u00e1jlt a konfigur\u00e1ci\u00f3b\u00f3l. A key.jks f\u00e1jl alap\u00e9rtelmezett kulcst\u00e1rol\u00f3k\u00e9nti alkalmaz\u00e1s\u00e1hoz nincs sz\u00fcks\u00e9g m\u00f3dos\u00edt\u00e1sra. 
 #--------------------------------------------------------------------------------------------------
 ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: SSL EGYEZTET\u00c9SI HIBA: Egy [{0}] SubjectDN n\u00e9vvel rendelkez\u0151 al\u00e1\u00edr\u00f3 ker\u00fclt elk\u00fcld\u00e9sre a(z) [{1}] hosztr\u00f3l.  Lehets\u00e9ges, hogy az al\u00e1\u00edr\u00f3t hozz\u00e1 kell adni a helyi [{2}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3hoz, amely a(z) [{3}] SSL konfigur\u00e1ci\u00f3 \u00e1ln\u00e9vben tal\u00e1lhat\u00f3.  Az SSL egyeztet\u00e9s kiv\u00e9tel r\u00e9szletes hiba\u00fczenete: [{4}].
 ssl.client.handshake.error.CWPKI0823E.explanation=Hiba t\u00f6rt\u00e9nt az SSL egyeztet\u00e9s sor\u00e1n.  Lehet, hogy egy al\u00e1\u00edr\u00f3 export\u00e1l\u00e1sa/import\u00e1l\u00e1sa sz\u00fcks\u00e9ges a c\u00e9l hosztr\u00f3l az \u00fcgyf\u00e9l tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3j\u00e1ba.
@@ -655,7 +655,7 @@ ssl.cacerts.error.CWPKI0825W=CWPKI0825W: A trustDefaultCerts attrib\u00fatum eng
 ssl.cacerts.error.CWPKI0825W.explanation=Az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem ker\u00fclt inicializ\u00e1l\u00e1sra, mert nem k\u00e9rhet\u0151 le a tan\u00fas\u00edtv\u00e1nykezel\u0151b\u0151l. Az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem ker\u00fcl alkalmaz\u00e1sra a megb\u00edzhat\u00f3s\u00e1g kialak\u00edt\u00e1s\u00e1n\u00e1l. Csak a be\u00e1ll\u00edtott SSL konfigur\u00e1ci\u00f3 lesz haszn\u00e1lva.
 ssl.cacerts.error.CWPKI0825W.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 f\u00e1jl l\u00e9tezik \u00e9s el\u00e9rhet\u0151
 # -------------------------------------------------------------------------------------------------
-ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: A tan\u00fas\u00edtv\u00e1ny nem ker\u00fclt lek\u00e9r\u00e9sre a(z) {0} k\u00f6rnyezeti v\u00e1ltoz\u00f3b\u00f3l. A tan\u00fas\u00edtv\u00e1ny nem lett felv\u00e9ve a(z) {1} tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ba. A visszakapott kiv\u00e9tel: {2}.
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: A tan\u00fas\u00edtv\u00e1ny nem ker\u00fclt lek\u00e9r\u00e9sre a(z) {0} k\u00f6rnyezeti v\u00e1ltoz\u00f3b\u00f3l. A tan\u00fas\u00edtv\u00e1ny nem lett felv\u00e9ve a(z) {1} tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ba.  A visszakapott kiv\u00e9tel: {2}.
 ssl.environment.cert.error.CWPKI0826W.explanation=A k\u00f6rnyezeti v\u00e1ltoz\u00f3ban megadott tan\u00fas\u00edtv\u00e1ny nem \u00e9rhet\u0151 el, \u00e9s nem tartalmazza a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3. A k\u00f6rnyezeti v\u00e1ltoz\u00f3, a f\u00e1jln\u00e9v vagy a tan\u00fas\u00edtv\u00e1ny is okozhatja ezt a probl\u00e9m\u00e1t. A tan\u00fas\u00edtv\u00e1ny hozz\u00e1ad\u00e1s\u00e1nak sikertelens\u00e9ge nem \u00e9rv\u00e9nytelen\u00edti az SSL konfigur\u00e1ci\u00f3t, de probl\u00e9m\u00e1kat okozhat a kimen\u0151 kapcsolatok megb\u00edzhat\u00f3s\u00e1g\u00e1nak kialak\u00edt\u00e1sakor.
 ssl.environment.cert.error.CWPKI0826W.useraction=A probl\u00e9m\u00e1nak sz\u00e1mos oka lehet. Gondoskodj\u00e9k r\u00f3la, hogy a k\u00f6rnyezeti v\u00e1ltoz\u00f3 vagy f\u00e1jl tartalmazzon egy alap 64 bites tan\u00fas\u00edtv\u00e1nyt.
 # -------------------------------------------------------------------------------------------------
@@ -664,10 +664,14 @@ ssl.using.cacerts.CWPKI0827I.explanation=Az alap\u00e9rtelmezett tan\u00fas\u00e
 ssl.using.cacerts.CWPKI0827I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: A trustDefaultCerts attrib\u00fatum enged\u00e9lyezett, de az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 haszn\u00e1lat\u00e1val nem j\u00f6tt l\u00e9tre a megb\u00edzhat\u00f3s\u00e1g. Az SSL egyeztet\u00e9s kiv\u00e9tel r\u00e9szletes hiba\u00fczenete: {0}
-ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nincs megfelel\u0151en be\u00e1ll\u00edtva megb\u00edzhat\u00f3s\u00e1g kialak\u00edt\u00e1s\u00e1hoz. 
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Az alap\u00e9rtelmezett tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nincs megfelel\u0151en be\u00e1ll\u00edtva megb\u00edzhat\u00f3s\u00e1g kialak\u00edt\u00e1s\u00e1hoz.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Tekintse \u00e1t a r\u00e9szletes hiba\u00fczenetet, hogy meg\u00e1llap\u00edthassa, mit kell m\u00f3dos\u00edtani a konfigur\u00e1ci\u00f3ban.
 # -------------------------------------------------------------------------------------------------
 ssl.update.certificate.error=CWPKI0829E: SSL tan\u00fas\u00edtv\u00e1nyfriss\u00edt\u00e9si hiba. {0}
 ssl.update.certificate.error.explanation=Az SSL tan\u00fas\u00edtv\u00e1ny nem friss\u00edthet\u0151 a megadott helyen.
 ssl.update.certificate.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hely a kiszolg\u00e1l\u00f3 feldolgoz sz\u00e1m\u00e1ra hozz\u00e1f\u00e9rhet\u0151.  A kulcsok el\u0151\u00e1ll\u00edt\u00e1s\u00e1val vagy bet\u00f6lt\u00e9s\u00e9vel kapcsolatos tov\u00e1bbi hib\u00e1k\u00e9rt tekintse \u00e1t az FFDC napl\u00f3kat.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: A(z) {1} k\u00f6rnyezeti v\u00e1ltoz\u00f3b\u00f3l a(z) {0} SubjectDN n\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny hozz\u00e1ad\u00e1sra ker\u00fcl a(z) {2} kulcst\u00e1rol\u00f3hoz.
+ssl.certificate.add.CWPKI0830I.explanation=Lek\u00e9r\u00e9sre ker\u00fclt egy tan\u00fas\u00edtv\u00e1ny egy k\u00f6rnyezeti v\u00e1ltoz\u00f3b\u00f3l a konfigur\u00e1ci\u00f3ban, \u00e9s hozz\u00e1ad\u00e1sra ker\u00fcl a kulcst\u00e1rol\u00f3 f\u00e1jlhoz.
+ssl.certificate.add.CWPKI0830I.useraction=Nem kell semmit tennie.
 # -------------------------------------------------------------------------------------------------

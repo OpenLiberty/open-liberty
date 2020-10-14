@@ -13,6 +13,8 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.logging.Logger;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -42,6 +44,7 @@ public class StreamingTests extends FATServletClient {
 
     protected static final Class<?> c = StreamingTests.class;
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     ManagedChannel streamingChannel;
     private StreamingServiceStub streamingServiceStub;
@@ -67,7 +70,7 @@ public class StreamingTests extends FATServletClient {
     }
 
     private void startStreamingService(String address, int port) {
-        System.out.println("Connecting to StreamingService gRPC service at " + address + ":" + port);
+        LOG.info("Connecting to StreamingService gRPC service at " + address + ":" + port);
         streamingChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         streamingServiceStub = StreamingServiceGrpc.newStub(streamingChannel);
     }
@@ -143,7 +146,7 @@ public class StreamingTests extends FATServletClient {
             }
 
             nextRequest = StreamRequest.newBuilder().setMessage(nextMessage).build();
-            // System.out.println("Client sending/onNext: " + nextMessage);
+            // LOG.info("Client sending/onNext: " + nextMessage);
             clientStreamX.onNext(nextRequest);
             try {
                 if (timeBetweenMessagesMsec > 0) {
@@ -160,7 +163,7 @@ public class StreamingTests extends FATServletClient {
         } catch (Exception x) {
             // do nothing
         }
-        System.out.println("Client calling onCompleted");
+        LOG.info("Client calling onCompleted");
         clientStreamX.onCompleted();
 
         // wait for the response from server
@@ -171,10 +174,10 @@ public class StreamingTests extends FATServletClient {
         }
 
         // test that this is what was expected:
-        System.out.println("reply message was: " + replyAfterClientStream);
+        LOG.info("reply message was: " + replyAfterClientStream);
         int i1 = replyAfterClientStream.indexOf(firstMessage);
         int i2 = replyAfterClientStream.indexOf(lastMessage);
-        System.out.println("firstMessage index at: " + i1 + " lastMessage index at: " + i2);
+        LOG.info("firstMessage index at: " + i1 + " lastMessage index at: " + i2);
 
         assertTrue((i1 >= 0 && i2 >= 0));
 

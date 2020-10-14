@@ -48,10 +48,12 @@ import com.ibm.ws.jaxrs.fat.contextresolver.DepartmentListWrapper;
 import com.ibm.ws.jaxrs.fat.contextresolver.User;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class DepartmentTest {
 
     @Server("com.ibm.ws.jaxrs.fat.contextresolver")

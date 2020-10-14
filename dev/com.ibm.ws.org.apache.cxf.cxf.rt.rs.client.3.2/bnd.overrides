@@ -13,6 +13,7 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2
 
+exportVer=3.4.1
 
 Import-Package: \
   !com.ctc.wstx.*,\
@@ -25,9 +26,9 @@ Import-Package: \
   *
 
 Export-Package: com.ibm.ws.jaxrs21.clientconfig,\
-  org.apache.cxf.jaxrs.client;version=3.3.0,\
-  org.apache.cxf.jaxrs.client.blueprint;version=3.3.0,\
-  org.apache.cxf.jaxrs.client.spec;version=3.3.0
+  org.apache.cxf.jaxrs.client;version=${exportVer},\
+  org.apache.cxf.jaxrs.client.blueprint;version=${exportVer},\
+  org.apache.cxf.jaxrs.client.spec;version=${exportVer}
  
 Service-Component: \
   com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \

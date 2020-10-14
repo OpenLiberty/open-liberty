@@ -10,3 +10,4 @@
  *******************************************************************************/
 
 addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn addJakartaTransformer

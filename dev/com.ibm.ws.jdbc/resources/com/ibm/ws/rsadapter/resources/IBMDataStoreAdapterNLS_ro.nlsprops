@@ -257,7 +257,7 @@ DSRA4006.null.connection.useraction=Raporta\u0163i eroarea la v\u00e2nz\u0103tor
 
 DSRA4008.tran.none.unsupported=DSRA4008E: Driver-ul JDBC nu suport\u0103 un nivel de izolare de TRANSACTION_NONE, care este configurat pe sursa de date {0}.
 DSRA4008.tran.none.unsupported.explanation=Nivelul de izolare TRANSACTION_NONE care este configurat pe sursa de date nu este suportat de driver-ul JDBC.
-DSRA4008.tran.none.unsupported.useraction=Fie actualiza\u0163i configura\u0163ia sursei de date pentru a utiliza un nivel de izolare care este suportat de driver, fie folosi\u0163i un driver care suport\u0103 un nivel de isolation TRANSACTION_NONE.
+DSRA4008.tran.none.unsupported.useraction=Fie actualiza\u0163i configura\u0163ia sursei de date pentru a utiliza un nivel de izolare care este suportat de driver, fie folosi\u0163i un driver care suport\u0103 un nivel de isolation TRANSACTION_NONE. 
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Sursa de date {0} nu poate fi configurat cu un nivel de izolare TRANSACTION_NONE \u015fi transactional= true.
 DSRA4009.tran.none.transactional.unsupported.explanation=Un driver JDBC care este configurat cu un nivel de izolare TRANSACTION_NONE nu va suporta tranzac\u0163ii.
@@ -489,7 +489,7 @@ UNSUPPORTED_JDBC30_METHOD.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul d
 # {0}        The vendor interface requested for the wrapper.
 # {1}        The underlying connection implementation class of the pooled connection.
 VENDOR_IMPL_NOT_FOUND=DSRA8760W: Nu poate s\u0103 localizeze implementarea pentru interfa\u0163a furnizorului {0} dup\u0103 trecerea la o alt\u0103 conexiune pool. Aliasul de conexiune unwrapped nu mai este utilizabil\u0103 ca acea interfa\u0163\u0103. Noua clas\u0103 de implementare a conexiunii este: {1}
-VENDOR_IMPL_NOT_FOUND.explanation=Aliasul de conexiune este asociat acum cu o conexiune pooled care este diferit\u0103 \u015fi care nu implementeaz\u0103 interfa\u0163a care este cerut\u0103 pentru wrapper.
+VENDOR_IMPL_NOT_FOUND.explanation=Aliasul de conexiune este asociat acum cu o conexiune din pool care este diferit\u0103 \u015fi care nu implementeaz\u0103 interfa\u0163a care este cerut\u0103 pentru wrapper.
 VENDOR_IMPL_NOT_FOUND.useraction=Wrapper-ele pentru interfa\u0163a care este specificat\u0103 ar trebui s\u0103 nu fie utilizate c\u00e2nd metoda Wrapper.isWrapperFor indic\u0103 faptul c\u0103 conexiunea nu este un wrapper al interfe\u0163ei.
 
 # 8770I      DEFAULT_MATCH_ORIGINAL
@@ -497,7 +497,7 @@ VENDOR_IMPL_NOT_FOUND.useraction=Wrapper-ele pentru interfa\u0163a care este spe
 # {0}        The name of the connection property.
 # {1}        The name of the data source custom property.
 DEFAULT_MATCH_ORIGINAL=DSRA8770I: \u00cen mod implicit, proprietatea conexiune, {0}, este potrivit\u0103 mai degrab\u0103 pentru conecxiunile partajate bazat pe cererile conexiunii originale dec\u00e2t pentru starea curent\u0103 a conexiunii. Pute\u0163i utiliza proprietatea personalizat\u0103 surs\u0103 de date, {1}, pentru a configura acest comportament.
-DEFAULT_MATCH_ORIGINAL.explanation=Proprietatea personalizat\u0103 surs\u0103 de date v\u0103 d\u0103 poisibilitatea s\u0103 alege\u0163i ce comportament de partajare conexiune dori\u0163i.
+DEFAULT_MATCH_ORIGINAL.explanation=Proprietatea personalizat\u0103 surs\u0103 de date v\u0103 d\u0103 posibilitatea s\u0103 alege\u0163i ce comportament de partajare conexiune dori\u0163i.
 DEFAULT_MATCH_ORIGINAL.useraction=Verifica\u0163i c\u0103 proprietatea personalizat\u0103 surs\u0103 de date este configurat\u0103 pentru comportamentul dorit de dumneavoastr\u0103.
 
 # 8780 deleted
@@ -648,5 +648,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Dezactiva\u0163i Kerberos sau utiliza
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Utilizarea IBM Java 8 SDK cu o baz\u0103 de date Oracle nu este suportat\u0103. Driver-ul JDBC Oracle suport\u0103 doar autentificarea Kerberos folosind API-urile de securitate implicite disponibile \u00een OpenJDK, OpenJ9 sau alte SDK-uri similare.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Utilizarea IBM Java 8 SDK cu o baz\u0103 de date Oracle nu este suportat\u0103. Driver-ul JDBC Oracle suport\u0103 doar autentificarea Kerberos folosind API-urile de securitate implicite disponibile \u00een OpenJDK, OpenJ9 sau alte SDK-uri similare.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Dezactiva\u0163i autentificarea Kerberos pentru sursa de date Oracle sau comuta\u0163i la un alt SDK Java \u00een afar\u0103 de IBM Java 8 SDK.
 # 9600-9603 deleted 
 # 9900 deleted

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -24,7 +26,6 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-
 import com.ibm.ws.transaction.test.tests.DualServerDynamicCoreTest;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
@@ -82,6 +83,7 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         server.addEnvVar("POSTGRES_USER", POSTGRES_USER);
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
         server.addEnvVar("POSTGRES_URL", jdbcURL);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 
     private static void log(OutputFrame frame) {
@@ -93,10 +95,9 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("NYTRACE: DualServerDynamicDBTest.setUp called");
         server1 = firstServer;
         server2 = secondServer;
-        servletName = "transaction/Simple2PCCloudServlet";
+        servletName = APP_NAME + "/Simple2PCCloudServlet";
         cloud1RecoveryIdentity = "cloud001";
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
         // Include the 'app1.web' package and all of it's java classes and sub-packages
@@ -104,7 +105,6 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-
     }
 
     @Override
@@ -112,114 +112,92 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
         StringBuilder sb = null;
-        boolean testFailed = false;
-        String testFailureString = "";
 
         // Start Server1
-        setUp(server1);
-        server1.startServer();
+        startServers(server1);
 
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, servletName, "setupRec" + id);
         } catch (Throwable e) {
-            // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
+
+        assertNull("setupRec" + id + " returned: " + sb, sb);
 
         // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog("Dump State:"));
 
         // Now start server2
-        if (!testFailed) {
-            server2.setHttpDefaultPort(Cloud2ServerPort);
-            setUp(server2);
-            ProgramOutput po = server2.startServerAndValidate(false, true, true);
+        server2.setHttpDefaultPort(Cloud2ServerPort);
+        startServers(server2);
 
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not start server2");
-                Log.error(this.getClass(), "dynamicTest", ex);
-                throw ex;
-            }
-
-            // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
-                testFailed = true;
-                testFailureString = "Second server did not perform peer recovery";
-            }
-        }
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server2.getServerName() + " did not perform peer recovery",
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
 
         // flush the resource states
-        if (!testFailed) {
-
-            try {
-                sb = runTestWithResponse(server2, servletName, "dumpState");
-                Log.info(this.getClass(), method, sb.toString());
-            } catch (Exception e) {
-                Log.error(this.getClass(), method, e);
-                throw e;
-            }
-
-            //Stop server2
-            server2.stopServer(null);
-
-            // restart 1st server
-            server1.resetStarted();
-            setUp(server1);
-            server1.startServerAndValidate(false, true, true);
-
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on first server";
-            }
+        try {
+            sb = runTestWithResponse(server2, servletName, "dumpState");
+            Log.info(this.getClass(), method, sb.toString());
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            fail(e.getMessage());
         }
 
-        if (!testFailed) {
+        //Stop server2
+        server2.stopServer((String[]) null);
 
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + id);
-            try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + id);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+        // restart 1st server
+        server1.resetStarted();
+        startServers(server1);
 
-            // Bounce first server to clear log
-            server1.stopServer(null);
-            setUp(server1);
-            server1.startServerAndValidate(false, true, true);
+        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
 
-            // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
-
+        // check resource states
+        Log.info(this.getClass(), method, "calling checkRec" + id);
+        try {
+            sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+        } catch (Exception e) {
+            Log.error(this.getClass(), "dynamicTest", e);
+            throw e;
         }
+        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
+        // Bounce first server to clear log
+        server1.stopServer((String[]) null);
+        startServers(server1);
+
+        // Check log was cleared
+        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
+        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
+    }
+
+    @After
+    public void tearDown() throws Exception {
         tidyServerAfterTest(server1);
         tidyServerAfterTest(server2);
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
-        if (testFailed)
-            fail(testFailureString);
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
-    }
+    private void startServers(LibertyServer... servers) {
+        final String method = "startServers";
 
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
+            try {
+                setUp(server);
+                po = server.startServerAndValidate(false, false, false);
+                if (po.getReturnCode() != 0) {
+                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
+                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                }
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            }
+        }
+    }
 }

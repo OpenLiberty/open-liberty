@@ -18,6 +18,8 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -35,10 +37,12 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -53,8 +57,9 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 public class ApplicationStateHealthCheckTest {
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
-    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E", "CWWKZ0002E" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
+    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E",
+                                                                       "CWWKZ0002E", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String MULTIPLE_APP_NAME = "MultipleHealthCheckApp";
     public static final String DIFFERENT_APP_NAME = "DifferentApplicationNameHealthCheckApp";
@@ -90,7 +95,7 @@ public class ApplicationStateHealthCheckTest {
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
                                     .removeFeature("mpHealth-2.0")
-                                    .forServers(SERVER_NAME, FAILS_TO_START_SERVER_NAME));
+                                    .forServers(SERVER_NAME));
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
@@ -114,16 +119,20 @@ public class ApplicationStateHealthCheckTest {
         if (server2.isStarted()) {
             server2.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
         }
-        
+
     }
 
     /**
      * This test will first load an application that purposely fails to start.
      * It will then load a dropin that would like to reports UP on all health checks.
      * But since the pre-loaded app failed to start, readiness/overall reports DOWN and liveness remains unaltered.
+     *
+     * Note: Not repeated for mpHealth-3.0, since mpReactiveMessaging-1.0 uses mpConfig-1.4, which conflicts with mpConfig-2.0 from
+     * mpHealth-3.0. Will allow for mpHealth-3.x repetition, once mpReactiveMessaging starts using mpConfig-2.0.
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("mpHealth-3.0")
     @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException",
                     "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
                     "org.jboss.weld.exceptions.DeploymentException" })
@@ -197,8 +206,16 @@ public class ApplicationStateHealthCheckTest {
 
             // Repeatedly hit the readiness endpoint until an UP response is received
             while (!app_ready) {
-                conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                responseCode = conReady.getResponseCode();
+                try {
+                    conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+                    responseCode = conReady.getResponseCode();
+                } catch (SocketTimeoutException ste) {
+                    log("testDynamicallyLoadedApplicationsHealthCheckTest", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                    continue;
+                } catch (SocketException se) {
+                    log("testDynamicallyLoadedApplicationsHealthCheckTest", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                    continue;
+                }
 
                 // We need to ensure we get a connection refused in the case of the server not finished starting up
                 // We expect a connection refused as the ports are not open until server is fully started
@@ -270,7 +287,8 @@ public class ApplicationStateHealthCheckTest {
             for (File file : libsDir.listFiles()) {
                 server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
             }
-            ShrinkHelper.exportAppToServer(server, app);
+            //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
+            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
         } else {
             ShrinkHelper.exportDropinAppToServer(server, app);
         }

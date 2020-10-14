@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs20.client.configuration;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -19,9 +20,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transport.http.osgi.HttpConduitConfigApplier;
 import org.apache.cxf.transports.http.configuration.ConnectionType;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.cxf.transports.http.configuration.ProxyServerType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -59,7 +60,7 @@ public class LibertyJaxRsClientConfigInterceptor extends AbstractPhaseIntercepto
                     cxfClientProps.put(key, value);
                 }
             }
-            HttpConduitConfigApplier.applyClientPolicies(cxfClientProps, httpConduit);
+            applyClientPolicies(cxfClientProps, httpConduit);
 
             // IBM KeepAlive Constant takes priority over CXF constant - reset if necessary
             Object keepAlive = message.get(JAXRSClientConstants.KEEP_ALIVE_CONNECTION);
@@ -118,5 +119,61 @@ public class LibertyJaxRsClientConfigInterceptor extends AbstractPhaseIntercepto
                      e.getMessage());
         }
 
+    }
+
+    // This method was "lifted" and modified slightly from CXF's HttpConduitConfigApplier
+    private static void applyClientPolicies(Dictionary<String, String> d, HTTPConduit c) {
+        Enumeration<String> keys = d.keys();
+        HTTPClientPolicy p = c.getClient();
+        while (keys.hasMoreElements()) {
+            String k = keys.nextElement();
+            if (k.startsWith("client.")) {
+                if (p == null) {
+                    p = new HTTPClientPolicy();
+                    c.setClient(p);
+                }
+                String v = d.get(k);
+                k = k.substring("client.".length());
+                if ("ConnectionTimeout".equals(k)) {
+                    p.setConnectionTimeout(Long.parseLong(v.trim()));
+                } else if ("ReceiveTimeout".equals(k)) {
+                    p.setReceiveTimeout(Long.parseLong(v.trim()));
+                } else if ("AsyncExecuteTimeout".equals(k)) {
+                    p.setAsyncExecuteTimeout(Long.parseLong(v.trim()));
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The Liberty threadpool maximum length is infinite.  The AsyncExecuteTimeout property will be ignored.");
+                    }
+                } else if ("AsyncExecuteTimeoutRejection".equals(k)) {
+                    p.setAsyncExecuteTimeoutRejection(Boolean.parseBoolean(v.trim()));
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The Liberty threadpool maximum length is infinite.  The AsyncExecuteTimeoutRejection property will be ignored.");
+                    }
+                } else if ("AutoRedirect".equals(k)) {
+                    p.setAutoRedirect(Boolean.parseBoolean(v.trim()));
+                } else if ("MaxRetransmits".equals(k)) {
+                    p.setMaxRetransmits(Integer.parseInt(v.trim()));
+                } else if ("AllowChunking".equals(k)) {
+                    p.setAllowChunking(Boolean.parseBoolean(v.trim()));
+                } else if ("ChunkingThreshold".equals(k)) {
+                    p.setChunkingThreshold(Integer.parseInt(v.trim()));
+                } else if ("ChunkLength".equals(k)) {
+                    p.setChunkLength(Integer.parseInt(v.trim()));
+                } else if ("Connection".equals(k)) {
+                    p.setConnection(ConnectionType.valueOf(v));
+                } else if ("DecoupledEndpoint".equals(k)) {
+                    p.setDecoupledEndpoint(v);
+                } else if ("ProxyServer".equals(k)) {
+                    p.setProxyServer(v);
+                } else if ("ProxyServerPort".equals(k)) {
+                    p.setProxyServerPort(Integer.parseInt(v.trim()));
+                } else if ("ProxyServerType".equals(k)) {
+                    p.setProxyServerType(ProxyServerType.fromValue(v));
+                } else if ("NonProxyHosts".equals(k)) {
+                    p.setNonProxyHosts(v);
+                }
+            }
+        }
     }
 }

@@ -17,14 +17,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
-import javax.json.JsonArray;
+
 import javax.json.JsonException;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonStructure;
+import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.spi.JsonProvider;
 import javax.ws.rs.BadRequestException;
@@ -74,9 +71,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonStructure.class.isAssignableFrom(type) ||
-               JsonArray.class.isAssignableFrom(type) ||
-               JsonObject.class.isAssignableFrom(type);
+        return JsonValue.class.isAssignableFrom(type);
     }
 
     @Override
@@ -90,7 +85,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
         try {
             writer = this.jsonProvider.createWriter(entityStream);
             if (writer != null) {
-                writer.write((JsonStructure) obj);
+                writer.write((JsonValue) obj);
             }
         } catch (Throwable e) {
             //ignore
@@ -107,9 +102,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonStructure.class.isAssignableFrom(type) ||
-               JsonArray.class.isAssignableFrom(type) ||
-               JsonObject.class.isAssignableFrom(type);
+        return JsonValue.class.isAssignableFrom(type);
     }
 
     @FFDCIgnore(value = { Throwable.class })

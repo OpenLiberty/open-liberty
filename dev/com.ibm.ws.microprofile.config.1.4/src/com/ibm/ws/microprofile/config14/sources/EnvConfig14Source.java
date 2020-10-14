@@ -13,25 +13,21 @@ package com.ibm.ws.microprofile.config14.sources;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
+import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
+
 /**
  *
  */
-public class EnvConfig14Source implements ConfigSource {
+public class EnvConfig14Source extends InternalConfigSource {
 
     private static final TraceComponent tc = Tr.register(EnvConfig14Source.class);
-
-    private final int ordinal;
-    private final String name;
 
     private static Pattern p = null;
 
@@ -50,32 +46,25 @@ public class EnvConfig14Source implements ConfigSource {
         });
 
         p = Pattern.compile(ConfigConstants.CONFIG13_ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE);
-
-    }
-
-    public EnvConfig14Source() {
-        ordinal = getEnvOrdinal();
-        name = Tr.formatMessage(tc, "environment.variables.config.source");
     }
 
     @Override
+    @Trivial
     public String getName() {
-        return name;
+        return Tr.formatMessage(tc, "environment.variables.config.source");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ConfigConstants.ORDINAL_ENVIRONMENT_VARIABLES;
     }
 
     @Override
-    public int getOrdinal() {
-        return ordinal;
-    }
-
-    @Override
+    @Trivial
     public Map<String, String> getProperties() {
         return env;
-    }
-
-    @Override
-    public Set<String> getPropertyNames() {
-        return env.keySet();
     }
 
     @Override
@@ -107,16 +96,6 @@ public class EnvConfig14Source implements ConfigSource {
         if (p != null)
             modifiedName = p.matcher(name).replaceAll("_");
         return modifiedName;
-    }
-
-    @Trivial
-    public static int getEnvOrdinal() {
-        String ordinalProp = env.get(ConfigConstants.ORDINAL_PROPERTY);
-        int ordinal = ConfigConstants.ORDINAL_ENVIRONMENT_VARIABLES;
-        if (ordinalProp != null) {
-            ordinal = Integer.parseInt(ordinalProp);
-        }
-        return ordinal;
     }
 
     @Override

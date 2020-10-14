@@ -151,6 +151,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     private final static String CFG_KEY_ACTIVE_FEATURES = "feature";
 
+    public static final String EE_COMPATIBLE_NAME = "eeCompatible";
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
     final static String FEATURE_FIX_CACHE_FILE = "feature.fix.cache";
@@ -494,7 +495,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param locationService
      *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -526,7 +528,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -541,7 +544,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -563,7 +567,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
@@ -582,7 +587,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param executorService
      *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -599,7 +605,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -745,10 +752,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, null);
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, null);
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
-                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {}, null);
+                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
+                    }, null);
 
                     break;
                 default:
@@ -1642,16 +1651,23 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         for (String missing : result.getMissing()) {
             reportedErrors = true;
+            boolean isRootFeature = rootFeatures.contains(missing);
+            boolean isExtension = missing.indexOf(":") > -1;
+            String altName = featureRepository.matchesAlternate(missing);
             //Check if using Open Liberty before suggesting install util for missing features
             if (!getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
-                if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+                if (isRootFeature && !isExtension) {
                     // Only report this message for core features included as root features in the server.xml
                     Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
                 } else {
                     Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
                 }
             } else {
+                // Not on Open Liberty
                 Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+            }
+            if (altName != null && isRootFeature && !isExtension) {
+                Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
             }
             installStatus.addMissingFeature(missing);
         }
@@ -1691,6 +1707,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         sortedConflicts.sort(new ConflictComparator()); // order by importance
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
 
+        boolean disableAllOnConflict = disableAllOnConflict(result);
         for (Entry<String, Collection<Chain>> conflict : sortedConflicts) {
             reportedErrors = true;
             // Attempt to gather two distinct features that are in conflict, here we assume we
@@ -1752,7 +1769,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                         Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR", getPreferredEePlatform(eeConflict1),
                                  getPreferredEePlatform(eeConflict2), getFeatureName(eeConflict1), getFeatureName(eeConflict2), getFeatureName(configured1),
                                  getFeatureName(configured2));
-
                         // Remove the conflicting features (not necessarily the configured features)
                         result.getResolvedFeatures().remove(getFeatureName(eeConflict1));
                         result.getResolvedFeatures().remove(getFeatureName(eeConflict2));
@@ -1770,10 +1786,55 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             for (Chain chain : conflict.getValue()) {
                 installStatus.addConflictFeature(chain.getFeatureRequirement());
             }
+        }
 
+        if (disableAllOnConflict) {
+            // Remove all features on conflicts
+            Set<String> resolved = result.getResolvedFeatures();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Conflicts found in feature set, no features will be enabled:" + String.valueOf(sortedConflicts));
+            }
+            resolved.clear();
+            Tr.warning(tc, "UPDATE_DISABLED_FEATURES_ON_CONFLICT");
         }
         return reportedErrors;
 
+    }
+
+    private boolean disableAllOnConflict(Result result) {
+        Map<String, Collection<Chain>> conflicts = result.getConflicts();
+        if (conflicts.isEmpty()) {
+            return false;
+        }
+        // First check if any features in the resolved feature set want to disable on conflict.
+        // This includes features not involved in the conflict as well as the features in the
+        // chain leading up to the conflict
+        for (String featureName : result.getResolvedFeatures()) {
+            if (shouldDisableOnConflict(featureName)) {
+                return true;
+            }
+        }
+
+        // Once we get here we know that all the features in the resolution set
+        // do not have disable on conflict set to true.
+        // But the feature conflicting feature may want to disable all features on conflict.
+        // In this case we only will disable all if all candidates want to disable for a specific chain
+        // NOTE - This is a bit of a degenerate case.  If a requiring feature only tolerates versions
+        // of a feature that disable on conflict then that feature likely should be disable on conflict also.
+        // In that case the above loop over the resolved features would have returned true already
+        for (Entry<String, Collection<Chain>> conflict : conflicts.entrySet()) {
+            for (Chain chain : conflict.getValue()) {
+                // NOTE - reverse logic here because there is no isEmpty on Optional in Java 8!
+                if (!!!chain.getCandidates().stream().filter((f) -> !!!shouldDisableOnConflict(f)).findFirst().isPresent()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldDisableOnConflict(String featureName) {
+        return featureRepository.disableAllFeaturesOnConflict(featureName);
     }
 
     private String getFeatureName(String symbolicName) {
@@ -1837,7 +1898,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private boolean isEeCompatible(String symbolicName) {
-        return symbolicName != null && symbolicName.lastIndexOf("eeCompatible") >= 0;
+        return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
     private static char getEeCompatibleVersion(String symbolicName) {

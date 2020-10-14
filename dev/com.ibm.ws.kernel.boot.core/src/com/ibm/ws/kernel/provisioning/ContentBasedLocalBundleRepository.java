@@ -170,8 +170,10 @@ public class ContentBasedLocalBundleRepository extends AbstractResourceRepositor
                 beginIndex = cacheLine.lastIndexOf(';', endIndex - 1);
                 symbolicName = cacheLine.substring(beginIndex + 1, endIndex);
             } else {
-                JarFile jar = new JarFile(file);
-                Manifest man = jar.getManifest();
+                Manifest man;
+                try (JarFile jar = new JarFile(file)) {
+                    man = jar.getManifest();
+                }
                 Attributes a = man.getMainAttributes();
                 symbolicName = getSymbolicName(a);
                 version = Version.parseVersion(a.getValue(Constants.BUNDLE_VERSION));

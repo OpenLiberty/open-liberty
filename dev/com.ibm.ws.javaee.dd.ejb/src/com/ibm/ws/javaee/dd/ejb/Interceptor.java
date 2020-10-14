@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,17 +13,12 @@ package com.ibm.ws.javaee.dd.ejb;
 import java.util.List;
 
 import com.ibm.ws.javaee.dd.common.Describable;
-import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRefsGroup;
 import com.ibm.ws.javaee.dd.common.LifecycleCallback;
 
 /**
  * Represents &lt;interceptor>.
  */
-public interface Interceptor
-                extends Describable,
-                JNDIEnvironmentRefsGroup,
-                SessionInterceptor
-{
+public interface Interceptor extends Describable, SessionInterceptor {
     /**
      * @return &lt;interceptor-class>
      */

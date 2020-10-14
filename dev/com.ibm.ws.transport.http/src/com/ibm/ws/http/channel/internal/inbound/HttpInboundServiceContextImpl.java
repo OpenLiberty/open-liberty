@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -555,7 +556,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     /**
      * Send the headers for the outgoing response synchronously.
      *
-     * @throws IOException          -- if a socket exception occurs
+     * @throws IOException -- if a socket exception occurs
      * @throws MessageSentException -- if a finishMessage API was already used
      */
     @Override
@@ -666,9 +667,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @param body
      * @throws IOException
-     *                                  -- if a socket exception occurs
+     *             -- if a socket exception occurs
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public void sendResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -727,7 +728,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -772,9 +773,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @param body
      * @throws IOException
-     *                                  -- if a socket error occurs
+     *             -- if a socket error occurs
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public void sendRawResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -805,7 +806,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendRawResponseBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -889,11 +890,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * the zero-length chunk is automatically appended.
      *
      * @param body
-     *                 (last set of buffers to send, null if no body data)
+     *            (last set of buffers to send, null if no body data)
      * @throws IOException
-     *                                  -- if a socket exception occurs
+     *             -- if a socket exception occurs
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public void finishResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -967,12 +968,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * be null and the callback always used.
      *
      * @param body
-     *                     (last set of body data, null if no body information)
+     *            (last set of body data, null if no body information)
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishResponseMessage(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1047,11 +1048,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * been sent yet, then they will be prepended to the input data.
      *
      * @param body
-     *                 -- null if there is no body data
+     *            -- null if there is no body data
      * @throws IOException
-     *                                  -- if a socket exception occurs
+     *             -- if a socket exception occurs
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public void finishRawResponseMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1080,12 +1081,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * such that the callback is always used.
      *
      * @param body
-     *                   -- null if there is no more body data
+     *            -- null if there is no more body data
      * @param cb
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *                                  -- if a finishMessage API was already used
+     *             -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishRawResponseMessage(WsByteBuffer[] body, InterChannelCallback cb, boolean bForce) throws MessageSentException {
@@ -1270,7 +1271,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * now that we're ready to read the next inbound request.
      *
      * @param callClose
-     *                      (should this method call the close API itself)
+     *            (should this method call the close API itself)
      */
     public void purgeBodyBuffers(boolean callClose) {
 
@@ -1300,11 +1301,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *                                      -- if a socket exceptions happens
+     *             -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *                                      -- if a malformed request body is
-     *                                      present such that the server should send an HTTP 400 Bad Request
-     *                                      back to the client.
+     *             -- if a malformed request body is
+     *             present such that the server should send an HTTP 400 Bad Request
+     *             back to the client.
      */
 
     @Override
@@ -1381,7 +1382,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *                                   -- if the entire body has already been read
+     *             -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRequestBodyBuffers(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -1471,11 +1472,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer
      * @throws IOException
-     *                                      -- if a socket exceptions happens
+     *             -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *                                      -- if a malformed request body is
-     *                                      present such that the server should send an HTTP 400 Bad Request
-     *                                      back to the client.
+     *             -- if a malformed request body is
+     *             present such that the server should send an HTTP 400 Bad Request
+     *             back to the client.
      */
     @Override
     public WsByteBuffer getRequestBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -1524,6 +1525,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return buffer;
     }
 
+    ReentrantLock gateKeeper = new ReentrantLock();
+
     /**
      * This gets the next body buffer asynchronously. If the body is encoded
      * or compressed, then the encoding is removed and the "next" buffer
@@ -1546,63 +1549,35 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *                                   -- if the entire body has already been read
+     *             -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRequestBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getRequestBodyBuffer(async)");
-        }
-        if (!headersParsed()) {
-            // request message must have the headers parsed prior to attempting
-            // to read a body (this is a completely invalid state in the channel
-            // above)
-            IOException ioe = new IOException("Request not read yet");
-            FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1511");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Attempt to read a body without headers");
-            }
-            callback.error(getVC(), ioe);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): no hdrs yet");
-            }
-            return null;
+            Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
 
-        // check to see if a read is even necessary
-        if (!isIncomingBodyValid() || incomingBuffersReady()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): read not needed");
-            }
-            if (bForce) {
-                callback.complete(getVC());
-                return null;
-            }
-            return getVC();
-        }
-
-        if (isBodyComplete()) {
-            // throw new BodyCompleteException("No more body to read");
-            // instead of throwing an exception, just return the VC as though
-            // data is immediately ready and the caller will switch to their
-            // sync block and then get a null buffer back
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): body complete");
-            }
-            if (bForce) {
-                callback.complete(getVC());
-                return null;
-            }
-            return getVC();
-        }
-
-        setAppReadCallback(callback);
-        setForceAsync(bForce);
-        setMultiRead(false);
         try {
-            if (!readBodyBuffer(getRequestImpl(), true)) {
+            if (!headersParsed()) {
+                // request message must have the headers parsed prior to attempting
+                // to read a body (this is a completely invalid state in the channel
+                // above)
+                IOException ioe = new IOException("Request not read yet");
+                FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1511");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to read a body without headers");
+                }
+                callback.error(getVC(), ioe);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "getRequestBodyBuffer(async): read finished");
+                    Tr.exit(tc, "getRequestBodyBuffer(async): no hdrs yet");
+                }
+                return null;
+            }
+
+            // check to see if a read is even necessary
+            if (!isIncomingBodyValid() || incomingBuffersReady()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): read not needed");
                 }
                 if (bForce) {
                     callback.complete(getVC());
@@ -1610,19 +1585,65 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return getVC();
             }
-        } catch (IOException ioe) {
-            // no FFDC required
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): exception: " + ioe);
-            }
-            callback.error(getVC(), ioe);
-            return null;
-        }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getRequestBodyBuffer(async): null");
+            if (isBodyComplete()) {
+                // throw new BodyCompleteException("No more body to read");
+                // instead of throwing an exception, just return the VC as though
+                // data is immediately ready and the caller will switch to their
+                // sync block and then get a null buffer back
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): body complete");
+                }
+                if (bForce) {
+                    callback.complete(getVC());
+                    return null;
+                }
+                return getVC();
+            }
+
+            setAppReadCallback(callback);
+            setForceAsync(bForce);
+            setMultiRead(false);
+            try {
+                if (!readBodyBuffer(getRequestImpl(), true)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "getRequestBodyBuffer(async): read finished");
+                    }
+                    if (bForce) {
+                        callback.complete(getVC());
+                        return null;
+                    }
+                    return getVC();
+                }
+            } catch (IOException ioe) {
+                // no FFDC required
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): exception: " + ioe);
+                }
+                callback.error(getVC(), ioe);
+                return null;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getRequestBodyBuffer(async): null");
+            }
+            return null;
+        } finally {
+            countDownFirstReadLatch();
         }
-        return null;
+    }
+
+    public void countDownFirstReadLatch() {
+        if (this.myLink instanceof H2HttpInboundLinkWrap) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "countDownFirstReadLatch. count down. HISCI hc: " + this.hashCode());
+            }
+            ((H2HttpInboundLinkWrap) myLink).countDownFirstReadLatch();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, " can not count down countDownFirstReadLatch. HISCI hc: " + this.hashCode());
+            }
+        }
     }
 
     /**
@@ -1637,11 +1658,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer
      * @throws IOException
-     *                                      -- if a socket exceptions happens
+     *             -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *                                      -- if a malformed request body is
-     *                                      present such that the server should send an HTTP 400 Bad Request
-     *                                      back to the client.
+     *             -- if a malformed request body is
+     *             present such that the server should send an HTTP 400 Bad Request
+     *             back to the client.
      */
     @Override
     public WsByteBuffer getRawRequestBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -1668,11 +1689,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *                                      -- if a socket exceptions happens
+     *             -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *                                      -- if a malformed request body is
-     *                                      present such that the server should send an HTTP 400 Bad Request
-     *                                      back to the client.
+     *             -- if a malformed request body is
+     *             present such that the server should send an HTTP 400 Bad Request
+     *             back to the client.
      */
     @Override
     public WsByteBuffer[] getRawRequestBodyBuffers() throws IOException, IllegalHttpBodyException {
@@ -1705,7 +1726,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *                                   -- if the entire body has already been read
+     *             -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawRequestBodyBuffer(InterChannelCallback cb, boolean bForce) throws BodyCompleteException {
@@ -1738,7 +1759,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *                                   -- if the entire body has already been read
+     *             -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawRequestBodyBuffers(InterChannelCallback cb, boolean bForce) throws BodyCompleteException {

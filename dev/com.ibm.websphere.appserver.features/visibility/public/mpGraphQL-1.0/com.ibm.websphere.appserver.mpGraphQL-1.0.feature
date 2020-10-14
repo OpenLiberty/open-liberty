@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpGraphQL-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: org.eclipse.microprofile.graphql; type="stable", \

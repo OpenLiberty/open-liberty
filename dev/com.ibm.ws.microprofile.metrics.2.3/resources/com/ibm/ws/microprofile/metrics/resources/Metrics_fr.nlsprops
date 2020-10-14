@@ -128,6 +128,17 @@ session.activeSessions.description=Nombre de sessions actives simultan\u00e9ment
 session.invalidated.total.description=Nombre de sessions d\u00e9connect\u00e9es depuis l'activation de cette m\u00e9trique.
 session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect\u00e9es suite au d\u00e9passement du d\u00e9lai d'attente depuis l'activation de cette m\u00e9trique.
 
+grpc.server.rpcStarted.total.description=Nombre total d'appels de proc\u00e9dure distante d\u00e9marr\u00e9s sur le serveur.
+grpc.server.rpcCompleted.total.description=Nombre total d'appels de proc\u00e9dure distante ayant abouti ou \u00e9chou\u00e9 termin\u00e9s sur le serveur.
+grpc.server.sentMessages.total.description=Nombre total de messages de flux envoy\u00e9s par le serveur.
+grpc.server.receivedMessages.total.description=Nombre total de messages de flux re\u00e7us du client.
+grpc.server.responseTime.total.description=Temps de r\u00e9ponse total des appels de proc\u00e9dure distante termin\u00e9s.
+
+grpc.client.rpcStarted.total.description=Nombre total d'appels de proc\u00e9dure distante d\u00e9marr\u00e9s sur le client.
+grpc.client.rpcCompleted.total.description=Nombre total d'appels de proc\u00e9dure distante ayant abouti ou \u00e9chou\u00e9 termin\u00e9s sur le client.
+grpc.client.sentMessages.total.description=Nombre total de messages de flux envoy\u00e9s par le client.
+grpc.client.receivedMessages.total.description=Nombre total de messages de flux re\u00e7us du serveur.
+grpc.client.responseTime.total.description=Temps de r\u00e9ponse total des appels de proc\u00e9dure distante termin\u00e9s.
 
 REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
 #-----------------------------------------------------------------------------------------------------------------------------

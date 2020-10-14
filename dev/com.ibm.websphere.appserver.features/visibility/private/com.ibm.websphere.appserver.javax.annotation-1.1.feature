@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.annotation-1.1
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 IBM-Process-Types: server, \
  client

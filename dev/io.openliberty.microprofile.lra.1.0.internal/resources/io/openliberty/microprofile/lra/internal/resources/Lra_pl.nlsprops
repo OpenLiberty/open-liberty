@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: Identyfikator URI koordynatora LRA nie jest poprawny.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=Uczestnicy LRA musz\u0105 mie\u0107 mo\u017cliwo\u015b\u0107 kontaktu z koordynatorem.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Popraw konfiguracj\u0119 koordynatora LRA w pliku server.xml.
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania sk\u0142adnika mpLRA-1.0. B\u0142\u0105d: {0}.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d dzia\u0142ania LRA, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107 problem.

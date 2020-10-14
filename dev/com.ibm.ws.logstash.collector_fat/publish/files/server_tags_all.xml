@@ -1,40 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?><server description="new server">
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
 
-	<logging traceSpecification="com.ibm.logs.TraceServlet=fine" />
+    <logging traceSpecification="com.ibm.logs.TraceServlet=fine" />
 
     <!-- Enable features -->
     <featureManager>
         <feature>jsp-2.2</feature>
-	   <feature>logstashCollector-1.0</feature>
-	   <feature>ssl-1.0</feature>
-	   <feature>timedexit-1.0</feature>
+        <feature>logstashCollector-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
-    
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
-        <accessLogging enabled="true" filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log" logFormat="%h %u %t &quot;%r&quot; %s %b %D %{User-agent}i"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+        httpPort="${bvt.prop.HTTP_default}"
+        httpsPort="${bvt.prop.HTTP_default.secure}">
+        <accessLogging enabled="true"
+            filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log"
+            logFormat="%h %u %t &quot;%r&quot; %s %b %D %{User-agent}i" />
     </httpEndpoint>
 
-	<!-- Automatically expand WAR files and EAR files -->
-	<applicationManager autoExpand="true"/>
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true" />
 
-	<include location="log-tags.xml"/>
-	<logstashCollector hostName="localhost" port="5043" sslRef="testSSLConfig">
-		<source>message</source>
-		<source>accessLog</source>
-		<source>trace</source>
-		<source>garbageCollection</source>
-		<source>ffdc</source>
-		<tag>singleTag</tag>
-		<tag>correctTag</tag>
-		<tag>_</tag>
-  		<tag>:\</tag>
-  		<tag>;</tag>
-  		<tag>\</tag>
-  		<tag>1234?:</tag>
-  		<tag>-</tag>
-	</logstashCollector>
+    <include location="log-tags.xml" />
+    <logstashCollector hostName="${LOGSTASH_HOST}" port="${LOGSTASH_PORT}">
+        <source>message</source>
+        <source>accessLog</source>
+        <source>trace</source>
+        <source>garbageCollection</source>
+        <source>ffdc</source>
+        <tag>singleTag</tag>
+        <tag>correctTag</tag>
+        <tag>_</tag>
+        <tag>:\</tag>
+        <tag>;</tag>
+        <tag>\</tag>
+        <tag>1234?:</tag>
+        <tag>-</tag>
+    </logstashCollector>
 
-    <keyStore id="testKeyStore" location="${server.output.dir}/resources/security/keystorelogstash.jks" password="passw0rd"/>
-	<ssl id="testSSLConfig" keyStoreRef="testKeyStore"></ssl>
-	
+    <keyStore id="defaultKeyStore" password="{xor}Lz4sLChvLTs=" />
+
 </server>

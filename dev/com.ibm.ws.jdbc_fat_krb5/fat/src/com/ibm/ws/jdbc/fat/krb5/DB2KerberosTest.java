@@ -145,6 +145,11 @@ public class DB2KerberosTest extends FATServletClient {
         }
     }
 
+    /**
+     * Test that the 'password' attribute of an authData element can be used to supply a Kerberos password.
+     * Normally a keytab file takes precedence over this, so perform dynamic config for the test to temporarily
+     * set the keytab location to an invalid location to confirm that the supplied password actually gets used.
+     */
     @Test
     @Mode(TestMode.FULL)
     public void testBasicPassword() throws Exception {

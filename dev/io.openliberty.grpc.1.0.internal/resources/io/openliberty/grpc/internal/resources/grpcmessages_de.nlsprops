@@ -26,3 +26,15 @@ invalid.serverinterceptor.useraction=\u00dcberpr\u00fcfen Sie den konfigurierten
 invalid.inbound.msg.size=CWWKT0203E: maxInboundMessageSize {0} ist nicht g\u00fcltig. Der Wert muss gr\u00f6\u00dfer als 0 sein.
 invalid.inbound.msg.size.explanation=Der konfigurierte Wert f\u00fcr maxInboundMessageSize ist nicht g\u00fcltig.
 invalid.inbound.msg.size.useraction=Konfigurieren Sie f\u00fcr maxInboundMessageSize einen g\u00fcltigen Wert.
+
+response.already.committed=CWWKT0204E: Die gRPC-Anforderung f\u00fcr {0} kann nicht fortgesetzt werden. Die Antwort wurde bereits festgeschrieben.
+response.already.committed.explanation=Die gRPC-Anforderung ist nicht g\u00fcltig, weil die Antwort festgeschrieben wurde, bevor die gRPC-Methoden gestartet wurden.
+response.already.committed.useraction=Suchen Sie in den Protokollen nach anderen Warnungen oder Fehlernachrichten vor dieser Nachricht. Es ist m\u00f6glich, dass dieser Fehler aufgrund eines vorherigen Sicherheitsfehlers aufgetreten ist.
+
+authentication.error=CWWKT0205E: Die gRPC-Serviceanforderung f\u00fcr {0} ist mit dem Authentifizierungsfehler {1} fehlgeschlagen.
+authentication.error.explanation=Die gRPC-Anforderung konnte vor dem Start der gRPC-Methoden nicht authentifiziert werden.
+authentication.error.useraction=Suchen Sie in den Protokollen nach anderen Warnungen oder Fehlernachrichten vor dieser Nachricht. Es ist m\u00f6glich, dass dieser Fehler aufgetreten ist, weil keine Berechtigungsnachweise mit der Anforderung bereitgestellt wurden oder weil die bereitgestellten Berechtigungsnachweise nicht g\u00fcltig sind.
+
+authorization.error=CWWKT0206E: Die gRPC-Serviceanforderung f\u00fcr {0} ist mit dem Berechtigungsfehler {1} fehlgeschlagen.
+authorization.error.explanation=Die gRPC-Anforderung konnte vor dem Start der gRPC-Methoden nicht autorisiert werden.
+authorization.error.useraction=Suchen Sie in den Protokollen nach anderen Warnungen oder Fehlernachrichten vor dieser Nachricht. Es ist m\u00f6glich, dass dieser Fehler aufgetreten ist, weil keine Berechtigungsnachweise mit der Anforderung bereitgestellt wurden oder weil die bereitgestellten Berechtigungsnachweise nicht g\u00fcltig sind.

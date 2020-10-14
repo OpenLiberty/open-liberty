@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Ujist\u011bte se, \u017ee konfigurace tokenu
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: V ur\u010den\u00e9m koncov\u00e9m bod\u011b: {0} se pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP, je po\u017eadov\u00e1no sch\u00e9ma HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Ur\u010den\u00fd koncov\u00fd bod vy\u017eaduje sch\u00e9ma HTTPS, ale v adrese URL po\u017eadavku bylo pou\u017eito sch\u00e9ma HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Zkontrolujte adresu URL po\u017eadavku a ujist\u011bte se, \u017ee pou\u017e\u00edv\u00e1 sch\u00e9ma HTTPS, nebo zm\u011b\u0148te konfiguraci tak, aby sch\u00e9ma HTTPS nebylo po\u017eadov\u00e1no.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Podpisov\u00fd algoritmus [{0}], kter\u00fd je ur\u010den vlastnostmi MicroProfile Config, nen\u00ed podporov\u00e1n. Bude pou\u017eit podpisov\u00fd algoritmus [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Podporov\u00e1na je pouze ur\u010dit\u00e1 sada podpisov\u00fdch algoritm\u016f RSA, Elliptical Curve a HMAC. Podpisov\u00fd algoritmus, kter\u00fd je ur\u010den vlastnostmi MicroProfile Config, nen\u00ed jedn\u00edm z podporovan\u00fdch podpisov\u00fdch algoritm\u016f.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Uve\u010fte podporovan\u00fd podpisov\u00fd algoritmus ve vlastnostech MicroProfile Config. Podporovan\u00e9 podpisov\u00e9 algoritmy zahrnuj\u00ed ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 a HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: AMR [{0}] zadan\u00e9ho tokenu JSON Web Token (JWT) nen\u00ed v konfiguraci JWT [{1}] uveden jako d\u016fv\u011bryhodn\u00fd n\u00e1rok AMR. D\u016fv\u011bryhodn\u00fd n\u00e1rok AMR je [ {2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=Konfigurace serveru ur\u010duje, kter\u00fd n\u00e1rok AMR je p\u0159i ov\u011b\u0159ov\u00e1n\u00ed JWT d\u016fv\u011bryhodn\u00fd. Dodan\u00fd token nen\u00ed ur\u010den pro d\u016fv\u011bryhodn\u00fd n\u00e1rok AMR, tak\u017ee token nelze ov\u011b\u0159it.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Z\u00edskejte nov\u00fd token pro jeden d\u016fv\u011bryhodn\u00fd n\u00e1rok AMR ur\u010den\u00fd v konfiguraci JWT, nebo p\u0159idejte n\u00e1rok AMR ur\u010den\u00fd ve zpr\u00e1v\u011b jako d\u016fv\u011bryhodn\u00fd n\u00e1rok AMR v konfiguraci JWT.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Konfigurace [{0}] ur\u010duje podpisov\u00fd algoritmus {1}, ale dan\u00fd algoritmus je dostupn\u00fd pouze ve vyd\u00e1n\u00ed beta. M\u00edsto toho se pou\u017eije podpisov\u00fd algoritmus {2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Podpora podpisov\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b, m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1, tak\u017ee podpisov\u00fd algoritmus lze pou\u017e\u00edt pouze ve vyd\u00e1n\u00ed beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Nakonfigurujte podporovan\u00fd podpisov\u00fd algoritmus nebo pou\u017eijte vyd\u00e1n\u00ed beta tohoto produktu pro pou\u017eit\u00ed podpisov\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b.

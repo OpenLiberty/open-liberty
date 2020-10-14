@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -50,7 +51,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class DelayAppStartupHealthCheckTest {
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
     private static final String MESSAGE_LOG = "logs/messages.log";
@@ -81,7 +82,8 @@ public class DelayAppStartupHealthCheckTest {
         log("deployApplicatonIntoDropins", "Deploying the Delayed App into the dropins directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server1, app);
+        //This test expects to hit the server before the app is started so we disable validation to prevent the test framework waiting for the app to start.
+        ShrinkHelper.exportAppToServer(server1, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server1.isStarted())
             server1.startServer();

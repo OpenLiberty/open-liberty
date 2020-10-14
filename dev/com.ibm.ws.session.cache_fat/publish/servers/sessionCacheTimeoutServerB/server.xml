@@ -4,18 +4,15 @@
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jndi-1.0</feature>
+        <feature>sessionCache-1.0</feature>
     </featureManager>
     
-    <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestCommon.xml"/>
     
     <httpEndpoint id="defaultHttpEndpoint"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
     
-     <!-- Use this config for sessionCache -->
-     <featureManager>
-        <feature>sessionCache-1.0</feature>
-    </featureManager>   
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
     <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
         <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
@@ -57,6 +54,7 @@
 	<!-- Perms needed because the application uses Hazelcast directly   -->
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

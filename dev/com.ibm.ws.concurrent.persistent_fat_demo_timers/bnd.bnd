@@ -27,13 +27,13 @@ fat.test.databases: true
 #fat.test.use.remote.docker: true
 
 -buildpath: \
+	com.ibm.ws.componenttest.2.0;version=latest,\
 	fattest.databases;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2,\
-	com.ibm.ws.concurrent.persistent;version=latest,\
+	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.concurrency.2.0;version=latest,\
+	io.openliberty.jakarta.ejb.4.0,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	org.testcontainers:database-commons;version=1.14.0,\
 	org.testcontainers:jdbc;version=1.14.0,\
 	org.testcontainers:testcontainers;version=1.14.0,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * Group search level.
      */
-    private short groupLevel = 1;
+    private short groupLevel = Service.PROP_LEVEL_IMMEDIATE; // TODO THIS WAS PROP_LEVEL_NESTED (0) IN TWAS
     public boolean returnRealmInfoInUniqueUserId = false; //PM50390.2
     private final String groupLevelLock = "GROUP_LEVEL_LOCK";
 
@@ -170,7 +170,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * @param chain Certificate chain to validate.
      *
      * @throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException The certificate array is invalid because it is null,
-     *             empty or contains an null certificate.
+     *                                                                                empty or contains an null certificate.
      */
     protected void validateCertificate(X509Certificate[] chain) throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException {
         // validate the certificate array
@@ -350,7 +350,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the realm context.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputRealm The realm.
+     * @param inputRealm          The realm.
      *
      * @pre inputRootDataObject != null
      * @pre inputRealm != null
@@ -373,7 +373,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the property request.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputProperty The property to request
+     * @param inputProperty       The property to request
      *
      * @pre inputRootDataObject != null
      * @pre inputProperty != null
@@ -397,7 +397,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
      * Create a DataObject for the login property request.
      *
      * @param inputRootDataObject The root DataObject.
-     * @param inputProperty The property to request
+     * @param inputProperty       The property to request
      *
      * @pre inputRootDataObject != null
      * @pre inputProperty != null
@@ -421,11 +421,11 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * Gets an entity using an identifier attribute (ex. uniqueName, externalName).
      *
-     * @param root Root data object
-     * @param inputAttrName Input attribute name
+     * @param root           Root data object
+     * @param inputAttrName  Input attribute name
      * @param inputAttrValue Input attribute value
      * @param outputAttrName Ouptut attribute name
-     * @param mapUtils Bridge utility instance
+     * @param mapUtils       Bridge utility instance
      * @return Entity or null if the input attribute is not an identifier type or if there are no entities
      */
     protected Root getEntityByIdentifier(Root root, String inputAttrName, String inputAttrValue, String outputAttrName, BridgeUtils mapUtils) throws WIMException {
@@ -490,8 +490,8 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * get input securityName.
      *
-     * @param input security attribute defined in the realm.
-     * @param input security name value.
+     * @param input        security attribute defined in the realm.
+     * @param input        security name value.
      * @param loginAccount or Group.
      *
      * @return uniqueName if the property is an IdentifierType property, principalName otherwise.
@@ -592,5 +592,15 @@ public class BridgeUtils implements WIMUserRegistryDefines {
              */
             throw new RegistryException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Get a String value for the object, or return null if the object is null.
+     *
+     * @param o The object to get the string value for.
+     * @return The string value of the object, or null if the object is null.
+     */
+    public static String getStringValue(Object o) {
+        return (o == null) ? null : String.valueOf(o);
     }
 }

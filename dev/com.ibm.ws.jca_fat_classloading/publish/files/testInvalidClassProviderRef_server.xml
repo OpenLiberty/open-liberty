@@ -10,12 +10,12 @@
  -->
 <server>
     <featureManager>
-      <feature>jca-1.7</feature>
+      <feature>connectors-2.0</feature>
       <feature>jndi-1.0</feature>
       <feature>localConnector-1.0</feature>
-      <feature>servlet-3.1</feature>
-      <feature>jms-2.0</feature>
-      <feature>jmsMdb-3.2</feature>
+      <feature>servlet-5.0</feature>
+      <feature>messaging-3.0</feature>
+      <feature>mdb-4.0</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>

@@ -66,7 +66,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         try {
 
             NameResponse resp = null;
-            if (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) {
+            if (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_grpcClient")) {
 
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getAppNameSetBadRoles");
@@ -75,7 +75,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 resp = get_consumerService()
                                 .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                                 .getAppNameSetBadRoles(Empty.getDefaultInstance());
-            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcTarget")) {
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getNameCookieJWTHeader");
                 }
@@ -83,7 +83,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 resp = get_consumerService()
                                 .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
                                 .getNameCookieJWTHeader(Empty.getDefaultInstance());
-            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget")) {
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
                     log.fine(testMethodName + " ,Consumer: send grpc request to getAppSetBadRoleCookieJWTHeader");
                 }
@@ -118,9 +118,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new NotFoundException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
-                if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcTarget")) ||
-                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcTarget")) ||
-                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcTarget"))) {
+                if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient"))) {
 
                     /*
                      * if need to print exception trailers
@@ -208,7 +208,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         AppNameRequest appReq = AppNameRequest.newBuilder().setName(appName).build();
 
         if (log.isLoggable(Level.FINE)) {
-            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " send grpc request.");
+            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " , testName = " + testName + " send grpc request.");
         }
         // get results from rpc call
         // This is a Unary call
@@ -230,7 +230,11 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new InvalidArgException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
-                if (testName.equalsIgnoreCase("getAppInfo_BadAuth")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.finest("Consumer: getAppInfo: testName = " + testName + " failed with UNAUTHENTICATED");
+                }
+                if (testName.equalsIgnoreCase("getAppInfo_BadAuth") ||
+                    (testName.equalsIgnoreCase("getAppInfo_Bad_BasicAuth_SC"))) {
                     String message = "Expected auth failure.";
                     log.info("Consumer: getAppInfo: " + message);
                     e.printStackTrace();
@@ -240,6 +244,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                     e.printStackTrace();
                     throw new UnauthException(e.getMessage());
                 }
+            } else {
+                e.printStackTrace();
+                throw e;
             }
         }
 
@@ -330,7 +337,6 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                         handleException.setNfException(new NotFoundException(t));
                                     }
                                 }
-
                                 latch.countDown();
 
                             }
@@ -340,7 +346,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                 if (log.isLoggable(Level.FINE)) {
                                     log.fine("Consumer: getAppswPrices: completed response from server ");
                                 }
-
+                                latch.countDown();
                             }
 
                         });

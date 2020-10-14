@@ -24,7 +24,6 @@ org.jboss.resteasy.plugins.interceptors.ClientContentEncodingAnnotationFeature
 org.jboss.resteasy.plugins.interceptors.ServerContentEncodingAnnotationFeature
 org.jboss.resteasy.plugins.interceptors.MessageSanitizerContainerResponseFilter
 org.jboss.resteasy.plugins.providers.sse.SseEventProvider
-org.jboss.resteasy.plugins.providers.sse.SseEventOutputProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventSinkInterceptor
 io.openliberty.restfulWS.providers.JsonPProvider
 org.jboss.resteasy.plugins.providers.multipart.IBMMultipartProvider

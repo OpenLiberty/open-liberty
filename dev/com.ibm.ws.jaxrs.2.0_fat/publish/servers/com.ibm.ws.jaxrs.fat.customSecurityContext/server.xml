@@ -1,0 +1,39 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+		<feature>jaxrs-2.0</feature>
+		<feature>appSecurity-2.0</feature>
+    </featureManager>
+    
+    <basicRegistry id="basic" realm="WebRealm">
+    	<user name="adam" password="password1" />
+		<user name="bob" password="password1" />
+	</basicRegistry>
+	
+	<application type="war" id="DefaultSecurityContext" name="SecurityContext" location="${server.config.dir}/apps/SecurityContext.war">
+		<application-bnd id="application-bnd1">
+			<security-role name="admin">
+			    <user name="bob" />
+			</security-role>
+			<security-role name="user">
+			    <user name="adam" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application type="war" id="CustomSecurityContext" name="CustomSecurityContext" location="${server.config.dir}/apps/CustomSecurityContext.war">
+		<application-bnd id="application-bnd1">
+			<security-role name="admin">
+			    <user name="bob" />
+			</security-role>
+			<security-role name="user">
+			    <user name="adam" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+    <include location="../fatTestPorts.xml"/>
+    
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
+</server>

@@ -1,0 +1,142 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.apache.myfaces.3.0
+Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 Implementation
+
+Implementation-Version: 3.0.0
+Impl-Jar-Version: 3.0.0.RC1
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+instrument.ffdc: false
+instrument.classesExcludes: \
+  org/**/*.class
+
+Include-Resource: \
+  @${repo;org.apache.myfaces.core.impl;${Impl-Jar-Version};EXACT}!/META-INF/**, \
+  @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/resources/**, \
+  @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/internal-resources/**, \
+  META-INF=@src/META-INF
+
+Service-Component: \
+  com.ibm.ws.faces_3_0.taglib; \
+    implementation:=com.ibm.ws.faces.taglibconfig.FacesGlobalTagLibConfig; \
+    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.jsf_3_0.cdiextension; \
+    implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
+    provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
+    properties:="service.vendor=IBM,\
+    bean.defining.annotations=jakarta.faces.flow.FlowScoped;jakarta.faces.view.ViewScoped,\
+    api.classes=jakarta.faces.flow.builder.FlowDefinition;jakarta.faces.flow.builder.FlowBuilderParameter,\
+    extension.classes.only=true",\
+  com.ibm.ws.jsf_30.dd; \
+    implementation:=com.ibm.ws.javaee.version.FacesVersion; \
+    provide:=com.ibm.ws.javaee.version.FacesVersion; \
+    properties:="version:Integer=30"
+
+# Not used directly, so these packages needs to be dynamically imported
+DynamicImport-Package: \
+  com.ibm.ws.jsf.cdi, \
+  com.ibm.ws.jsf.config.annotion,\
+  com.ibm.ws.jsf.config.resource,\
+  com.ibm.ws.jsf.ee, \
+  com.ibm.ws.jsf.spi.impl, \
+  com.ibm.ws.jsf.extprocessor
+
+# Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
+# org.apache.myfaces.buildtools package is myfaces-builder-annotations-1.0.9.jar
+# Additionally, a subset of these org.apache.myfaces packages are exported by the thirdparty.faces-3.0 bundle - so we exclude them here.
+Export-Package: \
+  !org.apache.myfaces.buildtools.*, \
+  !org.apache.myfaces.renderkit.html, \
+  !org.apache.myfaces.shared.config, \
+  !org.apache.myfaces.shared.renderkit, \
+  !org.apache.myfaces.shared.renderkit.html, \
+  !org.apache.myfaces.shared.renderkit.html.util, \
+  com.ibm.ws.faces.taglibconfig, \
+  org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.view;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.component;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.component.search;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.component.visit;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.config.annotation;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.config.impl.digester.elements;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.push.cdi;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.context.flash;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.taglib;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.taglib.core;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.spi.impl;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.taglib.core;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.taglib.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.compiler;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.component;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.el;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.impl;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.pool;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.pool.impl;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.composite;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.jsf;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.jsf.core;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.jsf.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.jstl.core;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.jstl.fn;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.tag.ui;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.view.facelets.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.webapp;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.*;version=${Implementation-Version}
+
+# Import everything we need except for the below exclusions that will not be needed at runtime.
+Import-Package: \
+  !com.ibm.ws.jsf.ee, \
+  !com.google.inject, \
+  !jakarta.ejb, \
+  !jakarta.persistence, \
+  !org.apache.tomcat, \
+  *
+
+-buildpath: \
+  org.apache.myfaces.core:myfaces-impl;version=3.0.0,\
+  io.openliberty.jakarta.faces.3.0;version=latest,\
+  com.ibm.ws.classloading;version=latest,\
+  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.ws.serialization;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.adaptable.module;version=latest,\
+  com.ibm.ws.anno;version=latest,\
+  com.ibm.ws.managedobject;version=latest,\
+  com.ibm.ws.jsp;version=latest,\
+  io.openliberty.jakarta.el.4.0;version=latest,\
+  io.openliberty.jakarta.servlet.5.0;version=latest, \
+  io.openliberty.jakarta.cdi.3.0;version=latest,\
+  com.ibm.ws.logging.core,\
+  com.ibm.websphere.appserver.spi.kernel.service,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+  io.openliberty.faces.internal;version=latest

@@ -353,3 +353,8 @@ security.oauth20.pkce.codeverifier.length.error.useraction=Inviare nuovamente le
 security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] e code_verifier [{1}] non corrispondono. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=Il provider OAuth utilizza il code_challenge_method specificato nella richiesta di autorizzazione e trasforma il code_verifier a meno che il code_challenge_method non sia in testo chiaro. Il valore trasformato deve corrispondere con il code_challenge nella richiesta di autorizzazione.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Assicurarsi di inviare il code_challenge e il code_verifier corrispondenti e il corretto algoritmo di trasformazione con le richieste di autorizzazione e token.
+
+# 0=User name, 1=OAuth client ID, 2=Maximum number of tokens allowed
+security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: L''utente [{0}] e il client OAuth [{1}] hanno raggiunto il numero massimo ([{2}]) di token di accesso che \u00e8 possibile creare utilizzando i token di aggiornamento. Non \u00e8 possibile creare un nuovo token di accesso con il token di aggiornamento fornito.
+security.oauth20.refreshed.access.token.limit.reached.explanation=Una combinazione di client OAuth e utente pu\u00f2 richiedere un numero limitato di token di accesso utilizzando i token di aggiornamento. Non \u00e8 possibile creare un nuovo token di accesso.
+security.oauth20.refreshed.access.token.limit.reached.useraction=Aumentare il numero di token di accesso che \u00e8 possibile emettere tramite i token di accesso. In alternativa, revocare alcuni dei token di accesso esistenti per l'utente e il client OAuth specificati nel messaggio.

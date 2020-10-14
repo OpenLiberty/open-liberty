@@ -1,0 +1,67 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Validation of the OpenAPI document produced the following error(s):
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=The OpenAPI document is invalid.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Provide a valid OpenAPI document that resolves the reported error.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validation of the OpenAPI document produced the following warning(s):
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=The OpenAPI document contains data that is not in the recommended format.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Provide a valid OpenAPI document that resolves the reported warning.
+
+CSS_NOT_PROCESSED=CWWKO1652W: The server cannot read the specified CSS document {0} due to {1} : {2}.
+CSS_NOT_PROCESSED.explanation=The CSS document cannot be processed due to a valid error.
+CSS_NOT_PROCESSED.useraction=Provide a valid CSS document.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: The value that was specified for the {0} property is not supported. The value must be {1}.
+UNSUPPORTED_CSS_VALUE.explanation=The value of the specified property is either invalid or is not supported by the OpenAPI framework.
+UNSUPPORTED_CSS_VALUE.useraction=Provide a valid value for the property within the custom CSS file for the OpenAPI UI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: The background image that was specified at {0} either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=The background image either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Provide a valid image.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: The custom CSS file {0} that was specified for the OpenAPI UI was not processed. The server will restore the default values for the OpenAPI UI. Reason={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=The server cannot process the custom CSS file. The server will restore the default values for the OpenAPI UI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Provide a valid custom CSS file for the OpenAPI UI along with all the dependencies.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: The server read the specified CSS document {0}, but was unable to find <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=The CSS document that is specified does not contain <.swagger-ui .headerbar >, or it is not formatted to meet the constraints that are required by the server.
+CSS_SECTION_NOT_FOUND.useraction=Provide a valid CSS file that contains <.swagger-ui .headerbar > in the required format.
+
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Failed to load the OpenAPI filter class: {0}.
+OPENAPI_FILTER_LOAD_ERROR.explanation=Specified OpenAPI filter class could not be found or loaded.
+OPENAPI_FILTER_LOAD_ERROR.useraction=Make sure that the class specified exists and implements OASFilter interface.
+
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Failed to load the OpenAPI model reader class: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Specified OpenAPI model reader class could not be found or loaded.
+OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Make sure that the class specified exists and implements OASModelReader interface.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Failed to parse the OpenAPI document for application: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Failed to parse OpenAPI document from META-INF folder.
+OPENAPI_FILE_PARSE_ERROR.useraction=Make sure that the file is in correct YAML or JSON format.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: The application {0} was processed and an OpenAPI document was produced.
+OPENAPI_APPLICATION_PROCESSED.explanation=Generated the OpenAPI document for the specified application. It can be viewed at /openapi endpoint.
+OPENAPI_APPLICATION_PROCESSED.useraction=No action is required.
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: An error occured when processing application {0} and an OpenAPI document was not produced.
+OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A runtime error occured when processing the application.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Gather logs and contact IBM service.
+  

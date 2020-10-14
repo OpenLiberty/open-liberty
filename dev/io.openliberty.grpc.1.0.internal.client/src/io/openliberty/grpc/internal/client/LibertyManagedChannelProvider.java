@@ -13,6 +13,7 @@ package io.openliberty.grpc.internal.client;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
@@ -62,10 +63,20 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
 	private void configureLibertyBuilder(NettyChannelBuilder builder, String target, String port) {
 		addLibertyInterceptors(builder);
-		addUserInterceptors(builder, target);
-		addLibertySSLConfig(builder, target, port);
-		addKeepAliveConfiguration(builder, target);
-		addMaxInboundMessageSize(builder, target);
+		// set up any user config from server.xml
+		Map<String, String> config = GrpcClientConfigHolder.getHostProps(target);
+		if (config != null && !config.isEmpty()) {
+			addUserInterceptors(builder, config);
+			addKeepAliveConfiguration(builder, config);
+			addMaxInboundMessageSize(builder, config);
+			addMaxInboundMetadataSize(builder, config);
+			addUserAgent(builder, config);
+			addOverrideAuthority(builder, config);
+		}
+		// only create an SSL context if usePlaintext is disabled (default)
+		if (!isUsePlaintextEnabled(config)) {
+			addLibertySSLConfig(builder, target, port, config);
+		}
 	}
 
 	private void addLibertyInterceptors(NettyChannelBuilder builder) {
@@ -76,8 +87,11 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port) {
-		String sslRef = GrpcClientConfigHolder.getSSLConfig(target);
+	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port, Map<String, String> config) {
+		String sslRef = null;
+		if (config != null && !config.isEmpty()) {
+			sslRef = config.get(GrpcClientConstants.SSL_CFG_PROP);
+		}
 		SslContext context = null;
 		GrpcSSLService sslService = GrpcClientComponent.getGrpcSSLService();
 		if (sslService != null) {
@@ -88,17 +102,17 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addKeepAliveConfiguration(NettyChannelBuilder builder, String target) {
-		String keepAliveTime = GrpcClientConfigHolder.getKeepAliveTime(target);
-		String keepAlive = GrpcClientConfigHolder.getEnableKeepAlive(target);
-		String keepAliveTimeout = GrpcClientConfigHolder.getKeepAliveTimeout(target);
+	private void addKeepAliveConfiguration(NettyChannelBuilder builder, Map<String, String> config) {
+		String keepAliveTime = config.get(GrpcClientConstants.KEEP_ALIVE_TIME_PROP);
+		String keepAliveWithoutCalls = config.get(GrpcClientConstants.KEEP_ALIVE_WITHOUT_CALLS_PROP);
+		String keepAliveTimeout = config.get(GrpcClientConstants.KEEP_ALIVE_TIMEOUT_PROP);
 
 		if (keepAliveTime != null && !keepAliveTime.isEmpty()) {
 			int time = Integer.parseInt(keepAliveTime);
 			builder.keepAliveTime(time, TimeUnit.SECONDS);
 		}
-		if (keepAlive != null && !keepAlive.isEmpty()) {
-			Boolean enabled = Boolean.parseBoolean(keepAlive);
+		if (keepAliveWithoutCalls != null && !keepAliveWithoutCalls.isEmpty()) {
+			Boolean enabled = Boolean.parseBoolean(keepAliveWithoutCalls);
 			builder.keepAliveWithoutCalls(enabled);
 		}
 		if (keepAliveTimeout != null && !keepAliveTimeout.isEmpty()) {
@@ -107,8 +121,8 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addMaxInboundMessageSize(NettyChannelBuilder builder, String target) {
-		String maxMsgSizeString = GrpcClientConfigHolder.getMaxInboundMessageSize(target);
+	private void addMaxInboundMessageSize(NettyChannelBuilder builder, Map<String, String> config) {
+		String maxMsgSizeString = config.get(GrpcClientConstants.MAX_INBOUND_MSG_SIZE_PROP);
 		if (maxMsgSizeString != null && !maxMsgSizeString.isEmpty()) {
 			int maxSize = Integer.parseInt(maxMsgSizeString);
 			if (maxSize == -1) {
@@ -119,8 +133,44 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addUserInterceptors(NettyChannelBuilder builder, String target) {
-		String interceptorListString = GrpcClientConfigHolder.getClientInterceptors(target);
+	private void addMaxInboundMetadataSize(NettyChannelBuilder builder, Map<String, String> config) {
+		String maxMetaString = config.get(GrpcClientConstants.MAX_INBOUND_METADATA_SIZE_PROP);
+		if (maxMetaString != null && !maxMetaString.isEmpty()) {
+			int maxSize = Integer.parseInt(maxMetaString);
+			if (maxSize == -1) {
+				builder.maxInboundMetadataSize(Integer.MAX_VALUE);
+			} else if (maxSize > 0) {
+				builder.maxInboundMetadataSize(maxSize);
+			}
+		}
+	}
+
+	private void addUserAgent(NettyChannelBuilder builder, Map<String, String> config) {
+		String userAgent = config.get(GrpcClientConstants.USER_AGENT_PROP);
+		if (userAgent != null && !userAgent.isEmpty()) {
+			builder.userAgent(userAgent);
+		}
+	}
+
+	private void addOverrideAuthority(NettyChannelBuilder builder, Map<String, String> config) {
+		String authority = config.get(GrpcClientConstants.OVERRIDE_AUTHORITY_PROP);
+		if (authority != null && !authority.isEmpty()) {
+			builder.overrideAuthority(authority);
+		}
+	}
+
+	private boolean isUsePlaintextEnabled(Map<String, String> config) {
+		if (config != null) {
+			String usePlaintext = config.get(GrpcClientConstants.USE_PLAINTEXT_PROP);
+			if (usePlaintext != null && !usePlaintext.isEmpty()) {
+				return Boolean.parseBoolean(usePlaintext);
+			}
+		}
+		return false;
+	}
+
+	private void addUserInterceptors(NettyChannelBuilder builder, Map<String, String> config) {
+		String interceptorListString = config.get(GrpcClientConstants.CLIENT_INTERCEPTORS_PROP);
 
 		if (interceptorListString != null) {
 			List<String> items = Arrays.asList(interceptorListString.split("\\s*,\\s*"));
@@ -142,24 +192,9 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			}
 		}
 	}
-	
+
 	private ClientInterceptor createMonitoringClientInterceptor() {
 		// create the interceptor only if the monitor feature is enabled
-		if (!GrpcClientComponent.isMonitoringEnabled()) {
-			return null;
-		}
-		ClientInterceptor interceptor = null;
-		// monitoring interceptor 
-		final String className = "io.openliberty.grpc.internal.monitor.GrpcMonitoringClientInterceptor";
-		try {
-			Class<?> clazz = Class.forName(className);
-			interceptor = (ClientInterceptor) clazz.getDeclaredConstructor()
-					.newInstance();
-		} catch (Exception e) {
-			// an exception can happen if the monitoring package is not loaded 
-        }
-
-		return interceptor;
+		return GrpcClientComponent.getMonitoringClientInterceptor();
 	}
-
 }

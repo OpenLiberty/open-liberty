@@ -63,7 +63,7 @@ public class UICustomizationTest extends FATServletClient {
     private final static String UI_CUSTOM_IMAGE = "/openapi/ui/css/images/custom-logo.png";
 
     private final static String CSS_CONTENT_CUSTOM_IMAGE = "url(images/custom-logo.png)";
-    private final static String CSS_CONTENT_DEFAULT = ""; //default content is empty
+    private final static String CSS_CONTENT_DEFAULT = ""; // default content is empty
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -74,10 +74,11 @@ public class UICustomizationTest extends FATServletClient {
         server.startServer("UICustomizationTest.log", true);
 
         // Wait for /api/ui
-        assertTrue("Web application is not available at */openapi/ui",
-                   server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 2);
+        assertTrue("Web application is not available at */openapi/ui", server.waitForMultipleStringsInLog(2,
+            "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 2);
 
-        assertNotNull("FAIL: Did not receive smarter planet message", server.waitForStringInLog("CWWKF0011I", START_TIMEOUT));
+        assertNotNull("FAIL: Did not receive smarter planet message",
+            server.waitForStringInLog("CWWKF0011I", START_TIMEOUT));
     }
 
     @AfterClass
@@ -90,55 +91,63 @@ public class UICustomizationTest extends FATServletClient {
     @Test
     public void testCustomizeOpenAPIUI() throws Exception {
 
-        //------------------------------------------------------------------
+        // ------------------------------------------------------------------
         // Process local CSS file (already set during test set up)
-        //------------------------------------------------------------------
+        // ------------------------------------------------------------------
         validateCustomOpenAPIUI();
 
-        //---------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------
         // Invalid CSS file (value of background-image property is not valid)
-        //---------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.copyFileToLibertyServerRoot(MP_OPEN_API_DIR, INVALID_CSS_FILE);
         assertNotNull("Expected warning CWWKO1655W with customization.css was not received",
-                      server.waitForStringInLogUsingMark("CWWKO1655W.*customization.css", TIMEOUT));
+            server.waitForStringInLogUsingMark("CWWKO1655W.*customization.css", TIMEOUT));
 
-        //---------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------
         // After an invalid CSS file the CSS content should revert to default
-        //---------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------
         assertTrue("Web application /openapi/ui/ was not restarted on server",
-                   server.waitForMultipleStringsInLogUsingMark(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 1);
+            server.waitForMultipleStringsInLogUsingMark(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT,
+                server.getDefaultLogFile()) == 1);
         validateDefaultOpenAPIUI();
 
-        //------------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------
         // Ensure Caching issue is resolved
-        // Scenario: First set customization, then stop the server. When the server is offline,
-        // remove the customization. Then start the server and verify customization is no longer applied.
-        //------------------------------------------------------------------------------------------------------------------------------
+        // Scenario: First set customization, then stop the server. When the server is
+        // offline,
+        // remove the customization. Then start the server and verify customization is
+        // no longer applied.
+        // ------------------------------------------------------------------------------------------------------------------------------
 
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.copyFileToLibertyServerRoot(MP_OPEN_API_DIR, VALID_CSS_FILE);
         assertTrue("Web application /openapi/ui/ was not restarted on server",
-                   server.waitForMultipleStringsInLogUsingMark(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 1);
+            server.waitForMultipleStringsInLogUsingMark(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT,
+                server.getDefaultLogFile()) == 1);
         validateCustomOpenAPIUI();
 
         tearDown();
         server.deleteFileFromLibertyServerRoot(MP_OPEN_API_CSS_FILE);
         server.startServer("UICustomizationTest.log", false);
 
-        // Wait for /openapi/ui to be restarted - first the regular start then it should be restored to default customization values and started again.
-        // It's possible that the server didn't cache the old CSS, so we tolerate one or two openapi/ui messages.
+        // Wait for /openapi/ui to be restarted - first the regular start then it should
+        // be restored to default customization values and started again.
+        // It's possible that the server didn't cache the old CSS, so we tolerate one or
+        // two openapi/ui messages.
         assertTrue("Web application /openapi/ui/ was not restarted on server",
-                   server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT * 2, server.getDefaultLogFile()) > 0);
+            server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT * 2,
+                server.getDefaultLogFile()) > 0);
         validateDefaultOpenAPIUI();
 
-        //---------------------------------------------------------------------------------
-        // Empty CSS file (should produce a warning because it does not contain .swagger-ui .headerbar)
-        //---------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------
+        // Empty CSS file (should produce a warning because it does not contain
+        // .swagger-ui .headerbar)
+        // ---------------------------------------------------------------------------------
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         server.copyFileToLibertyServerRoot(MP_OPEN_API_DIR, EMPTY_CSS_FILE);
         assertNotNull("Expected warning CWWKO1656W with customization.css was not received",
-                      server.waitForStringInLogUsingMark("CWWKO1656W.*customization.css", TIMEOUT));
+            server.waitForStringInLogUsingMark("CWWKO1656W.*customization.css", TIMEOUT));
         validateDefaultOpenAPIUI();
     }
 
@@ -150,7 +159,10 @@ public class UICustomizationTest extends FATServletClient {
         validateOpenAPIUI(CSS_CONTENT_CUSTOM_IMAGE, true, true);
     }
 
-    private boolean validateOpenAPIUI(String expectedContent, boolean validateImage, boolean assertion) throws IOException, Exception {
+    private boolean validateOpenAPIUI(
+        String expectedContent,
+        boolean validateImage,
+        boolean assertion) throws IOException, Exception {
         // UI endpoint - HTTP
         String cssContent = downloadUrl(UI_CUSTOM_HEADER_CSS);
         boolean valid = validateCSS(cssContent, expectedContent, assertion);
@@ -164,22 +176,26 @@ public class UICustomizationTest extends FATServletClient {
         return valid;
     }
 
-    private static boolean validateCSS(String body, String referenceText, boolean assertion) {
+    private static boolean validateCSS(
+        String body,
+        String referenceText,
+        boolean assertion) {
         if (assertion) {
             assertNotNull("FAIL: Unexpected null content", body);
             assertTrue("FAIL: Unexpected content : Didn't find '" + referenceText + "' within content : " + body,
-                       referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
+                referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
             assertFalse("FAIL: Unexpected content : Found 'invalid-content' : " + body,
-                        body.contains("invalid-content"));
+                body.contains("invalid-content"));
         } else {
             return body != null &&
-                   !body.contains("invalid-content") &&
-                   (referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
+                !body.contains("invalid-content") &&
+                (referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
         }
         return true;
     }
 
-    private String downloadUrl(String path) throws IOException, Exception {
+    private String downloadUrl(
+        String path) throws IOException, Exception {
         return new OpenAPIConnection(server, path).download();
     }
 }

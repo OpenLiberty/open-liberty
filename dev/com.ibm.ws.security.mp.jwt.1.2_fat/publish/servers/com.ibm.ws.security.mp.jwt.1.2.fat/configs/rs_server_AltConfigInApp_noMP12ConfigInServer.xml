@@ -1,0 +1,30 @@
+
+<server>
+
+	<include location="${shared.config.dir}/mpConfigFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
+	
+	<include location="${shared.config.dir}/microProfileMP12ConfigApps.xml"/>
+
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
+        <mpJwt
+                id="mpJwt_1"
+                jwksUri="${mpJwt_jwksUri}"
+                keyName="${mpJwt_keyName}"
+                issuer="http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidc/endpoint/OidcConfigSample,
+							https://9.41.244.182:8947/jwt/defaultJWT,
+							testIssuer">
+        </mpJwt>
+
+</server>

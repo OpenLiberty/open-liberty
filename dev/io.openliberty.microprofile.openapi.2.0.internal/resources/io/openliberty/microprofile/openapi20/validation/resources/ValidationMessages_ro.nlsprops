@@ -1,0 +1,118 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+validationMessage=Mesaj: {0}, Loca\u0163ie: {1}
+
+callbackURLTemplateEmpty=\u015eablonul de URL al obiectului Apelare invers\u0103 este gol \u015fi nu este un URL valid
+callbackInvalidSubstitutionVariables=Obiectul Apelare invers\u0103 con\u0163ine variabile invalide de substitu\u0163ie: \"{0}\"
+callbackMustBeRuntimeExpression=Obiectul Apelare invers\u0103 trebuie s\u0103 con\u0163in\u0103 o expresie valid\u0103 la runtime, a\u015fa cum este definit\u0103 \u00een OpenAPI Specification. Valoarea \"{0}\" specificat\u0103 pentru expresia de runtime nu este valid\u0103
+callbackInvalidURL=Obiectul Apelare invers\u0103 trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+callbackInvalidPathItem=Obiectul Apelare invers\u0103 trebuie s\u0103 con\u0163in\u0103 un articol valid de cale. Valoarea articolului de cale asociat cu tasta \"{0}\" nu este o valoare valid\u0103
+
+contactInvalidURL=Obiectul Contact trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+contactInvalidEmail=Obiectul Contact trebuie s\u0103 con\u0163in\u0103 o adres\u0103 valid\u0103 de e-mail. Valoarea \"{0}\" specificat\u0103 pentru adresa de e-mail nu este valid\u0103
+
+exampleOnlyValueOrExternalValue=Obiectul Exemplu \"{0}\" specific\u0103 ambele c\u00e2mpuri, \"value\" \u015fi \"externalValue\". Specifica\u0163i un singur c\u00e2mp
+
+externalDocumentationInvalidURL=Obiectul Documenta\u0163ie extern\u0103 trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+
+infoTermsOfServiceInvalidURL=Obiectul Info trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru c\u00e2mpul \"termsOfService\" nu este un URL valid
+invalidUrl=Obiectul \"{0}\" trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{1}\" specificat\u0103 pentru URL nu este valid\u0103
+invalidUri=Valoarea \"{0}\" specificat\u0103 pentru URI nu este valid\u0103. Valoarea trebuie s\u0103 fie \u00een forma unui URI absolut
+
+invalidExtensionName=Numele extensiei \"{0}\" trebuie s\u0103 \u00eenceap\u0103 cu \"x-\"
+
+headerExampleOrExamples=Obiectul Antet \"{0}\" nu poate avea ambele c\u00e2mpuri, \"examples\" \u015fi \"example\". Specifica\u0163i un singur c\u00e2mp
+headerSchemaAndContent=Obiectul Antet \"{0}\" trebuie s\u0103 con\u0163in\u0103 fie o proprietate de schem\u0103 sau o proprietate de con\u0163inut, dar nu le poate con\u0163ine pe am\u00e2ndou\u0103
+headerSchemaOrContent=Obiectul Antet \"{0}\" trebuie s\u0103 con\u0163in\u0103 fie o proprietate de schem\u0103 sau o proprietate de con\u0163inut
+headerContentMap=Maparea \"content\" din Obiectul Antet \"{0}\" trebuie s\u0103 con\u0163in\u0103 numai o intrare
+
+licenseInvalidURL=Obiectul Licen\u0163\u0103 trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+
+linkOperationRefInvalidOrMissing=Obiectul Leg\u0103tur\u0103 \"{0}\" a specificat un c\u00e2mp relativ \"operationRef\" cu valoarea \"{1}\" care indic\u0103 on Obiect de opera\u0163ie invalid
+linkOperationRefAndId=Obiectul Leg\u0103tur\u0103 \"{0}\" define\u015fte c\u00e2mpul \"operationRef\" \u015fi c\u00e2mpul \"operationId\", care sunt mutual exclusive
+linkOperationIdInvalid=Obiectul Leg\u0103tur\u0103 a specificat un c\u00e2mp \"operationId\" cu valoarea \"{0}\" care indic\u0103 on Obiect opera\u0163ie care nu exist\u0103
+linkMustSpecifyOperationRefOrId=Obiectul Leg\u0103tur\u0103 \"{0}\" trebuie s\u0103 fie identificat utiliz\u00e2nd fie un \"operationRef\" fie un \"operationId\"
+
+mediaTypeExampleOrExamples=Obiectul MediaType nu poate avea ambele c\u00e2mpuri, \"examples\" \u015fi \"example\". Specifica\u0163i un singur c\u00e2mp
+mediaTypeEncodingProperty=Proprietatea de codare \"{0}\" specificat\u0103 \u00een Obiectul MediaType nu exist\u0103 \u00een schem\u0103 ca proprietate
+mediaTypeEmptySchema=Proprietatea de codare specificat\u0103 nu poate fi validat\u0103 deoarece proprietatea de schem\u0103 corespunz\u0103toare este nul\u0103
+
+oAuthFlowInvalidURL=Obiectul OAuth Flow trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+
+nonApplicableField=C\u00e2mpul \"{0}\" nu este aplicabil pentru \"{1}\" de tipul \"{2}\"
+nonApplicableFieldWithValue=C\u00e2mpul \"{0}\" cu valoarea \"{1}\" nu este aplicabil pentru \"{2}\" de tipul \"{3}\"
+
+nullOrEmptyKeyInMap=Maparea con\u0163ine o cheie nevalid\u0103. O mapare nu ar trebui s\u0103 aib\u0103 chei goale sau null
+nullValueInMap=Maparea specific\u0103 o valoare invalid\u0103 pentru cheia \"{0}\". O mapare nu ar trebui s\u0103 aib\u0103 valori null
+
+openAPIVersionInvalid=Obiectul OpenAPI trebuie s\u0103 con\u0163in\u0103 o versiune valid\u0103 de specifica\u0163ie OpenAPI. Valoarea \"{0}\" specificat\u0103 pentru versiunea de specifica\u0163ie OpenAPI nu este valid\u0103
+openAPITagIsNotUnique=Obiectul OpenAPI trebuie s\u0103 con\u0163in\u0103 nume unice de taguri. Numele tagului \"{0}\" nu este unic
+
+operationIdsMustBeUnique=S-a g\u0103sit mai mult de un Obiect Opera\u0163ie cu valoarea \"{0}\" pentru c\u00e2mpul \"operationId\". \"operationId\" trebuie s\u0103 fie unic \u00eentre toate opera\u0163iile descrise \u00een API
+
+parameterInFieldInvalid=Valoarea \"{0}\" specificat\u0103 pentru c\u00e2mpul \"in\" din Obiectul Parametru \"{1}\" este invalid\u0103. Valorile posibile sunt \"query\", \"header\", \"path\" sau \"cookie\"
+parameterExampleOrExamples=Obiectul Parametru \"{0}\" specific\u0103 \u015fi un c\u00e2mp \"example\" \u015fi un c\u00e2mp \"examples\". Specifica\u0163i un singur c\u00e2mp
+parameterSchemaOrContent=Obiectul Parametru \"{0}\" nu con\u0163ine o proprietate \"schema\" sau  o proprietate \"content\"
+parameterSchemaAndContent=Obiectul Parametru \"{0}\" nu trebuie s\u0103 con\u0163in\u0103 o proprietate \"schema\" \u015fi o proprietate \"content\"
+parameterContentMapMustNotBeEmpty=Maparea \"content\" din Obiectul Parametru \"{0}\" trebuie s\u0103 con\u0163in\u0103 numai o intrare
+
+pathItemInvalidRef=Obiectul Articol de cale are o valoare invalid\u0103 $ref \"{0}\" pentru articolul de cale \"{1}\". O referin\u0163\u0103 la un articol de cale trebuie s\u0103 fie extern\u0103
+pathItemRequiredField=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Parametrul de cale \"{0}\" din calea \"{1}\" nu con\u0163ine c\u00e2mpul \"required\" sau valoarea sa nu este \"true\"
+pathItemDuplicate=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Calea \"{0}\" define\u015fte un parametru \"{1}\" duplicat la nivel de cale: \"{2}\"
+pathItemParameterNotDeclaredSingle=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Calea \"{0}\" define\u015fte un parametru de cale \"{1}\" care nu este declarat
+pathItemParameterNotDeclaredMultiple=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Calea \"{0}\" define\u015fte parametrii de cale \"{1}\" care nu sunt declara\u0163i: \"{2}\"
+pathItemOperationRequiredField=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Parametrul de cale \"{0}\" din opera\u0163ia \"{1}\" din calea \"{2}\" nu con\u0163ine c\u00e2mpul \"required\" sau valoarea sa nu este \"true\"
+pathItemOperationDuplicate=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Opera\u0163ia \"{0}\" din calea \"{1}\" define\u015fte un parametru \"{2}\" duplicat: \"{3}\"
+pathItemOperationNullParameter=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Lista de parametri din opera\u0163ia \"{0}\" din calea \"{1}\" con\u0163ine un parametru nul
+pathItemOperationParameterNotDeclaredSingle=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Opera\u0163ia \"{0}\" din calea \"{1}\" define\u015fte un parametru de cale care nu este declarat: \"{2}\"
+pathItemOperationParameterNotDeclaredMultiple=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Opera\u0163ia \"{0}\" din calea \"{1}\" define\u015fte parametri de cale \"{2}\" care nu sunt declara\u0163i: \"{3}\"
+pathItemOperationNoPathParameterDeclared=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Opera\u0163ia \"{0}\" din calea \"{1}\" nu define\u015fte un parametru de cale care este declarat: \"{2}\"
+pathItemInvalidFormat=Obiectul Articol de cale trebuie s\u0103 con\u0163in\u0103 o cale valid\u0103. Formatul c\u0103ii \"{0}\" este invalid
+
+pathsRequiresSlash=Obiectul Articol de cale con\u0163ine o cale invalid\u0103. Valoarea de cale \"{0}\" nu \u00eencepe cu o bar\u0103 oblic\u0103 spre dreapta
+
+referenceExternalOrExtension=Valoarea \"{0}\" este o referin\u0163\u0103 extern\u0103 sau o extensie. Nu este disponibil\u0103 nicio validare
+referenceNotPartOfModel=Valoarea referin\u0163ei \"{0}\" nu este definit\u0103 \u00een Obiectul Componente
+referenceNotValid=Valoarea referin\u0163ei \"{0}\" este invalid\u0103
+referenceNotValidFormat=Valoarea referin\u0163ei \"{0}\" nu este \u00een format valid
+referenceNull=Valoarea referin\u0163ei este nul\u0103
+referenceToObjectInvalid=Valoarea \"{0}\" este o referin\u0163\u0103 invalid\u0103
+
+responseMustContainOneCode=Obiectul R\u0103spunsuri trebuie s\u0103 con\u0163in\u0103 cel pu\u0163in un cod de r\u0103spuns
+responseShouldContainSuccess=Obiectul R\u0103spunsuri ar trebui s\u0103 con\u0163in\u0103 cel pu\u0163in un cod de r\u0103spuns pentru o opera\u0163ie reu\u015fit\u0103
+
+securityRequirementNotDeclared=Numele \"{0}\" furnizat pentru Obiectul Cerin\u0163\u0103 de securitate nu corespunde unei scheme declarate de securitate
+securityRequirementScopeNamesRequired=Obiectul Cerin\u0163\u0103 de securitate \"{0}\" ar trebui s\u0103 specifice o list\u0103 de nume de domenii necesare pentru execu\u0163ie
+securityRequirementFieldNotEmpty=C\u00e2mpul \"{0}\" al Obiectului Cerin\u0163\u0103 de securitate ar trebui s\u0103 fie gol dar este: \"{1}\"
+securityRequirementIsEmpty=Obiectul Cerin\u0163\u0103 de securitate nu trebuie s\u0103 fie gol
+
+securitySchemeInFieldInvalid=Obiectul Schem\u0103 de securitate \"{0}\" este invalid. Valoarea c\u00e2mpului s\u0103u \"in\" este \"{1}\", dar trebuie s\u0103 fie una dintre valorile (\"query\", \"header\", \"cookie\")
+securitySchemeInvalidURL=Obiectul Schem\u0103 de securitate trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+
+schemaTypeArrayNullItems=Obiectul Schem\u0103 de tipul \"array\" trebuie s\u0103 aib\u0103 definit\u0103 proprietatea \"items\"
+schemaReadOnlyOrWriteOnly=Obiectul Schem\u0103 nu trebuie s\u0103 aib\u0103 ambele c\u00e2mpuri, \"readOnly\" \u015fi \"writeOnly\", setate la true
+schemaMultipleOfLessThanOne=Obiectul Schem\u0103 trebuie s\u0103 aib\u0103 proprietatea \"multipleOf\" setat\u0103 la un num\u0103r strict mai mare dec\u00e2t zero
+schemaPropertyLessThanZero=Proprietatea \"{0}\" a Obiectului Schem\u0103 trebuie s\u0103 fie mai mare sau egal dec\u00e2t zero
+schemaTypeDoesNotMatchProperty=Proprietatea \"{0}\" nu este potrivit\u0103 pentru Obiectul Schem\u0103 de tipul \"{1}\"
+
+keyNotARegex=Numele \"{0}\" declarat \u00een Obiectul Componente este invalid. Trebuie s\u0103 se potriveasc\u0103 cu expresia regulat\u0103, dup\u0103 cum este definit\u0103 de specifica\u0163ia OpenAPI
+
+serverVariableNotDefined=Variabila \"{0}\" din Obiectul Server nu este definit\u0103
+serverInvalidURL=Obiectul Server trebuie s\u0103 con\u0163in\u0103 un URL valid. Valoarea \"{0}\" specificat\u0103 pentru URL nu este valid\u0103
+
+requiredFieldMissing=Lipse\u015fte c\u00e2mpul necesar \"{0}\" sau este setat la o valoare invalid\u0103

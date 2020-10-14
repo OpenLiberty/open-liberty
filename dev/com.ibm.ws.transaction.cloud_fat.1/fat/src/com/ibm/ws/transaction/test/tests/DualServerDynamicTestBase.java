@@ -30,6 +30,8 @@ import componenttest.topology.utils.FATServletClient;
 @Mode
 public abstract class DualServerDynamicTestBase extends FATServletClient {
 
+    protected static final int LOG_SEARCH_TIMEOUT = 300000;
+
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
     protected static final int Cloud2ServerPort = 9992;
@@ -43,13 +45,19 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     /**
      * @deprecated Use {@link #dynamicTest(LibertyServer,LibertyServer,int,int)} instead
      */
+    @Deprecated
     public void dynamicTest(int test, int resourceCount) throws Exception {
         dynamicTest(server1, server2, test, resourceCount);
     }
 
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
+        String testSuffix = String.format("%03d", test);
+        dynamicTest(server1, server2, testSuffix, resourceCount);
+    }
+
+    public void dynamicTest(LibertyServer server1, LibertyServer server2, String testSuffix, int resourceCount) throws Exception {
         final String method = "dynamicTest";
-        final String id = String.format("%03d", test);
+
         StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
@@ -59,12 +67,12 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
+            sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
         } catch (Throwable e) {
             // as expected
             Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
+        Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
 
         // wait for 1st server to have gone away
         if (server1.waitForStringInLog("Dump State:") == null) {
@@ -87,7 +95,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             }
 
             // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity) == null) {
+            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
                 testFailed = true;
                 testFailureString = "Second server did not perform peer recovery";
             }
@@ -105,7 +113,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             }
 
             //Stop server2
-            server2.stopServer(null);
+            server2.stopServer((String[]) null);
 
             // restart 1st server
             server1.startServerAndValidate(false, true, true);
@@ -119,17 +127,17 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         if (!testFailed) {
 
             // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + id);
+            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
             try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
             } catch (Exception e) {
                 Log.error(this.getClass(), "dynamicTest", e);
                 throw e;
             }
-            Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
 
             // Bounce first server to clear log
-            server1.stopServer(null);
+            server1.stopServer((String[]) null);
             server1.startServerAndValidate(false, true, true);
 
             // Check log was cleared

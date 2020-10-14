@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config14.test.apps.badobserver.BadObserverServlet;
@@ -32,6 +33,7 @@ import com.ibm.ws.microprofile.config14.test.apps.characterInjection.CharacterIn
 import com.ibm.ws.microprofile.config14.test.apps.optional_observer.OptionalObserverServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -79,7 +81,8 @@ public class Config14Tests extends FATServletClient {
     }
 
     @Test
-    public void testBadObserver() throws Exception {
+    @SkipForRepeat(RepeatConfig20EE8.ID)
+    public void testBadObserver14() throws Exception {
         List<String> msgs = server.findStringsInLogs("java.util.NoSuchElementException: CWMCG0015E: The property DOESNOTEXIST was not found in the configuration.");
         assertTrue("NoSuchElementException message not found", msgs.size() > 0);
         msgs = server.findStringsInLogs("org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type String with qualifiers @ConfigProperty");

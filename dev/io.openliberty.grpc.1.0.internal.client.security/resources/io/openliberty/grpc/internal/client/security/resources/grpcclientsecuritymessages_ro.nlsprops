@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: Protocolul SSL {0} configurat \u00een {1} nu este valid pentru gRPC. Trebuie s\u0103 se utilizeze TLSv1.2 sau ulterior.
+invalid.ssl.protocol.explanation=Protocolul SSL configurat nu este valid pentru gRPC.
+invalid.ssl.protocol.useraction=Configura\u0163i ca valoare de protocol SSL TLSv1.2 sau ulterior.
+
+client.ssl.failed=CWWKT0306W: Nu a fost creat\u0103 o conexiune SSL pentru clientul gRPC cu referin\u0163a SSL {0}, din cauza {1}.
+client.ssl.failed.explanation=A e\u015fuat crearea contextului SSL pentru clientul gRPC.
+client.ssl.failed.useraction=Configura\u0163i o proprietate SSL valid\u0103 pentru gRPC.

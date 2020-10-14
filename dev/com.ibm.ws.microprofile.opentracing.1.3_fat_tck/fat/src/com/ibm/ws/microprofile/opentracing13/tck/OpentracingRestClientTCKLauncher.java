@@ -46,9 +46,12 @@ public class OpentracingRestClientTCKLauncher {
         server.startServer();
     }
 
+    /*
+     * CWWKG0014E - Ignore due to server.xml intermittently missing
+     */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKG0014E");
     }
 
     @Test

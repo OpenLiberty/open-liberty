@@ -128,6 +128,17 @@ session.activeSessions.description=Po\u010det soub\u011b\u017en\u011b aktivn\u00
 session.invalidated.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed.
 session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed z d\u016fvodu p\u0159ekro\u010den\u00ed \u010dasov\u00e9ho limitu.
 
+grpc.server.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na serveru.
+grpc.server.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na serveru bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.server.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch serverem.
+grpc.server.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od klienta.
+grpc.server.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
+
+grpc.client.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na klientovi.
+grpc.client.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na klientovi bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.client.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch klientem.
+grpc.client.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od serveru.
+grpc.client.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
 
 REST.request.description=Po\u010det vyvol\u00e1n\u00ed a celkov\u00e1 doba odezvy t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
 #-----------------------------------------------------------------------------------------------------------------------------

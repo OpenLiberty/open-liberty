@@ -11,16 +11,8 @@
 package com.ibm.ws.jca.fat.app;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -35,25 +27,25 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConnectionManager;
 import com.ibm.websphere.simplicity.config.JMSConnectionFactory;
+import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jca.fat.FATSuite;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class ConnectionManagerMBeanTest {
+public class ConnectionManagerMBeanTest extends FATServletClient {
 
-    @Server("com.ibm.ws.jca.fat")
     public static LibertyServer server;
 
     private static ServerConfiguration originalServerConfig;
@@ -61,60 +53,18 @@ public class ConnectionManagerMBeanTest {
     private static final String fvtapp = "fvtapp";
     private static final Set<String> appNames = Collections.singleton(fvtapp);
 
-    @Rule
-    public TestName testName = new TestName();
+    private void runTest() throws Exception {
+        runTest(server, fvtweb, getTestMethodSimpleName());
+    }
 
-    /**
-     * Utility method to run a test on JCAFVTServlet.
-     */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        // RepeatTests causes the test name to be appended with _EE8_FEATURES.  Strip it off so that the right
-        // test name is sent to the servlet
-        int index = test == null ? -1 : test.indexOf("_EE8_FEATURES");
-        if (index != -1) {
-            test = test.substring(0, index);
-        }
-
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        for (int numRetries = 2;; numRetries--) {
-            Log.info(getClass(), "runInServlet", "URL is " + url);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            try {
-                con.setDoInput(true);
-                con.setDoOutput(true);
-                con.setUseCaches(false);
-                con.setRequestMethod("GET");
-
-                InputStream is = con.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-
-                String sep = System.getProperty("line.separator");
-                StringBuilder lines = new StringBuilder();
-                for (String line = br.readLine(); line != null; line = br.readLine())
-                    lines.append(line).append(sep);
-
-                if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                    fail("Missing success message in output. " + lines);
-
-                return lines;
-            } catch (FileNotFoundException x) {
-                if (numRetries > 0)
-                    try {
-                        Log.info(getClass(), "runInServlet", x + " occurred - will retry after 10 seconds");
-                        Thread.sleep(10000);
-                    } catch (InterruptedException interruption) {
-                    }
-                else
-                    throw x;
-            } finally {
-                con.disconnect();
-            }
-        }
+    private void runTest(String testName) throws Exception {
+        runTest(server, fvtweb, testName);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server = FATSuite.getServer();
+
         // Build jars that will be in the RAR
         JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");
         JCAFAT1_jar.addPackage("fat.jca.resourceadapter.jar1");
@@ -143,6 +93,25 @@ public class ConnectionManagerMBeanTest {
         fvtapp_ear.addAsModule(fvtweb_war);
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
+
+        if (JakartaEE9Action.isActive()) {
+            /*
+             * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
+             */
+            ServerConfiguration clone = server.getServerConfiguration().clone();
+            clone.getJMSActivationSpecs().getById("FVTMessageDrivenBeanBindingOverride").getProperties_FAT1().get(0).setDestinationType("jakarta.jms.Topic");
+
+            for (JavaPermission perm : clone.getJavaPermissions()) {
+                if (perm.getSignedBy() != null && perm.getSignedBy().startsWith("javax.resource.spi")) {
+                    perm.setSignedBy(perm.getSignedBy().replace("javax.", "jakarta."));
+                }
+                if (perm.getName() != null && perm.getName().startsWith("javax.resource.spi")) {
+                    perm.setName(perm.getName().replace("javax.", "jakarta."));
+                }
+            }
+
+            server.updateServerConfiguration(clone);
+        }
 
         originalServerConfig = server.getServerConfiguration().clone();
         server.addInstalledAppForValidation(fvtapp);
@@ -179,10 +148,10 @@ public class ConnectionManagerMBeanTest {
     public void testPoolSizeDelegated() throws Exception {
         // Run a test that calls purge on connections that are in state ActiveInTransactionToBePurged
         // which will let the servlet teardown code cleanup the connections
-        runInServlet("testPoolSizeDelegatedBEFORE", fvtweb);
+        runTest("testPoolSizeDelegatedBEFORE");
 
         // Run another servlet method and verify that the connections were cleaned
-        runInServlet("testPoolSizeDelegatedAFTER", fvtweb);
+        runTest("testPoolSizeDelegatedAFTER");
     }
 
     /**
@@ -190,7 +159,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanCreation() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -198,7 +167,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanPurge() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -208,7 +177,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanPurgeDuringTransaction() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -216,7 +185,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanPurgeImmediate() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -226,7 +195,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanPurgeImmediateDuringTransaction() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -235,7 +204,7 @@ public class ConnectionManagerMBeanTest {
      */
     @Test
     public void testMBeanPurgeTwoResourceRef() throws Exception {
-        runInServlet(testName.getMethodName(), fvtweb);
+        runTest();
     }
 
     /**
@@ -247,7 +216,7 @@ public class ConnectionManagerMBeanTest {
     public void testConfigChangeDestroyMBean() throws Throwable {
         //Verify bean exists:
         System.out.println("---> testConfigChangeDestroyMBean begins");
-        runInServlet("testMBeanCreation", fvtweb);
+        runTest("testMBeanCreation");
 
         String method = "testConfigChangeAddConnectionManager";
         // Remove a connectionManager
@@ -267,7 +236,7 @@ public class ConnectionManagerMBeanTest {
                 throw x;
             }
 
-            runInServlet("testMBeanIsMissing", fvtweb);
+            runTest("testMBeanIsMissing");
 
             // Add the connectionManager back
             config.getJMSConnectionFactories().add(cf);
@@ -278,7 +247,7 @@ public class ConnectionManagerMBeanTest {
                 server.updateServerConfiguration(config);
                 server.waitForConfigUpdateInLogUsingMark(appNames);
                 //Make sure we're back.
-                runInServlet("testMBeanCreation", fvtweb);
+                runTest("testMBeanCreation");
             } catch (Throwable x) {
                 System.out.println("Failure during " + method + " with the following config:");
                 System.out.println(config);
@@ -301,7 +270,7 @@ public class ConnectionManagerMBeanTest {
 //    @Test
     public void testRemovalAndReplacementOfConnectionFactory() throws Exception {
         //Get the showPoolContents of the Mbean
-        StringBuilder poolContents = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
+        StringBuilder poolContents = runTestWithResponse(server, fvtweb, "testGetConnectionFactoryPoolContents");
         //Change the poolSize on the element
         try {
             // Remove the connection factory.
@@ -314,7 +283,7 @@ public class ConnectionManagerMBeanTest {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
             server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
-            runInServlet("testMBeanIsMissing", fvtweb);
+            runTest("testMBeanIsMissing");
             //Give new connectionFactory the same JNDI Name
             config = server.getServerConfiguration();
             JMSConnectionFactory cf2 = new JMSConnectionFactory();
@@ -329,7 +298,7 @@ public class ConnectionManagerMBeanTest {
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
             //Get the showPoolContents again
-            StringBuilder poolContentsAfterChange = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
+            StringBuilder poolContentsAfterChange = runTestWithResponse(server, fvtweb, "testGetConnectionFactoryPoolContents");
             //Compare for changes: Different poolSize, same everything else
             System.out.println(poolContents + "\n\n\n" + poolContentsAfterChange);
 
@@ -362,7 +331,7 @@ public class ConnectionManagerMBeanTest {
     @Test
     public void testNonDestructiveChangeToPool() throws Exception {
         //Get the showPoolContents of the Mbean
-        StringBuilder poolContents = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
+        StringBuilder poolContents = runTestWithResponse(server, fvtweb, "testGetConnectionFactoryPoolContents");
         //Change the poolSize on the element
         try {
             // Change maxPoolSize to 1
@@ -375,7 +344,7 @@ public class ConnectionManagerMBeanTest {
             server.waitForConfigUpdateInLogUsingMark(appNames);
             server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
             //Get the showPoolContents again
-            StringBuilder poolContentsAfterChange = runInServlet("testGetConnectionFactoryPoolContents", fvtweb);
+            StringBuilder poolContentsAfterChange = runTestWithResponse(server, fvtweb, "testGetConnectionFactoryPoolContents");
             //Compare for changes: Different poolSize, same everything else
             System.out.println(poolContents + "\n\n\n" + poolContentsAfterChange);
 
@@ -407,7 +376,7 @@ public class ConnectionManagerMBeanTest {
     @Test
     public void testJNDILookupConnectionFactoryDynamic() throws Exception {
         //Look up a connection Factory
-        runInServlet("testJNDILookupConnectionFactory", fvtweb);
+        runTest("testJNDILookupConnectionFactory");
 
         //Remove it
         ServerConfiguration config = server.getServerConfiguration();
@@ -428,7 +397,7 @@ public class ConnectionManagerMBeanTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames);
 
-        runInServlet("testJNDILookupConnectionFactory", fvtweb);
+        runTest("testJNDILookupConnectionFactory");
     }
 
 }

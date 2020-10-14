@@ -22,7 +22,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -32,7 +35,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -41,6 +43,22 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class EjbLinkTest extends FATServletClient {
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
+
     private static Class<?> c = EjbLinkTest.class;
 
     private static LibertyClient client = LibertyClientFactory.getLibertyClient("com.ibm.ws.ejbcontainer.remote.client.fat.clientInjection");
@@ -49,7 +67,7 @@ public class EjbLinkTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {

@@ -11,7 +11,7 @@ Subsystem-Name: MicroProfile Fault Tolerance 3.0
 -features=io.openliberty.org.eclipse.microprofile.faulttolerance-3.0, \
  com.ibm.websphere.appserver.cdi-2.0, \
  com.ibm.websphere.appserver.concurrent-1.0, \
- com.ibm.websphere.appserver.mpConfig-1.4; ibm.tolerates:="1.1, 1.2, 1.3"
+ io.openliberty.mpConfig-2.0
 -bundles=com.ibm.ws.microprofile.faulttolerance; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/", \

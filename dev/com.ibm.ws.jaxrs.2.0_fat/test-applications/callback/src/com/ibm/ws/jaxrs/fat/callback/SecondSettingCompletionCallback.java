@@ -12,10 +12,12 @@ public class SecondSettingCompletionCallback implements CompletionCallback {
 
    @Override
    public void onComplete(Throwable throwable) {
+      System.out.println("execute secondsettingcompletioncallback's onComplete method!!!");
       throwableName = throwable == null ? NULL : throwable.getClass()
               .getName();
       if (!SettingCompletionCallback.getLastThrowableName().equals(throwableName))
          throwableName = throwableName + OUTOFORDER;
+      System.out.println(throwableName);
    }
 
    public static final String getLastThrowableName() {

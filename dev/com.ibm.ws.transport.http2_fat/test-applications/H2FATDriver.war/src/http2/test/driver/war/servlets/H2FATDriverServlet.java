@@ -2767,11 +2767,9 @@ public class H2FATDriverServlet extends FATServlet {
         FramePriority priorityFrame = new FramePriority(3, 0, 255, false, false);
         h2Client.sendFrame(priorityFrame);
 
-        List<H2HeaderField> firstContinuationHeadersToSend = new ArrayList<H2HeaderField>();
-        firstContinuationHeadersToSend.add(new H2HeaderField("harold", "padilla"));
-        FrameContinuationClient firstContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
-        firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
-        h2Client.sendFrame(firstContinuationHeaders);
+        // The previous priority frame should cause the error, so no need to try to send anything else
+        // as it can cause a timing issue if the server has already detected the problem and
+        // closed the connection
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);

@@ -702,6 +702,10 @@ error.missing.version.files=CWWKE0952E: A verzi\u00f3inform\u00e1ci\u00f3k nem o
 error.missing.version.files.explanation=A verzi\u00f3inform\u00e1ci\u00f3s f\u00e1jlokat tartalmaz\u00f3 k\u00f6nyvt\u00e1r vagy nem l\u00e9tezik, vagy nem olvashat\u00f3 az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal.
 error.missing.version.files.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3nak van hozz\u00e1 olvas\u00e1si enged\u00e9lye. 
 
+warning.earlyRelease=CWWKE0953W: A(z) {0} v\u00e1ltozata egy nem t\u00e1mogatott korai kiad\u00e1s\u00fa v\u00e1ltozat.
+warning.earlyRelease.explanation=A korai kiad\u00e1sokban a nem teljesk\u00f6r\u0171en tesztelt \u00faj szolg\u00e1ltat\u00e1sok el\u00e9rhet\u0151v\u00e9 lettek t\u00e9ve, hogy visszajelz\u00e9s \u00e9rkezzen, miel\u0151tt egy t\u00e1mogatott kiad\u00e1sban szerepeln\u00e9nek.
+warning.earlyRelease.useraction=\u00c9les rendszerben ne haszn\u00e1ljon korai kiad\u00e1s\u00fa v\u00e1ltozatot, mivel a korai kiad\u00e1sv\u00e1ltozatok nem t\u00e1mogatottak.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

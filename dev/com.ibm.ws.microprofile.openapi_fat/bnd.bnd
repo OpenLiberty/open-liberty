@@ -13,26 +13,28 @@ bVersion=1.0
 
 
 src: \
-	fat/src, \
-	test-applications/appWithAnnotations/src, \
-	test-applications/appWithStaticDoc/src, \
-	test-applications/complete-flow/src, \
-	test-applications/pure-jaxrs/src, \
-	test-applications/simpleServlet/src
+    fat/src, \
+    test-applications/appWithAnnotations/src, \
+    test-applications/appWithStaticDoc/src, \
+    test-applications/complete-flow/src, \
+    test-applications/pure-jaxrs/src, \
+    test-applications/simpleServlet/src
 
 fat.project: true
 
 fat.minimum.java.level: 1.8
 
+tested.features=mpOpenAPI-1.0,mpOpenAPI-1.1,mpOpenAPI-2.0
+
 -buildpath: \
-	com.ibm.ws.microprofile.openapi;version=latest, \
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
-	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
-	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest, \
-	com.ibm.ws.common.encoder;version=latest, \
-    com.fasterxml.jackson.core.jackson-core;version=2.9.1, \
-    com.fasterxml.jackson.core.jackson-annotations;version=2.9.1, \
-    com.fasterxml.jackson.core:jackson-databind;version=2.9.1, \
-    com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1, \
-    org.yaml:snakeyaml;version=1.18
+    com.ibm.ws.microprofile.openapi;version=latest, \
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+    com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
+    com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest, \
+    com.ibm.ws.common.encoder;version=latest, \
+    com.fasterxml.jackson.core.jackson-core;version=2.11.2, \
+    com.fasterxml.jackson.core.jackson-annotations;version=2.11.2, \
+    com.fasterxml.jackson.core:jackson-databind;version=2.11.2, \
+    com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.11.2, \
+    org.yaml:snakeyaml;version=1.27

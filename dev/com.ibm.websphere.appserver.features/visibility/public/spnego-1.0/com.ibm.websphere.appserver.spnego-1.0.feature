@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.spnego-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: spnego-1.0
 Subsystem-Name: Simple and Protected GSSAPI Negotiation Mechanism 1.0

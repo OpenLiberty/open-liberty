@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.client;
 
-import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
 import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.getMetric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +41,8 @@ import com.ibm.testapp.g3store.restProducer.model.Price;
 import com.ibm.testapp.g3store.restProducer.model.Price.PurchaseType;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * @author anupag
@@ -139,8 +140,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(isValidResponse);
 
         } catch (Exception e) {
-            e.getMessage();
-            e.printStackTrace();
+            LOG.info(m + " " + e.getMessage());
+            throw e;
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
             LOG.info(m + " ----- invoking producer rest client to delete app: " + appName);
@@ -233,8 +234,9 @@ public class ProducerEndpointFATServlet extends FATServlet {
             assertTrue(entity.contains("Store has successfully added the app [myApp4]"));
 
         } catch (Exception e) {
-
+            LOG.info(m + " " + e.getMessage());
             e.printStackTrace();
+            throw e;
 
         } finally {
             LOG.info(m + " ------------------------------------------------------------");
@@ -427,7 +429,8 @@ public class ProducerEndpointFATServlet extends FATServlet {
         LOG.info(m + " ----------------------------------------------------------------");
     }
 
-    @Test
+    //@Mode(TestMode.FULL)
+    //@Test
     public void testClientStreamingMetrics(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testClientStreamingMetrics";
@@ -503,7 +506,6 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_secondary"));
-        checkMetric("/metrics/vendor/grpc.client.sentMessages.total", "0", "localhost", httpPort);
         String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
         if (metricValue == null || Integer.parseInt(metricValue) < 200) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.client.receivedMessages.total", ">=200", metricValue));

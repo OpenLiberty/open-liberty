@@ -10,20 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jca.fat.app;
 
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.jms.Topic;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -45,24 +35,26 @@ import com.ibm.websphere.simplicity.config.JCAGeneratedProperties;
 import com.ibm.websphere.simplicity.config.JMSActivationSpec;
 import com.ibm.websphere.simplicity.config.JMSConnectionFactory;
 import com.ibm.websphere.simplicity.config.JMSQueue;
+import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.ResourceAdapter;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.context.ClassloaderContext;
 import com.ibm.websphere.simplicity.config.context.JEEMetadataContext;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Tests of config update scenarios for JCA.
  */
 @RunWith(FATRunner.class)
-public class DependantApplicationTest {
+public class DependantApplicationTest extends FATServletClient {
 
-    @Server("com.ibm.ws.jca.fat")
     public static LibertyServer server;
 
     private static final String fvtapp = "fvtapp";
@@ -88,45 +80,18 @@ public class DependantApplicationTest {
     };
     private static String[] cleanUpExprs = EMPTY_EXPR_LIST;
 
-    /**
-     * Utility method to run a test on JCAFVTServlet.
-     *
-     * @param test Test name to supply as an argument to the servlet
-     * @return output of the servlet
-     * @throws IOException if an error occurs
-     */
-    private StringBuilder runInServlet(String test, String webmodule) throws IOException {
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + webmodule + "?test=" + test);
-        Log.info(getClass(), "runInServlet", "URL is " + url);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
+    private void runTest() throws Exception {
+        runTest(server, fvtweb, getTestMethodSimpleName());
+    }
 
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br.readLine())
-                lines.append(line).append(sep);
-
-            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0)
-                fail("Missing success message in output. " + lines);
-
-            return lines;
-        } catch (IOException x) {
-            throw x;
-        } finally {
-            con.disconnect();
-        }
+    private void runTest(String testName) throws Exception {
+        runTest(server, fvtweb, testName);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server = FATSuite.getServer();
+
         // Build jars that will be in the RAR
         JavaArchive JCAFAT1_jar = ShrinkWrap.create(JavaArchive.class, "JCAFAT1.jar");
         JCAFAT1_jar.addPackage("fat.jca.resourceadapter.jar1");
@@ -156,6 +121,25 @@ public class DependantApplicationTest {
         ShrinkHelper.addDirectory(fvtapp_ear, "lib/LibertyFATTestFiles/fvtapp");
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
+        if (JakartaEE9Action.isActive()) {
+            /*
+             * Need to update the destination type of the topic to ensure it matches the Jakarta FQN.
+             */
+            ServerConfiguration clone = server.getServerConfiguration().clone();
+            clone.getJMSActivationSpecs().getById("FVTMessageDrivenBeanBindingOverride").getProperties_FAT1().get(0).setDestinationType("jakarta.jms.Topic");
+
+            for (JavaPermission perm : clone.getJavaPermissions()) {
+                if (perm.getSignedBy() != null && perm.getSignedBy().startsWith("javax.resource.spi")) {
+                    perm.setSignedBy(perm.getSignedBy().replace("javax.", "jakarta."));
+                }
+                if (perm.getName() != null && perm.getName().startsWith("javax.resource.spi")) {
+                    perm.setName(perm.getName().replace("javax.", "jakarta."));
+                }
+            }
+
+            server.updateServerConfiguration(clone);
+        }
+
         originalServerConfig = server.getServerConfiguration().clone();
         server.addInstalledAppForValidation(fvtapp);
         server.startServer();
@@ -183,8 +167,8 @@ public class DependantApplicationTest {
                               "J2CA8802E", // TODO : The message endpoint activation failed for resource adapter FAT1 due to exception: javax.resource.spi.InvalidPropertyException: destination
                               "J2CA8806E", // TODO : The administered object with id or JNDI name topic2 could not be found in the server configuration
                               "J2CA0045E:.*jms/cf1", // EXPECTED
-                              "CWWKE0701E.*com.ibm.ws.jca.resourceAdapter.properties", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
-                              "CWWKE0700W.*com.ibm.ws.jca.resourceAdapter.properties", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
+                              "CWWKE0701E.*com.ibm.ws.jca", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
+                              "CWWKE0700W.*com.ibm.ws.jca", // occurs when Derby shutdown on FVTResourceAdapter.stop holds up deactivate for too long
                               "CWWKG0007W"); // TODO : The system could not delete C:\Users\IBM_ADMIN\Documents\workspace\build.image\wlp/usr/servers\com.ibm.ws.jca.fat\workarea\org.eclipse.osgi\9\data\configs\com.ibm.ws.jca.jmsQueue.properties_99!-1806458000
         } finally {
             if (originalServerConfig != null)
@@ -215,8 +199,8 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize1&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
-        runInServlet("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+        runTest("testMaxPoolSize1&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
+        runTest("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
 
         // Update the top level connectionManager
         conMgr1.setMaxPoolSize("2");
@@ -224,10 +208,10 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
-        // TODO runInServlet("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager", fvtweb);
+        runTest("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
+        // TODO runTest("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
 
-        runInServlet("resetState", fvtweb);
+        runTest("resetState");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testIncreaseMaxPoolSizeOfTopLevelConnectionManager");
@@ -242,8 +226,8 @@ public class DependantApplicationTest {
     public void testIncreaseMaxPoolSizeOfNestedConnectionManager() throws Exception {
         Log.entering(getClass(), "testIncreaseMaxPoolSizeOfNestedConnectionManager");
 
-        runInServlet("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
-        runInServlet("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+        runTest("testMaxPoolSize2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager");
+        runTest("setServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager");
 
         // Update a nested connectionManager
         ServerConfiguration config = server.getServerConfiguration();
@@ -254,10 +238,10 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSizeGreaterThan2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
-        // TODO runInServlet("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager", fvtweb);
+        runTest("testMaxPoolSizeGreaterThan2&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager");
+        // TODO runTest("requireServletInstanceStillActive&invokedBy=testIncreaseMaxPoolSizeOfNestedConnectionManager");
 
-        runInServlet("resetState", fvtweb);
+        runTest("resetState");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testIncreaseMaxPoolSizeOfNestedConnectionManager");
@@ -267,7 +251,7 @@ public class DependantApplicationTest {
     public void testUpdateActivationSpecConfigProperties() throws Exception {
         Log.entering(getClass(), "testUpdateActivationSpecConfigProperties");
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         // Switch from authDataRef to userName="ACTV1USER" password="{xor}HhwLCW4PCBs="
         ServerConfiguration config = server.getServerConfiguration();
@@ -280,19 +264,23 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         // Update the destinationRef to point to a new destination (topic2)
         // <activationSpec id="fvtapp/fvtmdb.jar/FVTMessageDrivenBean">
         //   <properties.FAT1.jmsMessageListener destinationRef="queue2"...
         // </activationSpec>
         properties_FAT1.setDestinationRef("topic2");
-        properties_FAT1.setDestinationType(Topic.class.getName());
+        if (JakartaEE9Action.isActive()) {
+            properties_FAT1.setDestinationType(jakarta.jms.Topic.class.getName());
+        } else {
+            properties_FAT1.setDestinationType(javax.jms.Topic.class.getName());
+        }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpecsBothUsingTopic2", fvtweb);
+        runTest("testActivationSpecsBothUsingTopic2");
 
         // Remove the destinationRef from FVTMessageDrivenBeanBindingOverride,
         // <jmsActivationSpec id="FVTMessageDrivenBeanBindingOverride">
@@ -306,7 +294,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpecBindings", fvtweb);
+        runTest("testActivationSpecBindings");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateActivationSpecConfigProperties");
@@ -316,7 +304,7 @@ public class DependantApplicationTest {
     public void testUpdateConnectionFactoryConfigProperties() throws Exception {
         Log.entering(getClass(), "testUpdateConnectionFactoryConfigProperties");
 
-        runInServlet("testConnectionFactoryClientIDDefault", fvtweb);
+        runTest("testConnectionFactoryClientIDDefault");
 
         // Update the clientID property
         ServerConfiguration config = server.getServerConfiguration();
@@ -328,7 +316,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryClientIDUpdated", fvtweb);
+        runTest("testConnectionFactoryClientIDUpdated");
 
         // Restore the original value
         properties_FAT1.setClientID(defaultClientID);
@@ -336,7 +324,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryClientIDDefault", fvtweb);
+        runTest("testConnectionFactoryClientIDDefault");
 
         // Switch the jndiName of the existing jmsConnectionFactory
         // and create another jmsConnectionFactory with the old JNDI name and updatedClientID
@@ -356,7 +344,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryClientIDUpdated", fvtweb);
+        runTest("testConnectionFactoryClientIDUpdated");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateConnectionFactoryConfigProperties");
@@ -366,7 +354,7 @@ public class DependantApplicationTest {
     public void testUpdateConnectionFactoryUserName() throws Exception {
         Log.entering(getClass(), "testUpdateConnectionFactoryUserName");
 
-        runInServlet("testConnectionFactoryUserDefault", fvtweb);
+        runTest("testConnectionFactoryUserDefault");
 
         // Add a containerAuthDataRef
         ServerConfiguration config = server.getServerConfiguration();
@@ -376,7 +364,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryUserUpdated1", fvtweb);
+        runTest("testConnectionFactoryUserUpdated1");
 
         // Switch to a different containerAuthDataRef
         AuthData newAuth = new AuthData();
@@ -389,7 +377,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryUserUpdated2", fvtweb);
+        runTest("testConnectionFactoryUserUpdated2");
 
         // Update the authData without touching the connection factory
         AuthData auth1 = config.getAuthDataElements().getById("activation1auth");
@@ -399,7 +387,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryUserUpdated1", fvtweb);
+        runTest("testConnectionFactoryUserUpdated1");
 
         // Remove containerAuthDataRef
         config.getAuthDataElements().remove(newAuth);
@@ -408,7 +396,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testConnectionFactoryUserDefault", fvtweb);
+        runTest("testConnectionFactoryUserDefault");
 
         cleanUpExprs = EMPTY_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateConnectionFactoryUserName");
@@ -425,7 +413,7 @@ public class DependantApplicationTest {
     public void testUpdateConnectionManager() throws Exception {
         Log.entering(getClass(), "testUpdateConnectionManager");
 
-        runInServlet("testMaxPoolSize2", fvtweb);
+        runTest("testMaxPoolSize2");
 
         // Update a nested connectionManager
         ServerConfiguration config = server.getServerConfiguration();
@@ -437,7 +425,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize1", fvtweb);
+        runTest("testMaxPoolSize1");
 
         // Remove the nested connectionManager
         cf1.getConnectionManager().remove(conMgr);
@@ -445,7 +433,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSizeGreaterThan2", fvtweb);
+        runTest("testMaxPoolSizeGreaterThan2");
 
         // Add a reference to a new top-level connectionManager
         ConnectionManager conMgr1 = new ConnectionManager();
@@ -458,7 +446,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize1", fvtweb);
+        runTest("testMaxPoolSize1");
 
         // Update a top-level connectionManager
         conMgr1.setMaxPoolSize("2");
@@ -466,7 +454,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize2", fvtweb);
+        runTest("testMaxPoolSize2");
 
         // Switch from a top-level connectionManager to a nested connectionManager
         config.removeConnectionManagerById(conMgr1.getId());
@@ -479,7 +467,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testMaxPoolSize1", fvtweb);
+        runTest("testMaxPoolSize1");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateConnectionManager");
@@ -489,7 +477,7 @@ public class DependantApplicationTest {
     public void testUpdateQueueConfigProperties() throws Exception {
         Log.entering(getClass(), "testUpdateQueueConfigProperties");
 
-        runInServlet("testQueueNameDefault", fvtweb);
+        runTest("testQueueNameDefault");
 
         // Update the queueName property
         ServerConfiguration config = server.getServerConfiguration();
@@ -500,7 +488,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testQueueNameUpdated", fvtweb);
+        runTest("testQueueNameUpdated");
 
         // Restore the original value
         properties_FAT1.setQueueName("queue1");
@@ -508,7 +496,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testQueueNameDefault", fvtweb);
+        runTest("testQueueNameDefault");
 
         // Switch the jndiName of the existing jmsQueue
         // and create another jmsQueue with the old JNDI name and updatedQueueName
@@ -525,7 +513,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_RECYCLE_EXPR_LIST);
 
-        runInServlet("testQueueNameUpdated", fvtweb);
+        runTest("testQueueNameUpdated");
 
         cleanUpExprs = FVTAPP_RECYCLE_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateQueueConfigProperties");
@@ -535,7 +523,7 @@ public class DependantApplicationTest {
     public void testUpdateContextService() throws Exception {
         Log.entering(getClass(), "testUpdateContextService");
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         // Add a contextServiceRef
         ServerConfiguration config = server.getServerConfiguration();
@@ -549,7 +537,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         // Switch to a nested contextService
         resourceAdapter_FAT1.setContextServiceRef(null);
@@ -561,7 +549,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         // Remove the nested context service
         resourceAdapter_FAT1.getContextServices().clear();
@@ -569,7 +557,7 @@ public class DependantApplicationTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, FVTAPP_AND_RA_RECYCLE_EXPR_LIST);
 
-        runInServlet("testActivationSpec", fvtweb);
+        runTest("testActivationSpec");
 
         cleanUpExprs = EMPTY_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateContextService");

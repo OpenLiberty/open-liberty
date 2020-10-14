@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,19 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Assurez-vous que la configuration JWT qui es
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Un sch\u00e9ma HTTP est utilis\u00e9 au point d''extr\u00e9mit\u00e9 indiqu\u00e9 : {0}, HTTPS est requis.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Le noeud final sp\u00e9cifi\u00e9 requiert le protocole HTTPS, mais le protocole HTTP a \u00e9t\u00e9 utilis\u00e9 dans l'URL de demande.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=V\u00e9rifiez l'URL de demande et assurez-vous qu'elle utilise le protocole HTTPS ou changez la configuration de sorte que le protocole HTTPS ne soit pas requis.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: L''algorithme de signature [{0}] qui est sp\u00e9cifi\u00e9 par les propri\u00e9t\u00e9s MicroProfile Config n''est pas pris en charge. L''algorithme de signature [{1}] va \u00eatre utilis\u00e9.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Seuls certains algorithmes de signature RSA, Elliptical Curve et HMAC sont pris en charge. L'algorithme de signature qui est sp\u00e9cifi\u00e9 par les propri\u00e9t\u00e9s MicroProfile Config ne fait pas partie des algorithmes de signature pris en charge.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Sp\u00e9cifiez un algorithme de signature pris en charge dans les propri\u00e9t\u00e9s MicroProfile Config. Les algorithmes de signature pris en charge sont ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 et HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: L''AMR [{0}] du jeton Web JSON (JWT) n''est pas r\u00e9pertori\u00e9 en tant qu''AMR digne de confiance dans la configuration du jeton JWT [{1}]. Les AMR dignes de confiance sont les suivants : [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=La configuration du serveur sp\u00e9cifie les AMR qui sont dignes de confiance lors de la validation des jetons Web JSON (JWT). Le jeton fourni n'est pas pr\u00e9vu pour un AMR digne de confiance ; par cons\u00e9quent, il ne peut pas \u00eatre valid\u00e9.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenez un nouveau jeton pour l'un des AMR dignes de confiances sp\u00e9cifi\u00e9s dans votre configuration de jeton Web JSON (JWT) ou ajoutez l'AMR sp\u00e9cifi\u00e9 dans le message en tant qu'AMR digne de confiance dans votre configuration de jeton Web JSON (JWT).
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configuration [{0}] sp\u00e9cifie l''algorithme de signature {1}, mais celui-ci n''est disponible que dans l''\u00e9dition b\u00eata. L''algorithme de signature {2} est utilis\u00e9 \u00e0 la place.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Il se peut que la prise en charge de l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message soit incompl\u00e8te ; par cons\u00e9quent, l'algorithme de signature ne peut \u00eatre utilis\u00e9 que dans l'\u00e9dition b\u00eata.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configurez un algorithme de signature qui est pris en charge ou utilisez l'\u00e9dition b\u00eata de ce produit pour utiliser l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message.

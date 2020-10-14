@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.faces.3.0; singleton:=true
+Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 API
+
+Export-Package: jakarta.faces.*; version="3.0.0"
+
+DynamicImport-Package: \
+  com.ibm.ws.jsf.spi, \
+  com.ibm.ws.managedobject, \
+  org.apache.myfaces.cdi.util, \
+  org.apache.myfaces.spi
+
+Include-Resource: \
+	@${repo;org.apache.myfaces.core.api;3.0.0.RC1;EXACT}!/jakarta/faces, \
+	@${repo;org.apache.myfaces.core.api;3.0.0.RC1;EXACT}!/META-INF/**
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	org.apache.myfaces.core:myfaces-api;version=3.0.0,\
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	io.openliberty.jakarta.el.4.0;version=latest,\
+	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+	io.openliberty.jakarta.validation.3.0;version=latest,\
+	io.openliberty.jakarta.jstl.2.0;version=latest,\
+	io.openliberty.jakarta.jsp.3.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest, \
+	io.openliberty.jakarta.websocket.2.0;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
