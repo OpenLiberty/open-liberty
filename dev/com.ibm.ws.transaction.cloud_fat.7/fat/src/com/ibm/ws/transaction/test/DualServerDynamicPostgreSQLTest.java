@@ -10,15 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_DB;
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_PASS;
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_USER;
+import static com.ibm.ws.transaction.test.FATSuite.postgre;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -35,9 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 @Mode
 @RunWith(FATRunner.class)
 public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
+
     private static final int LOG_SEARCH_TIMEOUT = 120000;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
@@ -47,14 +47,6 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
     @Server("com.ibm.ws.transaction_CLOUD002")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
-
-    @ClassRule
-    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>("postgres:11.2-alpine")
-                    .withDatabaseName(POSTGRES_DB)
-                    .withUsername(POSTGRES_USER)
-                    .withPassword(POSTGRES_PASS)
-                    .withConfigOption("max_prepared_transactions", "2")
-                    .withLogConsumer(DualServerDynamicPostgreSQLTest::log);
 
     public static void setUp(LibertyServer server) throws Exception {
 
@@ -70,13 +62,6 @@ public class DualServerDynamicPostgreSQLTest extends DualServerDynamicCoreTest {
         server.addEnvVar("POSTGRES_PASS", POSTGRES_PASS);
         server.addEnvVar("POSTGRES_URL", jdbcURL);
         server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(DualServerDynamicPostgreSQLTest.class, "postgresql-ssl", msg);
     }
 
     @BeforeClass
