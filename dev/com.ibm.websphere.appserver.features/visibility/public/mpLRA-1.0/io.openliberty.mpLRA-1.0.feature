@@ -7,6 +7,7 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: mpLRA-1.0
 Subsystem-Name: MicroProfile Long Running Actions 1.0
 IBM-API-Package: \
+  org.eclipse.microprofile.lra; type="stable", \
   org.eclipse.microprofile.lra.annotation; type="stable", \
   org.eclipse.microprofile.lra.annotation.ws.rs; type="stable";
 -features=io.openliberty.org.eclipse.microprofile.lra-1.0, \
