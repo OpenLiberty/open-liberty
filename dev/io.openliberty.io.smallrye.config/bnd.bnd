@@ -55,4 +55,5 @@ Export-Package: \
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.jboss.logging;version=latest,\
-  com.ibm.ws.logging;version=latest
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.container.service;version=latest
