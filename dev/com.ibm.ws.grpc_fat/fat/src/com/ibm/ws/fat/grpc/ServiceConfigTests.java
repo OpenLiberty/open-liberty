@@ -106,22 +106,6 @@ public class ServiceConfigTests extends FATServletClient {
     }
 
     /**
-     * This method is used to set the server.xml
-     */
-    private static void setServerConfiguration(LibertyServer server,
-                                               String serverXML) throws Exception {
-        if (!serverConfigurationFile.equals(serverXML)) {
-            // Update server.xml
-            LOG.info("ServiceConfigTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            serverConfigurationFile = serverXML;
-            grpcServer.waitForConfigUpdateInLogUsingMark(appName);
-        }
-    }
-
-    /**
      * Add a new <grpc/> element and make sure it's applied
      * The original server.xml enables the grpc feature, but has no grpc element.
      * Update the server with a server.xml that has a grpc element, make sure no errors, send a request.
@@ -137,7 +121,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testAddGrpcElement() : update the server.xml file to one with a <grpc> element.");
 
         // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
@@ -166,7 +150,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with no interceptor");
 
         // Update to a config file with a <grpc> element with no interceptor
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
@@ -182,7 +166,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with Interceptor included
         LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with an interceptor");
-        setServerConfiguration(grpcServer, GRPC_INTERCEPTOR);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INTERCEPTOR, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         person = HelloRequest.newBuilder().setName("Millie").build();
@@ -215,7 +199,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with a small grpc message size of 1");
 
         // Update to a config file with a <grpc> element with a small message size, send msg, look for failure
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
 
         boolean testPassed = false;
         try {
@@ -231,7 +215,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with no <grpc> element, do same test, it should work
         LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with no grpc message size.");
-        setServerConfiguration(grpcServer, DEFAULT_CONFIG_FILE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, DEFAULT_CONFIG_FILE, appName, LOG);
 
         // Send a request to the HelloWorld service, this should work
         HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
@@ -278,7 +262,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with a <grpc target="*" maxInboundMessageSize="1"/>
         // This should apply max msg size of 1 to both services
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
 
         boolean test1Passed = false;
         try {
@@ -330,7 +314,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testServiceTargetNoMatch() : update the server.xml file to one with a </grpc> target that matches nothing.");
 
         // Update to a config file with a <grpc> element with Foo.fighter target and an invalid msg size
-        setServerConfiguration(grpcServer, GRPC_BAD_TARGET);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_BAD_TARGET, appName, LOG);
 
         // Send a request to a different service, the HelloWorld service, and check for a response
         // This should work, since the invalid msg size is set on the invalid target
@@ -375,7 +359,7 @@ public class ServiceConfigTests extends FATServletClient {
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
 
         // Update to a config file with a <grpc> element that has a specific target
-        setServerConfiguration(grpcServer, GRPC_MAX_MESSAGE_SPECIFIC_TARGET);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MAX_MESSAGE_SPECIFIC_TARGET, appName, LOG);
 
         // Send a message to the first service, expect error
         boolean test1Passed = false;
@@ -420,7 +404,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testInvalidMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an invalid maxInboundMessageSize.");
 
         // Update to a config file with a <grpc> element with a max msg size of -1
-        setServerConfiguration(grpcServer, GRPC_INVALID_MAX_MSG_SIZE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INVALID_MAX_MSG_SIZE, appName, LOG);
 
         String warningMsg = grpcServer.waitForStringInLogUsingMark("CWWKT0203E: The maxInboundMessageSize -1 is not valid. Sizes must greater than 0.", STARTUP_TIMEOUT);
         if (warningMsg == null) {
@@ -441,7 +425,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an very small maxInboundMessageSize.");
 
         // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
 
         boolean testPassed = false;
         try {

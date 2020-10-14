@@ -71,6 +71,7 @@ public class ClientConfigTests extends FATServletClient {
     private static final String GRPC_CLIENT_USEPLAINTEXTINV = "grpc.client.invaliduseplaintext.server.xml";
     private static final String GRPC_CLIENT_USEPLAINTEXTTRUE = "grpc.client.useplaintext.true.server.xml";
     private static final String GRPC_CLIENT_USEPLAINTEXTFALSE = "grpc.client.useplaintext.false.server.xml";
+    private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
 
     @Server("GrpcClientOnly")
     public static LibertyServer GrpcClientOnly;
@@ -152,8 +153,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ClientConfigTests : testAddgrpcClientElement() : update the server.xml file to one with a <grpcClient> element.");
 
         // Update to a config file with a <grpcClient> element
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_ELEMENT, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_ELEMENT, appName, LOG);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
@@ -210,12 +210,10 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ClientConfigTests : testUpdateGrpcClientParam() : update <grpcClient> element with new parms.");
 
         // First set a config with a <grpcClient> that wouldn't match the helloworld client
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_NOMATCH, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_NOMATCH, appName, LOG);
 
         // Update to a config with a <grpcClient> element with different parms
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_PARAM, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_PARAM, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -272,8 +270,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ClientConfigTests : testRemoveGrpcClientElement() : remove <grpcClient> element.");
 
         // First set a config with a <grpcClient>
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_ELEMENT, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_ELEMENT, appName, LOG);
 
         // verify this client uses the target
         String contextRoot = "HelloWorldClient";
@@ -321,8 +318,7 @@ public class ClientConfigTests extends FATServletClient {
         }
 
         // Update to a config file without a <grpcClient> element
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, NO_GRPC_CLIENT_ELEMENT, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, NO_GRPC_CLIENT_ELEMENT, appName, LOG);
 
         try (WebClient webClient = new WebClient()) {
 
@@ -377,8 +373,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetWildcard() throws Exception {
         LOG.info("ClientConfigTests : testClientTargetWildcard() : validate that * matches all outbound calls.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_WILDCARD, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_WILDCARD, appName, LOG);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
@@ -434,8 +429,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testClientTargetNoMatch() throws Exception {
         LOG.info("ClientConfigTests : testClientTargetNoMatch() : validate no matches.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_NOMATCH, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_NOMATCH, appName, LOG);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
 
@@ -491,8 +485,7 @@ public class ClientConfigTests extends FATServletClient {
         LOG.info("ClientConfigTests : testClientTargetSpecificMatch() : validate a specific match.");
 
         // set up client and server with same target name
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_SPEC, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_SPEC, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -548,8 +541,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testInvalidMaxInboundMessageSize() throws Exception {
         LOG.info("ClientConfigTests : testInvalidMaxInboundMessageSize() : test an invalid setting.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_MSGSIZEINVALID, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_MSGSIZEINVALID, appName, LOG, false);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0083W.*.junk"));
     }
 
@@ -564,8 +556,7 @@ public class ClientConfigTests extends FATServletClient {
     public void testSmallMaxInboundMessageSize() throws Exception {
         LOG.info("ClientConfigTests : testSmallMaxInboundMessageSize() : test very small MaxInboundMessageSize.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_MSGSIZESM, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_MSGSIZESM, appName, LOG);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false); // set to false since we'll be expecting a code 500
@@ -619,9 +610,8 @@ public class ClientConfigTests extends FATServletClient {
     public void testMaxInboundMetadataSize() throws Exception {
         LOG.info("ClientConfigTests : testMaxInboundMetadataSize() : test maxInboundMetadataSize.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_METASIZE, null, LOG);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_METASIZE, appName, LOG);
 
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false); // set to false since we'll be expecting a code 500
@@ -672,16 +662,13 @@ public class ClientConfigTests extends FATServletClient {
     public void testKeepAliveWithoutCalls() throws Exception {
         LOG.info("ClientConfigTests : keepAliveWithoutCalls() : test settings true, false, invalid.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_KEEPALIVEWINV, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_KEEPALIVEWINV, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0083W.*.morejunk"));
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_KEEPALIVEWTRUE, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_KEEPALIVEWTRUE, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0017I.*.success"));
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_KEEPALIVEWFALSE, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_KEEPALIVEWFALSE, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0017I.*.success"));
     }
 
@@ -694,16 +681,13 @@ public class ClientConfigTests extends FATServletClient {
     public void testUsePlaintext() throws Exception {
         LOG.info("ClientConfigTests : testUsePlaintext() : test usePlaintext settings true, false, invalid.");
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_USEPLAINTEXTINV, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_USEPLAINTEXTINV, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0083W.*.additionaljunk"));
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_USEPLAINTEXTTRUE, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_USEPLAINTEXTTRUE, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0017I.*.success"));
 
-        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, DEFAULT_CONFIG_FILE, GRPC_CLIENT_USEPLAINTEXTFALSE, null, LOG);
-        GrpcClientOnly.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcClientOnly, serverConfigurationFile, GRPC_CLIENT_USEPLAINTEXTFALSE, appName, LOG);
         assertNotNull(GrpcClientOnly.waitForStringInLog("CWWKG0017I.*.success"));
     }
 
