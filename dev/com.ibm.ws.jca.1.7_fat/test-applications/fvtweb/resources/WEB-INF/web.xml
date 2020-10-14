@@ -123,7 +123,7 @@
 		<interface-name>
 		com.ibm.adapter.message.FVTBaseMessageProvider
 		</interface-name>
-		<resource-adapter>fvtapp.adapter_administrator_object</resource-adapter>
+		<resource-adapter>fvtapp.adapter</resource-adapter>
 	</administered-object>
 	
 </web-app>

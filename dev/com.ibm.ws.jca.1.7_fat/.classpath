@@ -9,5 +9,7 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-resourceadapters/adapter/src"/>
 	<classpathentry kind="src" path="test-applications/fvtweb/src"/>
+	<classpathentry kind="src" path="test-resourceadapters/fvtra/src"/>
+	<classpathentry kind="src" path="test-resourceadapters/helloworldra/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
