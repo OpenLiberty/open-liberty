@@ -1,5 +1,13 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+  
+  <!--
+  <logging 
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
+    maxFileSize="200"/>
+   -->
+
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
@@ -12,42 +20,24 @@
     <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
 
-  <variable name="onError" value="FAIL"/>
-  
-  <!--
-  <logging 
-    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
-    maxFileSize="200"/>
-   -->
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
 
-  <!-- Avoid MissingDoPrivDetectionSecurityManager warning CWWKE0921W potential violation warnings -->
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
+  <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
 
-  <!--
-
-  JMSContextInjectServlet.java    
-    jmsQCFBindings = (QueueConnectionFactory)
-      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-    jmsQCFTCP = (QueueConnectionFactory)
-      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-    jmsQueue = (Queue)
-      new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF1")
-    @JMSConnectionFactory("java:comp/env/eis/qcf")
-    @JMSConnectionFactory("java:comp/env/eis/qcf1")
-    @JMSConnectionFactory("java:comp/env/eis/tcf")
-    @JMSConnectionFactory("java:comp/env/eis/tcf1")
-
-    Topic jmsTopic = jmsContextTopic.createTopic("Topic1");
-
-  SampleSecureStatelessBean.java
-    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
-
-    -->
+  <!-- JMS endpoint configuration -->
 
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
@@ -97,5 +87,26 @@
   <jmsTopic jndiName="eis/topic1">
     <properties.wasJms topicSpace="NewTopic1" topicName="testTopic1"/>
   </jmsTopic>
+
+  <!--
+  JMSContextInjectServlet.java    
+    jmsQCFBindings = (QueueConnectionFactory)
+      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
+    jmsQCFTCP = (QueueConnectionFactory)
+      new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+    jmsQueue = (Queue)
+      new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
+    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF1")
+    @JMSConnectionFactory("java:comp/env/eis/qcf")
+    @JMSConnectionFactory("java:comp/env/eis/qcf1")
+    @JMSConnectionFactory("java:comp/env/eis/tcf")
+    @JMSConnectionFactory("java:comp/env/eis/tcf1")
+
+    Topic jmsTopic = jmsContextTopic.createTopic("Topic1");
+
+  SampleSecureStatelessBean.java
+    @JMSConnectionFactory("java:comp/env/jndi_JMS_BASE_QCF")
+    -->
 
 </server>

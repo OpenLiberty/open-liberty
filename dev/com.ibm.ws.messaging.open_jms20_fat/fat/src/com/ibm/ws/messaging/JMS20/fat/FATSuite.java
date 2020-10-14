@@ -39,28 +39,28 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 @SuiteClasses({
 
         DummyTest.class,
-            // LiteBucketSet1Test.class,
-            // LiteBucketSet2Test.class,
-        JMSMBeanTest.class,
+        LiteBucketSet1Test.class,
+        LiteBucketSet2Test.class, // 2 tests disabled for jakarta
+        JMSMBeanTest.class, // not run in jakarta: j2ee-management is not supported
 
         JMSProducerTest_118071.class, //full
-            // JMSProducerTest_118073.class, //full
-            // SharedSubscriptionTest_129623.class,
+        JMSProducerTest_118073.class, //full
+        SharedSubscriptionTest_129623.class,
 
-            // JMSConsumerTest_118076.class, //full
-            // JMSConsumerTest_118077.class, //full
-            // JMSRedeliveryTest_120846.class,
+        JMSConsumerTest_118076.class, //full
+        JMSConsumerTest_118077.class, //full
+        JMSRedeliveryTest_120846.class,
 
-            // SharedSubscriptionWithMsgSelTest_129623.class,
-            // SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-            // SharedSubscriptionTest_129626.class, //full 2nd
-            // JMSProducer_Test118073.class, //full
+        SharedSubscriptionWithMsgSelTest_129623.class,
+        SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+        SharedSubscriptionTest_129626.class, //full 2nd
+        JMSProducer_Test118073.class, //full
 
-            // DurableUnsharedTest.class,
-            // JMSContextInjectTest.class, //full // JMSContextTest
+        DurableUnsharedTest.class,
+        JMSContextInjectTest.class, //full // all tests disabled for jakarta
 
 // xx JMSDCFTest.class,
-            // JMSDCFVarTest.class //full 2nd
+        JMSDCFVarTest.class //full 2nd
 
 // xx JMSEjbJarXmlMdbTest.class, // MDBMDB
 })

@@ -1,15 +1,34 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging traceSpecification="*=info" maxFileSize="200"/>
+   -->
+
   <featureManager>
     <feature>servlet-3.1</feature>
     <feature>j2eeManagement-1.1</feature>   
+
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
 
     <feature>timedexit-1.0</feature>
   </featureManager>
-  
-  <include location="../fatTestPorts.xml"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="javax.management.MBeanPermission" name="*" actions="queryNames"/>
