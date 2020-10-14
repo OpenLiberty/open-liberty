@@ -262,7 +262,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with a <grpc target="*" maxInboundMessageSize="1"/>
         // This should apply max msg size of 1 to both services
-        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appNames, LOG);
 
         boolean test1Passed = false;
         try {
@@ -359,7 +359,8 @@ public class ServiceConfigTests extends FATServletClient {
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
 
         // Update to a config file with a <grpc> element that has a specific target
-        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MAX_MESSAGE_SPECIFIC_TARGET, appName, LOG);
+        // make sure to pass in both appNames so that the test will wait until they're both up
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MAX_MESSAGE_SPECIFIC_TARGET, appNames, LOG);
 
         // Send a message to the first service, expect error
         boolean test1Passed = false;
