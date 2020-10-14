@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: Nativn\u00ed rutina ({0}) p\u0159ijala k\u00f3d p\u0159\u00ed\u010diny selh\u00e1n\u00ed ({1}) z lok\u00e1ln\u00ed komunikace.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=Server \u0159\u00eddil nativn\u00ed metodu, kter\u00e1 volala uvedenou slu\u017ebu lok\u00e1ln\u00ed komunikace. K\u00f3d p\u0159\u00ed\u010diny ze slu\u017eby lok\u00e1ln\u00ed komunikace uv\u00e1d\u00ed p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Pomoc\u00ed k\u00f3du p\u0159\u00ed\u010diny lok\u00e1ln\u00ed komunikace ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Nativn\u00ed rutina se nezda\u0159ila, slu\u017eba WebSphere Application Server ({0}) RC({1}), slu\u017eba lok\u00e1ln\u00ed komunikace ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Server spustil nativn\u00ed metodu, je\u017e selhala. Zobrazuje se c\u00edlov\u00e1 slu\u017eba serveru WebSphere Application Server a n\u00e1vratov\u00fd k\u00f3d. Poskytnuty jsou informace o c\u00edlov\u00e9 slu\u017eb\u011b lok\u00e1ln\u00ed komunikace s n\u00e1vratov\u00fdm k\u00f3dem a k\u00f3dem p\u0159\u00ed\u010diny.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Pou\u017eijte n\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny k ur\u010den\u00ed d\u016fvodu selh\u00e1n\u00ed.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: Nativn\u00ed rutina ({0}) obdr\u017eela neo\u010dek\u00e1van\u00fd n\u00e1vratov\u00fd k\u00f3d ({1}) ze sv\u00e9 autorizovan\u00e9 slu\u017eby PC.
+NATIVE_SERVICE_PC.explanation=Server spustil nativn\u00ed metodu k proveden\u00ed vol\u00e1n\u00ed autorizovan\u00e9 slu\u017eby. Obdr\u017eel nenulov\u00fd n\u00e1vratov\u00fd k\u00f3d od autorizovan\u00e9ho vol\u00e1n\u00ed programu (Program Call - PC).
+NATIVE_SERVICE_PC.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Lok\u00e1ln\u00ed komunikace p\u0159ijala nezn\u00e1m\u00fd typ nativn\u00edho po\u017eadavku ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=Byl p\u0159ijat po\u017eadavek na lok\u00e1ln\u00ed komunikaci s nezn\u00e1m\u00fdm typem po\u017eadavku. Tento po\u017eadavek se bude ignorovat.
+INVALID_NATIVE_REQUESTTYPE.useraction=Povolte nativn\u00ed trasov\u00e1n\u00ed a ur\u010dete p\u0159\u00ed\u010dinu nezn\u00e1m\u00e9ho typu po\u017eadavku.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Proces typu angel na tomto syst\u00e9mu nen\u00ed kompatibiln\u00ed s lok\u00e1ln\u00ed komunika\u010dn\u00ed slu\u017ebou. Aktu\u00e1ln\u00ed verze procesu typu angel je {0}, je v\u0161ak po\u017eadov\u00e1na verze {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=Lok\u00e1ln\u00ed komunika\u010dn\u00ed slu\u017eba se pou\u017e\u00edv\u00e1 ke komunikaci s klienty spu\u0161t\u011bn\u00fdmi na stejn\u00e9m syst\u00e9mu jako tato instance serveru. Proces typu angel mus\u00ed b\u00fdt spu\u0161t\u011bn\u00fd na minim\u00e1ln\u00ed po\u017eadovan\u00e9 \u00farovni pro lok\u00e1ln\u00ed komunika\u010dn\u00ed slu\u017ebu. Minim\u00e1ln\u00ed po\u017eadovan\u00e1 \u00farove\u0148 je uvedena ve zpr\u00e1v\u011b.
+ANGEL_VERSION_INCOMPATIBLE.useraction=V k\u00f3du JCL, pomoc\u00ed kter\u00e9ho jste spustili proces typu angel, zkontrolujte, ze kter\u00e9ho adres\u00e1\u0159e se na\u010d\u00edt\u00e1. Verze produktu v tomto adres\u00e1\u0159i mus\u00ed b\u00fdt minim\u00e1ln\u011b na stejn\u00e9 \u00farovni PTF, jako je \u00farove\u0148 PTF t\u00e9to instance serveru.

@@ -1,0 +1,127 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: A(z) {0} rendszerszolg\u00e1ltat\u00e1s {1} visszat\u00e9r\u00e9si k\u00f3ddal meghi\u00fasult. Kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3k: {2}
+INVALID_RRS_SERVICE_RC.explanation=A jelzett szolg\u00e1ltat\u00e1s megh\u00edv\u00e1sa nem siker\u00fclt. A visszat\u00e9r\u00e9si k\u00f3d egy hexadecim\u00e1lis eg\u00e9sz sz\u00e1m.
+INVALID_RRS_SERVICE_RC.useraction=A visszat\u00e9r\u00e9si k\u00f3ddal kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3kat a k\u00f6vetkez\u0151 kiadv\u00e1nyban tal\u00e1l: MVS Programming: Resource Recovery book. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Az er\u0151forr\u00e1s-kezel\u0151 (n\u00e9v: {0}, tokenazonos\u00edt\u00f3: {1}) bejegyz\u00e9se elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a rendszerb\u0151l. Az er\u0151forr\u00e1s-kezel\u0151 bejegyz\u00e9s\u00e9nek elt\u00e1vol\u00edt\u00e1sakor {2} f\u00fcgg\u0151ben l\u00e9v\u0151 tranzakci\u00f3 volt. Ezeknek a tranzakci\u00f3knak a glob\u00e1lis tranzakci\u00f3azonos\u00edt\u00f3ja a k\u00f6vetkez\u0151: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=F\u00fcgg\u0151ben l\u00e9v\u0151 tranzakci\u00f3k voltak az er\u0151forr\u00e1s-kezel\u0151 bejegyz\u00e9s\u00e9nek elt\u00e1vol\u00edt\u00e1sakor. A kiszolg\u00e1l\u00f3 k\u00f6vetkez\u0151 \u00fajraind\u00edt\u00e1sakor minden f\u00fcgg\u0151ben l\u00e9v\u0151 er\u0151forr\u00e1s helyre\u00e1ll\u00edt\u00e1si elj\u00e1r\u00e1son megy kereszt\u00fcl.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, az RRS-k\u00e9pes er\u0151forr\u00e1sok tranzakci\u00f3inak kezel\u00e9s\u00e9hez sz\u00fcks\u00e9ges minden be\u00e1ll\u00edt\u00e1s rendben van. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: A(z) {0} er\u0151forr\u00e1s-kezel\u0151 (tokenazonos\u00edt\u00f3 {1}) sikeresen \u00fajraind\u00edt\u00e1sra ker\u00fclt az Er\u0151forr\u00e1s-helyre\u00e1ll\u00edt\u00e1si  szolg\u00e1ltat\u00e1sokkal (RRS). Feloldatlan helyre\u00e1ll\u00edt\u00e1si egys\u00e9gek sz\u00e1ma: {2}
+RM_RESTART_COMPLETE.explanation=A megadott er\u0151forr\u00e1s-kezel\u0151 RRS szolg\u00e1ltat\u00e1sokkal \u00fajraindult. Minden jelentett helyre\u00e1ll\u00edt\u00e1si egys\u00e9g helyre\u00e1ll\u00edt\u00e1son megy kereszt\u00fcl.
+RM_RESTART_COMPLETE.useraction=Nincs teend\u0151. 
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: A(z) {0} er\u0151forr\u00e1s-kezel\u0151 (tokenazonos\u00edt\u00f3 {1}) helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1sa sikeresen befejez\u0151d\u00f6tt.
+RM_RECOVERY_COMPLETE.explanation=A megadott er\u0151forr\u00e1s-kezel\u0151 helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1sa befejez\u0151d\u00f6tt. Minden jelentett helyre\u00e1ll\u00edt\u00e1si egys\u00e9g helyre\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+RM_RECOVERY_COMPLETE.useraction=Nincs teend\u0151. 
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je a felf\u00fcggesztett {0} kontextustokenre v\u00e1r, hogy a k\u00f6vetkez\u0151 munkaegys\u00e9get befejezhesse: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je le\u00e1ll\u00edt\u00e1sra ker\u00fcl.  A kontextuskezel\u0151 arra v\u00e1r, hogy a t\u00e1rs\u00edtott nat\u00edv kontextussal rendelkez\u0151 \u00f6sszes munkaegys\u00e9g befejez\u0151dj\u00f6n.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Nincs teend\u0151.  Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je addig folytatja a lez\u00e1r\u00e1st, am\u00edg minden munkaegys\u00e9g be nem fejez\u0151dik.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je arra v\u00e1r, hogy a(z) {1} sz\u00e1lban fut\u00f3 {0} kontextustoken befejezze a k\u00f6vetkez\u0151 akt\u00edv munkaegys\u00e9get: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je le\u00e1ll\u00edt\u00e1sra ker\u00fcl.  A kontextuskezel\u0151 arra v\u00e1r, hogy a t\u00e1rs\u00edtott nat\u00edv kontextussal rendelkez\u0151 \u00f6sszes munkaegys\u00e9g befejez\u0151dj\u00f6n.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Nincs teend\u0151.  Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je addig folytatja a lez\u00e1r\u00e1st, am\u00edg minden munkaegys\u00e9g be nem fejez\u0151dik.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je lez\u00e1rja a(z) {0} kontextustokent, ami pillanatnyilag a k\u00f6vetkez\u0151 munkaegys\u00e9ghez van t\u00e1rs\u00edtva: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Az RRS be\u00e9p\u00edtett kontextuskezel\u0151je le\u00e1ll\u00edt\u00e1sra ker\u00fcl, miut\u00e1n megv\u00e1rta az akt\u00edv munka felf\u00fcggeszt\u00e9s\u00e9t.  A kontextuskezel\u0151 az \u00fczenetben megadott kontextust lez\u00e1rja.  A kontextus munkaegys\u00e9ghez van t\u00e1rs\u00edtva \u00e9s a munkaegys\u00e9g visszal\u00e9ptet\u00e9sre fog ker\u00fclni.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Nincs teend\u0151.  N\u00e9h\u00e1ny er\u0151forr\u00e1s-kezel\u0151 hib\u00e1t jelenthet, ha a kontextus befejez\u0151d\u00e9sekor munk\u00e1t dolgoztak fel.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: A(z) {0} er\u0151forr\u00e1s-kezel\u0151 {1} tranzakci\u00f3 befejez\u0151d\u00e9s\u00e9re v\u00e1rakozik.  Legfeljebb {2} ezredm\u00e1sodpercig fog v\u00e1rni.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Az RRS be\u00e9p\u00edtett er\u0151forr\u00e1s-kezel\u0151je le\u00e1ll\u00edt\u00e1sra ker\u00fcl.  Tov\u00e1bbra is vannak RSS er\u0151forr\u00e1sokat haszn\u00e1l\u00f3 akt\u00edv tranzakci\u00f3k, p\u00e9ld\u00e1ul 2-es t\u00edpus\u00fa adatb\u00e1zis-kapcsolatok.  A be\u00e9p\u00edtett er\u0151forr\u00e1s-kezel\u0151 a le\u00e1ll\u00edt\u00e1ssal megv\u00e1rja ezen tranzakci\u00f3k befejez\u0151d\u00e9s\u00e9t.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Nincs teend\u0151.  Az er\u0151forr\u00e1s-kezel\u0151 a tranzakci\u00f3k befejez\u0151d\u00e9se ut\u00e1n vagy a megadott id\u0151 eltelt\u00e9vel folytatja a le\u00e1ll\u00edt\u00e1st.  A maxim\u00e1lis v\u00e1rakoz\u00e1si id\u0151 eltelt\u00e9vel a CWLIB0102W \u00fczenet fogja jelezni a tov\u00e1bbra is akt\u00edv tranzakci\u00f3kat.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: A(z) {0} RRS URID azonos\u00edt\u00f3 \u00e1ltal k\u00e9pviselt tranzakci\u00f3\u00e1gat nem lehet feloldani, mert az \u00e1gat l\u00e9trehoz\u00f3 NativeTransactionManager p\u00e9ld\u00e1ny le\u00e1ll\u00edt\u00e1sra ker\u00fclt.  A kiszolg\u00e1l\u00f3t \u00fajra kell ind\u00edtani, hogy a tranzakci\u00f3 befejez\u0151dhessen.  A tranzakci\u00f3\u00e1g Xid azonos\u00edt\u00f3ja: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Az RRS be\u00e9p\u00edtett tranzakci\u00f3kezel\u0151 szolg\u00e1ltat\u00e1sa le\u00e1ll\u00edt\u00e1sra ker\u00fclt \u00e9s m\u00e1r nem csatlakozik az RRS szolg\u00e1ltat\u00e1shoz.  A tranzakci\u00f3\u00e1gat nem lehet befejezni, mert az RRS nem \u00e9rtes\u00edthet\u0151 az eredm\u00e9nyr\u0151l.  A kiszolg\u00e1l\u00f3t \u00fajra kell ind\u00edtani, hogy a tranzakci\u00f3kezel\u0151 \u00fajraszinkroniz\u00e1l\u00e1st v\u00e9gezhessen az RRS szolg\u00e1ltat\u00e1ssal \u00e9s feloldhassa a tranzakci\u00f3t.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: A(z) {0} munkaegys\u00e9g befejez\u0151dik \u00e9s a(z) {1} kontextustoken alatt m\u0171k\u00f6d\u0151, t\u00e1rs\u00edtott RRS helyre\u00e1ll\u00edt\u00e1si egys\u00e9g feloldatlan er\u0151forr\u00e1s\u00e9rdekeket tartalmaz. Az RRS helyre\u00e1ll\u00edt\u00e1si egys\u00e9g visszag\u00f6rget\u00e9sre ker\u00fcl.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=Egy RRS helyre\u00e1ll\u00edt\u00e1si egys\u00e9gnek f\u00fcgg\u0151ben l\u00e9v\u0151 er\u0151forr\u00e1s\u00e9rdekei voltak a munkaegys\u00e9g v\u00e9g\u00e9n.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Ellen\u0151rizze, hogy a haszn\u00e1lt RRS-k\u00e9pes er\u0151forr\u00e1sok nem tranzakci\u00f3s hat\u00f3k\u00f6r\u00f6n k\u00edv\u00fcl m\u0171k\u00f6dnek-e. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: A konfigur\u00e1lt {0} er\u0151forr\u00e1skezel\u0151 el\u0151tag \u00e9rv\u00e9nytelen. Az alap\u00e9rtelmezett er\u0151forr\u00e1skezel\u0151 el\u0151tag ker\u00fcl felhaszn\u00e1l\u00e1sra.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=A be\u00e1ll\u00edtott er\u0151forr\u00e1skezel\u0151 el\u0151tagnak 1-8 karakter hossz\u00fas\u00e1g\u00fanak kell lennie, \u00e9s csak alfanumerikus (a-z,A-Z,0-9) \u00e9s nemzeti (@,$,#) karaktereket tartalmazhat.
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Ellen\u0151rizze, hogy a be\u00e1ll\u00edtott er\u0151forr\u00e1skezel\u0151 el\u0151tag megfelel a hossz- \u00e9s karakterk\u00f6vetelm\u00e9nyeknek. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: Az er\u0151forr\u00e1skezel\u0151 el\u0151tagot {0} n\u00e9vre be\u00e1ll\u00edt\u00f3 konfigur\u00e1ci\u00f3s friss\u00edt\u00e9s a fut\u00e1s sor\u00e1n nem enged\u00e9lyezett. A friss\u00edt\u00e9s figyelmen k\u00edv\u00fcl marad.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=Az er\u0151forr\u00e1skezel\u0151 el\u0151tag fut\u00e1s k\u00f6zbeni be\u00e1ll\u00edt\u00e1s\u00e1ra ir\u00e1nyul\u00f3 konfigur\u00e1ci\u00f3friss\u00edt\u00e9s figyelmen k\u00edv\u00fcl marad.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa, illetve a zosTransaction-1.0 \u00f6sszetev\u0151 be\u00e1ll\u00edt\u00e1sa el\u0151tt \u00e1ll\u00edtsa be az er\u0151forr\u00e1skezel\u0151 el\u0151tagot. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: A felhaszn\u00e1l\u00f3i jogosults\u00e1gokat a konfigur\u00e1lt er\u0151forr\u00e1skezel\u0151 el\u0151tag {0} neve alapj\u00e1n \u00e9rv\u00e9nyes\u00edt\u0151 jogosults\u00e1gellen\u0151rz\u00e9s meghi\u00fasult. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=A jogosults\u00e1gellen\u0151rz\u00e9s, amely \u00e9rv\u00e9nyes\u00edti a felhaszn\u00e1l\u00f3i jogosults\u00e1gokat a be\u00e1ll\u00edtott er\u0151forr\u00e1skezel\u0151 el\u0151tag n\u00e9vvel, meghi\u00fasult az \u00fczenetben szerepl\u0151 visszat\u00e9r\u00e9si k\u00f3dokkal.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Ellen\u0151rizze, hogy a be\u00e1ll\u00edtott er\u0151forr\u00e1skezel\u0151 el\u0151tag megfelel a n\u00e9v-, hossz- \u00e9s karakterk\u00f6vetelm\u00e9nyeknek. Ellen\u0151rizze, hogy az el\u0151tag neve nem hib\u00e1san lett be\u00e1ll\u00edtva. Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3nak meg vannak adva a megfelel\u0151 jogosults\u00e1gok az el\u0151tagn\u00e9v haszn\u00e1lat\u00e1hoz. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: A(z) {0} sz\u00e1l lez\u00e1rul. A(z) {1} kontextus tokenhez tartoz\u00f3 helyre\u00e1ll\u00edt\u00e1si RSS egys\u00e9g feloldatlan er\u0151forr\u00e1s-\u00e9rdekelts\u00e9gekkel rendelkezik. A nat\u00edv kontextuskezel\u0151 lez\u00e1rja a kontextust.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=A megadott sz\u00e1l lez\u00e1rul, \u00e9s a kontextushoz tartoz\u00f3 helyre\u00e1ll\u00edt\u00e1si RRS egys\u00e9g feloldatlan \u00e9rdekelts\u00e9gekkel rendelkezik. A helyre\u00e1ll\u00edt\u00e1si RRS egys\u00e9g visszag\u00f6rget\u00e9s\u00e9re tett k\u00eds\u00e9rlet meghi\u00fasult.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Ellen\u0151rizze, hogy a haszn\u00e1lt RRS-k\u00e9pes er\u0151forr\u00e1skezel\u0151k nem tranzakci\u00f3s hat\u00f3k\u00f6r\u00f6n k\u00edv\u00fcl m\u0171k\u00f6dnek-e. N\u00e9h\u00e1ny er\u0151forr\u00e1s-kezel\u0151 hib\u00e1t jelenthet, ha a kontextus befejez\u0151d\u00e9sekor munk\u00e1t dolgoztak fel. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: A(z) {0} sz\u00e1l lez\u00e1rul. A(z) {1} kontextus tokenhez tartoz\u00f3 helyre\u00e1ll\u00edt\u00e1si RSS egys\u00e9g feloldatlan er\u0151forr\u00e1s-\u00e9rdekelts\u00e9gekkel rendelkezik. Az RRS helyre\u00e1ll\u00edt\u00e1si egys\u00e9g visszag\u00f6rget\u00e9sre ker\u00fcl, \u00e9s a kontextus token \u00fajra fel lesz haszn\u00e1lva.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=A megadott sz\u00e1l befejez\u0151dik, \u00e9s a helyre\u00e1ll\u00edt\u00e1si RRS egys\u00e9g f\u00fcgg\u0151ben l\u00e9v\u0151 er\u0151forr\u00e1s-\u00e9rdekelts\u00e9gekkel rendelkezik.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Ellen\u0151rizze, hogy a haszn\u00e1lt RRS-k\u00e9pes er\u0151forr\u00e1skezel\u0151k nem tranzakci\u00f3s hat\u00f3k\u00f6r\u00f6n k\u00edv\u00fcl m\u0171k\u00f6dnek-e. N\u00e9h\u00e1ny er\u0151forr\u00e1skezel\u0151 hib\u00e1t jelenthet, ha a helyre\u00e1ll\u00edt\u00e1si egys\u00e9g visszag\u00f6rget\u00e9sekor munk\u00e1t dolgoztak fel. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.

@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.asyncio/resources/com.ibm.ws.zos.asyncio.internal.resources/ZAsyncIOMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO zOS Async IO
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0NNN-0NNN: zOS Async IO
+# -------------------------------------------------------------------------------------------------
+
+ZOSAIO_ACTIVATED=CWWKO0229I: z/OS \u539f\u751f\u975e\u540c\u6b65 I/O \u652f\u63f4\u5df2\u555f\u52d5\u3002
+ZOSAIO_ACTIVATED.explanation=\u53ef\u5728\u4f5c\u696d\u7cfb\u7d71\u5c64\u6b21\u63d0\u4f9b\u975e\u540c\u6b65 I/O \u5957\u4ef6\u57fa\u672c\u529f\u80fd\u4e4b z/OS \u670d\u52d9\u4e0a\u7684 Liberty \u975e\u540c\u6b65 TCP/IP Socket I/O (AsyncIO) \u5df2\u555f\u52d5\u3002
+ZOSAIO_ACTIVATED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: z/OS \u539f\u751f\u975e\u540c\u6b65 I/O \u652f\u63f4\u5df2\u95dc\u9589\u3002
+ZOSAIO_DEACTIVATED.explanation=\u53ef\u5728\u4f5c\u696d\u7cfb\u7d71\u5c64\u6b21\u63d0\u4f9b\u975e\u540c\u6b65 I/O \u5957\u4ef6\u57fa\u672c\u529f\u80fd\u4e4b z/OS \u670d\u52d9\u4e0a\u7684 Liberty \u975e\u540c\u6b65 TCP/IP Socket I/O (AsyncIO) \u5df2\u95dc\u9589\u3002
+ZOSAIO_DEACTIVATED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002

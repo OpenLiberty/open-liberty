@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: Us\u0142uga systemu {0} zako\u0144czy\u0142a si\u0119 niepowodzeniem z kodem powrotu {1}. Istotne informacje: {2}
+INVALID_RRS_SERVICE_RC.explanation=Wywo\u0142anie wskazanej us\u0142ugi nie powiod\u0142o si\u0119. Kod powrotu jest szesnastkow\u0105 liczb\u0105 ca\u0142kowit\u0105.
+INVALID_RRS_SERVICE_RC.useraction=Informacje dodatkowe dotycz\u0105ce kodu powrotu zawiera podr\u0119cznik MVS Programming: Resource Recovery (Programowanie w systemie MVS: Odtwarzanie zasob\u00f3w). Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Mened\u017cer zasob\u00f3w o nazwie {0} i identyfikatorze znacznika {1} zosta\u0142 wyrejestrowany z systemu. W momencie wyrejestrowywania mened\u017cera zasob\u00f3w liczba oczekuj\u0105cych transakcji wynosi\u0142a: {2}. Te transakcje maj\u0105 nast\u0119puj\u0105ce identyfikatory transakcji globalnych: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=W momencie wyrejestrowywania mened\u017cera zasob\u00f3w istnia\u0142y oczekuj\u0105ce transakcje. Wszystkie oczekuj\u0105ce zasoby zostan\u0105 poddane procesowi odtwarzania przy nast\u0119pnym restarcie serwera.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Upewnij si\u0119, \u017ce istniej\u0105 wszystkie wymagane ustawienia dla przeprowadzenia pracy transakcyjnej z zasobami obs\u0142uguj\u0105cymi us\u0142ugi RRS. Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Mened\u017cer zasob\u00f3w {0} z odpowiadaj\u0105cym mu identyfikatorem znacznika {1} zosta\u0142 pomy\u015blnie zrestartowany z u\u017cyciem us\u0142ug RRS (Resource Recovery Services). Liczba nierozstrzygni\u0119tych jednostek odtwarzania: {2}
+RM_RESTART_COMPLETE.explanation=Podany mened\u017cer zasob\u00f3w zosta\u0142 zrestartowany z u\u017cyciem us\u0142ug RRS. Dla wszystkich nierozstrzygni\u0119tych jednostek odtwarzania zostanie wykonana operacja odtwarzania.
+RM_RESTART_COMPLETE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: Przetwarzanie operacji odtwarzania dla mened\u017cera zasob\u00f3w {0} z odpowiadaj\u0105cym mu identyfikatorem znacznika wynosz\u0105cym {1} zosta\u0142o zako\u0144czone.
+RM_RECOVERY_COMPLETE.explanation=Przetwarzanie operacji odtwarzania dla podanego mened\u017cera zasob\u00f3w zosta\u0142o zako\u0144czone. Wszystkie zg\u0142oszone nierozstrzygni\u0119te jednostki odtwarzania zosta\u0142y odtworzone.
+RM_RECOVERY_COMPLETE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Mened\u017cer kontekstu rodzimego RRS oczekuje na zawieszony znacznik kontekstu {0} w celu zako\u0144czenia nast\u0119puj\u0105cej jednostki pracy: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Mened\u017cer kontekstu rodzimego RRS jest wy\u0142\u0105czany.  Mened\u017cer kontekstu oczekuje na zako\u0144czenie wszystkich jednostek pracy z powi\u0105zanym kontekstem rodzimym.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Mened\u017cer kontekstu rodzimego RRS b\u0119dzie kontynuowa\u0107 ko\u0144czenie dzia\u0142ania po zako\u0144czeniu wszystkich jednostek pracy.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Mened\u017cer kontekstu rodzimego RRS oczekuje na znacznik kontekstu {0} w w\u0105tku {1} w celu zako\u0144czenia nast\u0119puj\u0105cej aktywnej jednostki pracy: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Mened\u017cer kontekstu rodzimego RRS jest wy\u0142\u0105czany.  Mened\u017cer kontekstu oczekuje na zako\u0144czenie wszystkich jednostek pracy z powi\u0105zanym kontekstem rodzimym.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Mened\u017cer kontekstu rodzimego RRS b\u0119dzie kontynuowa\u0107 ko\u0144czenie dzia\u0142ania po zako\u0144czeniu wszystkich jednostek pracy.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Mened\u017cer kontekstu rodzimego RRS ko\u0144czy znacznik kontekstu {0}, kt\u00f3ry jest obecnie powi\u0105zany z nast\u0119puj\u0105c\u0105 jednostk\u0105 pracy: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Mened\u017cer kontekstu rodzimego RRS jest wy\u0142\u0105czany po oczekiwaniu na wyciszenie aktywnej pracy.  Mened\u017cer kontekstu ko\u0144czy kontekst zidentyfikowany w tym komunikacie.  Kontekst jest powi\u0105zany z jednostk\u0105 pracy, a ta jednostka pracy zostanie wycofana.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Jeden lub wi\u0119cej mened\u017cer\u00f3w zasob\u00f3w mo\u017ce zg\u0142osi\u0107 b\u0142\u0105d, je\u015bli przetwarza\u0142y jednostk\u0119 pracy w momencie zako\u0144czenia kontekstu.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Mened\u017cer zasob\u00f3w {0} oczekuje na zako\u0144czenie nast\u0119puj\u0105cej liczby transakcji: {1}.  Zaczeka on przez maksymalnie {2} ms.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Mened\u017cer zasob\u00f3w rodzimych RRS jest wy\u0142\u0105czany.  Istniej\u0105 jeszcze aktywne transakcje u\u017cywaj\u0105ce zasob\u00f3w rodzimych RRS, na przyk\u0142ad po\u0142\u0105czenia z baz\u0105 danych typu 2.  Mened\u017cer zasob\u00f3w rodzimych zaczeka przed wy\u0142\u0105czeniem na zako\u0144czenie tych transakcji.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.  Mened\u017cer zasob\u00f3w wznowi wy\u0142\u0105czanie po zako\u0144czeniu transakcji lub po up\u0142ywie okre\u015blonego czasu oczekiwania.  Je\u015bli up\u0142ynie maksymalny czas oczekiwania, w komunikacie CWLIB0102W zostan\u0105 wskazane transakcje, kt\u00f3re nadal by\u0142y aktywne.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: Ga\u0142\u0105\u017a transakcji reprezentowana przez jednostk\u0119 odtwarzania us\u0142ugi RRS o identyfikatorze {0} nie mo\u017ce zosta\u0107 odtworzona, poniewa\u017c instancja NativeTransactionManager, kt\u00f3ra utworzy\u0142a ga\u0142\u0105\u017a, zosta\u0142a zdezaktywowana.  Serwer musi zosta\u0107 zrestartowany, aby zezwoli\u0107 na zako\u0144czenie tej transakcji.  Identyfikator XID ga\u0142\u0119zi transakcji: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Us\u0142uga mened\u017cera transakcji rodzimych RRS zosta\u0142a zatrzymana i nie jest ju\u017c po\u0142\u0105czona z us\u0142ugami RRS.  Nie mo\u017cna zako\u0144czy\u0107 ga\u0142\u0119zi transakcji, poniewa\u017c nie mo\u017cna powiadomi\u0107 us\u0142ug RRS o wyniku.  Serwer musi zosta\u0107 zrestartowany, aby zezwoli\u0107 mened\u017cerowi transakcji na ponowne zsynchronizowanie z us\u0142ugami RRS i rozstrzygni\u0119cie transakcji.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Zrestartuj serwer.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: Jednostka pracy {0} zostanie zako\u0144czona i powi\u0105zana jednostka odtwarzania us\u0142ug RRS dzia\u0142aj\u0105ca w znaczniku kontekstu {1} ma nierozstrzygni\u0119te udzia\u0142y w zasobie. Jednostka odtwarzania us\u0142ug RRS zostanie wycofana.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=Jednostka odtwarzania us\u0142ug RRS ma oczekuj\u0105ce udzia\u0142y w zasobach na ko\u0144cu jednostki pracy.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Sprawd\u017a, czy u\u017cywane zasoby obs\u0142uguj\u0105ce us\u0142ugi RRS nie dzia\u0142aj\u0105 poza zasi\u0119giem transakcji. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: Skonfigurowany przedrostek mened\u017cera zasob\u00f3w {0} jest nieprawid\u0142owy. Zostanie u\u017cyty domy\u015blny przedrostek mened\u017cera zasob\u00f3w.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=Skonfigurowany przedrostek mened\u017cera zasob\u00f3w musi mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 8 znak\u00f3w i mo\u017ce zawiera\u0107 tylko znaki alfanumeryczne (a-z,A-Z,0-9) i narodowe (@,$,#).
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Sprawd\u017a, czy skonfigurowany przedrostek mened\u017cera zasob\u00f3w jest zgodny z wymaganiami dotycz\u0105cymi d\u0142ugo\u015bci i dozwolonych znak\u00f3w. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: Aktualizacja konfiguracji maj\u0105ca ustawi\u0107 przedrostek mened\u017cera zasob\u00f3w na warto\u015b\u0107 {0} nie jest dozwolona w czasie wykonywania. Aktualizacja jest ignorowana.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=Aktualizacja konfiguracji maj\u0105ca ustawi\u0107 przedrostek mened\u017cera zasob\u00f3w w czasie wykonywania jest ignorowana.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Skonfiguruj przedrostek mened\u017cera zasob\u00f3w przed uruchomieniem serwera lub przed skonfigurowaniem sk\u0142adnika zosTransaction-1.0. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: Sprawdzanie poprawno\u015bci autoryzacji uprawnie\u0144 u\u017cytkownika wzgl\u0119dem skonfigurowanej nazwy przedrostka mened\u017cera zasob\u00f3w {0} nie powiod\u0142o si\u0119. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=Sprawdzanie poprawno\u015bci autoryzacji uprawnie\u0144 u\u017cytkownika wzgl\u0119dem skonfigurowanej nazwy przedrostka mened\u017cera zasob\u00f3w nie powiod\u0142o si\u0119 ze wskazanymi kodami powrotu.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Sprawd\u017a, czy skonfigurowany przedrostek mened\u017cera zasob\u00f3w jest zgodny z wymaganiami dotycz\u0105cymi nazwy, d\u0142ugo\u015bci i dozwolonych znak\u00f3w. Sprawd\u017a, czy nazwa przedrostka nie zosta\u0142a skonfigurowana z b\u0142\u0119dem. Sprawd\u017a r\u00f3wnie\u017c, czy u\u017cytkownikowi przyznano uprawnienia wymagane do u\u017cycia nazwy przedrostka. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W:  Trwa ko\u0144czenie w\u0105tku {0}. Jednostka odzyskiwania us\u0142ug RRS powi\u0105zana ze znacznikiem kontekstu {1} ma nierozstrzygni\u0119te udzia\u0142y w zasobach. Rodzimy mened\u017cer kontekstu ko\u0144czy kontekst.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=Podany w\u0105tek jest przerywany, a powi\u0105zana z kontekstem jednostka odtwarzania us\u0142ug RRS ma nierozstrzygni\u0119te udzia\u0142y w zasobie. Pr\u00f3by wycofania zmian dotycz\u0105cych jednostki odtwarzania us\u0142ug RRS nie powiod\u0142y si\u0119.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Sprawd\u017a, czy u\u017cywane mened\u017cery zasob\u00f3w obs\u0142uguj\u0105ce us\u0142ugi RRS nie dzia\u0142aj\u0105 poza zasi\u0119giem transakcji. Jeden lub wi\u0119cej mened\u017cer\u00f3w zasob\u00f3w mo\u017ce zg\u0142osi\u0107 b\u0142\u0105d, je\u015bli przetwarza\u0142y jednostk\u0119 pracy w momencie zako\u0144czenia kontekstu. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Trwa ko\u0144czenie w\u0105tku {0}. Jednostka odzyskiwania us\u0142ug RRS powi\u0105zana ze znacznikiem kontekstu {1} ma nierozstrzygni\u0119te udzia\u0142y w zasobach. Zmiany jednostki odzyskiwania us\u0142ug RRS zostan\u0105 wycofane, a znacznik kontekstu zostanie ponownie wykorzystany.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=Podany w\u0105tek jest ko\u0144czony i znaleziono jednostk\u0119 odtwarzania us\u0142ug RRS, kt\u00f3ra ma oczekuj\u0105ce udzia\u0142y w zasobie.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Sprawd\u017a, czy u\u017cywane mened\u017cery zasob\u00f3w obs\u0142uguj\u0105ce us\u0142ugi RRS nie dzia\u0142aj\u0105 poza zasi\u0119giem transakcji. Jeden lub wi\u0119cej mened\u017cer\u00f3w zasob\u00f3w mo\u017ce zg\u0142osi\u0107 b\u0142\u0105d, je\u015bli przetwarza\u0142y jednostk\u0119 pracy w momencie wycofywania zmian dotycz\u0105cych jednostki odtwarzania. Je\u015bli problem nie ust\u0105pi, skontaktuj si\u0119 z nast\u0119pnym poziomem wsparcia.

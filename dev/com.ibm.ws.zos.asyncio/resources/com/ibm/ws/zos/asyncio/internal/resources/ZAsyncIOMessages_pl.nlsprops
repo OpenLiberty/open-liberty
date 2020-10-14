@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.asyncio/resources/com.ibm.ws.zos.asyncio.internal.resources/ZAsyncIOMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO zOS Async IO
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0NNN-0NNN: zOS Async IO
+# -------------------------------------------------------------------------------------------------
+
+ZOSAIO_ACTIVATED=CWWKO0229I: Aktywowano obs\u0142ug\u0119 rodzimych asynchronicznych we/wy dla systemu z/OS.
+ZOSAIO_ACTIVATED.explanation=Aktywowano asynchroniczne we/wy gniazd TCP/IP dla serwera Liberty (AsyncIO) w systemie z/OS udost\u0119pniaj\u0105ce podstawowe mo\u017cliwo\u015bci pakietu asynchronicznych we/wy na poziomie systemu operacyjnego.
+ZOSAIO_ACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: Dezaktywowano obs\u0142ug\u0119 rodzimych asynchronicznych we/wy dla systemu z/OS.
+ZOSAIO_DEACTIVATED.explanation=Dezaktywowano asynchroniczne we/wy gniazd TCP/IP dla serwera Liberty (AsyncIO) w systemie z/OS udost\u0119pniaj\u0105ce podstawowe mo\u017cliwo\u015bci pakietu asynchronicznych we/wy na poziomie systemu operacyjnego.
+ZOSAIO_DEACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

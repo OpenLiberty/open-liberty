@@ -1,0 +1,117 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.wola/resources/com.ibm.ws.zos.channel.wola.internal.resources/ZWOLAChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0501-0550: WOLA Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_REGISTERED=CWWKB0501I: \u300cWebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u901a\u9053\u662f\u4ee5\u4e0b\u5217\u540d\u7a31\u5411 Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u767b\u9304\uff1a{0} {1} {2}
+WOLA_SERVER_REGISTERED.explanation=Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u5df2\u767b\u9304\u300cWebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u3002\u73fe\u5728\u53ef\u5728\u539f\u751f\u8a9e\u8a00\u61c9\u7528\u7a0b\u5f0f\u548c\u672c\u7aef Liberty \u8a2d\u5b9a\u6a94\u4f3a\u670d\u5668\u74b0\u5883\u4e4b\u9593\u9032\u884c\u547c\u53eb\u3002
+WOLA_SERVER_REGISTERED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+#{0} the key for part of the WOLA group name, for which the value contains at least one lowercase character
+#{1} the value for the part of the WOLA group name referred to by {0}, as given, containing at least one lowercase character
+#{2} the correct value referred to by {1}, now all uppercase
+WOLA_LOWERCASE_GROUP_NAME=CWWKB0502W: zosLocalAdapters \u914d\u7f6e\u4e2d WebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u7fa4\u7d44\u540d\u7a31\u7684 {0} \u90e8\u5206\u8a2d\u70ba {1}\uff0c\u5176\u4e2d\u542b\u6709\u81f3\u5c11\u4e00\u500b\u5c0f\u5beb\u5b57\u5143\u3002\u503c\u5c07\u8b8a\u66f4\u70ba {2}\u3002
+WOLA_LOWERCASE_GROUP_NAME.explanation=z/OS \u5b89\u5168\u5b50\u7cfb\u7d71\u6703\u5c07\u5c0f\u5beb\u5b57\u5143\u8f49\u63db\u6210\u5927\u5beb\u5b57\u5143\uff0c\u5982\u6b64\u53ef\u80fd\u5c0e\u81f4\u8207\u60a8\u7684\u914d\u7f6e\u4e0d\u76f8\u7b26\u3002
+WOLA_LOWERCASE_GROUP_NAME.useraction=\u5728 zosLocalAdapters \u914d\u7f6e\u4e2d\uff0c\u8acb\u52ff\u5728 wolaGroup\u3001wolaName2 \u548c wolaName3 \u7684\u503c\u4e2d\u4f7f\u7528\u5c0f\u5beb\u5b57\u5143\u3002\u5982\u9700\u547d\u540d\u6163\u4f8b\u7684\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u300c\u7cfb\u7d71\u6388\u6b0a\u6a5f\u80fd (SAF)\u300d\u8aaa\u660e\u6587\u4ef6\u3002
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_UNAVAILABLE=CWWKB0503E: \u4f7f\u7528 {0} {1} {2} \u540d\u7a31\u7684 WebSphere(R) \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u901a\u9053\u7121\u6cd5\u8207 Liberty \u4f3a\u670d\u5668\u4e00\u8d77\u4f7f\u7528\u3002\u8acb\u78ba\u8a8d\u6c92\u6709\u5176\u4ed6 Liberty \u4f3a\u670d\u5668\u5728\u4f7f\u7528\u9019\u500b\u4f3a\u670d\u5668\u4e0a\u7684\u76f8\u540c zosLocalAdapters \u914d\u7f6e\u3002
+WOLA_SERVER_UNAVAILABLE.explanation=Liberty \u4f3a\u670d\u5668\u7121\u6cd5\u5229\u7528 zosLocalAdapters \u914d\u7f6e\u4e2d\u6240\u6307\u5b9a\u7684\u540d\u7a31\u4f86\u767b\u9304 Websphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u3002\u53ef\u80fd\u6709\u53e6\u4e00\u500b Liberty \u4f3a\u670d\u5668\u5728\u4f7f\u7528\u9019\u500b\u540d\u7a31\u3002
+WOLA_SERVER_UNAVAILABLE.useraction=\u8acb\u6aa2\u67e5\u60a8\u7684\u74b0\u5883\uff0c\u78ba\u8a8d\u6c92\u6709\u5176\u4ed6 Liberty \u4f3a\u670d\u5668\u5728\u4f7f\u7528\u9019\u500b\u4f3a\u670d\u5668\u4e0a\u7684\u76f8\u540c zosLocalAdapters \u914d\u7f6e\u3002
+
+
+# ------------------------------------------------------------------------------------------------
+# OTMA Message Parsing section for WOLA
+# ------------------------------------------------------------------------------------------------
+
+#{0} The segment number in question
+OTMA_RESP_MSG_PARSE_ERR=CWWKB0504E: \u6307\u5b9a\u7d66\u5340\u6bb5 {0} \u7684 OTMA \u56de\u61c9\u8a0a\u606f\u5340\u6bb5\u9577\u5ea6\u4e0d\u7b26\u5408\u5be6\u969b\u7684\u5340\u6bb5\u5927\u5c0f\u3002
+OTMA_RESP_MSG_PARSE_ERR.explanation=\u5256\u6790\u63a5\u6536\u81ea IMS \u7684\u300cOTMA \u56de\u61c9\u8a0a\u606f\u300d\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u6a19\u982d\u4e2d\u6307\u51fa\u7684\u5927\u5c0f\u4e0d\u7b26\u5408\u8a0a\u606f\u8cc7\u6599\u7684\u5be6\u969b\u5927\u5c0f\u3002
+OTMA_RESP_MSG_PARSE_ERR.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u5b83\u7522\u751f\u7684\u662f\u6709\u6548 OTMA \u683c\u5f0f\u8a0a\u606f\u3002
+
+#{0} is the Total Message Length identified by headers
+#{1] is the actual header message length
+OTMA_RESP_HEADER_SHORT=CWWKB0505E: \u6307\u5b9a\u7684 OTMA \u56de\u61c9\u8a0a\u606f\u9577\u5ea6 {0} \u5c0f\u65bc\u5be6\u969b\u7684\u8a0a\u606f\u7de9\u885d\u5340\u9577\u5ea6 {1}\u3002
+OTMA_RESP_HEADER_SHORT.explanation=\u5256\u6790\u63a5\u6536\u81ea IMS \u7684 OTMA \u56de\u61c9\u8a0a\u606f\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u6a19\u982d\u4e2d\u6307\u51fa\u7684\u5927\u5c0f\u4e0d\u7b26\u5408\u8a0a\u606f\u8cc7\u6599\u7684\u5be6\u969b\u5927\u5c0f\u3002
+OTMA_RESP_HEADER_SHORT.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684\u8a0a\u606f\u5340\u6bb5\u6a19\u982d\u9577\u5ea6\u7b26\u5408\u8a0a\u606f\u8cc7\u6599\u7684\u9577\u5ea6\u3002
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number in this message
+OTMA_REQ_HEADER_INVALID=CWWKB0506E: \u5340\u6bb5\u865f\u78bc {1} \u7684 OTMA \u8981\u6c42\u5340\u6bb5\u9577\u5ea6 {0} \u7121\u6548\u3002
+OTMA_REQ_HEADER_INVALID.explanation=\u5256\u6790\u300cOTMA \u8981\u6c42\u8a0a\u606f\u300d\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u8a0a\u606f\u5340\u6bb5\u6a19\u982d\u4e2d\u6307\u5b9a\u7684\u8a0a\u606f\u9577\u5ea6\u8d85\u904e 32768 \u6216\u662f\u4f4e\u65bc\u9577\u5ea6\u4e0b\u9650\u3002
+OTMA_REQ_HEADER_INVALID.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684\u8a0a\u606f\u6a19\u982d\u9577\u5ea6\u6709\u6548\u3002\u6b64\u5916\uff0c\u8acb\u78ba\u5b9a OTMA \u56de\u61c9\u8a0a\u606f\u9577\u5ea6\u7b49\u65bc\u6a19\u982d\u9577\u5ea6\u4e2d\u6307\u5b9a\u7684\u4f4d\u5143\u7d44\u6578\u7e3d\u8a08\u3002
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the actual number of bytes left in the buffer
+#{2} is the segment number being processed
+OTMA_REQ_HEADER_SHORT=CWWKB0507E: OTMA \u8981\u6c42\u5340\u6bb5\u6a19\u982d\u9577\u5ea6 {0} \u8d85\u904e\u5340\u6bb5 {2} \u5269\u9918\u7684\u7de9\u885d\u5340\u9577\u5ea6 {1}\u3002
+OTMA_REQ_HEADER_SHORT.explanation=\u5256\u6790\u300cOTMA \u8981\u6c42\u8a0a\u606f\u300d\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5340\u6bb5\u6a19\u982d\u4e2d\u6307\u5b9a\u7684\u9577\u5ea6\u5927\u65bc\u8cc7\u6599\u7de9\u885d\u5340\u4e2d\u5269\u9918\u7684\u4f4d\u5143\u7d44\u6578\u3002
+OTMA_REQ_HEADER_SHORT.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u6307\u5b9a\u7684\u8a0a\u606f\u6a19\u982d\u9577\u5ea6\u6709\u6548\u3002\u6b64\u5916\uff0c\u8acb\u78ba\u5b9a OTMA \u56de\u61c9\u8a0a\u606f\u9577\u5ea6\u7b49\u65bc\u6a19\u982d\u9577\u5ea6\u4e2d\u6307\u5b9a\u7684\u4f4d\u5143\u7d44\u6578\u7e3d\u8a08\u3002
+ 
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number being processed
+OTMA_RESP_MSG_SEG_SMALL=CWWKB0508E: \u6307\u5b9a\u7684 OTMA \u56de\u61c9\u6a19\u982d\u9577\u5ea6 {0} \u8d85\u904e\u8a0a\u606f\u5340\u6bb5 {1} \u7684\u8f38\u5165\u7de9\u885d\u5340\u5927\u5c0f\u3002
+OTMA_RESP_MSG_SEG_SMALL.explanation=\u6307\u5b9a\u7d66\u56de\u61c9\u5340\u6bb5\u7684\u6a19\u982d\u5927\u65bc\u8a0a\u606f\u7de9\u885d\u5340\u4e2d\u5269\u9918\u7684\u4f4d\u5143\u7d44\u6578\u3002
+OTMA_RESP_MSG_SEG_SMALL.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u6a19\u982d\u8a0a\u606f\u9577\u5ea6\u7b26\u5408\u7de9\u885d\u5340\u5927\u5c0f\u3002
+
+#{0} is the segment count from the segment header array
+#{1} is the number of elements in the header array
+OTMA_RESP_COUNT_INVALID=CWWKB0509E: \u6307\u5b9a\u7684 OTMA \u56de\u61c9\u8a0a\u606f\u8a08\u6578 {0} \u4e0d\u7b26\u5408\u5be6\u969b\u7684\u5340\u6bb5\u6578\u76ee {1}\u3002
+OTMA_RESP_COUNT_INVALID.explanation=\u6307\u5b9a\u7d66\u56de\u61c9\u5340\u6bb5\u7684\u6a19\u982d\u5927\u65bc\u8a0a\u606f\u7de9\u885d\u5340\u4e2d\u5269\u9918\u7684\u4f4d\u5143\u7d44\u6578\u3002
+OTMA_RESP_COUNT_INVALID.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u6a19\u982d\u8a0a\u606f\u9577\u5ea6\u7b26\u5408\u7de9\u885d\u5340\u5927\u5c0f\u3002
+
+
+#{0} is the segment count from the segment header array
+#{1} is the max number of segments configured for the connection
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED=CWWKB0510E: OTMA \u8981\u6c42\u5340\u6bb5\u8a08\u6578\u70ba {0}\uff0c\u9019\u8d85\u904e\u5bb9\u8a31\u7684\u5340\u6bb5\u6578\u4e0a\u9650 {1}\u3002
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.explanation=\u8981\u6c42\u5340\u6bb5\u6578\u5927\u65bc\u76ee\u524d\u6240\u914d\u7f6e\u7684\u5bb9\u8a31\u5340\u6bb5\u6578\u4e0a\u9650\u3002
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.useraction=\u8acb\u6aa2\u67e5\u9023\u7dda\u898f\u683c\u7684\u914d\u7f6e\uff0c\u4e26\u78ba\u5b9a\u5340\u6bb5\u6578\u76ee\u4e0a\u9650\u8a2d\u5b9a\u6b63\u78ba\u3002
+
+#{0} is the 3rd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS actually returned
+#{1} is the 2nd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS wanted to return
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED=CWWKB0511E: OTMA \u56de\u61c9\u5340\u6bb5\u8a08\u6578\u70ba {0}\uff0c\u9019\u8d85\u904e\u5bb9\u8a31\u7684\u5340\u6bb5\u6578\u4e0a\u9650 {1}\u3002
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.explanation=\u56de\u61c9\u5340\u6bb5\u6578\u5927\u65bc\u76ee\u524d\u6240\u914d\u7f6e\u7684\u5bb9\u8a31\u5340\u6bb5\u6578\u4e0a\u9650\u3002IMS \u50b3\u56de\u5340\u6bb5\u6578\u4e0a\u9650\uff0c\u4e26\u5728\u6700\u7d42\u5340\u6bb5\u4e2d\u9023\u7d50\u90a3\u4e9b\u8d85\u51fa\u5bb9\u8a31\u4e0a\u9650\u7684\u56de\u61c9\u5340\u6bb5\u3002
+
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.useraction=\u8acb\u6aa2\u67e5\u9023\u7dda\u898f\u683c\u7684\u914d\u7f6e\uff0c\u4e26\u78ba\u5b9a\u5340\u6bb5\u6578\u76ee\u4e0a\u9650\u8a2d\u5b9a\u6b63\u78ba\u3002
+
+# ------------------------------------------------------------------------------------------------
+# OK back to generic WOLA messages
+# ------------------------------------------------------------------------------------------------
+
+#{0} is the WOLA group name, a string of length 1-8
+#{1} is a registration count, an integer >= 500
+WOLA_GROUP_REGISTRATION_COUNT=CWWKB0512I: WOLA \u7fa4\u7d44 {0} \u5305\u542b {1} \u500b\u767b\u9304\u3002
+WOLA_GROUP_REGISTRATION_COUNT.explanation=WOLA \u7fa4\u7d44\u4e2d\u6709\u8d85\u904e 500 \u500b\u767b\u9304\u3002\u8a0a\u606f\u4e2d\u6703\u986f\u793a\u767b\u9304\u7684\u6578\u76ee\u3002
+WOLA_GROUP_REGISTRATION_COUNT.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002

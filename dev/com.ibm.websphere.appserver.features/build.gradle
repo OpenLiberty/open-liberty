@@ -267,6 +267,8 @@ task publishFeatureResources {
         edition(baseEdition: "base",
                 validEditions: "Open")
         edition(baseEdition: "full")
+        edition(baseEdition: "zos",
+                validEditions: "zOS")
       }
 
       delete "${buildDir}/repo/description.html"

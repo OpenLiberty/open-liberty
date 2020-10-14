@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.console/resources/com.ibm.ws.zos.channel.console.internal.resources/ZConsoleChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE zOS Pause and Resume Console Command
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0651-0700: zOS Console Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the command type.
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE=CWWKE0651E: \u30b5\u30fc\u30d0\u30fc {0} \u30b3\u30de\u30f3\u30c9\u3092\u53d7\u3051\u53d6\u308a\u307e\u3057\u305f\u304c\u3001\u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u3092\u4e00\u6642\u505c\u6b62\u3059\u308b\u305f\u3081\u306e\u30a4\u30f3\u30d5\u30e9\u30b9\u30c8\u30e9\u30af\u30c1\u30e3\u30fc\u304c\u4f7f\u7528\u53ef\u80fd\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u8981\u6c42\u306f\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3002
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.explanation=\u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u3092\u4e00\u6642\u505c\u6b62\u3059\u308b\u305f\u3081\u306e\u30a4\u30f3\u30d5\u30e9\u30b9\u30c8\u30e9\u30af\u30c1\u30e3\u30fc\u304c\u51e6\u7406\u3059\u308b\u30b3\u30de\u30f3\u30c9\u3092\u30e6\u30fc\u30b6\u30fc\u304c\u767a\u884c\u3057\u307e\u3057\u305f\u3002\u3057\u304b\u3057\u3001\u30b3\u30de\u30f3\u30c9\u3092\u51e6\u7406\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30b5\u30fc\u30d0\u30fc\u304c\u521d\u671f\u5316\u4e2d\u307e\u305f\u306f\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u4e2d\u3067\u3042\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.useraction=\u30b5\u30fc\u30d0\u30fc\u304c\u5b8c\u5168\u306b\u521d\u671f\u5316\u6e08\u307f\u3067\u3001\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u306e\u51e6\u7406\u4e2d\u3067\u306f\u306a\u3044\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002

@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Byl p\u0159ijat p\u0159\u00edkaz pro zastaven\u00ed serveru {0}.
+STOP_COMMAND_RECEIVED.explanation=Server p\u0159ijal p\u0159\u00edkaz pro zastaven\u00ed. Bude zah\u00e1jeno zastavov\u00e1n\u00ed serveru.
+STOP_COMMAND_RECEIVED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: P\u0158\u00cdKAZ MODIFY {0} BYL DOKON\u010cEN {1}.
+MODIFY_COMMAND_COMPLETED.explanation=Server dokon\u010dil zpracov\u00e1n\u00ed uveden\u00e9ho p\u0159\u00edkazu. Pokud nebyl p\u0159\u00edkaz proveden \u00fasp\u011b\u0161n\u011b, p\u0159edchoz\u00ed zpr\u00e1vy nazna\u010duj\u00ed p\u0159\u00ed\u010dinu.
+MODIFY_COMMAND_COMPLETED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: Zpracov\u00e1n\u00ed p\u0159\u00edkazu p\u0159ijalo k\u00f3d chyby {0} z nativn\u00edho vol\u00e1n\u00ed.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=Server volal nativn\u00ed k\u00f3d pro slu\u017ebu souvisej\u00edc\u00ed se zpracov\u00e1n\u00edm p\u0159\u00edkazu. Nativn\u00ed k\u00f3d zaznamenal probl\u00e9m identifikovan\u00fd zobrazen\u00fdm k\u00f3dem chyby.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Prozkoumejte protokoly serveru a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=Server p\u0159ijal p\u0159\u00edkaz modify ke zpracov\u00e1n\u00ed. Toto je zpr\u00e1va odezvy p\u0159\u00edkazu z obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f. Zpr\u00e1va CWWKB0005I identifikuje obslu\u017enou rutinu p\u0159\u00edkaz\u016f.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: ODEZVY P\u0158\u00cdKAZU DOKON\u010cENY {0} Z {1}.
+MODIFY_COMMAND_HANDLER_DONE.explanation=Server p\u0159ijal p\u0159\u00edkaz modify ke zpracov\u00e1n\u00ed. Tato zpr\u00e1va ozna\u010duje, \u017ee obslu\u017en\u00e1 rutina p\u0159\u00edkaz\u016f dokon\u010dila zpracov\u00e1n\u00ed p\u0159\u00edkazu.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: \u017d\u00c1DN\u00c1 AKTIVN\u00cd OBSLU\u017dN\u00c1 RUTINA P\u0158\u00cdKAZ\u016e NEROZPOZNALA P\u0158\u00cdKAZ MODIFY {0}.
+MODIFY_COMMAND_UNKNOWN.explanation=Server dokon\u010dil zpracov\u00e1n\u00ed uveden\u00e9ho p\u0159\u00edkazu. \u017d\u00e1dn\u00e1 aktivn\u00ed obslu\u017en\u00e1 rutina p\u0159\u00edkaz\u016f neohl\u00e1sila zpracov\u00e1n\u00ed p\u0159\u00edkazu. 
+MODIFY_COMMAND_UNKNOWN.useraction=Zkontrolujte syntaxi p\u0159\u00edkazu a ujist\u011bte o jeho spr\u00e1vnosti. Pot\u00e9 jej znovu zadejte.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: BYLA P\u0158IJATA CHYBA OD OBSLU\u017dN\u00c9 RUTINY P\u0158\u00cdKAZ\u016e {0}.
+MODIFY_HANDLER_ERROR.explanation=Server p\u0159ijal p\u0159\u00edkaz modify ke zpracov\u00e1n\u00ed. Tato zpr\u00e1va ozna\u010duje, \u017ee obslu\u017en\u00e1 rutina p\u0159\u00edkaz\u016f p\u0159i zpracov\u00e1n\u00ed p\u0159\u00edkazu zjistila chybu.
+MODIFY_HANDLER_ERROR.useraction=Prozkoumejte protokoly serveru a ur\u010dete p\u0159\u00ed\u010dinu chyby obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=Server se pokusil vyslat zpr\u00e1vu odezvy p\u0159\u00edkazu. Nebylo mo\u017en\u00e9 vy\u0159e\u0161it zpr\u00e1vu s bal\u00edkem zpr\u00e1v. 
+MODIFY_NLSBUILDMSG_FAILED.useraction=Prozkoumejte protokoly serveru a ur\u010dete p\u0159\u00ed\u010dinu souvisej\u00edc\u00ed chyby obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: ODEZVA P\u0158\u00cdKAZU NEBYLA P\u0158ELO\u017dENA DO NATIVN\u00cdHO K\u00d3DOV\u00c1N\u00cd.
+MESSAGE_TRANSLATE_ERROR.explanation=Server se pokusil vyslat zpr\u00e1vu odezvy p\u0159\u00edkazu. Odpov\u011b\u010f na zpr\u00e1vu nebylo mo\u017en\u00e9 p\u0159elo\u017eit do nativn\u00edho k\u00f3dov\u00e1n\u00ed ("Cp1047").
+MESSAGE_TRANSLATE_ERROR.useraction=Prozkoumejte protokoly serveru a ur\u010dete p\u0159\u00ed\u010dinu chyby.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Nespr\u00e1vn\u00fd form\u00e1t p\u0159ijat\u00e9ho p\u0159\u00edkazu modify. 
+COMMAND_TRANSLATE_ERROR.explanation=Server p\u0159ijal p\u0159\u00edkaz modify. Text p\u0159\u00edkazu nebylo mo\u017en\u00e9 p\u0159elo\u017eit z nativn\u00edho k\u00f3dov\u00e1n\u00ed ("Cp1047").
+COMMAND_TRANSLATE_ERROR.useraction=Prozkoumejte protokoly serveru a ur\u010dete p\u0159\u00ed\u010dinu chyby.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: ZA\u010c\u00c1TEK INFORMAC\u00cd N\u00c1POV\u011aDY Z {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Tato zpr\u00e1va p\u0159edstavuje za\u010d\u00e1tek informac\u00ed n\u00e1pov\u011bdy z uveden\u00e9 obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Zobraz\u00ed se informace n\u00e1pov\u011bdy z uveden\u00e9 obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: KONEC INFORMAC\u00cd N\u00c1POV\u011aDY Z {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Tato zpr\u00e1va p\u0159edstavuje konec informac\u00ed n\u00e1pov\u011bdy z uveden\u00e9 obslu\u017en\u00e9 rutiny p\u0159\u00edkaz\u016f.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: SOUBOR PID NELZE ODSTRANIT.
+FILE_DELETE_UNSUCCESSFUL.explanation=Server se pokusil odstranit soubor pid b\u011bhem zastavov\u00e1n\u00ed serveru. Nebylo mo\u017en\u00e9 odstranit soubor pid zadan\u00fd v {0}.
+FILE_DELETE_UNSUCCESSFUL.useraction=Zkontrolujte syst\u00e9mov\u00e9 protokoly, zda byl server \u0159\u00e1dn\u011b ukon\u010den.

@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: Syst\u00e9mov\u00e1 slu\u017eba {0} selhala s n\u00e1vratov\u00fdm k\u00f3dem {1}. Relevantn\u00ed informace: {2}
+INVALID_RRS_SERVICE_RC.explanation=Vyvol\u00e1n\u00ed uveden\u00e9 slu\u017eby se nezda\u0159ilo. N\u00e1vratov\u00fd k\u00f3d je hexadecim\u00e1ln\u00ed \u010d\u00edslo.
+INVALID_RRS_SERVICE_RC.useraction=Dal\u0161\u00ed informace o n\u00e1vratov\u00e9m k\u00f3du naleznete v p\u0159\u00edru\u010dce MVS Programming: Resource Recovery (Programov\u00e1n\u00ed v syst\u00e9mu MVS: Zotaven\u00ed prost\u0159edk\u016f). Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Byla zru\u0161ena registrace spr\u00e1vce prost\u0159edk\u016f s n\u00e1zvem {0} a identifik\u00e1torem token {1} v syst\u00e9mu. V momentu zru\u0161en\u00ed registrace spr\u00e1vce prost\u0159edk\u016f existovalo {2} nevy\u0159\u00edzen\u00fdch transakc\u00ed. Tyto transakce maj\u00ed n\u00e1sleduj\u00edc\u00ed glob\u00e1ln\u00ed ID transakce: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=V momentu zru\u0161en\u00ed registrace spr\u00e1vce prost\u0159edk\u016f existovaly nevy\u0159\u00edzen\u00e9 transakce. Ve\u0161ker\u00e9 nevy\u0159\u00edzen\u00e9 prost\u0159edky budou podrobeny zpracov\u00e1n\u00ed obnovy p\u0159i p\u0159\u00ed\u0161t\u00edm restartu serveru.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Zajist\u011bte, aby byla k dispozici ve\u0161ker\u00e1 nastaven\u00ed nezbytn\u00e1 k prov\u00e1d\u011bn\u00ed transakc\u00ed s prost\u0159edky podporuj\u00edc\u00edmi RRS. Vyhledejte dal\u0161\u00ed informace v protokolech serveru. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Spr\u00e1vce prost\u0159edk\u016f {0} s p\u0159\u00edslu\u0161n\u00fdm ID tokenu {1} byl \u00fasp\u011b\u0161n\u011b restartov\u00e1n pomoc\u00ed slu\u017eeb prost\u0159edk\u016f a obnoven\u00ed \u010dinnosti (RRS). Po\u010det nevy\u0159e\u0161en\u00fdch jednotek obnoven\u00ed: {2}
+RM_RESTART_COMPLETE.explanation=Uveden\u00fd spr\u00e1vce prost\u0159edk\u016f byl restartov\u00e1n\u00ed pomoc\u00ed slu\u017eeb RRS. Ve\u0161ker\u00e9 uveden\u00e9 nevy\u0159e\u0161en\u00e9 jednotky obnoven\u00ed budou podrobeny obnoven\u00ed.
+RM_RESTART_COMPLETE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: Zpracov\u00e1n\u00ed obnoven\u00ed pro spr\u00e1vce prost\u0159edk\u016f {0} s p\u0159\u00edslu\u0161n\u00fdm ID tokenu {1} bylo dokon\u010deno.
+RM_RECOVERY_COMPLETE.explanation=Zpracov\u00e1n\u00ed obnoven\u00ed pro uveden\u00e9ho spr\u00e1vce prost\u0159edk\u016f bylo dokon\u010deno. V\u0161echny nevy\u0159e\u0161en\u00e9 jednotky obnoven\u00ed byly obnoveny.
+RM_RECOVERY_COMPLETE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Spr\u00e1vce nativn\u00edho kontextu RRS \u010dek\u00e1, a\u017e pozastaven\u00fd token kontextu {0} dokon\u010d\u00ed n\u00e1sleduj\u00edc\u00ed pracovn\u00ed jednotku: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Spr\u00e1vce nativn\u00edho kontextu RRS se vyp\u00edn\u00e1. Spr\u00e1vce kontextu \u010dek\u00e1 na dokon\u010den\u00ed v\u0161ech pracovn\u00edch jednotek p\u0159idru\u017een\u00e9ho nativn\u00edho kontextu.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Spr\u00e1vce nativn\u00edho kontextu RRS bude pokra\u010dovat v ukon\u010dov\u00e1n\u00ed a\u017e do dokon\u010den\u00ed v\u0161ech pracovn\u00edch jednotek.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Spr\u00e1vce nativn\u00edho kontextu RRS \u010dek\u00e1, a\u017e token kontextu {0} v podprocesu {1} dokon\u010d\u00ed n\u00e1sleduj\u00edc\u00ed aktivn\u00ed pracovn\u00ed jednotku: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Spr\u00e1vce nativn\u00edho kontextu RRS se vyp\u00edn\u00e1. Spr\u00e1vce kontextu \u010dek\u00e1 na dokon\u010den\u00ed v\u0161ech pracovn\u00edch jednotek p\u0159idru\u017een\u00e9ho nativn\u00edho kontextu.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Spr\u00e1vce nativn\u00edho kontextu RRS bude pokra\u010dovat v ukon\u010dov\u00e1n\u00ed a\u017e do dokon\u010den\u00ed v\u0161ech pracovn\u00edch jednotek.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Spr\u00e1vce nativn\u00edho kontextu RRS ukon\u010duje token kontextu {0}, kter\u00fd je moment\u00e1ln\u011b p\u0159idru\u017een k n\u00e1sleduj\u00edc\u00ed pracovn\u00ed jednotce: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Spr\u00e1vce nativn\u00edho kontextu RRS se vyp\u00edn\u00e1 po vy\u010dk\u00e1n\u00ed na ne\u010dinnost aktivn\u00ed pr\u00e1ce. Spr\u00e1vce kontextu ukon\u010duje kontext identifikovan\u00fd touto zpr\u00e1vou. Kontext je p\u0159idru\u017een k ur\u010dit\u00e9 pracovn\u00ed jednotce a pracovn\u00ed jednotka bude zaz\u00e1lohov\u00e1na.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Nejm\u00e9n\u011b jeden z va\u0161ich spr\u00e1vc\u016f prost\u0159edk\u016f m\u016f\u017ee signalizovat chybu, zpracov\u00e1v\u00e1-li v momentu ukon\u010den\u00ed kontextu ur\u010ditou pr\u00e1ci.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Spr\u00e1vce prost\u0159edk\u016f {0} \u010dek\u00e1 na dokon\u010den\u00ed {1} transakc\u00ed. \u010cekat bude nejv\u00fd\u0161e {2} milisekund.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Spr\u00e1vce nativn\u00edho prost\u0159edku RRS se vyp\u00edn\u00e1. Dosud existuj\u00ed aktivn\u00ed transakce, je\u017e pou\u017e\u00edvaj\u00ed nativn\u00ed prost\u0159edky RRS, nap\u0159\u00edklad p\u0159ipojen\u00ed k datab\u00e1zi druh\u00e9ho typu. Spr\u00e1vce nativn\u00edch prost\u0159edk\u016f p\u0159ed sv\u00fdm vypnut\u00edm \u010dek\u00e1 na dokon\u010den\u00ed t\u011bchto transakc\u00ed.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Spr\u00e1vce prost\u0159edk\u016f obnov\u00ed vyp\u00edn\u00e1n\u00ed po dokon\u010den\u00ed transakc\u00ed nebo po uplynut\u00ed zadan\u00e9 doby \u010dek\u00e1n\u00ed. Po uplynut\u00ed maxim\u00e1ln\u00ed doby \u010dek\u00e1n\u00ed bude zpr\u00e1va CWLIB0102W informovat o nad\u00e1le aktivn\u00edch transakc\u00edch.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: V\u011btev transakce reprezentovanou identifik\u00e1torem RRS URID {0} nelze vy\u0159e\u0161it, proto\u017ee instance spr\u00e1vce NativeTransactionManager, kter\u00e1 v\u011btev vytvo\u0159ila, ji\u017e byla deaktivov\u00e1na. Tato transakce m\u016f\u017ee b\u00fdt dokon\u010dena a\u017e po restartov\u00e1n\u00ed serveru. Xid v\u011btve transakce: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Slu\u017eba spr\u00e1vce nativn\u00edch transakc\u00ed RRS byla zastavena a nen\u00ed nad\u00e1le p\u0159ipojena k RRS. V\u011btev transakce nelze dokon\u010dit, proto\u017ee slu\u017ebu RRS nelze informovat o v\u00fdsledku. Mus\u00ed b\u00fdt restartov\u00e1n server, aby bylo mo\u017en\u00e9 prov\u00e9st op\u011btovnou synchronizaci spr\u00e1vce transakc\u00ed se slu\u017ebou RRS a k vy\u0159e\u0161en\u00ed transakce.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Restartujte server.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: Ukon\u010duje se pracovn\u00ed jednotka {0} a p\u0159idru\u017een\u00e1 jednotka obnoven\u00ed RRS b\u011b\u017e\u00edc\u00ed pod tokenem kontextu {1} m\u00e1 nevy\u0159e\u0161en\u00e9 z\u00e1jmy prost\u0159edku. Jednotka RRS obnoven\u00ed bude odvol\u00e1na.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=Bylo zji\u0161t\u011bno, \u017ee jednotka obnoven\u00ed RRS m\u00e1 nevy\u0159\u00edzen\u00e9 z\u00e1jmy prost\u0159edk\u016f na konci pracovn\u00ed jednotky.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Ov\u011b\u0159te, \u017ee pou\u017eit\u00e9 prost\u0159edky podporuj\u00edc\u00ed slu\u017ebu RRS nejsou provozov\u00e1ny mimo rozsah transakce. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: Nakonfigurovan\u00e1 p\u0159edpona spr\u00e1vce prost\u0159edk\u016f {0} je neplatn\u00e1. Pou\u017eije se v\u00fdchoz\u00ed p\u0159edpona spr\u00e1vce prost\u0159edk\u016f.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=Nakonfigurovan\u00e1 p\u0159edpona spr\u00e1vce prost\u0159edk\u016f mus\u00ed b\u00fdt dlouh\u00e1 1 a\u017e 8 znak\u016f a sm\u00ed obsahovat pouze alfanumerick\u00e9 znaky (a-z,A-Z,0-9) a n\u00e1rodn\u00ed znaky (@,$,#).
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Ov\u011b\u0159te, zda nakonfigurovan\u00e1 p\u0159edpona spr\u00e1vce prost\u0159edk\u016f spl\u0148uje po\u017eadavky na d\u00e9lku a pou\u017eit\u00e9 znaky. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: Aktualizace konfigurace, kter\u00e1 by nastavila p\u0159edponu n\u00e1zvu spr\u00e1vce prost\u0159edk\u016f na {0}, nen\u00ed za b\u011bhu povolena. Je ignorov\u00e1na.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=Aktualizace konfigurace, kter\u00e1 by nastavila p\u0159edponu spr\u00e1vce prost\u0159edk\u016f za b\u011bhu je ignorov\u00e1na.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=P\u0159edponu spr\u00e1vce prost\u0159edk\u016f nakonfigurujte p\u0159ed spu\u0161t\u011bn\u00edm serveru nebo p\u0159ed nakonfigurov\u00e1n\u00edm funkce zosTransaction-1.0. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: Kontrola autorizace, kter\u00e1 ov\u011b\u0159uje opr\u00e1vn\u011bn\u00ed u\u017eivatele oproti nakonfigurovan\u00e9mu n\u00e1zvu p\u0159edpony spr\u00e1vce prost\u0159edk\u016f {0}, se nezda\u0159ila. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=Kontrola autorizace, kter\u00e1 ov\u011b\u0159uje opr\u00e1vn\u011bn\u00ed u\u017eivatele oproti nakonfigurovan\u00e9mu n\u00e1zvu p\u0159edpony spr\u00e1vce prost\u0159edk\u016f, se nezda\u0159ila a vr\u00e1tila uveden\u00e9 n\u00e1vratov\u00e9 k\u00f3dy.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Ov\u011b\u0159te, zda nakonfigurovan\u00e1 p\u0159edpona spr\u00e1vce prost\u0159edk\u016f spl\u0148uje po\u017eadavky na n\u00e1zev, d\u00e9lku a pou\u017eit\u00e9 znaky. Ov\u011b\u0159te, zda nebyl n\u00e1zev p\u0159edpony nakonfigurov\u00e1n chybn\u011b. Ov\u011b\u0159te, zda byla u\u017eivateli ud\u011blena odpov\u00eddaj\u00edc\u00ed opr\u00e1vn\u011bn\u00ed pro pou\u017eit\u00ed n\u00e1zvu p\u0159edpony. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: Podproces {0} se ukon\u010duje. Jednotka obnovy RRS p\u0159idru\u017een\u00e1 k tokenu kontextu {1} m\u00e1 nevy\u0159e\u0161en\u00e9 z\u00e1jmy na prost\u0159edc\u00edch. Nativn\u00ed spr\u00e1vce kontextu ukon\u010duje tento kontext.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=Ur\u010den\u00fd podproces se ukon\u010duje a jednotka obnovy RRS p\u0159idru\u017een\u00e1 k tomuto kontextu m\u00e1 nevy\u0159e\u0161en\u00e9 z\u00e1jmy. Pokusy o odvol\u00e1n\u00ed jednotky obnovy RRS se nezda\u0159ily.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Ov\u011b\u0159te, zda nejsou pou\u017eit\u00ed spr\u00e1vci prost\u0159edk\u016f podporuj\u00edc\u00ed slu\u017ebu RRS provozov\u00e1ni mimo rozsah transakce. Jeden \u010di v\u00edce spr\u00e1vc\u016f prost\u0159edk\u016f m\u016f\u017ee hl\u00e1sit chybu, pokud v okam\u017eiku ukon\u010den\u00ed kontextu zpracov\u00e1vali n\u011bjakou pr\u00e1ci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Podproces {0} se ukon\u010duje. Jednotka obnovy RRS p\u0159idru\u017een\u00e1 k tokenu kontextu {1} m\u00e1 nevy\u0159e\u0161en\u00e9 z\u00e1jmy na prost\u0159edc\u00edch. Jednotka obnoven\u00ed RRS bude odvol\u00e1na a token kontextu se pou\u017eije znovu.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=Ur\u010den\u00fd podproces kon\u010d\u00ed a zjistilo se, \u017ee jednotka obnovy RRS m\u00e1 nevy\u0159e\u0161en\u00e9 z\u00e1jmy na prost\u0159edc\u00edch.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Ov\u011b\u0159te, zda nejsou pou\u017eit\u00ed spr\u00e1vci prost\u0159edk\u016f podporuj\u00edc\u00ed slu\u017ebu RRS provozov\u00e1ni mimo rozsah transakce. Jeden \u010di v\u00edce spr\u00e1vc\u016f prost\u0159edk\u016f m\u016f\u017ee hl\u00e1sit chybu, pokud v okam\u017eiku odvol\u00e1n\u00ed jednotky obnovy zpracov\u00e1vali n\u011bjakou pr\u00e1ci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.

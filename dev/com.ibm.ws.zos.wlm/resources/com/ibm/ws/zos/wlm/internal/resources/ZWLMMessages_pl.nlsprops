@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm/resources/com.ibm.ws.zos.wlm.internal.resources/ZWLMMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WLM Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0151-0200: WLM Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+NATIVE_SERVICE_OOM=CWWKB0151E: W procedurze rodzimej ({0}) wyst\u0105pi\u0142 warunek braku pami\u0119ci.
+NATIVE_SERVICE_OOM.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, w kt\u00f3rej wyst\u0105pi\u0142 warunek braku pami\u0119ci.
+NATIVE_SERVICE_OOM.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0}
+#{1}
+NATIVE_SERVICE_WLM_FAILURE=CWWKB0152E: Procedura rodzima ({0}) otrzyma\u0142a od mened\u017cera WLM kod przyczyny niesprawno\u015bci ({1}).
+NATIVE_SERVICE_WLM_FAILURE.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, kt\u00f3ra wywo\u0142a\u0142a przywo\u0142an\u0105 us\u0142ug\u0119 WLM.  Kod przyczyny pochodz\u0105cy z us\u0142ugi WLM wskazuje przyczyn\u0119 niepowodzenia.
+NATIVE_SERVICE_WLM_FAILURE.useraction=U\u017cyj kodu przyczyny WLM do okre\u015blenia przyczyny niepowodzenia.
+
+#{0}
+#{1}
+NATIVE_SERVICE_ERRNO=CWWKB0153E: Procedura rodzima ({0}) zako\u0144czy\u0142a si\u0119 niepowodzeniem z nast\u0119puj\u0105cym numerem b\u0142\u0119du ({1}).
+NATIVE_SERVICE_ERRNO.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, kt\u00f3ra wywo\u0142a\u0142a przywo\u0142an\u0105 us\u0142ug\u0119 WLM.  Numer b\u0142\u0119du pochodz\u0105cy z us\u0142ugi WLM wskazuje przyczyn\u0119 niepowodzenia.
+NATIVE_SERVICE_ERRNO.useraction=U\u017cyj warto\u015bci numeru b\u0142\u0119du do okre\u015blenia przyczyny niepowodzenia.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0154E: Procedura rodzima zako\u0144czy\u0142a si\u0119 niepowodzeniem, us\u0142uga WebSphere Application Server ({0}), kod powrotu ({1}), us\u0142uga WLM ({2}), kod powrotu ({3}), kod przyczyny ({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, kt\u00f3ra zako\u0144czy\u0142a si\u0119 niepowodzeniem.  Udost\u0119pniono docelow\u0105 us\u0142ug\u0119 serwera WebSphere Application Server i kod powrotu.  Udost\u0119pniono r\u00f3wnie\u017c docelow\u0105 us\u0142ug\u0119 WLM z kodami powrotu i przyczyny.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=U\u017cyj kod\u00f3w powrotu i przyczyny, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia.
+
+#{0}
+NATIVE_SERVICE_PC=CWWKB0155E: Procedura rodzima ({0}) otrzyma\u0142a nieoczekiwany kod powrotu ({1}) od swojej autoryzowanej us\u0142ugi PC.
+NATIVE_SERVICE_PC.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105 w celu przeprowadzenia wywo\u0142ania autoryzowanej us\u0142ugi.  Otrzyma\u0142 niezerowy kod powrotu od autoryzowanego wywo\u0142ania programu (Program Call - PC).
+NATIVE_SERVICE_PC.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0} 
+NATIVE_SERVICE_FAILED_TO_REGISTER=CWWKB0156E: Rejestracja enklawy WLM w rejestrze rodzimym przez procedur\u0119 rodzim\u0105 ({0}) nie powiod\u0142a si\u0119.
+NATIVE_SERVICE_FAILED_TO_REGISTER.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105 w celu przeprowadzenia wywo\u0142ania autoryzowanej us\u0142ugi.  Wywo\u0142anie rodzimej us\u0142ugi WLM powiod\u0142o si\u0119, ale nie powiod\u0142a si\u0119 rejestracja enklawy WLM w rejestrze rodzimym.
+NATIVE_SERVICE_FAILED_TO_REGISTER.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0} 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE=CWWKB0157E: Sprawdzenie poprawno\u015bci enklawy WLM w rejestrze rodzimym przez procedur\u0119 rodzim\u0105 ({0}) nie powiod\u0142o si\u0119.
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.explanation=Sprawdzanie poprawno\u015bci udost\u0119pnionego znacznika reprezentuj\u0105cego enklaw\u0119 WLM w rejestrze rodzimym nie powiod\u0142o si\u0119.  
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0} 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND=CWWKB0158E: Znalezienie rodzimej procedury nieautoryzowanego kodu po\u015brednicz\u0105cego przez procedur\u0119 rodzim\u0105 ({0}) nie powiod\u0142o si\u0119.
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.explanation=Us\u0142uga rodzima potrzebna do przetworzenia wywo\u0142ania us\u0142ugi nie zosta\u0142a znaleziona.  
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0} 
+NATIVE_SERVICE_BPX4IPT_FAILED=CWWKB0159E: Procedura rodzima ({0}) otrzyma\u0142a nieoczekiwany wynik od us\u0142ugi BPX4IPT.
+NATIVE_SERVICE_BPX4IPT_FAILED.explanation=Pr\u00f3ba uruchomienia wywo\u0142ania us\u0142ugi za pomoc\u0105 us\u0142ugi rodzimej BPX4IPT nie powiod\u0142a si\u0119.  
+NATIVE_SERVICE_BPX4IPT_FAILED.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+#{0} 
+CONFIG_INVALID_COLLECTIONNAME=CWWKB0160W: Warto\u015b\u0107 konfiguracji zarz\u0105dzania obci\u0105\u017ceniem dla atrybutu collectionName ({0}) zosta\u0142a obci\u0119ta.
+CONFIG_INVALID_COLLECTIONNAME.explanation=Warto\u015b\u0107 podana dla atrybutu collectionName mia\u0142a wi\u0119cej ni\u017c osiemna\u015bcie znak\u00f3w (maksymalna d\u0142ugo\u015b\u0107).  Zostanie u\u017cytych pierwszych osiemna\u015bcie znak\u00f3w.
+CONFIG_INVALID_COLLECTIONNAME.useraction=Zaktualizuj konfiguracj\u0119 serwera, aby okre\u015bli\u0107 poprawn\u0105 warto\u015b\u0107 atrybutu collectionName.
+
+#{0}
+CONFIG_NO_COLLECTIONNAME=CWWKB0161W: Warto\u015b\u0107 konfiguracji zarz\u0105dzania obci\u0105\u017ceniem dla atrybutu collectionName wynosi NULL lub jest pusta. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna ({0}).
+CONFIG_NO_COLLECTIONNAME.explanation=Warto\u015b\u0107 podana dla atrybutu collectionName wynosi NULL lub jest pusta.  
+CONFIG_NO_COLLECTIONNAME.useraction=Zaktualizuj konfiguracj\u0119 serwera, aby okre\u015bli\u0107 warto\u015b\u0107 atrybutu collectionName.
+
+#{0}
+#{1}
+CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0162W: Warto\u015b\u0107 konfiguracji klasyfikacji WLM dla atrybutu transactionClass zosta\u0142a obci\u0119ta z {0} do {1}.
+CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Okre\u015blono regu\u0142\u0119 klasyfikacji zawieraj\u0105c\u0105 nazw\u0119 klasy transakcji sk\u0142adaj\u0105c\u0105 si\u0119 z ponad 8 znak\u00f3w. Zosta\u0142a ona obci\u0119ta do 8 znak\u00f3w.
+CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Zaktualizuj powi\u0105zan\u0105 regu\u0142\u0119 klasyfikacji, aby okre\u015bli\u0107 poprawn\u0105 warto\u015b\u0107 atrybutu transactionClass.
+
+#{0}
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS=CWWKB0163W: Warto\u015b\u0107 konfiguracji klasyfikacji WLM dla zasobu atrybutu zawiera nieprawid\u0142owe znaki wieloznaczne.  Warto\u015b\u0107 ({0}) zawiera zbyt wiele nast\u0119puj\u0105cych po sobie znak\u00f3w wieloznacznych.
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.explanation=Okre\u015blono regu\u0142\u0119 klasyfikacji zawieraj\u0105c\u0105 \u0142a\u0144cuch zasob\u00f3w, w kt\u00f3rym zosta\u0142a u\u017cyta zbyt du\u017ca liczba nast\u0119puj\u0105cych po sobie znak\u00f3w wieloznacznych.  Okre\u015blony \u0142a\u0144cuch zasob\u00f3w zawiera zbyt wiele nast\u0119puj\u0105cych po sobie znak\u00f3w wieloznacznych. (Nast\u0119puj\u0105co po sobie mog\u0105 wyst\u0119powa\u0107 maksymalnie dwa znaki wieloznaczne).
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.useraction=Zaktualizuj powi\u0105zan\u0105 regu\u0142\u0119 klasyfikacji, tak aby okre\u015bla\u0142a poprawny \u0142a\u0144cuch zasob\u00f3w, poprawiaj\u0105c u\u017cycie znak\u00f3w wieloznacznych.
+
+#{0}
+CLASSIFICATION_DROPPED_BAD_WILDCARD=CWWKB0164W: Warto\u015b\u0107 konfiguracji klasyfikacji WLM dla zasobu atrybutu zawiera nieprawid\u0142owe znaki wieloznaczne. Warto\u015b\u0107 ({0}) zawiera nieprawid\u0142owo u\u017cyte podw\u00f3jne znaki wieloznaczne.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.explanation=Okre\u015blono regu\u0142\u0119 klasyfikacji zawieraj\u0105c\u0105 \u0142a\u0144cuch zasob\u00f3w, w kt\u00f3rym zosta\u0142y u\u017cyte podw\u00f3jne znaki wieloznaczne.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.useraction=Zaktualizuj powi\u0105zan\u0105 regu\u0142\u0119 klasyfikacji, tak aby okre\u015bla\u0142a poprawny \u0142a\u0144cuch zasob\u00f3w, eliminuj\u0105c u\u017cycie podw\u00f3jnych znak\u00f3w wieloznacznych.
+
+#{0}
+WLM_CURRENT_HEALTH_PERCENTAGE=CWWKB0165I: Warto\u015b\u0107 procentowa poprawno\u015bci WLM serwera wynosi teraz {0}.
+WLM_CURRENT_HEALTH_PERCENTAGE.explanation=Ten komunikat wskazuje, \u017ce nowy czynnik poprawno\u015bci dla tego serwera zosta\u0142 dostarczany do mened\u017cera WLM za pomoc\u0105 interfejsu API IWM4HLTH.
+WLM_CURRENT_HEALTH_PERCENTAGE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

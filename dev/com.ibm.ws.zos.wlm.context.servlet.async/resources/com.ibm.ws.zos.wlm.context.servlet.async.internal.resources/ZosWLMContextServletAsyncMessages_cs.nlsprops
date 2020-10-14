@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: Slu\u017eba \u0161\u00ed\u0159en\u00ed kontextu pro asynchronn\u00ed servlety se vyp\u00edn\u00e1 v dob\u011b, kdy je\u0161t\u011b prob\u00edhaj\u00ed aktivn\u00ed asynchronn\u00ed \u010dinnosti. Enkl\u00e1va WLM s tokenem identifikace {0} byla odstran\u011bna.
+DEACTIVATE_ENCLAVE_DELETED.explanation= Slu\u017eba \u0161\u00ed\u0159en\u00ed kontextu pro asynchronn\u00ed servlety se vyp\u00edn\u00e1, proto\u017ee nen\u00ed dostupn\u00e1 funkce WLM nebo funkce servletu, p\u0159\u00edpadn\u011b nejsou dostupn\u00e9 ob\u011b tyto funkce.
+DEACTIVATE_ENCLAVE_DELETED.useraction=Ov\u011b\u0159te, \u017ee funkce WLM, funkce servletu nebo ob\u011b tyto funkce nebyly odebr\u00e1ny z konfigura\u010dn\u00edho souboru v dob\u011b prob\u00edhaj\u00edc\u00ed aktivity.

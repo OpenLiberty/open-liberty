@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: TYPE: {0} JOBNAME: {1} NAME: {2}
+CWWKB0351I.explanation=R\u0103spuns prima linia la o comand\u0103 de listare \u00eenregistrare detaliat\u0103.
+CWWKB0351I.useraction=Nimic
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  JOBNUM: {0} ACTIVE: {1} ACTIVE-CONNECTIONS: {2}
+CWWKB0352I.explanation=R\u0103spuns a doua linie la o comand\u0103 de listare \u00eenregistrare detaliat\u0103.
+CWWKB0352I.useraction=Nimic
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: MIN-CONN: {0} MAX-CONN: {1} STATE: {2} TRACELEVEL: {3}
+CWWKB0353I.explanation=R\u0103spuns a treia linie la o comand\u0103 de listare \u00eenregistrare detaliat\u0103.
+CWWKB0353I.useraction=Nimic
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: Name         Jobname  SWT TL Min  Max  Act  State
+CWWKB0354I.explanation=R\u0103spuns antet pentru o comand\u0103 de listare \u00eenregistrare cu file.
+CWWKB0354I.useraction=Nimic
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=R\u0103spuns r\u00e2nd RGE pentru comanda cu file: MODIFY,DISPLAY,ADAPTER,RGE,*
+CWWKB0355I.useraction=Nimic
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: STATUS: VER:{0} MAX-CONN:{1} WOLA-GROUP-NAME:{2}
+CWWKB0356I.explanation=R\u0103spuns la comanda: MODIFY DISPLAY,ADAPTER,STATUS
+CWWKB0356I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: SHOWING REGISTRATIONS FOR SERVER:
+CWWKB0357I.explanation=R\u0103spuns la comanda: MODIFY DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0357I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: SHOWING REGISTRATIONS FOR WOLA GROUP:
+CWWKB0358I.explanation=R\u0103spuns la comanda: MODIFY DISPLAY,ADAPTER,GROUPRGES
+CWWKB0358I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: POSSIBLE COMMANDS FOR ADAPTER: (EXAMPLE: DISPLAY,ADAPTER,STATUS)
+CWWKB0359I.explanation=R\u0103spuns la o comand\u0103 ADAPTER sau comand\u0103 HELP necunsocut\u0103
+CWWKB0359I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=Afi\u015feaz\u0103 o comand\u0103 sau op\u0163iune de c\u0103utare \u015fi descrierea sa
+CWWKB0360I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: INVALID OPTION OR TOKEN: {0}
+CWWKB0361I.explanation=Afi\u015feaz\u0103 un mesaj de eroare pentru o op\u0163iune sau jeton invalid
+CWWKB0361I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: EXPLANATION: INVALID BOOLEAN VALUE: EXPECTED TRUE/FALSE OR 0/1
+CWWKB0362I.explanation=Afi\u015feaz\u0103 o eroare pentu o valoare boolean\u0103 invalid\u0103
+CWWKB0362I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: EXPLANATION: INVALID NUMERIC VALUE
+CWWKB0363I.explanation=Afi\u015feaz\u0103 o eroare pentu o valoare numeric\u0103 invalid\u0103
+CWWKB0363I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: EXPLANATION: INVALID ATTRIBUTE NAME
+CWWKB0364I.explanation=Afi\u015feaz\u0103 o eroare pentru un nume de atribut invalid la c\u0103utare
+CWWKB0364I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: EXPLANATION: SHOULD NOT CONTAIN MORE THAN ONE =
+CWWKB0365I.explanation=Afi\u015feaz\u0103 o eroare pentru o op\u0163iune de c\u0103utare cu mai mult de un semn =
+CWWKB0365I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: VALID SEARCH OPTIONS:
+CWWKB0366I.explanation=Afi\u015feaz\u0103 un antet pentru lista de op\u0163iuni de c\u0103utare valide \u015fi tipurile lor
+CWWKB0366I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: ''{0}''
+CWWKB0367I.explanation=Afi\u015feaz\u0103 o op\u0163iune de c\u0103utare \u015fi tipul s\u0103u
+CWWKB0367I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0} DISPLAYS OLA STATUS
+CWWKB0368I.explanation=O descriere pentru comanda STATUS
+CWWKB0368I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0} DISPLAYS REGISTRATIONS FOR CURRENT SERVER
+CWWKB0369I.explanation=O descriere pentru comanda STATUS
+CWWKB0369I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0} DISPLAYS REGISTRATIONS FOR GIVEN SERVER NAME
+CWWKB0370I.explanation=O descriere pentru comanda STATUS
+CWWKB0370I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0} DISPLAYS REGISTRATIONS FOR WOLA GROUP
+CWWKB0371I.explanation=O descriere pentru comanda STATUS
+CWWKB0371I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} SEE DISPLAY,ADAPTER,SEARCHRGES,HELP FOR INFO
+CWWKB0372I.explanation=O descriere pentru comanda STATUS
+CWWKB0372I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: SERVER NOT FOUND WITH THE NAME {0}
+CWWKB0373I.explanation=Un measaj de eroare pentru comanda nume server DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0373I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: THIS REGISTRATION DOES NOT HAVE ANY CONNECTION HANDLES
+CWWKB0374I.explanation=Un mesaj care este afi\u015fat pentru pentru o vizualizare RGE f\u0103r\u0103 niciun handle de conexiune
+CWWKB0374I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: ID                  LSCB        State
+CWWKB0375I.explanation=Un antet pentru afi\u015farea cu file a handle-urilor de conexiune
+CWWKB0375I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=Un r\u00e2nd de afi\u015fare handle-uri de conexiune pentru o \u00eenregistrare
+CWWKB0376I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=Un r\u00e2nd de spa\u0163iu alb
+CWWKB0377I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: {0} AFTER ENTIRE COMMAND WILL SHOW EXTENDED INFORMATION
+CWWKB0378I.explanation=O descriere pentru comanda DETAILS
+CWWKB0378I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: Fi\u015fierul RAR Optimized Local Adapters utilizat de acest server trebuie s\u0103 fie actualizat
+CWWKB0379I.explanation=Un fi\u015fier RAR actualizat pentru caracteristica OLA (Optimized Local Adapters) a WebSphere Application Server for z/OS a fost furnizat\u0103 cu acest pachet de servicii.  Versiunea care este instalat\u0103 momentan poate s\u0103 nu fie compatibil\u0103 cu acest pachet de servicii.
+CWWKB0379I.useraction=\u00cenlocui\u0163i fi\u015fierul RAR OLA (Optimized Local Adapters) instalat \u00een aceast\u0103 instan\u0163\u0103 server cu acela furnizat de de nivelul de service instalat momentan al WebSphere Application Server for z/OS.  Instruc\u0163iuni de instalare pot fi g\u0103site \u00een WebSphere Applicatin Server for z/OS Information Center.
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: A fost \u00eent\u00e2lnit\u0103 o eroare la realizarea resincroniz\u0103rii de tranzac\u0163ie cu \u00eenregistrarea OLA {0} 
+CWWKB0380E.explanation=WebSphere Application Server for z/OS cere resuncronizare tranzac\u0163ie cu numele de \u00eenregistrare Optimized Local identificat \u00een mesaj.  Procesul de resincronizare nu s-a finalizat din cauza unei excep\u0163ii.
+CWWKB0380E.useraction=La resincronizare cu CICS, ave\u0163i grij\u0103 ca serverul de leg\u0103tur\u0103 Optimized Local Adapter corespunz\u0103tor numelui de \u00eenregistrare s\u0103 fie pornit.  Uita\u0163i-v\u0103 \u00een jurnalele WebSphere Application Server for z/OS \u015fi FFDC pentru o excep\u0163ie asociat\u0103 cu aceast\u0103 opera\u0163ie de resincronizare.  Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: A fost ridicat\u0103 o excep\u0163ie c\u00e2nd {0} o tranzac\u0163ie cu \u00eenregistrare OLA {1}
+CWWKB0381E.explanation=WebSphere Application Server for z/OS a \u00eencercat s\u0103 finalizaze o tranzac\u0163ie de comitere \u00een doi pa\u015fi, \u015fi a \u00eent\u00e2lnit o eroare la comunicarea cu o \u00eenregistrare Optimized Local Adapters.  Acest mesaj poate fi comprimat dac\u0103 apar erori repetate la aceea\u015fi \u00eenregistrare.
+CWWKB0381E.useraction=Ave\u0163i grij\u0103 ca \u00eenregistrarea Optimized Local Adapters numit\u0103 \u00een mesaj s\u0103 fie pornit\u0103.  \u00cen timpul resincroniz\u0103rii la pornire server, acest mesaj nu indic\u0103 neap\u0103rat ca a ap\u0103rut o e\u015fuare, datorit\u0103 naturii comiterii pe dou\u0103 faze \u015fi protocoalelor de abandonare presupunere.  Uita\u0163i-v\u0103 \u00een jurnalele WebSphere Application Server for z/OS \u015fi FFDC pentru detalii apar\u0163in\u00e2nd excep\u0163iei care a cauzat emiterea acestui mesaj.  Excep\u0163ia poate con\u0163ine XID-ul tranzac\u0163iei identific\u00e2nd tranzac\u0163ia specific\u0103 \u015fi opera\u0163ia care a e\u015fuat.  Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: DETAILS FOR IMS {0} / {1}
+CWWKB0382I.explanation=Afi\u015feaz\u0103 ID-ul grupului XCF \u015fi numele serverului XCF utilizat de OTMA pentru un sistem IMS la care este conectat WbSphere Application Server for z/OS.  Numele de clien\u0163i individuale vor urma utiliz\u00e2nd mesajul CWWKB0383I.
+CWWKB0382I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=Afi\u015feaz\u0103 numele serverului WebSphere Application Server for z/OS \u015fi numele clientului OTMA care sunt utilizate pentru conectarea la sistemul IMS identificat de mesajul CWWKB0382I anterior.
+CWWKB0383I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: OTMA NAME POOL DOES NOT EXIST
+CWWKB0384I.explanation=Pool-ul de nume OTMA pentru acest sistem nu a fost creat \u00eenc\u0103 \u015fi nu poate fi afi\u015fat de comanda de afi\u015fare.
+CWWKB0384I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: {0} DISPLAYS THE OTMA NAME POOL
+CWWKB0385I.explanation=O descriere pentru comanda OTMANAMES.
+CWWKB0385I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: MAX NAMES PER IMS {0}
+CWWKB0386I.explanation=Afi\u015feaz\u0103 num\u0103rul maxim de nume de clien\u0163i OTMA pe care le pate utiliza WebSphere Application Server for z/OS pentru conectarea la fiecare sistem IMS.
+CWWKB0386I.useraction=Nimic
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: SET BY {0} AT {1}
+CWWKB0387I.explanation=Afi\u015feaz\u0103 numele de grup daemon WebSphere Application Server for z/OS care a setat num\u0103rul maxim de nume de clien\u0163i OTMA. Numele de clien\u0163i OTMA pot fi utilizate pentru a vedea la ce sisteme IMS este conectat\u0103 o instan\u0163\u0103 WebSphere Application Server for z/OS.  Ora la care a fost setat num\u0103rul maxim de nume de clien\u0163i OTMA, \u00een format STCK, este afi\u015fat\u0103 de asemenea.  Num\u0103rul maxim de nume de clien\u0163i OTMA a fost afi\u015fat utiliz\u00e2nd mesajul CWWKB0386I.
+CWWKB0387I.useraction=Nimic
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: RAR-ul Optimized Local Adapters func\u0163ioneaz\u0103 \u00een mod proxy \u015fi nu va participa la tranzac\u0163iile locale sau globale.
+CWWKB0388W.explanation=C\u00e2nd RAR-ul Optimized Local Adapters este instalat pe o platform\u0103 diferit\u0103 de z/OS, func\u015fioneaz\u0103 \u00een mod proxy, comunic\u00e2nd cu un server WebSphere Application Server for z/OS care are EJB-ul proxy instalat.  La rularea \u00een acest mod, tranzac\u0163iile nu sunt suportate.  Adaptorul de resurse va ignora orice mesaje de protocol tranzac\u0163ie pe care le recep\u0163ioneaz\u0103.
+CWWKB0388W.useraction=Niciuna.  Acest mesaj este emis prima dat\u0103 c\u00e2nd adaptorul de resurse \u00eencearc\u0103 s\u0103 se \u00eenroleze \u00eentr-o tranzac\u0163ie \u00een timp ce este \u00een mod proxy.
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: A fost \u00eent\u00e2lnit\u0103 o eroare \u00een timpul \u00eencerc\u0103rii de a procesa o cerere de lucru la distan\u0163\u0103 WOAL (WebSphere Optimized Local Adapter) pe o \u0163int\u0103 EJB (Enterprise Java Bean) identificat\u0103 cu numele JNDI de {0}. Excep\u0163ia \u00eent\u00e2lnit\u0103 este {1}.
+CWWKB0389E.explanation=A fost \u00eent\u00e2lnit\u0103 o eroare \u00een timpul \u00eencerc\u0103rii de a procesa o cerere de lucru la distan\u0163\u0103 WOAL (WebSphere Optimized Local Adapter) pe o \u0163int\u0103 EJB (Enterprise Java Bean).
+CWWKB0389E.useraction=Verifica\u0163i dac\u0103 numele JNDI (Java Naming and Directory Interface) furnizat este corect. Verifica\u0163i dac\u0103 \u0163inta Enterprise Java Bean este \u00een domeniul pe care apelantul \u00eel poate vedea \u015fi ajunge. Uita\u0163i-v\u0103 \u00een jurnalele WebSphere Application Server for z/OS \u015fi FFDC pentru o excep\u0163ie asociat\u0103 cu apelul EJB la distan\u0163\u0103.
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: XID-ul de tranzac\u0163ie pentru cererea e\u015fuat\u0103 este: {0}
+CWWKB0390E.explanation=WebSphere Application Server for z/OS a raportat o cerere de rezolu\u0163ie tranzac\u0163ie WOLA (WebSphere Optimized Local Adapters) \u00een mesajul CWWKB0381E.  Acest mesaj con\u0163ine identificatorul tranzac\u0163ional pentru cererea care a e\u015fuat.
+CWWKB0390E.useraction=Nici o ac\u0163iune nu este necesar\u0103.  Informa\u0163iile din acest mesaj pot fi utile \u00een rezolvarea e\u015fu\u0103rii raportate \u00een mesajul CWWKB0381E.
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: Nu se poate localiza Numele de \u00eenregistrare cerut {0}
+CWWKB0391E.explanation=Numele de \u00eenregistrare cerut nu a putut fi g\u0103sit de adaptorul de resurse.
+CWWKB0391E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de \u00eenregistrare a fost introdus corect, fie \u00een propriet\u0103\u0163ile ConnectionFactory sau \u00een ConnectionSpecImpl furnizat pe cererea getConnection.
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: Numele OTMA Client nu a fost specificat.
+CWWKB0392W.explanation=Numele OTMA Client trebuie s\u0103 fie specificat \u00een ConnectionSpec, sau \u00een server.xml
+CWWKB0392W.useraction=Asigura\u0163i-v\u0103 c\u0103 numele OTMA Client este setat \u00een ConnectionSpec prin ConnectionSpecImpl.setOTMAClientName(), sau \u00een server.xml.
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: Numele specificat OTMA Client ({0}) este blanc, mai lung de {1} caractere, sau con\u0163ine caractere altele dec\u00e2t A-Z, 0-9, @, \# \u015fi $
+CWWKB0393W.explanation=Lungimea numelui OTMA Client trebuie s\u0103 fie \u00eentre 1 \u015fi lungimea indicat\u0103 \u00een mesaj \u015fi numele Clientului trebuie s\u0103 fie compus doar din caractere A-Z, 0-9, @, \# sau $
+CWWKB0393W.useraction=Furniza\u0163i un nume OTMA Client de o lungime care este \u00een interval \u015fi care utilizeaz\u0103 doar caractere permise.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: Se va folosi numele OTMA Client ({0}).
+CWWKB0394I.explanation=Numele OTMA Client specificat este numele OTMA Client care va fi folosit. Aceasta ar putea proveni din server.xml, din ConnectionSpec sau poate fi valoarea implicit\u0103.
+CWWKB0394I.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: Numele specificat OTMA {0} ({1}) este blanc, mai lung de {2} caractere sau con\u0163ine caractere altele dec\u00e2t A-Z, 0-9, @, \# \u015fi $
+CWWKB0395E.explanation=Lungimea numelui OTMA indicat trebuie s\u0103 fie \u00eentre 1 \u015fi lungimea indicat\u0103 \u00een mesaj \u015fi numele trebuie s\u0103 fie compus doar din caractere A-Z, 0-9, @, \# sau $
+CWWKB0395E.useraction=Furnizare un nume OTMA de o lungime care este \u00een interval \u015fi care utilizeaz\u0103 doar caractere permise. 
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: Numele OTMA Group \u015fi numele OTMA Server trebuie s\u0103 fie specificate pe ConnectionFactory sau \u00een ConnectionSpec
+CWWKB0396E.explanation=Nu a fost specificat\u0103 nicio valoare fie pentru numele OTMA Group sau pentru numele OTMA Server sau ambele. 
+CWWKB0396E.useraction=Asigura\u0163i-v\u0103 c\u0103 numele OTMA Group \u015fi numele OTMA Server sunt specificate pe ConnectionFactory sau \u00een ConnectionSpec.
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: Dimensiunea de primire configura\u0163ie OTMA maxim\u0103 specificat\u0103 {0} este mai mare dec\u00e2t dimensiunea maxim\u0103 de mesaj permis\u0103 pentru Maximul {1} de segmente configurat. Dimensiunea maxim\u0103 de mesaj de primire este modificat\u0103 la {2}.
+CWWKB0397W.explanation=Dimensiunea maxim\u0103 de primire mesaje configurat\u0103 este mai mare dec\u00e2t dimensiunea de mesaj care poate fi tratat de num\u0103rul maxim de segmente configurat. Fiecare segment poate purta doar 32k de date. 
+CWWKB0397W.useraction=Examina\u0163i configura\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 lungimea maxim\u0103 de mesaj \u015fi num\u0103rul maxim de segmente sunt configurate corect. 

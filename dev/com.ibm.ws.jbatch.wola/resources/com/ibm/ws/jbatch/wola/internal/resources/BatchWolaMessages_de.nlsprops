@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.wola/resources/com/ibm/ws/jbatch/wola/internal/resources/BatchWolaMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0250 - 0299: com.ibm.ws.jbatch.wola
+# 
+#
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.activation=CWWKY0250I: Der Stapellistener f\u00fcr z/OS Local Adapter (WOLA)-Anforderungen wurde aktiviert und mit dem JNDI-Namen {0} registriert.
+batch.wola.listener.activation.explanation=Der Listener ist aktiv und f\u00fcr den Empfang von Anforderungen von Clients \u00fcber z/OS Local Adapters (WOLA), einschlie\u00dflich des nativen z/OS-Stapeldienstprogramms batchManagerZos, bereit. 
+batch.wola.listener.activation.useraction=Es ist keine Aktion erforderlich. 
+ 
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.deactivation=CWWKY0251I: Der Stapellistener f\u00fcr z/OS Local Adapter (WOLA)-Anforderungen wurde inaktiviert.
+batch.wola.listener.deactivation.explanation=Der Listener wurde inaktiviert und empf\u00e4ngt keine Anforderungen mehr von Clients \u00fcber z/OS Local Adapters (WOLA), einschlie\u00dflich des nativen z/OS-Stapeldienstprogramms batchManagerZos.
+batch.wola.listener.deactivation.useraction=Es ist keine Aktion erforderlich. 
+ 

@@ -1,0 +1,26 @@
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.saf/resources/com/ibm/ws/security/authorization/saf/internal/resources/SAFAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2960 - CWWKS2999
+
+UNABLE_TO_CREATE_DEFAULT_CRED=CWWKS2960W: Impossibile creare la credenziale predefinita per l''autorizzazione SAF di utenti non autenticati. Tutti i controlli di autorizzazione per gli utenti non autenticati avranno esito negativo. Non \u00e8 stato possibile creare la credenziale predefinita a causa del seguente errore: {0}
+UNABLE_TO_CREATE_DEFAULT_CRED.explanation=Il server non pu\u00f2 creare la credenziale predefinita che rappresenta l'utente SAF non autenticato. L'utente SAF non autenticato \u00e8 specificato dall'attributo unauthenticatedUser nella configurazione del server. Il server non pu\u00f2 eseguire i controlli di autorizzazione per gli utenti non autenticati; pertanto, tali tentativi di autorizzazione avranno esito negativo.
+UNABLE_TO_CREATE_DEFAULT_CRED.useraction=Risolvere l'errore descritto nel messaggio.
+
+CANNOT_READ_APPLDATA=CWWKS2961E: Impossibile leggere APPLDATA dal profilo SAF EJBROLE {0} a causa del seguente errore: {1}
+CANNOT_READ_APPLDATA.explanation=Il server non \u00e8 riuscito a leggere il campo APPLDATA dal profilo SAF EJBROLE fornito.  Il campo APPLDATA contiene l'utente Esegui come per la delega SAF.
+CANNOT_READ_APPLDATA.useraction=Il messaggio di errore include i codici di ritorno e causa SAF che identificano la causa dell'errore.

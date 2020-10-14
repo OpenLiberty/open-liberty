@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: Us\u0142uga propagacji kontekstu dla serwlet\u00f3w asynchronicznych jest zamykana, gdy wci\u0105\u017c jest przetwarzana aktywna asynchroniczna praca. Usuni\u0119to enklaw\u0119 WLM o znaczniku identyfikuj\u0105cym {0}.
+DEACTIVATE_ENCLAVE_DELETED.explanation= Us\u0142uga propagacji kontekstu dla serwlet\u00f3w asynchronicznych jest zamykana, poniewa\u017c sk\u0142adnik WLM, sk\u0142adnik serwletu lub oba te sk\u0142adniki s\u0105 niedost\u0119pne.
+DEACTIVATE_ENCLAVE_DELETED.useraction=Sprawd\u017a, czy nie usuni\u0119to z pliku konfiguracyjnego sk\u0142adnika WLM, sk\u0142adnika serwletu lub obu tych sk\u0142adnik\u00f3w, gdy wci\u0105\u017c trwa\u0142a praca.
