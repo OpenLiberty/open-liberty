@@ -44,3 +44,4 @@ task copyAnonymousPostgres(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn copyAnonymousPostgres
+addRequiredLibraries.dependsOn copyFattestDatabases
