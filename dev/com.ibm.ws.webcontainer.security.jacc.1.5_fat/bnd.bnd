@@ -26,8 +26,8 @@ tested.features: jacc-1.5, el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.
     commons-codec:commons-codec;version=1.4,\
     commons-logging:commons-logging;version=1.1.1,\
     fattest.simplicity;version=latest,\
-    org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
-    org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
+    org.apache.httpcomponents:httpclient;version=latest,\
+    org.apache.httpcomponents:httpcore;version=latest,\
     com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
     com.ibm.ws.security.registry_test.custom;version=latest,\
     com.ibm.ws.org.apache.directory.server;version=latest

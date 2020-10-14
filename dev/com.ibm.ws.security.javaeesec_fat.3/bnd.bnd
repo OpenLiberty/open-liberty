@@ -43,8 +43,8 @@ src: \
 
 fat.project: true
 -buildpath: \
-	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
-	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
+	org.apache.httpcomponents:httpclient;version=latest,\
+	org.apache.httpcomponents:httpcore;version=latest,\
 	fattest.simplicity;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

@@ -84,8 +84,8 @@ tested.features: \
   com.ibm.ws.monitor;version=latest,\
   com.ibm.json4j;version=latest,\
   commons-httpclient:commons-httpclient;version=3.1,\
-  org.apache.httpcomponents:httpclient;version=4.3.1,\
-  org.apache.httpcomponents:httpcore;version=4.3.1,\
+  org.apache.httpcomponents:httpclient;version=latest,\
+  org.apache.httpcomponents:httpcore;version=latest,\
   org.apache.wink:wink-client;version=1.4,\
   org.apache.wink:wink-common;version=1.4,\
   org.json:json;version=20080701,\

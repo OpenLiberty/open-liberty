@@ -24,8 +24,8 @@ tested.features: springBoot-1.5, springBoot-2.0, servlet-3.1, servlet-4.0, trans
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-    org.apache.httpcomponents:httpcore;strategy=exact;version=4.3,\
-    org.apache.httpcomponents:httpclient;strategy=exact;version=4.3.1,\
+    org.apache.httpcomponents:httpcore;version=latest,\
+    org.apache.httpcomponents:httpclient;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	commons-logging:commons-logging;version=1.1.3,\
 	net.sourceforge.htmlunit:htmlunit;version=2.27,\

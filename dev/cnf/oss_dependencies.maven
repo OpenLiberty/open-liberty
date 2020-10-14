@@ -288,10 +288,7 @@ org.apache.httpcomponents.core5:httpcore5:5.0
 org.apache.httpcomponents:fluent-hc:4.3.1
 org.apache.httpcomponents:httpclient-cache:4.1.2
 org.apache.httpcomponents:httpclient-cache:4.3.1
-org.apache.httpcomponents:httpclient:4.1.2
-org.apache.httpcomponents:httpclient:4.3.1
-org.apache.httpcomponents:httpclient:4.5.4
-org.apache.httpcomponents:httpclient:4.5.7
+org.apache.httpcomponents:httpclient:4.5.13
 org.apache.httpcomponents:httpcore:4.1.2
 org.apache.httpcomponents:httpcore:4.3
 org.apache.httpcomponents:httpmime:4.1.2

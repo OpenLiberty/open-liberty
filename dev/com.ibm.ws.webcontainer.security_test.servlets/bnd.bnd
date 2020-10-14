@@ -52,6 +52,6 @@ test.project: true
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.componenttest:public.api;version=latest, \
 	fattest.simplicity;version=latest, \
-	org.apache.httpcomponents:httpclient;version=4.1.2, \
-	org.apache.httpcomponents:httpcore;version=4.1.2, \
+	org.apache.httpcomponents:httpclient;version=latest, \
+	org.apache.httpcomponents:httpcore;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -114,8 +114,8 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.junit.extensions;version=latest, \
-	org.apache.httpcomponents:httpclient;version=4.4.5, \
-	org.apache.httpcomponents:httpcore;version=4.4.9, \
+	org.apache.httpcomponents:httpclient;version=latest, \
+	org.apache.httpcomponents:httpcore;version=latest, \
 	commons-logging:commons-logging;version=1.1.1, \
 	commons-codec:commons-codec;version=1.14, \
 	com.ibm.ws.kernel.boot;version=latest, \

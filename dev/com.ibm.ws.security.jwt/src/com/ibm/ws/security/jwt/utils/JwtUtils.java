@@ -184,9 +184,6 @@ public class JwtUtils {
 		if (!isNullEmpty(tokenString)) {
 			if ((tokenString.startsWith("{") && tokenString.endsWith("}"))
 					|| (tokenString.startsWith("[") && tokenString.endsWith("]"))) {
-				// com.google.gson.JsonParser parser = new
-				// com.google.gson.JsonParser();
-				// parser.parse(tokenString);
 				result = true;
 			}
 		}

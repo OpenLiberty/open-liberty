@@ -43,7 +43,6 @@ instrument.classesExcludes: com/ibm/ws/security/common/jwk/internal/resources/*.
     com.ibm.websphere.org.osgi.core;version=latest, \
     com.ibm.websphere.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-    com.ibm.ws.com.google.gson.2.2.4;version=latest,\
     com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.ws.org.apache.commons.codec;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \

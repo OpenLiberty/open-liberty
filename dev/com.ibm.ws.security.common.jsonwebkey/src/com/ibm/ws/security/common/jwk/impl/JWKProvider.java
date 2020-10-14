@@ -239,7 +239,6 @@ public class JWKProvider {
 
             while (it.hasNext()) {
                 JWK jwk = it.next();
-                //keys.add(( new Gson().toJson(jwk.getJsonObject())));
                 JSONObject jsonKey = jwk != null ? jwk.getJsonObject() : (JSONObject) null;
                 keys.add(jsonKey);
             }

@@ -52,7 +52,7 @@ generate.replacement: true
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	org.apache.httpcomponents:httpmime;version=4.3.1,\
+	org.apache.httpcomponents:httpmime;version=latest,\
 	net.sourceforge.cssparser:cssparser;version=0.9.23,\
 	org.eclipse.jetty.websocket:websocket-api;version=9.4.5.v20170502,\
 	org.eclipse.jetty.websocket:websocket-client;version=9.4.5.v20170502,\
@@ -72,8 +72,8 @@ generate.replacement: true
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
-    org.apache.httpcomponents:httpclient;version=4.3.1, \
-    org.apache.httpcomponents:httpcore;version=4.3, \
+    org.apache.httpcomponents:httpclient;version=latest, \
+    org.apache.httpcomponents:httpcore;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.27, \
     net.sourceforge.htmlunit:htmlunit-core-js;version=2.27, \
     org.apache.commons:commons-lang3;version=3.8, \

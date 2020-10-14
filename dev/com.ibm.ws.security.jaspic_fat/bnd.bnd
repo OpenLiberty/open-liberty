@@ -44,5 +44,5 @@ tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, jaxb-3.
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	fattest.simplicity;version=latest,\
-	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
-	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2
+	org.apache.httpcomponents:httpclient;version=latest,\
+	org.apache.httpcomponents:httpcore;version=latest

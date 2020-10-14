@@ -66,8 +66,8 @@ tested.features:\
     com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
     httpunit:httpunit;version=1.5.4,\
     commons-httpclient:commons-httpclient;version=3.1,\
-    org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
-    org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
+    org.apache.httpcomponents:httpclient;version=latest,\
+    org.apache.httpcomponents:httpcore;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest

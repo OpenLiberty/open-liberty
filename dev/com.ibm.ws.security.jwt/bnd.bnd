@@ -58,7 +58,6 @@ Import-Package: \
     javax.servlet.http, \
     javax.net.ssl, \
     org.apache.http.*, \
-    com.google.gson.*;resolution:=optional, \
     javax.ws.rs.client;version="[2.0.0, 3.0.0)";resolution:=optional, \
     javax.ws.rs.core;version="[2.0.0, 3.0.0)";resolution:=optional, \
     com.ibm.wsspi.security.registry;version="[1.0.0, 2.0)";resolution:=optional, \
@@ -117,9 +116,6 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.ssl;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
-    org.apache.httpcomponents:httpclient;version=4.5.5, \
-    org.apache.httpcomponents:httpcore;version=4.4.9, \
-    com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.json4j;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest

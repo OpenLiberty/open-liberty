@@ -42,6 +42,6 @@ tested.features: \
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    org.apache.httpcomponents:httpclient;version=4.3.4,\
-    org.apache.httpcomponents:httpcore;version=4.3.4,\
+    org.apache.httpcomponents:httpclient;version=latest,\
+    org.apache.httpcomponents:httpcore;version=latest,\
     javax.validation:validation-api;version=2.0.1.Final

@@ -32,6 +32,6 @@ tested.features: mpconfig-1.4, restfulWS-3.0, restfulWSClient-3.0, appsecurity-2
   com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
   com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2,\
-  org.apache.httpcomponents:httpclient;version=4.3.1,\
-  org.apache.httpcomponents:httpcore;version=4.3.1
+  org.apache.httpcomponents:httpclient;version=latest,\
+  org.apache.httpcomponents:httpcore;version=latest
   

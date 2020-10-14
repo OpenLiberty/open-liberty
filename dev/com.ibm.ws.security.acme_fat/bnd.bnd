@@ -24,8 +24,8 @@ fat.project: true
     org.rnorth.duct-tape:duct-tape;version=1.0.7,\
     org.testcontainers:testcontainers;version=1.14.0,\
     org.slf4j:slf4j-api;version=1.7.7,\
-    org.apache.httpcomponents:httpclient;version=4.5.5,\
-    org.apache.httpcomponents:httpcore;version=4.4.9,\
+    org.apache.httpcomponents:httpclient;version=latest,\
+    org.apache.httpcomponents:httpcore;version=latest,\
     org.shredzone.acme4j:acme4j-client;version=2.7,\
     org.shredzone.acme4j:acme4j-utils;version=2.7,\
     com.ibm.ws.logging;version=latest,\
