@@ -10,9 +10,16 @@
  *******************************************************************************/
 
  dependencies {
-  requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
-      'net.sourceforge.htmlunit:htmlunit:2.27',
-      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
+  requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+      'org.brotli:dec:0.1.2',
+      'xerces:xercesImpl:2.11.0',
+      'xalan:xalan:2.7.2',
+      'commons-io:commons-io:2.6',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
       'org.apache.commons:commons-lang3:3.8',
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'org.apache.httpcomponents:httpmime:4.3.1',

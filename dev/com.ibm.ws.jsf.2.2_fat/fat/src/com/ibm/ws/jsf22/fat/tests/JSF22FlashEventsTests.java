@@ -115,7 +115,7 @@ public class JSF22FlashEventsTests {
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22FlashEvents/indexNoFlash.jsf");
 
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("John", false, false, false);
+            input.type("John");
 
             HtmlElement button = (HtmlElement) page.getElementById("testForm:submitCommandButton1");
             page = button.click();
@@ -132,7 +132,7 @@ public class JSF22FlashEventsTests {
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22FlashEvents/indexFlash.jsf");
 
             input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("John", false, false, false);
+            input.type("John");
 
             button = (HtmlElement) page.getElementById("testForm:submitCommandButton1");
             page = button.click();
@@ -180,7 +180,7 @@ public class JSF22FlashEventsTests {
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22FlashEvents/indexFlashAndKeep.jsf");
 
             input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("Mary", false, false, false);
+            input.type("Mary");
 
             button = (HtmlElement) page.getElementById("testForm:submitCommandButton1");
             page = button.click();
