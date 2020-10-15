@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
@@ -577,7 +578,8 @@ public class H2StreamProcessor {
                     }
                     continue;
                 } catch (Http2Exception e) {
-                    if ((addFrame == ADDITIONAL_FRAME.FIRST_TIME) || (addFrame == ADDITIONAL_FRAME.RESET)) {
+                    if (!(muxLink.checkIfGoAwaySendingOrClosing()) &&
+                        ((addFrame == ADDITIONAL_FRAME.FIRST_TIME) || (addFrame == ADDITIONAL_FRAME.RESET))) {
                         if ((frameType == FrameTypes.DATA) && (e instanceof FlowControlException)) {
                             FCEToThrow = (FlowControlException) e;
                         }
@@ -1990,6 +1992,13 @@ public class H2StreamProcessor {
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFrameSync caught an IOException: " + e);
+                }
+
+                // close connection on IOException, unless it is a timeout, without sending a GOAWAY or RESET
+                // this is mainly to prevent trying to send spuirous goaways during server shutdown
+                if (!(e instanceof SocketTimeoutException)) {
+                    updateStreamState(StreamState.CLOSED);
+                    muxLink.closeConnectionLink(e, false);
                 }
 
                 Http2Exception up = new Http2Exception(e.getMessage());
