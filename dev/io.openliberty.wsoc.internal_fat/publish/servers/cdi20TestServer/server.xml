@@ -116,4 +116,6 @@
     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,accept,listen"/>
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    
+    <webContainer deferServletLoad="false"/>
 </server>
