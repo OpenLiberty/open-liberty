@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -268,6 +268,7 @@ public class SerializationServiceImpl implements SerializationService {
     private Class<?> loadClass(final ServiceReference<?> ref, final String name) throws ClassNotFoundException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                @FFDCIgnore(ClassNotFoundException.class)
                 @Override
                 public Class<?> run() throws ClassNotFoundException {
                     // NOTE: If you're investigating a stack trace that shows a
@@ -275,7 +276,27 @@ public class SerializationServiceImpl implements SerializationService {
                     // loadClass, then the bundle mentioned by the trace point
                     // below has a DeserializationClassProvider for a class or
                     // package but probably does not actually contain the class.
-                    return ref.getBundle().loadClass(name);
+                    try {
+                        return ref.getBundle().loadClass(name);
+                    } catch (ClassNotFoundException x) {
+                        if (name != null) {
+                            String retryName;
+                            if (name.startsWith("javax."))
+                                retryName = "jakarta." + name.substring(6);
+                            else if (name.startsWith("jakarta."))
+                                retryName = "javax." + name.substring(8);
+                            else
+                                retryName = null;
+                            if (retryName != null)
+                                try {
+                                    return ref.getBundle().loadClass(retryName);
+                                } catch (ClassNotFoundException cnfx) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                        Tr.debug(tc, "unable to load " + retryName + " from " + ref, x);
+                                }
+                        }
+                        throw x;
+                    }
                 }
             });
         } catch (PrivilegedActionException e) {
