@@ -14,7 +14,9 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-resourceadapters/adapter/src,\
-	test-applications/fvtweb/src
+	test-applications/fvtweb/src,\
+	test-resourceadapters/fvtra/src,\
+	test-resourceadapters/helloworldra/src
 
 fat.project: true
 

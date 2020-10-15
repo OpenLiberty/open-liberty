@@ -26,7 +26,7 @@
 		<config-property>
 			<config-property-name>adapterName</config-property-name>
 			<config-property-type>java.lang.String</config-property-type>
-			<config-property-value>adapter_administrator_object</config-property-value>
+			<config-property-value>adapter</config-property-value>
 		</config-property>
 		
 		<!--Outbound resource adapter-->

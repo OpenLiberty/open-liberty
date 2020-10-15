@@ -9,9 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+//TODO this external resource adapter is currently being hosted in artifactory. 
+// We need to figure out a way to not depend on this as this test cannot be run by external contributors
+// But at the moment I fear we will loose some necessary test coverage if we try to uncouple.
+
+configurations {
+	artifactory
+}
+
+dependencies {
+	artifactory 'com.ibm.ws.jca:imsico1210:1.0'
+}
+
 task copyExternalResourceAdapaters(type: Copy) {
-	from new File(projectDir, 'external-resourceadapters')
+	from configurations.artifactory
 	into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jca.fat/connectors')
+	rename 'imsico1210-1.0.jar', 'imsico1210.rar'
 }
 
 addRequiredLibraries.dependsOn copyExternalResourceAdapaters

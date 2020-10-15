@@ -51,23 +51,27 @@ public class JCA17Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Build jars that will be in the RAR
-        JavaArchive adapter_jar = ShrinkWrap.create(JavaArchive.class, "ResourceAdapter.jar");
-        adapter_jar.addPackage("com.ibm.adapter");
-        adapter_jar.addPackage("com.ibm.adapter.message");
-        adapter_jar.addPackage("com.ibm.ejs.ras");
-        adapter_jar.addPackage("com.ibm.inout.adapter");
-        adapter_jar.addManifest();
+        //build adapter.rar
+        ResourceAdapterArchive adapter = ShrinkHelper.defaultRar(server, "adapter", "com.ibm.adapter", "com.ibm.adapter.message", "com.ibm.ejs.ras", "com.ibm.inout.adapter");
 
-        // Build the resource adapter
-        ResourceAdapterArchive adpater_resource = ShrinkWrap.create(ResourceAdapterArchive.class, "adapter_administrator_object.rar");
-        adpater_resource.as(JavaArchive.class).addPackage("fat.jca.resourceadapter");
-        adpater_resource.addAsManifestResource(new File("test-resourceadapters/adapter/resources/META-INF/ra.xml"));
-        adpater_resource.addAsLibrary(adapter_jar);
-        adpater_resource.addManifest();
-        ShrinkHelper.exportToServer(server, "connectors", adpater_resource);
+        //build fvtra.rar
+        ResourceAdapterArchive fvtra = ShrinkHelper.defaultRar(server, "fvtra", "com.ibm.fvtra");
 
-        // Build the web module and application
+        //intermediate jar
+        JavaArchive helloworld = ShrinkHelper.buildJavaArchive("helloworldra", "com.ibm.helloworldra");
+
+        //build helloworld.rar
+        ResourceAdapterArchive helloworldra = ShrinkWrap.create(ResourceAdapterArchive.class, "helloworldra.rar");
+        helloworldra.addAsLibrary(helloworld);
+        helloworldra.addAsManifestResource(new File("test-resourceadapters/helloworldra/resources/META-INF/ra.xml"));
+
+        //build helloworldbean.rar
+        ResourceAdapterArchive helloworldbeanra = ShrinkWrap.create(ResourceAdapterArchive.class, "helloworldbeanra.rar");
+        helloworldbeanra.addAsLibrary(helloworld);
+        helloworldbeanra.addAsManifestResource(new File("test-resourceadapters/helloworldra/resources/META-INF/ra.xml"));
+        helloworldbeanra.addAsManifestResource(new File("test-resourceadapters/helloworldra/resources/META-INF/beans.xml"));
+
+        // Build the web module
         WebArchive fvtweb_war = ShrinkWrap.create(WebArchive.class, WEB_NAME + ".war");
         fvtweb_war.addPackage("web");
         fvtweb_war.addPackage("ejb");
@@ -76,10 +80,17 @@ public class JCA17Test extends FATServletClient {
         fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
         fvtweb_war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
 
+        // build and export enterprise application
         EnterpriseArchive fvtapp_ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear");
         fvtapp_ear.addAsModule(fvtweb_war);
-        fvtapp_ear.addAsModule(adpater_resource);
+        fvtapp_ear.addAsModule(adapter);
         fvtapp_ear.addAsManifestResource(new File("test-applications/fvtapp/META-INF/application.xml"));
+
+        //Export everything to server
+        ShrinkHelper.exportToServer(server, "connectors", adapter);
+        ShrinkHelper.exportToServer(server, "connectors", fvtra);
+        ShrinkHelper.exportToServer(server, "connectors", helloworldra);
+        ShrinkHelper.exportToServer(server, "connectors", helloworldbeanra);
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
         server.startServer();

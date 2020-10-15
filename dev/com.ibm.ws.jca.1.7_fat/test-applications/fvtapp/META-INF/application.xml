@@ -22,7 +22,7 @@
     
     </module>
     <module>
-        <connector id="AOD1">adapter_administrator_object.rar</connector>
+        <connector id="AOD1">adapter.rar</connector>
     </module>
     
     <connection-factory>
@@ -59,7 +59,7 @@
 		<description>Sample Admin Object definition</description>
 		<name>java:app/env/jca/aodappdd</name>
 		<interface-name>javax.jms.Queue</interface-name>
-		<class-name>ra.DummyQueue</class-name>	
+		<class-name>com.ibm.fvtra.DummyQueue</class-name>	
 		<resource-adapter>ZRA</resource-adapter>
 	</administered-object> 
 </application>

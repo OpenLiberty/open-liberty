@@ -29,7 +29,7 @@
     <resourceAdapter id="IMS1" location="${server.config.dir}/connectors/imsico1210.rar"/>
     <resourceAdapter id="HELLOWORLD1" location="${server.config.dir}/connectors/helloworldra.rar"/>
     <resourceAdapter id="HELLOWORLD2" location="${server.config.dir}/connectors/helloworldbeanra.rar"/>
-	<resourceAdapter id="ADO" location="${server.config.dir}/connectors/adapter_administrator_object.rar"/>
+	<resourceAdapter id="ADO" location="${server.config.dir}/connectors/adapter.rar"/>
 	<resourceAdapter id="ZRA" location="${server.config.dir}/connectors/fvtra.rar"/>
 	
     <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear"/>
