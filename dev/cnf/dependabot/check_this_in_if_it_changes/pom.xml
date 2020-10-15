@@ -889,7 +889,7 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.0-M1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
