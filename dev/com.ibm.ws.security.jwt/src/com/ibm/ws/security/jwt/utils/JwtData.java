@@ -39,8 +39,6 @@ public class JwtData {
 
     private static final TraceComponent tc = Tr.register(JwtData.class);
 
-    private static final String SIGNATURE_ALG_HS256 = "HS256";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
     private static final String SIGNATURE_ALG_NONE = "none";
 
     // public static final String TYPE_ID_TOKEN = "ID Token";
@@ -52,6 +50,7 @@ public class JwtData {
     private Key _signingKey = null;
     private String _keyId = null;
 
+    BuilderImpl builder = null;
     JwtConfig jwtConfig = null;
     JwtDataConfig jwtDataConfig = null;
     String tokenType = TYPE_JWT_TOKEN;
@@ -63,6 +62,7 @@ public class JwtData {
     private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     public JwtData(BuilderImpl jwtBuilder, JwtConfig jwtConfig, String tokenType) throws JwtTokenException {
+        builder = jwtBuilder;
         this.jwtConfig = jwtConfig;
         this.tokenType = tokenType;
         signatureAlgorithm = jwtBuilder.getAlgorithm();
@@ -81,6 +81,10 @@ public class JwtData {
         signatureAlgorithm = config.signatureAlgorithm;
         bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
         initSigningKey(jwtDataConfig);
+    }
+
+    public BuilderImpl getBuilder() {
+        return builder;
     }
 
     public JwtConfig getConfig() {
@@ -235,4 +239,16 @@ public class JwtData {
     public boolean isJwt() {
         return bJwtToken;
     }
+
+    public boolean isJwe() {
+        boolean isJwe = false;
+        if (jwtConfig != null) {
+            isJwe = jwtConfig.getKeyManagementKeyAlias() != null;
+        }
+        if (!isJwe && builder != null) {
+            isJwe = builder.getKeyManagementKey() != null;
+        }
+        return isJwe;
+    }
+
 }

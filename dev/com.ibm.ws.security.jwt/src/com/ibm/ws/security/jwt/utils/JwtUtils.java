@@ -88,6 +88,9 @@ public class JwtUtils {
 	public static final String CFG_KEY_ELAPSED_NBF = "elapsedNBF";
 	public static final String CFG_AMR_CLAIM = "amrValues";
 	public static final String CFG_AMR_ATTR = "amrInclude";
+	public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALG = "keyManagementKeyAlgorithm";
+	public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
+	public static final String CFG_KEY_CONTENT_ENCRYPTION_ALG = "contentEncryptionAlgorithm";
 
 	public static final String JCEPROVIDER_IBM = "IBMJCE";
 	public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
@@ -392,7 +395,7 @@ public class JwtUtils {
 			isPlainTextJWT = true;
 		}
 		String[] pieces = tokenString.split(Pattern.quote(DELIMITER));
-		if (!isPlainTextJWT && pieces.length != 3) {
+		if (!isPlainTextJWT && pieces.length != 3 && pieces.length != 5) {
 			// Tr.warning("Expected JWT to have 3 segments separated by '" +
 			// DELIMITER + "', but it has " + pieces.length + " segments");
 			return null;
@@ -403,7 +406,12 @@ public class JwtUtils {
 	public static String getPayload(String jwt) {
 		String[] jwtInfo = splitTokenString(jwt);
 		if (jwtInfo != null) {
-			return jwtInfo[1];
+		    if (jwtInfo.length > 3) {
+		        // TODO JWT appears to be in JWE format
+		        return jwtInfo[3];
+		    } else {
+			    return jwtInfo[1];
+		    }
 		}
 		return null;
 	}

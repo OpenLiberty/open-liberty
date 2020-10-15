@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ task jwtbuilder(type: War, dependsOn: classes) {
   from ('build/classes/java/main') {
     include "com/ibm/ws/security/fat/common/apps/${appName}/**/*.class"
     include "com/ibm/ws/security/fat/common/jwt/JwtConstants.class"
+    include "com/ibm/ws/security/fat/common/jwt/HeaderConstants.class"
     into "WEB-INF/classes"
   }
 }

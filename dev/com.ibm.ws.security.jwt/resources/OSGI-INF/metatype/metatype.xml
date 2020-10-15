@@ -48,6 +48,13 @@
          </AD>
          <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String" default="-1" ibm:type="duration(s)" ibm:beta="true"/>
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
+         <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" ibm:beta="true">
+             <Option label="%keyManagementKeyAlgorithm.RSA-OAEP" value="RSA-OAEP" />
+         </AD>
+         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" ibm:beta="true"/>
+         <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" ibm:beta="true">
+             <Option label="%contentEncryptionAlgorithm.A256GCM" value="A256GCM" />
+         </AD>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">

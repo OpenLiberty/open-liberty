@@ -11,6 +11,7 @@
 package com.ibm.ws.security.jwt.fat.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jose4j.jwt.NumericDate;
@@ -28,17 +29,18 @@ import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
-import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderClaimRepeatActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
+import com.ibm.ws.security.jwt.fat.builder.validation.BuilderTestValidationUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -67,7 +69,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtBuilderApiBasicTests extends CommonSecurityFat {
@@ -82,10 +83,11 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     // -- once where the builder will process claims individually
     // This allows us to use the same tests with a variety of claims without having to duplicate test cases
     @ClassRule
+    //  TODO  public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection());
     public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection()).andWith(JwtBuilderClaimRepeatActions.asSingle());
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
-    public static final TestValidationUtils validationUtils = new TestValidationUtils();
+    public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
 
     public long testExp = 2107268760L;
     public long oldExp = 1443551518L;
@@ -97,13 +99,16 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // Start server that will build the JWT Token
         serverTracker.addServer(builderServer);
+        ServerInstanceUtils.addPSSAlgSettingToBootstrap(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_basicRegistry.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
 
         // start server to run protected app - make sure we can use the JWT Token that we produce
         serverTracker.addServer(rsServer);
         ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
+        ServerInstanceUtils.addPSSAlgSettingToBootstrap(rsServer);
         rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
         rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
@@ -229,7 +234,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedUrl(SecurityFatHttpUtils.getServerUrlBase(builderServer) + JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT));
-        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+someBadBuilderId", "Response did not show the expected failure."));
+        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+someBadBuilderId", "Response did not show the expected failure."));
 
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, "someBadBuilderId");
         validationUtils.validateResult(response, expectations);
@@ -258,7 +263,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedUrl(SecurityFatHttpUtils.getServerUrlBase(builderServer) + JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT));
-        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+null", "Response did not show the expected failure."));
+        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+null", "Response did not show the expected failure."));
 
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, JWTBuilderConstants.NULL_STRING);
         validationUtils.validateResult(response, expectations);
@@ -287,7 +292,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedUrl(SecurityFatHttpUtils.getServerUrlBase(builderServer) + JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT));
-        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+\\[\\]", "Response did not show the expected failure."));
+        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+\\[\\]", "Response did not show the expected failure."));
 
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, JWTBuilderConstants.EMPTY_STRING);
         validationUtils.validateResult(response, expectations);
@@ -333,7 +338,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.AUDIENCE, parmarray);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -707,7 +712,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.EXPIRATION_TIME, oldExp);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -749,7 +754,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.EXPIRATION_TIME, NumericDate.fromSeconds(0L).getValue());
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -791,7 +796,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.EXPIRATION_TIME, NumericDate.fromSeconds(-2L).getValue());
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6042E_BAD_EXP_TIME, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -878,7 +883,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.NOT_BEFORE, NumericDate.fromSeconds(0L).getValue());
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6018E_CLAIM_MUST_BE_GT_ZERO, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6018E_CLAIM_MUST_BE_GT_ZERO, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -920,7 +925,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.NOT_BEFORE, NumericDate.fromSeconds(-2L).getValue());
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6018E_CLAIM_MUST_BE_GT_ZERO, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6018E_CLAIM_MUST_BE_GT_ZERO, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -1236,7 +1241,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, null);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -1278,7 +1283,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "");
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -1365,7 +1370,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.ISSUER, null);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -1407,7 +1412,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.ISSUER, "");
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -1604,10 +1609,10 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         String msgId = null;
         if (processClaimsAs.equals(JWTBuilderConstants.AS_COLLECTION)) {
             // message received when null map passed
-            msgId = JwtMessageConstants.CWWKS6021E_CLAIMS_ARE_NOT_VALID;
+            msgId = JwtBuilderMessageConstants.CWWKS6021E_CLAIMS_ARE_NOT_VALID;
         } else {
             // message received when key value is null
-            msgId = JwtMessageConstants.CWWKS6015E_INVALID_CLAIM;
+            msgId = JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM;
         }
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, msgId, builderServer);
 
@@ -1659,7 +1664,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put("stillOneMoreClaim", "stillOneMoreValue");
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6009E_INVALID_CLAIM, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -1763,7 +1768,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put("stillOneMoreClaim", "stillOneMoreValue");
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -1858,7 +1863,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.EXPIRATION_TIME, Long.toString(testExp));
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -1952,7 +1957,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.ISSUED_AT, Long.toString(BuilderHelpers.setNowLong() + Long.valueOf(5 * 60)));
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2046,7 +2051,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.NOT_BEFORE, Long.toString(BuilderHelpers.setNowLong() + Long.valueOf(5 * 60)));
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2141,7 +2146,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.ISSUER, testExp);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2236,7 +2241,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.TOKEN_TYPE, testExp);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2331,7 +2336,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.SUBJECT, testExp);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6019E_BAD_DATA_TYPE, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2427,7 +2432,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToSet.put(PayloadConstants.JWT_ID, testExp);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
 
         // Indicate how claims are to be handled (one at a time, or added as a hashmap)
         List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
@@ -2793,7 +2798,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToRemove.add(null);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_REMOVE_API, claimsToRemove);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -2824,7 +2829,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         claimsToRemove.add("");
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_REMOVE_API, claimsToRemove);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -3407,7 +3412,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
         String builderId = "jwt1";
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         validationUtils.validateResult(response, expectations);
 
@@ -3448,7 +3453,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
         String builderId = "jwt1";
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         validationUtils.validateResult(response, expectations);
 
@@ -3493,7 +3498,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         // extract the first jwt token from the output and use that to create expectations.  We'll compare the content of the second token
         // to that of the first (since everything from the original token was obtained via claimFrom(<jwtToken>), they should be the same
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         validationUtils.validateResult(response, expectations);
 
@@ -3538,7 +3543,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         // extract the first jwt token from the output and use that to create expectations.  We'll compare the content of the second token
         // to that of the first (since everything from the original token was obtained via claimFrom(<jwtToken>), they should be the same
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         validationUtils.validateResult(response, expectations);
 
@@ -3615,7 +3620,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another build to get claims from - we're testing claimFrom(null)
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3656,7 +3661,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another build to get claims from - we're testing claimFrom(null)
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3701,7 +3706,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another build to get claims from - we're testing claimFrom("")
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3740,7 +3745,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another build to get claims from - we're testing claimFrom("")
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3784,7 +3789,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another builder to get claims from - we're testing claimFrom("foo.foo.foo") (garbage)
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3825,7 +3830,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // don't bother building a token from another builder to get claims from - we're testing claimFrom("foo.foo.foo") (garbage)
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3884,7 +3889,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -3932,7 +3937,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -4030,7 +4035,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -4078,7 +4083,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -4176,7 +4181,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -4223,7 +4228,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIMFROM_API, claimsFrom);
 
         // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
@@ -4364,7 +4369,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -4407,7 +4412,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, "");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -4450,7 +4455,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -4493,7 +4498,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -4536,7 +4541,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -4579,7 +4584,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5094,7 +5099,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PUBLIC_KEY_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5136,7 +5141,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
         testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5178,7 +5183,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(HeaderConstants.ALGORITHM, null);
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5220,7 +5225,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(HeaderConstants.ALGORITHM, "");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5262,7 +5267,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         testSettings.put(HeaderConstants.ALGORITHM, "someNonAlg");
         testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -5336,4 +5341,757 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         validationUtils.validateResult(appResponse, appExpectations);
 
     }
+
+    /***************************************************** Test encryptWith ****************************************************/
+    /**
+     * The encryption tests will behave the same as the non-encryption tests - the test app will run the set methods,
+     * build, then the get methods - the output from the get methods is what the builder expectations will validate against.
+     * When the token is encrypted, the same get methods should/better work... So, we'll be testing that they return
+     * the correct results.
+     * The app will also run compact on the builder to generated the JWT Token string - when it's encrypted, it'll create
+     * a 5 part string (not encrypted, it'll be 3 parts)
+     * The encryption tests will decrypt and parse the token to do extra validation on the token!
+     *
+     **/
+    //    // encryptWith(String  keyManagementAlg,  Key keyManagementKey,  String  contentEncryptionAlg)
+    //    //"RSA-OAEP",  rsaPublicKey, "A256GCM"
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //
+    //        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+    //        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+    //
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+    //        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+    //
+    //    }
+    //  remaining tests will require updates similiar to the above test
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_shortPublicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_privateKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512private-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_RS256() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_ES384() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_HS512() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_shortPublicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS384public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_privateKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384private-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_RS384() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_ES512() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_HS256() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_shortPublicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS512public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_privateKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512private-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_RS512() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_ES256() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_HS384() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+    //        expectationSettings.put("overrideSettings", testSettings);
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_Invalid_publicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, "Some Random string");
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_Invalid_KeyMgmtAlg_RS256_publicKey_A256GCM() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "SomeKeyMgmtAlg");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    @Test
+    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_Invalid_ContentEncryptAlg() throws Exception {
+    //
+    //        String builderId = "jwt1";
+    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+    //
+    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
+    //        JSONObject testSettings = new JSONObject();
+    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
+    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
+    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "SomeContentEncryptAlg");
+    //        //        expectationSettings.put("overrideSettings", testSettings);
+    //        // TODO - update expectations for the encryption settings.
+    //
+    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+    //
+    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+    //        validationUtils.validateResult(response, expectations);
+    //
+    //    }
+    //
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_sigAlg_RS256_key_string() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_null_key_string() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_empty_key_string() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_garbage_key_string() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_privKey() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS384_key_privKey() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS512_key_privKey() throws Exception {
+    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_publicKey() throws Exception {
+    //    //    public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_null() throws Exception {
+
+    /*****************************************************
+     * Test various claimsFrom using encryption
+     ****************************************************/
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a JWT builder using <config1> and create a JWT Token (in the servlet)
+     * <LI>In the same server instance, use <config2> to create another builder.
+     * <LI>Use the claimsFrom api to load all claims from the original token
+     * <LI>Build another token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Verify that the second returned JWT Token contains all of the claims from the original token
+     * </OL>
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jwtToken_to_jweToken_allClaims() throws Exception {
+
+        String baseBuilderId = "jwt1";
+        // The test code can't really convert the jwt string into the jwt token, so, tell the
+        // test app to create a jwt token from another jwt builder config
+        // use that as the source for the claimFrom call.
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID, baseBuilderId);
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_TOKEN);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS256";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        // extract the first jwt token from the output and use that to create expectations.  We'll compare the content of the second token
+        // to that of the first (since everything from the original token was obtained via claimFrom(<jwtToken>), they should be the same
+        String jwtToken = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM + ": ");
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken); // first token is NOT encrypted
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweToken_to_jwtToken_allClaims() throws Exception {
+
+        String baseBuilderId = "encryptJwtRS256";
+        // The test code can't really convert the jwt string into the jwt token, so, tell the
+        // test app to create a jwt token from another jwt builder config
+        // use that as the source for the claimFrom call.
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID, baseBuilderId);
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_TOKEN);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
+        String builderId = "jwt1";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        // extract the first jwt token from the output and use that to create expectations.  We'll compare the content of the second token
+        // to that of the first (since everything from the original token was obtained via claimFrom(<jwtToken>), they should be the same
+        String jwtToken = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM + ": ");
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256)); // first token is  encrypted
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweTokenRS256_to_jweTokenRS384_allClaims() throws Exception {
+
+        String baseBuilderId = "encryptJwtRS256";
+        // The test code can't really convert the jwt string into the jwt token, so, tell the
+        // test app to create a jwt token from another jwt builder config
+        // use that as the source for the claimFrom call.
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID, baseBuilderId);
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_TOKEN);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS384";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        // extract the first jwt token from the output and use that to create expectations.  We'll compare the content of the second token
+        // to that of the first (since everything from the original token was obtained via claimFrom(<jwtToken>), they should be the same
+        String jwtToken = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM + ": ");
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256)); // first token is  encrypted
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jwtString_to_jweToken_allClaims() throws Exception {
+
+        // build a token using the alternate builder config (we'll get claims from it)
+        String baseBuilderId = "jwt1";
+        String jwtToken = getBaseToken(baseBuilderId);
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
+        // give it a flag that says jwt string, and then pass the 3 part jwt token string
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
+        testSettings.put(JWTBuilderConstants.JWT_TOKEN, jwtToken);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS256";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    // TODO Failing since claimsFrom doesn't know how to parse JWE Token
+    //@Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweString_to_jwtToken_allClaims() throws Exception {
+
+        // build a token using the alternate builder config (we'll get claims from it)
+        String baseBuilderId = "encryptJwtRS256";
+        String jwtToken = getBaseToken(baseBuilderId);
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
+        // give it a flag that says jwt string, and then pass the 3 part jwt token string
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
+        testSettings.put(JWTBuilderConstants.JWT_TOKEN, jwtToken);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
+        String builderId = "jwt1";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    // TODO Failing since claimsFrom doesn't know how to parse JWE Token
+    //@Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweStringRS256_to_jweTokenRS384_allClaims() throws Exception {
+
+        // build a token using the alternate builder config (we'll get claims from it)
+        String baseBuilderId = "encryptJwtRS256";
+        String jwtToken = getBaseToken(baseBuilderId);
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
+        // give it a flag that says jwt string, and then pass the 3 part jwt token string
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
+        testSettings.put(JWTBuilderConstants.JWT_TOKEN, jwtToken);
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS384";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweString_encodedPayload_allClaims() throws Exception {
+
+        // build a token using the alternate builder config (we'll get claims from it)
+        String baseBuilderId = "encryptJwtRS256";
+        String jwtToken = getBaseToken(baseBuilderId);
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
+        // give it a flag that says jwt string, and then pass the 3 part jwt token string
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
+        // just pass the encoded payload
+        testSettings.put(JWTBuilderConstants.JWT_TOKEN, BuilderHelpers.getPayload(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256)));
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS384";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @Test
+    public void JwtBuilderAPIBasicTests_claimsFrom_jweString_decodedPayload_allClaims() throws Exception {
+
+        // build a token using the alternate builder config (we'll get claims from it)
+        String baseBuilderId = "encryptJwtRS256";
+        String jwtToken = getBaseToken(baseBuilderId);
+        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
+        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
+        baseSettings.remove(PayloadConstants.ISSUED_AT);
+        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
+
+        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
+        // give it a flag that says jwt string, and then pass the 3 part jwt token string
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
+        // just pass the decoded payload
+        testSettings.put(JWTBuilderConstants.JWT_TOKEN, BuilderHelpers.getDecodedPayload(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256)));
+
+        // Now, add any override values - for this test, there are none
+        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
+        String builderId = "encryptJwtRS384";
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
 }
