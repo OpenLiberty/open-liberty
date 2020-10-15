@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -94,10 +95,8 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testSecureHelloWorldWithTls() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, serverConfigurationFile, DEFAULT_CONFIG_FILE, clientAppName, LOG);
 
         String response = runHelloWorldTlsTest();

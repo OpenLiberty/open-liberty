@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -99,10 +100,8 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testHelloWorldWithTls() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_DEFAULT, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
@@ -115,10 +114,8 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testHelloWorldWithTlsMutualAuth() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_MUTUAL_AUTH, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
@@ -131,12 +128,12 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     @AllowedFFDC("io.grpc.StatusRuntimeException")
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
+        // grpc.server.tls.invalid.trust.xml will cause the ssl channel to get restarted; we need to wait for it to come back up
+        assertNotNull("CWWKO0219I.*ssl not recieved", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
         Exception clientException = null;
 
         try {
@@ -147,6 +144,9 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         }
         assertTrue("An error is expected for this case", clientException != null);
 
+        // test cleanup: restore a "good" server.xml so that we don't need to wait for the ssl channel restart in another test case
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_OUTBOUND_FILTER, clientAppName, LOG);
+        assertNotNull("CWWKO0219I.*ssl not recieved", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     /**
@@ -156,11 +156,10 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testHelloWorldWithTlsFilter() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_OUTBOUND_FILTER, clientAppName, LOG);
+
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
