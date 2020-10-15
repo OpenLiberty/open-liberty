@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.internal.lifecycle;
 
+import static java.util.Collections.unmodifiableSet;
+import static java.util.stream.Collectors.toSet;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,6 +20,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -25,7 +29,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -36,7 +39,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 
 /**
- * Non configurable immediate component to track prereqs as they appear.
+ * Immediate component to track prereqs as they appear.
  */
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.app.prereqmonitor",
@@ -44,7 +47,7 @@ import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 public class ApplicationPrereqMonitor {
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
     private final ConfigurationAdmin configurationAdmin;
-    private final Set<String> declaredPrereqs = new TreeSet<>();
+    private final Set<String> declaredPrereqs;
     private final Set<String> realisedPrereqs = new TreeSet<>();
 
     /**
@@ -55,15 +58,9 @@ public class ApplicationPrereqMonitor {
     @Activate
     public ApplicationPrereqMonitor(@Reference ConfigurationAdmin configurationAdmin, Map<String, Object> properties) {
         this.configurationAdmin = configurationAdmin;
-        recordDeclaredPrereqs(properties);
-    }
 
-    @Modified
-    synchronized void recordDeclaredPrereqs(Map<String, Object> properties) {
         String[] pids = (String[]) properties.get("applicationPrereqDeclarations");
-        declaredPrereqs.clear();
-        for (String pid : pids)
-            declaredPrereqs.add(getIdFromServicePid(pid));
+        declaredPrereqs = unmodifiableSet(Stream.of(pids).map(this::servicePidToConfigId).collect(toSet()));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Known configured application Prereq Pids:" + Arrays.toString(pids)
@@ -71,7 +68,7 @@ public class ApplicationPrereqMonitor {
         }
     }
 
-    private String getIdFromServicePid(String servicePid) {
+    private String servicePidToConfigId(String servicePid) {
         Configuration[] configs;
         try {
             configs = this.configurationAdmin.listConfigurations("(" + Constants.SERVICE_PID + "=" + servicePid + ")");
