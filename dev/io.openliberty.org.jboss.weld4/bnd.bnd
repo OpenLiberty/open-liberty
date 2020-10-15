@@ -23,3 +23,7 @@ instrument.disabled: true
 -buildpath: \
 	org.jboss.weld:weld-osgi-bundle;version=4.0.0, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest

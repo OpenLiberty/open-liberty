@@ -73,6 +73,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("wasJmsServer", "messagingServer");
         featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
         featureNameMapping.put("jsf", "faces");
+        featureNameMapping.put("jsfContainer", "facesContainer");
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);

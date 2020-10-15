@@ -47,6 +47,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * General JSF 2.3 test cases the also require CDI.
@@ -277,14 +278,14 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
             assertTrue(resultPage.asText()
                             .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type javax.faces.flow.FlowScoped")); // Expected exception
+                                      + "for scope type "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: javax.servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: javax.faces"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"faces"));
         }
     }
 
