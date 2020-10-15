@@ -27,6 +27,7 @@ import com.ibm.ws.security.jaspic11.fat.audit.JASPIFormLoginAuditTest;
 import com.ibm.ws.security.jaspic11.fat.audit.JASPIFormLoginJACCAuthorizationAuditTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -71,8 +72,8 @@ public class FATSuite {
     }
 
     /*
-     * Repeat tests with EE9.
+     * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().removeFeatures(EE78_FEATURES).addFeatures(EE9_FEATURES));
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().removeFeatures(EE78_FEATURES).addFeatures(EE9_FEATURES));
 }

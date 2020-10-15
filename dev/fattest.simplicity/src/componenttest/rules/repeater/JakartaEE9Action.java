@@ -74,7 +74,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "enterpriseBeansTest-2.0",
                                                  "jacc-2.0",
                                                  "jaspic-2.0",
-                                                 "javaMail-2.0",
+                                                 "mail-2.0",
                                                  "jaxb-3.0",
                                                  "jpa-3.0",
                                                  "jsonp-2.0",
