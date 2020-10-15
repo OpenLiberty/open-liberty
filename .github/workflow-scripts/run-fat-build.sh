@@ -32,6 +32,7 @@ do
   BUCKET_PASSED=true
   ./gradlew :$FAT_BUCKET:buildandrun $GIT_DIFF || BUCKET_PASSED=false
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
+  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
   mkdir -p $OUTPUT_DIR
   if $BUCKET_PASSED; then
     echo "The bucket $FAT_BUCKET passed.";
@@ -40,6 +41,8 @@ do
     echo "::error::The bucket $FAT_BUCKET failed.";
     touch "$OUTPUT_DIR/fail.log";
   fi
+  echo "@@@ Uploading fat results to testspace @@@"
+  testspace "[$CATEGORY/$FAT_BUCKET]$RESULTS_DIR/junit/TEST-*.xml"
   echo "### END running FAT bucket $FAT_BUCKET";
 done
 

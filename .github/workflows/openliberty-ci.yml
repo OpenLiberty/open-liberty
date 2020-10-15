@@ -1,9 +1,11 @@
 name: OpenLiberty CI
 
 on:
+  # This is temporary so that a new build starts on push for testing.
   push:
     branches: 
     - gh-actions
+  ###############
   pull_request:
     branches: 
     - integration
@@ -19,7 +21,6 @@ on:
       - 'cla/**'
       - 'images/**'
       - 'logos/**'
-
 env:
   LANG: en_US
 jobs:
@@ -64,6 +65,9 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v2
+    - uses: testspace-com/setup-testspace@v1
+      with:
+        domain: ${{ github.repository_owner }}  
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
@@ -88,6 +92,7 @@ jobs:
         cd dev
         chmod +x gradlew
         ./gradlew --continue cnf:initialize testClasses testResults
+        testspace "[Unit Tests][+]dev/cnf/generated/testReports/allUnitTests/*"
     - name: Upload unit test logs
       if: failure()
       uses: actions/upload-artifact@v2
@@ -545,6 +550,9 @@ jobs:
               com.ibm.ws.wsat_fat.7
     steps:
     - uses: actions/checkout@v2
+    - uses: testspace-com/setup-testspace@v1
+      with:
+        domain: ${{ github.repository_owner }}
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
