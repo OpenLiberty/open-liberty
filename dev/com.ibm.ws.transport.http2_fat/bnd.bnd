@@ -23,6 +23,6 @@ fat.project: true
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	org.apache.httpcomponents.client5:httpclient5;version=5.0,\
-	org.apache.httpcomponents.core5:httpcore5;version=5.0,\
-	org.apache.httpcomponents.core5:httpcore5-h2;version=5.0
+	org.apache.httpcomponents.client5:httpclient5;version=5.0.2,\
+	org.apache.httpcomponents.core5:httpcore5;version=5.0.2,\
+	org.apache.httpcomponents.core5:httpcore5-h2;version=5.0.2
