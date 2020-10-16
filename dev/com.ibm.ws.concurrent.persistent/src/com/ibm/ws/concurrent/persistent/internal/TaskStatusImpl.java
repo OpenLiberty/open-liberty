@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2020 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -329,10 +329,8 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
         if (triggerBytes == null)
             return null;
 
-        ClassLoader loader = classLoaderIdentifier == null //
-                        ? InvokerTask.priv.getSystemClassLoader() //
-                        : persistentExecutor.classloaderIdSvc.getClassLoader(classLoaderIdentifier);
-        return (TimerTrigger) persistentExecutor.deserialize(triggerBytes, loader);
+        // The task/trigger for EJB persistent timers does not require the application class loader to deserialize.
+        return (TimerTrigger) persistentExecutor.deserialize(triggerBytes, InvokerTask.priv.getSystemClassLoader());
     }
 
     /**

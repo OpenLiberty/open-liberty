@@ -268,7 +268,7 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                            "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                           "CWWKC1503W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+                           "CWWKC1503W.*", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry] OR timer rolls back for trying to run while server is stopping
                            "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
         );
     }

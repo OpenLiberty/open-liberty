@@ -261,6 +261,32 @@ public class SerializationServiceImpl implements SerializationService {
             }
         }
 
+        // Check for classes to convert between Java EE and Jakarta EE.
+        String retryName;
+        if (name.startsWith("javax."))
+            retryName = "jakarta." + name.substring(6);
+        else if (name.startsWith("jakarta."))
+            retryName = "javax." + name.substring(8);
+        else
+            retryName = null;
+        if (retryName != null) {
+            // First, try to find the class by name.
+            provider = classProviders.getReference(retryName);
+            if (provider != null) {
+                return loadClass(provider, retryName);
+            }
+
+            // Next, try to find the class by package.
+            index = retryName.lastIndexOf('.');
+            if (index != -1) {
+                String pkg = retryName.substring(0, index);
+                provider = packageProviders.getReference(pkg);
+                if (provider != null) {
+                    return loadClass(provider, retryName);
+                }
+            }
+        }
+
         return null;
     }
 
@@ -268,7 +294,6 @@ public class SerializationServiceImpl implements SerializationService {
     private Class<?> loadClass(final ServiceReference<?> ref, final String name) throws ClassNotFoundException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-                @FFDCIgnore(ClassNotFoundException.class)
                 @Override
                 public Class<?> run() throws ClassNotFoundException {
                     // NOTE: If you're investigating a stack trace that shows a
@@ -276,27 +301,7 @@ public class SerializationServiceImpl implements SerializationService {
                     // loadClass, then the bundle mentioned by the trace point
                     // below has a DeserializationClassProvider for a class or
                     // package but probably does not actually contain the class.
-                    try {
-                        return ref.getBundle().loadClass(name);
-                    } catch (ClassNotFoundException x) {
-                        if (name != null) {
-                            String retryName;
-                            if (name.startsWith("javax."))
-                                retryName = "jakarta." + name.substring(6);
-                            else if (name.startsWith("jakarta."))
-                                retryName = "javax." + name.substring(8);
-                            else
-                                retryName = null;
-                            if (retryName != null)
-                                try {
-                                    return ref.getBundle().loadClass(retryName);
-                                } catch (ClassNotFoundException cnfx) {
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                        Tr.debug(tc, "unable to load " + retryName + " from " + ref, x);
-                                }
-                        }
-                        throw x;
-                    }
+                    return ref.getBundle().loadClass(name);
                 }
             });
         } catch (PrivilegedActionException e) {
