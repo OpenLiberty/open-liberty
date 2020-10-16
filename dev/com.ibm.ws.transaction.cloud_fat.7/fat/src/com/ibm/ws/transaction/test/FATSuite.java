@@ -10,9 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.output.OutputFrame;
+
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -20,5 +27,37 @@ import org.junit.runners.Suite.SuiteClasses;
                 PostgreSQLTest.class,
 })
 public class FATSuite {
+
+    static final String POSTGRES_DB = "testdb";
+    static final String POSTGRES_USER = "postgresUser";
+    static final String POSTGRES_PASS = "superSecret";
+
+    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>("postgres:11.2-alpine")
+                    .withDatabaseName(POSTGRES_DB)
+                    .withUsername(POSTGRES_USER)
+                    .withPassword(POSTGRES_PASS)
+                    .withConfigOption("max_prepared_transactions", "2")
+                    .withLogConsumer(FATSuite::log);
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        // Allows local tests to switch between using a local docker client, to using a
+        // remote docker client.
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+        postgre.start();
+    }
+
+    @AfterClass
+    public static void afterSuite() {
+        postgre.stop();
+    }
+
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(FATSuite.class, "[postgresql]", msg);
+    }
 
 }

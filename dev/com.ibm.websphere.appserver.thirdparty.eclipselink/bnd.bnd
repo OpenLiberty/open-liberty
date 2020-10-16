@@ -11,6 +11,12 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# Eclipselink version info
+eclVersion=2.6.8.WAS
+eclHash=b093148
+eclFullVersion=${eclVersion}-${eclHash}
+eclPackageVersion=1.0.16
+
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink
 Bundle-Description: EclipseLink JPA
 Bundle-Distributor: IBM
@@ -20,19 +26,19 @@ Premain-Class: org.eclipse.persistence.internal.jpa.deployment.JavaSECMPInitiali
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse.org - EclipseLink Project
 Bundle-ManifestVersion: 2
-Specification-Version: 2.6.8.WAS
+Specification-Version: ${eclVersion}
 
 Export-Package: \
-            org.eclipse.persistence.javax.persistence.osgi;version="1.0.16", \
-            org.eclipse.persistence.jpa.config;version="1.0.16", \
-            org.eclipse.persistence.sessions.serializers.kryo;version="1.0.16", \
-            org.eclipse.persistence.internal.jpa.config.*;version="1.0.16", \
-            org.eclipse.persistence.internal.jpa.metadata.graphs;version="1.0.16", \
-            org.eclipse.persistence.internal.jpa.metadata.sop;version="1.0.16", \
-            org.eclipse.persistence.internal.libraries.asm*;version="1.0.16", \
-            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="1.0.16", \
-            org.eclipse.persistence.jpa.jpql*;version="1.0.16", \
-            org.eclipse.persistence.*;version="2.6.8.WAS"
+            org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
+            org.eclipse.persistence.jpa.config;version="${eclPackageVersion}", \
+            org.eclipse.persistence.sessions.serializers.kryo;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.*;version="${eclVersion}"
 
 Import-Package: \
             com.ibm.tx.jta;resolution:=optional, \
@@ -102,12 +108,12 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence.antlr;3.5.2.v202005201612;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;8.0.1.v202008070940;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20200807-b093148;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 publish.wlp.jar.suffix: dev/api/third-party
@@ -120,8 +126,8 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence.core;version=2.6.8.WAS;strategy=exact,\
-    org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
+    com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
+    com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
     com.ibm.ws.javax.j2ee:persistence;version=2.1,\
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\

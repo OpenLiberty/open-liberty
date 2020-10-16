@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 Subsystem-Version: 2.0
 -bundles=io.openliberty.com.sun.mail.jakarta.mail.2.0
-kind=noship
+kind=beta
 edition=core
 WLP-Activation-Type: parallel

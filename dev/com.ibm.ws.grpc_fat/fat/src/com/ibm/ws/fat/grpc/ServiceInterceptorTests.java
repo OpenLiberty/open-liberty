@@ -99,7 +99,7 @@ public class ServiceInterceptorTests extends FATServletClient {
      */
     private static void setServerConfiguration(LibertyServer server,
                                                String serverXML) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        LOG.info("Entered set server config with xml " + serverXML);
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             LOG.info("ServiceInterceptorTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);

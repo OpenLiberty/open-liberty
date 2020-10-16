@@ -273,7 +273,7 @@ public class FeatureDefinitionUtils {
      * manifest.
      *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *                    for retrieving information from the manifest.
+     *            for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {

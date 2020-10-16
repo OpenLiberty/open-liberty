@@ -1,0 +1,1031 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               project(':com.ibm.websphere.javaee.servlet.3.0'),
+               project(':com.ibm.ws.security.audit_fat.common.tooling')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all test applications will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Java2Client.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task Java2Client_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'Java2Client.jar'
+
+  from (new File(projectDir, 'test-applications/Java2Client.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/java2/Java2App.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Java2Client.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task Java2Client_EAR (type: Zip, dependsOn: Java2Client_JAR) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'Java2Client.ear'
+
+  from (new File(projectDir, 'test-applications/Java2Client.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'Java2Client.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Java2ClientNoPermissionsXML.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task Java2ClientNoPermissionsXML_EAR (type: Zip, dependsOn: Java2Client_JAR) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'Java2ClientNoPermissionsXML.ear'
+
+  from (new File(projectDir, 'test-applications/Java2ClientNoPermissionsXML.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'Java2Client.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JavaColonInjectionAppClient.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task JavaColonInjectionAppClient_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'JavaColonInjectionAppClient.jar'
+  
+  from (new File(projectDir, 'test-applications/JavaColonInjectionAppClient.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/InjectionClientMain.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JavaColonInjectionAppEJB.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task JavaColonInjectionAppEJB_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'JavaColonInjectionAppEJB.jar'
+  
+  from (new File(projectDir, 'test-applications/JavaColonInjectionAppEJB.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/My*Bean.class'
+    include 'com/ibm/ws/security/client/fat/view/*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JavaColonInjectionApp.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task JavaColonInjectionApp_EAR (type: Zip) {
+  dependsOn JavaColonInjectionAppClient_JAR, JavaColonInjectionAppEJB_JAR
+  
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'JavaColonInjectionApp.ear'
+
+  from (new File(projectDir, 'test-applications/JavaColonInjectionApp.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'JavaColonInjectionAppClient.jar', 'JavaColonInjectionAppEJB.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** FileMonitorClient.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task FileMonitorClient_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'FileMonitorClient.jar'
+  
+  from (new File(projectDir, 'test-applications/FileMonitorClient.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/FileMonitorClientMain.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** FileMonitor.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task FileMonitor_EAR (type: Zip, dependsOn: FileMonitorClient_JAR) {
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'FileMonitor.ear'
+
+  from (new File(projectDir, 'test-applications/FileMonitor.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'FileMonitorClient.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SSLHttpsClient.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task SSLHttpsClient_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'SSLHttpsClient.jar'
+  
+  from (new File(projectDir, 'test-applications/SSLHttpsClient.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/BasicSSLClientMain*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SSLClient.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task SSLClient_EAR (type: Zip, dependsOn: SSLHttpsClient_JAR) {
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'SSLClient.ear'
+
+  from (new File(projectDir, 'test-applications/SSLClient.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'SSLHttpsClient.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** BasicCalculatorClient.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task BasicCalculatorClient_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'BasicCalculatorClient.jar'
+  
+  from (new File(projectDir, 'test-applications/BasicCalculatorClient.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/websphere/samples/technologysamples/basiccalcclient/*.class'
+    include 'com/ibm/websphere/samples/technologysamples/basiccalcclient/common/*.class'
+    include 'com/ibm/websphere/samples/technologysamples/ejb/stateless/basiccalculatorejb/BasicCalculator.class'
+    include 'com/ibm/websphere/samples/technologysamples/ejb/stateless/basiccalculatorejb/BasicCalculatorHome.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** BasicCalculatorClient.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task BasicCalculatorClient_EAR (type: Zip, dependsOn: BasicCalculatorClient_JAR) {
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'BasicCalculatorClient.ear'
+
+  from (new File(projectDir, 'test-applications/BasicCalculatorClient.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar' 
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** BasicCalculatorEJB.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task BasicCalculatorEJB_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'BasicCalculatorEJB.jar'
+  
+  from (new File(projectDir, 'test-applications/BasicCalculatorEJB.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/websphere/samples/technologysamples/ejb/stateless/basiccalculatorejb/BasicCalculatorBean.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** BasicCalculator.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task BasicCalculator_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, BasicCalculatorEJB_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'BasicCalculator.ear'
+
+  from (new File(projectDir, 'test-applications/BasicCalculator.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'BasicCalculatorEJB.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticJaasLogin.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticJaasLogin_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticJaasLogin.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticJaasLogin.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/programmaticlogin/ProgrammaticJaasLoginApp*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticJaasLogin.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticJaasLogin_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticJaasLogin_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticJaasLogin.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticJaasLogin.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticJaasLogin.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLogin.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLogin_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLogin.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLogin.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/programmaticlogin/ProgrammaticLoginApp*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLogin.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLogin_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLogin.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLogin.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandler.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandler_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandler.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandler.jar/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/client/fat/callbackhandler/ProgrammaticLoginCallbackHandler*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandler.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandler_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandler.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandler.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerBadPwd.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerBadPwd_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerBadPwd.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerBadPwd.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerBadPwd.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerBadPwd_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerBadPwd_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerBadPwd.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerBadPwd.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerBadPwd.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerEmptyPwd.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerEmptyPwd_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerEmptyPwd.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerEmptyPwd.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerEmptyPwd.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerEmptyPwd_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerEmptyPwd_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerEmptyPwd.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerEmptyPwd.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerEmptyPwd.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerEmptyUser.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerEmptyUser_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerEmptyUser.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerEmptyUser.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerEmptyUser.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerEmptyUser_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerEmptyUser_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerEmptyUser.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerEmptyUser.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerEmptyUser.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerNullPwd.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerNullPwd_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerNullPwd.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerNullPwd.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerNullPwd.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerNullPwd_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerNullPwd_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerNullPwd.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerNullPwd.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerNullPwd.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerNullUser.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerNullUser_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerNullUser.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerNullUser.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerNullUser.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerNullUser_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerNullUser_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerNullUser.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerNullUser.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerNullUser.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerUnauthzUser.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerUnauthzUser_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerUnauthzUser.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerUnauthzUser.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerUnauthzUser.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerUnauthzUser_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerUnauthzUser_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerUnauthzUser.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerUnauthzUser.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerUnauthzUser.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerUserNotDefined.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerUserNotDefined_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerUserNotDefined.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerUserNotDefined.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithCallbackHandlerUserNotDefined.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithCallbackHandlerUserNotDefined_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithCallbackHandlerUserNotDefined_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithCallbackHandlerUserNotDefined.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithCallbackHandlerUserNotDefined.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithCallbackHandlerUserNotDefined.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithNonexistentCallbackHandler.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithNonexistentCallbackHandler_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithNonexistentCallbackHandler.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithNonexistentCallbackHandler.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithNonexistentCallbackHandler.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithNonexistentCallbackHandler_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithNonexistentCallbackHandler_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithNonexistentCallbackHandler.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithNonexistentCallbackHandler.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithCallbackHandler.jar'
+    include 'ProgrammaticLoginWithNonexistentCallbackHandler.jar'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithoutCallbackHandler.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithoutCallbackHandler_JAR (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithoutCallbackHandler.jar'
+  
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithoutCallbackHandler.jar/resources')) {
+    include 'META-INF/**'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ProgrammaticLoginWithoutCallbackHandler.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task ProgrammaticLoginWithoutCallbackHandler_EAR (type: Zip) {
+  dependsOn BasicCalculatorClient_JAR, ProgrammaticLogin_JAR, ProgrammaticLoginWithCallbackHandler_JAR, ProgrammaticLoginWithoutCallbackHandler_JAR
+
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'ProgrammaticLoginWithoutCallbackHandler.ear'
+
+  from (new File(projectDir, 'test-applications/ProgrammaticLoginWithoutCallbackHandler.ear/resources')) {
+    include 'META-INF/**'
+  }
+  from (new File(buildDir, 'test-application')) {
+    include 'BasicCalculatorClient.jar'
+    include 'ProgrammaticLogin.jar'
+    include 'ProgrammaticLoginWithoutCallbackHandler.jar'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn Java2Client_EAR
+assemble.dependsOn Java2ClientNoPermissionsXML_EAR
+assemble.dependsOn JavaColonInjectionApp_EAR
+assemble.dependsOn FileMonitor_EAR
+assemble.dependsOn SSLClient_EAR
+assemble.dependsOn BasicCalculatorClient_EAR
+assemble.dependsOn BasicCalculator_EAR
+assemble.dependsOn ProgrammaticJaasLogin_EAR
+assemble.dependsOn ProgrammaticLogin_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandler_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerBadPwd_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerEmptyPwd_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerEmptyUser_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerNullPwd_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerNullUser_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerUnauthzUser_EAR
+assemble.dependsOn ProgrammaticLoginWithCallbackHandlerUserNotDefined_EAR
+assemble.dependsOn ProgrammaticLoginWithNonexistentCallbackHandler_EAR
+assemble.dependsOn ProgrammaticLoginWithoutCallbackHandler_EAR
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:testmarker'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:basicauth'
+autoFVT.doLast {
+
+
+  /******************************************************************
+   *
+   * COPY APPLICATIONS TO CLIENTS.
+   *
+   ******************************************************************/
+   
+  /*
+   * Copy applications into the java2client client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/java2Client/apps')
+    include 'Java2Client.ear', 'Java2ClientNoPermissionsXML.ear'
+  }
+
+  /*
+   * Copy applications into the javacolonClientInjection client. 
+   * (Not sure why the app is in both apps and dropins)
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/JavaColonInjectionApp.ear')
+    into new File(autoFvtDir, 'publish/clients/javacolonClientInjection/apps')
+  }
+  copy { 
+    from new File(project.buildDir, 'test-application/JavaColonInjectionApp.ear')
+    into new File(autoFvtDir, 'publish/clients/javacolonClientInjection/dropins')
+  }
+   
+  /*
+   * Copy applications into the myFileMonitorClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/FileMonitor.ear')
+    into new File(autoFvtDir, 'publish/clients/myFileMonitorClient/apps')
+  }
+   
+  /*
+   * Copy applications into the mySSLAutoAcceptClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/SSLClient.ear')
+    into new File(autoFvtDir, 'publish/clients/mySSLAutoAcceptClient/apps')
+  }
+
+  /*
+   * Copy applications into the mySSLCmdClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/earDD.ear')
+    into new File(autoFvtDir, 'publish/clients/mySSLCmdClient/apps')
+  }
+
+  /*
+   * Copy applications into the mySSLPromptClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/SSLClient.ear')
+    into new File(autoFvtDir, 'publish/clients/mySSLPromptClient/apps')
+  }
+
+  /*
+   * Copy applications into the mySSLTestClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/mySSLTestClient/apps')
+    include 'BasicCalculatorClient.ear', 'earDD.ear'
+  }
+
+  /*
+   * Copy applications into the myTestClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/myTestClient/apps')
+    include 'BasicCalculatorClient.ear', 'TechnologySamples.ear'
+  }
+
+  /*
+   * Copy applications into the noDefaultKeyClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/BasicCalculatorClient.ear')
+    into new File(autoFvtDir, 'publish/clients/noDefaultKeyClient/apps')
+  }
+
+  /*
+   * Copy applications into the ProgrammaticJaasLoginConfigFileTestClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application/ProgrammaticJaasLogin.ear')
+    into new File(autoFvtDir, 'publish/clients/ProgrammaticJaasLoginConfigFileTestClient/apps')
+  }
+  copy { 
+    from new File(project.buildDir, 'com.ibm.ws.security.client_fat.jar') 
+    into new File(autoFvtDir, 'publish/clients/ProgrammaticJaasLoginConfigFileTestClient')
+    rename 'com.ibm.ws.security.client_fat.jar', 'CustomLoginModule.jar'
+  }
+    copy { 
+    from new File(project.buildDir, 'com.ibm.ws.security.client_fat.jar') 
+    into new File(autoFvtDir, 'publish/clients/ProgrammaticJaasLoginConfigFileTestClient/resources/security/jaas')
+    rename 'com.ibm.ws.security.client_fat.jar', 'CustomLoginModule.jar'
+  }
+
+  /*
+   * Copy applications into the ProgrammaticLoginTestClient client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/ProgrammaticLoginTestClient/apps')
+    include 'ProgrammaticLogin.ear',                                  'ProgrammaticLoginWithCallbackHandler.ear', 
+            'ProgrammaticLoginWithCallbackHandlerBadPwd.ear',         'ProgrammaticLoginWithCallbackHandlerEmptyPwd.ear',
+            'ProgrammaticLoginWithCallbackHandlerEmptyUser.ear',      'ProgrammaticLoginWithCallbackHandlerNullPwd.ear',
+            'ProgrammaticLoginWithCallbackHandlerNullUser.ear',       'ProgrammaticLoginWithCallbackHandlerUnauthzUser.ear',
+            'ProgrammaticLoginWithCallbackHandlerUserNotDefined.ear', 'ProgrammaticLoginWithNonexistentCallbackHandler.ear',
+            'ProgrammaticLoginWithoutCallbackHandler.ear'
+  }
+  copy { 
+    from new File(project.buildDir, 'com.ibm.ws.security.client_fat.jar') 
+    into new File(autoFvtDir, 'publish/clients/ProgrammaticLoginTestClient')
+    rename 'com.ibm.ws.security.client_fat.jar', 'CustomLoginModule.jar'
+  }
+   
+
+  /******************************************************************
+   *
+   * COPY APPLICATIONS TO SERVERS.
+   *
+   ******************************************************************/
+   
+   /*
+    * Copy applications to the BasicAuthTest server.
+    */
+   copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/BasicAuthTest/dropins')
+   }
+   copy { 
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/BasicAuthTest/apps')
+   }
+   
+   /*
+    * Copy applications to the javacolonServerInjection server.
+    */
+   copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/javacolonServerInjection/dropins')
+   }
+   copy { 
+      from new File(project.buildDir, 'test-application/JavaColonInjectionApp.ear')
+      into new File(autoFvtDir, 'publish/servers/javacolonServerInjection/dropins')
+   }
+
+   /*
+    * Copy applications to the NonSecureServerTest server.
+    */
+   copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/NonSecureServerTest/dropins')
+   }
+   copy { 
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/NonSecureServerTest/apps')
+   }
+   
+   /*
+    * Copy applications to the SecureServerTest server.
+    */
+   copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/SecureServerTest/dropins')
+   }
+   copy {
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/SecureServerTest/apps')
+      rename 'basicauth.zip', 'basicauth.war'
+   }
+   
+   /*
+    * Copy applications to the SSLCipherTest server.
+    */
+   copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/SSLCipherTest/dropins')
+   }
+   copy { 
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/SSLCipherTest/apps')
+   }
+   
+   /*
+    * Copy applications to the SSLnonIBMCipherTest server.
+    */
+   copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/dropins')
+   }
+   copy { 
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/apps')
+   }
+}

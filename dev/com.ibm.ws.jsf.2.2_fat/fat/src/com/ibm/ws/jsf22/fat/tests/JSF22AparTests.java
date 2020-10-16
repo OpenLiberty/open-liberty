@@ -336,8 +336,8 @@ public class JSF22AparTests {
         URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI57255Default", "");
 
         // Need to restart the applications to make sure the non-CDI application is loaded first
-        jsfAparServer.restartDropinsApplication("PI57255Default.war");
-        jsfAparServer.restartDropinsApplication("PI57255CDI.war");
+        Assert.assertTrue("The PI57255Default.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI57255Default.war"));
+        Assert.assertTrue("The PI57255CDI.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI57255CDI.war"));
 
         try (WebClient webClient = new WebClient()) {
             HtmlPage page;
@@ -1020,7 +1020,7 @@ public class JSF22AparTests {
         try (WebClient webClient = new WebClient()) {
             // Set up search mark and restart the app so that we can check to see if preDestroy is called
             jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
+            Assert.assertTrue("The PI90507.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI90507.war"));
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerNonBinding.xhtml");
 
@@ -1064,7 +1064,7 @@ public class JSF22AparTests {
         try (WebClient webClient = new WebClient()) {
             // Set up search mark and restart the app so that we can check to see if preDestroy is called
             jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
+            Assert.assertTrue("The PI90507.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI90507.war"));
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerBinding.xhtml");
 

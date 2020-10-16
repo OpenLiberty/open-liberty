@@ -421,4 +421,20 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	public List<String> getAMRAttributes() {
 		return null;
 	}
+
+    @Override
+    public String getKeyManagementKeyAlgorithm() {
+        return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return null;
+    }
+
+    @Override
+    public String getContentEncryptionAlgorithm() {
+        return null;
+    }
+
 }

@@ -38,6 +38,7 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
 import com.ibm.ws.security.jwt.config.JwtConfig;
@@ -68,6 +69,9 @@ public class JwtComponent implements JwtConfig {
     private long jwkRotationTime;
     private int jwkSigningKeySize;
     private long elapsedNbfTime;
+    private String keyManagementKeyAlgorithm;
+    private String keyManagementKeyAlias;
+    private String contentEncryptionAlgorithm;
 
     private PublicKey publicKey = null;
     private PrivateKey privateKey = null;
@@ -83,6 +87,7 @@ public class JwtComponent implements JwtConfig {
     private List<String> amrAttributes;
 
     private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
+    private final CommonConfigUtils configUtils = new CommonConfigUtils();
 
     @org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
@@ -168,6 +173,7 @@ public class JwtComponent implements JwtConfig {
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         elapsedNbfTime = ((Long) props.get(JwtUtils.CFG_KEY_ELAPSED_NBF)).longValue();
         amrAttributes = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_ATTR));
+        loadJweConfigOptions(props);
 
         if (isJwkCapableSigAlgorithm()) {
             initializeJwkProvider(this);
@@ -199,6 +205,17 @@ public class JwtComponent implements JwtConfig {
         if (jwtConfig.isJwkEnabled()) {
             jwkProvider = new JWKProvider(jwtConfig.getJwkSigningKeySize(), jwtConfig.getSignatureAlgorithm(),
                     jwtConfig.getJwkRotationTime());
+        }
+    }
+
+    private void loadJweConfigOptions(Map<String, Object> props) {
+        keyManagementKeyAlgorithm = configUtils.getConfigAttribute(props, JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALG);
+        contentEncryptionAlgorithm = configUtils.getConfigAttribute(props, JwtUtils.CFG_KEY_CONTENT_ENCRYPTION_ALG);
+        keyManagementKeyAlias = configUtils.getConfigAttribute(props, JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
+        if (keyManagementKeyAlgorithm != null || contentEncryptionAlgorithm != null) {
+            if (keyManagementKeyAlias == null) {
+                Tr.warning(tc, "KEY_MANAGEMENT_KEY_ALIAS_MISSING", new Object[] { getId(), JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS, JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALG, JwtUtils.CFG_KEY_CONTENT_ENCRYPTION_ALG });
+            }
         }
     }
 
@@ -361,6 +378,21 @@ public class JwtComponent implements JwtConfig {
     @Override
     public long getElapsedNbfTime() {
         return elapsedNbfTime;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlgorithm() {
+        return keyManagementKeyAlgorithm;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return keyManagementKeyAlias;
+    }
+
+    @Override
+    public String getContentEncryptionAlgorithm() {
+        return contentEncryptionAlgorithm;
     }
 
     /**

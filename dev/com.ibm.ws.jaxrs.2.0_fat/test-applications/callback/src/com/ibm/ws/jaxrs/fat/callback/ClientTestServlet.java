@@ -275,10 +275,12 @@ public class ClientTestServlet extends HttpServlet {
         System.out.println(b);
         if (a != b)
         {
+            System.out.println("failure: a = " + a + ": b = " + b);
             return "failure: a = " + a + ": b = " + b;
         }
         else
         {
+            System.out.println("success: a = " + a + ": b = " + b);
             return "success";
         }
     }

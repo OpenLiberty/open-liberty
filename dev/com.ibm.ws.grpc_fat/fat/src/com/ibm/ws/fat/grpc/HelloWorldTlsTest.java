@@ -102,7 +102,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_DEFAULT, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_DEFAULT, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -118,7 +118,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_MUTUAL_AUTH, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_MUTUAL_AUTH, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -135,11 +135,11 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
         Exception clientException = null;
 
         try {
-            testHelloWorldWithTls();
+            runHelloWorldTlsTest();
         } catch (Exception e) {
             clientException = e;
             Log.info(c, name.getMethodName(), "exception caught: " + e);
@@ -159,7 +159,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
         if (!checkJavaVersion()) {
             return;
         }
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, TLS_DEFAULT, TLS_OUTBOUND_FILTER, clientAppName, LOG);
+        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_OUTBOUND_FILTER, clientAppName, LOG);
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package web;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -22,20 +26,30 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.ejb.EJBException;
+import javax.ejb.NoSuchObjectLocalException;
+import javax.ejb.ScheduleExpression;
 import javax.ejb.Timer;
 import javax.ejb.TimerHandle;
+import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -56,6 +70,18 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     private static final long serialVersionUID = 8447513765214641067L;
 
     /**
+     * Time zone (Central time - Rochester, MN) in which the persistent timer data was originally captured.
+     */
+    private static final TimeZone CST = TimeZone.getTimeZone("CST");
+
+    /**
+     * Dates for the tests to use.
+     */
+    private static final Date
+        NOVEMBER_6_2020 = new Calendar.Builder().setTimeZone(CST).setDate(2020, 11-1, 6).build().getTime(),
+        JANUARY_8_3031 = new Calendar.Builder().setTimeZone(CST).setDate(2031, 1-1, 8).build().getTime();
+
+    /**
      * Interval in milliseconds between polling for task results.
      */
     private static final long POLL_INTERVAL = 200;
@@ -66,9 +92,9 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(30);
 
     /**
-     * Update this to control the version that is written to new task identity names
+     * Update this in server.xml to control the version that is written to new task identity names
      */
-    private static final String VNEXT = "8.5.5.6";
+    private String VNEXT;
 
     @Resource(lookup = "jdbc/myDataSource")
     private DataSource dataSource;
@@ -87,11 +113,20 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Resource
     private UserTransaction tran;
 
+    public void init(ServletConfig config) throws ServletException {
+        try {
+            VNEXT = (String) InitialContext.doLookup("liberty/version");
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        }
+    }
+
     /**
      * Utility method that reads a task from a file within the application (/WEB-INF/serialized/*.ser)
-     * and creates a task in the database for it.
+     * and creates a task in the EXECTASK database table for it. This table corresponds to a persistent
+     * executor that is able to run tasks.
      */
-    private long insertTaskEntry(HttpServletRequest request, String name) throws Exception {
+    private long insertTaskEntryForExecution(HttpServletRequest request, String name) throws Exception {
         InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/" + name + ".ser");
         ObjectInputStream objectInput = new ObjectInputStream(input);
         LinkedHashMap<String, Object> map;
@@ -131,6 +166,66 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
                 ResultSet result = pstmt.executeQuery();
                 result.next();
                 return result.getLong(1);
+            } finally {
+                con.close();
+            }
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * Utility method that reads a task from a file within the application (/WEB-INF/serialized/*.ser)
+     * and creates a task in the SCHDTASK database table for it. This table corresponds to EJB Timers that
+     * are configured to be unable to execute.
+     */
+    private long insertTaskEntryForFind(HttpServletRequest request, String name) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/" + name + ".ser");
+        ObjectInputStream objectInput = new ObjectInputStream(input);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("ID", "not-available-yet"); // Reserve first spot for ID, but determine from sequence later
+        try {
+            @SuppressWarnings("unchecked")
+            LinkedHashMap<String, Object> m = (LinkedHashMap<String, Object>) objectInput.readObject();
+            map.putAll(m);
+        } finally {
+            objectInput.close();
+        }
+
+        Method getPartitionId = schedulerWithoutContext.getClass().getDeclaredMethod("getPartitionId");
+        getPartitionId.setAccessible(true);
+        long partitionId = (Long) getPartitionId.invoke(schedulerWithoutContext);
+        map.put("PARTN", partitionId);
+
+        String insert = "INSERT INTO SCHDTASK VALUES(";
+        for (int i = map.size(); i >= 1; i--)
+            if (i == 1)
+                insert += "?";
+            else
+                insert += "?,";
+        insert += ')';
+
+        System.out.println("Insert command for " + name + ": " + insert + " Params: " + map);
+
+        tran.begin();
+        try {
+            Connection con = dataSource.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement("VALUES(NEXT VALUE FOR SCHDSEQ)");
+                ResultSet result = pstmt.executeQuery();
+                result.next();
+                long taskId = result.getLong(1);
+                pstmt.close();
+                map.put("ID", taskId);
+
+                pstmt = con.prepareStatement(insert);
+                int i = 0;
+                for (Object value : map.values())
+                    pstmt.setObject(++i, value);
+                pstmt.executeUpdate();
+                pstmt.close();
+
+                return taskId;
             } finally {
                 con.close();
             }
@@ -181,7 +276,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testExecuteCallableTrigger_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableTrigger-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<Integer> status = executor.getStatus(taskId);
         for (long start = System.nanoTime(); status.getNextExecutionTime() != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
@@ -205,7 +300,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testExecuteCallableWithTrigger_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableWithTrigger-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<Date> status = executor.getStatus(taskId);
         for (long start = System.nanoTime(); !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
@@ -231,8 +326,27 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
         MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
 
         String name = "EJBTimer-8.5.5.6";
-        long taskId = insertTaskEntry(request, name);
+        long taskId = insertTaskEntryForExecution(request, name);
 
+        Integer count = ejb.getRunCount(name);
+        for (long start = System.nanoTime(); count == null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+            count = ejb.getRunCount(name);
+
+        if (!Integer.valueOf(1).equals(count))
+            throw new Exception("Expecting EJB timer to run exactly once. Instead: " + count + ". " + executor.getStatus(taskId));
+    }
+
+    /**
+     * Execute an EJB persistent timer which was scheduled with javax.ejb.TimerInfo
+     * and persisted with the 20.0.0.10 release.
+     */
+    @Test
+    public void testExecuteEJBTimerWithInfoFromJavaEE_20_0_0_10(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+
+        long taskId = insertTaskEntryForExecution(request, "EJBTimerWithInfo-20.0.0.10-JavaEE");
+
+        String name = "EJBTimerWithInfo-20.0.0.10";
         Integer count = ejb.getRunCount(name);
         for (long start = System.nanoTime(); count == null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
             count = ejb.getRunCount(name);
@@ -248,7 +362,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testExecuteFixedDelayTask_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedDelayTask-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         Integer initialCount = MapCounter.counters.get(taskName);
         for (long start = System.nanoTime(); initialCount == null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
@@ -275,7 +389,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testExecuteFixedRateTask_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedRateTask-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         Integer initialCount = MapCounter.counters.get(taskName);
         for (long start = System.nanoTime(); initialCount == null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
@@ -302,7 +416,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testExecuteOneShotCallable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "OneShotCallable-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<Integer> status = executor.getStatus(taskId);
         for (long start = System.nanoTime(); status.getNextExecutionTime() != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
@@ -326,7 +440,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testGetFailingRunnable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FailingRunnable-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<String> status = executor.getStatus(taskId);
         if (!status.isDone())
@@ -342,13 +456,96 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     }
 
     /**
+     * Find an EJB persistent timer for an EJB that was deleted, and for which previous attempts
+     * to run it have failed with javax.ejb.EJBException due to the EJB not being available.
+     * An instance of EJBException could be serialized within the timer result.
+     */
+    @Test
+    public void testFindDeletedEJBTimerFromJavaEE_20_0_0_10(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+
+        long taskId = insertTaskEntryForFind(request, "EJBTimerDeleted-20.0.0.10-JavaEE");
+        System.out.println("Inserted task " + taskId);
+
+        Timer timer = ejb.getTimer("EJBTimerDeleted-20.0.0.10");
+        assertNotNull(timer);
+
+        try {
+            System.out.println("Handle is: " + timer.getHandle());
+            System.out.println("Next timeout is: " + timer.getNextTimeout());
+            fail("Not expecting deleted timer to be usable: " + timer);
+        } catch (NoSuchObjectLocalException x ) {
+            // expected
+        }
+
+        TaskStatus<?> status = schedulerWithoutContext.getStatus(taskId);
+        try {
+            fail("unexpected result: " + status.getResult());
+        } catch (AbortedException x) {
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1555E") || !x.getMessage().contains(Long.toString(taskId)))
+                throw x;
+            Throwable cause = x.getCause();
+            if (!(cause instanceof EJBException) || cause.getMessage() == null || !cause.getMessage().contains("DeletedTimer"))
+                throw x;
+            cause = cause.getCause();
+            if (!(cause instanceof ClassNotFoundException) || cause.getMessage() == null || !cause.getMessage().contains("DeletedTimer"))
+                throw x;
+        }
+    }
+
+    /**
+     * Find an EJB persistent timer which was scheduled with a Java EE class as timer info
+     * and persisted with the 20.0.0.10 release.
+     */
+    @Test
+    public void testFindEJBTimerWithInfoFromJavaEE_20_0_0_10(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+
+        long taskId = insertTaskEntryForFind(request, "EJBTimerWithInfo-20.0.0.10-JavaEE");
+        System.out.println("Inserted task " + taskId);
+
+        Timer timer = ejb.getTimer("EJBTimerWithInfo-20.0.0.10");
+        assertNotNull(timer);
+
+        Cookie cookie = (Cookie) timer.getInfo();
+        assertEquals("EJBTimerWithInfo-20.0.0.10", cookie.getName());
+        assertEquals("abcdefg", cookie.getValue());
+    }
+
+    /**
+     * Find an EJB persistent timer which was scheduled with a javax.ejb.ScheduleExpression
+     * and persisted with the 20.0.0.10 release.
+     */
+    @Test
+    public void testFindEJBTimerWithScheduleExpressionFromJavaEE_20_0_0_10(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+
+        long taskId = insertTaskEntryForFind(request, "EJBTimerWithScheduleExpression-20.0.0.10-JavaEE");
+        System.out.println("Inserted task " + taskId);
+
+        Timer timer = ejb.getTimer("EJBTimerWithScheduleExpression-20.0.0.10");
+        assertNotNull(timer);
+
+        ScheduleExpression schedule = timer.getSchedule();
+        assertEquals(NOVEMBER_6_2020, schedule.getStart());
+        assertEquals(JANUARY_8_3031, schedule.getEnd());
+        assertEquals("0", schedule.getSecond());
+        assertEquals("0", schedule.getMinute());
+        assertEquals("19", schedule.getHour());
+        assertEquals("*", schedule.getDayOfMonth());
+        assertEquals("Oct,Nov,Dec", schedule.getMonth());
+        assertEquals("Mon-Fri", schedule.getDayOfWeek());
+        assertEquals("*", schedule.getYear());
+    }
+
+    /**
      * Query for status of a task that was skipped
      * which previously attempted on the 8.5.5.6 release.
      */
     @Test
     public void testGetSkippedCallable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkippedCallable-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<Integer> status = executor.getStatus(taskId);
         if (!status.hasResult())
@@ -370,7 +567,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testGetSkipRunFailure_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkipRunFailure-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<Integer> status = executor.getStatus(taskId);
         if (!status.hasResult())
@@ -392,7 +589,7 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
     @Test
     public void testGetTaskWithNonSerializableResult_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "TaskWithNonSerializableResult-8.5.5.6";
-        long taskId = insertTaskEntry(request, taskName);
+        long taskId = insertTaskEntryForExecution(request, taskName);
 
         TaskStatus<ThreadGroup> status = executor.getStatus(taskId);
         if (!status.isDone())
@@ -565,6 +762,49 @@ public class PersistentExecCompatibilityTestServlet extends FATServlet {
         String name = "EJBTimer-" + VNEXT;
         MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
         Timer timer = ejb.scheduleTimer(name, 4);
+
+        TimerHandle handle = timer.getHandle();
+        System.out.println("Timer handle is " + timer.getHandle());
+        String s = handle.toString();
+        s = s.substring(s.indexOf('(') + 1, s.indexOf(')'));
+        long taskId = Long.parseLong(s);
+
+        saveTaskEntry(schedulerWithoutContext, taskId, name);
+    }
+
+    /**
+     * Schedule a persistent EJB timer with an EE spec-defined class as the timer info.
+     */
+    @Test
+    public void testScheduleEJBTimerWithInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String name = "EJBTimerWithInfo-" + VNEXT;
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+        Cookie info = new Cookie(name, "abcdefg");
+        Timer timer = ejb.scheduleTimerWithInfo(info, 5);
+
+        TimerHandle handle = timer.getHandle();
+        System.out.println("Timer handle is " + timer.getHandle());
+        String s = handle.toString();
+        s = s.substring(s.indexOf('(') + 1, s.indexOf(')'));
+        long taskId = Long.parseLong(s);
+
+        saveTaskEntry(schedulerWithoutContext, taskId, name);
+    }
+
+    /**
+     * Schedule a persistent EJB timer by specifying a ScheduleExpression.
+     */
+    @Test
+    public void testScheduleEJBTimerWithScheduleExpression(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String name = "EJBTimerWithScheduleExpression-" + VNEXT;
+        MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
+        ScheduleExpression schedule = new ScheduleExpression()
+                .start(NOVEMBER_6_2020)
+                .end(JANUARY_8_3031)
+                .dayOfWeek("Mon-Fri")
+                .hour(19)
+                .month("Oct,Nov,Dec");
+        Timer timer = ejb.scheduleTimerWithExpression(name, schedule);
 
         TimerHandle handle = timer.getHandle();
         System.out.println("Timer handle is " + timer.getHandle());

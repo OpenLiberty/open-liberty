@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.compat;
 
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
@@ -24,6 +27,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import web.PersistentExecCompatibilityTestServlet;
@@ -36,6 +41,11 @@ public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
     public static final String APP_NAME = "persistentcompattest";
 
     private static ServerConfiguration originalConfig;
+
+    // TODO run with Jakarta EE 9
+    //@ClassRule
+    //public static RepeatTests r = RepeatTests
+    //                .with(new JakartaEE9Action());
 
     @Server("com.ibm.ws.concurrent.persistent.fat.compat")
     @TestServlet(servlet = PersistentExecCompatibilityTestServlet.class, contextRoot = APP_NAME)
@@ -68,6 +78,10 @@ public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
         mySchedulerWithContext.setMissedTaskThreshold("1m14s");
         mySchedulerWithContext.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
 
+        Set<String> features = config.getFeatureManager().getFeatures();
+        // TODO run with Jakarta EE 9
+        //features.remove("persistentexecutor-1.0"); // compatible with Java EE 8
+        //features.add("persistentExecutor-2.0"); // compatible with Jakarta EE 9
 
         // config.getEJBContainer().getTimerService() lacks a way to get to the nested persistentExecutor, so this is left as is.
 

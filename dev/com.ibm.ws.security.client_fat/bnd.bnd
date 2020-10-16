@@ -1,0 +1,52 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+fat.project: true
+
+tested.features: \
+  el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, enterprisebeansremote-4.0, ejblite-4.0, \
+  appclientsupport-2.0, connectors-2.0, enterprisebeans-4.0, jaxb-3.0, mdb-4.0, jdbc-4.2, \
+  enterprisebeanshome-4.0, beanvalidation-3.0, mail-2.0
+
+src:\
+  fat/src,\
+  test-applications/BasicCalculatorClient.jar/src,\
+  test-applications/BasicCalculatorEJB.jar/src,\
+  test-applications/SSLHttpsClient.jar/src,\
+  test-applications/FileMonitorClient.jar/src,\
+  test-applications/ProgrammaticLogin.jar/src,\
+  test-applications/ProgrammaticLoginWithCallbackHandler.jar/src,\
+  test-applications/Java2Client.jar/src,\
+  test-applications/JavaColonInjectionAppClient.jar/src,\
+  test-applications/JavaColonInjectionAppEJB.jar/src,\
+  test-applications/ProgrammaticJaasLogin.jar/src
+
+-buildpath: \
+  commons-codec:commons-codec;version=1.4,\
+  commons-logging:commons-logging;version=1.1.1,\
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.mail.1.5;version=latest,\
+  com.ibm.websphere.security;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  com.ibm.websphere.javaee.validation.1.1;version=latest,\
+  com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.security.credentials;version=latest,\
+  com.ibm.ws.security.jaas.common;version=latest,\
+  com.ibm.ws.security.fat.common;version=latest,\
+  fattest.simplicity;version=latest,\
+  org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
+  com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
+  com.ibm.ws.webcontainer.security_test.servlets;version=latest

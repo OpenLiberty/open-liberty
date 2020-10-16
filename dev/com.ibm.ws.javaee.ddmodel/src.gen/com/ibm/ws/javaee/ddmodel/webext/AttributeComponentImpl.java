@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,15 +11,11 @@
 // NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.webext;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component(configurationPid = "com.ibm.ws.javaee.dd.webext.Attribute",
      configurationPolicy = ConfigurationPolicy.REQUIRE,

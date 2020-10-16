@@ -458,4 +458,149 @@
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs512" />
 
+	<jwtBuilder
+		id="key_encrypt_good_RS256"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+	<jwtBuilder
+		id="key_encrypt_good_RS384"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs384"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+	<jwtBuilder
+		id="key_encrypt_good_RS512"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs512"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />        	
+
+	<jwtBuilder
+		id="key_encrypt_good_ES256"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="es256"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="key_encrypt_good_RS256_sigAlgES384"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es384"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+
+    <jwtBuilder
+		id="key_encrypt_bad_keyMgmtKey"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="keyMgmtKey"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+    <jwtBuilder
+		id="key_encrypt_missing_keyMgmtKey"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="key_encrypt_rsaOaep256_RS256"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP-256"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />   
+
+	<jwtBuilder
+		id="key_encrypt_bad_contentEncryptAlg"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="contentEncryptAlg" />
+
+	<jwtBuilder
+		id="key_encrypt_missing_contentEncryptAlg"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256" />
+
+	<jwtBuilder
+		id="key_encrypt_missing_keyMgmtAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+        contentEncryptionAlgorithm="A256GCM" />
+                       
+	<jwtBuilder
+		id="key_encrypt_bad_keyMgmtAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="keyMgmtKeyAlias"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+	<jwtBuilder
+		id="key_encrypt_missing_trustStoreRef"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />        
+          
+	<jwtBuilder
+		id="key_encrypt_missing_trustStoreRef_userServerWideAlias"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rsacert"
+        contentEncryptionAlgorithm="A256GCM" />  
+
+	<jwtBuilder
+		id="key_encrypt_invalid_trustStoreRef"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="badTrustRef"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />        
+                                            
 </server>

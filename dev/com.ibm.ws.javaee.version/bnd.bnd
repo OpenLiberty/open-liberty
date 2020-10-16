@@ -19,5 +19,5 @@ Export-Package: \
     com.ibm.ws.javaee.version
 
 -buildpath: \
-	com.ibm.websphere.org.osgi.core, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.websphere.org.osgi.core, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
