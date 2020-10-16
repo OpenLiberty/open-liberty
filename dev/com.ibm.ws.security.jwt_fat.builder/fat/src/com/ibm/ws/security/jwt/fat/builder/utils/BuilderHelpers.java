@@ -81,7 +81,7 @@ public class BuilderHelpers {
         settings.remove(HeaderConstants.ALGORITHM);
         settings.put(HeaderConstants.ALGORITHM, KeyMgmtKeyAlg);
         settings.put(HeaderConstants.ENCRYPTION, contentEncryptAlg);
-        settings.put(HeaderConstants.TYPE, "JWT");
+        settings.put(HeaderConstants.TYPE, "JOSE");
         settings.put(HeaderConstants.CONTENT_TYPE, "jwt");
         // when we're testing with encrypted tokens, our underlying tools don't have the info to decrypt the JWE to get to the JWS, so skip validation of the time values
         settings.remove(PayloadConstants.EXPIRATION_TIME);
