@@ -43,7 +43,9 @@ instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.cl
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.runtime.update;version=latest, \
+	com.ibm.ws.threading;verison=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
