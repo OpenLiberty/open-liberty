@@ -15,11 +15,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Scanner;
 
-
+import javax.json.Json;
 import javax.json.JsonException;
+import javax.json.JsonNumber;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
@@ -71,7 +76,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonValue.class.isAssignableFrom(type);
+        return JsonValue.class.isAssignableFrom(type) || type.isPrimitive();
     }
 
     @Override
@@ -102,7 +107,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonValue.class.isAssignableFrom(type);
+        return JsonValue.class.isAssignableFrom(type) || Number.class.isAssignableFrom(type);
     }
 
     @FFDCIgnore(value = { Throwable.class })
@@ -113,9 +118,15 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
             throw new IOException("Initialized InputStream should be provided");
         }
 
+        if (type.equals(JsonNumber.class) || Number.class.isAssignableFrom(type)) {
+            return castNumber(entityStream, type);
+        }
+
         JsonReader reader = null;
         try {
             reader = this.jsonProvider.createReader(entityStream);
+            // TODO: consider checking charset in MediaType or headers and creating the reader with that...
+            //reader = this.jsonProvider.createReaderFactory(null).createReader(entityStream, Charset.defaultCharset());
             if (reader != null) {
                 return reader.read();
             }
@@ -123,6 +134,10 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
             if (JsonException.class.isAssignableFrom(e.getClass())) {
                 throw new BadRequestException(e);
             }
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            }
+            throw new WebApplicationException(e);
         } finally {
             if (reader != null) {
                 try {
@@ -135,5 +150,49 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
 
         return null;
     }
-}
 
+    private static <T> T castNumber(InputStream in, Class<T> type) throws IOException {
+        //read stream to string and then create a JsonNumber manually...
+        String str;
+        try (Scanner s = new Scanner(in).useDelimiter("\\A")) {
+            StringBuilder sb = new StringBuilder();
+            while (s.hasNext()) {
+                sb.append(s.next());
+            }
+            str = sb.toString(); //s.hasNext() ? s.next() : "";
+        }
+        if (str == null || str.length() < 1) {
+            return null;
+        }
+
+        if (type.isAssignableFrom(JsonNumber.class)) {
+            // check for decimal point
+            if (str.contains(".")) {
+                return type.cast(Json.createValue(Double.parseDouble(str)));
+            }
+            return type.cast(Json.createValue(Long.parseLong(str)));
+        }
+        if (type.isAssignableFrom(BigDecimal.class)) {
+            return type.cast(new BigDecimal(str));
+        }
+        if (type.isAssignableFrom(BigInteger.class)) {
+            return type.cast(new BigInteger(str));
+        }
+        if (type.isAssignableFrom(Double.class)) {
+            return type.cast(Double.parseDouble(str));
+        }
+        if (type.isAssignableFrom(Integer.class)) {
+            return type.cast(Integer.parseInt(str));
+        }
+        if (type.isAssignableFrom(Long.class)) {
+            return type.cast(Long.parseLong(str));
+        }
+        if (type.isAssignableFrom(Float.class)) {
+            return type.cast(Float.parseFloat(str));
+        }
+        if (type.isAssignableFrom(Short.class)) {
+            return type.cast(Short.parseShort(str));
+        }
+        throw new IOException("Unknown numeric type: " + type.getName());
+    }
+}
