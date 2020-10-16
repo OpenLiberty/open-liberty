@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.SessionCookieConfig;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -158,6 +159,9 @@ public class PluginGenerator {
     private Integer previousConfigHash = null;
     private File cachedFile;
 
+    // ensure only one generateXML operation is in progress at a time
+    private final AtomicBoolean hasGenerationStarted = new AtomicBoolean(false);
+
     private static final boolean CHANGE_TRANSFORMER;
     
     static {
@@ -216,6 +220,22 @@ public class PluginGenerator {
     }
 
     /**
+     * Check to see if the server is stopping
+     *
+     * @param container
+     * @return server stopping status
+     */
+    private boolean isStopping(WebContainer container) {
+        if (FrameworkState.isStopping() || container.isServerStopping() || isBundleUninstalled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "isStopping", "Server is stopping");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Generate the XML configuration with the current container information.
      *
      * @param container
@@ -223,7 +243,7 @@ public class PluginGenerator {
      * @param name
      */
     @FFDCIgnore(IOException.class)
-    protected synchronized void generateXML(String rootLoc, String serverName,
+    protected void generateXML(String rootLoc, String serverName,
                                             WebContainer container,
                                             SessionManager smgr,
                                             DynamicVirtualHostManager vhostMgr,
@@ -231,13 +251,9 @@ public class PluginGenerator {
                                             boolean utilityReq,
                                             File writeDirectory) {
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "generateXML", "server = " + serverName + ", Framework is stopping = " + FrameworkState.isStopping() + ", pcd = " + pcd + ", this = " + this);
-        }
-
         // Because this method is synchronized there can become a queue of requests waiting which then don't get started
         // for a significant time period. As a result if the servers is now shutting down skip generation.
-        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+        if (pcd == null || isStopping(container)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
             }
@@ -252,623 +268,651 @@ public class PluginGenerator {
             return; 
         }
 
-        utilityRequest = utilityReq;
-        boolean writeFile = true;
-
-        // set up server names, preserving original behavior for explicit (mbean) requests
-        if (!utilityRequest) {
-            appServerName = serverName;
-            webServerName = serverName;
-        } else {
-            appServerName = locationService.getServerName();
-            webServerName = pcd.webServerName;
+        // bail out if generation is already in progress
+        if (!hasGenerationStarted.compareAndSet(false, true)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "generateXML", "server = " + serverName + ", skipping generateXML because generate is already in progress; this = " + this);
+            }
+            return;
         }
 
-        BufferedWriter pluginCfgWriter = null;
-        WsResource outFile = null;
-        FileOutputStream fOutputStream = null;
         try {
+            utilityRequest = utilityReq;
+            boolean writeFile = true;
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Generating webserver plugin cfg for server=" + appServerName);
-            }
-
-            String root = rootLoc;
-            boolean userOverrideLocation = true;
-            if (root == null) {
-                root = pcd.PluginInstallRoot;
-                userOverrideLocation = false;
-            }
-            //String root = (null == rootLoc) ? pcd.PluginInstallRoot : rootLoc;
-            Map<String, Map<String, Set<URIData>>> clusterUriGroups = new HashMap<String, Map<String, Set<URIData>>>();
-
-            Document output = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-
-            SimpleDateFormat tmpDateFmt = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
-            Comment comment = output.createComment(String.format("HTTP server plugin config file for %s generated on %s",
-                                                                 appServerName,
-                                                                 tmpDateFmt.format(new Date())));
-            output.appendChild(comment);
-
-            // create and insert a config root element
-            Element rootElement = output.createElement("Config");
-
-            // add in hardcoded properties and any extra properties from the user configuration
-            if (!pcd.extraConfigProperties.isEmpty()) {
-                if (pcd.TrustedProxyEnable != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Overriding TrustedProxyEnable from extra config properties with the specified value");
-                    }
-                    pcd.extraConfigProperties.put("TrustedProxyEnable", pcd.TrustedProxyEnable.toString());
-                }
-
-                for (String key : pcd.extraConfigProperties.keySet()) {
-                    String value = (String) pcd.extraConfigProperties.get(key);
-                    rootElement.setAttribute(key, value);
-                }
-            }
-            output.appendChild(rootElement);
-
-            // add log Information
-            Element elem = output.createElement("Log");
-            //start 142740
-
-            // If user provided install root as argument, use that to generate the log location
-            String name = null;
-            if (userOverrideLocation) {
-                name = root + addSlash(root)
-                       + "logs" + File.separatorChar
-                       + webServerName + File.separatorChar + pcd.LogFile;;
-            } // otherwise use configured value, with LogFileName taking precedence over LogDirLocation
-            else {
-                if (pcd.LogFileName != null)
-                    name = pcd.LogFileName;
-                else
-                    name = pcd.LogDirLocation + addSlash(pcd.LogDirLocation) + pcd.LogFile;
-            }
-
-            if (name.charAt(1) == ':') //check if path specified is a windows path or not and replace File.separatorChar with correct separators
-                name = name.replace('/', '\\');
-            else
-                name = name.replace('\\', '/');
-
-            elem.setAttribute("Name", name);
-            //end 142740
-            elem.setAttribute("LogLevel", pcd.LogLevel);
-            rootElement.appendChild(elem);
-
-            // add esi properties
-            Element esiProp1 = output.createElement("Property");
-            esiProp1.setAttribute("Name", "ESIEnable");
-            esiProp1.setAttribute("Value", pcd.ESIEnable.toString());
-            rootElement.appendChild(esiProp1);
-
-            Element esiProp2 = output.createElement("Property");
-            esiProp2.setAttribute("Name", "ESIMaxCacheSize");
-            esiProp2.setAttribute("Value", pcd.ESIMaxCacheSize.toString());
-            rootElement.appendChild(esiProp2);
-
-            Element esiProp3 = output.createElement("Property");
-            esiProp3.setAttribute("Name", "ESIInvalidationMonitor");
-            esiProp3.setAttribute("Value", pcd.ESIInvalidationMonitor.toString());
-            rootElement.appendChild(esiProp3);
-
-            Element esiProp4 = output.createElement("Property");
-            esiProp4.setAttribute("Name", "ESIEnableToPassCookies");
-            esiProp4.setAttribute("Value", pcd.ESIEnableToPassCookies.toString());
-            rootElement.appendChild(esiProp4);
-
-            Element esiProp5 = output.createElement("Property");
-            esiProp5.setAttribute("Name", "PluginInstallRoot");
-            esiProp5.setAttribute("Value", root);
-            rootElement.appendChild(esiProp5);
-
-            // Reference to http endpoint the plugin should use
-            HttpEndpointInfo httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
-
-            // Map of virtual host name to the list of alias data being collected...
-            Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
-
-            // Process the virtual host configuration..
-            Set<DynamicVirtualHost> virtualHostSet = processVirtualHosts(vhostMgr, vhostAliasData, httpEndpointInfo, rootElement);
-
-            // Create the VirtualHostGroup and VirtualHost elements
-            for (DynamicVirtualHost vh : virtualHostSet) {
-                // Create the VirtualHostGroup in the plugin xml
-                Element vhElem = output.createElement("VirtualHostGroup");
-                vhElem.setAttribute("Name", vh.getName());
-                rootElement.appendChild(vhElem);
-
-                if (!vhostAliasData.containsKey(vh.getName())) {
-                    continue;
-                }
-                // Create a VirtualHost element for each alias
-                for (VHostData vh_aliasData : vhostAliasData.get(vh.getName())) {
-                    Element aliasElem = output.createElement("VirtualHost");
-                    // The IPv6 is already has the [] in alias
-                    aliasElem.setAttribute("Name", vh_aliasData.host + ":" + vh_aliasData.port);
-                    vhElem.appendChild(aliasElem);
-                }
-            }
-
-            if (pcd.TrustedProxyGroup != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Adding custom property TrustedProxyGroup element and its associated proxy servers");
-                }
-
-                Element tproxyGroupElem = output.createElement("TrustedProxyGroup");
-                rootElement.appendChild(tproxyGroupElem);
-                for (String trustedProxy : pcd.TrustedProxyGroup) {
-                    Element tproxyElem = output.createElement("TrustedProxy");
-                    if (trustedProxy.indexOf(":") != -1) {
-                        // IPV6
-                        tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]");
-                    } else {
-                        tproxyElem.setAttribute("Name", trustedProxy.trim());
-                    }
-                    tproxyGroupElem.appendChild(tproxyElem);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Added proxy server " + trustedProxy + " TrustedProxyGroup element");
-                    }
-                }
-            } // end-trusted-proxy
-
-            // define all server clusters
-            // config of server clusters
-            String serverID = smgr.getCloneID();
-            boolean singleServerConfig = true;
-            if (serverID == null) {
-                serverID = "";
-            }
-            if (serverID.length() > 0) {
-                // if the clone ID is defined, assume that session affinity matters
-                singleServerConfig = false;
-            }
-            char cloneSep = smgr.getCloneSeparator();
-            Boolean cloneSeparatorChange = null;
-            if (':' == cloneSep) {
-                cloneSeparatorChange = Boolean.FALSE;
-            } else if ('+' == cloneSep) {
-                cloneSeparatorChange = Boolean.TRUE;
+            // set up server names, preserving original behavior for explicit (mbean) requests
+            if (!utilityRequest) {
+                appServerName = serverName;
+                webServerName = serverName;
             } else {
-                throw new IllegalStateException("The session manager is configured to use '" + cloneSep + "' as the clone separator, but " + pcd.PluginConfigFileName
-                                                + " only supports ':' and '+'.");
-            }
-            pcd.cloneSeparatorChange = cloneSeparatorChange;
-
-            Element pServersElem = null;
-            Element bServersElem = null;
-            int numberOfPrimaryServers = 0;
-            int numberOfBackupServers = 0;
-
-            // ------------- SERVER CLUSTER ---------------------
-            // A Liberty server can only belong to one cluster
-            ServerClusterData scd = pcd.createServerCluster(appServerName + "_" + GeneratePluginConfig.DEFAULT_NODE_NAME + "_Cluster", singleServerConfig);
-
-            // get the server cluster data
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Adding the ServerCluster " + scd.clusterName);
-            }
-            scd.print(tc);
-
-            // define the server cluster element
-            Element sgElem = output.createElement("ServerCluster");
-
-            // Set cluster attributes
-            // name is node_server
-            sgElem.setAttribute("Name", scd.clusterName);
-            sgElem.setAttribute("LoadBalance", scd.loadBalance);
-            if (pcd.ignoreAffinityRequests != null) {
-                sgElem.setAttribute("IgnoreAffinityRequests", pcd.ignoreAffinityRequests.toString());
-            }
-            sgElem.setAttribute("RetryInterval", scd.retryInterval.toString());
-            sgElem.setAttribute("ServerIOTimeoutRetry", scd.serverIOTimeoutRetry.toString());
-            sgElem.setAttribute("RemoveSpecialHeaders", scd.removeSpecialHeaders.toString());
-            sgElem.setAttribute("CloneSeparatorChange", scd.cloneSeparatorChange.toString());
-            sgElem.setAttribute("PostSizeLimit", scd.postSizeLimit.toString());
-            sgElem.setAttribute("PostBufferSize", scd.postBufferSize.toString());
-            // retrieve Partition Table when HA-Based Session mgt is configured
-            sgElem.setAttribute("GetDWLMTable", scd.GetDWLMTable.toString());
-
-            // define a primary server element if this is a multi server gen
-            if (false == scd.singleServerConfig.booleanValue()) {
-                pServersElem = output.createElement("PrimaryServers");
-                bServersElem = output.createElement("BackupServers");
+                appServerName = locationService.getServerName();
+                webServerName = pcd.webServerName;
             }
 
-            if (!httpEndpointInfo.isValid()) {
-                // We couldn't find a matching endpoint -- there will be bits missing from
-                // the generated plugin config as a result
-                comment = output.createComment(" The configured endpoint could not be found. httpEndpointRef=" + httpEndpointInfo.getEndpointId());
-                rootElement.appendChild(comment);
-            } else {
-                // This is unique to liberty: we put the endpoint (http/https) in its
-                // own server. (this behavior has existed since 8.5.0.. )
-                // As of 8.5.5.2, we will use only one endpoint, so that a single plugin configuration
-                // will contain only one server definition (which is good because there was only one server id.. )
-
-                buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred);
-
-                // create a server element for each server in the cluster
-                for (ServerData sd : scd.clusterServers) {
-                    // get the server data
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Adding the Server definition " + sd.nodeName + "_" + sd.serverName);
-                    }
-                    sd.print(tc);
-
-                    // create a server element for the server
-                    Element serverElem = output.createElement("Server");
-                    serverElem.setAttribute("Name", sd.nodeName + "_" + sd.serverName);
-
-                    // add weight and clone id if multi server generation
-                    if (false == scd.singleServerConfig.booleanValue()) {
-
-                        serverElem.setAttribute("LoadBalanceWeight", sd.loadBalanceWeight.toString());
-
-                        if (0 < sd.serverID.length()) {
-                            serverElem.setAttribute("CloneID", sd.serverID);
-                        }
-                    }
-                    // Set server attributes
-                    // Could not find the best match values in liberty now, so just use the default value of metatype
-                    serverElem.setAttribute("ConnectTimeout", sd.connectTimeout.toString());
-                    serverElem.setAttribute("ServerIOTimeout", sd.serverIOTimeout.toString());
-                    if (sd.wsServerIOTimeout != null)
-                        serverElem.setAttribute("wsServerIOTimeout", sd.wsServerIOTimeout.toString());
-                    if (sd.wsServerIdleTimeout != null)
-                        serverElem.setAttribute("wsServerIdleTimeout", sd.wsServerIdleTimeout.toString());
-                    serverElem.setAttribute("WaitForContinue", sd.waitForContinue.toString());
-                    serverElem.setAttribute("MaxConnections", sd.maxConnections.toString());
-                    serverElem.setAttribute("ExtendedHandshake", sd.extendedHandshake.toString());
-
-                    sgElem.appendChild(serverElem);
-
-                    if (sd.transports != null) {
-                        // define its transports
-                        for (TransportData currentTransport : sd.transports) {
-                            Element tElem = output.createElement("Transport");
-                            String hostname = currentTransport.host;
-                            
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Adding the Transport definition " + hostname);
-                            }
-                            currentTransport.print(tc);
-
-                            tElem.setAttribute("Hostname", hostname);
-                            String transportPort = Integer.toString(currentTransport.port);
-                            tElem.setAttribute("Port", transportPort);
-                            if (currentTransport.isSslEnabled) {
-                                tElem.setAttribute("Protocol", "https");
-
-                                Element sslProp1 = output.createElement("Property");
-                                sslProp1.setAttribute("Name", "keyring");
-                                sslProp1.setAttribute("Value", pcd.KeyringLocation);
-                                tElem.appendChild(sslProp1);
-
-                                Element sslProp2 = output.createElement("Property");
-                                sslProp2.setAttribute("Name", "stashfile");
-                                sslProp2.setAttribute("Value", pcd.StashfileLocation);
-                                tElem.appendChild(sslProp2);
-
-                                if (pcd.CertLabel != null) {
-                                    Element sslProp3 = output.createElement("Property");
-                                    sslProp3.setAttribute("Name", "certLabel");
-                                    sslProp3.setAttribute("Value", pcd.CertLabel);
-                                    tElem.appendChild(sslProp3);
-                                }
-                            } else {
-                                tElem.setAttribute("Protocol", "http");
-                            }
-
-                            serverElem.appendChild(tElem);
-                        }
-                    }
-
-                    // append the server cluster element to the root
-                    rootElement.appendChild(sgElem);
-
-                    // add the server to the primary servers if this is a multi
-                    // server gen
-                    if (false == scd.singleServerConfig.booleanValue()) {
-                        Element psServerElem = output.createElement("Server");
-                        psServerElem.setAttribute("Name", sd.nodeName + "_" + sd.serverName);
-
-                        // Check if the current server is primary or backup
-                        if (sd.roleKind == Role.PRIMARY) {
-                            pServersElem.appendChild(psServerElem);
-                            numberOfPrimaryServers++;
-                        } else {
-                            bServersElem.appendChild(psServerElem);
-                            numberOfBackupServers++;
-                        }
-                    }
-                } // end of for processing each server
-            } // end of if we had an endpoint reference
-
-            // append the primary servers if this is a multi server gen
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Number of primary servers: "
-                             + numberOfPrimaryServers
-                             + " Number of backup servers: "
-                             + numberOfBackupServers);
-            }
-
-            if (false == scd.singleServerConfig.booleanValue()) {
-                if (numberOfPrimaryServers > 0) {
-                    sgElem.appendChild(pServersElem);
-                }
-                if (numberOfBackupServers > 0) {
-                    sgElem.appendChild(bServersElem);
-                }
-            }
-
-            // process the deployed modules for each server cluster (same
-            // across all servers in a cluster)
-            // deployed module config
-            String defaultAffinityCookie = smgr.getDefaultAffinityCookie();
-            String affinityUrlIdentifier = smgr.getAffinityUrlIdentifier();
-
-            // all virtual hosts are in the same cluster
-            for (DynamicVirtualHost vhost : virtualHostSet) {
-                for (Iterator<?> apps = vhost.getWebApps(); apps.hasNext();) {
-                    WebApp app = (WebApp) apps.next();
-                    // a timing window is possible where a wepp app of "null" is in the list.
-                    if (app != null) {
-                        DeployedModuleData dmd = new DeployedModuleData(app, defaultAffinityCookie, affinityUrlIdentifier);
-                        scd.deployedModules.add(dmd);
-                    }
-                }
-            }
-
-            Map<String, Set<URIData>> uriGroups = new HashMap<String, Set<URIData>>();
-            List<String> webGroupIDs = new LinkedList<String>();
-            // Check if any applications are deployed on the cluster
-            if (!scd.deployedModules.isEmpty()) {
-                for (DeployedModuleData dmd : scd.deployedModules) {
-                    dmd.print(tc);
-
-                    if (dmd.moduleConfig == null) {
-                        continue;
-                    }
-
-                    String contextRoot = dmd.moduleConfig.getContextRoot();
-                    if (!contextRoot.startsWith("/"))
-                        contextRoot = "/" + contextRoot;
-
-                    //String lvh = dmd.moduleBindings.getVirtualHostName();
-                    String lvh = dmd.moduleConfig.getVirtualHostName();
-
-                    if (lvh == null || 0 == lvh.length()) {
-                        lvh = DEFAULT_VIRTUAL_HOST;
-                    }
-
-                    if (!uriGroups.containsKey(lvh)) {
-                        uriGroups.put(lvh, new LinkedHashSet<URIData>());
-                    }
-
-                    Set<URIData> uriList = uriGroups.get(lvh);
-                    // form the web group index and warn if a duplicate context root is being used
-                    String wgIndex = lvh + contextRoot;
-
-                    if (webGroupIDs.contains(wgIndex)) {
-                        if (utilityRequest) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "duplicate.context.root", contextRoot);
-                            }
-                        } else
-                            Tr.warning(tc, "duplicate.context.root", contextRoot);
-                    }
-
-                    // add index for future reference
-                    webGroupIDs.add(wgIndex);
-
-                    // Enable File Serving by default
-                    // file serving enabled...just add the context root
-                    // does not considerate file serving disable!!!
-                    String newContextRoot = appendWildCardString(contextRoot);
-                    uriList.add(new URIData(newContextRoot, dmd.cookieName, dmd.urlCookieName));
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Computed URIs for the module " + dmd.moduleConfig.getDisplayName());
-                    }
-                } // end of while processing each deployed module
-            }
-
-            // put the cluster's uri groups into the cluster uri hash table,
-            // indexed by the cluster
-            clusterUriGroups.put(scd.clusterName, uriGroups);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Added the ServerCluster elements");
-            }
-
-            // output the uri group and route elements for each cluster
-            Set<ClusterUriGroup> cUgsSet = new HashSet<ClusterUriGroup>();
-
-            for (Map.Entry<String, Map<String, Set<URIData>>> entry : clusterUriGroups.entrySet()) {
-                String clusterName = entry.getKey();
-                uriGroups = entry.getValue();
-
-                String lvh = null;
-                Set<URIData> uriList = null;
-                // iterate through the uri groups
-                for (Map.Entry<String, Set<URIData>> ugEntry : uriGroups.entrySet()) {
-                    lvh = ugEntry.getKey();
-                    uriList = ugEntry.getValue();
-
-                    Element ugElem = output.createElement("UriGroup");
-                    String uriGroupName = lvh + "_" + clusterName + "_URIs";
-                    ugElem.setAttribute("Name", uriGroupName);
-                    rootElement.appendChild(ugElem);
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Adding the URIGroup " + uriGroupName);
-                    }
-
-                    // Check if URIList exists
-                    if (uriList != null) {
-                        for (URIData ud : uriList) {
-                            ud.print(tc);
-
-                            Element uriElem = output.createElement("Uri");
-                            uriElem.setAttribute("Name", ud.uriName);
-                            if (ud.cookieName != null && 0 < ud.cookieName.length()) {
-                                uriElem.setAttribute("AffinityCookie",
-                                                     ud.cookieName);
-                            }
-                            uriElem.setAttribute("AffinityURLIdentifier",
-                                                 ud.urlCookieName);
-                            ugElem.appendChild(uriElem);
-                        }
-                    }
-                    cUgsSet.add(new ClusterUriGroup(lvh, clusterName, uriGroupName));
-                }
-
-            } // end-cluster-urigroups
-
-            // ------------------------------------------
-            // Create Routes
-            for (DynamicVirtualHost vhost : virtualHostSet) {
-                for (ClusterUriGroup cug : cUgsSet) {
-                    if (vhost.getName().equals(cug.vhostName)) {
-                        Element routeElem = output.createElement("Route");
-                        routeElem.setAttribute("VirtualHostGroup", vhost.getName());
-                        routeElem.setAttribute("UriGroup", cug.uriGroupName);
-                        routeElem.setAttribute("ServerCluster", cug.clusterName);
-                        rootElement.appendChild(routeElem);
-                    }
-                }
-            }
-
-            // The <RequestMetrics> and the sub elements <filters> are not processed yet
-            // bunch of PMI stuff?
-
-            // create the plugin config output file
-            // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
-
-            Boolean fileExists = false;
-            if (writeDirectory == null) {
-                String outputDirectory = "";
-                if (utilityRequest) {
-                    // If utilityRequest is true and there was no writeDirectory then write to the server.output.dir/logs/state/ directory
-                    outputDirectory = "logs" + File.separatorChar + "state" + File.separatorChar;
-                }
-                fileExists = locationService.getServerOutputResource(outputDirectory + pcd.PluginConfigFileName).exists();
-                outFile = locationService.getServerOutputResource(outputDirectory + pcd.TempPluginConfigFileName);
-            } else {
-                // Otherwise a writeDirectory was specified
-                // Add a trailing slash if one is not present
-                String path = writeDirectory.getPath();
-                if (path.charAt(path.length() - 1) != File.separatorChar) {
-                    path += File.separatorChar;
-                }
-                File pluginFile = new File(path + pcd.PluginConfigFileName);
-                fileExists = pluginFile.exists();
-                File temPluginFile = new File(path + pcd.TempPluginConfigFileName);
-                // ensure any existing temp file is deleted (should never exist in non failure situations)
-                if (temPluginFile.exists())
-                    temPluginFile.delete();
-                outFile = locationService.asResource(temPluginFile, true);
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Output file already exists : " + fileExists);
-            }
-
-            // Check to see if the config has changed
-            writeFile = hasConfigChanged(output);
-
-            // Only write out to file if we have new or changed configuration information, or if this is an explicit request
-            if (writeFile || !utilityRequest || !fileExists) {
-                // The bundle must not be uninstalled in order to write the file
-                // If writeFile is true write to the cachedFile and copy from there
-                // If writeFile is false and the cachedFile doesn't exist write to the cache file and copy from there
-                // If writeFile is false and cachedFile exists copy from there
-                // If writeFile is false and cachedFile doesn't exist write to cachedFile and copy from there
-                try {
-                    if (!cachedFile.exists() || writeFile) {
-                        fOutputStream = new FileOutputStream(cachedFile);
-                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
-
-                        // Write the plugin config file
-                        // Create a style sheet to indent the output
-                        StreamSource xsltSource = new StreamSource(new StringReader(styleSheet));
-
-                        // Use transform apis to do generic serialization
-                        TransformerFactory tfactory = getTransformerFactory();
-                        Transformer serializer = tfactory.newTransformer(xsltSource);
-                        Properties oprops = new Properties();
-                        oprops.put(OutputKeys.METHOD, "xml");
-                        oprops.put(OutputKeys.OMIT_XML_DECLARATION, "no");
-                        oprops.put(OutputKeys.VERSION, "1.0");
-                        oprops.put(OutputKeys.INDENT, "yes");
-                        serializer.setOutputProperties(oprops);
-                        serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
-                    }
-                } catch(IOException e){
-                    //path to the cachedFile is broken when bundle was uninstalled 
-                    if(!this.isBundleUninstalled()){ 
-                        throw e; // Missing for some other reason 
-                    }
-                } finally {
-                    if (pluginCfgWriter != null) {
-                        pluginCfgWriter.flush();
-                        // Ensure data is physically written to disk
-                        fOutputStream.getFD().sync();
-                        pluginCfgWriter.close();
-                    }
-                    try {
-                        copyFile(cachedFile, outFile.asFile());
-                    } catch (IOException e){
-                        //cachedFile no longer exists if the bundle was uninstalled 
-                        if(!this.isBundleUninstalled()){
-                            throw e; // Missing for some other reason 
-                        }
-                    }    
-                }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "A new plugin configuration file was not written: the configuration did not change.");
-                }
-            }
-        } catch (Throwable t) {
-            FFDCFilter.processException(t, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Error creating plugin config xml; " + t.getMessage());
-            }
-        } finally {
+            BufferedWriter pluginCfgWriter = null;
+            WsResource outFile = null;
+            FileOutputStream fOutputStream = null;
             try {
 
-                // Verify that the temp plugin file exists
-                if (!outFile.exists()) {
-                    throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
-                }
-                // Construct the actual plugin file path
-                File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
-
-                if (pluginFile.exists()) {
-                    FileUtils.forceDelete(pluginFile);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Generating webserver plugin cfg for server=" + appServerName);
                 }
 
-                outFile.asFile().renameTo(pluginFile);
+                String root = rootLoc;
+                boolean userOverrideLocation = true;
+                if (root == null) {
+                    root = pcd.PluginInstallRoot;
+                    userOverrideLocation = false;
+                }
+                //String root = (null == rootLoc) ? pcd.PluginInstallRoot : rootLoc;
+                Map<String, Map<String, Set<URIData>>> clusterUriGroups = new HashMap<String, Map<String, Set<URIData>>>();
 
-                // tell the user where the file is - quietly for implicit requests
-                String fullFilePath = pluginFile.getAbsolutePath();
-                if (utilityRequest)
-                    Tr.info(tc, "plugin.file.generated.info", fullFilePath);
+                Document output = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+
+                SimpleDateFormat tmpDateFmt = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
+                Comment comment = output.createComment(String.format("HTTP server plugin config file for %s generated on %s",
+                                                                     appServerName,
+                                                                     tmpDateFmt.format(new Date())));
+                output.appendChild(comment);
+
+                // create and insert a config root element
+                Element rootElement = output.createElement("Config");
+
+                // add in hardcoded properties and any extra properties from the user configuration
+                if (!pcd.extraConfigProperties.isEmpty()) {
+                    if (pcd.TrustedProxyEnable != null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Overriding TrustedProxyEnable from extra config properties with the specified value");
+                        }
+                        pcd.extraConfigProperties.put("TrustedProxyEnable", pcd.TrustedProxyEnable.toString());
+                    }
+
+                    for (String key : pcd.extraConfigProperties.keySet()) {
+                        String value = (String) pcd.extraConfigProperties.get(key);
+                        rootElement.setAttribute(key, value);
+                    }
+                }
+                output.appendChild(rootElement);
+
+                // add log Information
+                Element elem = output.createElement("Log");
+                //start 142740
+
+                // If user provided install root as argument, use that to generate the log location
+                String name = null;
+                if (userOverrideLocation) {
+                    name = root + addSlash(root)
+                           + "logs" + File.separatorChar
+                           + webServerName + File.separatorChar + pcd.LogFile;;
+                } // otherwise use configured value, with LogFileName taking precedence over LogDirLocation
+                else {
+                    if (pcd.LogFileName != null)
+                        name = pcd.LogFileName;
+                    else
+                        name = pcd.LogDirLocation + addSlash(pcd.LogDirLocation) + pcd.LogFile;
+                }
+
+                if (name.charAt(1) == ':') //check if path specified is a windows path or not and replace File.separatorChar with correct separators
+                    name = name.replace('/', '\\');
                 else
-                    Tr.audit(tc, "plugin.file.generated.audit", fullFilePath);
+                    name = name.replace('\\', '/');
+
+                elem.setAttribute("Name", name);
+                //end 142740
+                elem.setAttribute("LogLevel", pcd.LogLevel);
+                rootElement.appendChild(elem);
+
+                // add esi properties
+                Element esiProp1 = output.createElement("Property");
+                esiProp1.setAttribute("Name", "ESIEnable");
+                esiProp1.setAttribute("Value", pcd.ESIEnable.toString());
+                rootElement.appendChild(esiProp1);
+
+                Element esiProp2 = output.createElement("Property");
+                esiProp2.setAttribute("Name", "ESIMaxCacheSize");
+                esiProp2.setAttribute("Value", pcd.ESIMaxCacheSize.toString());
+                rootElement.appendChild(esiProp2);
+
+                Element esiProp3 = output.createElement("Property");
+                esiProp3.setAttribute("Name", "ESIInvalidationMonitor");
+                esiProp3.setAttribute("Value", pcd.ESIInvalidationMonitor.toString());
+                rootElement.appendChild(esiProp3);
+
+                Element esiProp4 = output.createElement("Property");
+                esiProp4.setAttribute("Name", "ESIEnableToPassCookies");
+                esiProp4.setAttribute("Value", pcd.ESIEnableToPassCookies.toString());
+                rootElement.appendChild(esiProp4);
+
+                Element esiProp5 = output.createElement("Property");
+                esiProp5.setAttribute("Name", "PluginInstallRoot");
+                esiProp5.setAttribute("Value", root);
+                rootElement.appendChild(esiProp5);
+
+                // Reference to http endpoint the plugin should use
+                HttpEndpointInfo httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
+
+                // Map of virtual host name to the list of alias data being collected...
+                Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
+
+                // Process the virtual host configuration..
+                Set<DynamicVirtualHost> virtualHostSet = processVirtualHosts(vhostMgr, vhostAliasData, httpEndpointInfo, rootElement);
+
+                // Create the VirtualHostGroup and VirtualHost elements
+                for (DynamicVirtualHost vh : virtualHostSet) {
+                    // Create the VirtualHostGroup in the plugin xml
+                    Element vhElem = output.createElement("VirtualHostGroup");
+                    vhElem.setAttribute("Name", vh.getName());
+                    rootElement.appendChild(vhElem);
+
+                    if (!vhostAliasData.containsKey(vh.getName())) {
+                        continue;
+                    }
+                    // Create a VirtualHost element for each alias
+                    for (VHostData vh_aliasData : vhostAliasData.get(vh.getName())) {
+                        Element aliasElem = output.createElement("VirtualHost");
+                        // The IPv6 is already has the [] in alias
+                        aliasElem.setAttribute("Name", vh_aliasData.host + ":" + vh_aliasData.port);
+                        vhElem.appendChild(aliasElem);
+                    }
+                }
+
+                if (pcd.TrustedProxyGroup != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding custom property TrustedProxyGroup element and its associated proxy servers");
+                    }
+
+                    Element tproxyGroupElem = output.createElement("TrustedProxyGroup");
+                    rootElement.appendChild(tproxyGroupElem);
+                    for (String trustedProxy : pcd.TrustedProxyGroup) {
+                        Element tproxyElem = output.createElement("TrustedProxy");
+                        if (trustedProxy.indexOf(":") != -1) {
+                            // IPV6
+                            tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]");
+                        } else {
+                            tproxyElem.setAttribute("Name", trustedProxy.trim());
+                        }
+                        tproxyGroupElem.appendChild(tproxyElem);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Added proxy server " + trustedProxy + " TrustedProxyGroup element");
+                        }
+                    }
+                } // end-trusted-proxy
+
+                // define all server clusters
+                // config of server clusters
+                String serverID = smgr.getCloneID();
+                boolean singleServerConfig = true;
+                if (serverID == null) {
+                    serverID = "";
+                }
+                if (serverID.length() > 0) {
+                    // if the clone ID is defined, assume that session affinity matters
+                    singleServerConfig = false;
+                }
+                char cloneSep = smgr.getCloneSeparator();
+                Boolean cloneSeparatorChange = null;
+                if (':' == cloneSep) {
+                    cloneSeparatorChange = Boolean.FALSE;
+                } else if ('+' == cloneSep) {
+                    cloneSeparatorChange = Boolean.TRUE;
+                } else {
+                    throw new IllegalStateException("The session manager is configured to use '" + cloneSep + "' as the clone separator, but " + pcd.PluginConfigFileName
+                                                    + " only supports ':' and '+'.");
+                }
+                pcd.cloneSeparatorChange = cloneSeparatorChange;
+
+                Element pServersElem = null;
+                Element bServersElem = null;
+                int numberOfPrimaryServers = 0;
+                int numberOfBackupServers = 0;
+
+                // ------------- SERVER CLUSTER ---------------------
+                // A Liberty server can only belong to one cluster
+                ServerClusterData scd = pcd.createServerCluster(appServerName + "_" + GeneratePluginConfig.DEFAULT_NODE_NAME + "_Cluster", singleServerConfig);
+
+                // get the server cluster data
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Adding the ServerCluster " + scd.clusterName);
+                }
+                scd.print(tc);
+
+                // define the server cluster element
+                Element sgElem = output.createElement("ServerCluster");
+
+                // Set cluster attributes
+                // name is node_server
+                sgElem.setAttribute("Name", scd.clusterName);
+                sgElem.setAttribute("LoadBalance", scd.loadBalance);
+                if (pcd.ignoreAffinityRequests != null) {
+                    sgElem.setAttribute("IgnoreAffinityRequests", pcd.ignoreAffinityRequests.toString());
+                }
+                sgElem.setAttribute("RetryInterval", scd.retryInterval.toString());
+                sgElem.setAttribute("ServerIOTimeoutRetry", scd.serverIOTimeoutRetry.toString());
+                sgElem.setAttribute("RemoveSpecialHeaders", scd.removeSpecialHeaders.toString());
+                sgElem.setAttribute("CloneSeparatorChange", scd.cloneSeparatorChange.toString());
+                sgElem.setAttribute("PostSizeLimit", scd.postSizeLimit.toString());
+                sgElem.setAttribute("PostBufferSize", scd.postBufferSize.toString());
+                // retrieve Partition Table when HA-Based Session mgt is configured
+                sgElem.setAttribute("GetDWLMTable", scd.GetDWLMTable.toString());
+
+                // define a primary server element if this is a multi server gen
+                if (false == scd.singleServerConfig.booleanValue()) {
+                    pServersElem = output.createElement("PrimaryServers");
+                    bServersElem = output.createElement("BackupServers");
+                }
+
+                if (!httpEndpointInfo.isValid()) {
+                    // We couldn't find a matching endpoint -- there will be bits missing from
+                    // the generated plugin config as a result
+                    comment = output.createComment(" The configured endpoint could not be found. httpEndpointRef=" + httpEndpointInfo.getEndpointId());
+                    rootElement.appendChild(comment);
+                } else {
+                    // This is unique to liberty: we put the endpoint (http/https) in its
+                    // own server. (this behavior has existed since 8.5.0.. )
+                    // As of 8.5.5.2, we will use only one endpoint, so that a single plugin configuration
+                    // will contain only one server definition (which is good because there was only one server id.. )
+
+                    buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred);
+
+                    // create a server element for each server in the cluster
+                    for (ServerData sd : scd.clusterServers) {
+                        // get the server data
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Adding the Server definition " + sd.nodeName + "_" + sd.serverName);
+                        }
+                        sd.print(tc);
+
+                        // create a server element for the server
+                        Element serverElem = output.createElement("Server");
+                        serverElem.setAttribute("Name", sd.nodeName + "_" + sd.serverName);
+
+                        // add weight and clone id if multi server generation
+                        if (false == scd.singleServerConfig.booleanValue()) {
+
+                            serverElem.setAttribute("LoadBalanceWeight", sd.loadBalanceWeight.toString());
+
+                            if (0 < sd.serverID.length()) {
+                                serverElem.setAttribute("CloneID", sd.serverID);
+                            }
+                        }
+                        // Set server attributes
+                        // Could not find the best match values in liberty now, so just use the default value of metatype
+                        serverElem.setAttribute("ConnectTimeout", sd.connectTimeout.toString());
+                        serverElem.setAttribute("ServerIOTimeout", sd.serverIOTimeout.toString());
+                        if (sd.wsServerIOTimeout != null)
+                            serverElem.setAttribute("wsServerIOTimeout", sd.wsServerIOTimeout.toString());
+                        if (sd.wsServerIdleTimeout != null)
+                            serverElem.setAttribute("wsServerIdleTimeout", sd.wsServerIdleTimeout.toString());
+                        serverElem.setAttribute("WaitForContinue", sd.waitForContinue.toString());
+                        serverElem.setAttribute("MaxConnections", sd.maxConnections.toString());
+                        serverElem.setAttribute("ExtendedHandshake", sd.extendedHandshake.toString());
+
+                        sgElem.appendChild(serverElem);
+
+                        if (sd.transports != null) {
+                            // define its transports
+                            for (TransportData currentTransport : sd.transports) {
+                                Element tElem = output.createElement("Transport");
+                                String hostname = currentTransport.host;
+                                
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Adding the Transport definition " + hostname);
+                                }
+                                currentTransport.print(tc);
+
+                                tElem.setAttribute("Hostname", hostname);
+                                String transportPort = Integer.toString(currentTransport.port);
+                                tElem.setAttribute("Port", transportPort);
+                                if (currentTransport.isSslEnabled) {
+                                    tElem.setAttribute("Protocol", "https");
+
+                                    Element sslProp1 = output.createElement("Property");
+                                    sslProp1.setAttribute("Name", "keyring");
+                                    sslProp1.setAttribute("Value", pcd.KeyringLocation);
+                                    tElem.appendChild(sslProp1);
+
+                                    Element sslProp2 = output.createElement("Property");
+                                    sslProp2.setAttribute("Name", "stashfile");
+                                    sslProp2.setAttribute("Value", pcd.StashfileLocation);
+                                    tElem.appendChild(sslProp2);
+
+                                    if (pcd.CertLabel != null) {
+                                        Element sslProp3 = output.createElement("Property");
+                                        sslProp3.setAttribute("Name", "certLabel");
+                                        sslProp3.setAttribute("Value", pcd.CertLabel);
+                                        tElem.appendChild(sslProp3);
+                                    }
+                                } else {
+                                    tElem.setAttribute("Protocol", "http");
+                                }
+
+                                serverElem.appendChild(tElem);
+                            }
+                        }
+
+                        // append the server cluster element to the root
+                        rootElement.appendChild(sgElem);
+
+                        // add the server to the primary servers if this is a multi
+                        // server gen
+                        if (false == scd.singleServerConfig.booleanValue()) {
+                            Element psServerElem = output.createElement("Server");
+                            psServerElem.setAttribute("Name", sd.nodeName + "_" + sd.serverName);
+
+                            // Check if the current server is primary or backup
+                            if (sd.roleKind == Role.PRIMARY) {
+                                pServersElem.appendChild(psServerElem);
+                                numberOfPrimaryServers++;
+                            } else {
+                                bServersElem.appendChild(psServerElem);
+                                numberOfBackupServers++;
+                            }
+                        }
+                    } // end of for processing each server
+                } // end of if we had an endpoint reference
+
+                // append the primary servers if this is a multi server gen
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Number of primary servers: "
+                                 + numberOfPrimaryServers
+                                 + " Number of backup servers: "
+                                 + numberOfBackupServers);
+                }
+
+                if (false == scd.singleServerConfig.booleanValue()) {
+                    if (numberOfPrimaryServers > 0) {
+                        sgElem.appendChild(pServersElem);
+                    }
+                    if (numberOfBackupServers > 0) {
+                        sgElem.appendChild(bServersElem);
+                    }
+                }
+
+                // process the deployed modules for each server cluster (same
+                // across all servers in a cluster)
+                // deployed module config
+                String defaultAffinityCookie = smgr.getDefaultAffinityCookie();
+                String affinityUrlIdentifier = smgr.getAffinityUrlIdentifier();
+
+                // all virtual hosts are in the same cluster
+                for (DynamicVirtualHost vhost : virtualHostSet) {
+                    for (Iterator<?> apps = vhost.getWebApps(); apps.hasNext();) {
+                        WebApp app = (WebApp) apps.next();
+                        // a timing window is possible where a wepp app of "null" is in the list.
+                        if (app != null) {
+                            DeployedModuleData dmd = new DeployedModuleData(app, defaultAffinityCookie, affinityUrlIdentifier);
+                            scd.deployedModules.add(dmd);
+                        }
+                    }
+                }
+
+                Map<String, Set<URIData>> uriGroups = new HashMap<String, Set<URIData>>();
+                List<String> webGroupIDs = new LinkedList<String>();
+                // Check if any applications are deployed on the cluster
+                if (!scd.deployedModules.isEmpty()) {
+                    for (DeployedModuleData dmd : scd.deployedModules) {
+                        dmd.print(tc);
+
+                        if (dmd.moduleConfig == null) {
+                            continue;
+                        }
+
+                        String contextRoot = dmd.moduleConfig.getContextRoot();
+                        if (!contextRoot.startsWith("/"))
+                            contextRoot = "/" + contextRoot;
+
+                        //String lvh = dmd.moduleBindings.getVirtualHostName();
+                        String lvh = dmd.moduleConfig.getVirtualHostName();
+
+                        if (lvh == null || 0 == lvh.length()) {
+                            lvh = DEFAULT_VIRTUAL_HOST;
+                        }
+
+                        if (!uriGroups.containsKey(lvh)) {
+                            uriGroups.put(lvh, new LinkedHashSet<URIData>());
+                        }
+
+                        Set<URIData> uriList = uriGroups.get(lvh);
+                        // form the web group index and warn if a duplicate context root is being used
+                        String wgIndex = lvh + contextRoot;
+
+                        if (webGroupIDs.contains(wgIndex)) {
+                            if (utilityRequest) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "duplicate.context.root", contextRoot);
+                                }
+                            } else
+                                Tr.warning(tc, "duplicate.context.root", contextRoot);
+                        }
+
+                        // add index for future reference
+                        webGroupIDs.add(wgIndex);
+
+                        // Enable File Serving by default
+                        // file serving enabled...just add the context root
+                        // does not considerate file serving disable!!!
+                        String newContextRoot = appendWildCardString(contextRoot);
+                        uriList.add(new URIData(newContextRoot, dmd.cookieName, dmd.urlCookieName));
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Computed URIs for the module " + dmd.moduleConfig.getDisplayName());
+                        }
+                    } // end of while processing each deployed module
+                }
+
+                // put the cluster's uri groups into the cluster uri hash table,
+                // indexed by the cluster
+                clusterUriGroups.put(scd.clusterName, uriGroups);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Added the ServerCluster elements");
+                }
+
+                // output the uri group and route elements for each cluster
+                Set<ClusterUriGroup> cUgsSet = new HashSet<ClusterUriGroup>();
+
+                for (Map.Entry<String, Map<String, Set<URIData>>> entry : clusterUriGroups.entrySet()) {
+                    String clusterName = entry.getKey();
+                    uriGroups = entry.getValue();
+
+                    String lvh = null;
+                    Set<URIData> uriList = null;
+                    // iterate through the uri groups
+                    for (Map.Entry<String, Set<URIData>> ugEntry : uriGroups.entrySet()) {
+                        lvh = ugEntry.getKey();
+                        uriList = ugEntry.getValue();
+
+                        Element ugElem = output.createElement("UriGroup");
+                        String uriGroupName = lvh + "_" + clusterName + "_URIs";
+                        ugElem.setAttribute("Name", uriGroupName);
+                        rootElement.appendChild(ugElem);
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Adding the URIGroup " + uriGroupName);
+                        }
+
+                        // Check if URIList exists
+                        if (uriList != null) {
+                            for (URIData ud : uriList) {
+                                ud.print(tc);
+
+                                Element uriElem = output.createElement("Uri");
+                                uriElem.setAttribute("Name", ud.uriName);
+                                if (ud.cookieName != null && 0 < ud.cookieName.length()) {
+                                    uriElem.setAttribute("AffinityCookie",
+                                                         ud.cookieName);
+                                }
+                                uriElem.setAttribute("AffinityURLIdentifier",
+                                                     ud.urlCookieName);
+                                ugElem.appendChild(uriElem);
+                            }
+                        }
+                        cUgsSet.add(new ClusterUriGroup(lvh, clusterName, uriGroupName));
+                    }
+
+                } // end-cluster-urigroups
+
+                // ------------------------------------------
+                // Create Routes
+                for (DynamicVirtualHost vhost : virtualHostSet) {
+                    for (ClusterUriGroup cug : cUgsSet) {
+                        if (vhost.getName().equals(cug.vhostName)) {
+                            Element routeElem = output.createElement("Route");
+                            routeElem.setAttribute("VirtualHostGroup", vhost.getName());
+                            routeElem.setAttribute("UriGroup", cug.uriGroupName);
+                            routeElem.setAttribute("ServerCluster", cug.clusterName);
+                            rootElement.appendChild(routeElem);
+                        }
+                    }
+                }
+
+                if (isStopping(container)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "generateXML", "server = " + serverName + ", aborting generation due to server shutdown");
+                    }
+                    return;
+                }
+
+                // The <RequestMetrics> and the sub elements <filters> are not processed yet
+                // bunch of PMI stuff?
+
+                // create the plugin config output file
+                // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
+
+                Boolean fileExists = false;
+                if (writeDirectory == null) {
+                    String outputDirectory = "";
+                    if (utilityRequest) {
+                        // If utilityRequest is true and there was no writeDirectory then write to the server.output.dir/logs/state/ directory
+                        outputDirectory = "logs" + File.separatorChar + "state" + File.separatorChar;
+                    }
+                    fileExists = locationService.getServerOutputResource(outputDirectory + pcd.PluginConfigFileName).exists();
+                    outFile = locationService.getServerOutputResource(outputDirectory + pcd.TempPluginConfigFileName);
+                } else {
+                    // Otherwise a writeDirectory was specified
+                    // Add a trailing slash if one is not present
+                    String path = writeDirectory.getPath();
+                    if (path.charAt(path.length() - 1) != File.separatorChar) {
+                        path += File.separatorChar;
+                    }
+                    File pluginFile = new File(path + pcd.PluginConfigFileName);
+                    fileExists = pluginFile.exists();
+                    File temPluginFile = new File(path + pcd.TempPluginConfigFileName);
+                    // ensure any existing temp file is deleted (should never exist in non failure situations)
+                    if (temPluginFile.exists())
+                        temPluginFile.delete();
+                    outFile = locationService.asResource(temPluginFile, true);
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Output file already exists : " + fileExists);
+                }
+
+                if (isStopping(container)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "generateXML", "server = " + serverName + ", aborting generation due to server shutdown");
+                    }
+                    return;
+                }
+
+                // Check to see if the config has changed
+                writeFile = hasConfigChanged(output);
+
+                // Only write out to file if we have new or changed configuration information, or if this is an explicit request
+                if (writeFile || !utilityRequest || !fileExists) {
+                    // The bundle must not be uninstalled in order to write the file
+                    // If writeFile is true write to the cachedFile and copy from there
+                    // If writeFile is false and the cachedFile doesn't exist write to the cache file and copy from there
+                    // If writeFile is false and cachedFile exists copy from there
+                    // If writeFile is false and cachedFile doesn't exist write to cachedFile and copy from there
+                    try {
+                        if (!cachedFile.exists() || writeFile) {
+                            fOutputStream = new FileOutputStream(cachedFile);
+                            pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
+
+                            // Write the plugin config file
+                            // Create a style sheet to indent the output
+                            StreamSource xsltSource = new StreamSource(new StringReader(styleSheet));
+
+                            // Use transform apis to do generic serialization
+                            TransformerFactory tfactory = getTransformerFactory();
+                            Transformer serializer = tfactory.newTransformer(xsltSource);
+                            Properties oprops = new Properties();
+                            oprops.put(OutputKeys.METHOD, "xml");
+                            oprops.put(OutputKeys.OMIT_XML_DECLARATION, "no");
+                            oprops.put(OutputKeys.VERSION, "1.0");
+                            oprops.put(OutputKeys.INDENT, "yes");
+                            serializer.setOutputProperties(oprops);
+                            serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
+                        }
+                    } catch(IOException e){
+                        //path to the cachedFile is broken when bundle was uninstalled 
+                        if(!this.isBundleUninstalled()){ 
+                            throw e; // Missing for some other reason 
+                        }
+                    } finally {
+                        if (pluginCfgWriter != null) {
+                            pluginCfgWriter.flush();
+                            // Ensure data is physically written to disk
+                            fOutputStream.getFD().sync();
+                            pluginCfgWriter.close();
+                        }
+                        try {
+                            copyFile(cachedFile, outFile.asFile());
+                        } catch (IOException e){
+                            //cachedFile no longer exists if the bundle was uninstalled 
+                            if(!this.isBundleUninstalled()){
+                                throw e; // Missing for some other reason 
+                            }
+                        }    
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "A new plugin configuration file was not written: the configuration did not change.");
+                    }
+                }
             } catch (Throwable t) {
+                FFDCFilter.processException(t, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Error renaming the plugin config xml; " + t.getMessage());
+                    Tr.event(tc, "Error creating plugin config xml; " + t.getMessage());
+                }
+            } finally {
+                try {
+                    if (!isStopping(container)) {
+                        // Verify that the temp plugin file exists
+                        if (!outFile.exists()) {
+                            throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
+                        }
+                        // Construct the actual plugin file path
+                        File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+
+                        if (pluginFile.exists()) {
+                            FileUtils.forceDelete(pluginFile);
+                        }
+
+                        outFile.asFile().renameTo(pluginFile);
+
+                        // tell the user where the file is - quietly for implicit requests
+                        String fullFilePath = pluginFile.getAbsolutePath();
+                        if (utilityRequest)
+                            Tr.info(tc, "plugin.file.generated.info", fullFilePath);
+                        else
+                            Tr.audit(tc, "plugin.file.generated.audit", fullFilePath);
+                    }
+                } catch (Throwable t) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(tc, "Error renaming the plugin config xml; " + t.getMessage());
+                    }
                 }
             }
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "generateXML");
+        } finally {
+            hasGenerationStarted.set(false);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "generateXML");
+            }
         }
     }
+
     
     @FFDCIgnore(IOException.class)
     public static void copyFile(File in, File out) 
