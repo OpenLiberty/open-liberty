@@ -171,7 +171,7 @@ jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
 jakarta.servlet:jakarta.servlet-api:5.0.0-M1
 jakarta.transaction:jakarta.transaction-api:2.0.0-RC3
-jakarta.validation:jakarta.validation-api:3.0.0-M1
+jakarta.validation:jakarta.validation-api:3.0.0
 jakarta.websocket:jakarta.websocket-api:2.0.0-RC1
 jakarta.ws.rs:jakarta.ws.rs-api:3.0.0-M1
 jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3
