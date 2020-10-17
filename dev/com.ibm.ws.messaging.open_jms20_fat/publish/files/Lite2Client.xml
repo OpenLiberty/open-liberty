@@ -1,5 +1,13 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all:com.ibm.ws.sib.api.jms.impl.*=all:com.ibm.ws.jndi.*=all"
+    maxFileSize="200"/>
+   -->
+
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
@@ -12,21 +20,24 @@
     <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
 
-  <variable name="onError" value="FAIL"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
 
-  <!--
-  <logging
-    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all:com.ibm.ws.sib.api.jms.impl.*=all:com.ibm.ws.jndi.*=all"
-    maxFileSize="200"/>
-   -->
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warning CWWKE0921W potential violation warnings -->
-
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
 
-  <!-- Point the connection factories to the JMS endpoint defined in the engine configuration. -->
+  <!-- JMS endpoint configuration -->
 
   <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr1">
     <properties.wasJms
