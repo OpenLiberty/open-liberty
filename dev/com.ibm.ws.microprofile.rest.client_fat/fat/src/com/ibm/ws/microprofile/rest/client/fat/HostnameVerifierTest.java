@@ -45,7 +45,8 @@ public class HostnameVerifierTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("2.0", SERVER_NAME));
 
     private static final String appName = "hostnameVerifierApp";
 

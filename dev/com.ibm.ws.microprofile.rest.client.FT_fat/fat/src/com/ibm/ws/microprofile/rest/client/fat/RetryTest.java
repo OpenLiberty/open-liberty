@@ -20,7 +20,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -37,9 +36,10 @@ public class RetryTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.2", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.2", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.3", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG_AND_FT("2.0", SERVER_NAME));
 
     private static final String appName = "retryApp";
 
