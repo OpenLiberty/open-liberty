@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,18 @@ public class MapCounterRunnable implements ManagedTask, Runnable, Serializable {
     @Override
     public void run() {
         try {
+            String identityName = execProps.get(ManagedTask.IDENTITY_NAME);
+            if (identityName == null) {
+                // If instance was serialized using different Java EE/Jakarta,
+                // then it will be using the other constant value.
+                if (ManagedTask.IDENTITY_NAME.startsWith("jakarta."))
+                    identityName = execProps.get(ManagedTask.IDENTITY_NAME.replace("jakarta.", "javax."));
+                else if (ManagedTask.IDENTITY_NAME.startsWith("javax."))
+                    identityName = execProps.get(ManagedTask.IDENTITY_NAME.replace("javax.", "jakarta."));
+            }
             @SuppressWarnings("unchecked")
             Map<String, Integer> counters = (Map<String, Integer>) Thread.currentThread().getContextClassLoader().loadClass(web.MapCounter.class.getName()).getField("counters").get(null);
-            counters.put(execProps.get(ManagedTask.IDENTITY_NAME), ++counter);
+            counters.put(identityName, ++counter);
         } catch (RuntimeException x) {
             throw x;
         } catch (Exception x) {
