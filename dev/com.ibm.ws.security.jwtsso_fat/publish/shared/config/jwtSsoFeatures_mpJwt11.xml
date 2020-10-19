@@ -14,6 +14,7 @@
         <feature>jsp-2.3</feature>
         <feature>jwtSso-1.0</feature>
         <feature>componenttest-1.0</feature>
+        <feature>mpJwt-1.1</feature>
     </featureManager>
 
 </server>

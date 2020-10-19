@@ -490,7 +490,7 @@ public class JwtBuilderSetApisClient extends HttpServlet {
             //  allow caller to pass any subset of parms - we'll pass null for any missing
             // this means that for positive tests, caller needs to pass values for all parms even the "defaults"
             if (keyMgmtAlg != null || encryptKeyString != null || contentEncryptAlg != null) {
-                Key encryptKey = KeyTools.getPublicKeyFromPem(encryptKeyString);
+                Key encryptKey = KeyTools.getKeyFromPem(encryptKeyString);
                 appUtils.logIt(pw, "Calling encryptWith with parms: keyManagementAlg=" + keyMgmtAlg + ", keyManagementKey=" + encryptKey + ", contentEncryptionAlg=" + contentEncryptAlg);
                 myJwtBuilder.encryptWith(keyMgmtAlg, encryptKey, contentEncryptAlg);
             }
