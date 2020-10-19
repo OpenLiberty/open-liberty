@@ -40,6 +40,7 @@ public class LogstashCollectorIndependentTest extends LogstashCollectorTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
         Log.info(c, "setUp", "Logstash container: host=" + host + "  port=" + port);
