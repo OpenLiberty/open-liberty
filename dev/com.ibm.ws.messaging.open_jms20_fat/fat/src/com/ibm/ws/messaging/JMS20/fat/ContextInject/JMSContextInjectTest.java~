@@ -82,7 +82,7 @@ import com.ibm.ws.messaging.JMS20.fat.TestUtils;
     //   at java.lang.Thread.run(Thread.java:811)
 
 @RunWith(FATRunner.class)
-// @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // Temporarily disabled for Jakarta; (see above).
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // Temporarily disabled for Jakarta; (see above).
 @Mode(TestMode.FULL)
 public class JMSContextInjectTest {
 

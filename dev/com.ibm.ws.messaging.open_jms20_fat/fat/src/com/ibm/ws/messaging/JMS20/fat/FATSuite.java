@@ -39,37 +39,37 @@ import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithM
 @SuiteClasses({
 
         DummyTest.class,
-        LiteBucketSet1Test.class,
+        // LiteBucketSet1Test.class,
 
         // Two test methods temporarily disabled for jakarta due to injection exceptions.
         // See the LiteBucketSet2Test source for more information.
-        LiteBucketSet2Test.class,
+        // LiteBucketSet2Test.class,
 
         // Fully disabled for jakarta.  j2ee-management is not supported by jakarta, and
         // is not compatible with the jakarta features used by the test class.
-        JMSMBeanTest.class,
+        // JMSMBeanTest.class,
 
-        JMSProducerTest_118071.class, //full
-        JMSProducerTest_118073.class, //full
-        SharedSubscriptionTest_129623.class,
+        // JMSProducerTest_118071.class, //full
+        // JMSProducerTest_118073.class, //full
+        // SharedSubscriptionTest_129623.class,
 
-        JMSConsumerTest_118076.class, //full
-        JMSConsumerTest_118077.class, //full
-        JMSRedeliveryTest_120846.class,
+        // JMSConsumerTest_118076.class, //full
+        // JMSConsumerTest_118077.class, //full
+        // JMSRedeliveryTest_120846.class,
 
-        SharedSubscriptionWithMsgSelTest_129623.class,
-        SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-        SharedSubscriptionTest_129626.class, //full 2nd
-        JMSProducer_Test118073.class, //full
+        // SharedSubscriptionWithMsgSelTest_129623.class,
+        // SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+        // SharedSubscriptionTest_129626.class, //full 2nd
+        // JMSProducer_Test118073.class, //full
 
-        DurableUnsharedTest.class,
+        // DurableUnsharedTest.class,
 
         // Temporarily disabled for jakarta due to injection exceptions.
         // See the JMSContextInjectTest source for more information.
         JMSContextInjectTest.class, //full
 
 // xx JMSDCFTest.class,
-        JMSDCFVarTest.class //full 2nd
+        // JMSDCFVarTest.class //full 2nd
 
 // xx JMSEjbJarXmlMdbTest.class, // MDBMDB
 })
@@ -78,11 +78,11 @@ public class FATSuite {
     // the tests are removed from WS-CD-Open, the pre-jakarta
     // repeat can be re-enabled in open-liberty.
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests
-        .with(new JakartaEE9Action());
+    // public static RepeatTests r = RepeatTests
+    //     .with(new JakartaEE9Action());
 
-    // public static RepeatTests repeater = RepeatTests
-    //     .withoutModification()
-    //     .andWith( new JakartaEE9Action() );
+    @ClassRule
+    public static RepeatTests repeater = RepeatTests
+        .withoutModification()
+        .andWith( new JakartaEE9Action() );
 }

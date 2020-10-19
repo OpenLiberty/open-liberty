@@ -199,7 +199,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     // mBeans is currently not working for TCP. Below testcase has
     // to be uncommented once mBeans is fixed.
 
-    // @Test
+    // @Test // TODO
     public void testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP");
         assertTrue("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP_SecOff failed", testResult);
@@ -280,7 +280,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
     }
 
     @Mode(TestMode.FULL)
-    // @Test MDBMDB
+    // @Test // TODO MDBMDB
     public void testMultiSharedNonDurableConsumer_SecOff() throws Exception {
         runInServlet("testBasicMDBTopic");
         Thread.sleep(1000);
