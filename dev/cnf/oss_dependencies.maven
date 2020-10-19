@@ -169,7 +169,7 @@ jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1
 jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0-M1
-jakarta.servlet:jakarta.servlet-api:5.0.0-M1
+jakarta.servlet:jakarta.servlet-api:5.0.0
 jakarta.transaction:jakarta.transaction-api:2.0.0-RC3
 jakarta.validation:jakarta.validation-api:3.0.0
 jakarta.websocket:jakarta.websocket-api:2.0.0-RC1
