@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-5.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.webcontainer.monitor.jakarta
-kind=noship
+kind=beta
 edition=core
