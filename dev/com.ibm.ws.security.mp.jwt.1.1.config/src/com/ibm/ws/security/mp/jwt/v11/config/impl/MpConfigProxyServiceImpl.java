@@ -37,13 +37,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
 
     static private String MP_VERSION = "1.1";
 
-    public static Set<String> ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES = new HashSet<String>();
-    static {
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.ISSUER);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.PUBLIC_KEY);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.KEY_LOCATION);
-    }
-
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         Tr.info(tc, "MPJWT_11_CONFIG_PROXY_PROCESSED");
@@ -88,11 +81,15 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES;
+        Set<String> acceptableMpConfigPropNames = new HashSet<String>();
+        acceptableMpConfigPropNames.add(MpConstants.ISSUER);
+        acceptableMpConfigPropNames.add(MpConstants.PUBLIC_KEY);
+        acceptableMpConfigPropNames.add(MpConstants.KEY_LOCATION);
+        return acceptableMpConfigPropNames;
     }
 
     protected boolean isAcceptableMpConfigProperty(String propertyName) {
-        return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.contains(propertyName);
+        return getSupportedConfigPropertyNames().contains(propertyName);
     }
 
     protected Config getConfig(ClassLoader cl) {

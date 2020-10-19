@@ -91,6 +91,9 @@ public class BuilderImpl implements Builder {
     private final static String KEY_JWT_SERVICE = "jwtConfig";
     private static final String CFG_KEY_ID = "id";
 
+    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+    public static final String DEFAULT_CONTENT_ENCRYPTION_ALGORITHM = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
+
     private final Object initlock = new Object() {
     };
 
@@ -513,49 +516,26 @@ public class BuilderImpl implements Builder {
      */
     @Override
     public Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException {
-        if (!isSupportedKeyManagementAlg(keyManagementAlg)) {
-            String err = Tr.formatMessage(tc, "UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM", new Object[] { keyManagementAlg, getSupportedKeyManagementAlgorithms() });
-            throw new KeyException(err);
-        }
-        if (!isSupportedContentEncryptionAlgorithm(contentEncryptionAlg)) {
-            String err = Tr.formatMessage(tc, "UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM", new Object[] { contentEncryptionAlg, getSupportedContentEncryptionAlgorithms() });
-            throw new KeyException(err);
-        }
         if (keyManagementKey == null) {
             String err = Tr.formatMessage(tc, "KEY_MANAGEMENT_KEY_MISSING", new Object[] { configId });
             throw new KeyException(err);
         }
-
+        if (keyManagementAlg == null || keyManagementAlg.isEmpty()) {
+            keyManagementAlg = DEFAULT_KEY_MANAGEMENT_ALGORITHM;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Null or empty key management algorithm provided; defaulting to " + keyManagementAlg);
+            }
+        }
+        if (contentEncryptionAlg == null || contentEncryptionAlg.isEmpty()) {
+            contentEncryptionAlg = DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Null or empty content encryption algorithm provided; defaulting to " + contentEncryptionAlg);
+            }
+        }
         this.keyManagementAlg = keyManagementAlg;
         this.keyManagementKey = keyManagementKey;
         this.contentEncryptionAlg = contentEncryptionAlg;
         return this;
-    }
-
-    boolean isSupportedKeyManagementAlg(String keyManagementAlg) {
-        if (keyManagementAlg == null) {
-            return false;
-        }
-        return getSupportedKeyManagementAlgorithms().contains(keyManagementAlg);
-    }
-
-    List<String> getSupportedKeyManagementAlgorithms() {
-        List<String> supportedAlgs = new ArrayList<String>();
-        supportedAlgs.add(KeyManagementAlgorithmIdentifiers.RSA_OAEP);
-        return supportedAlgs;
-    }
-
-    boolean isSupportedContentEncryptionAlgorithm(String contentEncryptionAlg) {
-        if (contentEncryptionAlg == null) {
-            return false;
-        }
-        return getSupportedContentEncryptionAlgorithms().contains(contentEncryptionAlg);
-    }
-
-    List<String> getSupportedContentEncryptionAlgorithms() {
-        List<String> supportedAlgs = new ArrayList<String>();
-        supportedAlgs.add(ContentEncryptionAlgorithmIdentifiers.AES_256_GCM);
-        return supportedAlgs;
     }
 
     // add claims with the given name and value
