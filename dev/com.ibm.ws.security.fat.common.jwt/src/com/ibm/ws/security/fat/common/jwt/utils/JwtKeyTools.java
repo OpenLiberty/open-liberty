@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.jwt.utils;
 
-import java.security.Key;
-
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.utils.KeyTools;
 
@@ -47,14 +45,24 @@ public class JwtKeyTools extends KeyTools {
         return getComplexKey(server, getPublicKeyFileNameForAlg(sigAlg));
     }
 
-    public static Key getPublicKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
+    public static String getShortComplexPublicKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
 
-        return getPublicKeyFromPem(getComplexKey(server, getPublicKeyFileNameForAlg(sigAlg)));
+        return getComplexKey(server, "short_" + getPublicKeyFileNameForAlg(sigAlg));
     }
+
+//    public static Key getPublicKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
+//
+//        return getPublicKeyFromPem(getComplexKey(server, getPublicKeyFileNameForAlg(sigAlg)));
+//    }
 
     public static String getComplexPrivateKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
 
         return getComplexKey(server, getPrivateKeyFileNameForAlg(sigAlg));
+    }
+
+    public static String getShortComplexPrivateKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
+
+        return getComplexKey(server, "short_" + getPrivateKeyFileNameForAlg(sigAlg));
     }
 
     public static String getPublicKeyFileNameForAlg(String sigAlg) throws Exception {
