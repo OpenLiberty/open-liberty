@@ -20,6 +20,7 @@ Subsystem-Name: MicroProfile 4.0
   io.openliberty.mpJwt-1.2, \
   io.openliberty.mpMetrics-3.0, \
   io.openliberty.mpOpenAPI-2.0, \
-  io.openliberty.mpOpenTracing-2.0
+  io.openliberty.mpOpenTracing-2.0, \
+  io.openliberty.mpRestClient-2.0
 kind=beta
 edition=core
