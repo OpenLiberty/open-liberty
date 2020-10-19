@@ -12,20 +12,21 @@ package componenttest.topology.database.container;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.topology.database.DerbyNetworkUtilities;
+
 /**
  * This is a Derby Client no-op database test container that is returned
  * when attempting to test against derby client.
  *
- * This test container overrides the start and stop methods
- * to prevent the creation of a docker container.
- *
+ * This class will start and stop a Derby Network instance (although locally, not in a container)
  */
-class DerbyClientNoopContainer<SELF extends DerbyClientNoopContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
+class DerbyClientContainer extends JdbcDatabaseContainer<DerbyClientContainer> {
+	
+	private String user = "dbuser";
+	private String pass = "dbpass";
+	private String dbname = "memory:testdb";
 
-    /**
-     * @see DerbyClientNoopContainer
-     */
-    public DerbyClientNoopContainer() {
+    public DerbyClientContainer() {
         super("");
     }
 
@@ -36,7 +37,11 @@ class DerbyClientNoopContainer<SELF extends DerbyClientNoopContainer<SELF>> exte
 
     @Override
     public void start() {
-        //DO NOTHING
+    	try {
+			DerbyNetworkUtilities.startDerbyNetwork();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
 
     @Override
@@ -46,7 +51,11 @@ class DerbyClientNoopContainer<SELF extends DerbyClientNoopContainer<SELF>> exte
 
     @Override
     public void stop() {
-        //DO NOTHING
+    	try {
+			DerbyNetworkUtilities.stopDerbyNetwork();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
 
     @Override
@@ -56,32 +65,55 @@ class DerbyClientNoopContainer<SELF extends DerbyClientNoopContainer<SELF>> exte
 
 	@Override
 	public String getJdbcUrl() {
-		throw new UnsupportedOperationException();
+		return "jdbc:derby://" + getContainerIpAddress() + ":" + getFirstMappedPort() + "/" + getDatabaseName();
+	}
+	
+	@Override
+	public DerbyClientContainer withUsername(String username) {
+		user = username;
+		return self();
 	}
 
 	@Override
 	public String getUsername() {
-		throw new UnsupportedOperationException();
+		return user;
+	}
+	
+	@Override
+	public DerbyClientContainer withPassword(String password) {
+		pass = password;
+		return self();
 	}
 
 	@Override
 	public String getPassword() {
-		throw new UnsupportedOperationException();
+		return pass;
+	}
+	
+	@Override
+	public DerbyClientContainer withDatabaseName(String dbName) {
+		dbname = dbName;
+		return self();
+	}
+	
+	@Override
+	public String getDatabaseName() {
+		return dbname;
 	}
 
 	@Override
 	public Integer getFirstMappedPort() {
-		throw new UnsupportedOperationException();
+		return 1527;
 	}
 
 	@Override
 	public String getContainerIpAddress() {
-		throw new UnsupportedOperationException();
+		return "localhost";
 	}
 
 	@Override
 	public String getDriverClassName() {
-		throw new UnsupportedOperationException();
+		return "org.apache.derby.jdbc.ClientDriver";
 	}
 
 	@Override
