@@ -18,7 +18,6 @@ src: \
     test-applications/EJBTestNoBnd.jar/src, \
     test-applications/ServletTest.war/src, \
     test-applications/ServletTestNoBnd.war/src, \
-    test-applications/HelloWorld.war/src, \
     test-bundles/ddmodel_fat_bundle/src
 
 test.project: true
