@@ -13,9 +13,8 @@ bVersion=1.0
 
 # Eclipselink version info
 eclVersion=3.0.0
-#eclHash=69f2c2b
-#eclFullVersion=${eclVersion}.${eclHash}
-eclFullVersion=${eclVersion}
+eclHash=abf9986
+eclFullVersion=${eclVersion}.${eclHash}
 eclPackageVersion=3.0.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.3.0
@@ -109,12 +108,11 @@ DynamicImport-Package: \
 Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.corba;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion}}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion}}!/!META-INF/maven/*
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -124,7 +122,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
-    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion},\
-    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion},\
+    com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
+    com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
     jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
     com.ibm.websphere.org.osgi.core
