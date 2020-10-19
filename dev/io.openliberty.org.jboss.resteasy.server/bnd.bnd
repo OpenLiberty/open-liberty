@@ -73,7 +73,7 @@ instrument.disabled: true
 
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-cdi;4.5.8.Final;EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;4.5.8.Final;EXACT}, \ \
+  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;4.5.8.Final;EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty, \
   META-INF=resources/META-INF

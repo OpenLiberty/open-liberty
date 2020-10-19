@@ -28,7 +28,7 @@ src:\
     test-applications/LibertyReadWriteListenerTest.war/src,\
     test-applications/LibertyWriteListenerFilterTest.war/src,\
     test-applications/multiNBReadApp.war/src,\
-    test-applications/ServletcontextAddListener.war/src,\
+    test-applications/ServletContextAddListener.war/src,\
     test-applications/ServletContextCreateListener.war/src,\
     test-applications/SessionIdListener.jar/src,\
     test-applications/SessionIdListenerAddListener.war/src,\
