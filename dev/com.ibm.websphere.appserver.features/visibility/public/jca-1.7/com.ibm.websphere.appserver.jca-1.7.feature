@@ -16,3 +16,4 @@ Subsystem-Category: JavaEE7Application
  com.ibm.ws.jca.1.7
 kind=ga
 edition=base
+WLP-Activation-Type: parallel
