@@ -19,14 +19,16 @@
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
-
-  <persistentExecutor jndiName="concurrent/myScheduler" taskStoreRef="DBTaskStore" retryLimit="1" initialPollDelay="30m"/>
+  
+  <persistentExecutor jndiName="concurrent/myScheduler" taskStoreRef="DBTaskStore" 
+                      initialPollDelay="2s" pollInterval="2s500ms" missedTaskThreshold="6s" ignore.minimum.for.test.use.only="true"
+                      retryLimit="1"/>
 
   <databaseStore id="DBTaskStore">
     <dataSource fat.modify="true" jndiName="jdbc/schedDB" id="TaskStoreDS">
       <jdbcDriver libraryRef="FATJDBCLib"/>
       <!-- properties modified by FATRunner during database rotation. -->
-      <properties createDatabase="create" databaseName="memory:scheddb"/>
+      <properties createDatabase="create" databaseName="memory:failoverdb"/>
     </dataSource>
   </databaseStore>
   
