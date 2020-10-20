@@ -55,7 +55,7 @@ public class POP3Test {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testInlineMail() throws Exception {
+    public void testPOP3InlineMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/POP3InlineServlet");
         Log.info(c, "testInlineMail",
@@ -80,7 +80,7 @@ public class POP3Test {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testJNDIMail() throws Exception {
+    public void testPOP3JNDIMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/POP3JNDIServlet");
         Log.info(c, "testJNDIMail",
@@ -107,7 +107,7 @@ public class POP3Test {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testMailSessionMail() throws Exception {
+    public void testPOP3MailSessionMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/POP3MailSessionServlet");
         Log.info(c, "testAutoInstall",

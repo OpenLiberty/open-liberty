@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,16 +78,23 @@ final class FacesConfigDDParser extends DDParser {
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
         } else if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            //  don't want to allow a faces-config.xml with version="2.2" if the jsf-2.2 feature is not enabled
+            //  Don't allow a faces-config.xml with version="2.2" if the jsf-2.2 feature is not enabled.
             if ((this.FacesBundleLoadedVersion >= 22) && "2.2".equals(vers)) {
                 // javaee 7 only
                 version = 22;
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
-            //  don't want to allow a faces-config.xml with version="2.3" if the jsf-2.3 feature is not enabled
+            //  Don't allow a faces-config.xml with version="2.3" if the jsf-2.3 feature is not enabled.
             if ((this.FacesBundleLoadedVersion >= 23) && "2.3".equals(vers)) {
                 // javaee 8 only
                 version = 23;
+                return new FacesConfigType(getDeploymentDescriptorPath());
+            }
+        } else if ("https://jakarta.ee/xml/ns/jakartaee".contentEquals(namespace)) {
+            // Don't allow a faces-config.xml with a version="3.0" if the faces-3.0 feature is not enabled.
+            if ((this.FacesBundleLoadedVersion >= 30) && "3.0".contentEquals(vers)) {
+                // Jakarta 9 only
+                version = 30;
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
         }

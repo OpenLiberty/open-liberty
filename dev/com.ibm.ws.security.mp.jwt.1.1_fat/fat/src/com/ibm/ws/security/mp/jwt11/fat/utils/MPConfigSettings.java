@@ -95,6 +95,7 @@ public class MPConfigSettings {
         return certType;
     }
 
+    // TODO - these have been duplicated in the JWT tooling project - when encryption is added to mpJwt - remove these and replace with instances in JwtKeyTools
     public static String getComplexKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
 
         return getComplexKey(server, getKeyFileNameForAlg(sigAlg));

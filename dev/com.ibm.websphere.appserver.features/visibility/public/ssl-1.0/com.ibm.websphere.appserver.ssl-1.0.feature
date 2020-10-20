@@ -16,8 +16,8 @@ Subsystem-Name: Secure Socket Layer 1.0
  com.ibm.ws.crypto.certificateutil
 -jars=com.ibm.websphere.appserver.spi.ssl; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.ssl; location:=dev/api/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.4-javadoc.zip, \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ssl_1.3-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.5-javadoc.zip, \
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ssl_1.4-javadoc.zip
 kind=ga
 edition=core
 superseded-by=transportSecurity-1.0

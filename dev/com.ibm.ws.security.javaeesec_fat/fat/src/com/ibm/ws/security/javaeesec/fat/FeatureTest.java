@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -200,6 +201,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-2.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity20() throws Exception {
@@ -244,13 +246,14 @@ public class FeatureTest extends JavaEESecTestBase {
      * In this test case the following configuration will be used.
      * 1. WAR 1 will use the LDAP Identity Store.
      * 2. WAR 2 will use the LDAP2 Identity Store.
-     * 3. AppSecurity feature 2.0 Will be used.
+     * 3. AppSecurity feature 1.0 Will be used.
      * </OL>
      * <P> The application will fail to start because the feature does not support Identity Store.
      * <OL>
      * <LI>
      * </OL>
      */
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-1.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity10() throws Exception {

@@ -126,6 +126,9 @@
         <AD id="trustDefaultCerts" name="%repertoire.trustDefaultCerts" description="%repertoire.trustDefaultCerts.desc" 
             required="false" type="Boolean" default="false" />
             
+        <AD id="enforceCipherOrder" name="%repertoire.enforceCipherOrder" description="%repertoire.enforceCipherOrder.desc" 
+            required="false" type="Boolean" default="false" />
+                                 
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.ssl.repertoire">

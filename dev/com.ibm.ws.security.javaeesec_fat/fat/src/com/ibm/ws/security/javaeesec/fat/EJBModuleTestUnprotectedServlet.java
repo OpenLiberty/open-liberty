@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -42,7 +43,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-
 public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = EJBModuleTestUnprotectedServlet.class;
@@ -55,7 +55,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
     protected static String EJB_WAR_NAME2 = "AnnotatedEjbinWarServletLdap.war";
     protected static String EJB_WAR2_PATH = "/AnnotatedEjbinWarServletLdap/";
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
-    protected static String EJB_APP_NAME = EJB_EAR_NAME;
+    protected static String EJB_APP_NAME = "securityejbinwar";
     protected static String DB_APP_NAME = "DefaultQueryDatabaseServlet2";
     protected static String XML_NAME = "ejbunprotectedserver.xml";
     protected static String JASPIC_RUN_AS_XML_NAME = "ejbunprotectedCustomISRunAsserver.xml";
@@ -130,12 +130,12 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
 
     protected static void startServer(String config, String... appNames) throws Exception {
         myServer.setServerConfigurationFile(config);
-        myServer.startServer(true);
         if (appNames != null) {
             for (String appName : appNames) {
                 myServer.addInstalledAppForValidation(appName);
             }
         }
+        myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 

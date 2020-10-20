@@ -311,7 +311,7 @@ public class BootstrapConfig {
             mergeProperties(initProps, null, f.toURI().toString());
         }
 
-        boolean userRootIsDefault = userRoot.getParentFile().equals(installRoot);
+        boolean userRootIsDefault = installRoot.equals(userRoot.getParentFile());
 
         // Set locations into initProps
         initProps.put(BootstrapConstants.LOC_PROPERTY_INSTALL_DIR, getPathProperty(installRoot));

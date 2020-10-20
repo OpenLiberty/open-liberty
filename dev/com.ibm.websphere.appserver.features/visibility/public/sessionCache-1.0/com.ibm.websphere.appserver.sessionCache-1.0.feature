@@ -19,13 +19,9 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.sessionStore-1.0.0.JCache, \
   com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
-  io.openliberty.servlet.api-4.0; ibm.tolerates:="3.1,3.0"; apiJar=false, \
-  com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:=1.1
+  io.openliberty.servlet.api-4.0; ibm.tolerates:="3.1,3.0,5.0"; apiJar=false, \
+  com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:="1.1,2.0"
 -bundles=\
-  com.ibm.websphere.javaee.jcache.1.1; mavenCoordinates="javax.cache:cache-api:1.1.0", \
-  com.ibm.websphere.security, \
-  com.ibm.ws.session, \
-  com.ibm.ws.session.cache, \
-  com.ibm.ws.session.store
+  com.ibm.websphere.security
 kind=ga
 edition=core

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+<application-client id="ProgrammaticLoginAppClient_ID">
+	<display-name>Programmatic Login Client Application</display-name>
+	<callback-handler>com.ibm.ws.security.client.fat.callbackhandler.ProgrammaticLoginCallbackHandlerBadPwd</callback-handler>
+</application-client>

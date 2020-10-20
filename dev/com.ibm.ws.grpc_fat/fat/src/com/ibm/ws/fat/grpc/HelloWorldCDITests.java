@@ -14,6 +14,7 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -44,6 +45,8 @@ public class HelloWorldCDITests extends HelloWorldBasicTest {
     private static final String CDI_ENABLED_INTERCEPTOR = "grpc.server.cdi.interceptor.xml";
 
     private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
+
+    private static final Set<String> appName = Collections.singleton("HelloWorldService");
 
     @Rule
     public TestName name = new TestName();
@@ -83,21 +86,6 @@ public class HelloWorldCDITests extends HelloWorldBasicTest {
     }
 
     /**
-     * This method is used to set the server.xml
-     */
-    private static void setServerConfiguration(LibertyServer server,
-                                               String serverXML) throws Exception {
-        if (!serverConfigurationFile.equals(serverXML)) {
-            // Update server.xml
-            LOG.info("ServiceConfigTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            serverConfigurationFile = serverXML;
-        }
-    }
-
-    /**
      * Tests that the CDI-enabled GreetingCDIBean is injected correctly when cdi-2.0 is enabled
      *
      * @throws Exception
@@ -105,8 +93,7 @@ public class HelloWorldCDITests extends HelloWorldBasicTest {
     @Test
     public void testCDIService() throws Exception {
         // enable cdi-2.0
-        setServerConfiguration(helloWorldServer, CDI_ENABLED);
-        helloWorldServer.waitForConfigUpdateInLogUsingMark(Collections.singleton("HelloWorldService"));
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldServer, serverConfigurationFile, CDI_ENABLED, appName, LOG);
 
         String response = runHelloWorldTest();
         assertTrue("the gRPC CDI request did not complete correctly", response.contains("howdy from GreetingCDIBean us3r1"));
@@ -120,9 +107,8 @@ public class HelloWorldCDITests extends HelloWorldBasicTest {
      */
     @Test
     public void testCDIInterceptor() throws Exception {
-        // enable cdi-2.0
-        setServerConfiguration(helloWorldServer, CDI_ENABLED_INTERCEPTOR);
-        helloWorldServer.waitForConfigUpdateInLogUsingMark(Collections.singleton("HelloWorldService"));
+        // configure an interceptor
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldServer, serverConfigurationFile, CDI_ENABLED_INTERCEPTOR, appName, LOG);
 
         String response = runHelloWorldTest();
 

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -122,15 +123,15 @@ public class FailoverTimersTest extends FATServletClient {
 
         // Transform serverB's app to Jakarta:
         Path javaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA", "apps", APP_NAME + ".war");
-        Path jakartaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps", APP_NAME + ".jakarta.war"); // TODO omit jakarta in name
+        Path jakartaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps", APP_NAME + ".war");
         // /apps/ folder must exist for transform to run
-        Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile().mkdir();
+        File apps = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile();
+        apps.mkdir();
 
         JakartaEE9Action.transformApp(javaEEApp, jakartaEEApp);
         Log.info(c, "setUp", "Transformed app " + javaEEApp + " to " + jakartaEEApp);
-
-        // TODO remove the following line to make the test app use Jakarta (and also update server.xml)
-        ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
+        serverB.copyFileToLibertyServerRoot(apps.toString(), "apps", APP_NAME + ".war");
+        Log.info(c, "setUp", "Copied from " + apps + " to " + serverB.getServerRoot() + "/apps/");
     }
 
     /**
@@ -267,7 +268,7 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                            "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                           "CWWKC1503W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+                           "CWWKC1503W.*", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry] OR timer rolls back for trying to run while server is stopping
                            "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
         );
     }

@@ -25,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ClassSubResTest.class,
                 JsonbCharsetTest.class,
                 JsonbContextResolverTest.class,
+                JsonpTest.class,
                 FormBehaviorTest.class,
                 MutableHeadersTest.class,
                 PackageJsonBTestNoFeature.class,

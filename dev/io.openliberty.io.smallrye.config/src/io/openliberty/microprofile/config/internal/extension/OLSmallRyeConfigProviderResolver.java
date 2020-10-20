@@ -42,7 +42,7 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
 
     @Override
     public SmallRyeConfigBuilder getBuilder() {
-        return new OLSmallRyeConfigBuilder();
+        return new OLSmallRyeConfigBuilder().addDefaultInterceptors();
     }
 
 }

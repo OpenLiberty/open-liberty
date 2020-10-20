@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -51,6 +52,8 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
 
     private static final Set<String> clientAppName = Collections.singleton("HelloWorldClient");
     private static final String SECURITY_PLAIN_TEXT = "grpc.client.security.plaintext.xml";
+    private static final String DEFAULT_CONFIG_FILE = "grpc.client.security.default.xml";
+    private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -92,10 +95,10 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testSecureHelloWorldWithTls() throws Exception {
-        if (!checkJavaVersion()) {
-            return;
-        }
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, serverConfigurationFile, DEFAULT_CONFIG_FILE, clientAppName, LOG);
+
         String response = runHelloWorldTlsTest();
         assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
@@ -115,7 +118,7 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
         RemoteFile backup = new RemoteFile(secureHelloWorldServer.getMachine(), new File(secureHelloWorldServer.getServerRoot(), "server-backup.xml").getPath());
         backup.copyFromSource(secureHelloWorldServer.getServerConfigurationFile());
 
-        GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, null, SECURITY_PLAIN_TEXT, clientAppName, LOG);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(secureHelloWorldServer, serverConfigurationFile, SECURITY_PLAIN_TEXT, clientAppName, LOG);
         try {
             runHelloWorldTest();
         } catch (Exception e) {

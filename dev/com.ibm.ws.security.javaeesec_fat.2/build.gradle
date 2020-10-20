@@ -23,6 +23,8 @@ dependencies {
     project(':com.ibm.ws.security.javaeesec_fat')
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 task copyCommonFiles {
   doLast {
     /*

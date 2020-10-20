@@ -27,9 +27,12 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -47,6 +50,15 @@ import componenttest.topology.utils.HttpUtils;
 
 public class FATSuite {
 
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
+
     // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
     static {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
@@ -59,6 +71,12 @@ public class FATSuite {
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
+
+        if (JakartaEE9Action.isActive()) {
+            LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
+            RemoteFile jakartaResourceDir = LibertyFileManager.createRemoteFile(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
+            jakartaResourceDir.mkdirs();
+        }
     }
 
     /**

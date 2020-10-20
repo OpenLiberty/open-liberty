@@ -162,13 +162,16 @@ public class CallbackResource extends Resource {
    @GET
    @Path("seconderror")
    public String getSecondErrorValue() {
+      System.out.println("In getSecondErrorValue()");
       String name = SecondSettingCompletionCallback.getLastThrowableName();
+      System.out.println("CallbackResource.getSecondErrorValue() name = " + name);
       return name;
    }
 
    @GET
    @Path("reset")
    public void resetErrorValue() {
+      System.out.println("CallbackResource.resetErrorValue()");
       SettingCompletionCallback.resetLastThrowableName();
       SecondSettingCompletionCallback.resetLastThrowableName();
    }

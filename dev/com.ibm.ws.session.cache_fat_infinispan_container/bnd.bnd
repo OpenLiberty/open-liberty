@@ -20,6 +20,11 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 
+tested.features: \
+  servlet-5.0,\
+  componenttest-2.0,\
+  cdi-3.0
+
 
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

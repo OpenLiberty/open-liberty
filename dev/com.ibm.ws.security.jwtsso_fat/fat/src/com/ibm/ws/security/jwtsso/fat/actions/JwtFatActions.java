@@ -23,7 +23,7 @@ import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 public class JwtFatActions extends TestActions {
 
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    protected TestValidationUtils validationUtils = new TestValidationUtils();
 
     /**
      * Accesses the protected resource and logs in successfully, ensuring that a JWT SSO cookie is included in the result.

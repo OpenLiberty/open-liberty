@@ -40,6 +40,7 @@
 		 <AD id="jti" name="%jti" description="%jti.desc" required="false" type="Boolean" default="false"/>
          <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
          <AD id="keyAlias" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
+         <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
          <AD id="jwkRotationTime" name="internal" description="internal use only" required="false" type="String" ibm:type="duration(m)" default="720m" min="60m"/>
          <AD id="jwkSigningKeySize" name="internal" description="internal use only" required="false" type="Long" default="2048">
             <Option label="%jwkSigningKeySize.1024" value="1024"/>
@@ -48,6 +49,13 @@
          </AD>
          <AD id="elapsedNBF" name="%elapsedNBF" description="%elapsedNBF.desc" required="false" type="String" default="-1" ibm:type="duration(s)" ibm:beta="true"/>
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
+         <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" ibm:beta="true">
+             <Option label="%keyManagementKeyAlgorithm.RSA-OAEP" value="RSA-OAEP" />
+         </AD>
+         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" ibm:beta="true"/>
+         <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" ibm:beta="true">
+             <Option label="%contentEncryptionAlgorithm.A256GCM" value="A256GCM" />
+         </AD>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">

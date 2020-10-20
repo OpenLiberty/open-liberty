@@ -10,19 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_DB;
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_PASS;
+import static com.ibm.ws.transaction.test.FATSuite.POSTGRES_USER;
+import static com.ibm.ws.transaction.test.FATSuite.postgre;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -46,9 +45,6 @@ public class PostgreSQLTest extends FATServletClient {
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
 
     @Server("com.ibm.ws.transaction_CLOUD001")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
@@ -61,25 +57,6 @@ public class PostgreSQLTest extends FATServletClient {
     @Server("com.ibm.ws.transaction_CLOUD001.longlease")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseLengthServer1;
-
-    @ClassRule
-    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("postgres:11.2-alpine")
-                                    .copy("/var/lib/postgresql/server.crt", "/var/lib/postgresql/server.crt")
-                                    .copy("/var/lib/postgresql/server.key", "/var/lib/postgresql/server.key")
-                                    .run("chown postgres /var/lib/postgresql/server.key && chmod 600 /var/lib/postgresql/server.key && " +
-                                         "chown postgres /var/lib/postgresql/server.crt && chmod 600 /var/lib/postgresql/server.crt")
-                                    .build())
-                    .withFileFromFile("/var/lib/postgresql/server.crt", new File("lib/LibertyFATTestFiles/ssl-certs/server.crt"))
-                    .withFileFromFile("/var/lib/postgresql/server.key", new File("lib/LibertyFATTestFiles/ssl-certs/server.key")))
-                                    .withDatabaseName(POSTGRES_DB)
-                                    .withUsername(POSTGRES_USER)
-                                    .withPassword(POSTGRES_PASS)
-                                    .withConfigOption("ssl", "on")
-                                    .withConfigOption("max_prepared_transactions", "2")
-                                    .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
-                                    .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")
-                                    .withLogConsumer(PostgreSQLTest::log);
 
     @BeforeClass
     public static void init() throws Exception {
@@ -120,13 +97,6 @@ public class PostgreSQLTest extends FATServletClient {
 
         // Remove tranlog DB
         server1.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "postgresql-ssl", msg);
     }
 
     /**

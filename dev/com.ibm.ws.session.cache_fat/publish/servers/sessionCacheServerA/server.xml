@@ -6,7 +6,7 @@
         <feature>componenttest-1.0</feature>
         <feature>sessionCache-1.0</feature>
     </featureManager>
-    
+   
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>

@@ -13,14 +13,24 @@ package com.ibm.ws.security.jwt.fat.builder.validation;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.StringReader;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import org.apache.commons.codec.binary.Base64;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.ibm.json.java.JSONArray;
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
+import com.ibm.ws.security.jwt.fat.builder.JWTBuilderConstants;
+import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 public class BuilderTestValidationUtils extends TestValidationUtils {
 
@@ -34,22 +44,22 @@ public class BuilderTestValidationUtils extends TestValidationUtils {
         String jwtToken = WebResponseUtils.getResponseText(endpointOutput);
 
         Log.info(thisClass, thisMethod, "response value: " + jwtToken);
-        JSONObject val = JSONObject.parse(jwtToken);
+        JsonObject val = Json.createReader(new StringReader(jwtToken)).readObject();
 
         String keys = val.get("keys").toString();
         Log.info(thisClass, thisMethod, "keys: " + keys);
 
-        JSONArray keyArrays = (JSONArray) val.get("keys");
+        JsonArray keyArrays = val.getJsonArray("keys");
         // We are now generating two jwks again by default like before and should get the latest element
         int cnt = 0;
         for (Object o : keyArrays) {
-            JSONObject jsonLineItem = (JSONObject) o;
+            JsonObject jsonLineItem = (JsonObject) o;
             if (keyArrays.size() > 1 && cnt < 1) {
                 cnt++;
                 continue;
             }
 
-            String n = (String) jsonLineItem.get("n");
+            String n = jsonLineItem.getString("n");
             if (n == null) {
                 fail("Size of the signature checking failed as the signature (\"n\" value) was missing");
             }
@@ -72,22 +82,22 @@ public class BuilderTestValidationUtils extends TestValidationUtils {
         String jwtToken = WebResponseUtils.getResponseText(endpointOutput);
 
         Log.info(thisClass, thisMethod, "response value: " + jwtToken);
-        JSONObject val = JSONObject.parse(jwtToken);
+        JsonObject val = Json.createReader(new StringReader(jwtToken)).readObject();
 
         String keys = val.get("keys").toString();
         Log.info(thisClass, thisMethod, "keys: " + keys);
 
-        JSONArray keyArrays = (JSONArray) val.get("keys");
+        JsonArray keyArrays = val.getJsonArray("keys");
         // We are now generating two jwks again by default like before and should get the latest element
         int cnt = 0;
         for (Object o : keyArrays) {
-            JSONObject jsonLineItem = (JSONObject) o;
+            JsonObject jsonLineItem = (JsonObject) o;
             if (keyArrays.size() > 1 && cnt < 1) {
                 cnt++;
                 continue;
             }
 
-            String crv = (String) jsonLineItem.get("crv");
+            String crv = jsonLineItem.getString("crv");
             if (crv == null) {
                 fail("Curve checking failed as the curve (\"crv\" value) was missing");
             }
@@ -106,22 +116,22 @@ public class BuilderTestValidationUtils extends TestValidationUtils {
         String jwtToken = WebResponseUtils.getResponseText(endpointOutput);
 
         Log.info(thisClass, thisMethod, "response value: " + jwtToken);
-        JSONObject val = JSONObject.parse(jwtToken);
+        JsonObject val = Json.createReader(new StringReader(jwtToken)).readObject();
 
         String keys = val.get("keys").toString();
         Log.info(thisClass, thisMethod, "keys: " + keys);
 
-        JSONArray keyArrays = (JSONArray) val.get("keys");
+        JsonArray keyArrays = val.getJsonArray("keys");
         // We are now generating two jwks again by default like before and should get the latest element
         int cnt = 0;
         for (Object o : keyArrays) {
-            JSONObject jsonLineItem = (JSONObject) o;
+            JsonObject jsonLineItem = (JsonObject) o;
             if (keyArrays.size() > 1 && cnt < 1) {
                 cnt++;
                 continue;
             }
 
-            String alg = (String) jsonLineItem.get("alg");
+            String alg = jsonLineItem.getString("alg");
             if (alg == null) {
                 fail("Signature Algorithm checking failed as the signature algorithm (\"alg\" value) was missing");
             }
@@ -132,4 +142,95 @@ public class BuilderTestValidationUtils extends TestValidationUtils {
         }
     }
 
+    /**
+     * Validate that we have a JWE and not a JWS.
+     * Validate that we can decrypt the token properly
+     *
+     * @param response
+     *            - the test app response (the jwt token will be found in the response)
+     * @param keyMgmtKeyAlg
+     *            - the key management key algorithm used to decrypt the token
+     * @param privateKey
+     *            - the private key used to decrypt the token
+     * @param contentEncryptAlg
+     *            - the content encryption algorithm used to decrypt the token
+     * @return - returns a JwtTokenForTest - which has the JWE Header, JWS Header and payload objects in case the caller needs to
+     *         do more validation of the token content
+     * @throws Exception
+     */
+    public JwtTokenForTest validateJWSToken(Page response) throws Exception {
+
+        String thisMethod = "validateJWSToken";
+
+        String jwtTokenString = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.BUILT_JWT_TOKEN);
+
+        Log.info(thisClass, thisMethod, "");
+
+        if (jwtTokenString == null) {
+            fail("Test failed to find the JWT in the builder response");
+        }
+
+        JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(jwtTokenString);
+
+        // we should have a JWE, not a JWS
+        if (joseObject instanceof JsonWebEncryption) {
+            fail("Token is encrypted");
+        }
+
+        JwtTokenForTest tokenForTest = new JwtTokenForTest(jwtTokenString);
+        JsonObject jweHeader = tokenForTest.getJsonJWEHeader();
+
+        if (jweHeader != null) {
+            fail("Token was not a proper JWS - JWE Header was populated");
+        }
+
+        Log.info(thisClass, thisMethod, "Validation of the JWS was successful");
+        return tokenForTest;
+    }
+
+    /**
+     * Validate that we have a JWE and not a JWS.
+     * Validate that we can decrypt the token properly
+     *
+     * @param response
+     *            - the test app response (the jwt token will be found in the response)
+     * @param keyMgmtKeyAlg
+     *            - the key management key algorithm used to decrypt the token
+     * @param privateKey
+     *            - the private key used to decrypt the token
+     * @param contentEncryptAlg
+     *            - the content encryption algorithm used to decrypt the token
+     * @return - returns a JwtTokenForTest - which has the JWE Header, JWS Header and payload objects in case the caller needs to
+     *         do more validation of the token content
+     * @throws Exception
+     */
+    public JwtTokenForTest validateJWEToken(Page response, String keyMgmtKeyAlg, String privateKey, String contentEncryptAlg) throws Exception {
+
+        String thisMethod = "validateEncryptedToken";
+
+        String jwtTokenString = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.BUILT_JWT_TOKEN);
+
+        Log.info(thisClass, thisMethod, "keyMgmtAlg: " + keyMgmtKeyAlg + " ContentEncryptionAlg: " + contentEncryptAlg);
+
+        if (jwtTokenString == null) {
+            fail("Test failed to find the JWT in the builder response");
+        }
+
+        JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(jwtTokenString);
+
+        // we should have a JWS, not a JWE
+        if (joseObject instanceof JsonWebSignature) {
+            fail("Token is NOT encrypted");
+        }
+
+        JwtTokenForTest tokenForTest = new JwtTokenForTest(jwtTokenString, keyMgmtKeyAlg, privateKey, contentEncryptAlg);
+        JsonObject jweHeader = tokenForTest.getJsonJWEHeader();
+
+        if (jweHeader == null) {
+            fail("Token was not a proper JWE - JWE Header was not populated");
+        }
+
+        Log.info(thisClass, thisMethod, "Validation of the JWE was successful");
+        return tokenForTest;
+    }
 }
