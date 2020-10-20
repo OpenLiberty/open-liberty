@@ -15,6 +15,11 @@
             <package name="org.eclipse.microprofile.rest.client.tck.*"/>
         </packages>
         <classes>
+        <class name="org.eclipse.microprofile.rest.client.tck.sse.BasicReactiveStreamsTest">
+            <methods>
+                <exclude name=".*" />
+            </methods>
+        </class>
         <class name="org.eclipse.microprofile.rest.client.tck.sse.ReactiveStreamsPublisherTckTest">
             <methods>
                 <exclude name=".*" />
