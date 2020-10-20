@@ -56,6 +56,7 @@ public class MaxFieldLengthTest extends LogstashCollectorTest {
             return;
         }
 
+        clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
         Log.info(c, "setUp", "Logstash container: host=" + host + "  port=" + port);

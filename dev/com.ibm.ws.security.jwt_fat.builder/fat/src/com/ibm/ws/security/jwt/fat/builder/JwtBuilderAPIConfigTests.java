@@ -24,14 +24,12 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -53,7 +51,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
@@ -71,8 +68,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
-        builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getBasicSecurityReadyMsgs());
+        builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose),
@@ -104,37 +102,6 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <P>
-     * Test Purpose:
-     * <OL>
-     * <LI>Invoke the JWT Builder using a config that has "" as the id
-     * <LI>Create a JWT build specifying "" as the config id and show that even
-     * with a config with "" as the id, the builder throws and exception *
-     * <LI>The builder does not pick up the config that has the id ""
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>Should get another token built using the default values for the JWT
-     * Token
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIConfigTests_noId() throws Exception {
-
-        builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_noId.xml");
-
-        Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(SecurityFatHttpUtils.getServerUrlBase(builderServer) + JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT));
-        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6008E_BUILD_ID_UNKNOWN + ".+\\[\\]", "Response did not show the expected failure."));
-
-        Page response = actions.invokeJwtBuilder_create(_testName, builderServer, JWTBuilderConstants.EMPTY_STRING);
         validationUtils.validateResult(response, expectations);
 
     }
@@ -2075,7 +2042,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * the token will be validated)
      * </OL>
      */
-    //chc - need updated error handling @Test
+    @Test
     public void JwtBuilderAPIConfigTests_encryption_invalidKeyMgmtKeyAlg_goodRS256Alias_goodContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_bad_keyMgmtKey";
@@ -2108,7 +2075,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * the token will be validated)
      * </OL>
      */
-    //chc - need updated error handling @Test
+    @Test
     public void JwtBuilderAPIConfigTests_encryption_missingKeyMgmtKeyAlg_goodRS256Alias_goodContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_missing_keyMgmtKey";
@@ -2140,7 +2107,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * the token will be validated)
      * </OL>
      */
-    // chc - not allowing RSA-OAEP-256 at the moment @Test
+    @Test
     public void JwtBuilderAPIConfigTests_encryption_RSAOAEP256KeyMgmtKeyAlg_goodRS256Alias_goodContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_rsaOaep256_RS256";
@@ -2151,6 +2118,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
 
+        // NOTE:  even though the config specifies RSA-OAEP-256 for the KeyMgmtKeyAlg, we'll only allow the default RSA-OAEP to be used in the config
+        // server startup will log a warning about the unsupported value and the config will use the default value (which is what we'll check for now)
         validationUtils.validateJWEToken(response, (String) expectationSettings.get(HeaderConstants.ALGORITHM), JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256), (String) expectationSettings.get(HeaderConstants.ENCRYPTION));
 
     }
@@ -2172,7 +2141,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * the token will be validated)
      * </OL>
      */
-    //chc - need updated error handling @Test
+    @Test
     public void JwtBuilderAPIConfigTests_encryption_goodKeyMgmtKeyAlg_goodRS256Alias_invalidContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_bad_contentEncryptAlg";
@@ -2204,7 +2173,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * the token will be validated)
      * </OL>
      */
-    // - need updated error handling @Test
+    @Test
     public void JwtBuilderAPIConfigTests_encryption_goodKeyMgmtKeyAlg_goodRS256Alias_missingContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_missing_contentEncryptAlg";
@@ -2272,9 +2241,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_encryption_goodKeyMgmtKeyAlg_goodES256Alias_goodContentEncryptAlg() throws Exception {
 
         String builderId = "key_encrypt_good_ES256";
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        //chc        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.NewMSG, "Message log did not contain an error indicating a problem with ..."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "ECPublicKey", "Message log did not contain an error indicating that an EC public key can not be encrypted.")); // String may not be in msgs on all platforms
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -2318,7 +2288,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         String builderId = "key_encrypt_bad_keyMgmtAlias";
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        //chc        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.NewMSG, "Message log did not contain an error indicating a problem with ..."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "CertificateException", "Message log did not contain an error indicating that the key alias is not found in the KeyStore.")); // String may not be in msgs on all platforms
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -2332,7 +2303,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         String builderId = "key_encrypt_missing_trustStoreRef";
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        //chc        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.NewMSG, "Message log did not contain an error indicating a problem with ..."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "CertificateException", "Message log did not contain an error indicating that the key alias is not found in the KeyStore.")); // String may not be in msgs on all platforms
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -2359,7 +2331,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         String builderId = "key_encrypt_invalid_trustStoreRef";
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        //chc        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.NewMSG, "Message log did not contain an error indicating a problem with ..."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "KeyStoreException", "Message log did not contain an error indicating that the trust store was not found.")); // String may not be in msgs on all platforms
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);

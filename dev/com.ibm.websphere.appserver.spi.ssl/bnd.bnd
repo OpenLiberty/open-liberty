@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.4
+bVersion: 1.5
 
 Bundle-Name: WebSphere SSL SPI
 Bundle-Description: WebSphere SSL SPI, version ${bVersion}

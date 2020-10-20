@@ -1,5 +1,13 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+
+<!--
+  <logging
+    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
+    maxFileSize="200"/>
+  -->
+
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
@@ -10,48 +18,24 @@
     <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
-  
-  <variable name="onError" value="FAIL"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,connect"/>
 
-<!--
-  <logging
-    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
-    maxFileSize="200"/>
-  -->
-
-  <!--
-    SharedSubscriptionServlet.java
-      "java:comp/env/jndi_JMS_BASE_QCF"
-
-      "java:comp/env/eis/tcf"
-      "java:comp/env/eis/tcf1"
-      "java:comp/env/eis/tcf2"
-      "java:comp/env/jms/FAT_TCF"
-      "java:comp/env/jms/FAT_COMMS_TCF"
-
-      "java:comp/env/jndi_INPUT_Q" QUEUE1
-
-      "java:comp/env/eis/topic1" NewTopic1
-      "java:comp/env/eis/topic2" NewTopic2 (expiry)
-      "java:comp/env/eis/topic3" NewTopic3
-      "java:comp/env/eis/topic4" NewTopic4
-      "java:comp/env/jms/FAT_TOPIC"
-
-    SharedSubscriptionWithMsgSelServlet.java
-      "java:comp/env/eis/tcf"
-      "java:comp/env/eis/tcf1"
-      "java:comp/env/jms/FAT_TCF"
-      "java:comp/env/jms/FAT_COMMS_TCF"
-
-      "java:comp/env/eis/topic1"
-      "java:comp/env/eis/topic3"
-      "java:comp/env/eis/topic4"
-      "java:comp/env/jms/FAT_TOPIC"
-    -->
+  <!-- JMS endpoint configuration -->
 
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
@@ -108,5 +92,37 @@
   <jmsTopic id="jms/FAT_TOPIC" jndiName="jms/FAT_TOPIC">
     <properties.wasJms/>
   </jmsTopic>
+
+  <!-- JMS endpoint configuration -->
+
+  <!--
+    SharedSubscriptionServlet.java
+      "java:comp/env/jndi_JMS_BASE_QCF"
+
+      "java:comp/env/eis/tcf"
+      "java:comp/env/eis/tcf1"
+      "java:comp/env/eis/tcf2"
+      "java:comp/env/jms/FAT_TCF"
+      "java:comp/env/jms/FAT_COMMS_TCF"
+
+      "java:comp/env/jndi_INPUT_Q" QUEUE1
+
+      "java:comp/env/eis/topic1" NewTopic1
+      "java:comp/env/eis/topic2" NewTopic2 (expiry)
+      "java:comp/env/eis/topic3" NewTopic3
+      "java:comp/env/eis/topic4" NewTopic4
+      "java:comp/env/jms/FAT_TOPIC"
+
+    SharedSubscriptionWithMsgSelServlet.java
+      "java:comp/env/eis/tcf"
+      "java:comp/env/eis/tcf1"
+      "java:comp/env/jms/FAT_TCF"
+      "java:comp/env/jms/FAT_COMMS_TCF"
+
+      "java:comp/env/eis/topic1"
+      "java:comp/env/eis/topic3"
+      "java:comp/env/eis/topic4"
+      "java:comp/env/jms/FAT_TOPIC"
+    -->
 
 </server>

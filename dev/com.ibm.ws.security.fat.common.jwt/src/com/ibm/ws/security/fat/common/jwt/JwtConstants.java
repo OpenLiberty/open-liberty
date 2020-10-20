@@ -61,6 +61,7 @@ public class JwtConstants extends Constants {
     public static final String DEFAULT_KEY_MGMT_KEY_ALG = "RSA-OAEP";
     public static final String DEFAULT_CONTENT_ENCRYPT_ALG = "A256GCM";
     public static final String KEY_MGMT_KEY_ALG_256 = "RSA-OAEP-256";
+    public static final String CONTENT_ENCRYPT_ALG_192 = "A192GCM";
 
     public static final String BOOTSTRAP_PROP_ENCRYPTION_SETTING = "fat.server.encryption.setting";
 

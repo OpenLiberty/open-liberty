@@ -132,22 +132,6 @@ public class ClientInterceptorTests extends FATServletClient {
     }
 
     /**
-     * This method is used to set the server.xml
-     */
-    private static void setServerConfiguration(LibertyServer server,
-                                               String serverXML) throws Exception {
-        LOG.info("ClientInterceptorTests : setServerConfiguration Entered set server config with xml " + serverXML);
-        if (!serverConfigurationFile.equals(serverXML)) {
-            // Update server.xml
-            LOG.info("ClientInterceptorTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            serverConfigurationFile = serverXML;
-        }
-    }
-
-    /**
      * Test a single gRPC service interceptor
      *
      * This test adds a gRPC element without a gRPC interceptor and then updates
@@ -166,8 +150,7 @@ public class ClientInterceptorTests extends FATServletClient {
         // In this first request, there is no interceptor present in the server.xml file, make sure one doesn't run
         // Update to a config file with a <grpc> element with no interceptor
         LOG.info("ClientInterceptorTests : testSingleClientInterceptor() : update the server.xml file to one with a </grpc> element with no interceptor");
-        setServerConfiguration(grpcClient, GRPC_CLIENT_CONFIG_FILE);
-        grpcClient.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcClient, serverConfigurationFile, GRPC_CLIENT_CONFIG_FILE, appName, LOG);
 
         try (WebClient webClient = new WebClient()) {
             executeRPC(webClient, "us3r1");
@@ -183,8 +166,7 @@ public class ClientInterceptorTests extends FATServletClient {
         // In this second request, we have loaded a server.xml with one interceptor, make sure it runs
         // Update to a config file with a <grpc> element with Interceptor included
         LOG.info("ClientInterceptorTests : testSingleServerInterceptor() : update the server.xml file to one with a </grpc> element with an interceptor");
-        setServerConfiguration(grpcClient, GRPC_CLIENT_INTERCEPTOR_FILE);
-        grpcClient.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcClient, serverConfigurationFile, GRPC_CLIENT_INTERCEPTOR_FILE, appName, LOG);
 
         try (WebClient webClient = new WebClient()) {
             executeRPC(webClient, "us3r2");
@@ -216,8 +198,7 @@ public class ClientInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with multiple interceptors
         LOG.info("ClientInterceptorTests : testMultipleClientInterceptors() : update the server.xml file to one with a </grpc> element with multiple interceptors");
-        setServerConfiguration(grpcClient, GRPC_CLIENT_MULTIPLE_INTERCEPTOR_FILE);
-        grpcClient.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcClient, serverConfigurationFile, GRPC_CLIENT_MULTIPLE_INTERCEPTOR_FILE, appName, LOG);
 
         LOG.info("ClientInterceptorTests : Client port default " + grpcClient.getHttpDefaultPort());
         LOG.info("ClientInterceptorTests : Server port default " + grpcServer.getHttpDefaultPort());
@@ -256,7 +237,7 @@ public class ClientInterceptorTests extends FATServletClient {
         LOG.info("ClientInterceptorTests : testInvalidClientInterceptor() : update the server.xml file to one with a </grpc> element with an invalid interceptor");
 
         // Update to a config file with a <grpc> element with invalid interceptor
-        setServerConfiguration(grpcClient, GRPC_CLIENT_INVALID_CLIENT_INTERCEPTOR_FILE);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcClient, serverConfigurationFile, GRPC_CLIENT_INVALID_CLIENT_INTERCEPTOR_FILE, appName, LOG);
 
         try (WebClient webClient = new WebClient()) {
             executeRPC(webClient, "us3r4");

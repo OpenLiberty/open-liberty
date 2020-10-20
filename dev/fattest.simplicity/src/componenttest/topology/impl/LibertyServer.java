@@ -5584,6 +5584,11 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
         }
 
+        // The following app stop message does not necessarily indicate that the app has been completely removed.
+        // We'll wait for 1s to ensure that the "restarted" app is recognized as a new rather than updated app.
+        // If we don't wait here, in rare cases a CWWKZ0003I will be printed instead of CWWKZ0001I for the app.
+        Thread.sleep(1000);
+
         String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
         if (stopMsg == null) {
             return false;
