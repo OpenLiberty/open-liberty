@@ -68,7 +68,9 @@ public class ParameterUtilsTest {
         TestObject[] nestedparam = { new TestObject("nested1"), new TestObject("nested2") };
         Object[] param = { nestedparam, new TestObject("root1") };
         StringBuffer output = ParameterUtils.format(param);
-        assertEquals("The output does not match.", "[[TestObject-nested1, TestObject-nested2], TestObject-root1]", output.toString());
+        assertEquals("The output does not match.", "[[com.ibm.ws.security.audit.utils.ParameterUtilsTest$TestObject@" + System.identityHashCode(nestedparam[0]) + 
+                ", com.ibm.ws.security.audit.utils.ParameterUtilsTest$TestObject@" + System.identityHashCode(nestedparam[1]) + 
+                "], com.ibm.ws.security.audit.utils.ParameterUtilsTest$TestObject@" + System.identityHashCode(param[1]) + "]", output.toString());
     }
 
     @Test
