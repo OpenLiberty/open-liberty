@@ -14,8 +14,6 @@ import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -29,7 +27,6 @@ import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.messaging.service.JsMainAdminComponent;
-import com.ibm.ws.messaging.service.JsMainAdminServiceImpl;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.admin.JsMainAdminService;
@@ -42,13 +39,13 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
 /**
- * A declarative service implementor
+ * The JsMainAdminComponent requires the JsMainAdminService and its dependencies, to be started.
  */
 @Component(configurationPid = "com.ibm.ws.messaging.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class JsMainAdminComponentImpl implements JsMainAdminComponent, ConfigurationListener, ApplicationPrereq {
+public class JsMainAdminComponentImpl implements JsMainAdminComponent, ApplicationPrereq {
 
     /**  */
     private static final String KEY_JS_ADMIN_SERVICE = "jsAdminService";
@@ -90,13 +87,16 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Configura
     public static final AtomicServiceReference<RuntimeSecurityService> runtimeSecurityServiceRef = new AtomicServiceReference<RuntimeSecurityService>(
                     "runtimeSecurityService");
     
+    final String jsAdminComponentId;
+    
     @Activate
-    public JsMainAdminComponentImpl(@Reference JsMainAdminService service) {
+    public JsMainAdminComponentImpl(Map<String, Object> props, @Reference JsMainAdminService service) {
         final String methodName = "JsMainAdminComponentImpl";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, methodName, new Object[] { this, service });
         
         this.service = service;
+        jsAdminComponentId = (String) props.getOrDefault("id", "ERROR: No id in the properties for "+CLASS_NAME);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, methodName);
@@ -136,6 +136,7 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Configura
      * This method is call by the declarative service when there is
      * configuration change
      */
+    //TODO Consider disallowing modification of this service, remove modified() and force creation of a new JsMainAdmin.
     @Modified
     protected void modified(ComponentContext context,
                             Map<String, Object> properties) {
@@ -400,14 +401,8 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Configura
         return jsAdminServiceref.getService();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.osgi.service.cm.ConfigurationListener#configurationEvent(org.osgi.service.cm.ConfigurationEvent)
-     */
     @Override
-    public void configurationEvent(ConfigurationEvent event) {
-    //TODO DEL Changed JsMainAdminServiceImpl to a declarative service.
-    //TODO    service.configurationEvent(event, configAdminRef.getService());
+    public String getApplicationPrereqID() {
+        return jsAdminComponentId;
     }
 }

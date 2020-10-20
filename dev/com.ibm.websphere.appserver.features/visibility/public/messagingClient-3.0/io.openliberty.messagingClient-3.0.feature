@@ -14,6 +14,7 @@ Subsystem-Name: Jakarta Messaging 3.0 Client for Message Server
 -bundles=com.ibm.ws.messaging.common, \
  com.ibm.ws.resource, \
  com.ibm.ws.messaging.utils, \
+ com.ibm.ws.messaging.security.common, \
  com.ibm.ws.messaging.jms.common.jakarta, \
  com.ibm.ws.messaging.jms.2.0.jakarta, \
  com.ibm.ws.messaging.comms.client

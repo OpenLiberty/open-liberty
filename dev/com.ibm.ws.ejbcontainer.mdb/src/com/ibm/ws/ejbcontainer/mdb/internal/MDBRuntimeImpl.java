@@ -24,6 +24,7 @@ import javax.transaction.xa.Xid;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -719,10 +720,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener, App
         isServerStarted = false;
     }
 
-    protected void activate(ComponentContext cc) {
+    @Activate
+    protected void activate(Map<String, Object> props, ComponentContext cc) {
         final String methodName = "activate";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, methodName, new Object[] { this, cc });
+            Tr.entry(tc, methodName, new Object[] { this, props, cc });
 
         context = cc;
         ejbContainerSR.activate(cc);
@@ -1040,5 +1042,10 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener, App
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
+    }
+
+    @Override
+    public String getApplicationPrereqID() {
+        return "MDBRuntime";
     }
 }

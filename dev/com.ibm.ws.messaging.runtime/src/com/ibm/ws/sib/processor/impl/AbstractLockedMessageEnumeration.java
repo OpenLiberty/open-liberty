@@ -350,12 +350,7 @@ abstract class AbstractLockedMessageEnumeration
   }
 
   /**
-   * Add a new message to te end of the LME
-   * @param id
-   * @param message
-   * @param isStored
-   * @param isRecoverable
-   * @throws SIResourceException
+   * Add a new message to the end of the LockedMessageEnumerator
    */
   void addNewMessage(JsMessageWrapper message, boolean isStored, boolean isRecoverable)
   {
