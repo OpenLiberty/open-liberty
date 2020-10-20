@@ -22,7 +22,9 @@ import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.TrService;
 
-@SuppressWarnings("restriction")
+/**
+ *
+ */
 public class TrConfigZapper extends TrConfigurator {
     private static final String WS_LOG_MANAGER = "com.ibm.ws.kernel.boot.logging.WsLogManager";
 
