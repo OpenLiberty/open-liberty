@@ -21,7 +21,8 @@ Export-Package: \
   jakarta.mail.search, \
   jakarta.mail.util
 
-Import-Package: jakarta.activation
+Import-Package: jakarta.activation, \
+  *
 
 instrument.disabled: true
 
