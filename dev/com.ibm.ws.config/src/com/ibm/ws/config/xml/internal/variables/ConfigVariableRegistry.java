@@ -71,9 +71,12 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
     private final String bindingRoot;
 
+    private final File bindingRootDirectoryFile;
+
     public ConfigVariableRegistry(VariableRegistry registry, String[] cmdArgs, File variableCacheFile, WsLocationAdmin locationService) {
         this.registry = registry;
         this.bindingRoot = locationService.resolveString(WsLocationConstants.SYMBOL_SERVICE_BINDING_ROOT);
+        this.bindingRootDirectoryFile = new File(bindingRoot);
         this.serviceBindingVariables = new HashMap<String, ServiceBindingVariable>();
         this.configVariables = Collections.emptyMap();
         this.variableCacheFile = variableCacheFile;
@@ -560,6 +563,11 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     }
 
     public String getServiceBindingVariableName(File f) {
-        return f.getAbsolutePath().substring(this.bindingRoot.length());
+        String name = f.getName();
+
+        if ( f.getParentFile().compareTo(bindingRootDirectoryFile) == 0)
+            return name;
+
+        return f.getParentFile().getName() + "/" + name;
     }
 }

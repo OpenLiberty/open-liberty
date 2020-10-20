@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+testsrc: test/src
+
 Bundle-Name: Transaction context service
 Bundle-SymbolicName: com.ibm.ws.transaction.context
 Bundle-Description: Transaction context service; version=${bVersion}

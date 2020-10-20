@@ -1,0 +1,115 @@
+<server>
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+    <feature>wasJmsSecurity-1.0</feature>
+    <feature>timedexit-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <logging
+    traceSpecification="*=info::SIBCommunications=all:SIB*=all:ChannelFramework=all"
+    maxFileSize="200"
+  />
+
+  <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
+  <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}" />
+  <variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}" />
+  <!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml, to avoid configuration conflict warnings. -->
+  <wasJmsEndpoint id="InboundJmsCommsEndpoint" host="*" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
+
+  <!-- Overriding the values of the properties used for httpEndpoint port configuration in fatTestPorts.xml -->
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}" />
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}" />
+
+  <keyStore location="${server.output.dir}/resources/security/mykey.jks" password="{xor}NDombm1s" id="defaultKeyStore"/>
+
+  <basicRegistry id="basic" realm="customRealm">
+    <user name="user1" password="user1pwd"/>
+    <user name="user2" password="user2pwd"/>
+    <user name="user3" password="user3pwd"/>
+    <group name="Testers">
+      <member name="user3"/>
+    </group>
+  </basicRegistry>
+
+  <variable name="onError" value="FAIL"/>
+
+  <messagingEngine>
+    <queue id="QUEUE1"/>
+    <queue id="QUEUE2"/>
+    <queue id="QUEUE3"/>
+    <queue id="QUEUE4"/>
+
+    <topicSpace id="NewTopic1"/>
+    <topicSpace id="NewTopic2"/>
+    <topicSpace id="NewTopic3"/>
+
+    <messagingSecurity>
+      <role name="developer">
+        <queuePermission queueRef="QUEUE1">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE2">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE3">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <queuePermission queueRef="QUEUE4">
+          <action>SEND</action>
+          <action>BROWSE</action>
+          <action>RECEIVE</action>
+        </queuePermission>
+
+        <topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2" >
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="NewTopic3" topicName="testTopic3">
+          <action>ALL</action>
+        </topicPermission>
+
+        <topicPermission topicSpaceRef="Default.Topic.Space" topicName="_tempTopic" >
+          <action>ALL</action>
+        </topicPermission>
+
+        <tempDestinationPermission prefix="TEMP">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <tempDestinationPermission prefix="Qtemp">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <tempDestinationPermission prefix="Ttemp">
+          <action>CREATE</action>
+          <action>SEND</action>
+          <action>RECEIVE</action>
+        </tempDestinationPermission>
+
+        <user name="user1"/>
+        <group name="Testers"/>
+      </role>
+    </messagingSecurity>
+  </messagingEngine>
+</server>

@@ -15,3 +15,4 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.ws.jca.1.7.jakarta
 kind=beta
 edition=base
+WLP-Activation-Type: parallel

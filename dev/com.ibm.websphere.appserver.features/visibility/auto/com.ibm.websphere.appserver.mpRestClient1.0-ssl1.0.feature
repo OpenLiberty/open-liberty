@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.mpRestClient1.0-ssl1.0
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
-IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.0)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.1)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.2)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.3)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.4)))", \
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.0)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.1)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.2)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.3)(osgi.identity=com.ibm.websphere.appserver.mpRestClient-1.4)(osgi.identity=io.openliberty.mpRestClient-2.0)))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ssl-1.0))"
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.jaxrsClient-2.0; ibm.tolerates:=2.1

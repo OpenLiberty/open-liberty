@@ -1,27 +1,5 @@
 <server>
 
-  <featureManager>
-    <feature>jndi-1.0</feature>
-    <feature>servlet-3.1</feature>
-
-    <feature>wasJmsServer-1.0</feature>
-    <feature>testjmsinternals-1.0</feature>
-
-    <!-- Use local connector to access the JMS server related MBeans from the client server. -->
-    <feature>localConnector-1.0</feature>
-
-    <feature>timedexit-1.0</feature>
-  </featureManager>
-
-  <include location="../fatTestPorts.xml"/>
-
-  <!-- Deconflict the engine server default http endpoint port configuration from the client configuration. -->
-  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
-  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
-
-  <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
-  <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}"/> 
-
   <variable name="onError" value="FAIL"/>
 
   <!--
@@ -30,8 +8,40 @@
     maxFileSize="200"/>
    -->
 
+  <featureManager>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-3.1</feature>
+
+    <feature>wasJmsServer-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+
+    <feature>localConnector-1.0</feature>
+
+    <feature>timedexit-1.0</feature>
+  </featureManager>
+
+  <!-- Deconflict the engine server default http endpoint port configuration from the client configuration. -->
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- Set the JMS endpoint port configuration to values which are known to the client. -->
+  <wasJmsEndpoint host="*" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}"/> 
+
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+  <!-- JMS engine configuration -->
 
   <messagingEngine id="defaultME">
     <queue id="QUEUE1" maxRedeliveryCount="2"/>

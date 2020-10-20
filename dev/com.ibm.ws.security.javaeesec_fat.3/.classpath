@@ -2,6 +2,36 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/JavaEESecBase.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/JavaEESec.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/JavaEESecBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/dbfat.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/dbfatCustomHash.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/dbfatAuthAlias.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseAuthAliasBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseAnnotatedBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseAnnotatedDSServlet.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseIdstoreDeferred.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseIdstoreImmediate.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/securityContextHamApp.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/SecurityEJBinWAR.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/AuthMechs.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/IdentityStores.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/securityContextEJBInWar.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseAnnotatedCustomHash.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/DatabaseAnnotatedCustomHashBean.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/CustomPasswordHash.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/CustomPasswordHashBean.jar/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/EjbinWarServletISLdap.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/EjbinWarServletISLdapDb.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/AnnotatedEjbinWarServletLdap.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/AnnotatedEjbinWarServletLdapDB.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/AnnotatedEjbinWarServletLdapRealm2.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/AnnotatedEjbinWarServletLdapRealm1.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/dbfat2.war/src"/>
+	<classpathentry kind="src" path="com.ibm.ws.security.javaeesec_fat-test-applications/multipleDB.war/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

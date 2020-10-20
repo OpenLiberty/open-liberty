@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.3
+bVersion=1.4
 
 Bundle-Name: SSL Configuration
 Bundle-SymbolicName: com.ibm.ws.ssl; singleton:=true

@@ -45,6 +45,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8014_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8014Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh8014/";
     private final static String appFolder = "web";
     private final static String appName = "olgh8014Web";
@@ -64,7 +65,7 @@ public class TestOLGH8014_Web extends JPAFATServletClient {
 
     @Server("JPA10QueryServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8014Servlet.class, path = "olgh8014" + "/" + "TestOLGH8014Servlet"),
+                    @TestServlet(servlet = TestOLGH8014Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8014Servlet"),
     })
     public static LibertyServer server;
 

@@ -23,6 +23,7 @@ import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLParameters;
 
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ras.Tr;
@@ -1180,17 +1181,19 @@ public class SSLUtils {
      */
     private static void configureEngine(SSLEngine engine, FlowType type, SSLLinkConfig config, SSLConnectionLink connLink) {
         // Update the engine with the latest config parameters.
-        engine.setEnabledCipherSuites(config.getEnabledCipherSuites(engine));
+        SSLParameters sslParameters = engine.getSSLParameters();
+
+        sslParameters.setCipherSuites(config.getEnabledCipherSuites(engine));
 
         //Set the configured protocol on the SSLEngine
         String protocol = config.getSSLProtocol();
         if (protocol != null) {
-            engine.setEnabledProtocols(new String[] { protocol });
+            sslParameters.setProtocols(new String[] { protocol });
         }
 
         if (type == FlowType.INBOUND) {
             engine.setUseClientMode(false);
-            boolean flag = config.getBooleanProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION);
+            boolean clientAuth = config.getBooleanProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION);
             // When on z/OS, need to check the MutualAuthCBINDCheck property
             // to force client authentication
             //TODO: z/os
@@ -1230,24 +1233,39 @@ public class SSLUtils {
             //                }
             //            }
 
-            engine.setNeedClientAuth(flag);
+            sslParameters.setNeedClientAuth(clientAuth);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Client auth needed is " + engine.getNeedClientAuth());
+                Tr.debug(tc, "Client auth needed is " + sslParameters.getNeedClientAuth());
             }
-            if (!flag) {
+            if (!clientAuth) {
                 // Client auth set to false, check client auth supported
-                flag = config.getBooleanProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED);
-                engine.setWantClientAuth(flag);
+                boolean clientAuthSuported = config.getBooleanProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED);
+                sslParameters.setWantClientAuth(clientAuthSuported);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Client auth supported is " + engine.getWantClientAuth());
+                    Tr.debug(tc, "Client auth supported is " + sslParameters.getWantClientAuth());
                 }
             }
+            // set use cipher suite order
+            boolean useCipherOrder = config.getBooleanProperty(Constants.SSLPROP_ENFORCE_CIPHER_ORDER);
+            if (useCipherOrder) {
+                sslParameters.setUseCipherSuitesOrder(useCipherOrder);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Use cipher order is " + sslParameters.getUseCipherSuitesOrder());
+                }
+            }
+
+            //set the ssl parameters collected on the engine
+            engine.setSSLParameters(sslParameters);
+
             // enable ALPN support if this is for an inbound connection
             AlpnSupportUtils.registerAlpnSupport(connLink, engine);
 
         } else {
             // Update engine with client side specific config parameters.
             engine.setUseClientMode(true);
+
+            //set the ssl parameters collected on the engine
+            engine.setSSLParameters(sslParameters);
         }
 
         try {
