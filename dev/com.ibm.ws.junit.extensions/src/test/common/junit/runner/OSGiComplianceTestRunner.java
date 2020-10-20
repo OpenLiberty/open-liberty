@@ -11,7 +11,10 @@
 package test.common.junit.runner;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +22,6 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-
-import test.common.ClosingException;
 
 public class OSGiComplianceTestRunner extends Runner {
     private final Description suite;
@@ -37,27 +38,35 @@ public class OSGiComplianceTestRunner extends Runner {
     @Override
     public void run(RunNotifier notifier) {
         int numTests = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(System.getProperty("console.log")))) {
-            Pattern pattern = Pattern.compile(" (\\w+\\(.*\\)), fails=([0-9])");
-            for (String line; (line = br.readLine()) != null;) {
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    String testName = matcher.group(1);
-                    String fails = matcher.group(2);
+        try {
+            File consoleLog = new File(System.getProperty("console.log"));
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(consoleLog));
 
-                    Description desc = Description.createTestDescription(suite.getTestClass(), testName);
-                    suite.addChild(desc);
-                    notifier.fireTestStarted(desc);
-                    if (!fails.equals("0")) {
-                        notifier.fireTestFailure(new Failure(desc, new AssertionError(line)));
+            try {
+                BufferedReader br = new BufferedReader(reader);
+                Pattern pattern = Pattern.compile(" (\\w+\\(.*\\)), fails=([0-9])");
+                for (String line; (line = br.readLine()) != null;) {
+                    Matcher matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+                        String testName = matcher.group(1);
+                        String fails = matcher.group(2);
+
+                        Description desc = Description.createTestDescription(suite.getTestClass(), testName);
+                        suite.addChild(desc);
+                        notifier.fireTestStarted(desc);
+                        if (!fails.equals("0")) {
+                            notifier.fireTestFailure(new Failure(desc, new AssertionError(line)));
+                        }
+                        notifier.fireTestFinished(desc);
+                        numTests++;
                     }
-                    notifier.fireTestFinished(desc);
-                    numTests++;
+                }
+            } finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
                 }
             }
-            throw new ClosingException();    // throw, catch, and ignore
-        } catch (ClosingException ignored) { // so exceptions thrown from close()
-                                             // will all be suppressed
         } catch (Throwable t) {
             Description desc = Description.createTestDescription(suite.getTestClass(), "run");
             notifier.fireTestStarted(desc);
