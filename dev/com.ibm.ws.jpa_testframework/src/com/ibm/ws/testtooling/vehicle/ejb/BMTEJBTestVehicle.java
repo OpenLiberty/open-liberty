@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.testtooling.vehicle.ejb;
 
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -81,16 +84,14 @@ public class BMTEJBTestVehicle implements EJBTestVehicle {
 
             // Execute the test
             JEEExecutionContextHelper.executeTestLogic(ctx, testExecResources, this);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
         } catch (Throwable t) {
-            Assert.fail("BMTEJBTestVehicle Caught Exception: " + t);
+            logException(t, ctx);
         } finally {
             // Cleanup Resources
             try {
                 JEEExecutionContextHelper.destroyExecutionResources(testExecResources);
             } catch (Throwable t) {
-                Assert.fail("BMTEJBTestVehicle Cleanup Caught Exception: " + t);
+                // Assert.fail("BMTEJBTestVehicle Cleanup Caught Exception: " + t);
             }
 
             JEEExecutionContextHelper.printEndTestInfo(ctx);
@@ -100,6 +101,33 @@ public class BMTEJBTestVehicle implements EJBTestVehicle {
     @Override
     public void release() {
 
+    }
+
+    protected void logException(Throwable t, TestExecutionContext ctx) throws java.lang.AssertionError {
+        if (t instanceof java.lang.AssertionError) {
+            throw (java.lang.AssertionError) t;
+        }
+
+        String exText = exceptionToString(t);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n!!!!!\n");
+        sb.append("Test failed with Exception: \n");
+        sb.append("  Test Name: ").append(ctx.getName()).append("\n");
+        sb.append("  Test Logic Class: ").append(ctx.getTestLogicClassName()).append("\n");
+        sb.append("  Test Logic Method: ").append(ctx.getTestLogicMethod()).append("\n");
+        sb.append("Exception:\n");
+        sb.append(exText).append("\n");
+        sb.append("!!!!!\n");
+        System.out.println(sb);
+
+        Assert.fail("TestServlet Caught Exception: " + t + "\n" + exText);
+    }
+
+    protected String exceptionToString(Throwable t) {
+        CharArrayWriter caw = new CharArrayWriter();
+        t.printStackTrace(new PrintWriter(caw));
+        return caw.toString();
     }
 
 }
