@@ -25,13 +25,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -984,20 +981,6 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
      */
     public void setMeState(String state) {
         _state = state;
-    }
-
-    @Override
-    public void processConfigurationChange(ConfigurationEvent event) {
-        final String methodName = "processConfigurationChange";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, methodName, new Object[] {this, event});
-        
-        if (event.getType() == ConfigurationEvent.CM_UPDATED && pids.contains(event.getPid())) {
-            internalModify();
-        }
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, methodName);
     }
 
 }
