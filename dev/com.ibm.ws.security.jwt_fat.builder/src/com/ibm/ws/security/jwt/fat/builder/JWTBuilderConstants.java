@@ -60,4 +60,7 @@ public class JWTBuilderConstants extends JwtConstants {
     public static final String EMPTY_STRING = "empty";
     public static final String EMPTY_VALUE = "";
 
+    public static final String JWE_TYPE = "JOSE";
+    public static final String JWE_CONTENT_TYPE = "jwt";
+
 }

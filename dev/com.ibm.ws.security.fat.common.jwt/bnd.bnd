@@ -58,16 +58,17 @@ generate.replacement: true
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-    org.apache.commons.codec, \
+	org.apache.commons.codec,\
 	commons-logging:commons-logging;version=1.1.3,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-   	com.ibm.json4j;version=latest,\
+	com.ibm.json4j;version=latest,\
 	com.ibm.ws.org.glassfish.json.1.1,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	org.glassfish:javax.json;version=1.0,\
 	com.ibm.ws.security.token;version=latest,\
-	fattest.simplicity;version=latest
+	fattest.simplicity;version=latest,\
+	org.bitbucket.b_c.jose4j
     
