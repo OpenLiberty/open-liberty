@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,11 @@ import org.eclipse.microprofile.config.Config;
  */
 class ConfigWrapper {
 
-    private Config config;
-    private final ClassLoader classLoader;
+    private final Config config;
     private final Set<String> applications = new HashSet<>();
 
-    ConfigWrapper(Config config, ClassLoader classLoader) {
+    ConfigWrapper(Config config) {
         this.config = config;
-        this.classLoader = classLoader;
     }
 
     void addApplication(String appName) {
@@ -47,25 +45,7 @@ class ConfigWrapper {
     /**
      * @return
      */
-    Set<String> getApplications() {
-        return this.applications;
-    }
-
-    /**
-     * @return
-     */
     Config getConfig() {
         return this.config;
-    }
-
-    /**
-     * @param config2
-     */
-    void updateConfig(Config config) {
-        this.config = config;
-    }
-
-    ClassLoader getClassLoader() {
-        return this.classLoader;
     }
 }
