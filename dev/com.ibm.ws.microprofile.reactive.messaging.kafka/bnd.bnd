@@ -14,6 +14,7 @@
 bSymbolicName=com.ibm.ws.microprofile.reactive.messaging.kafka
 bVersion=1.0
 
+testsrc: test/src
 
 Bundle-Name: com.ibm.ws.microprofile.reactive.messaging.kafka
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.messaging.kafka
