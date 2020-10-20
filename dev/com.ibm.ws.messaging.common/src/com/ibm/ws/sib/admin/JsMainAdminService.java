@@ -12,10 +12,6 @@ package com.ibm.ws.sib.admin;
 
 import java.util.Map;
 
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-
-//TODO Complete work to convert JsMainAdminServiceImpl into a declarative service.
 /**
  * This class provides the functionality to consume the messaging properties sent by the configuration admin
  * and to use it. 
@@ -31,6 +27,5 @@ public interface JsMainAdminService {
  
     void start(Map<String, Object> properties);  
     void stop();
-    void modify(Map<String, Object> properties);
-    void processConfigurationChange(ConfigurationEvent event);    
+    void modify(Map<String, Object> properties);    
 }
