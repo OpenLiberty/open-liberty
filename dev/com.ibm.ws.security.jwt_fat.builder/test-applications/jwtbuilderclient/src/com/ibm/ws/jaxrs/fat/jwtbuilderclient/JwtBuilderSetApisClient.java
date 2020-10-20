@@ -481,10 +481,10 @@ public class JwtBuilderSetApisClient extends HttpServlet {
      */
     protected void setEncryptWith(PrintWriter pw, JSONObject attrs) throws Exception {
 
-        if (attrs.containsKey(JWTBuilderConstants.KEY_MGMT_ALG) || attrs.containsKey(JWTBuilderConstants.ENCRYPT_KEY) || attrs.containsKey(JWTBuilderConstants.CONTENT_ENCRYPT_ALG)) {
-            String keyMgmtAlg = (String) attrs.get(JWTBuilderConstants.KEY_MGMT_ALG);
-            String encryptKeyString = (String) attrs.get(JWTBuilderConstants.ENCRYPT_KEY);
-            String contentEncryptAlg = (String) attrs.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG);
+        if (attrs.containsKey(JWTBuilderConstants.PARAM_KEY_MGMT_ALG) || attrs.containsKey(JWTBuilderConstants.PARAM_ENCRYPT_KEY) || attrs.containsKey(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG)) {
+            String keyMgmtAlg = (String) attrs.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG);
+            String encryptKeyString = (String) attrs.get(JWTBuilderConstants.PARAM_ENCRYPT_KEY);
+            String contentEncryptAlg = (String) attrs.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG);
 
             // to allow calling test case to test all possible combinations of good/bad values passed to the encryptWith method,
             //  allow caller to pass any subset of parms - we'll pass null for any missing

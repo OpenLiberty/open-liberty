@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.JwtBuilder;
@@ -96,7 +99,10 @@ public class JwtConsumerClient extends HttpServlet {
             }
             appUtils.logIt(pw, "Successfully created consumer for id [" + configId + "]");
 
-            outputTokenJson(tokenParam);
+            JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(tokenParam);
+            if (joseObject instanceof JsonWebSignature) {
+                outputTokenJson(tokenParam); // update to handle jwe
+            }
 
             JwtToken token = myJwtConsumer.createJwt(tokenParam);
             appUtils.logIt(pw, JwtConsumerConstants.BUILT_JWT_TOKEN + ((token == null) ? null : token.compact()));
