@@ -15,6 +15,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import javax.ws.rs.ext.RuntimeDelegate;
 
@@ -63,6 +64,7 @@ public class JaxRsServiceActivator {
                             throws Exception
             {
                 System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "1"); // sets the bla property without throwing an exception -> ok
+                new CompletableFuture<Object>(); // initialize the class to avoid Java 2 sec errors with loading this class or the ForkJoinPool
                 return Boolean.TRUE;
             }
         });

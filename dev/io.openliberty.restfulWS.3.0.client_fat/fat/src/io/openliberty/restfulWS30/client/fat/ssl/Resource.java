@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.client.fat.ssl;
 
+import java.util.Collections;
+import java.util.Set;
+
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
@@ -22,6 +26,16 @@ import jakarta.ws.rs.core.Application;
 @Produces("text/plain")
 @ApplicationScoped
 public class Resource extends Application {
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Resource.init()");
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return Collections.singleton(this.getClass());
+    }
 
     @GET
     public String get() {

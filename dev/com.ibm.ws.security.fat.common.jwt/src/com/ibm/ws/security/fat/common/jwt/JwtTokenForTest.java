@@ -11,6 +11,7 @@
 package com.ibm.ws.security.fat.common.jwt;
 
 import java.io.StringReader;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,8 +29,13 @@ import javax.json.JsonValue;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
+import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 
 /**
  * JWT Token tools for Security testing with JWT Tokens.
@@ -49,13 +55,17 @@ public class JwtTokenForTest {
 
     public static final String DELIMITER = ".";
 
-    String jwtString = null;
+    String jwsString = null;
+    String jweString = null;
+    private String jweHeaderString = null;
     private String jwtHeaderString = null;
     private String jwtPayloadString = null;
     private String jwtSignatureString = null;
+    private JsonObject jweHeaderJson = null;
     private JsonObject jwtHeaderJson = null;
     private JsonObject jwtPayloadJson = null;
     private final JsonObject jwtSignatureJson = null;
+    private Map<String, Object> jweHeaderMap = null;
     private Map<String, Object> jwtHeaderMap = null;
     private Map<String, Object> jwtPayloadMap = null;
     private final Map<String, Object> jwtSignatureMap = null;
@@ -64,6 +74,7 @@ public class JwtTokenForTest {
 
     public void printJwtContent() throws Exception {
 
+        Log.info(thisClass, "printJwtContent", "JWE Header: " + getJsonJWEHeader());
         Log.info(thisClass, "printJwtContent", "Header: " + getJsonHeader());
         Log.info(thisClass, "printJwtContent", "Payload: " + getJsonPayload());
 //        Log.info(thisClass, "printJwtContent", "Signature: " + getJsonSignature());
@@ -80,7 +91,59 @@ public class JwtTokenForTest {
      */
     public JwtTokenForTest(String jwtTokenString) throws Exception {
         Log.info(thisClass, "JwtTokenForTest", "Original JWT Token String: " + jwtTokenString);
-        jwtString = jwtTokenString;
+
+        JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(jwtTokenString);
+        if (joseObject instanceof JsonWebEncryption) {
+            return;
+        }
+
+        processJWS(jwtTokenString);
+    }
+
+    /**
+     * Fortmat and load the JWE Token - assume no validation on the JWE header (meaning - use the key management key Alg and content
+     * encryption alg from the header along with the private key that was passed in
+     *
+     * @param jwtTokenString - the JWT Token string
+     * @param privateKey - the private key used to decrypt the token
+     * @throws Exception
+     */
+    public JwtTokenForTest(String jwtTokenString, String privateKey) throws Exception {
+
+        if (privateKey == null) {
+            processJWS(jwtTokenString);
+        } else {
+            processJWE(jwtTokenString, privateKey);
+        }
+    }
+
+    /**
+     * Format and load the JWT Token.
+     * Split the string, decode, load maps, ...
+     *
+     * @param jwtTokenString - the original multi part JWT Token string
+     * @throws Exception
+     */
+    public JwtTokenForTest(String jwtTokenString, String expectedKeyMgmtAlg, String privateKey, String expectedContentEncryptAlg) throws Exception {
+
+        this(jwtTokenString); // try to parse JWS - if token is JWE, it'll return here
+        // if it's a JWS, it'll be processed and the check below will cause this method to terminate.
+
+        JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(jwtTokenString);
+
+        if (joseObject instanceof JsonWebEncryption) {
+
+            processJWE(jwtTokenString, expectedKeyMgmtAlg, privateKey, expectedContentEncryptAlg);
+
+        }
+    }
+
+    public void processJWS(String jwtTokenString) throws Exception {
+
+        Log.info(thisClass, "processJWS", "Original JWS Token String: " + jwtTokenString);
+
+        jwsString = jwtTokenString;
+        jweString = null;
         String[] jwtParts = splitTokenString(jwtTokenString);
 
         jwtHeaderString = jwtParts[0];
@@ -104,8 +167,57 @@ public class JwtTokenForTest {
 
     }
 
+    public void processJWE(String jwtTokenString, String privateKey) throws Exception {
+        processJWE(jwtTokenString, null, privateKey, null);
+    }
+
+    public void processJWE(String jwtTokenString, String expectedKeyMgmtAlg, String privateKey, String expectedContentEncryptAlg) throws Exception {
+
+        Log.info(thisClass, "processJWE", "Original JWE Token String: " + jwtTokenString);
+//        Log.info(thisClass, "processJWE", "Key Management Key Alg: " + expectedKeyMgmtAlg);
+//        Log.info(thisClass, "processJWE", "Private Key: " + privateKey);
+//        Log.info(thisClass, "processJWE", "Content Encryption Alg: " + expectedContentEncryptAlg);
+
+        // process the JWE Header
+        String[] jwtParts = splitTokenString(jwtTokenString);
+
+        if (jwtParts.length != 5) {
+            Log.info(thisClass, "validateEncryptedToken", "Token does not have 5 parts");
+        }
+
+        jweHeaderString = jwtParts[0];
+        jweHeaderJson = deserialize(jweHeaderString);
+        jweHeaderMap = mapClaimsFromJsonAsStrings(jweHeaderString);
+
+        // now decrypt the JWE and process the JWS
+        JsonWebEncryption jwe = new JsonWebEncryption();
+        if (expectedKeyMgmtAlg != null) {
+            AlgorithmConstraints algorithmConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedKeyMgmtAlg);
+            jwe.setAlgorithmConstraints(algorithmConstraints);
+        }
+        if (expectedContentEncryptAlg != null) {
+            AlgorithmConstraints encryptionConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedContentEncryptAlg);
+            jwe.setContentEncryptionAlgorithmConstraints(encryptionConstraints);
+        }
+        jwe.setCompactSerialization(jwtTokenString);
+        PrivateKey keyManagementKey = JwtKeyTools.getPrivateKeyFromPem(privateKey);
+        jwe.setKey(keyManagementKey);
+        String jws = jwe.getPlaintextString();
+        Log.info(thisClass, "JwtTokenForTest", "Decrypted JWS: " + jws);
+
+        processJWS(jws);
+    }
+
+    public JsonObject getJsonJWEHeader() {
+        return jweHeaderJson;
+    }
+
+    public Map<String, Object> getMapJWEHeader() {
+        return jweHeaderMap;
+    }
+
     public String getJwtTokenString() {
-        return jwtString;
+        return jwsString;
     }
 
     public JsonObject getJsonHeader() {

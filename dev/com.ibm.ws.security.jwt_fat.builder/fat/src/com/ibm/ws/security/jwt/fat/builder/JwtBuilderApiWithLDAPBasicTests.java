@@ -19,7 +19,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
@@ -27,6 +26,7 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,7 +40,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
@@ -61,6 +60,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
         setupLdapServer(builderServer);
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_LDAPRegistry.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
@@ -135,7 +135,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
         claimsToFetch.add(null);
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_FETCH_API, claimsToFetch);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -164,7 +164,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
         claimsToFetch.add("");
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_FETCH_API, claimsToFetch);
 
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6015E_INVALID_CLAIM, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);

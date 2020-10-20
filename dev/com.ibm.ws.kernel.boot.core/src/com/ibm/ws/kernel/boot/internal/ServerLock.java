@@ -506,12 +506,10 @@ public class ServerLock {
             return false;
         }
 
-        FileOutputStream fos = null;
-        FileChannel fc = null;
         try {
-            fos = new FileOutputStream(lockFile);
-            fc = fos.getChannel();
-            lockFileChannel = fc;
+            @SuppressWarnings("resource")
+            FileOutputStream fos = new FileOutputStream(lockFile);
+            lockFileChannel = fos.getChannel();
 
             if (tryServerLock() && !FileUtils.isWSL()) {
                 // we could obtain the server lock, server is not running

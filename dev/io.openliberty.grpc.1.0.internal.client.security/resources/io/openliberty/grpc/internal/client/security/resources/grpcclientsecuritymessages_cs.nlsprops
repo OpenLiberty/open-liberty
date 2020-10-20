@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client Security
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal.client.security/resources/io/openliberty/grpc/internal/client/security/resources/grpcclientsecuritymessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.ssl.protocol=CWWKT0305W: Protokol SSL {0} nakonfigurovan\u00fd v {1} nen\u00ed platn\u00fd pro gRPC. Mus\u00ed b\u00fdt pou\u017eit TLSv1.2 nebo nov\u011bj\u0161\u00ed.
+invalid.ssl.protocol.explanation=Nakonfigurovan\u00fd protokol SSL nen\u00ed platn\u00fd pro gRPC.
+invalid.ssl.protocol.useraction=Nakonfigurujte hodnotu protokolu SSL TLSv1.2 nebo nov\u011bj\u0161\u00ed.
+
+client.ssl.failed=CWWKT0306W: P\u0159ipojen\u00ed SSL klienta gRPC nebylo vytvo\u0159eno s odkazem SSL {0} kv\u016fli {1}.
+client.ssl.failed.explanation=Vytvo\u0159en\u00ed kontextu SSL klienta gRPC se nezda\u0159ilo.
+client.ssl.failed.useraction=Nakonfigurujte platn\u00e9 vlastnosti SSL pro gRPC.

@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Wyst\u0105pi\u0142 wewn\u0119trzny b
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: W \u017c\u0105daniu po\u0142\u0105czenia dla zasobu XA {0} u\u017cyto uwierzytelniania SPNEGO, ale nie skonfigurowano aliasu danych uwierzytelniania odtwarzania. Zas\u00f3b XA nie mo\u017ce uczestniczy\u0107 w zautomatyzowanym odtwarzaniu XE bez skonfigurowanego aliasu danych uwierzytelniania odtwarzania.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=Odtwarzanie XA jest zautomatyzowanym procesem wykonywanym w tle, ale uwierzytelnienie SPNEGO wymaga r\u0119cznego wprowadzenia danych przez u\u017cytkownika. Dlatego uwierzytelniania SPNEGO nie mo\u017cna u\u017cywa\u0107 do zautomatyzowanego odtwarzania XA.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Skonfiguruj alias danych uwierzytelniania odtwarzania w zasobie XA.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Z wolnej puli pobrano niepoprawny obiekt MCWrapper {0} dla zasobu {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zarezerwowania obiektu MCWrapper.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

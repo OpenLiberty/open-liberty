@@ -216,6 +216,11 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR=CWWKF0044E: Di
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Jakarta EE- und Java EE-Features. Features, die das Programmiermodell von Jakarta EE 9 unterst\u00fctzen sind nicht kompatibel mit Features, die die Java EE-Programmiermodelle unterst\u00fctzen Dazu geh\u00f6rt auch Jakarta EE 8. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Geben Sie eine kompatible Version f\u00fcr die konfigurierten Features an, die den Konflikt in der Datei server.xml verursacht haben, und stellen Sie sicher, dass die Datei server.xml entweder Jakarta EE-Features oder Java EE-Features verwendet, jedoch nicht beide Features.
 
+#CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Eine bereits vorhandene Featuredefinition ({1}) ist eine m\u00f6gliche \u00dcbereinstimmung f\u00fcr das {0}-Feature, das nicht gefunden wurde. 
+MISSING_FEATURE_HAS_ALT_NAME.explanation=Der Feature-Manager kann keine Definition f\u00fcr ein in der Serverkonfiguration angegebenes Feature finden. Der angegebene Name stimmt m\u00f6glicherweise mit einer bereits vorhandenen Featuredefinition \u00fcberein.
+MISSING_FEATURE_HAS_ALT_NAME.useraction=Versuchen Sie, stattdessen die angegebene, bereits vorhandene Featuredefinition anzugeben. 
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Das Feature {0} ist bereits vorhanden. Es wird nicht erneut installiert. Um ein bereits vorhandenes Feature zu \u00e4ndern, m\u00fcssen Sie es zuerst manuell deinstallieren.

@@ -72,6 +72,7 @@ public class ArchiveFactory {
         // could add other archive type in future
 
         try {
+            @SuppressWarnings("resource")
             URLClassLoader loader = new URLClassLoader(new URL[] { ARCHIVE_IMPL_BUNDLE_URL });
             @SuppressWarnings("unchecked")
             Class<? extends Archive> archiveImplClass = (Class<? extends Archive>) loader.loadClass(className);

@@ -57,4 +57,12 @@ public class JwtConstants extends Constants {
     public static final String NO_JWT_TOKEN = "No Token";
     public static final String JWT_MALFORMED_TOKEN_HEADER = "Header malformed: ";
     public static final String JWT_TOKEN_HEADER_JSON = "JSON Header: ";
+    public static final String JWE_TOKEN_HEADER_JSON = "JWE JSON Header: ";
+    public static final String DEFAULT_KEY_MGMT_KEY_ALG = "RSA-OAEP";
+    public static final String DEFAULT_CONTENT_ENCRYPT_ALG = "A256GCM";
+    public static final String KEY_MGMT_KEY_ALG_256 = "RSA-OAEP-256";
+    public static final String CONTENT_ENCRYPT_ALG_192 = "A192GCM";
+
+    public static final String BOOTSTRAP_PROP_ENCRYPTION_SETTING = "fat.server.encryption.setting";
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,9 @@ public interface Builder {
     // shared key for signing
     public abstract Builder signWith(String algorithm, String key)
             throws KeyException;
+
+    // Sets token encryption information for creating JSON Web Encryption tokens.
+    public abstract Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException;
 
     // add claims with the given name and value
     public abstract Builder claim(String name, Object value)

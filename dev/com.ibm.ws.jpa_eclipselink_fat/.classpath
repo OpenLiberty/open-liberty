@@ -9,6 +9,8 @@
 	<classpathentry kind="src" path="test-applications/olgh8950/src"/>
 	<classpathentry kind="src" path="test-applications/olgh9018/src"/>
 	<classpathentry kind="src" path="test-applications/olgh9035/src"/>
+	<classpathentry kind="src" path="test-applications/olgh10068/src"/>
+	<classpathentry kind="src" path="test-applications/olgh14426/src"/>
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="src" path="test-framework/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

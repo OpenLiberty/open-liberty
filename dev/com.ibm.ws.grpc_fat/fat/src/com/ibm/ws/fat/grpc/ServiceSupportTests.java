@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,6 +26,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.grpc.fat.beer.service.Beer;
 import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
@@ -195,10 +197,12 @@ public class ServiceSupportTests extends FATServletClient {
         grpcServer.setMarkToEndOfLog();
 
         // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
-        // to a new app FavoriteBeerService.war
-        ShrinkHelper.defaultDropinApp(grpcServer, fbs,
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // to a new app FavoriteBeerService.war; skip validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp(fbs,
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
@@ -267,10 +271,12 @@ public class ServiceSupportTests extends FATServletClient {
         grpcServer.setMarkToEndOfLog();
 
         // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
-        // to a new app FavoriteBeerService.war
-        ShrinkHelper.defaultDropinApp(grpcServer, fbs,
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp(fbs,
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
@@ -291,9 +297,7 @@ public class ServiceSupportTests extends FATServletClient {
         grpcServer.setMarkToEndOfLog();
 
         // Add the same application to the dropins folder again so that it is updated
-        ShrinkHelper.defaultDropinApp(grpcServer, fbs,
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
         appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
@@ -335,10 +339,12 @@ public class ServiceSupportTests extends FATServletClient {
 
         LOG.info("testInvalidService() : add InvalidService to the server if not already present.");
         // add all classes from com.ibm.ws.grpc.fat.invalid.service and com.ibm.ws.grpc.fat.beer
-        // to a new app InvalidService.war
-        ShrinkHelper.defaultDropinApp(grpcServer, is,
-                                      "com.ibm.ws.grpc.fat.invalid.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // to a new app InvalidService.war; skip validation
+        WebArchive isApp = ShrinkHelper.buildDefaultApp(is,
+                                                        "com.ibm.ws.grpc.fat.invalid.service",
+                                                        "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, isApp, options);
 
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I: Application InvalidService started", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
@@ -393,10 +399,12 @@ public class ServiceSupportTests extends FATServletClient {
         grpcServer.setMarkToEndOfLog();
 
         // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
-        // to a new app FavoriteBeerService.war
-        ShrinkHelper.defaultDropinApp(grpcServer, fbs,
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp(fbs,
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
@@ -408,11 +416,12 @@ public class ServiceSupportTests extends FATServletClient {
         startBeerService(grpcServer.getHostname(), grpcServer.getHttpDefaultPort());
 
         LOG.info("testDuplicateService() : add FavoriteBeerService2 to the server if not already present.");
-        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
-        // to a new app FavoriteBeerService2.war
-        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService2.war",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer to a new app FavoriteBeerService2.war
+        // and disable validation
+        WebArchive fbs2App = ShrinkHelper.buildDefaultApp("FavoriteBeerService2.war",
+                                                          "com.ibm.ws.grpc.fat.beer.service",
+                                                          "com.ibm.ws.grpc.fat.beer");
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbs2App, options);
 
         // It's invalid to have the same grpc services served by two different apps, this should generate an error
         //CWWKZ0012I: The application FavoriteBeerService2 was not started.
@@ -420,7 +429,6 @@ public class ServiceSupportTests extends FATServletClient {
         if (app2NotStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService2" + " started in error within  " + APP_STARTUP_TIMEOUT + "ms");
         }
-        LOG.info("testDuplicateService() : FavoriteBeerService2 grpc application has started.");
 
         // Make sure we can still send a request to the original app
         // "Snozzberry","Green Man Brewery",AMERICANWILDALE, 4.2);
@@ -435,7 +443,7 @@ public class ServiceSupportTests extends FATServletClient {
         // Stop the grpc applications
         LOG.info("testDuplicateService() : Stop the FavoriteBeerService application and remove it from dropins.");
         assertTrue(grpcServer.removeAndStopDropinsApplications(fbs));
-        grpcServer.removeAndStopDropinsApplications("FavoriteBeerService2.war");
+        grpcServer.removeDropinsApplications("FavoriteBeerService2.war");
 
         // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
         grpcServer.deleteFileFromLibertyServerRoot("/" + fbs);

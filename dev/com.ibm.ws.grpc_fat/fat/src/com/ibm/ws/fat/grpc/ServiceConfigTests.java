@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -28,6 +29,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.grpc.fat.beer.service.Beer;
 import com.ibm.ws.grpc.fat.beer.service.BeerResponse;
 import com.ibm.ws.grpc.fat.beer.service.BeerServiceGrpc;
@@ -106,21 +108,6 @@ public class ServiceConfigTests extends FATServletClient {
     }
 
     /**
-     * This method is used to set the server.xml
-     */
-    private static void setServerConfiguration(LibertyServer server,
-                                               String serverXML) throws Exception {
-        if (!serverConfigurationFile.equals(serverXML)) {
-            // Update server.xml
-            LOG.info("ServiceConfigTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            serverConfigurationFile = serverXML;
-        }
-    }
-
-    /**
      * Add a new <grpc/> element and make sure it's applied
      * The original server.xml enables the grpc feature, but has no grpc element.
      * Update the server with a server.xml that has a grpc element, make sure no errors, send a request.
@@ -136,8 +123,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testAddGrpcElement() : update the server.xml file to one with a <grpc> element.");
 
         // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
@@ -166,8 +152,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with no interceptor");
 
         // Update to a config file with a <grpc> element with no interceptor
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Kevin").build();
@@ -183,8 +168,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with Interceptor included
         LOG.info("ServiceConfigTests : testUpdateGrpcParam() : update the server.xml file to one with a </grpc> element with an interceptor");
-        setServerConfiguration(grpcServer, GRPC_INTERCEPTOR);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INTERCEPTOR, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         person = HelloRequest.newBuilder().setName("Millie").build();
@@ -217,8 +201,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with a small grpc message size of 1");
 
         // Update to a config file with a <grpc> element with a small message size, send msg, look for failure
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
 
         boolean testPassed = false;
         try {
@@ -234,8 +217,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with no <grpc> element, do same test, it should work
         LOG.info("ServiceConfigTests : testRemoveGrpcElement() : update the server.xml file to one with no grpc message size.");
-        setServerConfiguration(grpcServer, DEFAULT_CONFIG_FILE);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, DEFAULT_CONFIG_FILE, appName, LOG);
 
         // Send a request to the HelloWorld service, this should work
         HelloRequest person = HelloRequest.newBuilder().setName("Holly").build();
@@ -267,10 +249,14 @@ public class ServiceConfigTests extends FATServletClient {
 
         grpcServer.setMarkToEndOfLog();
 
-        // The helloworld service is already in dropins, add the beer service app and fire it up
-        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp("FavoriteBeerService",
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
+
         LOG.info("ServiceConfigTests : testServiceTargetWildcard() : dropped the beer app into dropins.");
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
@@ -282,8 +268,7 @@ public class ServiceConfigTests extends FATServletClient {
 
         // Update to a config file with a <grpc target="*" maxInboundMessageSize="1"/>
         // This should apply max msg size of 1 to both services
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appNames);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appNames, LOG);
 
         boolean test1Passed = false;
         try {
@@ -335,8 +320,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testServiceTargetNoMatch() : update the server.xml file to one with a </grpc> target that matches nothing.");
 
         // Update to a config file with a <grpc> element with Foo.fighter target and an invalid msg size
-        setServerConfiguration(grpcServer, GRPC_BAD_TARGET);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_BAD_TARGET, appName, LOG);
 
         // Send a request to a different service, the HelloWorld service, and check for a response
         // This should work, since the invalid msg size is set on the invalid target
@@ -368,9 +352,14 @@ public class ServiceConfigTests extends FATServletClient {
         BeerServiceBlockingStub beerServiceBlockingStub;
 
         // The helloworld app is already in dropins, add the beer service app and fire it up
-        ShrinkHelper.defaultDropinApp(grpcServer, "FavoriteBeerService",
-                                      "com.ibm.ws.grpc.fat.beer.service",
-                                      "com.ibm.ws.grpc.fat.beer");
+        // add all classes from com.ibm.ws.grpc.fat.beer.service and com.ibm.ws.grpc.fat.beer
+        // to a new app FavoriteBeerService.war; disable validation
+        WebArchive fbsApp = ShrinkHelper.buildDefaultApp("FavoriteBeerService",
+                                                         "com.ibm.ws.grpc.fat.beer.service",
+                                                         "com.ibm.ws.grpc.fat.beer");
+        DeployOptions[] options = new DeployOptions[] { DeployOptions.DISABLE_VALIDATION };
+        ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
+
         LOG.info("ServiceConfigTests : testServiceTargetSpecificMatch() : dropped the beer app into dropins.");
         // Make sure the beer service has started
         String appStarted = grpcServer.waitForStringInLogUsingMark("CWWKT0201I.*FavoriteBeerService", STARTUP_TIMEOUT);
@@ -381,8 +370,8 @@ public class ServiceConfigTests extends FATServletClient {
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
 
         // Update to a config file with a <grpc> element that has a specific target
-        setServerConfiguration(grpcServer, GRPC_MAX_MESSAGE_SPECIFIC_TARGET);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appNames);
+        // make sure to pass in both appNames so that the test will wait until they're both up
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MAX_MESSAGE_SPECIFIC_TARGET, appNames, LOG);
 
         // Send a message to the first service, expect error
         boolean test1Passed = false;
@@ -427,8 +416,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testInvalidMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an invalid maxInboundMessageSize.");
 
         // Update to a config file with a <grpc> element with a max msg size of -1
-        setServerConfiguration(grpcServer, GRPC_INVALID_MAX_MSG_SIZE);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INVALID_MAX_MSG_SIZE, appName, LOG);
 
         String warningMsg = grpcServer.waitForStringInLogUsingMark("CWWKT0203E: The maxInboundMessageSize -1 is not valid. Sizes must greater than 0.", STARTUP_TIMEOUT);
         if (warningMsg == null) {
@@ -449,8 +437,7 @@ public class ServiceConfigTests extends FATServletClient {
         LOG.info("ServiceConfigTests : testSmallMaxInboundMessageSize() : update the server.xml file to one with an </grpc> with an very small maxInboundMessageSize.");
 
         // Update to a config file with a <grpc> element
-        setServerConfiguration(grpcServer, GRPC_SMALL_MAX_MESSAGE);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_SMALL_MAX_MESSAGE, appName, LOG);
 
         boolean testPassed = false;
         try {

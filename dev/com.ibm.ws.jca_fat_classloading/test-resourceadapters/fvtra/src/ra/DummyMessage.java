@@ -14,9 +14,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.TextMessage;
 
 public class DummyMessage implements TextMessage {
     private final Map<String, Object> properties = new HashMap<String, Object>();
@@ -257,4 +257,23 @@ public class DummyMessage implements TextMessage {
         this.text = text;
     }
 
+    @Override
+    public <T> T getBody(Class<T> arg0) throws JMSException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long getJMSDeliveryTime() throws JMSException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isBodyAssignableTo(Class arg0) throws JMSException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setJMSDeliveryTime(long arg0) throws JMSException {
+        throw new UnsupportedOperationException();
+    }
 }

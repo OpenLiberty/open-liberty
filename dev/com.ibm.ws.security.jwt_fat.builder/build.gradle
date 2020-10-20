@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
   }
   /* copy needed files from jwt common fat into our app */
   from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
-    include 'com/ibm/ws/security/fat/common/Constants.class'
+    include 'com/ibm/ws/security/fat/common/Constants.class', 'com/ibm/ws/security/fat/common/utils/KeyTools.class'
     into "WEB-INF/classes"
   }
   /* copy needed files from jwt common fat into our app */
@@ -66,13 +66,12 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
     include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class', 'com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class'
     into "WEB-INF/classes"
   }  
-  /* end of jose4j copy */  
+   /* start of jose4j copy */  
   /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
   from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
     into "WEB-INF/classes"
   }
-  /* end of jose4j copy */  
-     
+  /* end of jose4j copy */    
 }
 
 assemble {
@@ -106,6 +105,11 @@ autoFVT.doLast {
    	/* Copy all shared key/trust stores from the common security FAT */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    /* Copy all shared key/trust stores from the common security JWT FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
   	/* Copy all shared key/trust stores from this project

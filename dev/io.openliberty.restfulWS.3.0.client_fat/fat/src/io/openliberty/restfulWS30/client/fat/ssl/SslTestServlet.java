@@ -37,10 +37,14 @@ public class SslTestServlet extends FATServlet {
         ClientBuilder builder = ClientBuilder.newBuilder()
                                              .property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
         Client client = builder.build();
-        WebTarget target = client.target("https://localhost:" + PORT + "/ssl/hello/secure");
-        Response response = target.request().get();
-        assertEquals(200, response.getStatus());
-        assertEquals("Hello secure world!", response.readEntity(String.class));
+        try {
+            WebTarget target = client.target("https://localhost:" + PORT + "/ssl/hello/secure");
+            Response response = target.request().get();
+            assertEquals(200, response.getStatus());
+            assertEquals("Hello secure world!", response.readEntity(String.class));
+        } finally {
+            client.close();
+        }
     }
 
     @Test
@@ -54,13 +58,16 @@ public class SslTestServlet extends FATServlet {
         } catch (final Throwable t) {
             Throwable t2 = t;
             while (t2 != null) {
+                t2.printStackTrace();
                 if (t2.getClass().getName().contains("ssl")) {
                     return;
                 }
                 t2 = t2.getCause();
             }
-            t.printStackTrace();
+            //t2.printStackTrace();
             fail("Threw an exception, but not related to SSL");
+        } finally {
+            client.close();
         }
     }
 }

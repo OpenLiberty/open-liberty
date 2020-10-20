@@ -527,6 +527,11 @@ public class SSLConfigManager {
             sslprops.setProperty(Constants.SSLPROP_USE_DEFAULTCERTS, useDefaultCerts.toString());
         }
 
+        Boolean enforceCipherOrder = (Boolean) map.get("enforceCipherOrder");
+        if (null != enforceCipherOrder) {
+            sslprops.setProperty(Constants.SSLPROP_ENFORCE_CIPHER_ORDER, enforceCipherOrder.toString());
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Saving SSLConfig: " + sslprops);
 

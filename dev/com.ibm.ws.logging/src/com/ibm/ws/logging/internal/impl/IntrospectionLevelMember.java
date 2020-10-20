@@ -321,10 +321,10 @@ public final class IntrospectionLevelMember {
                          */
                         //Attempt Java 9 and above
                         try {
-                            Class moduleClass = Class.forName("java.lang.Module");
+                            Class<?> moduleClass = Class.forName("java.lang.Module");
                             Method getModule = Class.class.getMethod("getModule");
                             Object module = getModule.invoke(currentClass);
-                            Class[] paramString = new Class[1];
+                            Class<?>[] paramString = new Class[1];
                             paramString[0] = String.class;
                             Method isOpen = moduleClass.getMethod("isOpen", paramString);
                             Package currentPackage = currentClass.getPackage();

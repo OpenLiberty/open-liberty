@@ -85,6 +85,7 @@
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 
     <!-- needed by fake resource adapter -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>

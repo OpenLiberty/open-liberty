@@ -29,32 +29,11 @@
         <feature>arquillian-support-1.0</feature>
     </featureManager>
 
-    <mpJwt  groupNameAttribute="groups" id="myMpJwt" audiences="s6BhdRkqt3, s6BhdRkqt3.2" /> 
+    <mpJwt groupNameAttribute="groups" id="myMpJwt" />
   
     <!-- <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all"/>  --> 
       <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="*=info:com.ibm.websphere.security.*=all:com.ibm.ws.cdi*=all:com.ibm.ws.jaxrs*=all:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.weld*=all:com.ibm.wsspi.webcontainer*=all" /> 
  
     <keyStore id="defaultKeyStore" password="keyspass"/>
 	
-   
-     <webApplication id="RolesAllowedTest" location="${server.config.dir}apps/RolesAllowedTest.war" name="RolesAllowedTest">
-       <application-bnd>
-           <security-role name="Token2Role">
-              <group access-id="group:https://server.example.com/group1.2" name="group1.2"/>  
-               <group access-id="group:https://server.example.com/group1.2" name="Token2Role"/>    
-           </security-role>
-           <security-role name="Group1MappedRole">
-              <group access-id="group:https://server.example.com/group1" name="group1"/>   
-              <group access-id="group:https://server.example.com/group1" name="group1MappedRole"/>       
-           </security-role>
-           <security-role name="Tester">              
-               <group access-id="group:https://server.example.com/Tester" name="Tester"/>  
-            </security-role>
-            <security-role name="Echoer">
-                <group access-id="group:https://server.example.com/Echoer" name="Echoer"/> 
-            </security-role>
-       </application-bnd> 
-    </webApplication> 
-    
-
 </server>

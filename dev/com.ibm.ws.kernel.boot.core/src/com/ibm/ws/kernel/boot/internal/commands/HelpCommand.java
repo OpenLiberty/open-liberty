@@ -1,14 +1,6 @@
 package com.ibm.ws.kernel.boot.internal.commands;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.ibm.ws.kernel.boot.HelpActions;
@@ -16,9 +8,9 @@ import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.ReturnCode;
 
 public class HelpCommand {
-    private HelpActions actionHelper;
-    private ResourceBundle options;
-    
+    private final HelpActions actionHelper;
+    private final ResourceBundle options;
+
     public HelpCommand(HelpActions actions) {
         actionHelper = actions;
         options = actionHelper.getResourceBundle();

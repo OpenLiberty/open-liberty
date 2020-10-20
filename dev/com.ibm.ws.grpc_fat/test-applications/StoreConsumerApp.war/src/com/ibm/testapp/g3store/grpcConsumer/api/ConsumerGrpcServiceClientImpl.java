@@ -244,6 +244,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                     e.printStackTrace();
                     throw new UnauthException(e.getMessage());
                 }
+            } else {
+                e.printStackTrace();
+                throw e;
             }
         }
 
@@ -334,7 +337,6 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                         handleException.setNfException(new NotFoundException(t));
                                     }
                                 }
-
                                 latch.countDown();
 
                             }
@@ -344,7 +346,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                 if (log.isLoggable(Level.FINE)) {
                                     log.fine("Consumer: getAppswPrices: completed response from server ");
                                 }
-
+                                latch.countDown();
                             }
 
                         });

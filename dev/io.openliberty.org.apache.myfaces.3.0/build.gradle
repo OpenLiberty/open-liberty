@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-    //sourceJar 'org.apache.myfaces.core:myfaces-impl:3.0.0-RC1:sources'
+    sourceJar 'org.apache.myfaces.core:myfaces-impl:3.0.0-RC1:sources'
 }
 
 task copySource(type: Copy) {
@@ -32,7 +32,7 @@ assemble {
 task deleteJars(type:Delete) {
     doLast {
         println "deleteJars task, deleting " + downloadSrcDir
-        //file(downloadSrcDir).deleteDir()
+        file(downloadSrcDir).deleteDir()
     }
 }
 

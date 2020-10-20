@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -32,6 +33,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -52,6 +55,15 @@ public class SessionCacheTimeoutTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        if (JakartaEE9Action.isActive()) {
+            RemoteFile originalResourceDir = LibertyFileManager.getLibertyFile(server.getMachine(), server.getInstallRoot() + "/usr/shared/resources/infinispan");
+            RemoteFile jakartaResourceDir = LibertyFileManager.getLibertyFile(server.getMachine(), server.getInstallRoot() + "/usr/shared/resources/infinispan-jakarta");
+
+            /* transform any test resources to jakartaee-9 equivalents */
+            ResourceTransformationHelper.transformResourcestoEE9(originalResourceDir, jakartaResourceDir, server, null);
+        }
+
         //Dropin web, and listener1 apps
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
 

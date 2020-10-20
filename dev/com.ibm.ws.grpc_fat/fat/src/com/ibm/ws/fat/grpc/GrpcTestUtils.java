@@ -63,23 +63,38 @@ public class GrpcTestUtils {
     }
 
     /**
-     * This method is used to set the server.xml
+     * This method is used to set the server.xml; validation is enabled
      */
     public static String setServerConfiguration(LibertyServer server,
                                                 String originalServerXML,
                                                 String serverXML,
                                                 Set<String> appName,
                                                 Logger logger) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        return setServerConfiguration(server, null, serverXML, appName, logger, false);
+    }
+
+    /**
+     * This method is used to set the server.xml
+     */
+    public static String setServerConfiguration(LibertyServer server,
+                                                String originalServerXML,
+                                                String serverXML,
+                                                Set<String> appName,
+                                                Logger logger,
+                                                boolean skipValidation) throws Exception {
+        logger.info("Entered set server config with xml " + serverXML);
         if (originalServerXML == null || !originalServerXML.equals(serverXML)) {
             server.setMarkToEndOfLog();
             // Update server.xml
             logger.info("setServerConfiguration setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            if (appName != null) {
-                server.waitForConfigUpdateInLogUsingMark(appName);
+            if (!skipValidation) {
+                if (appName != null) {
+                    server.waitForConfigUpdateInLogUsingMark(appName);
+                } else {
+                    server.waitForStringInLog("CWWKG001[7-8]I");
+                }
             }
         }
         return serverXML;
@@ -92,16 +107,17 @@ public class GrpcTestUtils {
                                               RemoteFile serverXML,
                                               Set<String> appName,
                                               Logger logger) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
+        logger.info("Entered set server config with xml " + serverXML);
         if (serverXML != null && serverXML.exists()) {
             server.setMarkToEndOfLog();
             // Update server.xml
             logger.info("setServerConfiguration setServerConfigurationFile to : " + serverXML);
             server.setMarkToEndOfLog();
             server.getServerConfigurationFile().copyFromSource(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
             if (appName != null) {
                 server.waitForConfigUpdateInLogUsingMark(appName);
+            } else {
+                server.waitForStringInLog("CWWKG001[7-8]I");
             }
         }
     }

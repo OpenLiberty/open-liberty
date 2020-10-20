@@ -16,6 +16,8 @@ Bundle-Name: WebSphere Connector Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.rar
 Bundle-Description: WebSphere Connector Support, version ${bVersion}
 
+jakartaeeMe: true
+
 Import-Package: \
   !com.ibm.ws.container.service.metadata, \
   !com.ibm.ws.container.service.state, \

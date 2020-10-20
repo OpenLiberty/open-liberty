@@ -290,12 +290,4 @@ public class CollectorJsonUtils {
         }
         return jsonBuilder.build().toString();
     }
-
-    private static StringBuilder addTagNameForVersion(StringBuilder sb) {
-
-        sb.append(",\"tags\":");
-
-        return sb;
-    }
-
 }

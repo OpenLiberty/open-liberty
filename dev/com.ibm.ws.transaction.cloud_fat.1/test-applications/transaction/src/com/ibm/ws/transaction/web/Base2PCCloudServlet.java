@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.Serializable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transaction;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 
@@ -445,6 +446,36 @@ public class Base2PCCloudServlet extends FATServlet {
         } finally {
             XAResourceImpl.clear();
         }
+    }
+
+    public void setupRecInterruptedPeerRecovery(HttpServletRequest request,
+                                                HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+
+        try {
+            tm.begin();
+            final Transaction tx = tm.getTransaction();
+
+            final LastingXAResourceImpl xaRes1 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
+            xaRes1.setCommitAction(XAResourceImpl.DIE);
+            xaRes1.INTERRUPT_IN_RECOVERY = true;
+            tx.enlistResource(xaRes1);
+
+            final LastingXAResourceImpl xaRes2 = XAResourceFactoryImpl.instance().getLastingXAResourceImpl();
+            tx.enlistResource(xaRes2);
+
+            tm.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkRecInterruptedPeerRecovery(HttpServletRequest request,
+                                                HttpServletResponse response) throws Exception {
+
+        XAResourceImpl.clear();
+
     }
 
     public void setupRec008(HttpServletRequest request,

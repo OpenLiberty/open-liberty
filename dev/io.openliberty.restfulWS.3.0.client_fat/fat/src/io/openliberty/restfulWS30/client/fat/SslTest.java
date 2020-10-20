@@ -11,6 +11,7 @@
 package io.openliberty.restfulWS30.client.fat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,7 +45,8 @@ public class SslTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, SslTestServlet.class.getPackage());
+                        .addPackages(true, SslTestServlet.class.getPackage())
+                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
@@ -53,7 +55,7 @@ public class SslTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKO0801E");
     }
 
 }

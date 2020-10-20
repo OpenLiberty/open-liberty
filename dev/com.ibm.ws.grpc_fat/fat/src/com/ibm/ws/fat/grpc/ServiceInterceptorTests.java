@@ -95,22 +95,6 @@ public class ServiceInterceptorTests extends FATServletClient {
     }
 
     /**
-     * This method is used to set the server.xml
-     */
-    private static void setServerConfiguration(LibertyServer server,
-                                               String serverXML) throws Exception {
-        System.out.println("Entered set server config with xml " + serverXML);
-        if (!serverConfigurationFile.equals(serverXML)) {
-            // Update server.xml
-            LOG.info("ServiceInterceptorTests : setServerConfiguration setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
-            server.setServerConfigurationFile(serverXML);
-            server.waitForStringInLog("CWWKG0017I");
-            serverConfigurationFile = serverXML;
-        }
-    }
-
-    /**
      * Test a single grpc service interceptor
      *
      * This test adds a grpc element without a grpc interceptor and then updates
@@ -129,8 +113,7 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with no interceptor
         LOG.info("ServiceInterceptorTests : testSingleServerInterceptor() : update the server.xml file to one with a </grpc> element with no interceptor");
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Leigh").build();
@@ -147,8 +130,7 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with Interceptor included
         LOG.info("ServiceInterceptorTests : testSingleServerInterceptor() : update the server.xml file to one with a </grpc> element with an interceptor");
-        setServerConfiguration(grpcServer, GRPC_INTERCEPTOR);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INTERCEPTOR, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         person = HelloRequest.newBuilder().setName("Lisa").build();
@@ -181,8 +163,7 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with multiple interceptors
         LOG.info("ServiceInterceptorTests : testMultipleServerInterceptors() : update the server.xml file to one with a </grpc> element with multiple interceptors");
-        setServerConfiguration(grpcServer, GRPC_MULTIPLE_INTERCEPTOR);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MULTIPLE_INTERCEPTOR, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Lynnette").build();
@@ -216,8 +197,8 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         LOG.info("ServiceInterceptorTests : testInvalidServerInterceptor() : update the server.xml file to one with a </grpc> element with an invalid interceptor");
 
-        // Update to a config file with a <grpc> element with an invalid interceptor classname
-        setServerConfiguration(grpcServer, GRPC_INVALID_INTERCEPTOR);
+        // Update to a config file with a <grpc> element with an invalid interceptor classname; skip validation
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_INVALID_INTERCEPTOR, appName, LOG, false);
 
         String interceptorError = grpcServer.waitForStringInLogUsingMark("CWWKT0202W: Could not load gRPC interceptor",
                                                                          STARTUP_TIMEOUT);
@@ -240,8 +221,7 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with no interceptor
         LOG.info("ServiceInterceptorTests : testServerInterceptorAnnotations() : update the server.xml file to one with a </grpc> element with no interceptor");
-        setServerConfiguration(grpcServer, GRPC_ELEMENT);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_ELEMENT, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Annotated").build();
@@ -274,8 +254,7 @@ public class ServiceInterceptorTests extends FATServletClient {
 
         // Update to a config file with a <grpc> element with multiple interceptors
         LOG.info("ServiceInterceptorTests : testMultipleServerInterceptorsAndAnnotations() : update the server.xml file to one with a </grpc> element with multiple interceptors");
-        setServerConfiguration(grpcServer, GRPC_MULTIPLE_INTERCEPTOR);
-        grpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(grpcServer, serverConfigurationFile, GRPC_MULTIPLE_INTERCEPTOR, appName, LOG);
 
         // Send a request to the HelloWorld service and check for a response
         HelloRequest person = HelloRequest.newBuilder().setName("Annotated").build();

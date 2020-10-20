@@ -32,15 +32,16 @@ import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
-import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
+import com.ibm.ws.security.fat.common.jwt.servers.JwtServerInstanceUtils;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 import com.ibm.ws.security.jwt.fat.builder.validation.BuilderTestValidationUtils;
 
 import componenttest.annotation.Server;
@@ -56,7 +57,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
@@ -82,18 +82,20 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose),
         // tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
+        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtBuilderMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED, JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
 
         // start server to run protected app - make sure we can use the JWT
         // Token that we produce
         serverTracker.addServer(rsServer);
-        ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
+        skipRestoreServerTracker.addServer(rsServer);
+        JwtServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
         rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
         rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
@@ -155,8 +157,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         String builderId = "badConfig";
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_NOT_FOUND));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Response did not show the expected failure."));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Message log did not contain an error indicating a problem with the signing key."));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Response did not show the expected failure."));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Message log did not contain an error indicating a problem with the signing key."));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
         Page validateResponse = actions.invokeUrl(_testName, url);
@@ -341,8 +343,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations tokenExpectations = new Expectations();
         tokenExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_NOT_FOUND));
-        tokenExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Response did not show the expected failure."));
-        tokenExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Message log did not contain an error indicating a problem with the signing key."));
+        tokenExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Response did not show the expected failure."));
+        tokenExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Message log did not contain an error indicating a problem with the signing key."));
 
         Page tokenResponse = actions.invokeUrlWithBasicAuth(_testName, url, "testuser", "testuserpwd");
         validationUtils.validateResult(tokenResponse, tokenExpectations);
@@ -553,8 +555,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS256"));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS256"));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS256"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS256"));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
@@ -579,8 +581,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS384"));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS384"));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS384"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS384"));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
@@ -605,8 +607,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS512"));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS512"));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS512"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS512"));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
@@ -901,6 +903,84 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     }
 
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config that has encryption enabled using an RS256 key
+     *
+     * <p>
+     * The request should succeed -
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS256() throws Exception {
+
+        String builderId = "key_encrypt_good_RS256";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS384() throws Exception {
+
+        String builderId = "key_encrypt_good_RS384";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS512() throws Exception {
+
+        String builderId = "key_encrypt_good_RS512";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
     /**************************************************************************/
     /**
      * <p>
@@ -979,4 +1059,20 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         return builderResponse;
     }
+
+    public Page buildEncryptedJwtForEndpointValidationTests(String builderId, String keyMgmtKeyAlg, String contentEncryptAlg) throws Exception {
+
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, keyMgmtKeyAlg, contentEncryptAlg);
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(PayloadConstants.SUBJECT, "testuser");
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations builderExpectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page builderResponse = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(builderResponse, builderExpectations);
+
+        return builderResponse;
+    }
+
 }

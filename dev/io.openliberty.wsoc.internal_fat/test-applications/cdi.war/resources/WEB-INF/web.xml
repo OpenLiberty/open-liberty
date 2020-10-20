@@ -15,6 +15,7 @@
 	<servlet>
         <servlet-name>ClientTestServletCDI</servlet-name>
  	    <servlet-class>cdi.war.ClientTestServletCDI</servlet-class>
+ 	    <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

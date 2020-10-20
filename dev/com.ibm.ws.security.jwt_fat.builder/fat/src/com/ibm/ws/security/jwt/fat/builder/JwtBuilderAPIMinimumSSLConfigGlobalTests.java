@@ -21,12 +21,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -48,7 +48,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
@@ -67,12 +66,13 @@ public class JwtBuilderAPIMinimumSSLConfigGlobalTests extends CommonSecurityFat 
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_minimumSSLConfig1.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
 
     }
 

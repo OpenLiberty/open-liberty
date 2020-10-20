@@ -50,21 +50,27 @@
   <library id="DerbyLib">
     <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
-  
+
+  <!-- update this when creating versioned .ser files to save -->
+  <variable name="version" value="20.0.0.11"/>
+  <jndiEntry jndiName="liberty/version" value="${version}"/>
+
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-  <javaPermission className="java.io.FilePermission" name="CallableTrigger-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="CallableWithTrigger-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="EJBTimer-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="FailingRunnable-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="FixedDelayTask-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="FixedRateTask-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="OneShotCallable-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="SkippedCallable-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="SkipRunFailure-8.5.5.6.ser" actions="write"/>
-  <javaPermission className="java.io.FilePermission" name="TaskWithNonSerializableResult-8.5.5.6.ser" actions="write"/>
-
+  <javaPermission className="java.io.FilePermission" name="CallableTrigger-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="CallableWithTrigger-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="EJBTimer-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="EJBTimerWithInfo-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="EJBTimerWithScheduleExpression-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="FailingRunnable-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="FixedDelayTask-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="FixedRateTask-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="OneShotCallable-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="SkippedCallable-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="SkipRunFailure-${version}.ser" actions="write"/>
+  <javaPermission className="java.io.FilePermission" name="TaskWithNonSerializableResult-${version}.ser" actions="write"/>
+  <javaPermission className="java.util.PropertyPermission" name="org.glassfish.web.rfc2109_cookie_names_enforced" actions="read"/>
   <variable name="onError" value="FAIL"/>
 </server>

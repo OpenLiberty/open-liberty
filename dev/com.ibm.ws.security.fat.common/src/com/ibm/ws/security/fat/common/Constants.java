@@ -72,7 +72,9 @@ public class Constants {
     public static final String BASE_64_REGEX = "[a-zA-Z0-9_=+/-]";
 
     public static final String APP_FORMLOGIN = "formlogin";
+
     public static final String APP_TESTMARKER = "testmarker";
+    public static final String APP_TESTMARKER_PATH = "testMarker";
 
     public static final String COMMON_CONFIG_DIR = "configs";
 

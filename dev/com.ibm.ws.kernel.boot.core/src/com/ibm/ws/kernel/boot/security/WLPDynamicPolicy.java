@@ -18,7 +18,6 @@ import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -57,8 +56,8 @@ public class WLPDynamicPolicy extends Policy {
             }
 
             @Override
-            public Enumeration elements() {
-                return new Enumeration() {
+            public Enumeration<Permission> elements() {
+                return new Enumeration<Permission>() {
                     int cur = 0;
 
                     @Override
@@ -67,7 +66,7 @@ public class WLPDynamicPolicy extends Policy {
                     }
 
                     @Override
-                    public Object nextElement() {
+                    public Permission nextElement() {
                         if (cur == 0) {
                             cur = 1;
                             return allPermission;
@@ -137,9 +136,7 @@ public class WLPDynamicPolicy extends Policy {
             return false;
         // Check to see if this URL is in our set of URLs to give AllPermissions to.
 
-        for (Iterator iter = urls.iterator(); iter.hasNext();) {
-            URL u = (URL) iter.next();
-
+        for (URL u : urls) {
             if (u.toString().equals(url.toString())) {
                 return true;
             }

@@ -34,6 +34,7 @@
 	<!-- Perms needed because the application uses Hazelcast directly   -->
 	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
@@ -61,5 +62,4 @@
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="registerMBean,queryNames" name="*"/>
-
 </server>

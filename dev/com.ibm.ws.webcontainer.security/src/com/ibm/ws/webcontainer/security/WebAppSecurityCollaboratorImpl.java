@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -461,9 +461,31 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     @Override
+    @FFDCIgnore(NumberFormatException.class)
     public boolean isCDINeeded() {
-        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 &&
-               provisionerService.getInstalledFeatures().contains("appSecurity-3.0");
+        int specLevel = WebContainer.getServletContainerSpecLevel();
+
+        /*
+         * Determine which version of appSecurity we are running.
+         */
+        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
+        float appSecurityVers = 0.0f;
+        for (String feature : installedFeatures) {
+            if (feature.startsWith("appSecurity-")) {
+                try {
+                    appSecurityVers = Float.valueOf(feature.substring(12));
+                    break;
+                } catch (NumberFormatException e) {
+                    // Ignore. Not the feature we are looking for.
+                }
+            }
+        }
+
+        /*
+         * Future-proof check. Some of these combinations aren't valid, but
+         * they will not make it this far.
+         */
+        return appSecurityVers >= 3.0 && specLevel >= WebContainer.SPEC_LEVEL_40;
     }
 
     /**

@@ -342,6 +342,11 @@
       <version>4.0.0-M3</version>
     </dependency>
     <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.0-RC6</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>relaxng-datatype</artifactId>
       <version>3.0.0-M4</version>
@@ -827,6 +832,11 @@
       <version>3.0.0-RC2</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <version>2.0.0-RC6</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
       <version>3.0.0-RC2</version>
@@ -859,7 +869,7 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
-      <version>5.0.0-M1</version>
+      <version>5.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.transaction</groupId>
@@ -869,7 +879,7 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.0-M1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
@@ -1424,17 +1434,17 @@
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.core5</groupId>
       <artifactId>httpcore5-h2</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.core5</groupId>
       <artifactId>httpcore5</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -1839,7 +1849,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
-      <version>3.0-RC4</version>
+      <version>3.0-RC5</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>

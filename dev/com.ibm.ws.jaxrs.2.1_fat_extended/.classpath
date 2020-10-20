@@ -7,6 +7,7 @@
 	<classpathentry kind="src" path="test-applications/jsonbapp/src"/>
 	<classpathentry kind="src" path="test-applications/jsonbCharsetApp/src"/>
 	<classpathentry kind="src" path="test-applications/jsonbContextResolverApp/src"/>
+	<classpathentry kind="src" path="test-applications/jsonpApp/src"/>
 	<classpathentry kind="src" path="test-applications/mutableHeadersApp/src"/>
 	<classpathentry kind="src" path="test-applications/patchapp/src"/>
 	<classpathentry kind="src" path="test-applications/providerPriorityApp/src"/>

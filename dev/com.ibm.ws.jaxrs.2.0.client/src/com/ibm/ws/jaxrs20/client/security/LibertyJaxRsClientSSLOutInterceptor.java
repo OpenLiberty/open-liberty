@@ -68,7 +68,7 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             return; // only process HTTPS requests
         }
 
-        if (!overrideUserTLS && PropertyUtils.isTrue(message.get("com.ibm.ws.jaxrs.client.security.skipSSLConfigInterceptor"))) {
+        if (!overrideUserTLS && PropertyUtils.isTrue(message.get("org.apache.cxf.microprofile.client.sslConfigProvided"))) {
             return; // SSL config already provided
         }
 

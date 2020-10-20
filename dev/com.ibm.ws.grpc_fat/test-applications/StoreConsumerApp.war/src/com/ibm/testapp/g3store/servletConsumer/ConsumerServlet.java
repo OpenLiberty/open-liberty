@@ -27,13 +27,12 @@ import com.ibm.testapp.g3store.exception.UnauthException;
 import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
 import com.ibm.testapp.g3store.restConsumer.model.AppNamewPriceListPOJO;
 import com.ibm.testapp.g3store.restConsumer.model.PriceModel;
-import com.ibm.testapp.g3store.restConsumer.model.PriceModel.PurchaseType;
 import com.ibm.testapp.g3store.utilsConsumer.ConsumerUtils;
 
 /**
  * Servlet implementation class ConsumerServlet
  */
-@WebServlet("/ConsumerServlet")
+@WebServlet(urlPatterns = "/ConsumerServlet", loadOnStartup = 1)
 public class ConsumerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -46,13 +45,6 @@ public class ConsumerServlet extends HttpServlet {
      */
     public ConsumerServlet() {
         super();
-    }
-
-    ConsumerGrpcServiceClientImpl consumerhelper = null;
-
-    @Override
-    public void init() throws ServletException {
-        consumerhelper = new ConsumerGrpcServiceClientImpl();
     }
 
     /**
@@ -95,6 +87,8 @@ public class ConsumerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // get the values from the request
+
+        ConsumerGrpcServiceClientImpl consumerhelper = new ConsumerGrpcServiceClientImpl();
 
         String testToInvoke = request.getParameter("testName");
 
@@ -153,17 +147,16 @@ public class ConsumerServlet extends HttpServlet {
             //call the gRPC API and get response
             List<AppNamewPriceListPOJO> listOfAppNames_w_PriceList = consumerhelper2.getAppswPrices(Arrays.asList(appName));
             String priceType = null;
+            double price = -1;
 
             if (listOfAppNames_w_PriceList != null) {
                 for (int i = 0; i < listOfAppNames_w_PriceList.size(); i++) {
                     List<PriceModel> pricelist = listOfAppNames_w_PriceList.get(i).getPrices();
                     if (pricelist != null) {
                         for (int j = 0; j < pricelist.size(); j++) {
-                            PurchaseType ptype = pricelist.get(j).getPurchaseType();
-                            log.info(m + " -----ptype=" + ptype);
-                            if (ptype.toString() == "BLUEPOINTS") {
-                                priceType = "BLUEPOINTS";
-                            }
+                            price = pricelist.get(j).getSellingPrice();
+                            priceType = pricelist.get(j).getPurchaseType().name();
+                            log.info(m + " -----ptype=" + priceType + " price: " + price);
                         }
                     }
                 }
@@ -179,10 +172,12 @@ public class ConsumerServlet extends HttpServlet {
                             .append("                       <title>Get App response message</title>\r\n")
                             .append("               </head>\r\n")
                             .append("               <body>\r\n");
-            if (priceType != null) {
-
-                writer.append("<h3>getAppInfo: </h3>\r\n");
-                writer.append(priceType);
+            if (price > 0) {
+                writer.append("<h3>getAppPrice: </h3>\r\n");
+                writer.append(Double.toString(price) + " " + priceType);
+            } else {
+                writer.append("<h3>getAppPrice: </h3>\r\n");
+                writer.append("no app registered for name \"" + appName + "\"");
             }
 
         } catch (Exception e) {

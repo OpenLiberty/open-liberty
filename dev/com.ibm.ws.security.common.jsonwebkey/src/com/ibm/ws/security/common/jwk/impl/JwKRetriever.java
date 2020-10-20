@@ -224,18 +224,25 @@ public class JwKRetriever {
                     publicKey = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use, null);
                 }
                 if (publicKey == null) { // cache miss, read the jwk if we can,  &  update locationUsed
-                    InputStream is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
-                    if (is != null) {
-                        keyString = getKeyAsString(is);
-                        parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
-                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString);
+                    InputStream is = null;
+                    try {
+                        is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
+                        if (is != null) {
+                            keyString = getKeyAsString(is);
+                            parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
+                            publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString);
+                        }
+                    } finally {
+                        if (is != null) {
+                            is.close();
+                        }
                     }
                 }
             }
 
-        } catch (Exception e2) {
+        } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2);
+                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e);
             }
         }
         return publicKey;

@@ -45,7 +45,6 @@
 NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: \u8fde\u63a5\u6c60\u7ba1\u7406\u5668\u672a\u80fd\u4ece\u8d44\u6e90 {0} \u5206\u914d\u53d7\u7ba1\u8fde\u63a5\u3002
 NULL_MANAGED_CONNECTION_J2CA0015.explanation=\u6c60\u7ba1\u7406\u5668\u672a\u80fd\u5206\u914d\u53d7\u7ba1\u8fde\u63a5\u3002\u6b64\u9519\u8bef\u53ef\u80fd\u7531\u6c60\u7ba1\u7406\u5668\u7684\u76f8\u5173\u8054\u5c5e\u6027\u6240\u81f4\uff08\u4f8b\u5982\uff0c\u8d85\u51fa\u6700\u5927\u8fde\u63a5\u6570\uff09\u3002\u6c60\u7ba1\u7406\u5668\u8fd4\u56de\u7684\u53d7\u7ba1\u8fde\u63a5\u4e3a NULL\u3002
 NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
-
 # --------------------------------
 XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: \u5728\u6807\u8bc6\u4e3a {1} \u7684\u4e8b\u52a1\u4e2d\u8c03\u7528\u4e86\u4e24\u9636\u6bb5 XA \u64cd\u4f5c {0}\u3002\u6c60 {2} \u4e2d\u7684\u6b64\u8d44\u6e90\u9002\u914d\u5668\u4e0d\u652f\u6301\u4e24\u9636\u6bb5\u5904\u7406\u3002
 XA_OP_NOT_SUPPORTED_J2CA0016.explanation=\u6b64\u6d88\u606f\u8868\u660e\u5c1d\u8bd5\u5728 XA \u4e8b\u52a1\u4e0a\u4e0b\u6587\u4e2d\u5c06\u8be5\u8fde\u63a5\u4e0e\u5176\u4ed6\u652f\u6301 XA \u7684\u8d44\u6e90\u914d\u5408\u4f7f\u7528\u3002\u5bf9\u4e8e\u6b64\u8d44\u6e90\u9002\u914d\u5668\u800c\u8a00\uff0c\u6b64\u64cd\u4f5c\u65e0\u6548\u3002
@@ -110,7 +109,6 @@ UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=\u8bf7\u4e0e\u8d44\u6e90\u9002\u
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: \u5728\u4f7f\u7528\u534f\u8c03\u7a0b\u5e8f {1}\uff08\u4f7f\u7528 DataSource {2} \u7684\u8d44\u6e90\uff09\u7684\u65b9\u6cd5 {0} \u7684\u7ebf\u7a0b\u4e0a\u627e\u4e0d\u5230\u6709\u6548\u7684\u4e8b\u52a1\u4e0a\u4e0b\u6587\u3002
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=\u8fde\u63a5\u7ba1\u7406\u5668\u6267\u884c\u5904\u7406\u65f6\u53d1\u751f\u5185\u90e8\u9519\u8bef\u3002\u7ed9\u5b9a\u7684\u64cd\u4f5c\u9700\u8981\u6709\u6548\u7684\u4e8b\u52a1\u4e0a\u4e0b\u6587\uff0c\u4f46\u662f\u627e\u4e0d\u5230\u8be5\u4e0a\u4e0b\u6587\u3002
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
-
 # --------------------------------
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: \u5bf9\u8d44\u6e90 {1} \u8c03\u7528\u65b9\u6cd5 {0} \u65f6\uff0c\u6ca1\u6709\u53ef\u7528\u7684\u8fde\u63a5\u3002\u5df2\u8d85\u65f6\uff0c\u7b49\u5f85\u65f6\u95f4\u4e3a {2} \u6beb\u79d2\uff0c\u5269\u4f59 {3} \u4e2a\u6b63\u5728\u7b49\u5f85\u7684\u8bf7\u6c42\uff0c\u5f53\u524d\u4f7f\u7528\u7684\u8fde\u63a5\u603b\u6570\u4e3a {4}\u3002
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=\u53d1\u751f\u8fde\u63a5\u7b49\u5f85\u8d85\u65f6\u3002\u5df2\u521b\u5efa ConnectionWaitTimeoutException\u3002
@@ -120,7 +118,6 @@ POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=\u8bf7\u91cd\u65b0\u914d\u7f6e\u
 POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: \u4e3a\u8d44\u6e90 {3} \u521b\u5efa ManagedConnection \u671f\u95f4\uff0c\u65b9\u6cd5 {0} \u6355\u83b7\u5230\u5f02\u5e38\u5e76\u629b\u51fa\u4e86 {2}\u3002\u539f\u59cb\u5f02\u5e38\uff1a{1}
 POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=\u521b\u5efa ManagedConnection \u671f\u95f4\u53d1\u751f\u9519\u8bef\u3002\u901a\u5e38\uff0c\u60a8\u53ef\u4ee5\u901a\u8fc7\u67e5\u770b\u8d44\u6e90\u9002\u914d\u5668\u8fd4\u56de\u7684\u9519\u8bef\u6d88\u606f\u89e3\u51b3\u6b64\u95ee\u9898\u3002
 POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
-
 # --------------------------------
 HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: \u5de5\u4f5c\u5355\u5143\u4f5c\u7528\u57df\u7ed3\u675f\u65f6\uff0c\u672a\u5173\u95ed\u8fde\u63a5\u53e5\u67c4\u3002\u8fde\u63a5\u7ba1\u7406\u5668\u5c06\u5173\u95ed\u53e5\u67c4\u3002
 HANDLE_NOT_CLOSED_J2CA0055.explanation=\u6d3b\u52a8\u4f1a\u8bdd\u3001\u4e8b\u52a1\u6216\u672c\u5730\u4e8b\u52a1\u5de5\u4f5c\u4f5c\u7528\u57df\u6b63\u5728\u7ed3\u675f\uff0c\u4f46\u672a\u5173\u95ed\u8fde\u63a5\u53e5\u67c4\u3002\u6b64\u914d\u7f6e\u6216\u53d1\u884c\u7248\u4e0d\u652f\u6301\u5728\u5f53\u524d\u5de5\u4f5c\u5355\u5143\u4f5c\u7528\u57df\u5916\u90e8\u5bf9\u53e5\u67c4\u8fdb\u884c\u9ad8\u901f\u7f13\u5b58\u3002
@@ -135,7 +132,6 @@ RA_CONNECTION_ERROR_J2CA0056.useraction=\u6839\u636e\u914d\u7f6e\u7684\u4e0d\u54
 NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: interactionPending \u65b9\u6cd5\u627e\u4e0d\u5230\u4e8b\u52a1\u5305\u88c5\u5668\u7c7b\u3002
 NULL_TRAN_WRAPPER_J2CA0057.explanation=\u8fd9\u662f WebSphere \u5185\u90e8\u9519\u8bef\u3002
 NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
-
 # --------------------------------
 FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: ConnectionManager \u65e0\u6cd5\u4f7f\u8fde\u63a5 {0} \u4e0e\u8d44\u6e90 {3} \u7684 ManagedConnection {1} \u76f8\u5173\u8054\u3002\u63a5\u6536\u5230\u5f02\u5e38\uff1a{2}
 FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=\u8fd9\u5f88\u53ef\u80fd\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002\u793a\u4f8b\uff1a\u4e8b\u52a1\u5f81\u7528\u9ad8\u901f\u7f13\u5b58\u7684\u8fde\u63a5\uff0c\u7136\u540e\u5173\u95ed\u8be5\u8fde\u63a5\u3002\u5728\u8be5\u4e8b\u52a1\u5b8c\u6210\u524d\uff0c\u53e6\u4e00\u4e2a\u8bf7\u6c42\u88ab\u53d1\u9001\u5230\u6700\u521d\u6253\u5f00\u8be5\u8fde\u63a5\u7684\u90a3\u4e2a EJB\u3002\u9ad8\u901f\u7f13\u5b58\u7684\u53e5\u67c4\u4ecd\u4e0e\u539f\u59cb\u4e8b\u52a1\u76f8\u5173\u8054\uff0c\u5e76\u4e14\u5728\u8be5\u4e8b\u52a1\u843d\u5b9e\u524d\u65e0\u6cd5\u8fdb\u884c\u91cd\u65b0\u5173\u8054\u3002
@@ -145,7 +141,6 @@ FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=\u8bf7\u68c0\u67e5\u8be5\u5e9
 FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: \u8c03\u7528 doPrivileged \u65f6\u53d1\u751f PrivilegedActionException\uff1a{0}
 FAILED_DOPRIVILEGED_J2CA0060.explanation=\u8fd9\u662f\u5b89\u5168\u6027\u8fd0\u884c\u65f6\u9519\u8bef\u3002
 FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
-
 # ---------------------------------
 INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: {0} \u8bbe\u7f6e {1} \u65e0\u6548\u3002\u5df2\u6539\u4e3a\u4f7f\u7528\u7f3a\u7701\u503c {2}\u3002
 INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u6b63\u5728\u4f7f\u7528\u7f3a\u7701\u503c\u3002
@@ -155,12 +150,10 @@ INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=\u8fd9\u4ec5\u4ec5\u662f\u4e00
 DELIST_FAILED_J2CA0073=J2CA0073E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38\uff0c\u56e0\u6b64\u65e0\u6cd5\u4ece\u65b9\u6cd5 {0} \u4e2d\u7684\u4e8b\u52a1\u4e2d\u5254\u9664\u8d44\u6e90 {2} \u7684\u8fde\u63a5\u3002\u6b63\u5728\u542f\u52a8\u9500\u6bc1\u8fde\u63a5\u64cd\u4f5c\u3002\u5f02\u5e38\uff1a{1}
 DELIST_FAILED_J2CA0073.explanation=\u53d1\u751f\u5185\u90e8\u9519\u8bef\uff0c\u8fde\u63a5\u7ba1\u7406\u5668\u65e0\u6cd5\u4ece\u5b83\u6240\u6d89\u53ca\u7684\u4e8b\u52a1\u4e2d\u5254\u9664\u8fde\u63a5\u3002\u8fde\u63a5\u7ba1\u7406\u5668\u5c06\u5c1d\u8bd5\u9500\u6bc1\u8be5\u8fde\u63a5\u3002
 DELIST_FAILED_J2CA0073.useraction=CMSG0002
-
 # ---------------------------------
 ENLIST_FAILED_J2CA0074=J2CA0074E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38\uff0c\u56e0\u6b64\u65b9\u6cd5 {0} \u4e2d\u7684\u5f53\u524d\u4e8b\u52a1\u65e0\u6cd5\u5f81\u7528\u8d44\u6e90 {2} \u7684\u8fde\u63a5\u3002\u6b63\u5728\u542f\u52a8\u9500\u6bc1\u8fde\u63a5\u64cd\u4f5c\u3002\u5f02\u5e38\uff1a{1}
 ENLIST_FAILED_J2CA0074.explanation=\u53d1\u751f\u5185\u90e8\u9519\u8bef\uff0c\u8fde\u63a5\u7ba1\u7406\u5668\u65e0\u6cd5\u901a\u8fc7\u5f53\u524d\u4e8b\u52a1\u5f81\u7528\u8fde\u63a5\u3002\u8fde\u63a5\u7ba1\u7406\u5668\u5c06\u5c1d\u8bd5\u9500\u6bc1\u8be5\u8fde\u63a5\u3002
 ENLIST_FAILED_J2CA0074.useraction=CMSG0002
-
 # ---------------------------------
 MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: \u5904\u7406\u65b9\u6cd5 {0} \u65f6\uff0c\u5e94\u8be5\u5b58\u5728\u6d3b\u52a8\u7684\u4e8b\u52a1\u3002
 MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=\u6b63\u5e38\u7684\u8fde\u63a5\u7ba1\u7406\u5904\u7406\u8981\u6c42\u5b58\u5728\u4e8b\u52a1\uff0c\u8fd9\u6837\u624d\u80fd\u8fd0\u884c\u5f53\u524d\u65b9\u6cd5\u3002
@@ -180,12 +173,10 @@ FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=\u8bf7\u67e5\u627e\u6765\u81ea\u
 ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: \u65b9\u6cd5 {0} \u68c0\u6d4b\u5230\u5185\u90e8\u975e\u6cd5\u72b6\u6001\uff0c\u5e76\u4e14\u6b63\u5728\u629b\u51fa IllegalStateException\u3002\u5f02\u5e38\u4e3a {1}
 ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=\u8fde\u63a5\u7ba1\u7406\u5668\u68c0\u6d4b\u5230\u5185\u90e8\u9519\u8bef\u3002
 ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
-
 # ---------------------------------
 ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: \u65b9\u6cd5 {0} \u68c0\u6d4b\u5230\u5185\u90e8\u975e\u6cd5\u53c2\u6570\uff0c\u5e76\u4e14\u6b63\u5728\u629b\u51fa IllegalArgumentException\u3002\u5f02\u5e38\u4e3a {1}
 ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=\u8fde\u63a5\u7ba1\u7406\u5668\u68c0\u6d4b\u5230\u5185\u90e8\u9519\u8bef\u3002
 ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
-
 # ---------------------------------
 MCERROR_J2CA0081=J2CA0081E: \u5c1d\u8bd5\u5bf9\u8d44\u6e90 {4} \u7684 ManagedConnection {2} \u6267\u884c\u65b9\u6cd5 {1} \u65f6\uff0c\u65b9\u6cd5 {0} \u5931\u8d25\u3002\u6355\u83b7\u7684\u5f02\u5e38\uff1a{3}
 MCERROR_J2CA0081.explanation=\u8fde\u63a5\u7ba1\u7406\u5668\u5728\u5c1d\u8bd5\u5bf9 ManagedConnection \u6267\u884c\u64cd\u4f5c\u65f6\u6355\u83b7\u5230\u5f02\u5e38\u3002
@@ -205,19 +196,16 @@ BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\
 ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: \u8d44\u6e90 {1} \u7684\u6b63\u88ab\u9500\u6bc1\u7684 ManagedConnection \u5904\u4e8e\u65e0\u6548\u72b6\u6001 {0}\u3002\u5904\u7406\u5c06\u7ee7\u7eed\u8fdb\u884c\u3002
 ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
 ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002                     
-                     
 # ---------------------------------
 INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: \u5783\u573e\u6536\u96c6\u5668\u7ebf\u7a0b\u53d1\u751f InterruptedException\u3002
 INTERUPTED_EXCEPTION_J2CA0091.explanation=\u5783\u573e\u6536\u96c6\u5668\u7ebf\u7a0b\u53d1\u751f InterruptedException\u3002J2C \u5904\u7406\u5c06\u7ee7\u7eed\u8fdb\u884c\uff0c\u4f46\u4e0d\u4f1a\u6536\u96c6\u672a\u4f7f\u7528\u7684\u548c\u5df2\u8fc7\u671f\u7684\u8fde\u63a5\u3002
 INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
-
 # 0096 deleted
 
 # --------------------------------
 GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: \u5c1d\u8bd5\u5c06 event.getSource \u5f3a\u5236\u8f6c\u6362\u4e3a ManagedConnection \u65f6\uff0c\u53d1\u751f ClassCastException\uff1a{0}\u3002
 GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=\u5bf9\u4fa6\u542c\u5668\u89e6\u53d1\u7684\u4e8b\u4ef6\u7684\u6e90\u4e0d\u5177\u6709 ManagedConnection \u7c7b\u578b\u3002
 GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
-
 # --------------------------------
 DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: \u672a\u6dfb\u52a0\u91cd\u590d\u7684\u8fde\u63a5\u5668\u5c5e\u6027\u3002{0}
 DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=\u5c1d\u8bd5\u6dfb\u52a0\u91cd\u590d\u7684\u8fde\u63a5\u5668\u5c5e\u6027\u3002\u672a\u6dfb\u52a0\u8be5\u5c5e\u6027\u3002
@@ -227,6 +215,7 @@ DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=\u8fde\u63a5\
 INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: \u5df2\u5bf9 {0} \u6307\u5b9a\u503c\u4e3a 0 \u7684 ConnectionWaitTimeout\u3002\u8bf7\u6c42\u5c06\u7b49\u5f85\u5230\u53ef\u4ee5\u83b7\u53d6\u8fde\u63a5\u4e3a\u6b62\u3002
 INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=\u503c\u4e3a 0 \u7684 ConnectionWaitTimeout \u8868\u793a\u7b49\u5f85\u65f6\u95f4\u4e0d\u53d7\u9650\u5236\u3002\u6b64\u7ebf\u7a0b\u5c06\u4f11\u7720\u5230\u6709\u53ef\u7528\u8fde\u63a5\u4e3a\u6b62\u3002
 INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
 # --------------------------------
 CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: \u5728 CONNECTION_CLOSED ConnectionEvent {0} \u4e2d\u627e\u5230\u7a7a ConnectionHandle\u3002
 CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=Java EE \u8fde\u63a5\u5668\u4f53\u7cfb\u7ed3\u6784\u9700\u8981 CONNECTION_CLOSED ConnectionEvent\uff0c\u4ee5\u5305\u542b\u4e0e ManagedConnection \u5b9e\u4f8b\u76f8\u5173\u8054\u7684\u6709\u6548\u8fde\u63a5\u53e5\u67c4\u3002
@@ -236,7 +225,6 @@ CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=\u8d44\u6e90\u9002\u914d\u5668
 SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: \u5185\u90e8\u9519\u8bef\u3002\u5c1d\u8bd5\u66f4\u6539\u4e00\u6b21\u6027\u8bbe\u7f6e\u7684\u5c5e\u6027\uff0c\u4f46\u8be5\u5c5e\u6027\u5df2\u8bbe\u7f6e\u5b8c\u6bd5\u3002\u8be5\u5c5e\u6027\u540d\u4e3a {0}\u3002
 SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
 SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
-
 # 0165 deleted
 
 # 0166 deleted
@@ -269,6 +257,7 @@ NO_RA_EXCEPTION_J2CA0216.useraction=\u6839\u636e\u914d\u7f6e\u7684\u4e0d\u540c\u
 IGNORE_FEATURE_J2CA0240=J2CA0240I: \u5ffd\u7565\u4e86\u8d44\u6e90 {1} \u7684\u672a\u5b9e\u73b0\u529f\u80fd\u90e8\u4ef6 {0}\u3002
 IGNORE_FEATURE_J2CA0240.explanation=\u8be5\u529f\u80fd\u90e8\u4ef6\u672a\u7531\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u5b9e\u73b0\u3002
 IGNORE_FEATURE_J2CA0240.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
 # ---------------------------------
 # {0}    The field that is missing during de-serialization
 # {1}    The classname of the object with the missing field
@@ -287,7 +276,6 @@ ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=\u8bf7\u8bbf\u95ee\u8d44\
 FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: \u5f53\u524d\u4e8b\u52a1\u672a\u80fd\u5f81\u7528\u8d44\u6e90 {0} \u7684 ManagedConnection\u3002
 FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=\u5904\u7406 lazyEnlist() \u65b9\u6cd5\u65f6\u53d1\u751f\u5185\u90e8\u9519\u8bef\u3002
 FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002
-
 # --------------------------------
 FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: \u8fde\u63a5\u7ba1\u7406\u5668\u7684 lazyEnlist() \u65b9\u6cd5\u9700\u8981\u8d44\u6e90 {0} \u7684\u975e\u7a7a ManagedConnection \u53c2\u6570\u3002
 FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=\u6b64\u6d88\u606f\u5f88\u53ef\u80fd\u8868\u660e\u8d44\u6e90\u9002\u914d\u5668\u7684\u5b9e\u73b0\u6709\u9519\u8bef\u3002\u8d44\u6e90\u9002\u914d\u5668\u5728\u8c03\u7528 lazyEnlist() \u65b9\u6cd5\u65f6\u5bf9 ManagedConnection \u6307\u5b9a\u4e86\u7a7a\u503c\u3002
@@ -319,17 +307,19 @@ DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=\u6307\u5b9a\u4e86\u8fde\u63a5\
 POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: \u5728\u8fdb\u884c\u6545\u969c\u8f6c\u79fb\u5904\u7406\u671f\u95f4\u672a\u80fd\u4e3a JNDI \u540d\u79f0\u4e3a {0} \u7684\u8d44\u6e90\u627e\u5230\u4e3b\u6c60\u7ba1\u7406\u5668\u3002
 POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=\u5728\u8fdb\u884c\u6545\u969c\u8f6c\u79fb\u5904\u7406\u671f\u95f4\u53d1\u751f\u5185\u90e8\u9519\u8bef\u3002
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
+# ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: \u53d1\u51fa\u4e86\u9488\u5bf9 XA \u8d44\u6e90 {0} \u7684\u8fde\u63a5\u8bf7\u6c42\u5e76\u8fdb\u884c SPNEGO \u8ba4\u8bc1\uff0c\u4f46\u662f\u672a\u914d\u7f6e\u6062\u590d\u8ba4\u8bc1\u6570\u636e\u522b\u540d\u3002\u9664\u975e\u914d\u7f6e\u4e86\u6062\u590d\u8ba4\u8bc1\u6570\u636e\u522b\u540d\uff0c\u5426\u5219 XA \u8d44\u6e90\u65e0\u6cd5\u53c2\u4e0e\u81ea\u52a8 XA \u6062\u590d\u3002
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=XA \u6062\u590d\u662f\u81ea\u52a8\u8fdb\u884c\u7684\u540e\u53f0\u8fdb\u7a0b\uff0c\u4f46\u662f SPNEGO \u8ba4\u8bc1\u9700\u8981\u7528\u6237\u624b\u52a8\u8f93\u5165\u3002\u56e0\u6b64\uff0c\u65e0\u6cd5\u5c06 SPNEGO \u8ba4\u8bc1\u7528\u4e8e\u81ea\u52a8 XA \u6062\u590d\u3002
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=\u5bf9 XA \u8d44\u6e90\u914d\u7f6e\u6062\u590d\u8ba4\u8bc1\u6570\u636e\u522b\u540d\u3002
 
 # ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: \u8d44\u6e90 {1} \u5728\u7a7a\u95f2\u6c60\u4e2d\u7684 MCWrapper {0} \u65e0\u6548\u3002
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=\u5c1d\u8bd5\u4fdd\u7559 MCWrapper \u5931\u8d25\u3002
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
-
 # ---------------------------------
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: \u672a\u80fd\u4ece\u5171\u4eab\u6c60\u4e2d\u9664\u53bb MCWrapper {0}\u3002
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=\u5c1d\u8bd5\u9664\u53bb MCWrapper \u5931\u8d25\uff0c\u8fd9\u5bfc\u81f4\u5171\u4eab\u6c60\u5b58\u5728\u6f5c\u5728\u7684\u95ee\u9898\u3002
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
-
 # ---------------------------------
 # End of File
 #

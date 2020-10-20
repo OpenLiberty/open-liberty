@@ -21,6 +21,14 @@ import javax.security.enterprise.SecurityContext;
  */
 public abstract class SecurityEJBBeanBase {
 
+    /**
+     * Are we running with <code>jakarta.ejb.*</code> packages? This will indicate we are running with (at least) Jakarta EE 9.
+     *
+     * This check may seem silly on the surface, but the packages are transformed at run time to swap the <code>javax.ejb.*</code> packages with
+     * <code>jakarta.ejb.*</code>.
+     */
+    private static boolean isEENineOrHigher = SessionContext.class.getCanonicalName().startsWith("jakarta.ejb");
+
     private class Authentication {
 
         protected String authenticate(String method, SessionContext context, SecurityContext securityContext, Logger logger) {
@@ -91,7 +99,13 @@ public abstract class SecurityEJBBeanBase {
     protected abstract Logger getLogger();
 
     public void withDeprecation() {
-        a = new AuthenticationWithDeprecatedAPI();
+        /*
+         * Jakarta EE 9 removed the (deprecated) SessionContext.getCallerIdentity()
+         * method, so don't ever call it when running Jakarta EE 9+.
+         */
+        if (!isEENineOrHigher) {
+            a = new AuthenticationWithDeprecatedAPI();
+        }
     }
 
     protected String authenticate(String method) {

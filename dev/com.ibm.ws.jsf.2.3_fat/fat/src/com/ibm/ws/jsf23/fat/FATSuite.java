@@ -21,6 +21,7 @@ import com.ibm.ws.jsf23.fat.tests.CDIConfigByACPTests;
 import com.ibm.ws.jsf23.fat.tests.CDIFacesInMetaInfTests;
 import com.ibm.ws.jsf23.fat.tests.CDIFacesInWebXMLTests;
 import com.ibm.ws.jsf23.fat.tests.CDIInjectionTests;
+import com.ibm.ws.jsf23.fat.tests.Faces30Tests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CDIGeneralTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ClassLevelBeanValidationTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CommandScriptTests;
@@ -85,7 +86,8 @@ import componenttest.rules.repeater.RepeatTests;
                 CDIInjectionTests.class,
                 CDIFacesInMetaInfTests.class,
                 CDIFacesInWebXMLTests.class,
-                CDIConfigByACPTests.class
+                CDIConfigByACPTests.class,
+                Faces30Tests.class
 })
 public class FATSuite {
 

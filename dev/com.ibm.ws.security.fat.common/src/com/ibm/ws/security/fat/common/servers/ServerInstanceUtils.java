@@ -11,10 +11,12 @@
 package com.ibm.ws.security.fat.common.servers;
 
 import java.net.InetAddress;
+import java.security.Security;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -32,6 +34,7 @@ public class ServerInstanceUtils {
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
     public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
     public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTIP = "fat.server.hostip";
+    public static final String BOOTSTRAP_PROP_PSSALG = "fat.server.pss.alg.setting";
 
     public static void addHostNameAndAddrToBootstrap(LibertyServer server) {
         String thisMethod = "addHostNameAndAddrToBootstrap";
@@ -42,10 +45,47 @@ public class ServerInstanceUtils {
 
             bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, serverHostName);
             bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, serverHostIp);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.info(thisClass, thisMethod, "Setup failed to add host info to bootstrap.properties");
         }
+    }
+
+    // method should be called for any server that could be using PSS algorithms
+    public static void addPSSAlgSettingToBootstrap(LibertyServer server) {
+        String thisMethod = "addPSSAlgSettingToBootstrap";
+        try {
+            // Some tests need to know if PSS Algs can be used - set a property in bootstrap that can be
+            // used as part of a key/trust file name
+            bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_PSSALG, getPSSetting(server));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.info(thisClass, thisMethod, "Setup failed to add host info to bootstrap.properties");
+        }
+    }
+
+    public static String getPSSetting(LibertyServer server) {
+
+        if (isAlgSupported(server, "RSASSA-PSS")) {
+            return "_includingPSS_Algs";
+        } else {
+            return "";
+        }
+
+    }
+
+    public static boolean isAlgSupported(LibertyServer server, String signature) {
+
+        Set<String> AlgList = Security.getAlgorithms("Signature");
+        for (String alg : AlgList) {
+            Log.info(thisClass, "getPSSetting", "Supported Alg is: " + alg);
+            if (alg.equals(signature)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     // Special case SSL ready checker - for test classes that don't enable/use SSL from server

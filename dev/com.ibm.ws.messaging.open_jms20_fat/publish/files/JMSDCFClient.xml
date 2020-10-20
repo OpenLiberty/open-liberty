@@ -1,5 +1,13 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging
+    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
+    maxFileSize="200"/>
+   -->
+
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
@@ -11,26 +19,24 @@
     <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
 
-  <variable name="onError" value="FAIL"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,connect"/>
 
-  <!--
-  <logging
-    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
-    maxFileSize="200"/>
-   -->
-
-  <!--
-      JMSDCFServlet
-        new InitialContext().lookup("java:comp/DefaultJMSConnectionFactory");
-        @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
-        @Resource(name = "myJMSCF")
-        jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
-    -->
+  <!-- JMS endpoint configuration -->
 
   <!-- Required binding, since the messaging engine was moved to a different server. -->
   <jmsConnectionFactory jndiName="DefaultJMSConnectionFactory" connectionManagerRef="ConMgr6">
@@ -41,5 +47,13 @@
   <jmsQueue jndiName="jndi_INPUT_Q">
     <properties.wasJms queueName="QUEUE1"/>
   </jmsQueue>
+
+  <!--
+      JMSDCFServlet
+        new InitialContext().lookup("java:comp/DefaultJMSConnectionFactory");
+        @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
+        @Resource(name = "myJMSCF")
+        jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+    -->
 
 </server>

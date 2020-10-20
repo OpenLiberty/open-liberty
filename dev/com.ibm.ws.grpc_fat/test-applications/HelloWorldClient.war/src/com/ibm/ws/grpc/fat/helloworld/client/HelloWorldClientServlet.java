@@ -13,6 +13,7 @@ package com.ibm.ws.grpc.fat.helloworld.client;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLException;
 import javax.servlet.ServletException;
@@ -31,30 +32,28 @@ import io.grpc.examples.helloworld.HelloRequest;
 public class HelloWorldClientServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    protected static final Class<?> c = HelloWorldClientServlet.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
-    ManagedChannel channel = null;
-    private GreeterGrpc.GreeterBlockingStub greetingService;
-
-    private void startService(String address, int port, boolean useTls, String serverPath) throws SSLException {
-        System.out.println("connecting to helloworld gRPC service at " + address + ":" + port);
-        System.out.println("TLS enabled: " + useTls);
+    private ManagedChannel createChannel(String address, int port, boolean useTls) throws SSLException {
+        LOG.info("connecting to helloworld gRPC service at " + address + ":" + port);
+        LOG.info("TLS enabled: " + useTls);
 
         if (!useTls) {
-            channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
+            return ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
         } else {
-            channel = ManagedChannelBuilder.forAddress(address, port).build();
+            return ManagedChannelBuilder.forAddress(address, port).build();
         }
-        greetingService = GreeterGrpc.newBlockingStub(channel);
     }
 
-    private void stopService() {
+    private void stopService(ManagedChannel channel) {
         boolean terminated = false;
         try {
             channel.shutdownNow();
             terminated = channel.awaitTermination(500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
         }
-        System.out.println("Channel has been closed: " + terminated);
+        LOG.info("Channel has been closed: " + terminated);
     }
 
     @Override
@@ -97,14 +96,17 @@ public class HelloWorldClientServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        ManagedChannel channel = null;
+        GreeterGrpc.GreeterBlockingStub greetingService = null;
         String user = request.getParameter("user");
         String address = request.getParameter("address");
         int port = Integer.parseInt(request.getParameter("port"));
         boolean useTls = Boolean.parseBoolean(request.getParameter("useTls"));
-        String serverPath = request.getParameter("serverPath");
 
         try {
-            startService(address, port, useTls, serverPath);
+            channel = createChannel(address, port, useTls);
+            greetingService = GreeterGrpc.newBlockingStub(channel);
 
             // client side of the gRPC service is accessed via this servlet
             // create a gRPC User message to send to the server side service
@@ -140,7 +142,7 @@ public class HelloWorldClientServlet extends HttpServlet {
                             .append("               </body>\r\n")
                             .append("</html>\r\n");
         } finally {
-            stopService();
+            stopService(channel);
         }
     }
 }

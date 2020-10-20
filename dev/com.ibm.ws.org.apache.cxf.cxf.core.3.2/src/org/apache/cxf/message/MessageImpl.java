@@ -43,19 +43,20 @@ public class MessageImpl extends StringMapImpl implements Message {
     private Object[] contents = new Object[20];
     private int index;
 
-    // Liberty change - used to avoid resize
-    public MessageImpl(int isize, float factor) {
-        super(isize, factor);
-    }
+
 
     public MessageImpl() {
         //nothing
     }
 
+    public MessageImpl(int initialSize, float factor) {
+        super(initialSize, factor);
+    }
+
     public MessageImpl(Message m) {
         super(m);
         if (m instanceof MessageImpl) {
-            MessageImpl impl = (MessageImpl) m;
+            MessageImpl impl = (MessageImpl)m;
             exchange = impl.getExchange();
             id = impl.id;
             interceptorChain = impl.interceptorChain;
@@ -66,12 +67,10 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
     }
 
-    @Override
     public Collection<Attachment> getAttachments() {
-        return CastUtils.cast((Collection<?>) get(ATTACHMENTS));
+        return CastUtils.cast((Collection<?>)get(ATTACHMENTS));
     }
 
-    @Override
     public void setAttachments(Collection<Attachment> attachments) {
         put(ATTACHMENTS, attachments);
     }
@@ -81,38 +80,32 @@ public class MessageImpl extends StringMapImpl implements Message {
         return null;
     }
 
-    @Override
     public Destination getDestination() {
         return get(Destination.class);
     }
 
-    @Override
     public Exchange getExchange() {
         return exchange;
     }
 
-    @Override
     public String getId() {
         return id;
     }
 
-    @Override
     public InterceptorChain getInterceptorChain() {
         return this.interceptorChain;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
-                return (T) contents[x + 1];
+                return (T)contents[x + 1];
             }
         }
         return null;
     }
 
-    @Override
     public <T> void setContent(Class<T> format, Object content) {
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
@@ -132,7 +125,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         index += 2;
     }
 
-    @Override
     public <T> void removeContent(Class<T> format) {
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
@@ -148,12 +140,11 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
     }
 
-    @Override
     public Set<Class<?>> getContentFormats() {
 
         Set<Class<?>> c = new HashSet<>();
         for (int x = 0; x < index; x += 2) {
-            c.add((Class<?>) contents[x]);
+            c.add((Class<?>)contents[x]);
         }
         return c;
     }
@@ -162,17 +153,14 @@ public class MessageImpl extends StringMapImpl implements Message {
         put(Destination.class, d);
     }
 
-    @Override
     public void setExchange(Exchange e) {
         this.exchange = e;
     }
 
-    @Override
     public void setId(String i) {
         this.id = i;
     }
 
-    @Override
     public void setInterceptorChain(InterceptorChain ic) {
         this.interceptorChain = ic;
     }
@@ -197,7 +185,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             Object o = ex.getOrDefault(key, NOT_FOUND);
             if (o != NOT_FOUND) {
                 return o;
-            }
+        }
             
             Map<String, Object> p;
             Endpoint ep = ex.getEndpoint();
@@ -205,7 +193,7 @@ public class MessageImpl extends StringMapImpl implements Message {
                 o = ep.getOrDefault(key, NOT_FOUND);
                 if (o != NOT_FOUND) {
                     return o;
-                }
+    }
 
                 EndpointInfo ei = ep.getEndpointInfo();
                 if (ei != null) {
@@ -253,18 +241,18 @@ public class MessageImpl extends StringMapImpl implements Message {
                     if ((p = ei.getBinding().getProperties()) != null) {
                         if (!p.isEmpty()) {
                             keys.addAll(p.keySet());
-                        }
+                    }
                     }
                     if ((p = ei.getProperties()) != null) {
                         if (!p.isEmpty()) {
                             keys.addAll(p.keySet());
-                        }
-                    }
                 }
+            }
+        }
                 
                 if (!ep.isEmpty()) {
                     keys.addAll(ep.keySet());
-                }
+    }
             }
             if (!ex.isEmpty()) {
                 keys.addAll(ex.keySet());
@@ -288,7 +276,6 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     //Liberty code change start
-    @Override
     public void resetContextCache() {
     }
 
