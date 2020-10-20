@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017,2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -88,6 +88,18 @@
   <AD id="maxPriority"                        type="Integer" required="false" max="10" min="1" name="%maxPriority" description="%maxPriority.desc"/>
   <AD id="service.ranking"                    type="Integer" default="-1000" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                type="String"  required="false" name="internal" description="internal use only" />  
+ </OCD>
+
+ <!-- Concurrency Service (internal) -->
+
+ <Designate pid="com.ibm.ws.concurrent.internal.ConcurrencyService">
+  <Object ocdref="com.ibm.ws.concurrent.service"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.service" ibm:alias="concurrencyService" name="internal" description="internal use only">
+  <AD id="extensionProvider.cardinality.minimum" type="String"  ibm:final="true" default="${count(extensionProvider.component.name)}" name="internal" description="internal use only"/>
+  <AD id="extensionProvider.component.name"      type="String"  required="false" name="internal" description="internal use only"/>
+  <AD id="extensionProvider.target"              type="String"  ibm:final="true" default="(component.name=${extensionProvider.component.name})" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>
