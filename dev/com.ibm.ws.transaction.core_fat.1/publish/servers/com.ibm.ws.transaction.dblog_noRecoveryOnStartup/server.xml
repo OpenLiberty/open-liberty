@@ -1,0 +1,75 @@
+<!--
+    Copyright (c) 2017,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>componentTest-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>osgiconsole-1.0</feature>
+      <feature>jndi-1.0</feature>
+      <feature>microprofile-1.2</feature>
+      <feature>ejb-3.2</feature>
+    </featureManager>
+
+    <sslDefault outboundSSLRef="mySSLConfig" />
+     
+    <!-- Server SSL configuration -->
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" /> 
+    <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" /> 
+    <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" /> 
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
+    <library id="DerbyLib" filesetRef="DerbyFileset" />
+    <fileset id="DerbyFileset"
+             dir="${shared.resource.dir}derby"
+             includes="derby.jar" />
+    
+    <transaction
+      dataSourceRef="tranlogDataSource"
+        recoverOnStartup="false"
+        waitForRecovery="false"
+        heuristicRetryInterval="10"
+    />
+
+    <dataSource jndiName="jdbc/derby" jdbcDriverRef="DerbyEmbedded">
+      <properties
+        databaseName="${shared.resource.dir}/data/transactionFAT7"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+	<dataSource id="tranlogDataSource" 
+	            jdbcDriverRef="DerbyEmbedded"
+	            jndiName="jdbc/tranlogDataSource" 
+	            transactional="false"> 
+        <properties databaseName="${shared.resource.dir}/data/tranlogdb"
+                    createDatabase="create" />
+    </dataSource>
+    
+	<application location="transaction.war"/>
+	
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
+    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+ 
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+     
+
+</server>

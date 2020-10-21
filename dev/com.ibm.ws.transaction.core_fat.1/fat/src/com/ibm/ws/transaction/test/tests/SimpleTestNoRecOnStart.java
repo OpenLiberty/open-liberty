@@ -23,9 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.SimpleServlet;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -46,12 +44,12 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class SimpleDBTranlogTest extends FATServletClient {
+public class SimpleTestNoRecOnStart extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    @Server("com.ibm.ws.transaction.dblog")
+    @Server("com.ibm.ws.transaction_noRecoveryOnStartup")
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
@@ -71,8 +69,14 @@ public class SimpleDBTranlogTest extends FATServletClient {
             server.changeFeatures(Arrays.asList("jdbc-4.2", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
         }
 
-        server.setServerStartTimeout(300000);
-        server.startServer();
+        try {
+            server.setServerStartTimeout(300000);
+            server.startServer();
+        } catch (Exception e) {
+            Log.error(SimpleTestNoRecOnStart.class, "setUp", e);
+            // Try again
+            server.startServer();
+        }
     }
 
     @AfterClass
@@ -88,36 +92,6 @@ public class SimpleDBTranlogTest extends FATServletClient {
         });
     }
 
-    @Test
-    // TODO: Remove skip when injection is enabled for jakartaee9
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
-    public void testAsyncFallbackDBLog() throws Exception {
-        runTest("testAsyncFallback");
-    }
-
-    @Test
-    public void testUserTranLookupDBLog() throws Exception {
-        runTest("testUserTranLookup");
-    }
-
-    @Test
-    public void testUserTranFactoryDBLog() throws Exception {
-        runTest("testUserTranFactory");
-    }
-
-    @Test
-    public void testTranSyncRegistryLookupDBLog() throws Exception {
-        runTest("testTranSyncRegistryLookup");
-    }
-
-    /**
-     * Test of basic database connectivity
-     */
-    @Test
-    public void testBasicConnectionDBLog() throws Exception {
-        runTest("testBasicConnection");
-    }
-
     /**
      * Test enlistment in transactions.
      *
@@ -126,63 +100,8 @@ public class SimpleDBTranlogTest extends FATServletClient {
      * @throws Exception if an error occurs.
      */
     @Test
-    public void testTransactionEnlistmentDBLog() throws Exception {
+    public void testTransactionEnlistmentNoRecOnStart() throws Exception {
         runTest("testTransactionEnlistment");
-    }
-
-    /**
-     * Test that rolling back a newly started UserTransaction doesn't affect the previously implicitly committed
-     * LTC transaction.
-     */
-    @Test
-    public void testImplicitLTCCommitDBLog() throws Exception {
-        runTest("testImplicitLTCCommit");
-    }
-
-    @Test
-    @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
-    public void testNEWDBLog() throws Exception {
-        runTest("testNEW");
-    }
-
-    @Test
-    @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
-    public void testNEW2DBLog() throws Exception {
-        runTest("testNEW2");
-    }
-
-    /**
-     * Test that rolling back a newly started UserTransaction doesn't affect the previously explicitly committed
-     * LTC transaction.
-     */
-    @Test
-    public void testExplicitLTCCommitDBLog() throws Exception {
-        runTest("testExplicitLTCCommit");
-    }
-
-    @Test
-    public void testLTCAfterGlobalTranDBLog() throws Exception {
-        runTest("testLTCAfterGlobalTran");
-    }
-
-    @Test
-    public void testUOWManagerLookupDBLog() throws Exception {
-        runTest("testUOWManagerLookup");
-    }
-
-    @Test
-    public void testUserTranRestrictionDBLog() throws Exception {
-        runTest("testUserTranRestriction");
-    }
-
-    @Test
-    public void testSetTransactionTimeoutDBLog() throws Exception {
-        runTest("testSetTransactionTimeout");
-    }
-
-    @Test
-    public void testSingleThreadingDBLog() throws Exception {
-        runTest("testSingleThreading");
     }
 
     /**
