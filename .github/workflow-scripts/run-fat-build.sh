@@ -42,7 +42,7 @@ do
     touch "$OUTPUT_DIR/fail.log";
   fi
   echo "@@@ Uploading fat results to testspace @@@"
-  testspace "[$CATEGORY/$FAT_BUCKET]$RESULTS_DIR/junit/TEST-*.xml"
+  testspace "[$FAT_BUCKET]$RESULTS_DIR/junit/TEST-*.xml"
   echo "### END running FAT bucket $FAT_BUCKET";
 done
 
