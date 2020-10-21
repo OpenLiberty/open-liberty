@@ -565,4 +565,47 @@ public class JSF23CDIGeneralTests extends FATServletClient {
                        !jsf23CDIServer.findStringsInTrace("setViewHandler Setting IBM View Handler").isEmpty());
         }
     }
+
+    @Test
+    @Mode(TestMode.FULL)
+    @WebArchiveInfo(name = "ConversationScopedTest", pkgs = { "com.ibm.ws.jsf.conversationscoped.bean" })
+    public void testConversationScoped() throws Exception {
+      String contextRoot = "ConversationScopedTest";
+
+      // Wait for the application to be started.
+      jsf23CDIServer.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started", 2000);
+
+      // Construct the URL for the test
+      URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+
+      try (WebClient webClient = new WebClient()) {
+          HtmlPage indexPage = (HtmlPage) webClient.getPage(url);
+
+          //Get index page & click increment button
+          HtmlForm form = indexPage.getFormByName("form1");
+          HtmlSubmitInput submitButton = form.getInputByName("form1:incrementButton");
+          indexPage = submitButton.click();
+
+          String responseText = indexPage.asText();
+          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+
+          //Click Continue to go to page2.xhtml 
+          form = indexPage.getFormByName("form1");
+          submitButton = form.getInputByName("form1:continueButton");
+          HtmlPage page2 = submitButton.click();
+
+          //Ensure value is still 1 for conversation scoped bean
+          responseText = page2.asText();
+          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+
+          //End conversation and redirect to index.xhtml
+          form = page2.getFormByName("form2");
+          submitButton = form.getInputByName("form2:endButton");
+          indexPage = submitButton.click();
+
+          //Ensure bean counter resets to 0 when conversation scope ends.
+          responseText = indexPage.asText();
+          assertTrue("Page does not contain expected response.", responseText.contains("Value is 0"));
+    }
+  }
 }
