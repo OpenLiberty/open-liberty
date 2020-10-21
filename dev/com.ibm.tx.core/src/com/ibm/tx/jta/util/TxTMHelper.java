@@ -267,7 +267,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     @Override
     public void start(boolean waitForRecovery) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "start", new Object[] { waitForRecovery });
+            Tr.entry(tc, "start", waitForRecovery);
 
         // Get bundle context, for use by recovery in DS Service lookup.
         retrieveBundleContext();
@@ -401,7 +401,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 RecoveryManager._waitForRecovery = _waitForRecovery;
 
                 // Kick off recovery
-                setState(TMService.TMStates.REPLAYING);
                 _recLogService.startRecovery(_recoveryLogFactory);
 
                 // Defect RTC 99071. Don't make the STATE transition until recovery has been fully
@@ -430,10 +429,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 } // eof if waitForRecovery
             } // eof synchronized block
         } // eof if !_recoverDBLogStarted
-        else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Tran Logging to an RDBMS and START processing is in progress");
-        }
+        else if (tc.isDebugEnabled())
+            Tr.debug(tc, "Tran Logging to an RDBMS and START processing is in progress");
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "startRecovery");
@@ -606,30 +603,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "checkTMState");
         if (_state != TMService.TMStates.ACTIVE) {
-            if (_state == TMService.TMStates.REPLAYING) {
-                // Tran log replay, where logs are stored in a database can be slow and is interleaved with datasource and connection manager
-                // service initialisation
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Transaction Manager is REPLAYING");
-                if (_recoverDBLogStarted) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Tran Logging to an RDBMS and replay is in progress, recoveryAgent is: " + _recoveryAgent);
-                    if (_recoveryAgent != null) {
-                        RecoveryManager rm = _recoveryAgent.getRecoveryManager();
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Have retrieved recoveryManager: " + rm);
-                        if (rm != null) {
-                            if (!rm.isReplayThread()) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Wait for replay completion");
-                                rm.waitForReplayCompletion();
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Done waiting for replay completion");
-                            } else if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Thread on which replay will be done - do not wait");
-                        }
-                    }
-                }
+            if (_state == TMService.TMStates.RECOVERING) {
+                // Check that the initial phase of recovery is complete
             } else if (_state == TMService.TMStates.INACTIVE) {
                 try {
                     TMHelper.start();
