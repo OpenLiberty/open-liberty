@@ -19,9 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwx.JsonWebStructure;
-
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
@@ -99,10 +96,7 @@ public class JwtConsumerClient extends HttpServlet {
             }
             appUtils.logIt(pw, "Successfully created consumer for id [" + configId + "]");
 
-            JsonWebStructure joseObject = JsonWebStructure.fromCompactSerialization(tokenParam);
-            if (joseObject instanceof JsonWebSignature) {
-                outputTokenJson(tokenParam); // update to handle jwe
-            }
+            outputTokenJson(tokenParam);
 
             JwtToken token = myJwtConsumer.createJwt(tokenParam);
             appUtils.logIt(pw, JwtConsumerConstants.BUILT_JWT_TOKEN + ((token == null) ? null : token.compact()));
@@ -138,12 +132,19 @@ public class JwtConsumerClient extends HttpServlet {
             return;
         }
         String[] tokenParts = token.split("\\.");
-        for (int i = 0; i < tokenParts.length; i++) {
-            try {
-                String decodedPart = new String(Base64.getDecoder().decode(tokenParts[i]), "UTF-8");
-                appUtils.logIt(pw, "Token part[" + i + "]: " + decodedPart);
-            } catch (Exception e) {
-                appUtils.logIt(pw, "Decoding token part [" + i + "] failed with" + e.getMessage());
+        if (tokenParts.length > 3) {
+            // we have a JWE, not a JWS - we can only process the first header since we don't have the key to decode
+            String decodedPart = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
+            appUtils.logIt(pw, "JWE Token part[0]: " + decodedPart);
+        } else {
+            // we have a JWS - we can process all parts
+            for (int i = 0; i < tokenParts.length; i++) {
+                try {
+                    String decodedPart = new String(Base64.getDecoder().decode(tokenParts[i]), "UTF-8");
+                    appUtils.logIt(pw, "JWS Token part[" + i + "]: " + decodedPart);
+                } catch (Exception e) {
+                    appUtils.logIt(pw, "Decoding token part [" + i + "] failed with" + e.getMessage());
+                }
             }
         }
     }
