@@ -207,6 +207,13 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     @Override
+    @Reference(policy = ReferencePolicy.STATIC)
+    @Trivial
+    protected void setConcurrencyService(ConcurrencyService svc) {
+        super.setConcurrencyService(svc);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     @Trivial
     protected void setContextService(ServiceReference<WSContextService> ref) {
@@ -246,6 +253,12 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
         super.unsetConcurrencyPolicy(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetConcurrencyService(ConcurrencyService svc) {
+        super.unsetConcurrencyService(svc);
     }
 
     @Override
