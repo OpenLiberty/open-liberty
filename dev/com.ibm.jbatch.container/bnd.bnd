@@ -18,6 +18,8 @@ Bundle-Description:  Java Batch RI core runtime implementation
 
 WS-TraceGroup: wsbatch
 
+jakartaeeMe: true
+
 #######################################################################
 # Please be careful and circulate the idea in a design discussion
 # before exporting any new packages here.

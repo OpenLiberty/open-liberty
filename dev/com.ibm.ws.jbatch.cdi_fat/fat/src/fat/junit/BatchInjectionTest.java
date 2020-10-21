@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -26,8 +25,6 @@ import app.injection.BatchInjectionServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -54,9 +51,9 @@ public class BatchInjectionTest extends FATServletClient {
     //
     // Not sure I really have to restrict this with forServer() but will for now
     //
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchInjection"));
+//    @ClassRule
+//    public static RepeatTests r = RepeatTests.withoutModification()
+//                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchInjection"));
 
     @Server("BatchInjection")
     @TestServlet(servlet = BatchInjectionServlet.class, path = "implicit/BatchInjectionServlet")
@@ -78,7 +75,7 @@ public class BatchInjectionTest extends FATServletClient {
 
     /**
      * @param implicit archive
-     * @param jslName Batch Job JSL name
+     * @param jslName  Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
         Log.info(BatchInjectionTest.class, "addBatchJob", "Adding jslName = " + jslName);
