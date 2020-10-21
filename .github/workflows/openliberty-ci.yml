@@ -596,8 +596,9 @@ jobs:
       run: .github/workflow-scripts/check-fat-failures.sh
     - name: Upload FAT logs
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: aguibert/upload-artifact@v1.0
       with:
-        name: FAT logs for group ${{matrix.category}}
-        path: dev/failing_buckets/
+        name: ${{matrix.category}}
+        path: dev/failing_buckets/*.zip
+        single-archive: "false"
       
