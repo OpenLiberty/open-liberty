@@ -1,4 +1,4 @@
-package com.ibm.ws.jdbc.fat.postgresql;
+package componenttest.topology.database.container;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +17,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
  * 1. To add a ctor that accepts a <code>Future<String></code> parameter so we can mount SSL certificates in the image
  * 2. To fix the ordering of configure() so that we can set config options such as max_connections=200
  */
-public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
-
+public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContainer> {
+	
     public static final String NAME = "postgresql";
     public static final String IMAGE = "postgres";
     public static final String DEFAULT_TAG = "9.6.8";
@@ -29,11 +29,11 @@ public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SE
     private String password = "test";
     private final Map<String, String> options = new HashMap<>();
 
-    public CustomPostgreSQLContainer(String img) {
+    public PostgreSQLContainer(String img) {
         super(img);
     }
 
-    public CustomPostgreSQLContainer(final Future<String> image) {
+    public PostgreSQLContainer(final Future<String> image) {
         super(image);
     }
 
@@ -44,7 +44,7 @@ public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SE
      * @param value The PostgreSQL configuration option value. For example: "200"
      * @return this
      */
-    public SELF withConfigOption(String key, String value) {
+    public PostgreSQLContainer withConfigOption(String key, String value) {
         if (key == null) {
             throw new java.lang.NullPointerException("key marked @NonNull but is null");
         }
@@ -63,6 +63,8 @@ public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SE
         addEnv("POSTGRES_PASSWORD", password);
         if (!options.containsKey("fsync"))
             withConfigOption("fsync", "off");
+        if (!options.containsKey("max_prepared_transactions"))
+        	withConfigOption("max_prepared_transactions", "2");
         List<String> command = new ArrayList<>();
         for (Entry<String, String> e : options.entrySet()) {
             command.add("-c");
@@ -107,25 +109,40 @@ public class CustomPostgreSQLContainer<SELF extends CustomPostgreSQLContainer<SE
     }
 
     @Override
-    public SELF withDatabaseName(final String databaseName) {
+    public PostgreSQLContainer withDatabaseName(final String databaseName) {
         this.databaseName = databaseName;
         return self();
     }
 
     @Override
-    public SELF withUsername(final String username) {
+    public PostgreSQLContainer withUsername(final String username) {
         this.username = username;
         return self();
     }
 
     @Override
-    public SELF withPassword(final String password) {
+    public PostgreSQLContainer withPassword(final String password) {
         this.password = password;
         return self();
+    }
+    
+    /**
+     * Sets the necessary config options for enabling SSL for the container. Assumes there is
+     * a server.crt and server.key file under /var/lib/postgresql/ in the container.
+     * An easy way to use this is to combine it with the <code>aguibert/postgresql-ssl:1.0</code>
+     * or similar base image
+     */
+    public PostgreSQLContainer withSSL() {
+        withConfigOption("ssl", "on");
+        withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt");
+        withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key");
+        return this;
     }
 
     @Override
     protected void waitUntilContainerStarted() {
+        // by Testcontainers waits for being able to establish a JDBC connection
+        // use the default wait strategy instead (necessary for the SSL path)
         getWaitStrategy().waitUntilReady(this);
     }
 
