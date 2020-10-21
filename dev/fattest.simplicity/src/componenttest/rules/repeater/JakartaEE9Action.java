@@ -270,7 +270,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
 
-            args[2] = "-v"; // verbose
+            args[2] = "-q"; // quiet output
 
             // override jakarta default properties, which are
             // packaged in the transformer jar
