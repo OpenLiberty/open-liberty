@@ -69,7 +69,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     private static final int TRANSACTION_RECOVERYLOG_FORMAT_VERSION = 1;
 
     protected RecoveryDirector _recoveryDirector;
-    private RecoveryManager _recoveryManager;
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
 
@@ -323,7 +322,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // default thread pool, nor do we want to create recovery pools that may never get used and
             // just absorb resource.
 
-            _recoveryManager = fsc.getRecoveryManager();
+            final RecoveryManager rm = fsc.getRecoveryManager();
             final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
@@ -341,7 +340,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
 
                         // Drive recovery failure processing
-                        _recoveryManager.recoveryFailed(rex);
+                        rm.recoveryFailed(rex);
 
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
@@ -359,15 +358,15 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
 
-                _recoveryManager.setLeaseLog(_leaseLog);
-                _recoveryManager.setRecoveryGroup(_recoveryGroup);
-                _recoveryManager.setLocalRecoveryIdentity(localRecoveryIdentity);
+                rm.setLeaseLog(_leaseLog);
+                rm.setRecoveryGroup(_recoveryGroup);
+                rm.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
             final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
                 @Override
                 public Thread run() {
-                    return new Thread(_recoveryManager, "Recovery Thread");
+                    return new Thread(rm, "Recovery Thread");
                 }
             });
 
@@ -1030,14 +1029,5 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
         if (tc.isEntryEnabled())
             Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
-    }
-
-    /**
-     * @return the _recoveryManager
-     */
-    public RecoveryManager getRecoveryManager() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryManager", _recoveryManager);
-        return _recoveryManager;
     }
 }
