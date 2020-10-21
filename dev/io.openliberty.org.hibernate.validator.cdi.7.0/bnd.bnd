@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator-cdi;7.0.0.Alpha2}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator-cdi;7.0.0.Alpha6}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
 -buildpath: \
-  org.hibernate.validator:hibernate-validator;version=7.0.0.Alpha2,\
-  org.hibernate.validator:hibernate-validator-cdi;version=7.0.0.Alpha2
+  org.hibernate.validator:hibernate-validator;version=7.0.0.Alpha6,\
+  org.hibernate.validator:hibernate-validator-cdi;version=7.0.0.Alpha6
