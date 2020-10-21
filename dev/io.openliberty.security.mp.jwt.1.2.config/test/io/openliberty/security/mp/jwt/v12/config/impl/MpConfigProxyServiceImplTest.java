@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.config.Config;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -124,8 +126,8 @@ public class MpConfigProxyServiceImplTest {
         mockery.checking(new Expectations() {
             {
                 never(configClassLoader).getValue(NAME, CLAZZ);
-                one(configNoClassLoader).getValue(NAME, CLAZZ);
-                will(returnValue(VALUE));
+                one(configNoClassLoader).getOptionalValue(NAME, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
             }
         });
 
@@ -156,8 +158,8 @@ public class MpConfigProxyServiceImplTest {
         mockery.checking(new Expectations() {
             {
                 never(configNoClassLoader).getValue(NAME, CLAZZ);
-                one(configClassLoader).getValue(NAME, CLAZZ);
-                will(returnValue(VALUE));
+                one(configClassLoader).getOptionalValue(NAME, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
             }
         });
 
