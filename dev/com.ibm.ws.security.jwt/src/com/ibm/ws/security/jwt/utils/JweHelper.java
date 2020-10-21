@@ -20,6 +20,7 @@ import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
@@ -98,6 +99,7 @@ public class JweHelper {
         return JwtUtils.getPublicKey(keyAlias, trustStoreRef);
     }
 
+    @Sensitive
     Key getJweDecryptionKey(JwtConsumerConfig config) throws KeyStoreException, CertificateException {
         String keyAlias = config.getKeyManagementKeyAlias();
         String keyStoreRef = config.getKeyStoreRef();

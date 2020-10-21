@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,7 +31,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
@@ -180,7 +181,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         return keyStoreName;
     }
 
-    @FFDCIgnore(SSLException.class)
+    @FFDCIgnore(Exception.class)
     Properties getSslConfigProperties(String sslRef) {
         SSLSupport sslSupportService = JwtUtils.getSSLSupportService();
         if (sslSupportService == null) {
@@ -188,8 +189,15 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         }
         Properties sslConfigProps;
         try {
-            sslConfigProps = sslSupportService.getJSSEHelper().getProperties(sslRef);
-        } catch (SSLException e) {
+            sslConfigProps = (Properties) AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<Object>() {
+                        @Override
+                        public Object run() throws Exception {
+                            return sslSupportService.getJSSEHelper().getProperties(sslRef);
+
+                        }
+                    });
+        } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception getting SSL properties: " + e);
             }
