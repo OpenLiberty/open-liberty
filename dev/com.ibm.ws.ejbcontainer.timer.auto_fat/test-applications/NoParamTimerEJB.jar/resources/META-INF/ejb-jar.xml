@@ -1,0 +1,309 @@
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         version="3.1">
+  <enterprise-beans>
+    <!-- 625013 - AnnotationBean is also declared lower. -->
+    <session>
+      <ejb-name>AnnotationBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.AnnotationBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>AnnotationBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsZeroParamsXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.ZeroParamsXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsZeroParamsXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsOneParamXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.OneParamXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsOneParamXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsAmbiguousOneParamXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.AmbiguousParamsXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+      </timeout-method>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsAmbiguousOneParamXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsHierarchyXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.HierarchyXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsHierarchyXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>EmptyParamsZeroParamsXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.AmbiguousParamsXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+        <method-params/>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+          <method-params/>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EmptyParamsZeroParamsXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>EmptyParamsOneParamXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.OneParamXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+        <method-params/>
+      </timeout-method>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EmptyParamsOneParamXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>EmptyParamsHierarchyXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.HierarchyXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+        <method-params/>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+          <method-params/>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EmptyParamsHierarchyXMLBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.AnnotationBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsMixedBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>EmptyParamsMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.AnnotationBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timeout-method>
+        <method-name>timeout</method-name>
+        <method-params/>
+      </timeout-method>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+          <method-params/>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EmptyParamsMixedBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>NoParamsScheduleMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.ScheduleXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>NoParamsScheduleMixedBean</env-entry-value>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>EmptyParamsScheduleMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.timer.auto.noparam.ejb.ScheduleXMLBean</ejb-class>
+      <session-type>Singleton</session-type>
+
+      <timer>
+        <schedule>
+          <hour>*</hour>
+          <minute>*</minute>
+          <second>*/10</second>
+        </schedule>
+
+        <timeout-method>
+          <method-name>schedule</method-name>
+          <method-params/>
+        </timeout-method>
+
+        <persistent>false</persistent>
+      </timer>
+      <env-entry>
+        <env-entry-name>beanName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EmptyParamsScheduleMixedBean</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+</ejb-jar>
