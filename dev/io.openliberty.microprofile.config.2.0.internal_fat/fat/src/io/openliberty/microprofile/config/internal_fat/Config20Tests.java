@@ -40,6 +40,7 @@ import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
 import io.openliberty.microprofile.config.internal_fat.apps.classLoader.ClassLoadersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.converter.ConvertersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.defaultSources.DefaultSourcesTestServlet;
+import io.openliberty.microprofile.config.internal_fat.apps.propertyExpression.PropertyExpressionTestServlet;
 
 @RunWith(FATRunner.class)
 public class Config20Tests extends FATServletClient {
@@ -49,6 +50,7 @@ public class Config20Tests extends FATServletClient {
     public static final String BROKEN_INJECTION_APP_NAME = "brokenInjectionApp";
     public static final String CLASS_LOADER_APP_NAME = "classLoadersApp";
     public static final String CONVERTER_LOADER_APP_NAME = "convertersApp";
+    public static final String PROPERTY_EXPRESSION_APP_NAME = "propertyExpressionApp";
 
     public static final String SERVER_NAME = "Config20Server";
 
@@ -59,7 +61,8 @@ public class Config20Tests extends FATServletClient {
     @TestServlets({
                     @TestServlet(servlet = DefaultSourcesTestServlet.class, contextRoot = DEFAULT_SOURCES_APP_NAME),
                     @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = CLASS_LOADER_APP_NAME),
-                    @TestServlet(servlet = ConvertersTestServlet.class, contextRoot = CONVERTER_LOADER_APP_NAME)
+                    @TestServlet(servlet = ConvertersTestServlet.class, contextRoot = CONVERTER_LOADER_APP_NAME),
+                    @TestServlet(servlet = PropertyExpressionTestServlet.class, contextRoot = PROPERTY_EXPRESSION_APP_NAME)
 
     })
     public static LibertyServer server;
@@ -91,6 +94,7 @@ public class Config20Tests extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, classLoadersWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, convertersWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.defaultApp(server, PROPERTY_EXPRESSION_APP_NAME, "io.openliberty.microprofile.config.internal_fat.apps.propertyExpression");
 
         server.startServerAndValidate(true, true, false);
 
