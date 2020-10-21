@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+
+    <!-- Needed for com.ibm.ws.ejbcontainer.timer.auto.npTimer.context.web.AutoNpTimerServiceConfigServlet -->
+    <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>createLoginContext.WSLogin</name>
+   </permission>
+    <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.setRunAsSubject</name>
+   </permission>
+   <permission>
+   	  <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+   	  <name>com.ibm.ws.security.token.internal.SingleSignonTokenImpl * "*"</name>
+   	  <actions>read</actions>
+   </permission>
+</permissions>
