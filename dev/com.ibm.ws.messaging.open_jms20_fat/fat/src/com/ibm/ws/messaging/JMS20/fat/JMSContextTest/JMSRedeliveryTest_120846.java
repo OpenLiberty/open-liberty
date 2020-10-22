@@ -107,7 +107,7 @@ public class JMSRedeliveryTest_120846 {
     // Test with duplicate delivery of messages.
 
     @Mode(TestMode.FULL)
-    // @Test MDBMDB
+    // @Test // TODO MDBMDB
     public void testRDC_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testRDC_B");
         assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_B failed", testResult);
@@ -122,7 +122,7 @@ public class JMSRedeliveryTest_120846 {
 
 
     @Mode(TestMode.FULL)
-    // @Test MDBMDB
+    // @Test // TODO MDBMDB
     public void testRDC_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testRDC_TCP");
         assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_TCP failed", testResult);

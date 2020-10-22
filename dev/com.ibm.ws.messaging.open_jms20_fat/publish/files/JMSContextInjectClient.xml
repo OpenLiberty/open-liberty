@@ -3,10 +3,10 @@
   <variable name="onError" value="FAIL"/>
   
   <!--
-  <logging 
-    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
+  <logging
+    traceSpecification="*=info:SIBJms*=all:com.ibm.ws.cdi.*=all:org.apache.webbeans*=all:org.jboss.weld*=all:com.ibm.ws.messaging.jms*=all"
     maxFileSize="200"/>
-   -->
+    -->
 
   <featureManager>
     <feature>jndi-1.0</feature>
