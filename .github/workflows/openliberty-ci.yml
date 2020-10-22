@@ -1,14 +1,9 @@
 name: OpenLiberty CI
 
 on:
-  # This is temporary so that a new build starts on push for testing.
-  push:
-    branches: 
-    - gh-actions
-  ###############
   pull_request:
     branches: 
-    - integration
+    - gh-actions
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - '.gitignore'
