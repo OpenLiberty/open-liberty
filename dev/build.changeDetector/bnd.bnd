@@ -1,0 +1,42 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Change detector
+Bundle-SymbolicName: build.changeDetector
+Bundle-Description: Change detector; version=${bVersion}
+
+Main-Class: com.ibm.ws.infra.depchain.ChangeDetector
+
+# Create an uber-jar
+Private-Package: \
+  com.ibm.ws.infra.depchain,\
+  com.ibm.ws.kernel.*,\
+  com.ibm.wsspi.kernel.*,\
+  javax.json,\
+  org.apache.*,\
+  org.eclipse.*,\
+  org.glassfish.*,\
+  org.osgi.*
+
+test.project: true
+
+-buildpath: \
+  com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+  com.ibm.ws.org.apache.aries.util;version=latest,\
+  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  com.ibm.ws.org.apache.httpcomponents;version=latest,\
+  com.ibm.ws.org.glassfish.json.1.1;version=latest,\
+  com.ibm.ws.kernel.feature;version=latest,\
+  com.ibm.ws.kernel.boot;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  org.eclipse.osgi;version=latest
