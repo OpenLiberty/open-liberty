@@ -1,5 +1,4 @@
 name: OpenLiberty CI
-
 on:
   pull_request:
     branches: 
