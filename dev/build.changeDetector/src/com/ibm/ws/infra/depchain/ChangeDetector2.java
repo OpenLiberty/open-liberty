@@ -110,6 +110,12 @@ public class ChangeDetector2 {
     }
 
     public boolean shouldFatRun(Set<String> modifiedFiles) throws Exception {
+
+        if (modifiedFiles == null || modifiedFiles.isEmpty()) {
+            System.out.println("No modified files detected. Will run all FATs because this is not a normal PR.");
+            return true;
+        }
+
         Set<String> fatsToRun = new TreeSet<String>();
 
         Set<String> modifiedBundles = new HashSet<>();
