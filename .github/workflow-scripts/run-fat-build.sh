@@ -21,7 +21,7 @@ done
 GIT_DIFF=""
 # For PR type events, set the git_diff for the change detector tool so unreleated FATs do not run
 if [[ $GH_EVENT_NAME == 'pull_request' ]]; then
-  GIT_DIFF="-Dgit_diff=$GITHUB_BASE_REF..$GITHUB_HEAD_REF"
+  GIT_DIFF="-Dgit_diff=HEAD^...HEAD^2"
   echo "This event is a pull request. Will run FATs with: $GIT_DIFF"
 fi
   
