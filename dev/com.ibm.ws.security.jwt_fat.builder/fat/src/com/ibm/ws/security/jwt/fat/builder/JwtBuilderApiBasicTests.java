@@ -5608,21 +5608,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -5635,14 +5635,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -5662,14 +5662,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -5698,19 +5698,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -5738,19 +5738,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -5779,19 +5779,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -5810,21 +5810,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -5837,14 +5837,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -5864,14 +5864,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -5900,19 +5900,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -5940,19 +5940,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -5981,19 +5981,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -6012,21 +6012,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6039,14 +6039,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -6066,14 +6066,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
@@ -6102,19 +6102,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -6142,19 +6142,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -6183,19 +6183,19 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
         // cause expectations to be created for things that build the token, but don't show up in the token
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
         JsonObject header = jwtTokenForTest.getJsonHeader();
         String alg = header.getString(HeaderConstants.ALGORITHM);
@@ -6214,21 +6214,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6241,18 +6241,18 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "someKeyMgmtValue");
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, "someKeyMgmtValue");
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key managment key algorithm was bad."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -6267,21 +6267,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6294,21 +6294,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6321,21 +6321,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6348,18 +6348,18 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "someContentEncryptAlg");
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, "someContentEncryptAlg");
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
-        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the context encryption algorithm was bad."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -6378,16 +6378,16 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6404,16 +6404,16 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6425,8 +6425,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, "Message log did not contain an error indicating that the key management key was missing."));
@@ -6444,8 +6444,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, "Message log did not contain an error indicating that the key management key was missing."));
@@ -6464,12 +6464,12 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -6490,12 +6490,12 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
@@ -6516,21 +6516,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
-        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
-        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6543,21 +6543,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6570,21 +6570,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 
@@ -6597,21 +6597,21 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
         String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
 
-        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
         testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
 
-        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 

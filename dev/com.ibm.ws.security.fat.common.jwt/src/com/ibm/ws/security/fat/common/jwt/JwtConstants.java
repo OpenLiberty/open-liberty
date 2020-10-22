@@ -18,6 +18,9 @@ public class JwtConstants extends Constants {
 
     public static final String PARAM_BUILDER_ID = "builder_id";
     public static final String PARAM_UPN = "upn";
+    public static final String PARAM_KEY_MGMT_ALG = "keyManagementAlg";
+    public static final String PARAM_CONTENT_ENCRYPT_ALG = "contentEncryptionAlg";
+    public static final String PARAM_ENCRYPT_KEY = "encrypt_key";
 
     public static final String X509_CERT = "x509_cert";
     public static final String JWK_CERT = "jwk_cert";
