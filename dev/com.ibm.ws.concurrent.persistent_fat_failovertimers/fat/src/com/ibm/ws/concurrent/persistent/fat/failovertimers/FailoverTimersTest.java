@@ -64,6 +64,7 @@ import failovertimers.web.FailoverTimersTestServlet;
  */
 @RunWith(FATRunner.class)
 @SkipIfSysProp(DB_Oracle) //TODO investigate running these tests causes an FFDC java.lang.IllegalStateException: Attempting to execute an operation on a closed EntityManagerFactory.
+@AllowedFFDC
 public class FailoverTimersTest extends FATServletClient {
     private static final Class<FailoverTimersTest> c = FailoverTimersTest.class;
     private static final String APP_NAME = "failoverTimersApp";
@@ -139,37 +140,23 @@ public class FailoverTimersTest extends FATServletClient {
      */
     @Before
     public void setUpPerTest() throws Exception {
-        // TODO Test infrastructure is unable to start multiple servers at once. Intermittent errors occur while processing fatFeatureList.xml
-        boolean startInParallel = false;
-
-        if (startInParallel) {
-            ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
-            if (!serverA.isStarted()) {
-                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                startActions.add(() -> serverA.startServer(testName.getMethodName()));
-            }
-            if (!serverB.isStarted()) {
-                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                startActions.add(() -> serverB.startServer(testName.getMethodName()));
-            }
-
-            testThreads.invokeAll(startActions).forEach(f -> {
-                try {
-                    f.get();
-                } catch (ExecutionException | InterruptedException x) {
-                    throw new CompletionException(x);
-                }
-            });
-        } else {
-            if (!serverA.isStarted()) {
-                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                serverA.startServer(testName.getMethodName());
-            }
-            if (!serverB.isStarted()) {
-                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                serverB.startServer(testName.getMethodName());
-            }
+        ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
+        if (!serverA.isStarted()) {
+            serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            startActions.add(() -> serverA.startServer(testName.getMethodName() + ".log"));
         }
+        if (!serverB.isStarted()) {
+            serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            startActions.add(() -> serverB.startServer(testName.getMethodName() + ".log"));
+        }
+
+        testThreads.invokeAll(startActions).forEach(f -> {
+            try {
+                f.get();
+            } catch (ExecutionException | InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        });
     }
 
     @AfterClass
@@ -190,11 +177,6 @@ public class FailoverTimersTest extends FATServletClient {
      * and verify that the timer starts running on the same application on a different server.
      * This should occur even if a retryInterval is configured on the server where the failure occurs.
      */
-    @AllowedFFDC({
-                   "java.util.concurrent.CompletionException", // intentionally raised by timer to force a rollback
-                   "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
-                   "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
-    })
     @Test
     public void testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer() throws Exception {
         runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -360,6 +342,7 @@ public class FailoverTimersTest extends FATServletClient {
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer(
                                               "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                                              "CWWKC1503W.*AutoCountingSingletonTimer", // timer not invoking due to server stop
                                               "DSRA.*", "J2CA.*", "WTRN.*" // transaction in progress across server stop
             );
         }
@@ -407,5 +390,7 @@ public class FailoverTimersTest extends FATServletClient {
 
         runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
                 "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
+
+        serverForFailover.stopServer("CWWKC1503W.*AutoCountingSingletonTimer");
     }
 }
