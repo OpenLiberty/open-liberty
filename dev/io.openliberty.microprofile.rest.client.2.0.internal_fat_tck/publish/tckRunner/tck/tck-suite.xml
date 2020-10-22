@@ -9,22 +9,20 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="microprofile-rest.client-2.0-tck" verbose="2"
-    configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.rest.client.tck">
-        <packages>
-            <package name="org.eclipse.microprofile.rest.client.tck.*"/>
-        </packages>
-        <classes>
-        <class name="org.eclipse.microprofile.rest.client.tck.sse.BasicReactiveStreamsTest">
-            <methods>
-                <exclude name=".*" />
-            </methods>
-        </class>
-        <class name="org.eclipse.microprofile.rest.client.tck.sse.ReactiveStreamsPublisherTckTest">
-            <methods>
-                <exclude name=".*" />
-            </methods>
-        </class>
-    </classes>
-    </test>
+  configfailurepolicy="continue">
+  <test name="tck-package-org.eclipse.microprofile.rest.client.tck">
+    <packages>
+      <package name="org.eclipse.microprofile.rest.client.tck.*"/>
+    </packages> 
+    <classes>
+      <class name="org.eclipse.microprofile.rest.client.tck.sse.ReactiveStreamsPublisherTckTest">
+        <methods>
+          <exclude name="optional.*" />
+          <exclude name="untested.*" />
+          <!-- it says required, but this test is not actually required as it depends on a "failed" publish which the TCK says is optional  -->
+          <exclude name="required_spec109_mayRejectCallsToSubscribeIfPublisherIsUnableOrUnwillingToServeThemRejectionMustTriggerOnErrorAfterOnSubscribe"/>
+        </methods>
+      </class>
+    </classes> 
+  </test>
 </suite>

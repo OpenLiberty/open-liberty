@@ -14,7 +14,7 @@
 
     <groupId>com.ibm.ws.microprofile.rest.client</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>1.4</version>
+    <version>2.0</version>
     <packaging>pom</packaging>
     <name>MicroProfile RestClient 2.0 TCK Runner</name>
 
