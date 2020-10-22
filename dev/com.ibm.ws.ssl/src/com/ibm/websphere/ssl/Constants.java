@@ -391,7 +391,8 @@ public class Constants {
                 /** Security Level "high" will pare it down even more. */
                 for (int i = 0; i < supportedCiphers.length; i++) {
                     if ((supportedCiphers[i].indexOf("128_") != -1
-                         || supportedCiphers[i].indexOf("256_") != -1)
+                         || supportedCiphers[i].indexOf("256_") != -1
+                         || supportedCiphers[i].indexOf("CHACHA20_POLY1305_") != -1)
                         && supportedCiphers[i].indexOf("_anon_") == -1
                         && supportedCiphers[i].indexOf("_NULL_") == -1
                         && supportedCiphers[i].indexOf("_KRB5_") == -1
