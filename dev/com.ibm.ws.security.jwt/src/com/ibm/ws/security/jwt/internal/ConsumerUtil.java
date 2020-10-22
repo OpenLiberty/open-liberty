@@ -51,6 +51,7 @@ import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.JtiNonceCache;
+import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -111,7 +112,7 @@ public class ConsumerUtil {
     JwtContext parseJwtAndGetJwtContext(String jwtString, JwtConsumerConfig config) throws Exception {
         JwtContext jwtContext = parseJwtWithoutValidation(jwtString, config);
         if (config.isValidationRequired()) {
-            jwtContext = getSigningKeyAndParseJwtWithValidation(jwtString, config, jwtContext);
+            jwtContext = getSigningKeyAndParseJwtWithValidation(jwtContext.getJwt(), config, jwtContext);
         }
         return jwtContext;
     }
@@ -394,9 +395,11 @@ public class ConsumerUtil {
 
     protected JwtContext parseJwtWithoutValidation(String jwtString, JwtConsumerConfig config) throws Exception {
         if (jwtString == null || jwtString.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "JWT_CONSUMER_NULL_OR_EMPTY_STRING",
-                    new Object[] { config.getId(), jwtString });
+            String errorMsg = Tr.formatMessage(tc, "JWT_CONSUMER_NULL_OR_EMPTY_STRING", new Object[] { config.getId(), jwtString });
             throw new InvalidTokenException(errorMsg);
+        }
+        if (JweHelper.isJwe(jwtString)) {
+            jwtString = JweHelper.extractJwsFromJweToken(jwtString, config);
         }
         JwtConsumerBuilder builder = initializeJwtConsumerBuilderWithoutValidation(config);
         JwtConsumer firstPassJwtConsumer = builder.build();

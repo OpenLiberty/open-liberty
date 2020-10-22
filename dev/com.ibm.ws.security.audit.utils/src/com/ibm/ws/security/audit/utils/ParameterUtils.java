@@ -51,11 +51,11 @@ public class ParameterUtils {
 
     static private String ToString(Object object) {
         String value = null;
-        // it is potential that toString() method throws an exception.
-        // so if that's the case, catch it and substitution. 
-        try {
+        if (object instanceof Number || object instanceof Boolean) {
             value = object.toString();
-        } catch (Exception e) {
+        } else if (object instanceof String){
+            value = (String) object;
+        } else {
             value = object.getClass().getName() + '@' + System.identityHashCode(object);
         }
         return value;

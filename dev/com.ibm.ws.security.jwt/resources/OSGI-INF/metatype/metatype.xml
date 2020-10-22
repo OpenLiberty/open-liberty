@@ -87,7 +87,8 @@
         <AD id="jwkEndpointUrl" name="%jwkEndpointUrl" description="%jwkEndpointUrl.desc"  required="false"  type="String" />
         <AD id="amrValues" name="%amrValues" description="%amrValues.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
-         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="keyManagementKeyAlias" name="internal" description="internal use only" required="false" type="String" ibm:beta="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.consumer">

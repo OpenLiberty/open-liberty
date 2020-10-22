@@ -39,7 +39,7 @@ Subsystem-Name: Jakarta Server Faces 3.0
  io.openliberty.servlet.api-5.0, \
  io.openliberty.jakarta.validation-3.0, \
  io.openliberty.jakarta.faces-3.0, \
- io.openliberty.jsp-3.0, \
+ io.openliberty.pages-3.0, \
  io.openliberty.jakarta.jaxb-3.0; \
  io.openliberty.facesProvider-3.0.0.MyFaces, \
  com.ibm.websphere.appserver.eeCompatible-9.0

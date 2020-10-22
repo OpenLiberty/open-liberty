@@ -28,7 +28,7 @@ tested.features:\
 	appsecurity-4.0,\
 	servlet-5.0,\
 	concurrent-2.0,\
-	jsp-3.0,\
+	pages-3.0,\
 	enterpriseBeansLite-4.0,\
 	componenttest-2.0
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
-import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -37,7 +36,7 @@ public class JwtTokenActions extends TestActions {
 
         WebClient webClient = new WebClient();
         Page response = invokeUrlWithParameters(testName, webClient, jwtBuilderUrl, requestParams);
-        Log.info(thisClass, testName, "JWT builder app response: " + WebResponseUtils.getResponseText(response));
+//  builder output is logged twice with this line enabled      Log.info(thisClass, testName, "JWT builder app response: " + WebResponseUtils.getResponseText(response));
 
         Cookie jwtCookie = webClient.getCookieManager().getCookie("JWT");
         Log.info(thisClass, testName, "Built JWT cookie: " + jwtCookie);

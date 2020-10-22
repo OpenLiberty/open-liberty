@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/JMSContext/src, \
+  test-applications/JMSConsumer/src, \
+  test-applications/jmsmdb/src, \
+  test-applications/TemporaryQueue/src, \
+  test-applications/DurableUnshared/src, \
+  test-applications/JMSContextInject/src, \
+  test-applications/JMSDCFSecurity/src, \
+  test-applications/mdbapp/src
+
+fat.project: true
+
+tested.features: \
+  servlet-5.0,\
+  pages-3.0,\
+  messagingServer-3.0,\
+  messagingClient-3.0,\
+  messagingSecurity-3.0,\
+  mdb-4.0,\
+  cdi-3.0
+
+-buildpath: \
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  com.ibm.ws.security.registry_test.servlet;version=latest,\
+  com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+  com.ibm.websphere.javaee.jms.2.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+  com.ibm.websphere.javaee.cdi.1.0;version=latest
+

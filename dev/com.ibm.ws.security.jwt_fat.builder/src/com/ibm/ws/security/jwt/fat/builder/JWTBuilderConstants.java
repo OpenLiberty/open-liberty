@@ -43,10 +43,7 @@ public class JWTBuilderConstants extends JwtConstants {
     public static final String SHARED_KEY_STRING_TYPE = "string";
     public static final String SHARED_KEY_PRIVATE_KEY_TYPE = "private_key";
     public static final String SHARED_KEY_PUBLIC_KEY_TYPE = "public_key";
-    public static final String ENCRYPT_KEY = "encrypt_key";
     public static final String DECRYPT_KEY = "decrypt_key";
-    public static final String KEY_MGMT_ALG = "keyManagementAlg";
-    public static final String CONTENT_ENCRYPT_ALG = "contentEncryptionAlg";
 
     public static final String BUILT_JWT_TOKEN = "Built JWT Token: ";
 
@@ -59,5 +56,8 @@ public class JWTBuilderConstants extends JwtConstants {
     public static final String NULL_VALUE = null;
     public static final String EMPTY_STRING = "empty";
     public static final String EMPTY_VALUE = "";
+
+    public static final String JWE_TYPE = "JOSE";
+    public static final String JWE_CONTENT_TYPE = "jwt";
 
 }

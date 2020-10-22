@@ -71,6 +71,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("wasJmsServer", "messagingServer");
         featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
         featureNameMapping.put("jsf", "faces");
+        featureNameMapping.put("jsp", "pages");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -114,7 +115,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature the feature to add
+     * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -127,7 +128,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures the features to add
+     * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -458,10 +459,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Feature names are required to have a '-', for example, "servlet-3.1". Null
      * is answered for feature names which do not have a '-'.
      *
-     * @param originalFeature The feature name which is to be replaced.
-     * @param replacementFeatures Table of replacement features.
+     * @param  originalFeature     The feature name which is to be replaced.
+     * @param  replacementFeatures Table of replacement features.
      *
-     * @return The replacement feature name. Null if no replacement is available.
+     * @return                     The replacement feature name. Null if no replacement is available.
      */
     private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
         String methodName = "getReplacementFeature";
@@ -478,8 +479,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 return replacementFeature;
             }
         }
-        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesnt match
-        // the original feature name it replaces. We also check viceversa if the feature is an EE9 feature that involves a name change
+        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesn't match
+        // the original feature name it replaces. We also check vice versa if the feature is an EE9 feature that involves a name change
         // to update from EE9 to EE7/EE8
         Log.info(c, methodName, "No feature replacement found for [ " + originalFeature + " ]. Verifying if feature name was changed on EE9.");
         // Reset base feature to not include the "-"

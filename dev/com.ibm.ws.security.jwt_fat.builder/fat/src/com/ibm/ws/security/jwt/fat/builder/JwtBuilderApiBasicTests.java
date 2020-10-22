@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.fat.builder;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.json.JsonObject;
 
 import org.jose4j.jwt.NumericDate;
 import org.junit.BeforeClass;
@@ -28,7 +32,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
@@ -83,7 +89,6 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     // -- once where the builder will process claims individually
     // This allows us to use the same tests with a variety of claims without having to duplicate test cases
     @ClassRule
-    //  TODO  public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection());
     public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection()).andWith(JwtBuilderClaimRepeatActions.asSingle());
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
@@ -99,6 +104,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // Start server that will build the JWT Token
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         ServerInstanceUtils.addPSSAlgSettingToBootstrap(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_basicRegistry.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
@@ -107,6 +113,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // start server to run protected app - make sure we can use the JWT Token that we produce
         serverTracker.addServer(rsServer);
+        skipRestoreServerTracker.addServer(rsServer); // shouldn't need to reconfig server, so, no need to restore
         ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
         ServerInstanceUtils.addPSSAlgSettingToBootstrap(rsServer);
         rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
@@ -4287,1571 +4294,6 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
     }
 
-    /***************************************************** Test signWith ****************************************************/
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg HS256/signingKey "useThisToSign")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_string() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a null signingKey value
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg HS256/signingKey <null>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_null() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with an empty( "") signingKey value
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg HS256/signingKey "")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_empty() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but RS256 as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg RS256/signingKey "signWith")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_string() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but <null> as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg <null>/signingKey "signWith")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_null_key_string() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, null);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "" as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg ""/signingKey "signWith")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_empty_key_string() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, "");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "someNonAlg" as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg someNonAlg/signingKey "signWith")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_garbage_key_string() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, "someNonAlg");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg RS256/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg RS384/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS384_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg RS512/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS512_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg ES256/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES256_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg ES384/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES384_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg ES512/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES512_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg PS256/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    //    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS256_key_privKey() throws Exception {
-
-        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS256
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg PS384/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    //    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS384_key_privKey() throws Exception {
-
-        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS384
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS384);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg PS512/signingKey <privateKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    //    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS512_key_privKey() throws Exception {
-
-        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS512
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg HS384/signingKey "useThisToSign")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS384_key_string() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have updated signWith (value should be created from sigALg HS512/signingKey "useThisToSign")
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS512_key_string() throws Exception {
-
-        String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    // TODO - should add cases where we specify one alg, and then point to the private key of another alg - need runtime updates before this can be done.
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a bad value
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value should be created from sigALg RS256/signingKey <publicKey>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_publicKey() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PUBLIC_KEY_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with <null> signingKey value
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg RS256/signingKey <null>)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_null() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but <null> as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg <null>/signingKey privateKey)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_null_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, null);
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "" as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg ""/signingKey privateKey)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_empty_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, "");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "someNonAlg" as sigAlg
-     * <LI>generate a JWT token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should NOT have updated signWith (value failed due to sigALg "someNonAlg"/signingKey privateKey)
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking "signWith"
-     * <LI>The failure messages from our attempt to invoke "signWith"
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * </UL>
-     * </OL>
-     */
-    @Test
-    public void JwtBuilderAPIBasicTests_signWith_sigAlg_garbage_key_privKey() throws Exception {
-
-        String builderId = "jwt1";
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, "someNonAlg");
-        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-
-        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
-
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    /*************************** Test multiple settings and consume Token ***************************/
-    /**
-     * <p>
-     * Test Purpose:
-     * <OL>
-     * <LI>Create a builder using the specified configId (a generic config used for most tests)
-     * <LI>Run a variety of the api's to update the builder
-     * <LI>generate a JWT token
-     * <LI>Invoke a protected app using the generated JWT Token
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The builder should be created with default values as there is not much defined in the specified config
-     * <LI>The builder should have been updated
-     * <LI>The JWT Token should be created based on the builder
-     * <LI>The JWT Token will be used to display the claim values
-     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
-     * <LI>The test case will validate the content of:
-     * <UL>
-     * <LI>The messages logged indicating that we were invoking various set apis
-     * <LI>The content of the returned token
-     * <LI>The output from running the query apis
-     * <LI>The output from invoking the protected app
-     * </UL>
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void JwtBuilderAPIBasicTests_multiple_apis_and_consumeToken() throws Exception {
-
-        String builderId = null;
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-
-        // create settings that will be passed to the test app as well as used to create what to expect in the results
-        // set freeform claims into a json object.  Add that object into the json object of things to set
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(PayloadConstants.SUBJECT, "testuser");
-        testSettings.put(PayloadConstants.EXPIRATION_TIME, testExp);
-        testSettings.put(PayloadConstants.NOT_BEFORE, 1477691420L);
-        JSONObject claimsToSet = new JSONObject();
-        claimsToSet.put(PayloadConstants.AUTHORIZED_PARTY, "someParty");
-        claimsToSet.put("someClaim", "someValue");
-        claimsToSet.put("anotherClaim", "anotherValue");
-        claimsToSet.put("stillOneMoreClaim", "stillOneMoreValue");
-        testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
-        expectationSettings.put("overrideSettings", testSettings);
-
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-
-        // Indicate how claims are to be handled (one at a time, or added as a hashmap)
-        List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
-        extraParms.add(new NameValuePair(JWTBuilderConstants.ADD_CLAIMS_AS, processClaimsAs));
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, extraParms, testSettings);
-        validationUtils.validateResult(response, expectations);
-
-        // Page appResponse = actions.invokeProtectedAppWithJwtTokenInHeader(_testName, response, protectedApp);
-        // Try to use the JWT Token created by the builder - it can be passed in the header
-        // as well as - as a parm -  in this test we'll pass as a parm - another test will pass in the header
-        // the method will pull the JWT Token from the builder response
-        Page appResponse = actions.invokeProtectedAppWithJwtTokenAsParm(_testName, response, protectedApp);
-
-        Expectations appExpectations = new Expectations();
-        appExpectations.addExpectations(CommonExpectations.successfullyReachedUrl(null, protectedApp));
-        validationUtils.validateResult(appResponse, appExpectations);
-
-    }
-
-    /***************************************************** Test encryptWith ****************************************************/
-    /**
-     * The encryption tests will behave the same as the non-encryption tests - the test app will run the set methods,
-     * build, then the get methods - the output from the get methods is what the builder expectations will validate against.
-     * When the token is encrypted, the same get methods should/better work... So, we'll be testing that they return
-     * the correct results.
-     * The app will also run compact on the builder to generated the JWT Token string - when it's encrypted, it'll create
-     * a 5 part string (not encrypted, it'll be 3 parts)
-     * The encryption tests will decrypt and parse the token to do extra validation on the token!
-     *
-     **/
-    //    // encryptWith(String  keyManagementAlg,  Key keyManagementKey,  String  contentEncryptionAlg)
-    //    //"RSA-OAEP",  rsaPublicKey, "A256GCM"
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //
-    //        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
-    //        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
-    //
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, encryptKey);
-    //        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG));
-    //
-    //    }
-    //  remaining tests will require updates similiar to the above test
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_shortPublicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_privateKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512private-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_RS256() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_ES384() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_HS512() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_shortPublicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS384public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_privateKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384private-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_RS384() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_ES512() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_HS256() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS384public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_shortPublicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "short_RS512public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_privateKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512private-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_RS512() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_ES256() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_HS384() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
-    //        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
-    //        expectationSettings.put("overrideSettings", testSettings);
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS512public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_Invalid_publicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, "Some Random string");
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_Invalid_KeyMgmtAlg_RS256_publicKey_A256GCM() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "SomeKeyMgmtAlg");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "A256GCM");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    @Test
-    //    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_Invalid_ContentEncryptAlg() throws Exception {
-    //
-    //        String builderId = "jwt1";
-    //        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
-    //
-    //        // create settings that will be passed to the test app as well as used to create what to expect in the results
-    //        JSONObject testSettings = new JSONObject();
-    //        testSettings.put(JWTBuilderConstants.KEY_MGMT_ALG, "RSA-OAEP");
-    //        testSettings.put(JWTBuilderConstants.ENCRYPT_KEY, getKeyFromFile(builderServer, "RS256public-key.pem"));
-    //        testSettings.put(JWTBuilderConstants.CONTENT_ENCRYPT_ALG, "SomeContentEncryptAlg");
-    //        //        expectationSettings.put("overrideSettings", testSettings);
-    //        // TODO - update expectations for the encryption settings.
-    //
-    //        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
-    //
-    //        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
-    //        validationUtils.validateResult(response, expectations);
-    //
-    //    }
-    //
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_sigAlg_RS256_key_string() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_null_key_string() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_empty_key_string() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_garbage_key_string() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_privKey() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS384_key_privKey() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS512_key_privKey() throws Exception {
-    //    //        public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_publicKey() throws Exception {
-    //    //    public void JwtBuilderAPIBasicTests_encryptWith_sigAlg_RS256_key_null() throws Exception {
-
     /*****************************************************
      * Test various claimsFrom using encryption
      ****************************************************/
@@ -5981,16 +4423,14 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     }
 
-    // TODO Failing since claimsFrom doesn't know how to parse JWE Token
-    //@Test
+    // TODO - new error message is in the works
+    @Test
+    @ExpectedFFDC({ "org.jose4j.lang.JoseException" })
     public void JwtBuilderAPIBasicTests_claimsFrom_jweString_to_jwtToken_allClaims() throws Exception {
 
         // build a token using the alternate builder config (we'll get claims from it)
         String baseBuilderId = "encryptJwtRS256";
         String jwtToken = getBaseToken(baseBuilderId);
-        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
-        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -6003,34 +4443,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         String builderId = "jwt1";
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
 
-        validationUtils.validateResult(response, expectations);
-
-    }
-
-    // TODO Failing since claimsFrom doesn't know how to parse JWE Token
-    //@Test
-    public void JwtBuilderAPIBasicTests_claimsFrom_jweStringRS256_to_jweTokenRS384_allClaims() throws Exception {
-
-        // build a token using the alternate builder config (we'll get claims from it)
-        String baseBuilderId = "encryptJwtRS256";
-        String jwtToken = getBaseToken(baseBuilderId);
-        JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
-        // second token will be encrypted - we don't have a way to pass the key to the validation methods, so, we'll skip the checks that required the actual payload content
-        baseSettings.remove(PayloadConstants.EXPIRATION_TIME);
-        baseSettings.remove(PayloadConstants.ISSUED_AT);
-        // since we getting all claims in the case, we can base our expectations upon the content of this first token)
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, baseSettings, builderServer);
-
-        // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
-        // give it a flag that says jwt string, and then pass the 3 part jwt token string
-        JSONObject testSettings = new JSONObject();
-        testSettings.put(JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM, JWTBuilderConstants.JWT_BUILDER_ACTION_CLAIM_FROM_JWT_STRING);
-        testSettings.put(JWTBuilderConstants.JWT_TOKEN, jwtToken);
-
-        // Now, add any override values - for this test, there are none
-        // Invoke the builder app to create a token (using (a second) builder, load all claims from the token into the second builder
-        String builderId = "encryptJwtRS384";
-        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6017E_BAD_EMPTY_TOKEN, builderServer);
 
         validationUtils.validateResult(response, expectations);
 
@@ -6091,6 +4504,2114 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
 
         validationUtils.validateResult(response, expectations);
+
+    }
+
+    /***************************************************** Test signWith ****************************************************/
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg HS256/signingKey "useThisToSign")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_string() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a null signingKey value
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg HS256/signingKey <null>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_null() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with an empty( "") signingKey value
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg HS256/signingKey "")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_empty() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but RS256 as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg RS256/signingKey "signWith")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_string() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but <null> as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg <null>/signingKey "signWith")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_null_key_string() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, null);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "" as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg ""/signingKey "signWith")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_empty_key_string() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, "");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "someNonAlg" as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg someNonAlg/signingKey "signWith")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_garbage_key_string() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, "someNonAlg");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg RS256/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg RS384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS384_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg RS512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS512_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES256/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES256_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES384_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg ES512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES512_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS256/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS256_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS256
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS384/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Mode(TestMode.LITE)
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS384_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS384
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_PS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value to generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg PS512/signingKey <privateKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    //    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_PS512_key_privKey() throws Exception {
+
+        // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS512
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg HS384/signingKey "useThisToSign")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS384_key_string() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a good value generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have updated signWith (value should be created from sigALg HS512/signingKey "useThisToSign")
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS512_key_string() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    // TODO - should add cases where we specify one alg, and then point to the private key of another alg - need runtime updates before this can be done.
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a bad value
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value should be created from sigALg RS256/signingKey <publicKey>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_publicKey() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PUBLIC_KEY_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with <null> signingKey value
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg RS256/signingKey <null>)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_null() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, null);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6036E_INVALID_KEY, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but <null> as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg <null>/signingKey privateKey)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_null_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, null);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "" as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg ""/signingKey privateKey)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_empty_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, "");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run the signWith api to update the builder with a valid signingKey value, but "someNonAlg" as sigAlg
+     * <LI>generate a JWT token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should NOT have updated signWith (value failed due to sigALg "someNonAlg"/signingKey privateKey)
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking "signWith"
+     * <LI>The failure messages from our attempt to invoke "signWith"
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_signWith_sigAlg_garbage_key_privKey() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(HeaderConstants.ALGORITHM, "someNonAlg");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6037E_INVALID_SIG_ALG, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /*************************** Test multiple settings and consume Token ***************************/
+    /**
+     * <p>
+     * Test Purpose:
+     * <OL>
+     * <LI>Create a builder using the specified configId (a generic config used for most tests)
+     * <LI>Run a variety of the api's to update the builder
+     * <LI>generate a JWT token
+     * <LI>Invoke a protected app using the generated JWT Token
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>The builder should be created with default values as there is not much defined in the specified config
+     * <LI>The builder should have been updated
+     * <LI>The JWT Token should be created based on the builder
+     * <LI>The JWT Token will be used to display the claim values
+     * <LI>The JWT Token will be used to generate a JWT JSON String and this will be returned
+     * <LI>The test case will validate the content of:
+     * <UL>
+     * <LI>The messages logged indicating that we were invoking various set apis
+     * <LI>The content of the returned token
+     * <LI>The output from running the query apis
+     * <LI>The output from invoking the protected app
+     * </UL>
+     * </OL>
+     */
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwtBuilderAPIBasicTests_multiple_apis_and_consumeToken() throws Exception {
+
+        String builderId = null;
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        // set freeform claims into a json object.  Add that object into the json object of things to set
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(PayloadConstants.SUBJECT, "testuser");
+        testSettings.put(PayloadConstants.EXPIRATION_TIME, testExp);
+        testSettings.put(PayloadConstants.NOT_BEFORE, 1477691420L);
+        JSONObject claimsToSet = new JSONObject();
+        claimsToSet.put(PayloadConstants.AUTHORIZED_PARTY, "someParty");
+        claimsToSet.put("someClaim", "someValue");
+        claimsToSet.put("anotherClaim", "anotherValue");
+        claimsToSet.put("stillOneMoreClaim", "stillOneMoreValue");
+        testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
+        expectationSettings.put("overrideSettings", testSettings);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // Indicate how claims are to be handled (one at a time, or added as a hashmap)
+        List<NameValuePair> extraParms = new ArrayList<NameValuePair>();
+        extraParms.add(new NameValuePair(JWTBuilderConstants.ADD_CLAIMS_AS, processClaimsAs));
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, extraParms, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        // Page appResponse = actions.invokeProtectedAppWithJwtTokenInHeader(_testName, response, protectedApp);
+        // Try to use the JWT Token created by the builder - it can be passed in the header
+        // as well as - as a parm -  in this test we'll pass as a parm - another test will pass in the header
+        // the method will pull the JWT Token from the builder response
+        Page appResponse = actions.invokeProtectedAppWithJwtTokenAsParm(_testName, response, protectedApp);
+
+        Expectations appExpectations = new Expectations();
+        appExpectations.addExpectations(CommonExpectations.successfullyReachedUrl(null, protectedApp));
+        validationUtils.validateResult(appResponse, appExpectations);
+
+    }
+
+    /***************************************************** Test encryptWith ****************************************************/
+    /**
+     * The encryption tests will behave the same as the non-encryption tests - the test app will run the set methods,
+     * build, then the get methods - the output from the get methods is what the builder expectations will validate against.
+     * When the token is encrypted, the same get methods should/better work... So, we'll be testing that they return
+     * the correct results.
+     * The app will also run compact on the builder to generated the JWT Token string - when it's encrypted, it'll create
+     * a 5 part string (not encrypted, it'll be 3 parts)
+     * The encryption tests will decrypt and parse the token to do extra validation on the token!
+     *
+     **/
+    // encryptWith(String  keyManagementAlg,  Key keyManagementKey,  String  contentEncryptionAlg)
+    //"RSA-OAEP",  rsaPublicKey, "A256GCM"
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_shortPublicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_privateKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was Invalid."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_RS256() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_ES384() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_HS512() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_shortPublicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_privateKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was Invalid."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_RS384() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS384);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_ES512() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_HS256() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_shortPublicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getShortComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getShortComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_privateKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was Invalid."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_RS512() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS512);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_ES256() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_ES256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_HS256() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        // add parms to cause token to be signed with specified alg - normal expectations can validate as the alg will be embedded in the encrypted token
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY, "useThisToSign");
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_STRING_TYPE);
+
+        // add the flags to cause encryption after we create the expectations as we're adding a ref to testSettings to expectationSettings and that'll
+        // cause expectations to be created for things that build the token, but don't show up in the token
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        JwtTokenForTest jwtTokenForTest = validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+        JsonObject header = jwtTokenForTest.getJsonHeader();
+        String alg = header.getString(HeaderConstants.ALGORITHM);
+        if (!(alg != null && alg.equals(testSettings.get(HeaderConstants.ALGORITHM)))) {
+            fail("The token did NOT contain the expected signature algorithm (" + testSettings.get(HeaderConstants.ALGORITHM) + "), instead, it contained (" + alg + ").");
+        }
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS256_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidAlgorithmException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_invalidKeyMgmtKeyAlg_RS256_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, "someKeyMgmtValue");
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key managment key algorithm was bad."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS384_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS512_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A192GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ExpectedFFDC({ "org.jose4j.lang.InvalidAlgorithmException", "com.ibm.ws.security.jwt.internal.JwtTokenException" })
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_invalidContentEncryptAlg() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, "someContentEncryptAlg");
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the context encryption algorithm was bad."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_RS256_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_goodBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_null_publicKey_A256GCM() throws Exception {
+
+        String builderId = "jwt1";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, "Message log did not contain an error indicating that the key management key was missing."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_null_publicKey_goodBuidlerConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, builderServer);
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6058W_KEY_MGMT_KEY_MISSING, "Message log did not contain an error indicating that the key management key was missing."));
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_nullContentEncryptAlg() throws Exception {
+
+        String builderId = "jwt1";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_nullContentEncryptAlg_goodBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_useSameSettingsAsBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_useDifferentKeyMgmtKeyAlgThanBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_useDifferentPublicKeyThanBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
+
+    }
+
+    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @Test
+    public void JwtBuilderAPIBasicTests_encryptWith_useDifferentContentEncryptAlgThanBuilderConfig() throws Exception {
+
+        String builderId = "encryptJwtRS256";
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+
+        // create settings that will be passed to the test app as well as used to create what to expect in the results
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(JWTBuilderConstants.PARAM_KEY_MGMT_ALG, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+        String decryptKey = JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256);
+
+        testSettings.put(JWTBuilderConstants.PARAM_ENCRYPT_KEY, encryptKey);
+        testSettings.put(JWTBuilderConstants.DECRYPT_KEY, decryptKey);
+        testSettings.put(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(response, expectations);
+
+        validationUtils.validateJWEToken(response, (String) testSettings.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG), (String) testSettings.get(JWTBuilderConstants.DECRYPT_KEY), (String) testSettings.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG));
 
     }
 

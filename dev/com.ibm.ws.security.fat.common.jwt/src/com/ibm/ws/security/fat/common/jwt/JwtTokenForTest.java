@@ -113,12 +113,7 @@ public class JwtTokenForTest {
         if (privateKey == null) {
             processJWS(jwtTokenString);
         } else {
-            String[] jwtParts = splitTokenString(jwtTokenString);
-            String headerString = jwtParts[0];
-            JsonObject jwtHeaderObject = deserialize(headerString);
-            String keyMgmtKeyAlg = jwtHeaderObject.getString(HeaderConstants.ALGORITHM);
-            String contentEncryptAlg = jwtHeaderObject.getString(HeaderConstants.ENCRYPTION);
-            processJWE(jwtTokenString, keyMgmtKeyAlg, privateKey, contentEncryptAlg);
+            processJWE(jwtTokenString, privateKey);
         }
     }
 
@@ -172,9 +167,16 @@ public class JwtTokenForTest {
 
     }
 
+    public void processJWE(String jwtTokenString, String privateKey) throws Exception {
+        processJWE(jwtTokenString, null, privateKey, null);
+    }
+
     public void processJWE(String jwtTokenString, String expectedKeyMgmtAlg, String privateKey, String expectedContentEncryptAlg) throws Exception {
 
         Log.info(thisClass, "processJWE", "Original JWE Token String: " + jwtTokenString);
+//        Log.info(thisClass, "processJWE", "Key Management Key Alg: " + expectedKeyMgmtAlg);
+//        Log.info(thisClass, "processJWE", "Private Key: " + privateKey);
+//        Log.info(thisClass, "processJWE", "Content Encryption Alg: " + expectedContentEncryptAlg);
 
         // process the JWE Header
         String[] jwtParts = splitTokenString(jwtTokenString);
@@ -189,10 +191,14 @@ public class JwtTokenForTest {
 
         // now decrypt the JWE and process the JWS
         JsonWebEncryption jwe = new JsonWebEncryption();
-        AlgorithmConstraints algorithmConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedKeyMgmtAlg);
-        jwe.setAlgorithmConstraints(algorithmConstraints);
-        AlgorithmConstraints encryptionConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedContentEncryptAlg);
-        jwe.setContentEncryptionAlgorithmConstraints(encryptionConstraints);
+        if (expectedKeyMgmtAlg != null) {
+            AlgorithmConstraints algorithmConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedKeyMgmtAlg);
+            jwe.setAlgorithmConstraints(algorithmConstraints);
+        }
+        if (expectedContentEncryptAlg != null) {
+            AlgorithmConstraints encryptionConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST, expectedContentEncryptAlg);
+            jwe.setContentEncryptionAlgorithmConstraints(encryptionConstraints);
+        }
         jwe.setCompactSerialization(jwtTokenString);
         PrivateKey keyManagementKey = JwtKeyTools.getPrivateKeyFromPem(privateKey);
         jwe.setKey(keyManagementKey);

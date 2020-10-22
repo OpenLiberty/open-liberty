@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.security.fat.common.apps.jwtbuilder;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,8 @@ import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
+import com.ibm.ws.security.fat.common.jwt.utils.JWTApiApplicationUtils;
+import com.ibm.ws.security.fat.common.utils.KeyTools;
 import com.ibm.ws.security.openidconnect.token.PayloadConstants;
 
 @WebServlet("/build")
@@ -37,6 +41,7 @@ public class JwtBuilderServlet extends HttpServlet {
 
     private Map<String, String[]> parameters = new HashMap<String, String[]>();
     JwtBuilder builder = null;
+    protected JWTApiApplicationUtils appUtils = new JWTApiApplicationUtils();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,6 +61,7 @@ public class JwtBuilderServlet extends HttpServlet {
 
             JwtToken jwt = generateJwt(request);
             response.addCookie(new Cookie(JwtConstants.JWT_COOKIE_NAME, jwt.compact()));
+            printTokenParts(response, jwt);
 
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
@@ -70,7 +76,15 @@ public class JwtBuilderServlet extends HttpServlet {
         }
     }
 
-    private JwtToken generateJwt(HttpServletRequest request) throws InvalidBuilderException, InvalidClaimException, JwtException {
+    private void printTokenParts(HttpServletResponse response, JwtToken jwt) throws Exception {
+
+        PrintWriter pw = appUtils.outputEntry(response, "JwtBuilderServlet");
+        appUtils.outputHeader(pw, JwtConstants.JWT_TOKEN_HEADER, jwt);
+        appUtils.outputClaims(pw, JwtConstants.JWT_CLAIM, jwt);
+
+    }
+
+    private JwtToken generateJwt(HttpServletRequest request) throws InvalidBuilderException, InvalidClaimException, JwtException, Exception {
         System.out.println("Generating a JWT...");
 
         // create builder
@@ -79,6 +93,7 @@ public class JwtBuilderServlet extends HttpServlet {
 
         JwtToken jwt = builder.buildJwt();
         System.out.println("Built JWT: " + jwt.compact());
+
         return jwt;
     }
 
@@ -89,7 +104,11 @@ public class JwtBuilderServlet extends HttpServlet {
         return builder;
     }
 
-    private void populateBuilder(HttpServletRequest request) throws InvalidBuilderException, InvalidClaimException, JwtException {
+    private void populateBuilder(HttpServletRequest request) throws InvalidBuilderException, InvalidClaimException, JwtException, Exception {
+
+        String keyMgmtKeyAlg = null;
+        String contentEncryptAlg = null;
+        String encryptKey = null;
 
         Map<String, Object> claimMap = new HashMap<String, Object>();
         for (Entry<String, String[]> parameter : parameters.entrySet()) {
@@ -112,6 +131,21 @@ public class JwtBuilderServlet extends HttpServlet {
                 case PayloadConstants.EXPIRATION_TIME_IN_SECS:
                     builder.expirationTime(getOneLongValueFromParm(parameter));
                     break;
+                case JwtConstants.PARAM_KEY_MGMT_ALG:
+                    // allow special handling later
+                    keyMgmtKeyAlg = getOneStringValueFromParm(parameter);
+                    System.out.println("KeyMgmtKeyAlg: " + keyMgmtKeyAlg);
+                    break;
+                case JwtConstants.PARAM_ENCRYPT_KEY:
+                    // allow special handling later
+                    encryptKey = getOneStringValueFromParm(parameter);
+                    System.out.println("encryptKey: " + encryptKey);
+                    break;
+                case JwtConstants.PARAM_CONTENT_ENCRYPT_ALG:
+                    // allow special handling later
+                    contentEncryptAlg = getOneStringValueFromParm(parameter);
+                    System.out.println("contentEncryptAlg: " + contentEncryptAlg);
+                    break;
                 default:
                     // handle unknowns
                     addToClaimMap(claimMap, parameter);
@@ -121,6 +155,9 @@ public class JwtBuilderServlet extends HttpServlet {
         if (!claimMap.isEmpty()) {
             builder.claim(claimMap);
         }
+        // handle encryption outside of loop as we could have up to 3 parms need to perform encryption
+        setEncryptWith(keyMgmtKeyAlg, encryptKey, contentEncryptAlg);
+
     }
 
     private String getOneStringValueFromParm(Entry<String, String[]> parameter) {
@@ -157,12 +194,17 @@ public class JwtBuilderServlet extends HttpServlet {
         }
     }
 
-//    private JwtToken buildJwt(String builderConfigId) throws InvalidBuilderException, InvalidClaimException, JwtException {
-//        JwtBuilder builder = JwtBuilder.create(builderConfigId);
-//        //todo - need to figure out how to put upn into the token
-//        builder.claim("upn", "testuser");
-//        System.out.println("builder content: " + builder.toString());
-//        return builder.buildJwt();
-//    }
+    protected void setEncryptWith(String keyMgmtAlg, String encryptKeyString, String contentEncryptAlg) throws Exception {
+
+        if (keyMgmtAlg != null || encryptKeyString != null || contentEncryptAlg != null) {
+
+            if (keyMgmtAlg != null || encryptKeyString != null || contentEncryptAlg != null) {
+                Key encryptKey = KeyTools.getKeyFromPem(encryptKeyString);
+                System.out.println("Calling encryptWith with parms: keyManagementAlg=" + keyMgmtAlg + ", keyManagementKey=" + encryptKey + ", contentEncryptionAlg="
+                                   + contentEncryptAlg);
+                builder.encryptWith(keyMgmtAlg, encryptKey, contentEncryptAlg);
+            }
+        }
+    }
 
 }

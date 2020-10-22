@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.fat.consumer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,19 +22,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
 import com.ibm.ws.security.jwt.fat.consumer.utils.ConsumerHelpers;
+import com.ibm.ws.security.jwt.fat.consumer.utils.JwtConsumerMessageConstants;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -48,7 +52,6 @@ import componenttest.topology.impl.LibertyServer;
  * ie: signature algorithm in the config is RS256, but the token uses HS256 - we should fail
  */
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtConsumerApiConfigTests extends CommonSecurityFat {
@@ -71,11 +74,12 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
+        skipRestoreServerTracker.addServer(consumerServer);
         consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_configTests.xml");
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         // one of the JWT Consumer configs has an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
-        consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm", JwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
+        consumerServer.addIgnoredErrors(Arrays.asList(JwtConsumerMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm", JwtConsumerMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));
 
         // set the default signing key for this test class (individual test cases can override if needed)
         consumerHelpers.setDefaultKeyFile(consumerServer, "rsa_privateKey.pem");
@@ -158,28 +162,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
-     * server.xml has a config that has a blank ("") configId. The request to the consumer passes a blank ("") id.
-     * We expect a failure as the blank ("") configId passed will be substituted with the default "defaultJwtConfig".
-     * This built in config does NOT have a trusted issuer, so, the test will fail with a trusted issuer not found error.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void JwtConsumerApiConfigTests_blankId_blankConsumerIdPassedInRequest() throws Exception {
-
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_configTests2.xml");
-
-        builder.setIssuer("testIssuer2");
-        String jwtToken = buildToken();
-
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[testIssuer2\\]", currentAction, consumerServer, JwtConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG);
-
-        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "", jwtToken);
-        validationUtils.validateResult(response, currentAction, expectations);
-
-    }
-
-    /**
      * The consumer really does require some config information. The question is with nothing in the config, what will the failure
      * be?
      * It'll just be the first thing checked. That happens to be the trusted issuer. It doesn't matter what issuer we put in the
@@ -192,7 +174,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "emptyConfig");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "emptyConfig");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "emptyConfig", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -212,7 +194,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildConsumerClientAppExpectations(currentAction, consumerServer);
-        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + ".*doesntExist", "Response did not show the expected " + JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + " failure."));
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtConsumerMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + ".*doesntExist", "Response did not show the expected " + JwtConsumerMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + " failure."));
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "doesntExist", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -238,7 +220,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "blankIssuer");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "blankIssuer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "blankIssuer", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -259,7 +241,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.unsetClaim(PayloadConstants.ISSUER);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "blankIssuer");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "blankIssuer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "blankIssuer", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -278,7 +260,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "omittedIssuer");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "omittedIssuer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "omittedIssuer", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -299,7 +281,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.unsetClaim(PayloadConstants.ISSUER);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "omittedIssuer");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "omittedIssuer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "omittedIssuer", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -324,7 +306,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6032E_JWT_CONSUMER_SHARED_KEY_NOT_RETRIEVED + ".+" + JwtMessageConstants.CWWKS6034E_JWT_CONSUMER_SHARED_KEY_NOT_FOUND, currentAction, consumerServer, "sharedKeyBlank_HS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6032E_JWT_CONSUMER_SHARED_KEY_NOT_RETRIEVED + ".+" + JwtConsumerMessageConstants.CWWKS6034E_JWT_CONSUMER_SHARED_KEY_NOT_FOUND, currentAction, consumerServer, "sharedKeyBlank_HS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "sharedKeyBlank_HS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -384,7 +366,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -404,7 +386,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -424,7 +406,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS256 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -466,7 +448,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -486,7 +468,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -506,7 +488,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS384 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -546,7 +528,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -566,7 +548,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -586,7 +568,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_RS512 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -625,7 +607,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -645,7 +627,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -665,7 +647,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES256 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -704,7 +686,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -724,7 +706,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -744,7 +726,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES384 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -783,7 +765,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -803,7 +785,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -823,7 +805,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_ES512 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_ES512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -869,7 +851,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -889,7 +871,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -909,7 +891,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS256 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -956,7 +938,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -976,7 +958,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -996,7 +978,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS384 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS384", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1042,7 +1024,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasRS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1062,7 +1044,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasES";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1082,7 +1064,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String consumerId = JwtConsumerConstants.SIGALG_PS512 + "_trustedAliasPS";
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_PS512", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY, currentAction, consumerServer, consumerId);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, consumerId, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1162,7 +1144,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6032E_JWT_CONSUMER_SHARED_KEY_NOT_RETRIEVED + ".+" + JwtMessageConstants.CWWKS6034E_JWT_CONSUMER_SHARED_KEY_NOT_FOUND, currentAction, consumerServer, "sharedKeyOmitted_HS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6032E_JWT_CONSUMER_SHARED_KEY_NOT_RETRIEVED + ".+" + JwtConsumerMessageConstants.CWWKS6034E_JWT_CONSUMER_SHARED_KEY_NOT_FOUND, currentAction, consumerServer, "sharedKeyOmitted_HS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "sharedKeyOmitted_HS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1223,7 +1205,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, "sharedKeyBadXor_HS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, "sharedKeyBadXor_HS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "sharedKeyBadXor_HS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1248,7 +1230,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceOmitted");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceOmitted");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "audienceOmitted", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1286,7 +1268,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceBlank");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceBlank");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "audienceBlank", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1365,7 +1347,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + "someString");
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceMultiple");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceMultiple");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "audienceMultiple", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1409,7 +1391,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6028E_BAD_ALGORITHM + ".+" + JwtConsumerConstants.SIGALG_HS256 + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "sigAlgOmitted");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6028E_BAD_ALGORITHM + ".+" + JwtConsumerConstants.SIGALG_HS256 + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "sigAlgOmitted");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "sigAlgOmitted", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1448,7 +1430,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6028E_BAD_ALGORITHM + ".+" + JwtConsumerConstants.SIGALG_HS256 + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "sigAlgBlank");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6028E_BAD_ALGORITHM + ".+" + JwtConsumerConstants.SIGALG_HS256 + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "sigAlgBlank");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "sigAlgBlank", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1480,7 +1462,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefOmitted_RS256_withTrustedAlias");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefOmitted_RS256_withTrustedAlias");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRefOmitted_RS256_withTrustedAlias", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1501,7 +1483,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefOmitted_RS256_withoutTrustedAlias");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefOmitted_RS256_withoutTrustedAlias");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRefOmitted_RS256_withoutTrustedAlias", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1522,7 +1504,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefBlank_RS256_withTrustedAlias");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefBlank_RS256_withTrustedAlias");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRefBlank_RS256_withTrustedAlias", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1543,7 +1525,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefBlank_RS256_withoutTrustedAlias");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6029E_NO_SIGNING_KEY + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefBlank_RS256_withoutTrustedAlias");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRefBlank_RS256_withoutTrustedAlias", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1588,7 +1570,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+" + JwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256 + ".+" + JwtMessageConstants.CWWKS6047E_MULTIKEY_NO_ALIAS, currentAction, consumerServer, "trustStoreRef_RS256_withoutTrustedAlias_multipleCert");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+" + JwtConsumerMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256 + ".+" + JwtConsumerMessageConstants.CWWKS6047E_MULTIKEY_NO_ALIAS, currentAction, consumerServer, "trustStoreRef_RS256_withoutTrustedAlias_multipleCert");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRef_RS256_withoutTrustedAlias_multipleCert", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1632,7 +1614,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+badAlias.+rsa_trust.+" + JwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRef_RS256_trustedAliasInValid");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+badAlias.+rsa_trust.+" + JwtConsumerMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRef_RS256_trustedAliasInValid");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRef_RS256_trustedAliasInValid", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1655,7 +1637,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         consumerHelpers.updateBuilderWithRSASettings(builder);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+rsacert.+badtrust.+" + JwtMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefInvalid_RS256_trustedAliasValid");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6033E_JWT_CONSUMER_PUBLIC_KEY_NOT_RETRIEVED + ".+rsacert.+badtrust.+" + JwtConsumerMessageConstants.CWWKS6007E_BAD_KEY_ALIAS + ".+" + JwtConsumerConstants.SIGALG_RS256, currentAction, consumerServer, "trustStoreRefInvalid_RS256_trustedAliasValid");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "trustStoreRefInvalid_RS256_trustedAliasValid", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1705,7 +1687,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6025E_TOKEN_EXPIRED + ".+exp.+clock skew.+3", currentAction, consumerServer, "clockSkew_short");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6025E_TOKEN_EXPIRED + ".+exp.+clock skew.+3", currentAction, consumerServer, "clockSkew_short");
 
         // sleep beyond token lifetime + clockskew
         Thread.sleep(15 * 1000);
@@ -1728,12 +1710,11 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_multiple_invalid_amr() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
         builder.setClaim("amr", new String[] { "iris", "pwd" });
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
-                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
+                JwtConsumerMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "multipleJwtConsumer", currentAction,
                 consumerServer, "multipleJwtConsumer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "multipleJwtConsumer", jwtToken);
@@ -1754,7 +1735,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_multiple_valid_amr() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
         builder.setClaim("amr", new String[] { "pwd", "kba" });
         String jwtToken = buildToken();
 
@@ -1778,12 +1758,11 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_single_invalid_amr() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
         builder.setClaim("amr", new String[] { "OTP" });
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(
-                JwtMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
+                JwtConsumerMessageConstants.CWWKS6054E_INVALID_AMR_CLAIM + ".+" + "singleJwtConsumer", currentAction,
                 consumerServer, "singleJwtConsumer");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
@@ -1804,13 +1783,344 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_single_valid_amr() throws Exception {
 
-        consumerServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtConsumerAmr.xml");
         builder.setClaim("amr", new String[] { "OTP", "iris", "pwd", "kba" });
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "singleJwtConsumer", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    // JwtConsumerApiConfigTests_goodKeyManagementKeyAlias_goodSslRef same as JwtConsumerApiConfigTests_encryptRS256_decryptRS256
+    // JwtConsumerApiConfigTests_nullKeyManagementKeyAlias_goodSslRef same as JwtConsumerApiConfigTests_tokenNotEncrypted_consumerDecrypts
+    /**
+     * server.xml has a config that specifies an invalid key management key algorithm - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can not decrypt the token because
+     * it can't find the certificate to decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_badKeyManagementKeyAlias_goodSslRef() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+CertificateException", currentAction, consumerServer, "bad_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "bad_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key algorithm, but omits the sslRef - the server wide
+     * SSL config does not use a keystore that contains the alias specifies - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can not decrypt the token because
+     * it can't find the certificate to decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_goodKeyManagementKeyAlias_missingSslRef_refMissingFromServerwideSSL() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "missing_sslRef_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key algorithm, but specifies and inavalid sslRef - the server wide
+     * SSL config does not use a keystore that contains the alias specifies - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can not decrypt the token because
+     * it can't find the certificate to decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_goodKeyManagementKeyAlias_baddSslRef() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "bad_sslRef_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key algorithm that is not supported -this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can not decrypt the token because
+     * it can't use an EC alg
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_decryptWithUnsupportedAlg() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "decrypt_ES384");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "decrypt_ES384", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that does not specify a keyManagementKeyAlias - this test ensures that after building a jwt
+     * that is encrypted, we can not decrypt the token because there is not keyManagementKeyAlg
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptedToken_consumerDoesNotDecrypt() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_RS256, jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias - this test ensures that
+     * after building a jwt that is not encrypted can be parsed by a consumer that can handle
+     * encryption (but should NOT require an encrypted token)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_tokenNotEncrypted_consumerDecrypts() throws Exception { // this test would be the same as null keyManagementKeyAlias
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can use the consumer with the matching
+     * private key to "consume" it.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS256_decryptRS256() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS384 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS256_decryptRS384() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS384");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS384", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS512 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS256_decryptRS512() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS512");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS512", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS384 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can use the consumer with the matching
+     * private key to "consume" it.
+     * the token)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS384_decryptRS384() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS384", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS384 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS256 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS384_decryptRS256() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS384 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS512 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS384_decryptRS512() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS384", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS512");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS512", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS512 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, we can use the consumer with the matching
+     * private key to "consume" it.
+     * the token)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS512_decryptRS512() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS512", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS512 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS256 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS512_decryptRS256() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS512 Cert - this test ensures that
+     * after building a jwt that is encrypted a consumer that specifies an RS384 cert can NOT decrypt the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptRS512_decryptRS384() throws Exception {
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS512", null);
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+JoseException", currentAction, consumerServer, "good_decrypt_RS384");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS384", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, but using "RSA-OAEP-256" as the KeyManagementKeyAlg,
+     * we can use the consumer with the matching private key to "consume" it.
+     * the token)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptOtherKeyManagementKeyAlg() throws Exception {
+
+        List<NameValuePair> otherBuilderParms = new ArrayList<NameValuePair>();
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_KEY_MGMT_ALG, JwtConsumerConstants.KEY_MGMT_KEY_ALG_256));
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", otherBuilderParms);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, but using "A192GCM" as the contentEncryptionAlg,
+     * we can use the consumer with the matching private key to "consume" it.
+     * the token)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptOtherContentEncryptionAlg() throws Exception {
+
+        List<NameValuePair> otherBuilderParms = new ArrayList<NameValuePair>();
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConsumerConstants.CONTENT_ENCRYPT_ALG_192));
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
+
+        String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", otherBuilderParms);
+
+        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
 
     }

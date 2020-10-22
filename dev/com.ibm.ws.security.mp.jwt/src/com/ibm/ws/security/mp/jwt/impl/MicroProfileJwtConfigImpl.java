@@ -129,6 +129,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_COOKIE_NAME = "cookieName";
     protected String cookieName;
 
+    public static final String KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
+    protected String keyManagementKeyAlias;
+
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
 
@@ -215,6 +218,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         }
         tokenHeader = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER);
         cookieName = configUtils.getConfigAttribute(props, KEY_COOKIE_NAME);
+        keyManagementKeyAlias = configUtils.getConfigAttribute(props, KEY_KEY_MANAGEMENT_KEY_ALIAS);
         // Ensure that for MP JWT 1.2 and above that "aud" claim is allowed in tokens even if audiences or
         // mp.jwt.verify.audiences are not configured
         ignoreAudClaimIfNotConfigured = true;
@@ -313,14 +317,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @FFDCIgnore(MpJwtProcessingException.class)
     public String getTrustStoreRef() {
         if (this.sslRefInfo == null) {
-            MicroProfileJwtService service = mpJwtServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "MP JWT service is not available");
-                }
-                return null;
-            }
-            sslRefInfo = new SslRefInfoImpl(service.getSslSupport(), service.getKeyStoreServiceRef(), sslRef, trustAliasName);
+            sslRefInfo = initializeSslRefInfo();
         }
         try {
             return sslRefInfo.getTrustStoreName();
@@ -328,6 +325,32 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             // We already logged the error
         }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @FFDCIgnore(MpJwtProcessingException.class)
+    public String getKeyStoreRef() {
+        if (this.sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+        }
+        try {
+            return sslRefInfo.getKeyStoreName();
+        } catch (MpJwtProcessingException e) {
+            // We already logged the error
+        }
+        return null;
+    }
+
+    SslRefInfo initializeSslRefInfo() {
+        MicroProfileJwtService service = mpJwtServiceRef.getService();
+        if (service == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "MP JWT service is not available");
+            }
+            return null;
+        }
+        return new SslRefInfoImpl(service.getSslSupport(), service.getKeyStoreServiceRef(), sslRef, trustAliasName);
     }
 
     /** {@inheritDoc} */
@@ -576,11 +599,14 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         return cookieName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getAMRClaim() {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return keyManagementKeyAlias;
     }
 
 }

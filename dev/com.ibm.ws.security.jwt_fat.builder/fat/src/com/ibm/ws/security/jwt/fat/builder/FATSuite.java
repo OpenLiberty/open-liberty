@@ -28,6 +28,7 @@ import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 
         // Configuration Tests
         JwtBuilderAPIConfigTests.class,
+        JwtBuilderAPIConfigNoIdTests.class,
         JwtBuilderAPIConfigAltKeyStoreTests.class,
         JwtBuilderAPIWithLDAPConfigTests.class,
         JwtBuilderAPIMinimumConfigTests.class,

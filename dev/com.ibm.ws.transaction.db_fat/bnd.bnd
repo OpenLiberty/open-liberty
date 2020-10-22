@@ -22,6 +22,7 @@ fat.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	fattest.databases;version=latest,\
 	org.postgresql:postgresql;version=42.2.5,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.testcontainers:database-commons;version=1.14.0,\
@@ -29,5 +30,4 @@ fat.project: true
 	org.testcontainers:postgresql;version=1.14.0,\
 	org.testcontainers:testcontainers;version=1.14.0,\
 	org.slf4j:slf4j-api;version=1.7.7,\
-	com.ibm.ws.transaction.test.util;version=latest,\
-	fattest.simplicity
+	com.ibm.ws.transaction.test.util;version=latest

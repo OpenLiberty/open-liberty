@@ -5,7 +5,7 @@ repositories {
         username userProps.getProperty("artifactory.download.user")
         password userProps.getProperty("artifactory.download.token")
       }
-      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
     }
   } else {
     mavenCentral()

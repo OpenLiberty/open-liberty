@@ -126,13 +126,37 @@ public abstract class CommonTests {
         (LibertyServer server) -> {
             ShrinkHelper.exportAppToServer( server, CommonTests.createTestWar(), DeployOptions.SERVER_ONLY );
             ShrinkHelper.exportAppToServer( server, CommonTests.createTestNoBndWar(), DeployOptions.SERVER_ONLY );
-            ShrinkHelper.exportAppToServer( server, CommonTests.createTestJar(), DeployOptions.SERVER_ONLY );
-            ShrinkHelper.exportAppToServer( server, CommonTests.createTestNoBndJar(), DeployOptions.SERVER_ONLY );
+
+            // The installation message uses the jar name without the ".jar" extension.
+            // Current ShrinkHelper and LibertyServer code does not take this into account,
+            // and look for the jar name with the ".jar" extension.  That causes application
+            // startup verification to fail, leading to a test failure.
+            //
+            // Patches are made to the list of installed application names to work-around this
+            // naming problem.
+            //
+            // See java source file
+            // "open-liberty/dev/fattest.simplicity/src/com/ibm/websphere/simplicity/ShrinkHelper.java"
+            // and method
+            // "exportAppToServer".
+
+            Archive testJar = CommonTests.createTestJar();
+            ShrinkHelper.exportAppToServer( server, testJar, DeployOptions.SERVER_ONLY );
+            String testJarName = testJar.getName();
+            server.removeInstalledAppForValidation(testJarName);
+            server.addInstalledAppForValidation( testJarName.substring(0, testJarName.length() - ".jar".length()) );
+
+            Archive testJarNoBnd = CommonTests.createTestNoBndJar();
+            ShrinkHelper.exportAppToServer( server, testJarNoBnd, DeployOptions.SERVER_ONLY );
+            String testJarNoBndName = testJarNoBnd.getName();
+            server.removeInstalledAppForValidation(testJarNoBndName);
+            server.addInstalledAppForValidation( testJarNoBndName.substring(0, testJarNoBndName.length() - ".jar".length()) );
         };
 
     protected static FailableConsumer<LibertyServer, Exception> tearDownTestModules =
         (LibertyServer server) -> {
             ShrinkHelper.cleanAllExportedArchives();
+            server.removeAllInstalledAppsForValidation();
         };
 
     protected static FailableConsumer<LibertyServer, Exception> setUpTestApp =
@@ -143,6 +167,7 @@ public abstract class CommonTests {
     protected static FailableConsumer<LibertyServer, Exception> tearDownTestApp =
         (LibertyServer server) -> {
             ShrinkHelper.cleanAllExportedArchives();
+            server.removeAllInstalledAppsForValidation();
         };
 
     protected static void commonSetUp(
@@ -150,20 +175,26 @@ public abstract class CommonTests {
         String serverConfig,
         FailableConsumer<LibertyServer, Exception> appSetUp) throws Exception {
 
+        Log.info( testClass, "commonSetup", "Server configuration [ " + serverConfig + " ]" );
+
         appSetUp.accept(server); // throws Exception
+
+        server.listAllInstalledAppsForValidation();
 
         server.setServerConfigurationFile(serverConfig);
 
         server.copyFileToLibertyInstallRoot("lib/features", "features/libertyinternals-1.0.mf");
         server.copyFileToLibertyInstallRoot("lib", "bundles/ddmodel.jar");
 
-        server.startServer( testClass.getClass().getSimpleName() + ".log" );
+        server.startServer( testClass.getSimpleName() + ".log" );
     }
 
     protected static void commonTearDown(
         Class<?> testClass,
         FailableConsumer<LibertyServer, Exception> appTearDown,
         String[] expectedErrors) throws Exception {
+
+        Log.info( testClass, "commonTearDown", "Expected errors [ " + expectedErrors.length + " ]" );
 
         server.stopServer(expectedErrors);
 
