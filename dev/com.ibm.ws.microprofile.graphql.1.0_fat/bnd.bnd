@@ -20,6 +20,7 @@ src: \
   test-applications/graphQLInterfaceApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
+  test-applications/jarInWarApp/src,\
   test-applications/metricsApp/src,\
   test-applications/inputFieldsApp/src,\
   test-applications/outputFieldsApp/src,\

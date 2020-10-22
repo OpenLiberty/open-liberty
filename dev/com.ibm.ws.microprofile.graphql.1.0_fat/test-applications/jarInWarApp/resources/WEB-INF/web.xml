@@ -1,0 +1,38 @@
+<web-app
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    version="3.0">
+
+  <display-name>rolesAuth</display-name>
+  <description>Test Case App for testing role-based authorization</description>
+
+    <security-constraint id="SecurityConstraint_1">
+        <web-resource-collection id="WebResourceCollection_1">
+            <web-resource-name>allResources</web-resource-name>
+            <description>Requiring authentication for all resources when appSecurity is enabled</description>
+            <url-pattern>/graphql/*</url-pattern>
+            <url-pattern>/graphiql.html</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint id="UserDataConstraint_1">
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+        <auth-constraint id="AuthConstraint_1">
+            <role-name>Role1</role-name>
+            <role-name>Role2</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>rolesAuthApp</realm-name>
+    </login-config>
+    <security-role id="SecurityRole_1">
+        <role-name>Role1</role-name>
+    </security-role>
+    <security-role id="SecurityRole_2">
+        <role-name>Role2</role-name>
+    </security-role>
+</web-app>

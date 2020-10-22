@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="test-applications/ifaceApp/src"/>
 	<classpathentry kind="src" path="test-applications/ignoreApp/src"/>
 	<classpathentry kind="src" path="test-applications/inputFieldsApp/src"/>
+	<classpathentry kind="src" path="test-applications/jarInWarApp/src"/>
 	<classpathentry kind="src" path="test-applications/metricsApp/src"/>
 	<classpathentry kind="src" path="test-applications/outputFieldsApp/src"/>
 	<classpathentry kind="src" path="test-applications/rolesAuthApp/src"/>
