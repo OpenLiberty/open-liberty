@@ -104,6 +104,8 @@ jobs:
       max-parallel: 18
       matrix:
         include:
+          # This is a special category that runs directly modfied FATs in FULL mode
+          - category: MODIFIED_FULL_MODE
           - category: GENERAL
             fat-buckets: >
               build.example_fat
@@ -192,7 +194,6 @@ jobs:
               com.ibm.ws.concurrent.persistent_fat_feature
               com.ibm.ws.concurrent.persistent_fat_initial_polling
               com.ibm.ws.concurrent.persistent_fat_jca
-              com.ibm.ws.concurrent.persistent_fat_loadtest
               com.ibm.ws.concurrent.persistent_fat_locking
               com.ibm.ws.concurrent.persistent_fat_mbean
               com.ibm.ws.concurrent.persistent_fat_multiple
