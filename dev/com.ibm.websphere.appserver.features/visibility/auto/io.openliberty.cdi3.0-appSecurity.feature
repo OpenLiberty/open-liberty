@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
 -bundles=\
   com.ibm.ws.cdi.security
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=core

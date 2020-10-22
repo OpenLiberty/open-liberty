@@ -8,5 +8,5 @@ Subsystem-Version: 2.0.0
  com.ibm.ws.security.authentication, \
  io.openliberty.security.jaas.internal.common, \
  io.openliberty.security.auth.internal.data
-kind=noship
-edition=full
+kind=beta
+edition=base

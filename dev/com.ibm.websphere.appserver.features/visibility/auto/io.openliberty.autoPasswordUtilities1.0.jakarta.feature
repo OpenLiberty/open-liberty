@@ -14,5 +14,5 @@ IBM-Install-Policy: when-satisfied
  io.openliberty.authData; location:=dev/api/ibm/
 -files=\
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.authData_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=base

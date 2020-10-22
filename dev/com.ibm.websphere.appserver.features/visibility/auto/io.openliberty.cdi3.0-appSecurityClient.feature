@@ -9,5 +9,5 @@ IBM-Provision-Capability: \
 -bundles=\
   com.ibm.ws.cdi.client
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=base
