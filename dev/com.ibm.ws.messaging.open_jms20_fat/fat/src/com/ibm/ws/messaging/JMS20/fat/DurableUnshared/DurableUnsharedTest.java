@@ -160,7 +160,7 @@ public class DurableUnsharedTest {
         assertTrue("testCreateUnSharedDurableConsumer_JRException_TCP_SecOff failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testMultiUnSharedDurConsumer_B_SecOff() throws Exception {
         clientServer.setServerConfigurationFile("topicMDB_server.xml");
         clientServer.startServer();
@@ -219,7 +219,7 @@ public class DurableUnsharedTest {
     }
 
     // TCP and SecurityOff
-    // @Test // TODO
+    // @Test
     public void testMultiUnSharedDurConsumer_TCP_SecOff() throws Exception {
         engineServer.stopServer();
         engineServer.setServerConfigurationFile("topicMDBServer.xml");
@@ -286,7 +286,7 @@ public class DurableUnsharedTest {
         engineServer.startServer();
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_2Subscribers_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers");
         assertTrue("Test testCreateUnSharedDurableConsumer_2Subscribers_SecOff failed", testResult);
@@ -294,19 +294,19 @@ public class DurableUnsharedTest {
 
     // TCP and SecOff
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_2Subscribers_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2Subscribers_TCP");
         assertTrue("Test testCreateUnSharedDurableConsumer_2Subscribers_TCP_SecOff failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_2SubscribersDiffTopic() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic");
         assertTrue("Test testCreateUnSharedDurableConsumer_2SubscribersDiffTopic failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_2SubscribersDiffTopic_TCP() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP");
         assertTrue("Test testCreateUnSharedDurableConsumer_2SubscribersDiffTopic_TCP failed", testResult);
@@ -323,7 +323,7 @@ public class DurableUnsharedTest {
 
     @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableUndurableConsumer_JRException_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumer_JRException_TCP");
         assertTrue("Test testCreateUnSharedDurableUndurableConsumer_JRException_TCP_SecOff failed", testResult);
@@ -412,7 +412,7 @@ public class DurableUnsharedTest {
     }
 
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_Sel_2Subscribers_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_Sel_2Subscribers");
         assertTrue("testCreateUnSharedDurableConsumer_Sel_2Subscribers_SecOff failed", testResult);
@@ -420,19 +420,19 @@ public class DurableUnsharedTest {
 
     // TCP and SecOff
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_Sel_2Subscribers_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_Sel_2Subscribers_TCP");
         assertTrue("testCreateUnSharedDurableConsumer_Sel_2Subscribers_TCP_SecOff failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_Sel_2SubscribersDiffTopic() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_Sel_2SubscribersDiffTopic");
         assertTrue("testCreateUnSharedDurableConsumer_Sel_2SubscribersDiffTopic failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableConsumer_Sel_2SubscribersDiffTopic_TCP() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_Sel_2SubscribersDiffTopic_TCP");
         assertTrue("testCreateUnSharedDurableConsumer_Sel_2SubscribersDiffTopic_TCP failed", testResult);
@@ -449,7 +449,7 @@ public class DurableUnsharedTest {
 
     @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testCreateUnSharedDurableUndurableConsumer_Sel_JRException_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableUndurableConsumer_Sel_JRException_TCP");
         assertTrue("testCreateUnSharedDurableUndurableConsumer_Sel_JRException_TCP_SecOff failed", testResult);

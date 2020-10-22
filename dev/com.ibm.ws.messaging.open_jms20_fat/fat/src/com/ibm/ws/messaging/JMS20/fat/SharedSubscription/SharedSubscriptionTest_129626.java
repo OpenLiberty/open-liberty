@@ -341,9 +341,9 @@ public class SharedSubscriptionTest_129626 {
 
     // TCP and SecurityOff
 
-    @ExpectedFFDC("com.ibm.websphere.sib.exception.SIErrorException ,com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
+    @ExpectedFFDC("com.ibm.websphere.sib.exception.SIErrorException , com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
     @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testCreateSharedNonDurableConsumer_JRException_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedNonDurableConsumer_JRException_TCP_SecOff");
         assertTrue("Test testCreateSharedNonDurableConsumer_JRException_TCP_SecOff failed", testResult);

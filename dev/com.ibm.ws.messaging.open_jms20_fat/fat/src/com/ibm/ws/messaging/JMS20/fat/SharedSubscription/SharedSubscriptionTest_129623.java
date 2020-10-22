@@ -251,7 +251,7 @@ public class SharedSubscriptionTest_129623 {
     // Bindings and Sec Off
 
     // @Mode(TestMode.FULL)
-    // @Test // TODO BNDBND
+    // @Test BNDBND
     public void testMultiSharedDurConsumer_B_SecOff() throws Exception {
         runInServlet("testBasicMDBTopic");
 

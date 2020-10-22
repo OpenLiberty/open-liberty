@@ -181,7 +181,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP");
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP failed", testResult);
@@ -193,7 +193,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic failed", testResult);
     }
 
-    // @Test // TODO
+    // @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP");
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP failed", testResult);
@@ -259,7 +259,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
 
     @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP");
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP_SecOff failed", testResult);
@@ -289,7 +289,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
     }
 
     @Mode(TestMode.FULL)
-    // @Test // TODO MDBMDB
+    // @Test // MDBMDB
     public void testMultiSharedDurableConsumer_SecOff() throws Exception {
         runInServlet("testBasicMDBTopic");
         Thread.sleep(1000);

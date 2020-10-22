@@ -281,7 +281,7 @@ public class JMSConsumerTest_118077 {
 
     // There is no API available to test retrieve header. Has been tested manually.
     // @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testReceiveBodyRetrieveHeader_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testReceiveBodyRetrieveHeader_B_SecOff");
         assertTrue("testSetMessageListener_B_SecOff failed ", testResult);
@@ -289,7 +289,7 @@ public class JMSConsumerTest_118077 {
 
     // There is no API available to test retrieve header. Has been tested manually.
     // @Mode(TestMode.FULL)
-    // @Test // TODO
+    // @Test
     public void testReceiveBodyRetrieveHeader_TcpIp_SecOff() throws Exception {
         boolean testResult = runInServlet("testReceiveBodyRetrieveHeader_TcpIp_SecOff");
         assertTrue("testSetMessageListener_B_SecOff failed ", testResult);

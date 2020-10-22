@@ -199,7 +199,7 @@ public class JMSProducerTest_118073 {
 
     // Bindings and Security off
     // @Mode(TestMode.FULL)
-    @Test
+    // @Test
     public void testSetDeliveryMode_B_SecOff() throws Exception {
         String methodName = "testSetDeliveryMode_B_SecOff";
 
@@ -208,6 +208,7 @@ public class JMSProducerTest_118073 {
         try {
             runInServlet("testSetDeliveryMode_persistent_B_SecOff"); // Ignore result
 
+            System.out.println("Restarting the client to verify message persistence");
             stopClient();
             startClient();
 
@@ -219,6 +220,7 @@ public class JMSProducerTest_118073 {
 
             runInServlet("testSetDeliveryMode_nonpersistent_B_SecOff"); // Ignore result
 
+            System.out.println("Restarting the client to verify message persistence");
             stopClient();
             startClient();
 
@@ -239,7 +241,7 @@ public class JMSProducerTest_118073 {
 
     // TCP and Security Off
     // @Mode(TestMode.FULL)
-    @Test
+    // @Test
     public void testSetDeliveryMode_TCP_SecOff() throws Exception {
         String methodName = "testSetDeliveryMode_TCP_SecOff";
         String prefix = getClass().getSimpleName() + "." + methodName;
@@ -255,6 +257,11 @@ public class JMSProducerTest_118073 {
             stopEngine();
 
             startEngine();
+            String changedMessageFromLog = engineServer.waitForStringInLog(
+                "CWWKF0011I.*",
+                engineServer.getMatchingLogFile("trace.log"));
+            assertNotNull("Could not find the upload message in the new file", changedMessageFromLog);
+
             startClient();
 
             if ( !runInServlet("testBrowseDeliveryMode_persistent_TCP_SecOff") ) {
@@ -269,6 +276,11 @@ public class JMSProducerTest_118073 {
             stopEngine();
 
             startEngine();
+            changedMessageFromLog = engineServer.waitForStringInLog(
+                "CWWKF0011I.*",
+                engineServer.getMatchingLogFile("trace.log"));
+            assertNotNull("Could not find the upload message in the new file", changedMessageFromLog);
+
             startClient();
 
             if ( !runInServlet("testBrowseDeliveryMode_nonpersistent_TCP_SecOff") ) {

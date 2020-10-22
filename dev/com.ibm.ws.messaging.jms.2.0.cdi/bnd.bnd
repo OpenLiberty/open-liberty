@@ -41,5 +41,3 @@ instrument.classesExcludes: com/ibm/ws/cdi/jms/resources/*.class
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.jms.2.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest
-
-jakartaeeMe: true
