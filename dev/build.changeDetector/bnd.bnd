@@ -40,3 +40,5 @@ test.project: true
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.logging;version=latest,\
   org.eclipse.osgi;version=latest
+  
+  # Greg added this line
