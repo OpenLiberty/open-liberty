@@ -105,12 +105,12 @@ public class JaegerConfigTest {
     	server1.startServer();
     	currentServer = server1;
         String methodName = "testTraceCreated";
-        List<String> actualResponseLines = executeWebService(server1, "helloWorld");
+        List<String> responseLines = executeWebService(server1, "helloWorld");
 
-        FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
+        FATLogging.info(CLASS, methodName, "Response lines:", responseLines);
 
-        String logMsg = server1.waitForStringInLog("INFO io.jaegertracing");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
+        String logMsg = server1.waitForStringInLog("CWMOT1001I");
+        FATLogging.info(CLASS, methodName, "Assert not null:", logMsg);
         Assert.assertNotNull(logMsg);
     }
     
@@ -131,7 +131,7 @@ public class JaegerConfigTest {
         	// Error should be thrown when hitting endpoint
         }
         String logMsg = server2.waitForStringInLog("CWMOT0010W");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
+        FATLogging.info(CLASS, methodName, "Assert not null:", logMsg);
         Assert.assertNotNull(logMsg);
     }
     
@@ -144,12 +144,12 @@ public class JaegerConfigTest {
         server3.startServer();
         currentServer = server3;
         String methodName = "testLibraryInWar";
-        List<String> actualResponseLines = executeWebService(server3, "helloWorld");;
+        List<String> responseLines = executeWebService(server3, "helloWorld");;
         
-        FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
+        FATLogging.info(CLASS, methodName, "Response lines:", responseLines);
           
-        String logMsg = server3.waitForStringInLog("INFO io.jaegertracing");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
+        String logMsg = server3.waitForStringInLog("CWMOT1001I");
+        FATLogging.info(CLASS, methodName, "Assert not null:", logMsg);
         Assert.assertNotNull(logMsg);
     }
 

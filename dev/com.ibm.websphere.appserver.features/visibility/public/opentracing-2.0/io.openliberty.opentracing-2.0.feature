@@ -18,7 +18,7 @@ IBM-API-Package: io.opentracing;  type="third-party",\
          io.openliberty.opentracing.2.0.internal.cdi, \
          io.openliberty.io.opentracing.opentracing-util.0.33.0, \
          io.openliberty.opentracing.2.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="io.opentracing:opentracing-api:0.33.0", \
-         com.ibm.ws.microprofile.opentracing.jaeger, \
+         com.ibm.ws.microprofile.opentracing.jaeger.2.0, \
          com.ibm.ws.microprofile.opentracing.jaeger.adapter, \
          com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
 -jars=io.openliberty.opentracing.2.0.spi; location:=dev/spi/ibm/

@@ -1,10 +1,10 @@
 <server description="jaegerServer">
 
+    <include location="../fatTestCommon.xml" />
+
     <featureManager>
         <feature>mpOpenTracing-2.0</feature>
     </featureManager>
-
-    <include location="../fatTestPorts.xml" />
 
     <httpEndpoint httpPort="${bvt.prop.HTTP_secondary}"
         httpsPort="${bvt.prop.HTTP_secondary.secure}"

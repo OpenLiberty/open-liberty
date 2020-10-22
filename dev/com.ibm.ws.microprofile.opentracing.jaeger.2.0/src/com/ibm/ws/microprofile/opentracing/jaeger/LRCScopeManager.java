@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/package com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;
+ *******************************************************************************/package com.ibm.ws.microprofile.opentracing.jaeger;
 
 import java.util.HashMap;
 
