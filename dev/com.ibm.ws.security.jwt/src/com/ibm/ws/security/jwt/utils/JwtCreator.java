@@ -90,7 +90,7 @@ public class JwtCreator {
             jwt = JwsSigner.getSignedJwt(claims, jwtData);
 
             if (jwtData.isJwe()) {
-                jwt = JweCreator.createJweString(jwt, jwtData);
+                jwt = JweHelper.createJweString(jwt, jwtData);
             }
 
             return new JwtResult(jwt, claims);

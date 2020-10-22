@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.utils;
 
@@ -84,21 +84,20 @@ public class JsonUtils {
         }
         return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
     }
-    
+
     public static String convertToBase64(byte[] source) {
         if (source == null) {
             return null;
         }
         return Base64.encodeBase64URLSafeString(source);
     }
-    
+
     public static byte[] decodeFromBase64(String encoded) {
         if (encoded == null) {
             return null;
         }
         return Base64.decodeBase64(encoded);
     }
-
 
     public static String decodeFromBase64String(String encoded) {
         if (encoded == null) {
@@ -250,17 +249,15 @@ public class JsonUtils {
         return pieces;
     }
 
+    /**
+     * NOTE: This method DOES NOT support JWE tokens. This method can currently only be used to extract payloads from JWS tokens.
+     */
     public static String getPayload(String jwt) {
+        // TODO - update for JWE
         String[] jwtInfo = splitTokenString(jwt);
         if (jwtInfo != null) {
             return jwtInfo[1];
         }
-        // TODO Auto-generated method stub
-        // if (!isNullEmpty(jwt)) {
-        // if (jwt.startsWith("{")) {
-        // result = true;
-        // }
-        // }
         return null;
     }
 

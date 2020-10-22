@@ -20,32 +20,59 @@ import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.internal.BuilderImpl;
 import com.ibm.ws.security.jwt.internal.JwtTokenException;
 
-public class JweCreator {
+public class JweHelper {
 
-    private static final TraceComponent tc = Tr.register(JweCreator.class);
+    private static final TraceComponent tc = Tr.register(JweHelper.class);
 
     @FFDCIgnore({ Exception.class })
     public static String createJweString(String jws, JwtData jwtData) throws Exception {
-        JweCreator signer = new JweCreator();
+        JweHelper helper = new JweHelper();
         JwtConfig jwtConfig = jwtData.getConfig();
         try {
             JsonWebEncryption jwe = new JsonWebEncryption();
             BuilderImpl builder = jwtData.getBuilder();
-            signer.setJweKeyData(jwe, builder, jwtConfig);
-            signer.setJweHeaders(jwe, builder, jwtConfig);
+            helper.setJweKeyData(jwe, builder, jwtConfig);
+            helper.setJweHeaders(jwe, builder, jwtConfig);
             jwe.setPayload(jws);
-            return signer.getJwtString(jwe);
+            return helper.getJwtString(jwe);
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "ERROR_BUILDING_SIGNED_JWE", new Object[] { jwtConfig.getId(), e });
             throw new Exception(errorMsg, e);
         }
+    }
+
+    public static boolean isJwe(String jwtString) {
+        if (jwtString == null || jwtString.isEmpty()) {
+            return false;
+        }
+        String notPeriod = "[^\\.]";
+        return jwtString.matches("^(" + notPeriod + "*\\.){4}" + notPeriod + "*$");
+    }
+
+    @FFDCIgnore({ Exception.class })
+    public static String extractJwsFromJweToken(String jweString, JwtConsumerConfig config) throws InvalidTokenException {
+        JweHelper helper = new JweHelper();
+        String jws = null;
+        try {
+            Key decryptionKey = helper.getJweDecryptionKey(config);
+            JsonWebEncryption jwe = new JsonWebEncryption();
+            jwe.setKey(decryptionKey);
+            jwe.setCompactSerialization(jweString);
+            jws = jwe.getPayload();
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE", new Object[] { config.getId(), e });
+            throw new InvalidTokenException(errorMsg, e);
+        }
+        return jws;
     }
 
     void setJweKeyData(JsonWebEncryption jwe, BuilderImpl builder, JwtConfig jwtConfig) throws KeyStoreException, CertificateException, InvalidTokenException {
@@ -70,6 +97,13 @@ public class JweCreator {
         String keyAlias = jwtConfig.getKeyManagementKeyAlias();
         String trustStoreRef = jwtConfig.getTrustStoreRef();
         return JwtUtils.getPublicKey(keyAlias, trustStoreRef);
+    }
+
+    @Sensitive
+    Key getJweDecryptionKey(JwtConsumerConfig config) throws KeyStoreException, CertificateException {
+        String keyAlias = config.getKeyManagementKeyAlias();
+        String keyStoreRef = config.getKeyStoreRef();
+        return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
     }
 
     void setJweKidHeader(JsonWebEncryption jwe, Key keyManagementKey) {
