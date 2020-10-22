@@ -132,7 +132,7 @@ public class JwtConsumerClient extends HttpServlet {
             return;
         }
         String[] tokenParts = token.split("\\.");
-        if (tokenParts.length > 3) {
+        if (tokenParts.length != 3) {
             // we have a JWE, not a JWS - we can only process the first header since we don't have the key to decode
             String decodedPart = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
             appUtils.logIt(pw, "JWE Token part[0]: " + decodedPart);
