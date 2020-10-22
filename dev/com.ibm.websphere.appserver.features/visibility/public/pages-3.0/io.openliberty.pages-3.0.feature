@@ -30,6 +30,7 @@ IBM-API-Package: jakarta.servlet.jsp;  type="spec", \
  org.apache.el.lang;  type="internal", \
  org.apache.jasper.el;  type="internal"
 IBM-ShortName: pages-3.0
+WLP-AlsoKnownAs: jsp-3.0
 IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
 Subsystem-Name: Jakarta Server Pages 3.0
 -features=io.openliberty.jakarta.pages-3.0, \
