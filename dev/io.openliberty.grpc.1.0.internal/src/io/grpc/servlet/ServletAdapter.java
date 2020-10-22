@@ -192,7 +192,7 @@ public final class ServletAdapter {
 
 		transportListener.streamCreated(stream, method, headers);
 		stream.transportState().runOnTransportThread(stream.transportState()::onStreamAllocated);
-
+		stream.setWriteListener();
 	}
 
   private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
