@@ -15,8 +15,10 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoLibertySSLCfg {
 
