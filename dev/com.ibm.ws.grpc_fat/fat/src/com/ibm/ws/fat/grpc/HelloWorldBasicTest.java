@@ -47,7 +47,7 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, "grpcClient");
+            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, getURLPath());
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -87,7 +87,7 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, "grpcClient");
+            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, getURLPath());
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -129,5 +129,9 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
 
             return page.asText();
         }
+    }
+
+    protected String getURLPath() {
+        return "grpcClient";
     }
 }
