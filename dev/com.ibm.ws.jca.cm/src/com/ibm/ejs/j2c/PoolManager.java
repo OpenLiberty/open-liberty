@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -302,7 +301,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * pool manager's connection pools.
      *
      * @param Managed connection wrapper
-     * @param object affinity
+     * @param object  affinity
      *
      * @concurrency concurrent
      */
@@ -311,43 +310,33 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "fatalErrorNotification");
         }
+
         requestingAccessToPool();
         if (mcWrapper != null) {
             mcWrapper.markStale();
         }
         if (gConfigProps.connectionPoolingEnabled) {
-
             if (gConfigProps.getPurgePolicy() != null) {
-
-                /*
-                 * New with jdbc 4.1 support, if the connection was aborted, skip the entire pool connection purge.
-                 */
+                // New with jdbc 4.1 support, if the connection was aborted, skip the entire pool connection purge.
                 boolean aborted = mcWrapper != null && mcWrapper.getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection
                                   && ((WSManagedConnection) mcWrapper.getManagedConnectionWithoutStateCheck()).isAborted();
-                if (gConfigProps.getPurgePolicy() == PurgePolicy.EntirePool
-                    && !aborted) {
-
+                if (gConfigProps.getPurgePolicy() == PurgePolicy.EntirePool && !aborted) {
                     // The remove parked connection code was delete here
                     // Reset fatalErrorNotificationTime and remove all free connections
-                    ArrayList<MCWrapper> destroyMCWrappeList = new ArrayList<MCWrapper>();
+                    ArrayList<MCWrapper> destroyMCWrapperList = new ArrayList<MCWrapper>();
                     synchronized (destroyMCWrapperListLock) {
-
                         for (int j = 0; j < gConfigProps.getMaxFreePoolHashSize(); ++j) {
-
-                            //  ffdc uses this method ,,, and was locking freepool
-                            // without locking
-                            // waiter pool first, causing a deadlock.
+                            //  ffdc uses this method and was locking freePool without
+                            // locking waiter pool first, causing a deadlock.
                             synchronized (waiterFreePoolLock) {
                                 synchronized (freePool[j].freeConnectionLockObject) {
                                     /*
-                                     * If a connection gets away, by setting
-                                     * fatalErrorNotificationTime will guaranty when the
-                                     * connection is returned to the free pool, it will be
+                                     * If a connection gets away, by setting fatalErrorNotificationTime we will
+                                     * guarantee when the connection is returned to the free pool, it will be destroyed
                                      */
                                     freePool[j].incrementFatalErrorValue(j);
                                     /*
-                                     * Move as many connections as we can in the free pool to
-                                     * the destroy list
+                                     * Move as many connections as we can in the free pool to the destroy list
                                      */
                                     if (freePool[j].mcWrapperList.size() > 0) {
                                         // freePool[j].removeCleanupAndDestroyAllFreeConnections();
@@ -355,7 +344,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                         for (int k = mcWrapperListIndex; k >= 0; --k) {
                                             MCWrapper mcw = (MCWrapper) freePool[j].mcWrapperList.remove(k);
                                             mcw.setPoolState(0);
-                                            destroyMCWrappeList.add(mcw);
+                                            destroyMCWrapperList.add(mcw);
                                             --freePool[j].numberOfConnectionsAssignedToThisFreePool;
                                         }
 
@@ -371,14 +360,11 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                      * we need to cleanup and destroy connections in the local
                      * destroy list.
                      */
-                    for (int i = 0; i < destroyMCWrappeList.size(); ++i) {
-
-                        MCWrapper mcw = destroyMCWrappeList.get(i);
+                    for (int i = 0; i < destroyMCWrapperList.size(); ++i) {
+                        MCWrapper mcw = destroyMCWrapperList.get(i);
                         freePool[0].cleanupAndDestroyMCWrapper(mcw);
                         this.totalConnectionCount.decrementAndGet();
-
                     }
-
                 } // end "EntirePool" purge policy
                 else {
                     /*
@@ -452,94 +438,78 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.entry(this, tc, "validateConnections", gConfigProps.cfName);
         }
 
-        /*
-         * Get all of the managed connections wrappers.
-         */
+        // Get all of the managed connections wrappers.
         Set<ManagedConnection> mcSet = new HashSet<ManagedConnection>();
-        LinkedList<MCWrapper> failedMCWList = new LinkedList<MCWrapper>();
-        mcToMCWMapWrite.lock();
-        try {
-            Collection<MCWrapper> mcWrappers = mcToMCWMap.values();
-            Iterator<MCWrapper> mcWrapperIt = mcWrappers.iterator();
-            while (mcWrapperIt.hasNext()) {
-                MCWrapper mcw = mcWrapperIt.next();
-                if (mcw.getPoolState() == 1 && !mcw.isStale()) {
-                    /*
-                     * Only add valid managed connections to this set.
-                     */
-                    mcSet.add(mcw.getManagedConnection());
-                    mcw.setPoolState(50); // set the state to 50, which basically means we are interacting with the resource adapter
-                    try {
-                        Set<?> set = ((ValidatingManagedConnectionFactory) managedConnectionFactory).getInvalidConnections(mcSet);
-                        Iterator<?> it = set.iterator();
+        ArrayList<MCWrapper> invalidMCWList = new ArrayList<MCWrapper>();
+        // We do not allow other destroy processing to occur at the same time, so get the destroyMCWrapperListLock
+        synchronized (destroyMCWrapperListLock) {
+            for (int j = 0; j < gConfigProps.getMaxFreePoolHashSize(); ++j) {
+                // Since we do not know if we are removing connections until after getInvalidConnections
+                // is called for each thread, we need to get the waiter pool lock first
+                // before the freeConnectionLockObject lock, otherwise we may cause a deadlock.
+                synchronized (waiterFreePoolLock) {
+                    synchronized (freePool[j].freeConnectionLockObject) {
+                        // Move as many invalid connections as we can from the free pool to the invalid list
+                        if (freePool[j].mcWrapperList.size() > 0) {
+                            int mcWrapperListIndex = freePool[j].mcWrapperList.size() - 1;
+                            for (int k = mcWrapperListIndex; k >= 0; --k) {
+                                MCWrapper mcw = (MCWrapper) freePool[j].mcWrapperList.get(k);
+                                if (mcw.getPoolState() == 1 && !mcw.isStale()) {
+                                    // Only add valid managed connections to this set.
+                                    mcSet.add(mcw.getManagedConnection());
+                                    mcw.setPoolState(50); // set the state to 50, which basically means we are interacting with the resource adapter
+                                    Set<?> set = null;
+                                    try {
+                                        set = ((ValidatingManagedConnectionFactory) managedConnectionFactory).getInvalidConnections(mcSet);
+                                    } catch (ResourceException e) {
+                                        Object[] parms = new Object[] { "validateConnections", CommonFunction.exceptionList(e), "ResourceException", gConfigProps.cfName };
+                                        Tr.error(tc, "ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285", parms);
+                                    } finally {
+                                        // we do a check above to ensure we are in the free pool (1), therefore we shouldn't have to worry
+                                        // about capturing the current state and setting it back here - it is expected to be in the free pool.
+                                        mcSet.clear();
+                                        mcw.setPoolState(MCWrapper.ConnectionState_freePool);
+                                    }
 
-                        while (it.hasNext()) {
-                            it.next();
-                            failedMCWList.add(mcw);
-                        }
-                        mcSet.clear();
-                    } catch (ResourceException e) {
-                        Object[] parms = new Object[] { "fatalErrorNotification", CommonFunction.exceptionList(e), "ResourceException", gConfigProps.cfName };
-                        Tr.error(tc, "ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285", parms);
-                    } finally {
-                        // we do a check above to ensure we are in the free pool (1), therefore we shouldn't have to worry
-                        // about capturing the current state and setting it back here - it is expected to be the free pool.
-                        mcw.setPoolState(MCWrapper.ConnectionState_freePool);
-                    }
+                                    if (set != null && !set.isEmpty()) {
+                                        freePool[j].mcWrapperList.remove(k);
+                                        mcw.setPoolState(0);
+                                        invalidMCWList.add(mcw);
+                                        --freePool[j].numberOfConnectionsAssignedToThisFreePool;
+                                    }
 
-                    if (prepopulateEnabled) {
-                        // We prepopulate is enabled, we need to reset
-                        // the idle time out to keep the good connections
-                        // in the pool.  All of the bad connection will be
-                        // destored before we leave this method.  The idle
-                        // time will not matter for them.  :-)
-                        ((com.ibm.ejs.j2c.MCWrapper) mcw).resetIdleTimeOut();
-                    }
+                                    if (prepopulateEnabled) {
+                                        // When prepopulate is enabled, we need to reset
+                                        // the idle time out to keep the good connections
+                                        // in the pool.  All of the bad connections will be
+                                        // destroyed before we leave this method.  The idle
+                                        // time will not matter for them.  :-)
+                                        ((com.ibm.ejs.j2c.MCWrapper) mcw).resetIdleTimeOut();
+                                    }
+
+                                } // end if (mcw.getPoolState() == 1 && !mcw.isStale())
+                            } // end k
+                        } // end if (freePool[j].mcWrapperList.size() > 0)
+                    } // end sync for freeConnectionLockObject
+                } // end sync for waiterFreePoolLock
+            } // end j
+        } // end sync for destroyMCWrapperListLock
+
+        // We need to cleanup and destroy connections in the invalidMCWList
+        // which have already been removed from the free pools
+        for (MCWrapper mcw : invalidMCWList) {
+            freePool[0].cleanupAndDestroyMCWrapper(mcw);
+            synchronized (waiterFreePoolLock) {
+                this.totalConnectionCount.decrementAndGet();
+                if (waiterCount > 0) {
+                    waiterFreePoolLock.notify();
                 }
             }
-        } finally {
-            mcToMCWMapWrite.unlock();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Calling getInvalidConnections on the managedConnectionFactory with " + mcSet.size()
-                               + " managed connections");
-        }
-        /*
-         * Ask the mcf to validate the managed connections and return the
-         * failing managed connections
-         */
-
-        if (!failedMCWList.isEmpty()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Returned from getInvalidConnections. There are " + failedMCWList.size() + " failing connections.");
-            }
-            /*
-             * Check for failing connections
-             */
-            /*
-             * Transfer the failing connection to an iterator
-             */
-            Iterator<MCWrapper> it = failedMCWList.iterator();
-            /*
-             * Iterate through the failed managed connection marking the
-             * associated mcw stale
-             */
-            while (it.hasNext()) {
-                MCWrapper mcWrapper = it.next();
-                if (mcWrapper != null) {
-                    mcWrapper.markStale();
-                    checkForConnectionInFreePool(mcWrapper);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "null mc in set returned from getInvalidConnections");
-                    }
-                }
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Returned from getInvalidConnections. The returned set is null");
-            }
+            Tr.debug(this, tc, "Returning from getInvalidConnections with " + mcSet.size()
+                               + " managed connections and " + invalidMCWList.size() + " invalid connections.");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -788,7 +758,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * with the affinity, it is registered as unused. Otherwise it is prepared
      * for reuse (using <code>cleanup</code> method and then registered as unused.
      *
-     * @param managed ManagedConnection A connection to release
+     * @param managed  ManagedConnection A connection to release
      * @param affinity Object, an affinity, can be represented using <code>Identifier</code> interface.
      *
      * @concurrency concurrent
@@ -1015,12 +985,12 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * This method reserves connection. If unused connection exists, it is returned,
      * otherwise new connection is created using ManagedConnectionFactory.
      *
-     * @param Subject connection security context
+     * @param Subject               connection security context
      * @param ConnectionRequestInfo requestInfo
-     * @param Object affinity
-     * @param boolean connectionSharing
-     * @param boolean enforceSerialReuse
-     * @param int commitPriority
+     * @param Object                affinity
+     * @param boolean               connectionSharing
+     * @param boolean               enforceSerialReuse
+     * @param int                   commitPriority
      *
      * @return MCWrapper
      * @concurrency concurrent
@@ -2234,7 +2204,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     }
 
     /**
-     * Purge the connection from the pool. Any connection in the freepool wil
+     * Purge the connection from the pool. Any connection in the freepool will
      * be removed, cleaned up and destroyed and any active connection will be marked
      * to be destroyed. The parked connection will not be destroyed.
      */
@@ -2242,7 +2212,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         if (tc.isEntryEnabled()) {
             Tr.entry(this, tc, "purgePoolContents", gConfigProps.cfName);
         }
-        ArrayList<MCWrapper> destroyMCWrappeList = new ArrayList<MCWrapper>();
+        ArrayList<MCWrapper> destroyMCWrapperList = new ArrayList<MCWrapper>();
         synchronized (destroyMCWrapperListLock) {
             for (int j = 0; j < gConfigProps.getMaxFreePoolHashSize(); ++j) {
                 synchronized (freePool[j].freeConnectionLockObject) {
@@ -2262,7 +2232,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                             if (!mcw.isMarkedForPurgeDestruction()) {
                                 mcw.setPoolState(0);
                                 mcw.markForPurgeDestruction();
-                                destroyMCWrappeList.add(mcw);
+                                destroyMCWrapperList.add(mcw);
                                 --freePool[j].numberOfConnectionsAssignedToThisFreePool;
                             }
                         }
@@ -2316,7 +2286,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                             if (!mcw.isMarkedForPurgeDestruction()) {
                                 mcw.setPoolState(0);
                                 mcw.markForPurgeDestruction();
-                                destroyMCWrappeList.add(mcw);
+                                destroyMCWrapperList.add(mcw);
                             }
                         }
                     }
@@ -2328,8 +2298,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         /*
          * we need to cleanup and destroy connections in the local destroy list.
          */
-        for (int i = 0; i < destroyMCWrappeList.size(); ++i) {
-            MCWrapper mcw = destroyMCWrappeList.get(i);
+        for (int i = 0; i < destroyMCWrapperList.size(); ++i) {
+            MCWrapper mcw = destroyMCWrapperList.get(i);
             freePool[0].cleanupAndDestroyMCWrapper(mcw);
             this.totalConnectionCount.decrementAndGet();
         }
@@ -2344,8 +2314,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * will be remove when they are being returned to the free pool.
      *
      * @param value "immediate" will result an immediate purge of the pool.
-     *            value "abort" will result in purging the pool via Connection.abort()
-     *            Any other value will call purgePoolContents().
+     *                  value "abort" will result in purging the pool via Connection.abort()
+     *                  Any other value will call purgePoolContents().
      * @throws ResourceException
      */
     public void purgePoolContents(String value) throws ResourceException {
@@ -3021,7 +2991,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         }
         // This is only for additional trace if needed.
         //    displayAllConnectionInPool(aBuffer, connectionLeakBuffer, currentTime,
-        //    		holdTimeLimit_loc_disabled);
+        //              holdTimeLimit_loc_disabled);
         int tscdSize = tscdList.size();
         if (tscdSize > 0) {
             aBuffer.append(nl + "Thread supported cleanup and destroy connection information" + nl);
