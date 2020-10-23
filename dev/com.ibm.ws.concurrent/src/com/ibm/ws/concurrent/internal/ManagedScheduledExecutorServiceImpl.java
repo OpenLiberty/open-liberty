@@ -11,7 +11,6 @@
 package com.ibm.ws.concurrent.internal;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -24,28 +23,18 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.Trigger;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
-import com.ibm.wsspi.threadcontext.ThreadContextProvider;
-import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, //
@@ -82,13 +71,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     ScheduledExecutorService scheduledExecSvc;
 
-    @Activate
-    @Override
-    @Trivial
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
-        super.activate(context, properties);
-    }
-
     @Deactivate
     @Override
     protected void deactivate(ComponentContext context) {
@@ -101,13 +83,6 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
                     Tr.debug(this, tc, "canceled scheduled task", future);
 
         super.deactivate(context);
-    }
-
-    @Modified
-    @Override
-    @Trivial
-    protected void modified(ComponentContext context, Map<String, Object> properties) {
-        super.modified(context, properties);
     }
 
     /**
@@ -199,93 +174,14 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         return scheduledTask.future;
     }
 
-    @Override
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
-    protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
-        super.setConcurrencyPolicy(svc);
-    }
-
-    @Override
-    @Reference(policy = ReferencePolicy.STATIC)
-    @Trivial
-    protected void setConcurrencyService(ConcurrencyService svc) {
-        super.setConcurrencyService(svc);
-    }
-
-    @Override
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    @Trivial
-    protected void setContextService(ServiceReference<WSContextService> ref) {
-        super.setContextService(ref);
-    }
-
-    @Override
-    @Reference(service = JavaEEVersion.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
-        super.setEEVersion(ref);
-    }
-
-    @Override
-    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
-    @Trivial
-    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
-        super.setLongRunningPolicy(svc);
-    }
-
     @Reference(target = "(deferrable=false)")
     @Trivial
     protected void setScheduledExecutor(ScheduledExecutorService svc) {
         scheduledExecSvc = svc;
     }
 
-    @Override
-    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
-    @Trivial
-    protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
-        super.setTransactionContextProvider(ref);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
-        super.unsetConcurrencyPolicy(svc);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetConcurrencyService(ConcurrencyService svc) {
-        super.unsetConcurrencyService(svc);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetContextService(ServiceReference<WSContextService> ref) {
-        super.unsetContextService(ref);
-    }
-
-    @Override
-    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        super.unsetEEVersion(ref);
-    }
-
-    @Override
-    @Trivial
-    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
-        super.unsetLongRunningPolicy(svc);
-    }
-
     @Trivial
     protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
         scheduledExecSvc = null;
-    }
-
-    @Override
-    @Trivial
-    protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
-        super.unsetTransactionContextProvider(ref);
     }
 }
