@@ -20,15 +20,19 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationEvent;
+import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -36,6 +40,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 
 /**
@@ -44,11 +49,15 @@ import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.app.prereqmonitor",
            configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class ApplicationPrereqMonitor {
+public class ApplicationPrereqMonitor implements ConfigurationListener {
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
+    private static final AtomicInteger counter = new AtomicInteger(0);
+    private final int version = counter.incrementAndGet();
     private final ConfigurationAdmin configurationAdmin;
     private final Set<String> declaredPrereqs;
     private final Set<String> realisedPrereqs = new TreeSet<>();
+
+    private boolean configModified = false;
 
     /**
      * Use constructor parameter references to ensure that mandatory references are supplied first.
@@ -63,11 +72,20 @@ public class ApplicationPrereqMonitor {
         declaredPrereqs = unmodifiableSet(Stream.of(pids).map(this::servicePidToConfigId).collect(toSet()));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Known configured application Prereq Pids:" + Arrays.toString(pids)
+            Tr.debug(tc, this
+                         + "\nKnown configured application Prereq Pids:" + Arrays.toString(pids)
                          + "\nids:" + declaredPrereqs);
         }
     }
 
+    @Deactivate
+    void deactivate() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, this + " deactivate");
+        }
+    }
+
+    @Trivial
     private String servicePidToConfigId(String servicePid) {
         Configuration[] configs;
         try {
@@ -93,29 +111,60 @@ public class ApplicationPrereqMonitor {
     synchronized void setApplicationPrereq(ApplicationPrereq applicationPrereq) {
         realisedPrereqs.add(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Prereq added:" + applicationPrereq.getClass().getName()
+            Tr.debug(tc, this + " Prereq added:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs
                          + "\n  Realised:" + realisedPrereqs);
         }
 
+        // If the configuration has been modified we cannot reliably detect surplus Prereqs.
+        if (configModified)
+            return;
+
         // Check for unexpected Prereqs.
-        // If there are insufficient realised Prereqs, we don't raise an error but we will continue waiting until more Prereqs are realised.
-        if (!declaredPrereqs.containsAll(realisedPrereqs)) {
-            try {
-                throw new IllegalStateException("Invalid Prereqs. Configured:" + declaredPrereqs + " Realised:" + realisedPrereqs);
-            } catch (IllegalStateException illegalStateException) {
-                // AutoFFDC.
-                throw illegalStateException;
-            }
+        // If there are no unexpected Prereqs, we don't raise an error.
+        if (declaredPrereqs.containsAll(realisedPrereqs))
+            return;
+
+        // The configuration has not been modified but we have at least one prereq which we did not expect.
+        // Caused by implementing ApplicationPrereq without,
+        // Either adding application prereq in DefaultInstances,
+        // Or add ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" to the OCD in metatype.xml.
+        Set<String> surplusPrereqs = new TreeSet<>(realisedPrereqs);
+        surplusPrereqs.removeAll(declaredPrereqs);
+        try {
+            throw new IllegalStateException("Undeclared Prereqs:" + surplusPrereqs);
+        } catch (IllegalStateException illegalStateException) {
+            // AutoFFDC.
+            throw illegalStateException;
         }
+
     }
 
     synchronized void unsetApplicationPrereq(ApplicationPrereq applicationPrereq) {
         realisedPrereqs.remove(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Prereq removed:" + applicationPrereq.getClass().getName()
+            Tr.debug(tc, this + " Prereq removed:" + applicationPrereq.getClass().getName()
                          + "\nConfigured:" + declaredPrereqs
                          + "\n  Realised:" + realisedPrereqs);
         }
+    }
+
+    @Override
+    public void configurationEvent(ConfigurationEvent event) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, this + " Configuration changed, stop reporting invalid prereqs");
+        }
+
+        // It looks like we don't have permission to introspect all configuration events.
+        // Eg. [WARNING ] CWWKG0101W: The configuration with the persisted identity (PID) com.ibm.ws.app.prereqmonitor is bound to the bundle com.ibm.ws.app.manager. The configuration is not visible to other bundles.
+        // So we have to assume that this.declaredPrereqs is no longer current.
+
+        configModified = true;
+    }
+
+    @Override
+    public String toString() {
+        return ApplicationPrereqMonitor.class.getName() + "#" + version;
     }
 }
