@@ -20,6 +20,7 @@ env:
   LANG: en_US
 jobs:
   build:
+    name: Build Open Liberty
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -86,14 +87,17 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew --continue cnf:initialize testClasses testResults
-        testspace "[Unit Tests][+]dev/cnf/generated/testReports/allUnitTests/*"
-    - name: Upload unit test logs
+        ./gradlew --continue cnf:initialize testResults
+    - name: Upload test report
       if: failure()
       uses: actions/upload-artifact@v2
       with:
         name: Unit test logs
         path: dev/cnf/generated/testReports/allUnitTests
+    - name: Upload unit test results
+      shell: bash
+      if: always()
+      run: .github/workflow-scripts/upload-unit-tests.sh
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
     needs: build
@@ -594,7 +598,7 @@ jobs:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
         CATEGORY: ${{matrix.category}}
       run: .github/workflow-scripts/check-fat-failures.sh
-    - name: Upload FAT logs
+    - name: Upload failing FAT artifacts
       if: failure()
       uses: aguibert/upload-artifact@v1.0
       with:

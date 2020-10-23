@@ -83,7 +83,12 @@ public class OidcRedirectServletTest {
 
     @Before
     public void setUp() throws Exception {
-        OidcClientUtil.setReferrerURLCookieHandler(null);// reset the ReferrerURLCookieHandler which was set in previous tests
+        try {
+            OidcClientUtil.setReferrerURLCookieHandler(null);// reset the ReferrerURLCookieHandler which was set in previous tests
+        } catch (NullPointerException npe) {
+            //Ignore this indicates that this test class is being run in isolation.
+        }
+
         OidcClientUtil.setWebAppSecurityConfig(webAppSecurityConfig);
         mock.checking(new Expectations() {
             {
