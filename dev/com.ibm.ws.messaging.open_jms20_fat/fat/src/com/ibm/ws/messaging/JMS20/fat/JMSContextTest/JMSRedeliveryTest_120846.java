@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,31 +12,23 @@ package com.ibm.ws.messaging.JMS20.fat.JMSContextTest;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
 public class JMSRedeliveryTest_120846 {
 
-    private static final LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("RedeliveryEngine");
+    private static final LibertyServer engineServer = LibertyServerFactory.getLibertyServer("RedeliveryEngine");
 
-    private static final LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("RedeliveryClient");
+    private static final LibertyServer clientServer = LibertyServerFactory.getLibertyServer("RedeliveryClient");
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
@@ -44,7 +36,7 @@ public class JMSRedeliveryTest_120846 {
     private static final String redeliveryAppName = "JMSRedelivery_120846";
     private static final String redeliveryContextRoot = "JMSRedelivery_120846";
     private static final String[] redeliveryPackages = new String[] { "jmsredelivery_120846.web" };
-    
+
     private boolean runInServlet(String test) throws IOException {
         return TestUtils.runInServlet(clientHostName, clientPort, redeliveryContextRoot, test); // throws IOException
     }
@@ -52,13 +44,13 @@ public class JMSRedeliveryTest_120846 {
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("RedeliveryEngine.xml");
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         TestUtils.addDropinsWebApp(clientServer, redeliveryAppName, redeliveryPackages);
         clientServer.setServerConfigurationFile("RedeliveryClient.xml");
 
@@ -70,13 +62,13 @@ public class JMSRedeliveryTest_120846 {
     public static void tearDown() {
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -106,8 +98,9 @@ public class JMSRedeliveryTest_120846 {
 
     // Test with duplicate delivery of messages.
 
-    @Mode(TestMode.FULL)
-    // @Test // TODO MDBMDB
+//TODO
+//    @Mode(TestMode.FULL)
+//    @Test
     public void testRDC_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testRDC_B");
         assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_B failed", testResult);
@@ -120,9 +113,9 @@ public class JMSRedeliveryTest_120846 {
         assertTrue("testRDC_BindingsAndTcpIp_SecOff.testMaxRDC_B failed", testResult);
     }
 
-
-    @Mode(TestMode.FULL)
-    // @Test // TODO MDBMDB
+//TODO
+//    @Mode(TestMode.FULL)
+//    @Test
     public void testRDC_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testRDC_TCP");
         assertTrue("testRDC_BindingsAndTcpIp_SecOff.testRDC_TCP failed", testResult);

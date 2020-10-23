@@ -19,17 +19,20 @@
   
   <variable name="onError" value="FAIL"/>
 
+  <!-- 
   <logging 
-    traceSpecification="*=info:EJBContainer=all:SIBJmsRa=all:SIBMessageTrace=all:SIBRa=all:WAS.j2c=all"
-    traceFileName="trace.log"
-    maxFileSize="100"
-    maxFiles="2"/> 
-  
+      traceSpecification="*=info:EJBContainer=all:SIBJmsRa=all:SIBMessageTrace=all:SIBRa=all:WAS.j2c=all"
+      traceFileName="trace.log"
+      maxFileSize="100"
+      maxFiles="2"/> 
+  -->
+
   <messagingEngine id="defaultME">
     <queue id="Queue10" maxRedeliveryCount="2"/>
     <queue id="Queue11" maxRedeliveryCount="2"/>
     <topicSpace id="NewTopic1"/>
     <topicSpace id="NewTopic2"/>
+    <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
   </messagingEngine>
   
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
@@ -75,16 +78,20 @@
     <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2"/>
   </jmsTopic>
   
-   <jmsActivationSpec id="mdbapp/TestQueue"/>
+  <jmsActivationSpec id="mdbapp/TestQueue">
+     <properties.wasJms />
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="mdbapp1/MDBQueue">
+     <properties.wasJms />
+  </jmsActivationSpec>
 
-   <jmsActivationSpec id="mdbapp1/MDBQueue"/>
+  <jmsActivationSpec id="mdbapp/TestTopic">
+    <properties.wasJms clientId="client1"/>
+  </jmsActivationSpec>
 
-   <jmsActivationSpec id="mdbapp/TestTopic"> 
-     <properties.wasJms clientId="client1"/> 
-   </jmsActivationSpec>
-
-   <jmsActivationSpec id="mdbapp1/MDBTopic"> 
-     <properties.wasJms clientId="client2"/> 
-   </jmsActivationSpec>
+  <jmsActivationSpec id="mdbapp1/MDBTopic">
+    <properties.wasJms clientId="client2"/>
+  </jmsActivationSpec>
 
 </server>

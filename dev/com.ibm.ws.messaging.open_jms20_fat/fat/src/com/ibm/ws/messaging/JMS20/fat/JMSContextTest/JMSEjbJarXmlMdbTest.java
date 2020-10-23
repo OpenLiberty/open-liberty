@@ -13,21 +13,15 @@ package com.ibm.ws.messaging.JMS20.fat.JMSContextTest;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 public class JMSEjbJarXmlMdbTest {
 
@@ -53,8 +47,8 @@ public class JMSEjbJarXmlMdbTest {
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
         server.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                            "lib/features",
+                                            "features/testjmsinternals-1.0.mf");
         server.setServerConfigurationFile("EJBMDB_server.xml");
 
         // The redelivery application sends messages ... then waits for a message
@@ -63,8 +57,8 @@ public class JMSEjbJarXmlMdbTest {
 
         // MDBs in the MDB applications write to the server logs upon receipt of
         // a message.
-        TestUtils.addDropinsWebApp(server, redeliveryAppName, mdbPackages);
-        TestUtils.addDropinsWebApp(server, redeliveryAppName, mdb1Packages);
+        TestUtils.addDropinsWebApp(server, mdbAppName, mdbPackages);
+        TestUtils.addDropinsWebApp(server, mdb1AppName, mdb1Packages);
 
         server.startServer("EJBMDB.log");
     }
@@ -73,7 +67,7 @@ public class JMSEjbJarXmlMdbTest {
     public static void tearDown() {
         try {
             server.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -12,18 +12,17 @@
  */
 package sharedsubscriptionwithmsgsel.ejb;
 
-import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven
 public class FATTopic2MessageDrivenBean implements MessageListener {
+
     @Override
     public void onMessage(Message message) {
         try {
             System.out.println("Message Received in MDB2: " + ((TextMessage) message).getText());
-        } catch ( Exception x ) {
+        } catch (Exception x) {
             throw new RuntimeException(x);
         }
     }

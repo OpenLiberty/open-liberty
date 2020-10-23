@@ -16,6 +16,7 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 public class EJBTopicMessageDrivenBean implements MessageListener {
+
     @Override
     public void onMessage(Message message) {
         try {
