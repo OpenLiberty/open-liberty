@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
 
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
@@ -43,8 +42,8 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_1_Tck() throws Exception {
-        // TODO remove the guard once a copy of the v1.1 TCK is available other than a local snapshot build
-        if (FATRunner.FAT_TEST_LOCALRUN)
-            MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.1_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
+        // TODO use this to test with local build
+        // if (FATRunner.FAT_TEST_LOCALRUN)
+        //    MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.1_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
     }
 }
