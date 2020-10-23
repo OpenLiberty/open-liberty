@@ -42,6 +42,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.TimeoutClientTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -76,5 +77,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"));
+    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
 }

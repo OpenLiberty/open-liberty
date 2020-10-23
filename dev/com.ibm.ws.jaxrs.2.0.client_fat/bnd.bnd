@@ -40,6 +40,7 @@ fat.project: true
 tested.features: \
   jaxrsclient-2.1,\
   jaxrs-2.1,\
+  restfulWS-3.0,\
   appsecurity-3.0,\
   cdi-2.0
 

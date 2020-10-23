@@ -96,3 +96,5 @@ addRequiredLibraries {
   dependsOn addThirdPartyJerseyClient
   dependsOn addMockserver
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
