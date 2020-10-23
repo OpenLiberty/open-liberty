@@ -26,11 +26,23 @@
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
       'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
       'org.eclipse.jetty:jetty-util:9.4.7.RC0'  
-   }
- 
-addRequiredLibraries {
 }
-      
+
+autoFVT.dependsOn ':wlp.lib.extract:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version15.test.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.war.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.java.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.webanno.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.websocket.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.actuator.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.webflux.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.multi.context.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version21.test.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version22.test.app:build'
+autoFVT.dependsOn ':com.ibm.ws.springboot.support.version23.test.app:build'
+
 autoFVT.doLast {
 
   /*
@@ -40,7 +52,6 @@ autoFVT.doLast {
   	from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
   	into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
   }
-  
   
   /*
    * Copy the test application jars into appropriate test servers.
