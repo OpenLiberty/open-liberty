@@ -16,3 +16,7 @@ task rmic(type: Exec, dependsOn: compileJava) {
     executable 'rmic'
     args '-iiop', '-keep', '-d', compileJava.destinationDir, '-classpath', rmicClasspath, 'javax.management.j2ee.Management', 'javax.management.j2ee.ManagementHome'
 }
+
+//Unit tests assert the checksum of the bundle jar so ensure jar is done first.
+//Unit testing alone does not require assembling the jar. 
+test.dependsOn 'jar'
