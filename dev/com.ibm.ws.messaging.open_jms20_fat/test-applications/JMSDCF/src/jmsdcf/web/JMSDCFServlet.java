@@ -41,6 +41,7 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSDCFServlet extends HttpServlet {
 
+    public static QueueConnectionFactory jmsQCF;
     public static Queue jmsQueue;
 
     @Override
@@ -48,13 +49,27 @@ public class JMSDCFServlet extends HttpServlet {
         super.init();
 
         try {
-            jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+            jmsQCF = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/DefaultJMSConnectionFactory");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCF);
+
+        try {
+            // jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+            jmsQueue = (Queue) new InitialContext().lookup("jndi_INPUT_Q");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        // System.out.println("Queue 'java:comp/env/jndi_INPUT_Q' [ " + jmsQueue + " ]");
+        System.out.println("Queue 'jndi_INPUT_Q' [ " + jmsQueue + " ]");
+        if ( jmsQueue == null ) {
+            throw new ServletException("Failed JMS initialization");
+        }
     }
 
-    @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
+    @Resource(lookup = "java:comp/env/DefaultJMSConnectionFactory")
     ConnectionFactory jmsCF;
 
     @Inject
@@ -152,6 +167,10 @@ public class JMSDCFServlet extends HttpServlet {
     public void testP2P_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        System.out.println("testP2P_B_SecOff");
+        System.out.println("  Injected 'jmsCF' [ java:comp/env/DefaultJMSConnectionFactory ]: [ " + jmsCF + " ]");
+        System.out.println("  Injected 'myJMScf' [ myJMSCF ]: [ " + myJMScf + " ]");
+
         JMSContext jmsContextQueue = jmsCF.createContext();
 
         JMSConsumer jmsConsumer = jmsContextQueue.createConsumer(jmsQueue);
@@ -161,15 +180,17 @@ public class JMSDCFServlet extends HttpServlet {
 
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(500);
 
-        boolean exceptionFlag = false;
-        if ( (msgIn == null) || !msgIn.getText().equals("testP2P_B_SecOff") ) {
-            exceptionFlag = true;
+        String failureMessage = null;
+        if ( msgIn == null ) {
+            failureMessage = "Message not received";
+        } else if ( !msgIn.getText().equals("testP2P_B_SecOff") ) {
+            failureMessage = "Expected [ testP2P_B_SecOff ] received [ " + msgIn.getText() + " ]";
         }
 
         jmsContextQueue.close();
 
-        if ( exceptionFlag ) {
-            throw new Exception("testP2P_B_SecOff failed: Expected message was not received");
+        if ( failureMessage != null ) {
+            throw new Exception("testP2P_B_SecOff failed: " + failureMessage);
         }
     }
 

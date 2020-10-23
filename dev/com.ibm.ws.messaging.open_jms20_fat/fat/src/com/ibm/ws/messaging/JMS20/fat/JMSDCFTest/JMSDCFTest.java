@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class JMSDCFTest {
         clientServer.startServer();
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();
