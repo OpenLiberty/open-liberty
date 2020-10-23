@@ -2,6 +2,19 @@ set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
 
+# If this is the special 'MODIFIED_FULL_MODE' job, figure out which buckets
+# were directly modfied (if any) so they can be launched in FULL mode
+if [[ "MODIFIED_FULL_MODE" == $CATEGORY ]]; then
+  git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
+  echo "Modified files are:"
+  cat modified_files.diff
+  FAT_BUCKETS=$(sed -n "s/^dev\/\(.*_fat[^\/]*\)\/.*$/\1/p" modified_files.diff | uniq)
+  if [[ -z $FAT_BUCKETS ]]; then
+    echo "No FATs were directly modfied. Skipping this job."
+    exit 0
+  fi
+fi
+
 cd dev
 mkdir failing_buckets
 FAILURE=false

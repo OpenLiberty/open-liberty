@@ -114,4 +114,6 @@ public class SimpleTest extends FATServletClient {
         assertTrue("No EE7 features should be enabled when this test runs: " + features,
                    !features.contains("servlet-3.1"));
     }
+
+    // this is a sample change to a FAT bucket
 }
