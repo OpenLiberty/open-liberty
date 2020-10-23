@@ -35,7 +35,7 @@ public class HelloWorldClientServlet extends HttpServlet {
     protected static final Class<?> c = HelloWorldClientServlet.class;
     private static final Logger LOG = Logger.getLogger(c.getName());
 
-    private ManagedChannel createChannel(String address, int port, boolean useTls) throws SSLException {
+    protected ManagedChannel createChannel(String address, int port, boolean useTls) throws SSLException {
         LOG.info("connecting to helloworld gRPC service at " + address + ":" + port);
         LOG.info("TLS enabled: " + useTls);
 
@@ -71,7 +71,7 @@ public class HelloWorldClientServlet extends HttpServlet {
                         .append("               </head>\r\n")
                         .append("               <body>\r\n")
                         .append("                       <h3>gRPC helloworld client example</h3>\r\n")
-                        .append("                       <form action=\"grpcClient\" method=\"POST\" name=\"form1\">\r\n")
+                        .append("                       <form action=\"" + getURLPath() + "\" method=\"POST\" name=\"form1\">\r\n")
                         .append("                               Enter your name: \r\n")
                         .append("                               <input type=\"text\" name=\"user\" />\r\n\r\n")
                         .append("                               <br/>")
@@ -144,5 +144,9 @@ public class HelloWorldClientServlet extends HttpServlet {
         } finally {
             stopService(channel);
         }
+    }
+
+    protected String getURLPath() {
+        return "grpcClient";
     }
 }
