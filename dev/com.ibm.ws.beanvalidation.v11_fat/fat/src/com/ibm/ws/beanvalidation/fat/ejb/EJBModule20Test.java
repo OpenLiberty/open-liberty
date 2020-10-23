@@ -15,7 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -29,8 +28,6 @@ import componenttest.topology.utils.PrivHelper;
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
 @RunWith(FATRunner.class)
-// TODO: Remove skip when ejbLite is enabled for jakartaee9; issue #12434
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class EJBModule20Test extends EJBModule_Common {
 
     @Server("com.ibm.ws.beanvalidation.ejb_2.0.fat")
