@@ -78,17 +78,17 @@ public class ServicesTest extends InstallPackagesToolTest {
         Log.info(c, METHOD_NAME, "Starting defaultServer");
 
         ProgramOutput po2 = serviceCommand(METHOD_NAME, "start", "defaultServer");
-        wait(2000);
+        Thread.sleep(2000);
         ProgramOutput po2a = serviceCommand(METHOD_NAME, "status", "defaultServer");
         
         Log.info(c, METHOD_NAME, "Stopping defaultServer");
         ProgramOutput po3 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
-        wait(2000);
+        Thread.sleep(2000);
         ProgramOutput po3a = serviceCommand(METHOD_NAME, "status", "defaultServer");
 
         Log.info(c, METHOD_NAME, "Re-starting defaultServer");
         ProgramOutput po4 = serviceCommand(METHOD_NAME, "restart", "defaultServer");
-        wait(2000);
+        Thread.sleep(2000);
         ProgramOutput po4a = serviceCommand(METHOD_NAME, "status", "defaultServer");
         Log.info(c, METHOD_NAME, "Stopping defaultServer");
         ProgramOutput po5 = serviceCommand(METHOD_NAME, "stop", "defaultServer");

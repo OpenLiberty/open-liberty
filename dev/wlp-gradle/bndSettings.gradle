@@ -123,27 +123,11 @@ if (addAll) {
     println 'Preparing all bnd projects in the workspace (this can take a while)'
 }
 
-/**
- * This method is a hardcoded method that assumes if a project is
- * a multi module project, it will have a module named "module"
- **/
-def includeModuleIfExists(projectName) {
-    File module = new File(rootDir, projectName + '/module')
-    if (module.exists()) {
-        include projectName + ':' + module.getName()
-    }
-}
-
 def allBndProjects = workspace.getAllProjects().collect { project ->
     if (!project.name.startsWith('.')) {
         if (addAll) {
             project.prepare()
             include project.name
-
-            if (new File(rootDir, project.name + '/springboot.gradle').exists()) {
-                includeModuleIfExists(project.name)
-            }
-
         }
         return project.name
     } else {
@@ -169,12 +153,11 @@ projectNames.each { projectName ->
         workspace.getProject(projectName).getDependson()*.getName().each {
             include it
         }
-
-        if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
-            includeModuleIfExists(projectName)
-        }
     }
 }
+
+// A non-standared project. Just include it all the time
+include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
 
 private boolean parseBoolean(String value) {
     return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
