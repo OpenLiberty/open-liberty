@@ -36,6 +36,7 @@ public class ConfigOrdinalServerXMLServlet extends FATServlet {
     public void testServerXmlConfigOrdinal() {
         assertEquals("config_props", config.getValue("key_config_props", String.class));
         assertEquals("serverxml_vars", config.getValue("key_serverxml_vars", String.class));
+        assertEquals("serverxml_default_vars", config.getValue("key_serverxml_default_vars", String.class));
         assertEquals("env_vars", config.getValue("key_env_vars", String.class));
         assertEquals("serverxml_app_props", config.getValue("key_serverxml_app_props", String.class));
         assertEquals("system_props", config.getValue("key_system_props", String.class));

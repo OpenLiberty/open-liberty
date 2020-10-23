@@ -19,10 +19,13 @@
        </appProperties>
     </application>
     
-    <variable name="key_serverxml_vars" value="serverxml_vars" />
-    <variable name="key_env_vars" value="serverxml_vars" />
-    <variable name="key_serverxml_app_props" value="serverxml_vars" />
-    <variable name="key_system_props" value="serverxml_vars" />
-    <variable name="config_ordinal" value="150"/>
+    <variable name="key_serverxml_default_vars" defaultValue="serverxml_default_vars"/>
+    
+    <variable name="key_serverxml_vars" defaultValue="serverxml_default_vars" value="serverxml_vars"/>
+    <variable name="key_env_vars" defaultValue="serverxml_default_vars" value="serverxml_vars"/>
+    <variable name="key_serverxml_app_props" defaultValue="serverxml_default_vars" value="serverxml_vars"/>
+    <variable name="key_system_props" defaultValue="serverxml_default_vars" value="serverxml_vars"/>
+    
+    <variable name="config_ordinal" defaultValue="120" value="150"/>
     
 </server>
