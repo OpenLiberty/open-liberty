@@ -13,6 +13,7 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,17 +42,28 @@ public class HelloWorldTest extends HelloWorldBasicTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        // set exportApps = true and these apps will be saved under publish/savedApps/helloWorld/
+        boolean exportApps = false;
+        WebArchive helloWorldService = null;
+        WebArchive helloWorldClient = null;
+
         // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
         // to a new app HelloWorldService.war
-        ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldService.war",
-                                      "com.ibm.ws.grpc.fat.helloworld.service",
-                                      "io.grpc.examples.helloworld");
+        helloWorldService = ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldService.war",
+                                                          "com.ibm.ws.grpc.fat.helloworld.service",
+                                                          "io.grpc.examples.helloworld");
 
         // add all classes from com.ibm.ws.grpc.fat.helloworld.client, io.grpc.examples.helloworld,
         // and com.ibm.ws.fat.grpc.tls to a new app HelloWorldClient.war.
-        ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldClient.war",
-                                      "com.ibm.ws.grpc.fat.helloworld.client",
-                                      "io.grpc.examples.helloworld");
+        helloWorldClient = ShrinkHelper.defaultDropinApp(helloWorldServer, "HelloWorldClient.war",
+                                                         "com.ibm.ws.grpc.fat.helloworld.client",
+                                                         "io.grpc.examples.helloworld");
+
+        if (exportApps) {
+            ShrinkHelper.exportArtifact(helloWorldService, "publish/savedApps/helloWorld/");
+            ShrinkHelper.exportArtifact(helloWorldClient, "publish/savedApps/helloWorld/");
+        }
 
         helloWorldServer.startServer(HelloWorldTest.class.getSimpleName() + ".log");
     }
