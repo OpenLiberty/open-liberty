@@ -2,9 +2,9 @@ set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
 
-# If this is the special 'MODIFIED_FULL_MODE' job, figure out which buckets
-# were directly modfied (if any) so they can be launched in FULL mode
-if [[ "MODIFIED_FULL_MODE" == $CATEGORY ]]; then
+# If this is the special 'MODIFIED_*_MODE' job, figure out which buckets
+# were directly modfied so we can check for their results
+if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
   git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
   echo "Modified files are:"
   cat modified_files.diff
