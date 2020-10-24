@@ -24,7 +24,9 @@ import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
         JwtConsumerApiConfigTests.class,
         JwtConsumerApiConfigBlankIdTests.class,
         JwtConsumerApiConfigWithGlobalTrustTests.class,
-        JwtConsumerAPIMinimumConfigTests.class
+        JwtConsumerAPIMinimumHSARunnableConfigTests.class,
+        JwtConsumerAPIMinimumSSLConsumerConfigTests.class,
+        JwtConsumerAPIMinimumSSLGlobalConfigTests.class,
 
 })
 
