@@ -18,6 +18,8 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -370,6 +372,10 @@ public class PackageCommandTest {
         try {
 
             server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Ensure the usr/shared dir exists
+            Path sharedPath = Paths.get(server.getServerSharedPath());
+            sharedPath.toFile().mkdirs();
 
             String[] cmd = new String[] { "--archive=" + archivePackage,
                                           "--include=usr",

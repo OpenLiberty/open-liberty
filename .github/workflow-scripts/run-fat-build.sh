@@ -9,6 +9,13 @@ chmod +x gradlew
 chmod 777 build.image/wlp/bin/*
 echo "org.gradle.daemon=false" >> gradle.properties
 
+echo "Environment dump:"
+env
+echo "Ant version:"
+ant -v
+echo "Java version:"
+java -version
+
 FAT_ARGS=""
 
 # If this is the special 'MODIFIED_FULL_MODE' job, figure out which buckets 

@@ -98,11 +98,11 @@ jobs:
     name: FAT Tests - ${{matrix.category}}
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     strategy:
       fail-fast: false
-      max-parallel: 18
+      max-parallel: 19
       matrix:
+        category: [ MODIFIED_FULL_MODE, GENERAL, MISC, CDI_1, APPCLIENT, CONCURRENT_1, EJB_1, WEBCONTAINER_1, JAXRS_1, JDBC, JPA_1, TRANSACTION_1, MP_GRAPHQL, MP_REACTIVE, MP_JWT_1, SECURITY_3 ]
         include:
           # This is a special category that runs directly modfied FATs in FULL mode
           - category: MODIFIED_FULL_MODE
@@ -112,10 +112,10 @@ jobs:
               com.ibm.ws.java11_fat
               build.featureStart_fat
           - category: MISC
+            # com.ibm.ws.mongo_fat // disabled: requires Consul
             fat-buckets: >
               com.ibm.ws.cloudant_fat
               com.ibm.ws.couchdb_fat
-              com.ibm.ws.mongo_fat
               com.ibm.ws.jmx_fat
               com.ibm.ws.springboot.support_fat
           - category: KERNEL_1
@@ -576,9 +576,7 @@ jobs:
         name: liberty-image
         path: dev/build.image/wlp/
     - name: Run FAT buckets
-      # Set timeout to 5m less than the timeout for the overall job. This ensures that if
-      # FATs time out, there is a little time leftover in the overall job to collect logs
-      timeout-minutes: 85
+      timeout-minutes: 180
       shell: bash
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
