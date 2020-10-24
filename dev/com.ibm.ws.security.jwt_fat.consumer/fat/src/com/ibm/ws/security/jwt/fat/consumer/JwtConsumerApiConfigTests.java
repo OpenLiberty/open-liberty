@@ -2125,4 +2125,39 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     }
 
+    //    // sample test to build encrypted only payload
+    //    @Test
+    //    public void JwtConsumerApiConfigTests_saveForLater() throws Exception {
+    //
+    //        builder.setKeyManagementKey(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
+    //
+    //        // simple string content
+    //        //        builder.setPayload("Some String");
+    //
+    //        // Json Content
+    //        JSONObject payload = new JSONObject();
+    //        payload.put(PayloadConstants.ISSUER, "client01");
+    //        NumericDate now = NumericDate.now();
+    //        payload.put(PayloadConstants.ISSUED_AT, now.getValue());
+    //        payload.put(PayloadConstants.EXPIRATION_TIME, now.getValue() + (2 * 60 * 60));
+    //        payload.put(PayloadConstants.SCOPE, "openid profile");
+    //        payload.put(PayloadConstants.SUBJECT, "testuser");
+    //        payload.put(PayloadConstants.REALM_NAME, "BasicRealm");
+    //        payload.put(PayloadConstants.TOKEN_TYPE, "Bearer");
+    //        payload.put("key1", "ugh.ibm.com");
+    //        payload.put("key2", "my.dog.has.fleas");
+    //        payload.put("key3", "testing.to.bump.up.part.count");
+    //        payload.put("key4", "hereWe.goAgain");
+    //
+    //        String payloadString = payload.toString();
+    //        builder.setPayload(payloadString);
+    //
+    //        String jwtToken = consumerHelpers.buildSimpleJWEToken(builder, _testName);
+    //
+    //        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+    //
+    //        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+    //        validationUtils.validateResult(response, currentAction, expectations);
+    //
+    //    }
 }
