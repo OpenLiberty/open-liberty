@@ -32,7 +32,9 @@ dependencies {
 
 def appBuildDir = "${buildDir}/test-application"
 
-task formlogin(type: War, dependsOn: classes) {
+task formlogin(type: War) {
+  dependsOn classes
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
   def appName = "formlogin"
   def appSuffix = ".jwtsso"
   destinationDir file("${appBuildDir}")
@@ -51,7 +53,8 @@ task formlogin(type: War, dependsOn: classes) {
   }
 }
 
-task amrbuilder(type: War, dependsOn: classes) {
+task amrbuilder(type: War) {
+  dependsOn classes
   def appName = "amrbuilder"
   destinationDir file("${appBuildDir}")
   archiveName "${appName}.war"
@@ -66,11 +69,11 @@ task amrbuilder(type: War, dependsOn: classes) {
 }
 
 assemble {
-  dependsOn \
-    formlogin
-  dependsOn \
-    amrbuilder
+  dependsOn formlogin
+  dependsOn amrbuilder
 }
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 
 autoFVT.doLast {
 

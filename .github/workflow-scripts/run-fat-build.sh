@@ -9,13 +9,6 @@ chmod +x gradlew
 chmod 777 build.image/wlp/bin/*
 echo "org.gradle.daemon=false" >> gradle.properties
 
-echo "Environment dump:"
-env
-echo "Ant version:"
-ant -v
-echo "Java version:"
-java -version
-
 FAT_ARGS=""
 
 # If this is the special 'MODIFIED_FULL_MODE' job, figure out which buckets 
@@ -46,6 +39,13 @@ if [[ $GH_EVENT_NAME == 'pull_request' && "MODIFIED_FULL_MODE" != $CATEGORY ]]; 
   FAT_ARGS="-Dgit_diff=HEAD^...HEAD^2"
   echo "This event is a pull request. Will run FATs with: $FAT_ARGS"
 fi
+
+echo "\n## Environment dump:"
+env
+echo "\n## Ant version:"
+ant -version
+echo "\n## Java version:"
+java -version
   
 ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
 for FAT_BUCKET in $FAT_BUCKETS

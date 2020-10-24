@@ -90,7 +90,7 @@ assemble.dependsOn PasswordUtilAPI_WAR
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
