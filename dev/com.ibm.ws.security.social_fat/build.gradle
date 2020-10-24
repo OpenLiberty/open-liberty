@@ -30,6 +30,8 @@ dependencies {
       "xerces:xercesImpl:2.11.0"
 }
 
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+
 autoFVT.doLast {
 
   def servers = [
