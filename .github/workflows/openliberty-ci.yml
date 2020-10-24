@@ -103,12 +103,13 @@ jobs:
       max-parallel: 19
       matrix:
         # TEMP ordering to test modified buckets faster
-        category: [ MODIFIED_FULL_MODE, MP_OPENAPI, MP_JWT_1, MP_JWT_2, SECURITY_3, INSTALL, MISC, SECURITY_4 ]
+        category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, JAXRS_1, JAXRS_2, MP_OPENAPI, SECURITY_3, SECURITY_4 ]
         # All categories will be included even if they are not listed here
         # This array is only used to control the ordering the jobs run. If a category is not specified here, it runs in the order it is listed in the 'include' section
-        #category: [ MODIFIED_FULL_MODE, GENERAL, MISC, CDI_1, APPCLIENT, CONCURRENT_1, EJB_1, WEBCONTAINER_1, JAXRS_1, JDBC, JPA_1, TRANSACTION_1, MP_GRAPHQL, MP_REACTIVE, MP_JWT_1, SECURITY_3 ]
+        #category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, GENERAL, MISC, CDI_1, APPCLIENT, CONCURRENT_1, EJB_1, WEBCONTAINER_1, JAXRS_1, JDBC, JPA_1, TRANSACTION_1, MP_GRAPHQL, MP_REACTIVE, MP_JWT_1, SECURITY_3 ]
         include:
-          # This is a special category that runs directly modfied FATs in FULL mode
+          # These are special categories that run directly modfied FATs in LITE/FULL mode
+          - category: MODIFIED_LITE_MODE
           - category: MODIFIED_FULL_MODE
           - category: GENERAL
             fat-buckets: >
@@ -580,7 +581,7 @@ jobs:
         name: liberty-image
         path: dev/build.image/wlp/
     - name: Run FAT buckets
-      timeout-minutes: 180
+      timeout-minutes: 150
       shell: bash
       env:
         FAT_BUCKETS: ${{matrix.fat-buckets}}
