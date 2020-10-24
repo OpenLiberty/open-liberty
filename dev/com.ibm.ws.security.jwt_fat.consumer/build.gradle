@@ -38,7 +38,11 @@ dependencies {
  */
 def appBuildDir = "${buildDir}/test-applications"
 
-task jwtconsumerclient(type: War, dependsOn: classes) {
+task jwtconsumerclient(type: War) {
+  dependsOn classes
+  dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+  dependsOn ':com.ibm.ws.org.jose4j:assemble'
+
   def appName = "jwtconsumerclient"
   destinationDir file("${appBuildDir}")
   archiveName "${appName}.war"
@@ -63,9 +67,11 @@ task jwtconsumerclient(type: War, dependsOn: classes) {
 }
 
 assemble {
-  dependsOn \
-    jwtconsumerclient
+  dependsOn jwtconsumerclient
 }
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 
 autoFVT.doLast {
 
