@@ -11,10 +11,13 @@ echo "org.gradle.daemon=false" >> gradle.properties
 
 FAT_ARGS=""
 
-# If this is the special 'MODIFIED_FULL_MODE' job, figure out which buckets 
-# were directly modfied (if any) so they can be launched in FULL mode
-if [[ "MODIFIED_FULL_MODE" == $CATEGORY ]]; then
-  FAT_ARGS="-Dfat.test.mode=FULL"
+# If this is the special 'MODIFIED_*_MODE' job, figure out which buckets 
+# were directly modfied (if any) so they can be launched
+if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
+  if [[ $CATEGORY == 'MODIFIED_FULL_MODE' ]]; then
+    echo "FAT buckets in this job will run in FULL mode"
+    FAT_ARGS="-Dfat.test.mode=FULL"
+  fi
   git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
   echo "Modified files are:"
   cat modified_files.diff
@@ -35,7 +38,7 @@ do
 done
 
 # For PR type events, set the git_diff for the change detector tool so unreleated FATs do not run
-if [[ $GH_EVENT_NAME == 'pull_request' && "MODIFIED_FULL_MODE" != $CATEGORY ]]; then
+if [[ $GH_EVENT_NAME == 'pull_request' && ! $CATEGORY =~ MODIFIED_.*_MODE ]]; then
   FAT_ARGS="-Dgit_diff=HEAD^...HEAD^2"
   echo "This event is a pull request. Will run FATs with: $FAT_ARGS"
 fi
@@ -50,7 +53,7 @@ java -version
 ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
 for FAT_BUCKET in $FAT_BUCKETS
 do
-  echo "### BEGIN running FAT bucket $FAT_BUCKET"
+  echo "### BEGIN running FAT bucket $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
   ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS || BUCKET_PASSED=false
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output

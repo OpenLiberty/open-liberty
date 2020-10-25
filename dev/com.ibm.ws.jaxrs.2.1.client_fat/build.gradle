@@ -8,27 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
-}
-
 configurations {
   reactivex
   cxf
   jersey
   mockserver
-  
 }
 
 configurations.jersey {
@@ -45,36 +29,42 @@ dependencies {
     'org.glassfish.hk2.external:javax.inject:2.3.0-b10',
     'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava:2.30.1',
     'org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2:2.30.1'
-  mockserver 'org.mock-server:mockserver-netty:3.10.7',
-	'org.mock-server:mockserver-client-java:3.10.7',
-    'org.mock-server:mockserver-core:3.10.7-IBM20191022',
-	'com.google.guava:guava:18.0',
-	'io.netty:netty-buffer:4.1.8.Final',
-	'io.netty:netty-codec:4.1.8.Final',
-	'io.netty:netty-codec-http:4.1.8.Final',
-	'io.netty:netty-codec-socks:4.1.8.Final',
-	'io.netty:netty-common:4.1.8.Final',
-	'io.netty:netty-handler:4.1.8.Final',
-	'io.netty:netty-transport:4.1.8.Final',
-	'junit:junit:4.12',
-	'org.bouncycastle:bcprov-jdk15on:1.56',
-	'org.slf4j:slf4j-api:1.7.25',
-	'ch.qos.logback:logback-classic:1.1.3',
-	'janino:janino:2.5.10',
-	'org.mock-server:mockserver-logging:3.10.7',
-	'com.fasterxml.jackson.core:jackson-core:2.7.8',
-	'com.fasterxml.jackson.core:jackson-annotations:2.7.8',
-	'com.fasterxml.jackson.core:jackson-databind:2.7.8',
-	'com.github.fge:json-schema-validator:2.2.6',
-	'com.jcraft:jzlib:1.1.3',
-	'javax.servlet:javax.servlet-api:3.0.1',
-	'org.apache.commons:commons-lang3:3.4',
-	'org.apache.commons:commons-io:1.3.2',
-	'org.bouncycastle:bcprov-jdk15on:1.56',
-	'org.bouncycastle:bcmail-jdk15on:1.56',
-	'org.bouncycastle:bcpkix-jdk15on:1.56',
-	'org.reactivestreams:reactive-streams:1.0.3',
-	'org.skyscreamer:jsonassert:1.2.3'   
+  mockserver('org.mock-server:mockserver-netty:3.10.7') {
+    exclude group: 'xerces', module: 'xerces'
+  }
+  mockserver('org.mock-server:mockserver-client-java:3.10.7') {
+    exclude group: 'xerces', module: 'xerces'
+  }
+  mockserver('org.mock-server:mockserver-core:3.10.7-IBM20191022') { 
+    exclude group: 'xerces', module: 'xerces'
+  }
+  mockserver 'com.google.guava:guava:18.0'
+  mockserver 'io.netty:netty-buffer:4.1.8.Final'
+  mockserver 'io.netty:netty-codec:4.1.8.Final'
+  mockserver 'io.netty:netty-codec-http:4.1.8.Final'
+  mockserver 'io.netty:netty-codec-socks:4.1.8.Final'
+  mockserver 'io.netty:netty-common:4.1.8.Final'
+  mockserver 'io.netty:netty-handler:4.1.8.Final'
+  mockserver 'io.netty:netty-transport:4.1.8.Final'
+  mockserver 'junit:junit:4.12'
+  mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
+  mockserver 'org.slf4j:slf4j-api:1.7.25'
+  mockserver 'ch.qos.logback:logback-classic:1.1.3'
+  mockserver 'janino:janino:2.5.10'
+  mockserver 'org.mock-server:mockserver-logging:3.10.7'
+  mockserver 'com.fasterxml.jackson.core:jackson-core:2.7.8'
+  mockserver 'com.fasterxml.jackson.core:jackson-annotations:2.7.8'
+  mockserver 'com.fasterxml.jackson.core:jackson-databind:2.7.8'
+  mockserver 'com.github.fge:json-schema-validator:2.2.6'
+  mockserver 'com.jcraft:jzlib:1.1.3'
+  mockserver 'javax.servlet:javax.servlet-api:3.0.1'
+  mockserver 'org.apache.commons:commons-lang3:3.4'
+  mockserver 'org.apache.commons:commons-io:1.3.2'
+  mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
+  mockserver 'org.bouncycastle:bcmail-jdk15on:1.56'
+  mockserver 'org.bouncycastle:bcpkix-jdk15on:1.56'
+  mockserver 'org.reactivestreams:reactive-streams:1.0.3'
+  mockserver 'org.skyscreamer:jsonassert:1.2.3'   
 }
 task addReactivex(type: Copy) {
   from configurations.reactivex
