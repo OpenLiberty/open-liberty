@@ -102,11 +102,10 @@ jobs:
       fail-fast: false
       max-parallel: 19
       matrix:
-        # TEMP ordering to test modified buckets faster
-        category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, JAXRS_1, JAXRS_2, MP_OPENAPI, SECURITY_3, SECURITY_4 ]
-        # All categories will be included even if they are not listed here
-        # This array is only used to control the ordering the jobs run. If a category is not specified here, it runs in the order it is listed in the 'include' section
-        #category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, GENERAL, MISC, CDI_1, APPCLIENT, CONCURRENT_1, EJB_1, WEBCONTAINER_1, JAXRS_1, JDBC, JPA_1, TRANSACTION_1, MP_GRAPHQL, MP_REACTIVE, MP_JWT_1, SECURITY_3 ]
+        # All categories will be included even if they are not listed here. This array is only used to control the ordering the jobs run. 
+        # If a category is not specified here, it runs in the order it is listed in the following 'include' section
+        category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, GENERAL, CDI_1, CONCURRENT_1, EJB_1, JAXRS_1, JCA, JDBC, JPA_1, KERNEL_1,
+                    MP_CONFIG, MP_GRAPHQL, MP_METRICS_1, MP_REACTIVE, MP_REST_CLIENT_1, SECURITY_3, TRANSACTION_1, WEBCONTAINER_1 ]
         include:
           # These are special categories that run directly modfied FATs in LITE/FULL mode
           - category: MODIFIED_LITE_MODE
@@ -116,34 +115,6 @@ jobs:
               build.example_fat
               com.ibm.ws.java11_fat
               build.featureStart_fat
-          - category: MISC
-            # com.ibm.ws.mongo_fat // disabled: requires Consul
-            fat-buckets: >
-              com.ibm.ws.cloudant_fat
-              com.ibm.ws.couchdb_fat
-              com.ibm.ws.jmx_fat
-              com.ibm.ws.springboot.support_fat
-          - category: KERNEL_1
-            fat-buckets: >
-              com.ibm.ws.anno_fat
-              com.ibm.ws.app.manager.wab.installer_fat
-              com.ibm.ws.app.manager_fat
-              com.ibm.ws.artifact_fat
-              com.ibm.ws.artifact_fat_bvt
-          - category: KERNEL_2
-            fat-buckets: >
-              com.ibm.ws.config_fat
-              com.ibm.ws.kernel.boot_fat
-              com.ibm.ws.kernel.feature_fat
-          - category: KERNEL_3
-            fat-buckets: >
-              com.ibm.ws.kernel.filemonitor_fat
-              com.ibm.ws.osgi.console_fat
-              com.ibm.ws.rest.handler.config_fat
-              com.ibm.ws.rest.handler.validator.cloudant_fat
-              com.ibm.ws.rest.handler.validator_fat
-              com.ibm.ws.runtime.update_fat
-              com.ibm.ws.threading_policy_fat
           - category: CDI_1
             fat-buckets: >
               com.ibm.ws.cdi.2.0_fat
@@ -161,21 +132,6 @@ jobs:
               com.ibm.ws.cdi.noncontextual_fat
               com.ibm.ws.cdi.third.party_fat
               com.ibm.ws.cdi.visibility_fat
-          - category: APPCLIENT
-            fat-buckets: >
-              com.ibm.ws.clientcontainer.8.0_fat
-              com.ibm.ws.clientcontainer.beanvalidation_fat
-              com.ibm.ws.clientcontainer.cdi_fat
-              com.ibm.ws.clientcontainer.javamail_fat
-              com.ibm.ws.clientcontainer.json_fat
-          - category: SESSIONS
-            fat-buckets: >
-              com.ibm.ws.jcache_fat
-              com.ibm.ws.session.cache_fat
-              com.ibm.ws.session.cache_fat_config
-              com.ibm.ws.session.cache_fat_config_infinispan
-              com.ibm.ws.session.cache_fat_infinispan
-              com.ibm.ws.session.cache_fat_infinispan_container
           - category: CONCURRENT_1
             fat-buckets: >
               com.ibm.ws.concurrent.mp.1.1_fat_tck
@@ -242,28 +198,6 @@ jobs:
               com.ibm.ws.ejbcontainer.tx_fat
               com.ibm.ws.injection_fat
               com.ibm.ws.managedbeans_fat
-          - category: JAVAEE
-            fat-buckets: >
-              com.ibm.ws.beanvalidation.v11_fat
-              com.ibm.ws.beanvalidation.v20_fat
-              com.ibm.ws.el.3.0_fat
-              com.ibm.ws.javaee.7.0_fat
-              com.ibm.ws.javaee.8.0_fat
-              com.ibm.ws.javamail.1.6_fat
-              com.ibm.ws.jaxb_fat
-          - category: LOGGING_1
-            fat-buckets: >
-              com.ibm.ws.event.logging_fat
-              com.ibm.ws.logging.hpel_fat
-              com.ibm.ws.logging.json_fat
-              com.ibm.ws.logging_fat
-              com.ibm.ws.logstash.collector_fat
-          - category: LOGGING_2
-            fat-buckets: >
-              com.ibm.ws.request.probe.jdbc_fat
-              com.ibm.ws.request.probe.servlet_fat
-              com.ibm.ws.request.probes_fat
-              com.ibm.ws.request.timing_fat
           - category: WEBCONTAINER_1
             fat-buckets: >
               com.ibm.ws.grpc_fat
@@ -278,19 +212,14 @@ jobs:
               com.ibm.ws.webcontainer.servlet.4.0_fat
               com.ibm.ws.webserver.plugin.utility_fat
               io.openliberty.wsoc.internal_fat
-          - category: INSTALL
-            fat-buckets: >
-              com.ibm.ws.install.featureUtility_fat
-              com.ibm.ws.install.packaging_fat
-              com.ibm.ws.os.packaging_fat
-              com.ibm.ws.repository_fat
-              wlp.lib.extract_fat
           - category: JAXRS_1
             fat-buckets: >
-              com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
-              com.ibm.ws.jaxrs.2.0.client_fat
-              com.ibm.ws.jaxrs.2.0_fat
-              com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
+              com.ibm.ws.jaxrs.2.1_fat_extended
+              com.ibm.ws.jaxrs.2.x.webcontainer_fat
+              com.ibm.ws.jaxrs.2.x_fat_clientProps
+              io.openliberty.jakarta.restfulWS.3.0.api_fat
+              io.openliberty.restfulWS.3.0.client_fat
+              io.openliberty.restfulWS.3.0_fat
           - category: JAXRS_2
             fat-buckets: >
               com.ibm.ws.jaxrs.2.1.client_fat
@@ -299,20 +228,10 @@ jobs:
               com.ibm.ws.jaxrs.2.1_fat_executor
           - category: JAXRS_3
             fat-buckets: >
-              com.ibm.ws.jaxrs.2.1_fat_extended
-              com.ibm.ws.jaxrs.2.x.webcontainer_fat
-              com.ibm.ws.jaxrs.2.x_fat_clientProps
-              io.openliberty.jakarta.restfulWS.3.0.api_fat
-              io.openliberty.restfulWS.3.0.client_fat
-              io.openliberty.restfulWS.3.0_fat
-          - category: JAXWS
-            fat-buckets: >
-              com.ibm.ws.jaxws.2.2.webcontainer_fat
-              com.ibm.ws.jaxws.cdi_fat
-              com.ibm.ws.jaxws.clientcontainer_fat
-              com.ibm.ws.jaxws.ejb_fat
-              com.ibm.ws.jbatch.cdi_fat
-              com.ibm.ws.jbatch.misc_fat
+              com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
+              com.ibm.ws.jaxrs.2.0.client_fat
+              com.ibm.ws.jaxrs.2.0_fat
+              com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
           - category: JCA
             fat-buckets: >
               com.ibm.ws.jca_fat
@@ -353,54 +272,6 @@ jobs:
               com.ibm.ws.jpa_spec20_fat
               com.ibm.ws.jpa_spec21_fat
               com.ibm.ws.persistence_fat
-          - category: JSF_JSP
-            fat-buckets: >
-              com.ibm.ws.jsf.2.2_fat
-              com.ibm.ws.jsf.2.3_fat
-              com.ibm.ws.jsfContainer_fat_2.2
-              com.ibm.ws.jsfContainer_fat_2.3
-              com.ibm.ws.jsp.2.3_fat
-          - category: JSON
-            fat-buckets: >
-              com.ibm.ws.jsonb_fat
-              com.ibm.ws.jsonp.1.1_fat
-              com.ibm.ws.jsonp_fat
-          - category: TRANSACTION_1
-            fat-buckets: >
-              com.ibm.ws.jta_fat
-              com.ibm.ws.transaction.HADB_fat
-              com.ibm.ws.transaction.cloud_fat.1
-              com.ibm.ws.transaction.cloud_fat.2
-              com.ibm.ws.transaction.cloud_fat.3
-              com.ibm.ws.transaction.cloud_fat.4
-              com.ibm.ws.transaction.cloud_fat.5
-              com.ibm.ws.transaction.cloud_fat.6
-              com.ibm.ws.transaction.cloud_fat.7
-          - category: TRANSACTION_2
-            fat-buckets: >
-              com.ibm.ws.transaction.core_fat.1
-              com.ibm.ws.transaction.core_fat.2
-              com.ibm.ws.transaction.core_fat.3
-              com.ibm.ws.transaction.core_fat.4
-              com.ibm.ws.transaction.core_fat.5
-              com.ibm.ws.transaction.core_fat.6
-              com.ibm.ws.transaction.core_fat.7
-              com.ibm.ws.transaction.core_fat.8
-              com.ibm.ws.transaction.core_fat.9
-          - category: TRANSACTION_3
-            fat-buckets: >
-              com.ibm.ws.transaction.db_fat
-              com.ibm.ws.transaction.recovery_fat.1
-              com.ibm.ws.transaction.recovery_fat.2
-              com.ibm.ws.transaction.recovery_fat.3
-              com.ibm.ws.tx.jta_fat
-              com.ibm.ws.tx.jta_fat_hibernate
-          - category: MESSAGING
-            fat-buckets: >
-              com.ibm.ws.messaging.open_clientcontainer_fat
-              com.ibm.ws.messaging.open_comms_fat
-              com.ibm.ws.messaging.open_fat
-              com.ibm.ws.messaging.open_jms20_fat
           - category: MP_MISC
             fat-buckets: >
               com.ibm.ws.microprofile.1.0_fat
@@ -528,6 +399,134 @@ jobs:
               com.ibm.ws.security.wim.scim.2.0_fat
               com.ibm.ws.ssl_fat_keystoreGen
               com.ibm.ws.ssl_fat_pkcs12
+          - category: MISC
+            # com.ibm.ws.mongo_fat // disabled: requires Consul
+            fat-buckets: >
+              com.ibm.ws.cloudant_fat
+              com.ibm.ws.couchdb_fat
+              com.ibm.ws.jmx_fat
+              com.ibm.ws.springboot.support_fat
+          - category: KERNEL_1
+            fat-buckets: >
+              com.ibm.ws.anno_fat
+              com.ibm.ws.app.manager.wab.installer_fat
+              com.ibm.ws.app.manager_fat
+              com.ibm.ws.artifact_fat
+              com.ibm.ws.artifact_fat_bvt
+          - category: KERNEL_2
+            fat-buckets: >
+              com.ibm.ws.config_fat
+              com.ibm.ws.kernel.boot_fat
+              com.ibm.ws.kernel.feature_fat
+          - category: KERNEL_3
+            fat-buckets: >
+              com.ibm.ws.kernel.filemonitor_fat
+              com.ibm.ws.osgi.console_fat
+              com.ibm.ws.rest.handler.config_fat
+              com.ibm.ws.rest.handler.validator.cloudant_fat
+              com.ibm.ws.rest.handler.validator_fat
+              com.ibm.ws.runtime.update_fat
+              com.ibm.ws.threading_policy_fat
+          - category: SESSIONS
+            fat-buckets: >
+              com.ibm.ws.jcache_fat
+              com.ibm.ws.session.cache_fat
+              com.ibm.ws.session.cache_fat_config
+              com.ibm.ws.session.cache_fat_config_infinispan
+              com.ibm.ws.session.cache_fat_infinispan
+              com.ibm.ws.session.cache_fat_infinispan_container
+          - category: JAVAEE
+            fat-buckets: >
+              com.ibm.ws.beanvalidation.v11_fat
+              com.ibm.ws.beanvalidation.v20_fat
+              com.ibm.ws.el.3.0_fat
+              com.ibm.ws.javaee.7.0_fat
+              com.ibm.ws.javaee.8.0_fat
+              com.ibm.ws.javamail.1.6_fat
+              com.ibm.ws.jaxb_fat
+          - category: TRANSACTION_1
+            fat-buckets: >
+              com.ibm.ws.jta_fat
+              com.ibm.ws.transaction.HADB_fat
+              com.ibm.ws.transaction.cloud_fat.1
+              com.ibm.ws.transaction.cloud_fat.2
+              com.ibm.ws.transaction.cloud_fat.3
+              com.ibm.ws.transaction.cloud_fat.4
+              com.ibm.ws.transaction.cloud_fat.5
+              com.ibm.ws.transaction.cloud_fat.6
+              com.ibm.ws.transaction.cloud_fat.7
+          - category: TRANSACTION_2
+            fat-buckets: >
+              com.ibm.ws.transaction.core_fat.1
+              com.ibm.ws.transaction.core_fat.2
+              com.ibm.ws.transaction.core_fat.3
+              com.ibm.ws.transaction.core_fat.4
+              com.ibm.ws.transaction.core_fat.5
+              com.ibm.ws.transaction.core_fat.6
+              com.ibm.ws.transaction.core_fat.7
+              com.ibm.ws.transaction.core_fat.8
+              com.ibm.ws.transaction.core_fat.9
+          - category: TRANSACTION_3
+            fat-buckets: >
+              com.ibm.ws.transaction.db_fat
+              com.ibm.ws.transaction.recovery_fat.1
+              com.ibm.ws.transaction.recovery_fat.2
+              com.ibm.ws.transaction.recovery_fat.3
+              com.ibm.ws.tx.jta_fat
+              com.ibm.ws.tx.jta_fat_hibernate
+          - category: MESSAGING
+            fat-buckets: >
+              com.ibm.ws.messaging.open_clientcontainer_fat
+              com.ibm.ws.messaging.open_comms_fat
+              com.ibm.ws.messaging.open_fat
+              com.ibm.ws.messaging.open_jms20_fat
+          - category: LOGGING_1
+            fat-buckets: >
+              com.ibm.ws.event.logging_fat
+              com.ibm.ws.logging.hpel_fat
+              com.ibm.ws.logging.json_fat
+              com.ibm.ws.logging_fat
+              com.ibm.ws.logstash.collector_fat
+          - category: LOGGING_2
+            fat-buckets: >
+              com.ibm.ws.request.probe.jdbc_fat
+              com.ibm.ws.request.probe.servlet_fat
+              com.ibm.ws.request.probes_fat
+              com.ibm.ws.request.timing_fat
+          - category: INSTALL
+            fat-buckets: >
+              com.ibm.ws.install.featureUtility_fat
+              com.ibm.ws.install.packaging_fat
+              com.ibm.ws.os.packaging_fat
+              com.ibm.ws.repository_fat
+              wlp.lib.extract_fat
+          - category: JAXWS
+            fat-buckets: >
+              com.ibm.ws.jaxws.2.2.webcontainer_fat
+              com.ibm.ws.jaxws.cdi_fat
+              com.ibm.ws.jaxws.clientcontainer_fat
+              com.ibm.ws.jaxws.ejb_fat
+              com.ibm.ws.jbatch.cdi_fat
+              com.ibm.ws.jbatch.misc_fat
+          - category: JSF_JSP
+            fat-buckets: >
+              com.ibm.ws.jsf.2.2_fat
+              com.ibm.ws.jsf.2.3_fat
+              com.ibm.ws.jsfContainer_fat_2.2
+              com.ibm.ws.jsfContainer_fat_2.3
+              com.ibm.ws.jsp.2.3_fat
+          - category: JSON
+            fat-buckets: >
+              com.ibm.ws.jsonb_fat
+              com.ibm.ws.jsonp.1.1_fat
+              com.ibm.ws.jsonp_fat
+          - category: APPCLIENT
+            fat-buckets: >
+              com.ibm.ws.clientcontainer.8.0_fat
+              com.ibm.ws.clientcontainer.beanvalidation_fat
+              com.ibm.ws.clientcontainer.cdi_fat
+              com.ibm.ws.clientcontainer.javamail_fat
+              com.ibm.ws.clientcontainer.json_fat
           - category: WSAT_1
             fat-buckets: >
               com.ibm.ws.wsat.common_fat
