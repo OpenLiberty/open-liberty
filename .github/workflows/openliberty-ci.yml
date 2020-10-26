@@ -46,7 +46,7 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew cnf:initialize assemble
+        ./gradlew cnf:initialize assemble --parallel
     - name: Upload liberty image
       uses: actions/upload-artifact@v2
       with:
