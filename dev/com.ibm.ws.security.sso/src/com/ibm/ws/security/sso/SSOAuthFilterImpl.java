@@ -31,8 +31,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+
 
 @Component(service = { SSOAuthFilter.class },
            name = "com.ibm.ws.webcontainer.security.util.SSOAuthFilter",
@@ -48,6 +50,22 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
     protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
 
     private LTPAConfiguration ltpaConfig;
+
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
+
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("This method is beta and is not available.");
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class WSSecurityPropagationHelper for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
 
     @Reference(name = LTPA_CONFIGURATION,
                service = LTPAConfiguration.class,
@@ -99,6 +117,7 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
     public boolean processRequest(HttpServletRequest req) {
         AuthenticationFilter authFilter = getAuthFilter();
         if (authFilter != null) {
+            betaFenceCheck();
             if (!authFilter.isAccepted(req))
                 return false;
         }

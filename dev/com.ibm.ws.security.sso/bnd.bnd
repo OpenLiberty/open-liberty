@@ -53,4 +53,5 @@ Import-Package: !*.internal.*, *
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

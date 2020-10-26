@@ -11,7 +11,6 @@ visibility=protected
  com.ibm.websphere.appserver.authFilter-1.0
 -bundles=com.ibm.websphere.security, \
  com.ibm.ws.webcontainer.security.feature, \
- com.ibm.ws.security.authorization.builtin, \
- com.ibm.ws.security.sso
+ com.ibm.ws.security.authorization.builtin
 kind=ga
 edition=core
