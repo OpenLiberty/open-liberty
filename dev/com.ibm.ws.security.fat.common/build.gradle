@@ -8,11 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/fat.gradle'
+// This doesn't seem to be necessary and fails during unit-test assembly 
+//apply from: '../wlp-gradle/subprojects/fat.gradle'
 
-dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3'
-}
+//dependencies {
+//  requiredLibs 'commons-logging:commons-logging:1.1.3'
+//}
 
 /*
  * This is where all application ZIP and WARs will be built.
