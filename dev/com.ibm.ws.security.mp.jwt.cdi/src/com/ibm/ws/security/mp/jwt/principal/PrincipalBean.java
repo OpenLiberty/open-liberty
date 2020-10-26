@@ -13,7 +13,6 @@ package com.ibm.ws.security.mp.jwt.principal;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -50,7 +49,19 @@ public class PrincipalBean implements JsonWebToken {
             Tr.entry(tc, "PrincipalBean");
         }
 
-        Subject subject = getCallerSubject();
+        Subject subject = null;
+        try {
+            subject = (Subject) java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return new SubjectManager().getCallerSubject();
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getCallerSubject() Exception caught: " + pae);
+            }
+        }
         if (subject != null) {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
@@ -64,7 +75,7 @@ public class PrincipalBean implements JsonWebToken {
                 }
                 if (principal != null) {
                     wsPrincipalName = getSecurityNameFromCredential(subject); // do this if JsonWebToken is not present, so we can match the behavior of server running w/ javaee-8.0 features
-                }   
+                }
             }
         }
 
@@ -168,26 +179,5 @@ public class PrincipalBean implements JsonWebToken {
             return principal.toString();
         return null;
     }
-
-    @SuppressWarnings("unchecked")
-    private Subject getCallerSubject() {
-        Subject s = null;
-        try {
-            s = (Subject) java.security.AccessController.doPrivileged(getCallerSubjectAction);
-        } catch (PrivilegedActionException pae) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getCallerSubject(PrivilegedAction) Exception caught: " + pae);
-        }
-
-        return s;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private final PrivilegedExceptionAction getCallerSubjectAction = new PrivilegedExceptionAction() {
-        @Override
-        public Object run() throws Exception {
-            return new SubjectManager().getCallerSubject();
-        }
-    };
 
 }
