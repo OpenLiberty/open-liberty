@@ -45,6 +45,7 @@ import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class DB2KerberosTest extends FATServletClient {
 
     private static final Class<?> c = DB2KerberosTest.class;
