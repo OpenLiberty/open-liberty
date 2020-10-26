@@ -37,7 +37,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.jndi.JNDIConstants;
 
 import com.ibm.ejs.util.Util;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.naming.JavaColonNamingHelper;
@@ -101,23 +100,6 @@ public class IndirectJndiLookupObjectFactory implements ObjectFactory {
         return getObjectInstance(c, envmt, ref.getClassName(), ref.bindingName, ref.resourceInfo, ref);
     }
 
-    private static final String prefix = "getObjectInstance: ";
-
-    @Trivial
-    private static void debug(String text) {
-        System.out.println(prefix + text);
-    }
-
-    @Trivial
-    private static void debug(String text, Object value) {
-        System.out.println(prefix + text + " [ " + value + " ]");
-    }
-
-    @Trivial
-    private static void debug(String text, Object value1, Object value2) {
-        System.out.println(prefix + text + " [ " + value1 + " ] [ " + value2 + " ]");
-    }
-
     /**
      * Get an indirect object instance.
      *
@@ -133,14 +115,7 @@ public class IndirectJndiLookupObjectFactory implements ObjectFactory {
      * @param ref the actual Reference for diagnostic information
      */
     @FFDCIgnore(Exception.class)
-    private Object getObjectInstance(
-        Context c,
-        Hashtable<?, ?> envmt,
-        String className, String bindingName,
-        ResourceInfo resourceRefInfo, IndirectReference ref) throws Exception {
-
-        debug("ENTER", className, bindingName);
-
+    private Object getObjectInstance(Context c, Hashtable<?, ?> envmt, String className, String bindingName, ResourceInfo resourceRefInfo, IndirectReference ref) throws Exception {
         try {
             // References are supposed to always have a type, but we tolerate
             // references declared in XML that don't have a type, so it's possible
@@ -148,138 +123,85 @@ public class IndirectJndiLookupObjectFactory implements ObjectFactory {
             // target type the same as an actual JNDI lookup.
 
             boolean hasJNDIScheme;
-            if ( bindingName.startsWith("java:") ) {
-                debug("Trying java lookup");
-
+            if (bindingName.startsWith("java:")) {
                 Object instance = getJavaObjectInstance(c, envmt, className, bindingName, resourceRefInfo, ref);
-                if ( instance != null ) {
-                    debug("RETURN (java lookup)", instance);
+                if (instance != null) {
                     return instance;
-                } else {
-                    debug("Failed java lookup");
-                    hasJNDIScheme = true;
                 }
 
+                hasJNDIScheme = true;
             } else {
-                debug("Trying non-java lookup");
-
                 Object resource = createResource(ref.name, className, bindingName, resourceRefInfo);
-                if ( resource != null ) {
-                    debug("RETURN (typed create resource)", resource);
-                    return resource;
-                } else {
-                    debug("Failed typed create resource");
-                }
 
                 // If not found and the customer explicitly provided a binding, then
                 // try again without specifying type. This is for the case where the
                 // actual object produced by the factory is assignable to the reference
                 // type, but not an exact match.
+                if (resource == null && !ref.defaultBinding) {
+                    resource = createResource(ref.name, null, bindingName, resourceRefInfo);
+                }
 
-                if ( !ref.defaultBinding ) {
-                    debug("Non-default binding; trying untyped create resource");
-                    resource = createResource(ref.name, null, bindingName, resourceRefInfo);               
-                    if ( resource != null ) {
-                        debug("RETURN (untyped non-default create resource)", resource);
-                        return resource;
-                    } else {
-                        debug("Failed untyped create resource");
-                    }
-                } else {
-                    debug("Default binding; skipped untyped create resource");
+                if (resource != null) {
+                    return resource;
                 }
 
                 hasJNDIScheme = JNDIHelper.hasJNDIScheme(bindingName);
-                if ( !hasJNDIScheme ) {
-                    debug("Tryping non-JNDI service lookup");
+                if (!hasJNDIScheme) {
                     Object service = getJNDIServiceObjectInstance(className, bindingName, envmt);
-                    if ( service != null ) {
-                        debug("RETURN (service lookup)", resource);
+                    if (service != null) {
                         return service;
-                    } else {
-                        debug("Failed service lookup");
                     }
-                } else {
-                    debug("JNDI; skipped non-JNDI service lookup");
                 }
-
-                debug("Non-java lookup failed");
             }
 
             // If all else fails, try JNDI, which will fail if not enabled.  We only
             // attempt if the binding name has a scheme; we already checked the
             // service registry above, and we want to avoid JNDI if it might use a
             // non-ResourceFactory when a ResourceFactory is available.
-            if ( hasJNDIScheme ) {
-                debug("Trying context lookup");
+            if (hasJNDIScheme) {
                 try {
-                    if ( c == null ) {
+                    if (c == null) {
                         c = new InitialContext(envmt);
-                        debug("Created initial context", c);
-                    } else {
-                        debug("Using context", c);
                     }
-
-                    Object result = c.lookup(bindingName);
-                    debug("RETURN (JNDI lookup)", result);
-                    return result;
-
+                    return c.lookup(bindingName);
                 } catch (NoInitialContextException e) {
                     // The object was not found.
                 } catch (NameNotFoundException e) {
                     // The object was not found.
                 }
-            } else {
-                debug("Skipped context lookup");
             }
-
-        } catch ( Exception e ) {
-            debug("FAILED", e.getMessage());
-
-            String message = Tr.formatMessage(tc,
-                "INDIRECT_LOOKUP_FAILED_CWNEN1006E",
-                 bindingName, className,
-                 ((e instanceof InjectionException) ? e.getLocalizedMessage() : e) );
+        } catch (Exception e) {
+            String message = Tr.formatMessage(tc, "INDIRECT_LOOKUP_FAILED_CWNEN1006E",
+                                              bindingName, className,
+                                              e instanceof InjectionException ? e.getLocalizedMessage() : e);
             throw new InjectionException(message, e);
         }
 
         // If this was a default binding and EE 7 default resource support is
         // enabled, then try to create a default resource.
-        if ( !ref.defaultBinding ) {
-            debug("Skipped default resource create: Not a default binding");
-        } else if ( !javaCompDefaultEnabled ) {
-            debug("Skipped default resource create: 'javaCompDefault' not enabled");
-        } else {
-            debug("Trying default resource create");
+        if (ref.defaultBinding && javaCompDefaultEnabled) {
             Object resource = createDefaultResource(className, resourceRefInfo);
-            if ( resource != null ) {
-                debug("RETURN (created default resource)", resource);
+            if (resource != null) {
                 return resource;
-            } else {
-                debug("Failed default resource create");
             }
         }
 
         // We failed to find an object.
 
         String refName = InjectionScope.denormalize(ref.name);
-        debug("FAILED", refName);
 
-        String message;
-        if ( ref.defaultBinding ) {
-            message = Tr.formatMessage(tc,
-                "DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E",
-                bindingName, className, refName);
-        } else if ( ref.bindingListenerName != null ) {
-            message = Tr.formatMessage(tc,
-                "LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E",
-                bindingName, className, refName, ref.bindingListenerName);
-        } else {
-            message = Tr.formatMessage(tc,
-                "BINDING_OBJECT_NOT_FOUND_CWNEN1003E",
-                bindingName, className, refName);
+        if (ref.defaultBinding) {
+            throw new InjectionException(Tr.formatMessage(tc, "DEFAULT_BINDING_OBJECT_NOT_FOUND_CWNEN1004E",
+                                                          bindingName, className, refName));
         }
-        throw new InjectionException(message);
+
+        if (ref.bindingListenerName != null) {
+            throw new InjectionException(Tr.formatMessage(tc, "LISTENER_BINDING_OBJECT_NOT_FOUND_CWNEN1005E",
+                                                          bindingName, className, refName, ref.bindingListenerName));
+        }
+
+        throw new InjectionException(Tr.formatMessage(tc, "BINDING_OBJECT_NOT_FOUND_CWNEN1003E",
+                                                      bindingName, className, refName));
     }
 
     /**

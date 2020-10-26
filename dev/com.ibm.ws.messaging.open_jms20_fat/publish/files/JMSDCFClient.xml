@@ -2,15 +2,18 @@
 
   <variable name="onError" value="FAIL"/>
 
+  <!--
   <logging
     traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all:com.ibm.ws.jndi*=all:com.ibm.ws.injectionengine*=all"
     maxFileSize="200"/>
+    -->
 
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
     <feature>cdi-1.2</feature>
 
+    <feature>wasJmsServer-1.0</feature>
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
 
@@ -34,17 +37,21 @@
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,connect"/>
 
-  <!-- JMS endpoint configuration -->
+  <!-- JMS engine configuration -->
 
-  <!-- jmsConnectionFactory jndiName="DefaultJMSConnectionFactory" -->
+  <messagingEngine id="CLIENT_ME">
+    <queue id="QUEUE1" maxRedeliveryCount="2"/>
+  </messagingEngine>
+
+  <!-- JMS endpoint configuration -->
 
   <!-- Required binding, since the messaging engine was moved to a different server. -->
   <jmsConnectionFactory jndiName="DefaultJMSConnectionFactory" connectionManagerRef="ConMgr6">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
   </jmsConnectionFactory>
   <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
-  <jmsQueue jndiName="jndi_INPUT_Q">
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
     <properties.wasJms queueName="QUEUE1"/>
   </jmsQueue>
 
