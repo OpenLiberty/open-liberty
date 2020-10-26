@@ -48,6 +48,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
         // server has an empty mpJwt config
         MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.PemFile, MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigInApp_goodServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.IN_APP);
+        skipRestoreServerTracker.addServer(resourceServer);
 
     }
 
@@ -65,7 +66,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_GoodMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
 
@@ -80,7 +81,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_GoodMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
 
@@ -95,7 +96,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadIssuerInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
 
@@ -110,7 +111,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadIssuerInMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
 
@@ -125,7 +126,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadPublicKeyInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
 
@@ -140,7 +141,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadPublicKeyInMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_PUBLICKEY_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
 
@@ -155,7 +156,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadFilePublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_FILE_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
 
@@ -170,7 +171,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadUrlPublicKeyLocationInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_URL_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
 
     }
 
@@ -186,7 +187,7 @@ public class MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests extends MPJwt11
     public void MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_BadRelativePublicKeyLocationInMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_RELATIVE_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
 
     }
 
