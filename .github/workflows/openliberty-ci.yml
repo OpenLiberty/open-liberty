@@ -107,7 +107,7 @@ jobs:
       max-parallel: 19
       matrix:
         # All categories will be included even if they are not listed here. This array is only used to control the ordering the jobs run. 
-        # If a category is not specified here, it runs in the order it is listed in the following 'include' section
+        # If a category is not specified here, it runs in the order it is listed in the following 'include' section 
         category: [ MODIFIED_LITE_MODE, MODIFIED_FULL_MODE, GENERAL, CDI_1, CONCURRENT_1, EJB_1, JAXRS_1, JCA, JDBC, JPA_1, KERNEL_1,
                     MP_CONFIG, MP_GRAPHQL, MP_METRICS_1, MP_REACTIVE, MP_REST_CLIENT_1, SECURITY_3, TRANSACTION_1, WEBCONTAINER_1 ]
         include:
