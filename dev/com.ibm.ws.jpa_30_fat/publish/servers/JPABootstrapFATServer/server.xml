@@ -11,7 +11,7 @@
 <server description="new server">
 
 	<featureManager>
-		<feature>jpa-3.0</feature>
+		<feature>persistence-3.0</feature>
 		<feature>servlet-5.0</feature>
 	    <feature>componenttest-2.0</feature>
     </featureManager>

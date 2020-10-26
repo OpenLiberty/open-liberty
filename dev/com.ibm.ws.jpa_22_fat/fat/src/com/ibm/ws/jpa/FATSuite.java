@@ -39,5 +39,5 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat = RepeatTests
                     .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES()); // Blocked by CDI
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

@@ -76,7 +76,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jaspic-2.0",
                                                  "mail-2.0",
                                                  "jaxb-3.0",
-                                                 "jpa-3.0",
+                                                 "persistence-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
                                                  "jsonpContainer-2.0",

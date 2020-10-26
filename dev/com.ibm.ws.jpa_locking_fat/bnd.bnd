@@ -24,7 +24,7 @@ fat.test.databases: true
 fat.bucket.db.type: Derby
 
 
-tested.features: jaxb-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeanslite-4.0, jpa-3.0
+tested.features: jaxb-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeanslite-4.0, persistence-3.0
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true

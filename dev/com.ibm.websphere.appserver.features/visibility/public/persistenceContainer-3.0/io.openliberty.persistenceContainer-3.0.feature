@@ -1,11 +1,12 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jpaContainer-3.0
+symbolicName=io.openliberty.persistenceContainer-3.0
 visibility=public
 singleton=true
 kind=beta
 edition=core
 Subsystem-Name: Jakarta Persistence API Container 3.0
-IBM-ShortName: jpaContainer-3.0
+IBM-ShortName: persistenceContainer-3.0
+IBM-AlsoKnownAs: jpaContainer-3.0
 IBM-API-Package: jakarta.persistence; type="spec", \
  jakarta.persistence.spi; type="spec", \
  jakarta.persistence.criteria; type="spec", \
