@@ -54,7 +54,6 @@ instrument.classesExcludes: com/ibm/ws/security/authorization/jacc/internal/reso
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.security;version=latest, \
-	com.ibm.ws.security.audit.utils;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
