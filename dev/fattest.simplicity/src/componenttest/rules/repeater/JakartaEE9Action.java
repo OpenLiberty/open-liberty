@@ -11,8 +11,12 @@
 package componenttest.rules.repeater;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.transformer.jakarta.JakartaTransformer;
@@ -45,6 +50,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     private static final Class<?> c = JakartaEE9Action.class;
 
     public static final String ID = "EE9_FEATURES";
+
+    private boolean transformServerConfig = false;
 
     // Point-in-time list of enabled JakartaEE9 features.
     // This list is of only the currently enabled features.
@@ -112,8 +119,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return "JakartaEE9 FAT repeat action";
     }
 
-    //
-
     @Override
     public JakartaEE9Action addFeature(String addFeature) {
         return (JakartaEE9Action) super.addFeature(addFeature);
@@ -164,7 +169,19 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         return (JakartaEE9Action) super.forClients(clientNames);
     }
 
-    //
+    /**
+     * By default the JakartaEE9Action will perform a feature replacement on all server.xml files
+     * located in the /publish/* directories. By calling this method this action will also run all
+     * of these files through the transformer to replace javax package names with jakarta.
+     *
+     * Alternatively if you just want to transform a certain server.xml you can call the transformServer method
+     *
+     * @see JakartaEE9Action#transformServer(Path)
+     */
+    public JakartaEE9Action transformServerConfig() {
+        transformServerConfig = true;
+        return this;
+    }
 
     @Override
     public void setup() throws Exception {
@@ -177,8 +194,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         }
         ShrinkHelper.cleanAllExportedArchives();
 
-        // Transform server.xml's
         super.setup();
+
+        if (transformServerConfig)
+            for (File serverXml : super.getReplacementServers())
+                transformServer(serverXml.toPath());
     }
 
     public static boolean isActive() {
@@ -208,7 +228,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
-     * @param appPath The application path of file to be transformed to Jakarta
+     * @param appPath    The application path of file to be transformed to Jakarta
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
@@ -318,6 +338,49 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                 baos.close();
             } catch (IOException ignore) {
             }
+        }
+    }
+
+    /**
+     *
+     * @param serverXmlPath path to server.xml file to be transformed
+     */
+    public static void transformServer(Path serverXmlPath) {
+        final String m = "transformServer";
+        final String serverXmlTransformRules = System.getProperty("user.dir") + "/autoFVT-templates/jakarta-xml-server.properties";
+        Charset charset = StandardCharsets.UTF_8;
+
+        Log.info(c, m, "Transforming server.xml: " + serverXmlPath);
+
+        try {
+            Path backupdir = serverXmlPath.getParent().resolve("backup");
+            Path backupfile = backupdir.resolve(serverXmlPath.getFileName());
+
+            Log.info(c, m, "Backing up original server.xml to: " + backupfile);
+
+            if (!Files.exists(backupdir)) {
+                Files.createDirectory(backupdir); // throws IOException
+            }
+
+            Files.copy(serverXmlPath, backupfile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to create backup server.xml");
+            Log.error(c, m, e);
+            throw new RuntimeException(e);
+        }
+
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream(serverXmlTransformRules));
+
+            String content = new String(Files.readAllBytes(serverXmlPath), charset);
+            for (String key : props.stringPropertyNames()) {
+                content = content.replaceAll(key, props.getProperty(key).trim());
+            }
+
+            Files.write(serverXmlPath, content.getBytes(charset));
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to transform server.xml", e);
         }
     }
 }

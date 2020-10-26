@@ -101,10 +101,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
+    private final Set<File> serverXml = new HashSet<>();
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
+    private boolean isSetupComplete = false;
 
     public FeatureReplacementAction() {}
 
@@ -114,7 +116,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeature the feature to be removed
-     * @param addFeature the feature to add
+     * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
         this(addFeature);
@@ -127,7 +129,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * By default features are added even if there was not another version already there
      *
      * @param removeFeatures the features to remove
-     * @param addFeatures the features to add
+     * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
         this(addFeatures);
@@ -253,6 +255,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction forServers(String... serverNames) {
         if (NO_SERVERS.equals(serverNames[0])) {
+            if (serverNames.length > 1)
+                throw new RuntimeException("Invalid use of forServers(...) method.  Cannot provide additional server names along with 'NO_SERVERS'");
             servers.clear();
         } else {
             servers.remove(ALL_SERVERS);
@@ -268,6 +272,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction forClients(String... clientNames) {
         if (NO_CLIENTS.equals(clientNames[0])) {
+            if (clientNames.length > 1)
+                throw new RuntimeException("Invalid use of forClients(...) method.  Cannot provide additional client names along with 'NO_CLIENTS'");
             clients.clear();
         } else {
             clients.remove(ALL_CLIENTS);
@@ -374,6 +380,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     String line = s.nextLine();
                     if (line.contains("<server")) {
                         isServerConfig = true;
+                        serverXml.add(configFile);
                         break;
                     } else if (line.contains("<client")) {
                         isClientConfig = true;
@@ -441,6 +448,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
             LibertyServerFactory.getLibertyServer(serverName);
         for (String clientName : clients)
             LibertyClientFactory.getLibertyClient(clientName);
+
+        isSetupComplete = true;
+    }
+
+    protected Set<File> getReplacementServers() throws IllegalStateException {
+        if (isSetupComplete)
+            return this.serverXml;
+        else
+            throw new IllegalStateException("FeatureReplacementAction.setup() has not been called yet, "
+                                            + "and therefore the list of replacement servers have not been parsed.");
     }
 
     /**
@@ -458,10 +475,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Feature names are required to have a '-', for example, "servlet-3.1". Null
      * is answered for feature names which do not have a '-'.
      *
-     * @param originalFeature The feature name which is to be replaced.
-     * @param replacementFeatures Table of replacement features.
+     * @param  originalFeature     The feature name which is to be replaced.
+     * @param  replacementFeatures Table of replacement features.
      *
-     * @return The replacement feature name. Null if no replacement is available.
+     * @return                     The replacement feature name. Null if no replacement is available.
      */
     private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
         String methodName = "getReplacementFeature";
