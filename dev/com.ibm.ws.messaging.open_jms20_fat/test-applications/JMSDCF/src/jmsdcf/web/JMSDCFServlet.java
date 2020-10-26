@@ -41,20 +41,44 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSDCFServlet extends HttpServlet {
 
+    public static ConnectionFactory defaultJMSCF;
     public static Queue jmsQueue;
+    public static Queue jmsQueue2;
 
     @Override
     public void init() throws ServletException {
         super.init();
 
         try {
-            jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+            defaultJMSCF = (ConnectionFactory)
+                new InitialContext().lookup("java:comp/env/DefaultJMSConnectionFactory");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Connection factory 'java:comp/env/DefaultJMSConnectionFactory': [ " + defaultJMSCF + " ]");
+
+        try {
+            jmsQueue = (Queue) new InitialContext().lookup("jndi_INPUT_Q");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue 'jndi_INPUT_Q' [ " + jmsQueue + " ]");
+
+        //
+
+        try {
+            jmsQueue2 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q' [ " + jmsQueue2 + " ]");
+
+        if ( jmsQueue == null ) {
+            throw new ServletException("Failed JMS initialization");
+        }
     }
 
-    @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
+    @Resource(lookup = "java:comp/env/DefaultJMSConnectionFactory")
     ConnectionFactory jmsCF;
 
     @Inject
@@ -161,15 +185,17 @@ public class JMSDCFServlet extends HttpServlet {
 
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(500);
 
-        boolean exceptionFlag = false;
-        if ( (msgIn == null) || !msgIn.getText().equals("testP2P_B_SecOff") ) {
-            exceptionFlag = true;
+        String failureMessage = null;
+        if ( msgIn == null ) {
+            failureMessage = "Message not received";
+        } else if ( !msgIn.getText().equals("testP2P_B_SecOff") ) {
+            failureMessage = "Expected [ testP2P_B_SecOff ] received [ " + msgIn.getText() + " ]";
         }
 
         jmsContextQueue.close();
 
-        if ( exceptionFlag ) {
-            throw new Exception("testP2P_B_SecOff failed: Expected message was not received");
+        if ( failureMessage != null ) {
+            throw new Exception("testP2P_B_SecOff failed: " + failureMessage);
         }
     }
 
@@ -178,6 +204,11 @@ public class JMSDCFServlet extends HttpServlet {
     public void testP2P_B_SecOff_inject(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        System.out.println("testP2P_B_SecOff_inject");
+        System.out.println("  Injected 'jmsContext' [ " + jmsContext + " ]");
+        System.out.println("  Injected 'jmsCF' [ java:comp/env/DefaultJMSConnectionFactory ]: [ " + jmsCF + " ]");
+        System.out.println("  Injected 'myJMScf' [ myJMSCF ]: [ " + myJMScf + " ]");
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         TextMessage msgOut = jmsContext.createTextMessage("testP2P_B_SecOff_inject");
@@ -185,13 +216,15 @@ public class JMSDCFServlet extends HttpServlet {
 
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(500);
 
-        boolean exceptionFlag = false;
-        if ( (msgIn == null) || !msgIn.getText().equals("testP2P_B_SecOff_inject") ) {
-            exceptionFlag = true;
+        String failureMessage = null;
+        if ( msgIn == null ) {
+            failureMessage = "Message not received";
+        } else if ( !msgIn.getText().equals("testP2P_B_SecOff_inject") ) {
+            failureMessage = "Expected [ testP2P_B_SecOff_inject ] received [ " + msgIn.getText() + " ]";
         }
 
-        if ( exceptionFlag ) {
-            throw new Exception("testP2P_B_SecOff_inject failed: Expected message was not received");
+        if ( failureMessage != null ) {
+            throw new Exception("testP2P_B_SecOff_inject failed: " + failureMessage);
         }
     }
 

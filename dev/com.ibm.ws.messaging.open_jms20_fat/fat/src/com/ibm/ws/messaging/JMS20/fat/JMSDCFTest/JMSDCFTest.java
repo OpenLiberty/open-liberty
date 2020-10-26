@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,8 +28,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 public class JMSDCFTest {
 
-    private static final LibertyServer engineServer = LibertyServerFactory.getLibertyServer("JMSDCFEngine");
-    private static final LibertyServer clientServer = LibertyServerFactory.getLibertyServer("JMSDCFClient");
+    private static final LibertyServer engineServer =
+        LibertyServerFactory.getLibertyServer("JMSDCFEngine");
+    private static final LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("JMSDCFClient");
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHostName = clientServer.getHostname();
@@ -43,12 +46,10 @@ public class JMSDCFTest {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        engineServer.copyFileToLibertyInstallRoot(
-                                                  "lib/features", "features/testjmsinternals-1.0.mf");
+        engineServer.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("JMSDCFEngine.xml");
 
-        clientServer.copyFileToLibertyInstallRoot(
-                                                  "lib/features", "features/testjmsinternals-1.0.mf");
+        clientServer.copyFileToLibertyInstallRoot( "lib/features", "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSDCFClient.xml");
         TestUtils.addDropinsWebApp(clientServer, dcfAppName, dcfPackages);
 
@@ -56,7 +57,7 @@ public class JMSDCFTest {
         clientServer.startServer();
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();

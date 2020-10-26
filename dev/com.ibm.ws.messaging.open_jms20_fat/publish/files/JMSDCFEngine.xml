@@ -37,7 +37,7 @@
 
   <!-- JMS engine configuration -->
 
-  <messagingEngine id="defaultME">
+  <messagingEngine id="ENGINE_ME">
     <queue id="QUEUE1" maxRedeliveryCount="2"/>
   </messagingEngine>
 
