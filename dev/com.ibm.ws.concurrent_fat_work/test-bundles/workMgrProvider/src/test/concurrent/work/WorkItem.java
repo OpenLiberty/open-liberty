@@ -28,7 +28,10 @@ public class WorkItem {
             try {
                 return future.get();
             } catch (ExecutionException x) {
-                throw new WorkCompletedException(x);
+                if (x.getCause() == null)
+                    throw new WorkCompletedException(x);
+                else
+                    throw new WorkCompletedException(x.getCause());
             } catch (InterruptedException x) {
                 throw new RuntimeException(x);
             }
