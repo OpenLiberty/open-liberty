@@ -20,3 +20,5 @@ war {
    */
   classpath = classpath.filter{ file -> !file.name.endsWith('jar') }
 }
+
+assemble.dependsOn war

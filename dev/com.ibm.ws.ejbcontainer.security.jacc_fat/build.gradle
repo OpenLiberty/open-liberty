@@ -32,8 +32,7 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task securityejb_EAR (type: Zip) { 
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJB_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejb.ear) for tests with role mapping in server.xml'
   destinationDirectory = new File(appBuildDir)
@@ -57,7 +56,7 @@ task securityejb_EAR (type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbinwar_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservlet_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR (pure ann) ear file (securityejbinwar.ear) with role mapping in server.xml'
   destinationDir file(appBuildDir)
@@ -81,8 +80,7 @@ task securityejbinwar_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbXML_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJB_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file for tests with role mapping in ibm-application-bnd.xml only'
   destinationDir file(appBuildDir)
@@ -106,7 +104,7 @@ task securityejbXML_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbInWarEarXML_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservlet_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
   destinationDir file(appBuildDir)
@@ -130,8 +128,7 @@ task securityejbInWarEarXML_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbXMLmerge_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJB_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbXMLmerge.ear) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
   destinationDir file(appBuildDir)
@@ -155,7 +152,7 @@ task securityejbXMLmerge_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbInWarEarXMLMerge_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservlet_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXMLMerge) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
   destinationDir file(appBuildDir)
@@ -179,19 +176,7 @@ task securityejbInWarEarXMLMerge_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjar_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX01_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX02_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX03_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM01_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM02_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM03_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM04_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM05_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM07_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM08_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM09_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM10_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbjar.ear) for tests with ejb-jar.xml testing with role mapping in server.xml'
   destinationDir file(appBuildDir)
@@ -219,19 +204,7 @@ task securityejbjar_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarXMLmerge_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX01_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX02_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBX03_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM01_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM02_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM03_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM04_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM05_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM07_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM08_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM09_JAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBM10_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build ear file (securityejbjarXMLmerge.ear) for tests with ejb-jar.xml testing with role mapping in server.xml and ibm-application-bnd.xml'
   destinationDir file(appBuildDir)
@@ -259,8 +232,7 @@ task securityejbjarXMLmerge_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarMC_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:securityejb_WAR'
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:SecurityEJBMC06_JAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
   destinationDir file(appBuildDir)
@@ -284,7 +256,7 @@ task securityejbjarMC_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarInWarEarX01_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservletX01_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarX01) for tests with ejb-jar.xml only'
   destinationDir file(appBuildDir)
@@ -308,7 +280,7 @@ task securityejbjarInWarEarX01_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarInWarEarM01_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservletM01_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM01) for tests with ejb-jar.xml and mixed annotations'
   destinationDir file(appBuildDir)
@@ -332,7 +304,7 @@ task securityejbjarInWarEarM01_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarInWarEarMC06_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservletMC06_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
   destinationDir file(appBuildDir)
@@ -356,7 +328,7 @@ task securityejbjarInWarEarMC06_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarInWarEarM07_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservletM07_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM07) for tests with ejb-jar.xml and mixed annotations and run-as extension file'
   destinationDir file(appBuildDir)
@@ -380,7 +352,7 @@ task securityejbjarInWarEarM07_EAR(type: Zip) {
  ******************************************************************
  ******************************************************************/
 task securityejbjarInWarEarM07XMLmerge_EAR(type: Zip) {
-  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinwarservletM07_WAR'
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 
   description 'Build EJB in WAR ear file (securityejbjarInWarEarM07XMLmerge) for tests with ejb-jar.xml and mixed annotations and run-as extension file with bindings in server.xml and ibm-application-bnd'
   destinationDir file(appBuildDir)
@@ -425,8 +397,8 @@ assemble {
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:jar'
-autoFVT.dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:ejbinstandalone_WAR'
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
 autoFVT.doLast {
 
   /*

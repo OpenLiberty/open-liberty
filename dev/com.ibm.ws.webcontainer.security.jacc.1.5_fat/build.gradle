@@ -386,9 +386,9 @@ assemble {
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:jar' // Probably don't need.
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:assemble' // Probably don't need.
 autoFVT.doLast {
 
   /*
