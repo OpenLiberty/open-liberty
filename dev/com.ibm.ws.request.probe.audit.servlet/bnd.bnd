@@ -39,7 +39,6 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.request.probes;version=latest,\
 	com.ibm.ws.security.audit.source;version=latest,\
-	com.ibm.ws.security.audit.utils;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.session;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
