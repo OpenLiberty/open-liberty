@@ -12,6 +12,7 @@ package com.ibm.ws.jsf23.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.URL;
 
@@ -95,8 +96,8 @@ public class JSF23WebSocketTests {
             Log.info(c, name.getMethodName(), testPushWebSocketPage.asXml());
 
             // Verify that the page contains the expected messages.
-            assertTrue(testPushWebSocketPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-            assertTrue(testPushWebSocketPage.asText().contains("Called onopen listener"));
+            assertContains(testPushWebSocketPage.asText(), "JSF 2.3 WebSocket - Test message pushed from server to client");
+            assertContains(testPushWebSocketPage.asText(), "Called onopen listener");
 
             String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
@@ -117,7 +118,7 @@ public class JSF23WebSocketTests {
             Log.info(c, name.getMethodName(), resultPage.asXml());
 
             // Verify that the page contains the expected messages.
-            assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
+            assertContains(resultPage.asText(), "JSF 2.3 WebSocket - Test message pushed from server to client");
             assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
             assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
 
@@ -151,8 +152,8 @@ public class JSF23WebSocketTests {
             Log.info(c, name.getMethodName(), testOpenCloseWebSocketPage.asXml());
 
             // Verify that the page contains the expected messages.
-            assertTrue(testOpenCloseWebSocketPage.asText()
-                            .contains("JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false"));
+            assertContains(testOpenCloseWebSocketPage.asText(),
+                           "JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false");
 
             // Get the form that we are dealing with
             HtmlForm form = testOpenCloseWebSocketPage.getFormByName("form1");
@@ -165,7 +166,7 @@ public class JSF23WebSocketTests {
             HtmlPage openPage = openButton.click();
             webClient.waitForBackgroundJavaScript(10000);
 
-            assertTrue(openPage.asText().contains("Called onopen listener"));
+            assertContains(openPage.asText(), "Called onopen listener");
 
             String result1 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
@@ -176,12 +177,18 @@ public class JSF23WebSocketTests {
             HtmlPage closePage = closeButton.click();
             webClient.waitForBackgroundJavaScript(10000);
 
-            assertTrue(closePage.asText().contains("Called onclose listener"));
+            assertContains(closePage.asText(), "Called onclose listener");
 
             String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
             // Verify that the correct message is found in the logs
             assertNotNull("Message not found. Channel was not closed succesfully.", result2);
         }
+    }
+
+    private void assertContains(String str, String lookFor) {
+        Log.info(c, name.getMethodName(), "Looking for '" + lookFor + "' in string: " + str);
+        if (str == null || !str.contains(lookFor))
+            fail("Expected to find '" + lookFor + "' in response, but response was: " + str);
     }
 }
