@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# This file defines the bundle that supplies a ConcurrencyExtensionProvider
+
+Bundle-Name: ConcurrencyExtensionProviderTestBundle
+Bundle-SymbolicName: test.concurrent.work; singleton:=true
+Bundle-Description: Bundle that provides a ConcurrencyExtensionProvider to extend managed executors; version=${bVersion}
+
+Export-Package: \
+  test.concurrent.work,\
+  !test.concurrent.work.wm.*
+
+Private-Package: test.concurrent.work.wm.*
+
+Include-Resource:\
+ OSGI-INF/wlp/defaultInstances.xml=test-bundles/workMgrProvider/resources/OSGI-INF/wlp/defaultInstances.xml
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+-dsannotations: \
+  test.concurrent.work.wm.WorkManagerProvider
