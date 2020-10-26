@@ -70,7 +70,7 @@ public class CheckTags extends InstallPackagesToolTest {
             if (listOfFiles[i].isFile()) {
                 if (filename.startsWith(beginsWith)) {
                     count++;
-                    Log.info(c, METHODNAME, "found file starting with " + beginsWith + "expected :" + filename);
+                    Log.info(c, METHODNAME, "found file starting with " + beginsWith + "\nexpected :" + filename);
                 } ;
             }
         }
@@ -118,7 +118,7 @@ public class CheckTags extends InstallPackagesToolTest {
 
         // Check for OL swidtag (should only be in Open Liberty)
         if (tag1 > 0) {
-            Log.info(c, METHOD_NAME, "OL tag found:" + tag2);
+            Log.info(c, METHOD_NAME, "OL tag found:" + tag1);
             ol_swidtag_exists = true;
         }
         
@@ -141,22 +141,19 @@ public class CheckTags extends InstallPackagesToolTest {
                            + "\n    " + tag2 + "/1 IBM openliberty .swidtag found"
                            + "\n    " + tag3 + "/0 other tag files found";
 
+        // Check if correct number of tags were detected
         if (!testsPassed) {
             Log.info(c, METHOD_NAME, "INCORRECT number of tags found.\n");
-            // start DEBUG code here:
-            Log.info(c, METHOD_NAME, "####DEBUG INFO FOLLOWS####\n");
+
+            Log.info(c, METHOD_NAME, "Listing Contents of Tag File Directory:"+tagFolder+"\n");
 
             String debugpo1args[] = { "-l", tagFolder };
             ProgramOutput debugpo1 = runCommand(METHOD_NAME, "ls", debugpo1args);
-            Log.info(c, METHOD_NAME, "Tag File Directory=" + tagFolder);
-            Log.info(c, METHOD_NAME, "Tag File Directory listing.:\n" + debugpo1.getStdout());
-
+            
+            Log.info(c, METHOD_NAME, "Listing all properties files in /lib/versions:"+tagFolder+"\n");
             String debugpo2args[] = { "-l", installRoot + "/lib/versions/*properties" };
             ProgramOutput debugpo2 = runCommand(METHOD_NAME, "ls", debugpo2args);
-            Log.info(c, METHOD_NAME, "Listing Property Files in " +
-                                     installRoot + "/lib/versions/*properties:\n" + debugpo2.getStdout());
-            // end DEBUG code
-        }
+           }
 
         //Uninstall package
         ProgramOutput po6 = uninstallPackage(METHOD_NAME, packageExt);
