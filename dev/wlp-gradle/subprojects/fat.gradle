@@ -257,7 +257,7 @@ task autoFVT {
     
     // By default, load up all properties with certain prefixes from System
     System.getProperties().each { k, v ->
-      if(k.startsWith("test.") || k.startsWith("fat."))
+      if(k.startsWith("test.") || k.startsWith("fat.") || k.startsWith("fattest."))
         sysProps.setProperty(k, v);
     }
     
