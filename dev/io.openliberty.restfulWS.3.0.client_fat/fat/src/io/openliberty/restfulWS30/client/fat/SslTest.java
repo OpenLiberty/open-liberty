@@ -55,7 +55,7 @@ public class SslTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKO0801E");
     }
 
 }

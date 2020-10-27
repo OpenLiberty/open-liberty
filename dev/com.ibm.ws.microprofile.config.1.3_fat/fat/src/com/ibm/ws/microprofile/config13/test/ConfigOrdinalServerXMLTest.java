@@ -33,6 +33,7 @@ import componenttest.topology.utils.FATServletClient;
  * The following config sources should be present with the following ordinals:
  * <ul>
  * <li>microprofile-config.properties (100)
+ * <li>server.xml default variables(120)
  * <li>server.xml variables (150)
  * <li>environment variables (300)
  * <li>server.xml appProperties (350)
@@ -42,6 +43,7 @@ import componenttest.topology.utils.FATServletClient;
  * <ul>
  * <li>key_config_props
  * <li>key_serverxml_vars
+ * <li>key_serverxml_default_vars
  * <li>key_env_vars
  * <li>key_serverxml_app_props
  * <li>key_system_props

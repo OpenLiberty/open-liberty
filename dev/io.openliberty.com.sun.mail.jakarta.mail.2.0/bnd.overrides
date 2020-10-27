@@ -10,7 +10,8 @@ Include-Resource: \
      @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/gfprobe-provider.xml, \
      @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.charset.map, \
      @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.default.address.map, \
-     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.default.providers
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/META-INF/javamail.default.providers, \
+     @${repo;com.sun.mail.jakarta.mail;2.0.0}!/!jakarta/mail/*
 
 Import-Package: jakarta.mail;version="[2.0.0,3.0.0)",  \
 jakarta.mail.event;version="[2.0.0,3.0.0)", \
@@ -30,11 +31,6 @@ com.sun.mail.handlers;version="[2.0.0,3.0.0)"
 
 
 Export-Package: \
-jakarta.mail, \
-jakarta.mail.event, \
-jakarta.mail.internet, \
-jakarta.mail.search, \
-jakarta.mail.util, \
 com.sun.mail;version="2.0.0"; thread-context=true, \
 com.sun.mail.auth;version="2.0.0"; thread-context=true, \
 com.sun.mail.imap; thread-context=true, \

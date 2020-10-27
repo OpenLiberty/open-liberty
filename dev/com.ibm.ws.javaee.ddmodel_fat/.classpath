@@ -6,8 +6,6 @@
 	<classpathentry kind="src" path="test-applications/ServletTest.war/src"/>
 	<classpathentry kind="src" path="test-applications/ServletTestNoBnd.war/src"/>
 
-	<classpathentry kind="src" path="test-applications/HelloWorld.war/src"/>
-
 	<classpathentry kind="src" path="test-bundles/ddmodel_fat_bundle/src"/>
 
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,15 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.ws.jsf.container.fat.tests.CDIFlowsTests;
+import com.ibm.ws.jsf.container.fat.tests.ClassloadingTest;
+import com.ibm.ws.jsf.container.fat.tests.ErrorPathsTest;
+import com.ibm.ws.jsf.container.fat.tests.JSF22BeanValidationTests;
+import com.ibm.ws.jsf.container.fat.tests.JSF22CDIGeneralTests;
+import com.ibm.ws.jsf.container.fat.tests.JSF22FlowsTests;
+import com.ibm.ws.jsf.container.fat.tests.JSF22StatelessViewTests;
+import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({

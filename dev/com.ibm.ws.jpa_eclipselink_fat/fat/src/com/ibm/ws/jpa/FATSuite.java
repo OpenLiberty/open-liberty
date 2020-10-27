@@ -39,6 +39,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH10068_Web.class,
                 TestOLGH14426_EJB.class,
                 TestOLGH14426_Web.class,
+                TestOLGH14457_EJB.class,
+                TestOLGH14457_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

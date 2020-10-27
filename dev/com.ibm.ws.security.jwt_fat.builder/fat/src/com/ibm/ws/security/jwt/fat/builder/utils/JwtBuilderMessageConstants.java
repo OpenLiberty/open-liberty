@@ -15,4 +15,5 @@ import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 public class JwtBuilderMessageConstants extends JwtMessageConstants {
 
     public static final String CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING = "CWWKS6059W";
+    public static final String CWWKS6060E_CAN_NOT_CREATE_JWE = "CWWKS6060E";
 }

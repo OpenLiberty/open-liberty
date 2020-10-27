@@ -82,6 +82,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
@@ -93,6 +94,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // start server to run protected app - make sure we can use the JWT
         // Token that we produce
         serverTracker.addServer(rsServer);
+        skipRestoreServerTracker.addServer(rsServer);
         JwtServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
         rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
         rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());

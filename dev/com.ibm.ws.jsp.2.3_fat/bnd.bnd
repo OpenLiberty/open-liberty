@@ -26,7 +26,7 @@ tested.features:\
     cdi-2.0,\
     el-4.0,\
     servlet-5.0,\
-    jsp-3.0,\
+    pages-3.0,\
     cdi-3.0,\
 
 

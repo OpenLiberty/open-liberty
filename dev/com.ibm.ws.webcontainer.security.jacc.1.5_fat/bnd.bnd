@@ -16,7 +16,7 @@ src: fat/src
 
 fat.project: true
 
-tested.features: jacc-1.5, el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, jacc-2.0
+tested.features: jacc-1.5, el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, pages-3.0, jacc-2.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\

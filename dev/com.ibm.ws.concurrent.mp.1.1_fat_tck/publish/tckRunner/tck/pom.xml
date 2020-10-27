@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2017,2019 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2017,2020 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at 
@@ -14,16 +14,16 @@
 
     <groupId>com.ibm.ws.concurrent.mp</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <name>MicroProfile Context Propagation TCK Runner TCK Module</name>
 
     <properties>
         <!-- Use the following to test a release (1.1) or release candidate (1.1-RC1) -->
-        <!-- <microprofile.context.propagation.version>1.0</microprofile.context.propagation.version> -->
+        <microprofile.context.propagation.version>1.1</microprofile.context.propagation.version>
 
         <!-- Use the following to test a local snaphost (1.1-SNAPSHOT) -->
         <!-- The test case launch must be guarded with "if (FATRunner.FAT_TEST_LOCALRUN)" of this option is delivered. -->
-        <microprofile.context.propagation.version>1.1-SNAPSHOT</microprofile.context.propagation.version>
+        <!-- <microprofile.context.propagation.version>1.1-SNAPSHOT</microprofile.context.propagation.version> -->
 
         <arquillian.version>1.3.0.Final</arquillian.version>
 
@@ -64,7 +64,7 @@
             <version>${microprofile.context.propagation.version}</version>
             <scope>system</scope>
             <!-- Switch to 1.1 once there is a snapshot spec binary in place -->
-            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.0_}</systemPath>
+            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.contextpropagation.1.1_}</systemPath>
         </dependency>
 
         <dependency>

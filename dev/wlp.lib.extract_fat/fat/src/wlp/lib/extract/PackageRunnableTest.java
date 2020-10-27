@@ -14,21 +14,17 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -49,8 +45,8 @@ public class PackageRunnableTest {
     protected static final Class<?> c = PackageRunnableTest.class;
     protected static final String CLASS_NAME = c.getName();
 
-    private static String serverName = "runnableTestServer";
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+    private static final String serverName = "runnableTestServer";
+    private static final LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
     private static final File runnableJar = new File("publish/" + serverName + ".jar");
     private static final File extractDirectory1 = new File("publish" + File.separator + "wlpExtract1");
     private static final File extractDirectory2 = new File("publish" + File.separator + "wlpExtract2");
@@ -61,30 +57,15 @@ public class PackageRunnableTest {
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
      */
-    private static String[] runEnv(String extractDirectory, boolean useDummyUserDir) {
+    private static void runEnv(Map<String, String> envmap, String extractDirectory, boolean useDummyUserDir) {
 
-        Map<String, String> envmap = System.getenv();
-        Iterator<String> iKeys = envmap.keySet().iterator();
-        List<String> envArrayList = new ArrayList<String>();
-
-        while (iKeys.hasNext()) {
-            String key = iKeys.next();
-            String val = envmap.get(key);
-            // Pass along except for this one special case
-            if (key != "WLP_USER_DIR" || !useDummyUserDir) {
-                envArrayList.add(key + "=" + val);
-            }
-        }
-        if (extractDirectory != null) {
-            String extDirVar = "WLP_JAR_EXTRACT_DIR=" + extractDirectory;
-            envArrayList.add(extDirVar);
-        }
         if (useDummyUserDir) {
             String dummyUserDir = extractDirectory + File.separator + "a1a" + File.separator + "b2b" + File.separator + "c3c";
-            envArrayList.add("WLP_USER_DIR" + "=" + dummyUserDir);
+            envmap.put("WLP_USER_DIR", dummyUserDir);
         }
-        return envArrayList.toArray(new String[0]);
-
+        if (extractDirectory != null) {
+            envmap.put("WLP_JAR_EXTRACT_DIR", extractDirectory);
+        }
     }
 
     @BeforeClass
@@ -272,13 +253,14 @@ public class PackageRunnableTest {
 
         assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
-        String cmd = "java -jar " + runnableJar.getAbsolutePath();
-        Process proc = null;
+        String[] cmd = { "java", "-jar", runnableJar.getAbsolutePath() };
+        Log.info(c, "executeTheJar", "Running command: " + Arrays.toString(cmd));
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.redirectErrorStream(true);
         if (useRunEnv == true) {
-            proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath(), useDummyUserDir), null); // run server
-        } else {
-            proc = Runtime.getRuntime().exec(cmd);
+            runEnv(processBuilder.environment(), extractDirectory.getAbsolutePath(), useDummyUserDir);
         }
+        Process proc = processBuilder.start();
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -304,6 +286,18 @@ public class PackageRunnableTest {
             count++;
         }
 
+        if (!found) {
+            Log.info(c, "executeTheJar", "Process is alive: " + proc.isAlive());
+            // capture the messages.log for debugging test
+            File messagesLog = new File(extractDirectory, "wlp/usr/servers/" + serverName + "/logs/messages.log").getAbsoluteFile();
+            if (messagesLog.exists()) {
+                Files.lines(messagesLog.toPath()).forEach((l) -> {
+                    Log.info(c, "executeTheJar", "MESSAGES LINE: " + l);
+                });
+            } else {
+                Log.info(c, "executeTheJar", "No messages.log - " + messagesLog.getAbsolutePath());
+            }
+        }
         assertTrue("Server did not start successfully in time.", found);
 
         outputReader.setIs(null);
@@ -352,8 +346,12 @@ public class PackageRunnableTest {
             }
         }
 
-        String cmd = "java -cp " + extractAndRunDir.getAbsolutePath() + " wlp.lib.extract.SelfExtractRun";
-        Process proc = Runtime.getRuntime().exec(cmd, runEnv(null, false), null); // run server
+        String[] cmd = { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        Log.info(c, "executeAndExecuteMain", "Running command: " + Arrays.toString(cmd));
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.redirectErrorStream(true);
+        runEnv(processBuilder.environment(), null, false);
+        Process proc = processBuilder.start();
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -396,26 +394,13 @@ public class PackageRunnableTest {
 
     class StreamReader extends Thread {
         InputStream is;
-        String type;
         OutputStream os;
         String watchFor;
         boolean foundWatchFor = false;
         String extractLoc = null;
 
-        StreamReader(InputStream is, String type, String watchFor) {
-            this(is, type, watchFor, null);
-        }
-
-        StreamReader(OutputStream os, String type, String watchFor) {
-            this.os = os;
-            this.type = type;
-            this.watchFor = watchFor;
-
-        }
-
         StreamReader(InputStream is, String type, String watchFor, OutputStream redirect) {
             this.is = is;
-            this.type = type;
             this.os = redirect;
             this.watchFor = watchFor;
         }
@@ -435,14 +420,7 @@ public class PackageRunnableTest {
         @Override
         public void run() {
             try {
-                // stdin, process stream is output
-                if (type.equals("INPUT")) {
-                    runOutputStream();
-                }
-                // else stdout, stderr, process stream is input
-                else {
-                    runInputStream();
-                }
+                runInputStream();
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -455,18 +433,15 @@ public class PackageRunnableTest {
                 Log.info(c, "runInputStream", "runInputStream() - inputStream is null: skip.");
                 return;
             }
-            PrintWriter pw = null;
-            if (os != null)
-                pw = new PrintWriter(os);
+            PrintWriter pw = new PrintWriter(os);
 
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
             String line = null;
             String extract = "Extracting files to ";
             while (!foundWatchFor && is != null && (line = br.readLine()) != null) {
-                if (pw != null)
-                    pw.println("runInputStream() - readLine(): " + line);
                 Log.info(c, "runInputStream", "line=" + line);
+                pw.println("runInputStream() - readLine(): " + line);
 
                 // Save off the extract location
                 if (line.contains(extract)) {
@@ -488,12 +463,6 @@ public class PackageRunnableTest {
             Log.info(c, "runInputStream", "runInputStream() - exit.");
             if (pw != null)
                 pw.flush();
-        }
-
-        public void runOutputStream() throws IOException {
-            OutputStreamWriter osr = new OutputStreamWriter(os, "UTF-8");
-            BufferedWriter br = new BufferedWriter(osr);
-            br.write("Y");
         }
     }
 

@@ -50,6 +50,7 @@
             <Option label="%tokenHeader.Cookie" value="Cookie" />
         </AD>
         <AD id="cookieName" name="%cookieName" description="%cookieName.desc" required="false" type="String" ibm:beta="true" />
+        <AD id="keyManagementKeyAlias" name="internal" description="internal use only" required="false" type="String" ibm:beta="true" />
 
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />

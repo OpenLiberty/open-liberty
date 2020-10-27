@@ -28,13 +28,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaderCache.test.ClassLoaderCacheTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -98,7 +96,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
         EnterpriseArchive classLoaderCacheB_ear = ShrinkWrap.create(EnterpriseArchive.class, EARB_NAME)
                                                             .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/application.xml"),
                                                                                    "application.xml")
-                                                            .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/permissions.xml"),
+                                                            .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/permissions.xml"), //shares the same permissions file as EARA
                                                                                    "permissions.xml")
                                                             .addAsModule(classLoaderCacheB1_war).addAsModule(classLoaderCacheB2_war);
 
@@ -117,7 +115,6 @@ public class ClassLoaderCacheTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testClassLoaderCache() throws Exception {
         runConfigTest(WARA1, 0, 2); //initially there are zero configs, the test is expected to load two; one specific to the war and one global one
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)
@@ -127,7 +124,6 @@ public class ClassLoaderCacheTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testMultiApplication() throws Exception {
         runConfigTest(WARA1, 0, 2); //initially there are zero configs, the test is expected to load two; one specific to the war and one global one
         runConfigTest(WARA2, 2, 3); //after the previous test there should be two configs, this test is expected to load one new one specific to the war and reuse the global one (total 3)

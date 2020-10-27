@@ -10,16 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -29,8 +25,10 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.SimpleLogConsumer;
 import jdbc.fat.postgresql.web.PostgreSQLNativeSSLTestServlet;
 import jdbc.fat.postgresql.web.PostgreSQLSSLTestServlet;
 
@@ -52,26 +50,17 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    @ClassRule
-    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("postgres:11.2-alpine")
-                                    .copy("/var/lib/postgresql/server.crt", "/var/lib/postgresql/server.crt")
-                                    .copy("/var/lib/postgresql/server.key", "/var/lib/postgresql/server.key")
-                                    .run("chown postgres /var/lib/postgresql/server.key && chmod 600 /var/lib/postgresql/server.key && " +
-                                         "chown postgres /var/lib/postgresql/server.crt && chmod 600 /var/lib/postgresql/server.crt")
-                                    .build())
-                    .withFileFromFile("/var/lib/postgresql/server.crt", new File("lib/LibertyFATTestFiles/ssl-certs/server.crt"))
-                    .withFileFromFile("/var/lib/postgresql/server.key", new File("lib/LibertyFATTestFiles/ssl-certs/server.key")))
-                                    .withDatabaseName(POSTGRES_DB)
-                                    .withUsername(POSTGRES_USER)
-                                    .withPassword(POSTGRES_PASS)
-                                    .withConfigOption("ssl", "on")
-                                    .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
-                                    .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")
-                                    .withLogConsumer(PostgreSQLSSLTest::log);
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("aguibert/postgresql-ssl:1.0")
+                    .withDatabaseName(POSTGRES_DB)
+                    .withUsername(POSTGRES_USER)
+                    .withPassword(POSTGRES_PASS)
+                    .withSSL()
+                    .withLogConsumer(new SimpleLogConsumer(c, "postgre-ssl"));
 
     @BeforeClass
     public static void setUp() throws Exception {
+        postgre.start();
+
         ShrinkHelper.defaultApp(serverLibertySSL, APP_NAME, "jdbc.fat.postgresql.web");
         ShrinkHelper.defaultApp(serverNativeSSL, APP_NAME, "jdbc.fat.postgresql.web");
 
@@ -107,14 +96,14 @@ public class PostgreSQLSSLTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        serverLibertySSL.stopServer();
-        serverNativeSSL.stopServer();
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "postgresql-ssl", msg);
+        try {
+            serverLibertySSL.stopServer();
+        } finally {
+            try {
+                serverNativeSSL.stopServer();
+            } finally {
+                postgre.stop();
+            }
+        }
     }
 }

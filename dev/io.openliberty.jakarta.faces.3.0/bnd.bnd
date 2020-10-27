@@ -37,7 +37,7 @@ publish.wlp.jar.suffix: dev/api/spec
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	io.openliberty.jakarta.validation.3.0;version=latest,\
 	io.openliberty.jakarta.jstl.2.0;version=latest,\
-	io.openliberty.jakarta.jsp.3.0;version=latest,\
+	io.openliberty.jakarta.pages.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest, \
 	io.openliberty.jakarta.websocket.2.0;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

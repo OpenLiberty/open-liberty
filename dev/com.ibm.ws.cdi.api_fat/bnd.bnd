@@ -38,7 +38,7 @@ tested.features:\
         jaxrs-2.1,\
         jsf-2.3,\
         el-4.0,\
-        jsp-3.0
+        pages-3.0
 	
 test.project: true
 

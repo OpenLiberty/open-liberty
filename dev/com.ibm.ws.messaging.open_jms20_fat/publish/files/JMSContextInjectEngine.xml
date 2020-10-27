@@ -2,6 +2,10 @@
 
   <variable name="onError" value="FAIL"/>
 
+  <!--
+  <logging traceSpecification="*=info:SIBJms*=all:com.ibm.ws.cdi.*=all" maxFileSize="200"/>
+    -->
+
   <featureManager>
     <feature>wasJmsServer-1.0</feature>
     <feature>testjmsinternals-1.0</feature>

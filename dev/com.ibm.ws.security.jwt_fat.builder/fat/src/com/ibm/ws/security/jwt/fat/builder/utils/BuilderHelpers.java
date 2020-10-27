@@ -81,8 +81,8 @@ public class BuilderHelpers {
         settings.remove(HeaderConstants.ALGORITHM);
         settings.put(HeaderConstants.ALGORITHM, KeyMgmtKeyAlg);
         settings.put(HeaderConstants.ENCRYPTION, contentEncryptAlg);
-        settings.put(HeaderConstants.TYPE, "JOSE");
-        settings.put(HeaderConstants.CONTENT_TYPE, "jwt");
+        settings.put(HeaderConstants.TYPE, JWTBuilderConstants.JWE_TYPE);
+        settings.put(HeaderConstants.CONTENT_TYPE, JWTBuilderConstants.JWE_CONTENT_TYPE);
         // when we're testing with encrypted tokens, our underlying tools don't have the info to decrypt the JWE to get to the JWS, so skip validation of the time values
         settings.remove(PayloadConstants.EXPIRATION_TIME);
         settings.remove(PayloadConstants.ISSUED_AT);
@@ -150,6 +150,7 @@ public class BuilderHelpers {
         // {"someclaim":"somevalue", "someclaim2":"somevalue2",
         // "aud":"["someAud1", "someAud2"]"}}}
 
+        // set expectations for just getting to the test app
         Expectations expectations = buildBuilderClientAppExpectations(app, null, server);
 
         // create a jsonObject of keys/values that will be used to create

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,7 +149,7 @@ public class ErrorPathsTest extends FATServletClient {
                         .addAsLibraries(new File(FATSuite.MYFACES_API))
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
 
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_IMPL);
 
         server.startServer(testName.getMethodName() + ".log");

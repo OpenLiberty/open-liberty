@@ -66,7 +66,12 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
     include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class', 'com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class'
     into "WEB-INF/classes"
   }  
-     
+   /* start of jose4j copy */  
+  /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+    into "WEB-INF/classes"
+  }
+  /* end of jose4j copy */    
 }
 
 assemble {

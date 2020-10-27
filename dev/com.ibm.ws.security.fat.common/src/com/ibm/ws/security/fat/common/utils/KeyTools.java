@@ -2,15 +2,11 @@ package com.ibm.ws.security.fat.common.utils;
 
 import java.security.Key;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.jose4j.base64url.Base64;
 import org.jose4j.base64url.SimplePEMEncoder;
-import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -54,7 +50,7 @@ public class KeyTools {
         return server.getServerRoot() + "/";
     }
 
-    public static PrivateKey getPrivateKeyFromPem(String privateKeyString) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
+    public static PrivateKey getPrivateKeyFromPem(String privateKeyString) throws Exception {
 
         int beginIndex = privateKeyString.indexOf(rsaPrivatePrefix) + rsaPrivatePrefix.length();
         int endIndex = privateKeyString.indexOf(rsaPrivateSuffix);
@@ -68,14 +64,14 @@ public class KeyTools {
         return kf.generatePrivate(spec);
     }
 
-    public static Key getPublicKeyFromPem(String publicKeyString) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
+    public static Key getPublicKeyFromPem(String publicKeyString) throws Exception {
 
         int beginIndex = publicKeyString.indexOf(rsaPublicPrefix) + rsaPublicPrefix.length();
         int endIndex = publicKeyString.indexOf(rsaPublicSuffix);
 
         String base64 = publicKeyString.substring(beginIndex, endIndex).trim();
         //        Log.info(thisClass, "getPublicKeyFromPem", "base64: " + base64 + " end");
-        byte[] decode = Base64.decode(base64);
+        byte[] decode = SimplePEMEncoder.decode(base64);
 
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decode);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -83,4 +79,15 @@ public class KeyTools {
 
     }
 
+    public static Key getKeyFromPem(String keyString) throws Exception {
+
+        if (keyString != null) {
+            if (keyString.contains("PRIVATE")) {
+                return getPrivateKeyFromPem(keyString);
+            } else {
+                return getPublicKeyFromPem(keyString);
+            }
+        }
+        return null;
+    }
 }

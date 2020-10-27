@@ -378,23 +378,20 @@ public class SocketFactory extends SocketFactoryHelper {
             // set the SSL protocol on the server socket
             String protocol = sslConfig.getSSLProtocol(sslConfigName);
             if (protocol != null) {
-                //serverSocket.setEnabledProtocols(new String[] { protocol });
                 sslParameters.setProtocols(new String[] { protocol });
             }
 
             boolean clientAuthRequired = ((options.requires & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             boolean clientAuthSupported = ((options.supports & EstablishTrustInClient.value) == EstablishTrustInClient.value);
             if (clientAuthRequired) {
-                //serverSocket.setNeedClientAuth(true);
                 sslParameters.setNeedClientAuth(true);
             } else if (clientAuthSupported) {
-                //serverSocket.setWantClientAuth(true);
                 sslParameters.setWantClientAuth(true);
             } else {
-                //serverSocket.setNeedClientAuth(false); //could set want with the same effect
                 sslParameters.setNeedClientAuth(false);
             }
             serverSocket.setSoTimeout(60 * 1000);
+            serverSocket.setSSLParameters(sslParameters);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.debug(tc, "Created SSL server socket on port " + serverSocket.getLocalPort());

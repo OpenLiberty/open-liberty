@@ -13,6 +13,7 @@ package com.ibm.ws.security.mp.jwt.v11.config.impl;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
@@ -74,7 +75,11 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     @Override
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         if (isAcceptableMpConfigProperty(propertyName)) {
-            return getConfig(cl).getValue(propertyName, propertyType);
+            Optional<T> value = getConfig(cl).getOptionalValue(propertyName, propertyType);
+            if (value != null && value.isPresent()) {
+                return value.get();
+            }
+            return null;
         }
         return null;
     }

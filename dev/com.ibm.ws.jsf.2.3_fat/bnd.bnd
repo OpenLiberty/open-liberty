@@ -17,7 +17,7 @@ tested.features: \
  cdi-3.0, \
  websocket-2.0, \
  faces-3.0, \
- jsp-3.0,\
+ pages-3.0,\
  beanvalidation-3.0,\
  jaxb-3.0,\
  jpacontainer-3.0,\

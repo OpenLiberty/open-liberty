@@ -10,6 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+nettyVersion=4.1.51
 
 src: \
     fat/src,\
@@ -47,6 +48,16 @@ tested.features:\
 	io.grpc:grpc-protobuf;version=1.31.1,\
 	io.grpc:grpc-protobuf-lite;version=1.31.1,\
 	io.grpc:grpc-stub;version=1.31.1,\
+    io.netty:netty-buffer;version=${nettyVersion},\
+    io.netty:netty-codec;version=${nettyVersion},\
+    io.netty:netty-codec-http;version=${nettyVersion},\
+    io.netty:netty-codec-http2;version=${nettyVersion},\
+    io.netty:netty-codec-socks;version=${nettyVersion},\
+    io.netty:netty-common;version=${nettyVersion},\
+    io.netty:netty-handler;version=${nettyVersion},\
+    io.netty:netty-handler-proxy;version=${nettyVersion},\
+    io.netty:netty-resolver;version=${nettyVersion},\
+    io.netty:netty-transport;version=${nettyVersion},\
 	net.sourceforge.htmlunit:htmlunit;version=2.20,\
 	xml-apis:xml-apis;version=1.4.01,\
 	com.google.protobuf:protobuf-java;version=3.13.0, \

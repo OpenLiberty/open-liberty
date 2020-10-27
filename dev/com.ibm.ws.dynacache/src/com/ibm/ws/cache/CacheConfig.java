@@ -337,6 +337,7 @@ public class CacheConfig implements DCacheConfig, Cloneable {
     // -----------------------------------------------------------
     DistributedObjectCache distributedObjectCache = null;
     DCache cache = null;
+    Map _passedInProperties = new HashMap();
     // -----------------------------------------------------------
 
     boolean refCountTracking = false;
@@ -377,6 +378,9 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         FieldInitializer.initFromSystemProperties(this);
         overrideCacheConfig(convert(map));
         determineCacheProvider();
+        _passedInProperties.putAll(map);
+        _passedInProperties.putAll(System.getProperties());
+
         WsLocationAdmin locAdmin = Scheduler.getLocationAdmin();
         // allow to run outside of OSGI for Unit tests
         if (locAdmin != null) {
@@ -455,6 +459,8 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         // -------------------------------------------------
         FieldInitializer.initFromSystemProperties(this);
         overrideCacheConfig(properties);
+        _passedInProperties.putAll(properties);
+        _passedInProperties.putAll(System.getProperties());
         determineCacheProvider();
 
         if (tc.isDebugEnabled()) {
@@ -888,7 +894,7 @@ public class CacheConfig implements DCacheConfig, Cloneable {
 
     /**
      * Determines if default cache provider is being used and sets flag accordingly.
-     * 
+     *
      */
     public void determineCacheProvider() {
         this.defaultProvider = true;
@@ -981,7 +987,7 @@ public class CacheConfig implements DCacheConfig, Cloneable {
 
     @Override
     public Map<String, String> getProperties() {
-        return new HashMap<String, String>(0);
+        return _passedInProperties;
     }
 
     @Override

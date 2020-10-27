@@ -21,7 +21,6 @@ Export-Package: \
 Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
-    org.jose4j.*, \
     *
 
 Private-Package: \
@@ -62,8 +61,8 @@ generate.replacement: true
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	org.glassfish:javax.json;version=1.0,\
 	com.ibm.ws.org.jose4j;version=latest,\
-   	com.ibm.json4j;version=latest,\
-
+	com.ibm.json4j;version=latest,\
+	org.bitbucket.b_c.jose4j
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \

@@ -585,6 +585,91 @@
 	>
 	</jwtConsumer>		
 		
+	<jwtConsumer
+		id="multipleJwtConsumer"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		amrValues="OTP iris, pwd kba"
+	/>
+	
+	<jwtConsumer
+		id="singleJwtConsumer"
+		issuer="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecure"
+		amrValues="OTP iris"
+	/>
+			
+	<jwtConsumer
+		id="good_decrypt_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="rs256"
+	/>
+	
+	<jwtConsumer
+		id="good_decrypt_RS384"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="rs384"
+	/>
+	
+	<jwtConsumer
+		id="good_decrypt_RS512"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="rs512"
+	/>
+	
+	<jwtConsumer
+		id="bad_decrypt_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="bogusName"
+	/>
+
+	<jwtConsumer
+		id="missing_sslRef_decrypt_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="rs256"
+	/>
+			
+	<jwtConsumer
+		id="bad_sslRef_decrypt_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="badSSLRef"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="rs256"
+	/>
+		
+	<jwtConsumer
+		id="decrypt_ES384"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="RS256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es384"
+	/>
+				
 <include location="${shared.config.dir}/allAlgSSLSettings.xml" />
 
 	<jwtBuilder
@@ -667,5 +752,38 @@
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
-		
+
+	<jwtBuilder
+		id="key_encrypt_good_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+	<jwtBuilder
+		id="key_encrypt_good_RS384"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="key_encrypt_good_RS512"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+
 </server>

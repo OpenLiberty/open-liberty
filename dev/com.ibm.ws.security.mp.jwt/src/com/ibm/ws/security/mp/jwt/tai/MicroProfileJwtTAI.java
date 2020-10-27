@@ -399,7 +399,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
                 }
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
-            String payload = JsonUtils.getPayload(token);
+            String payload = JsonUtils.getPayload(jwtToken.compact());
             decodedPayload = JsonUtils.decodeFromBase64String(payload);
         }
 

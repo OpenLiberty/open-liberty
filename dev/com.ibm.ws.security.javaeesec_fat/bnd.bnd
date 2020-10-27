@@ -13,7 +13,7 @@
 bVersion=1.0
 
 fat.project: true
-tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, jsp-3.0, ejblite-4.0, enterprisebeanslite-4.0, faces-3.0
+tested.features: el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, pages-3.0, ejblite-4.0, enterprisebeanslite-4.0, faces-3.0
 #fat.test.mode=full
 
 src: \

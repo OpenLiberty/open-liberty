@@ -94,8 +94,7 @@
     <properties.wasJms/>
   </jmsTopic>
 
-  <!-- MDBMDB
-  <jmsActivationSpec id="sharedsubscriptionwithmsgsel/ejb/FATTopic1MessageDrivenBean">
+  <jmsActivationSpec id="SharedSubscriptionWithMsgSel/TestTopic1">
     <properties.wasJms
       destinationRef="jms/FAT_TOPIC"
       destinationType="javax.jms.Topic"
@@ -104,7 +103,7 @@
       subscriptionName="DURSUB"/>
   </jmsActivationSpec>
   
-  <jmsActivationSpec id="sharedsubscriptionwithmsgsel/ejb/FATTopic2MessageDrivenBean">
+  <jmsActivationSpec id="SharedSubscriptionWithMsgSel/TestTopic2">
     <properties.wasJms
       destinationRef="jms/FAT_TOPIC"
       destinationType="javax.jms.Topic"
@@ -112,7 +111,6 @@
       clientId="cid1"
       subscriptionName="DURSUB"/>
   </jmsActivationSpec>
-  -->
 
   <!--
     SharedSubscriptionServlet.java
