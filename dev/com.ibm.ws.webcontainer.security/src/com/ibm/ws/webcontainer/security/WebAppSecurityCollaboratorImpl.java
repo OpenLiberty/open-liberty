@@ -461,31 +461,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     @Override
-    @FFDCIgnore(NumberFormatException.class)
     public boolean isCDINeeded() {
-        int specLevel = WebContainer.getServletContainerSpecLevel();
-
         /*
-         * Determine which version of appSecurity we are running.
+         * Tried to future-proof this check by iterating over all the
+         * installed features and finding the version of appSecurity installed,
+         * but that introduced a performance degradation. So for now, checking
+         * for the appSecurity-3.0/4.0 features directly.
          */
-        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
-        float appSecurityVers = 0.0f;
-        for (String feature : installedFeatures) {
-            if (feature.startsWith("appSecurity-")) {
-                try {
-                    appSecurityVers = Float.valueOf(feature.substring(12));
-                    break;
-                } catch (NumberFormatException e) {
-                    // Ignore. Not the feature we are looking for.
-                }
-            }
+        if (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_40) {
+            return false;
         }
-
-        /*
-         * Future-proof check. Some of these combinations aren't valid, but
-         * they will not make it this far.
-         */
-        return appSecurityVers >= 3.0 && specLevel >= WebContainer.SPEC_LEVEL_40;
+        Set<String> features = provisionerService.getInstalledFeatures();
+	return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
     }
 
     /**
