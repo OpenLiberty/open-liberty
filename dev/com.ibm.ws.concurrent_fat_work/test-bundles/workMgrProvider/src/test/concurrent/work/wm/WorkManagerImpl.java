@@ -12,6 +12,7 @@ package test.concurrent.work.wm;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.osgi.framework.BundleContext;
@@ -28,6 +29,7 @@ import test.concurrent.work.Work;
 import test.concurrent.work.WorkCompletedException;
 import test.concurrent.work.WorkItem;
 import test.concurrent.work.WorkManager;
+import test.concurrent.work.WorkRejectedException;
 
 /**
  * An oversimplified work manager that redirects work to a managed executor.
@@ -40,11 +42,15 @@ public class WorkManagerImpl extends ManagedExecutorExtension implements WorkMan
         this.executor = executor;
     }
 
-    public WorkItem schedule(Work work) {
-        Future<Work> future = ((ExecutorService) executor).submit(() -> {
-            work.run();
-            return work;
-        });
-        return new WorkItem(future);
+    public WorkItem schedule(Work work) throws WorkRejectedException {
+        try {
+            Future<Work> future = ((ExecutorService) executor).submit(() -> {
+                work.run();
+                return work;
+            });
+            return new WorkItem(future);
+        } catch (RejectedExecutionException x) {
+            throw new WorkRejectedException(x);
+        }
     }
 }

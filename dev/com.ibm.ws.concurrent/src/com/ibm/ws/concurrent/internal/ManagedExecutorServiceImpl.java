@@ -424,7 +424,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             applications.add(cData.getJ2EEName().getApplication());
 
         ConcurrencyExtensionProvider provider = concurrencySvc.extensionProvider;
-        if (provider == null || ref == null)
+        if (provider == null)
             return this;
         else
             return provider.provide(this, ref);

@@ -20,12 +20,14 @@
   <include location="../fatTestPorts.xml"/>
 
   <managedExecutorService jndiName="wm/executor">
+    <concurrencyPolicy max="1" maxQueueSize="2"/>
     <contextService>
       <classloaderContext/>
     </contextService>
   </managedExecutorService>
 
   <managedScheduledExecutorService jndiName="wm/scheduledExecutor">
+    <concurrencyPolicy max="2" maxQueueSize="1"/>
     <contextService>
       <classloaderContext/>
       <jeeMetadataContext/>

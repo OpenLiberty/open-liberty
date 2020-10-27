@@ -15,7 +15,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
 
 /**
  * Interface by which a single provider implementation can be plugged in
- * to intercept and replace resource reference lookups for
+ * to intercept and replace JNDI lookups of
  * <code>managedExecutorService</code> and
  * <code>managedScheduledExecutorService</code>.
  *
@@ -32,9 +32,8 @@ public interface ConcurrencyExtensionProvider {
      *
      * @param executor     managed executor instance that would normally be used for the
      *                         resource reference lookup.
-     * @param resourceInfo resource reference information.
-     * @return managed executor instance to use instead as the result of the
-     *         resource reference lookup.
+     * @param resourceInfo resource reference information. Null if a direct lookup.
+     * @return managed executor instance to use instead as the result of the JNDI lookup.
      */
     ManagedExecutorExtension provide(WSManagedExecutorService executor, ResourceInfo resourceInfo);
 }
