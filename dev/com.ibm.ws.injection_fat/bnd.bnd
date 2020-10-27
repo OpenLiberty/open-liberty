@@ -49,7 +49,7 @@ tested.features: \
 	enterpriseBeansLite-4.0,\
 	jdbc-4.2,\
 	jpa-2.2,\
-	jpa-3.0,\
+	persistence-3.0,\
 	servlet-4.0,\
 	servlet-5.0
 	
