@@ -19,6 +19,9 @@ Bundle-Description: Microprofile Rest Client CDI, version ${bVersion}
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.cdi
 
+Private-Package: \
+  com.ibm.ws.microprofile.rest.client.cdi.nls
+
 Import-Package: \
   !com.ibm.ws.microprofile.rest.client.cdi, \
   org.apache.cxf.common.classloader;version="[3.1,4)",\
@@ -38,6 +41,7 @@ Include-Resource: \
 
 -dsannotations: com.ibm.ws.microprofile.rest.client.cdi.LibertyRestClientExtension
 
+instrument.classesExcludes: com/ibm/ws/microprofile/rest/client/cdi/nls/*.class
 
 app-resources= \
   META-INF/services/javax.enterprise.inject.spi.Extension

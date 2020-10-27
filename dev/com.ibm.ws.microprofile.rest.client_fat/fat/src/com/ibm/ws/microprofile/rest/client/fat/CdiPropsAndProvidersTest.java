@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -24,6 +29,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import mpRestClient11.cdiPropsAndProviders.CdiPropsAndProvidersClient;
 import mpRestClient11.cdiPropsAndProviders.CdiPropsAndProvidersTestServlet;
 
 @RunWith(FATRunner.class)
@@ -57,7 +63,14 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
-        remoteAppServer.stopServer();
+        try {
+            List<String> requestScopedIntfMsgs = server.findStringsInLogs("CWWKW0750I.*" + CdiPropsAndProvidersClient.class.getName());
+            assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
+            assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",
+                         1, requestScopedIntfMsgs.size());
+        } finally {
+            server.stopServer();
+            remoteAppServer.stopServer();
+        }
     }
 }

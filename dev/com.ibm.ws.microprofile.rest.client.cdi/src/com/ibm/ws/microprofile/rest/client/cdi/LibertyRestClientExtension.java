@@ -16,13 +16,17 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.apache.cxf.microprofile.client.cdi.RestClientBean;
@@ -44,6 +48,7 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
 
     private final Map<ClassLoader, Set<Class<?>>> restClientClasses = new WeakHashMap<>();
     private final Set<Throwable> errors = new LinkedHashSet<>();
+    private final Set<Class<?>> requestScopedInterfaces = new LinkedHashSet<>();
 
     private static ClassLoader getContextClassLoader() {
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
@@ -91,5 +96,24 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
 
     public void registerErrors(@Observes AfterDeploymentValidation afterDeploymentValidation) {
         errors.forEach(afterDeploymentValidation::addDeploymentProblem);
+        if (!requestScopedInterfaces.isEmpty()) {
+            
+            Tr.info(tc, "rest.client.interface.using.request.scope", 
+                    requestScopedInterfaces.stream().map(c -> c.getName()).collect(Collectors.joining(" ")));
+        }
+        
+    }
+
+    public void logRequestScopedClientInterfaces(@Observes ProcessBean<?> processBean) {
+        Bean<?> bean = processBean.getBean();
+        ClassLoader tccl = getContextClassLoader();
+        Set<Class<?>> classes;
+        synchronized(restClientClasses) {
+            classes = restClientClasses.get(tccl);
+        }
+        Class<?> beanClass = bean.getBeanClass();
+        if (classes.contains(beanClass) && RequestScoped.class.isAssignableFrom(bean.getScope())) {
+            requestScopedInterfaces.add(beanClass);
+        }
     }
 }
