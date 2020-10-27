@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: workManager-1.0
+Subsystem-SymbolicName: test.concurrent.work.workManager-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content:
+ test.concurrent.work; version="[1,1.0.100)",
+ test.concurrent.work.concurrencyExtension-1.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: test.concurrent.work; type="spec"
