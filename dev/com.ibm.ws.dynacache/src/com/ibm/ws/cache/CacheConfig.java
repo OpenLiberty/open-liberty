@@ -12,12 +12,12 @@ package com.ibm.ws.cache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.cache.DistributedObjectCache;
 import com.ibm.websphere.ras.Tr;
@@ -337,7 +337,7 @@ public class CacheConfig implements DCacheConfig, Cloneable {
     // -----------------------------------------------------------
     DistributedObjectCache distributedObjectCache = null;
     DCache cache = null;
-    Map _passedInProperties = new HashMap();
+    ConcurrentHashMap _passedInProperties = new ConcurrentHashMap();
     // -----------------------------------------------------------
 
     boolean refCountTracking = false;
