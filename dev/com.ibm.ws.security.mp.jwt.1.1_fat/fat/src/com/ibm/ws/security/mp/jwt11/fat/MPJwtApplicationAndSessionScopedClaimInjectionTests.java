@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
@@ -103,16 +102,6 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
     }
 
     /**
-     * Don't restore between tests
-     * All of the tests in this class will reconfigure the server
-     */
-    @Override
-    public void restoreTestServers() {
-        Log.info(thisClass, "restoreTestServersWithCheck", "* Skipping server restore **");
-        logTestCaseInServerLogs("** Skipping server restore **");
-    }
-
-    /**
      * Gets the resource server up and running.
      * Sets properties in bootstrap.properties that will affect server behavior
      * Sets up and installs the test apps (does not start them)
@@ -137,6 +126,7 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
 
         generateRSServerTestApps(server);
         serverTracker.addServer(server);
+        skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));

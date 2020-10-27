@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtWithGoodAltSigAlgMPConfig;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
@@ -48,7 +49,7 @@ public class MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES2564Url 
     public static void setUp() throws Exception {
 
         String sigAlg = MpJwtFatConstants.SIGALG_ES256;
-        commonSetup(sysPropResourceServer, sigAlg, "file:///" + MP11ConfigSettings.getDefaultKeyFileLoc(sysPropResourceServer) + MP11ConfigSettings.getKeyFileNameForAlg(sigAlg),
+        commonSetup(sysPropResourceServer, sigAlg, "file:///" + JwtKeyTools.getDefaultKeyFileLoc(sysPropResourceServer) + JwtKeyTools.getPublicKeyFileNameForAlg(sigAlg),
                     MP11ConfigSettings.PublicKeyNotSet, MPConfigLocation.SYSTEM_PROP);
 
     }
