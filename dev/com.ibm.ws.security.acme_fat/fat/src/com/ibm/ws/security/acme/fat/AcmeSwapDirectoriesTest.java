@@ -225,7 +225,7 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			stopServer("CWPKI2038W");
+			stopServer("CWPKI2038W", "CWWKG0027W");
 		}
 	}
 	/**
@@ -325,7 +325,7 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			stopServer("CWPKI2038W", "CWPKI2072W");
+			stopServer("CWPKI2038W", "CWPKI2072W", "CWWKG0027W");
 		}
 	}
 	/**
@@ -403,7 +403,7 @@ public class AcmeSwapDirectoriesTest {
 			/*
 			 * Stop the server.
 			 */
-			stopServer("CWPKI2038W");
+			stopServer("CWPKI2038W", "CWWKG0027W");
 		}
 	}
 	
