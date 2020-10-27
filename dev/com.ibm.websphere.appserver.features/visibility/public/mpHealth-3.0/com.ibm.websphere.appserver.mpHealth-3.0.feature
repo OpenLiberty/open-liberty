@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpHealth-3.0
+symbolicName=com.ibm.websphere.appserver.mpHealth-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -16,7 +16,7 @@ Subsystem-Name: MicroProfile Health 3.0
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.servlet-4.0,\
- io.openliberty.mpConfig-2.0,\
+ com.ibm.websphere.appserver.mpConfig-2.0,\
  com.ibm.wsspi.appserver.webBundle-1.0 
 -bundles=com.ibm.websphere.jsonsupport, \
  com.ibm.ws.classloader.context, \

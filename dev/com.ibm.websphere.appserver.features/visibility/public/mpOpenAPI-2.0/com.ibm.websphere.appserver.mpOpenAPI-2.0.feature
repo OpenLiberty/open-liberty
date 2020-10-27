@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpOpenAPI-2.0
+symbolicName=com.ibm.websphere.appserver.mpOpenAPI-2.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -37,7 +37,7 @@ IBM-SPI-Package: \
     org.eclipse.microprofile.openapi.spi; type="stable"
 -features=\
     io.openliberty.org.eclipse.microprofile.openapi-2.0, \
-    io.openliberty.mpConfig-2.0, \
+    com.ibm.websphere.appserver.mpConfig-2.0, \
     com.ibm.websphere.appserver.servlet-4.0, \
     com.ibm.wsspi.appserver.webBundle-1.0, \
     com.ibm.websphere.appserver.jaxrs-2.1
