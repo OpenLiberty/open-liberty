@@ -65,12 +65,7 @@ fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
-    net.sourceforge.htmlunit:webdriver;version=2.6,\
-    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
-    org.brotli:dec;version=0.1.2,\
-    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+    net.sourceforge.htmlunit:htmlunit;version=2.20,\
     xml-apis:xml-apis;version=1.4.01,\
     com.ibm.websphere.appserver.thirdparty.jsf-2.3;version=latest, \
     com.ibm.ws.org.apache.myfaces.2.3;version=latest, \
