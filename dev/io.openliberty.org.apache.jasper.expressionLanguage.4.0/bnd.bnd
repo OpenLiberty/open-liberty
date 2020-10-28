@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.org.apache.jasper.el4
+Bundle-SymbolicName: io.openliberty.org.apache.jasper.expressionLanguage.4.0
 Bundle-Description: Jakarta Expression Language EE9 Implementation, version 4.0
 Implementation-Version: 4.0.0
 
@@ -32,6 +32,6 @@ instrument.ffdc: false
 
 -buildpath: \
     org.apache.tomcat:tomcat-jasper-el;version=10.0.0,\
-    io.openliberty.jakarta.el.4.0;version=latest,\
+    io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
     com.ibm.websphere.appserver.spi.logging;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest

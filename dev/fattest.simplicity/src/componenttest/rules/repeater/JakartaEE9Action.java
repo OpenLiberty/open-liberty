@@ -65,7 +65,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
                                                  "connectorsInboundSecurity-2.0",
-                                                 "el-4.0",
+                                                 "expressionLanguage-4.0",
                                                  "enterpriseBeans-4.0",
                                                  "enterpriseBeansHome-4.0",
                                                  "enterpriseBeansLite-4.0",

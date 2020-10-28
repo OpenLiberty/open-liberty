@@ -12,7 +12,7 @@
 bVersion=1.0
 
 tested.features: \
- el-4.0, \
+ expressionLanguage-4.0, \
  servlet-5.0, \
  cdi-3.0, \
  websocket-2.0, \
