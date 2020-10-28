@@ -64,7 +64,8 @@ public class EECompatibilityTest {
     static final String CONFLICT = "CWWKF0033E.*",
                     SAME_EE_CONFLICT = "CWWKF0043E.*",
                     DIFF_EE_CONFLICT = "CWWKF0044E.*",
-                    EE_CONFLICT = SAME_EE_CONFLICT + "|" + DIFF_EE_CONFLICT,
+                    SAME_INDIRECT_MODEL_CONFLICT = "CWWKF0047E.*",
+                    EE_CONFLICT = SAME_EE_CONFLICT + "|" + DIFF_EE_CONFLICT + "|" + SAME_INDIRECT_MODEL_CONFLICT,
                     ANY_CONFLICT = CONFLICT + "|" + EE_CONFLICT;
 
     static final String RESOLUTION_ERROR = "CWWKE0702E.*";
@@ -148,7 +149,7 @@ public class EECompatibilityTest {
     public void testConflictingEeCompatibleFeaturesEE8and7() throws Exception {
         server.changeFeatures(Arrays.asList("servlet-4.0", "jpa-2.1"));
         server.startServer();
-        msg = server.waitForStringInLogUsingMark(SAME_EE_CONFLICT, shortTimeOut);
+        msg = server.waitForStringInLogUsingMark(SAME_INDIRECT_MODEL_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report an EE compatibility conflict for the configured features, but it did not: msg=" + msg,
                    msg != null && msg.contains("servlet-4.0") && msg.contains("jpa-2.1"));
         server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
