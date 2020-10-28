@@ -300,7 +300,7 @@ public class ServiceSupportTests extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to update within " + APP_STARTUP_TIMEOUT + "ms");
         }
