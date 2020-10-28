@@ -1,0 +1,89 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+# This bundle uses range 1000-1100
+#-----------------------------------------------------------------------------------------------------------------------------
+JAEGER_TRACER_CREATED=CWMOT1001I: Uma inst\u00e2ncia de JaegerTracer foi criada para o aplicativo {0}. As informa\u00e7\u00f5es de rastreio s\u00e3o enviadas para {1}.
+JAEGER_TRACER_CREATED.explanation=Uma inst\u00e2ncia JaegerTracer foi criada para enviar spans do aplicativo para o back-end de rastreio.
+JAEGER_TRACER_CREATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+JAEGER_ENV_VAR_PARSE_ERROR=CWMOT1002W: O valor da propriedade do sistema ou da vari\u00e1vel de ambiente {0} n\u00e3o \u00e9 um tipo v\u00e1lido de {1}.
+JAEGER_ENV_VAR_PARSE_ERROR.explanation=O valor que \u00e9 definido na propriedade do sistema ou vari\u00e1vel de ambiente n\u00e3o pode ser convertido para o tipo especificado.
+JAEGER_ENV_VAR_PARSE_ERROR.useraction=Defina um valor para a propriedade de sistema ou vari\u00e1vel de ambiente que corresponda ao tipo. 
+
+JAEGER_PASSWORD_CANNOT_DECODE=CWMOT1003W: O valor da vari\u00e1vel de ambiente JAEGER_PASSWORD n\u00e3o pode ser decodificado.
+JAEGER_PASSWORD_CANNOT_DECODE.explanation=A senha n\u00e3o pode ser decodificada, portanto, ela \u00e9 ignorada.
+JAEGER_PASSWORD_CANNOT_DECODE.useraction=Use o comando securityUtility para codificar senhas.
+
+JAEGER_TAGS_CANNOT_PARSE=CWMOT1004W: O valor da vari\u00e1vel de ambiente JAEGER_TAGS n\u00e3o pode ser analisado.
+JAEGER_TAGS_CANNOT_PARSE.explanation=As tags n\u00e3o podem ser analisadas, portanto, elas s\u00e3o ignoradas.
+JAEGER_TAGS_CANNOT_PARSE.useraction=Use pares nome=valor separados por v\u00edrgulas.
+
+JAEGER_CONFIG_EXCEPTION=CWMOT1005E: Uma inst\u00e2ncia de JaegerTracer n\u00e3o pode ser instanciada.  Raz\u00e3o:  {0}
+
+JAEGER_CONFIG_EXCEPTION.explanation=Uma inst\u00e2ncia de JaegerTracer n\u00e3o pode ser instanciada devido a problemas de configura\u00e7\u00e3o.
+JAEGER_CONFIG_EXCEPTION.useraction=Corrija os problemas que foram relatados e tente novamente.
+
+JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: A propriedade do sistema ou vari\u00e1vel de ambiente JAEGER_PROPAGATION cont\u00e9m o valor {0}, que n\u00e3o \u00e9 v\u00e1lido.
+JAEGER_PROPAGATION_INVALID_VALUE.explanation=A propriedade do sistema ou a vari\u00e1vel de ambiente JAEGER_PROPAGATION cont\u00e9m um valor que n\u00e3o \u00e9 v\u00e1lido. Ela foi ignorada.
+JAEGER_PROPAGATION_INVALID_VALUE.useraction=Use um dos valores v\u00e1lidos, que s\u00e3o JAEGER e B3.
+
+JAEGER_CLASS_NOT_FOUND=CWMOT1007E: As bibliotecas de cliente do Jaeger n\u00e3o est\u00e3o definidas no arquivo server.xml ou no diret\u00f3rio WEB-INF/lib dentro do aplicativo da web. Raz\u00e3o:  {0}
+JAEGER_CLASS_NOT_FOUND.explanation=As bibliotecas de cliente do Jaeger n\u00e3o est\u00e3o localizadas no caminho de classe do aplicativo.
+JAEGER_CLASS_NOT_FOUND.useraction=Defina as bibliotecas de cliente do Jaeger no arquivo server.xml ou no diret\u00f3rio WEB-INF/lib dentro do aplicativo da web.

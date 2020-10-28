@@ -17,6 +17,8 @@ public interface Configuration extends JaegerAdapter {
 
     public io.opentracing.Tracer getTracer();
     
+    public JaegerTracer.Builder getTracerBuilder();
+    
     public Configuration withServiceName(String serviceName);
     
     public Configuration withReporter(ReporterConfiguration reporterConfig);

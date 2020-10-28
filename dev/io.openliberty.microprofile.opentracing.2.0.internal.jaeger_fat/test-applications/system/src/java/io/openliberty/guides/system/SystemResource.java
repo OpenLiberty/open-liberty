@@ -1,6 +1,5 @@
-// tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
-// end::copyright[]
 package io.openliberty.guides.system;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 // CDI
 import javax.enterprise.context.RequestScoped;
@@ -26,9 +25,12 @@ import javax.ws.rs.core.MediaType;
 @Path("properties")
 public class SystemResource {
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Properties getProperties() {
-    return System.getProperties();
-  }
+    private static final Logger LOGGER = Logger.getLogger(SystemResource.class.getName());
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Properties getProperties() {
+        LOGGER.info("System: Getting system properties");
+        return System.getProperties();
+    }
 }

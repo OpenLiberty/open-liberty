@@ -1,0 +1,88 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+# This bundle uses range 1000-1100
+#-----------------------------------------------------------------------------------------------------------------------------
+JAEGER_TRACER_CREATED=CWMOT1001I: \u5df2\u4e3a {0} \u5e94\u7528\u7a0b\u5e8f\u521b\u5efa JaegerTracer \u5b9e\u4f8b\u3002\u8ddf\u8e2a\u4fe1\u606f\u5c06\u53d1\u9001\u81f3 {1}\u3002
+JAEGER_TRACER_CREATED.explanation=\u5df2\u521b\u5efa JaegerTracer \u5b9e\u4f8b\uff0c\u4ee5\u5c06\u6301\u7eed\u65f6\u95f4\u4ece\u8be5\u5e94\u7528\u7a0b\u5e8f\u53d1\u9001\u81f3\u8ddf\u8e2a\u540e\u7aef\u3002
+JAEGER_TRACER_CREATED.useraction=\u65e0\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+JAEGER_ENV_VAR_PARSE_ERROR=CWMOT1002W: {0} \u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u7684\u503c\u4e0d\u662f\u6709\u6548\u7c7b\u578b {1}\u3002
+JAEGER_ENV_VAR_PARSE_ERROR.explanation=\u8be5\u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u4e2d\u5b9a\u4e49\u7684\u503c\u65e0\u6cd5\u8f6c\u6362\u4e3a\u6307\u5b9a\u7684\u7c7b\u578b\u3002
+JAEGER_ENV_VAR_PARSE_ERROR.useraction=\u8bf7\u4e3a\u8be5\u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u5b9a\u4e49\u4e00\u4e2a\u4e0e\u6b64\u7c7b\u578b\u5339\u914d\u7684\u503c\u3002
+
+JAEGER_PASSWORD_CANNOT_DECODE=CWMOT1003W: \u65e0\u6cd5\u5c06 JAEGER_PASSWORD \u73af\u5883\u53d8\u91cf\u7684\u503c\u89e3\u7801\u3002
+JAEGER_PASSWORD_CANNOT_DECODE.explanation=\u65e0\u6cd5\u5c06\u5bc6\u7801\u89e3\u7801\uff0c\u6240\u4ee5\u5c06\u5ffd\u7565\u8be5\u5bc6\u7801\u3002
+JAEGER_PASSWORD_CANNOT_DECODE.useraction=\u8bf7\u4f7f\u7528 securityUtility \u547d\u4ee4\u5bf9\u5bc6\u7801\u8fdb\u884c\u7f16\u7801\u3002
+
+JAEGER_TAGS_CANNOT_PARSE=CWMOT1004W: \u65e0\u6cd5\u89e3\u6790 JAEGER_TAGS \u73af\u5883\u53d8\u91cf\u7684\u503c\u3002
+JAEGER_TAGS_CANNOT_PARSE.explanation=\u65e0\u6cd5\u89e3\u6790\u6807\u8bb0\uff0c\u6240\u4ee5\u5c06\u5ffd\u7565\u8fd9\u4e9b\u6807\u8bb0\u3002
+JAEGER_TAGS_CANNOT_PARSE.useraction=\u8bf7\u4f7f\u7528\u4ee5\u9017\u53f7\u5206\u9694\u7684\u201c\u540d\u79f0=\u503c\u201d\u5bf9\u3002
+
+JAEGER_CONFIG_EXCEPTION=CWMOT1005E: JaegerTracer \u5b9e\u4f8b\u65e0\u6cd5\u5b9e\u4f8b\u5316\u3002\u539f\u56e0\uff1a{0}
+
+JAEGER_CONFIG_EXCEPTION.explanation=\u7531\u4e8e\u5b58\u5728\u914d\u7f6e\u95ee\u9898\uff0c\u6240\u4ee5 JaegerTracer \u5b9e\u4f8b\u65e0\u6cd5\u5b9e\u4f8b\u5316\u3002
+JAEGER_CONFIG_EXCEPTION.useraction=\u8bf7\u89e3\u51b3\u5df2\u62a5\u544a\u7684\u95ee\u9898\uff0c\u7136\u540e\u91cd\u8bd5\u3002
+
+JAEGER_PROPAGATION_INVALID_VALUE=CWMOT1006W: JAEGER_PROPAGATION \u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u5305\u542b {0} \u503c\uff0c\u8be5\u503c\u65e0\u6548\u3002
+JAEGER_PROPAGATION_INVALID_VALUE.explanation=JAEGER_PROPAGATION \u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u5305\u542b\u65e0\u6548\u503c\u3002\u5c06\u5ffd\u7565\u8be5\u7cfb\u7edf\u5c5e\u6027\u6216\u73af\u5883\u53d8\u91cf\u3002
+JAEGER_PROPAGATION_INVALID_VALUE.useraction=\u8bf7\u4f7f\u7528\u6709\u6548\u503c JAEGER \u548c B3 \u4e2d\u7684\u4e00\u4e2a\u3002
+
+JAEGER_CLASS_NOT_FOUND=CWMOT1007E: \u672a\u5728 server.xml \u6587\u4ef6\u6216 Web \u5e94\u7528\u7a0b\u5e8f\u5185\u7684 WEB-INF/lib \u76ee\u5f55\u4e2d\u5b9a\u4e49 Jaeger \u5ba2\u6237\u673a\u5e93\u3002\u539f\u56e0\uff1a{0}
+JAEGER_CLASS_NOT_FOUND.explanation=\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e2d\u627e\u4e0d\u5230 Jaeger \u5ba2\u6237\u673a\u5e93\u3002
+JAEGER_CLASS_NOT_FOUND.useraction=\u8bf7\u5728 server.xml \u6587\u4ef6\u6216 Web \u5e94\u7528\u7a0b\u5e8f\u5185\u7684 WEB-INF/lib \u76ee\u5f55\u4e2d\u5b9a\u4e49 Jaeger \u5ba2\u6237\u673a\u5e93\u3002

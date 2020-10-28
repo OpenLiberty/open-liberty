@@ -1,6 +1,5 @@
-// tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +8,11 @@
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
-// end::copyright[]
 package io.openliberty.guides.inventory;
 
 import java.util.Properties;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -32,10 +32,13 @@ public class InventoryResource {
 
     @Inject InventoryManager manager;
 
+    private static final Logger LOGGER = Logger.getLogger(InventoryResource.class.getName());
+    
     @GET
     @Path("/{hostname}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPropertiesForHost(@PathParam("hostname") String hostname) {
+        LOGGER.info("Inventory: hostname=" + hostname);
         Properties props = manager.get(hostname);
         if (props == null) {
             return Response.status(Response.Status.NOT_FOUND)

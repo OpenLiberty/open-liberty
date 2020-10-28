@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,28 +11,27 @@
 -include= ~../cnf/resources/bnd/bundle.props,\
           ~../cnf/resources/bnd/app-resources.bnd
 
-bSymbolicName=com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
+bSymbolicName=com.ibm.ws.microprofile.opentracing.jaeger.2.0
 bVersion=1.0
 
 
-Bundle-Name: com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
-Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl
+Bundle-Name: com.ibm.ws.microprofile.opentracing.jaeger.2.0
+Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.jaeger.2.0
 
-Bundle-Description:MicroProfile OpenTracing Jaeger Adapter Interface Implementation, version ${bVersion}
+Bundle-Description:MicroProfile OpenTracing Jaeger Adapter, version ${bVersion}
 
 WS-TraceGroup: OPENTRACING
 
 Export-Package: \
-  com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;version=1.0
+  com.ibm.ws.microprofile.opentracing.jaeger;version=1.0
 
 Import-Package: \
-  !io.jaegertracing.*,\
   *
 
+Private-Package: com.ibm.ws.microprofile.opentracing.jaeger.resources
 
-instrument.disabled: true
 
-src: src
+src: src, resources
 
 -buildpath: \
   com.ibm.ws.logging;version=latest, \
@@ -42,7 +41,10 @@ src: src
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
+  io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest, \
+  io.openliberty.io.opentracing.opentracing-util.0.33.0;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
-  io.jaegertracing:jaeger-core;version=0.34.0
-
+  com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;version=latest, \
+  com.ibm.ws.crypto.passwordutil;version=latest, \
+  com.ibm.ws.kernel.boot.core;version=latest
+  

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.opentracing.internal.jaeger_fat;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,8 +46,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class JaegerTraceTest {
     private static final Class<?> CLASS = JaegerTraceTest.class;
 
-    private static LibertyServer server1;
-    private static LibertyServer server2;
+    private static LibertyServer systemServer;
+    private static LibertyServer inventoryServer;
+    private static final String TRACE_ID_KEY = "ext_traceId";
+    private static final String SPAN_ID_KEY = "ext_spanId";
     
     /**
      * Deploy the application and start the server.
@@ -53,8 +58,9 @@ public class JaegerTraceTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server1 = LibertyServerFactory.getLibertyServer("jaegerServerSystem");
-        server2 = LibertyServerFactory.getLibertyServer("jaegerServerInventory");
+        systemServer = LibertyServerFactory.getLibertyServer("jaegerServerSystem");
+        inventoryServer = LibertyServerFactory.getLibertyServer("jaegerServerInventory");
+        inventoryServer.useSecondaryHTTPPort();
         
         WebArchive systemWar = ShrinkWrap.create(WebArchive.class, "system.war");
         WebArchive inventoryWar = ShrinkWrap.create(WebArchive.class, "inventory.war");
@@ -62,14 +68,14 @@ public class JaegerTraceTest {
         systemWar.addPackages(true, "io.openliberty.guides.system");
         inventoryWar.addPackages(true, "io.openliberty.guides.inventory");
 
-        ShrinkHelper.exportAppToServer(server1, systemWar);
-        ShrinkHelper.exportAppToServer(server2, inventoryWar);
+        ShrinkHelper.exportAppToServer(systemServer, systemWar);
+        ShrinkHelper.exportAppToServer(inventoryServer, inventoryWar);
         
         File libsDir = new File("lib");
         File[] libs = libsDir.listFiles();
         for (File file : libs) {
-            server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
-            server2.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+            systemServer.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+            inventoryServer.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
         }
     }
 
@@ -80,25 +86,61 @@ public class JaegerTraceTest {
      */
     @Test
     public void testMultiSpans() throws Exception {
-        server1.startServer();
-        server2.startServer();
+        systemServer.startServer();
+        inventoryServer.startServer();
         
         String methodName = "testMultiSpans";
         
         // Both servers should have a tracer created when hitting the localhost endpoint on the Inventory server
-        List<String> actualResponseLines = executeWebService(server2, "inventory/systems/localhost");
+        List<String> responseLines = executeWebService(inventoryServer, "inventory/systems/localhost");
 
-        FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
+        FATLogging.info(CLASS, methodName, "Response lines:", responseLines);
         
-        String logMsg = server1.waitForStringInLog("INFO io.jaegertracing");
-        String logMsg2 = server2.waitForStringInLog("INFO io.jaegertracing");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg2);
+        String logMsg = systemServer.waitForStringInLog("CWMOT1001I");
+        String logMsg2 = inventoryServer.waitForStringInLog("CWMOT1001I");
+        FATLogging.info(CLASS, methodName, "Assert not null:", logMsg);
+        FATLogging.info(CLASS, methodName, "Assert not null:", logMsg2);
         
         Assert.assertNotNull(logMsg);
         Assert.assertNotNull(logMsg2);
     }
 
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testLogRecordContext() throws Exception {
+        String methodName = "testLogRecordContext";
+
+        FATLogging.info(CLASS, methodName, "Start server1");
+        systemServer.addEnvVar("WLP_LOGGING_MESSAGE_FORMAT", "json");
+        systemServer.addEnvVar("WLP_LOGGING_MESSAGE_LOGLEVEL", "info");
+        systemServer.addEnvVar("WLP_LOGGING_MESSAGE_SOURCE", "message");
+        systemServer.startServer();
+
+        FATLogging.info(CLASS, methodName, "Start server2");
+        inventoryServer.addEnvVar("WLP_LOGGING_MESSAGE_FORMAT", "json");
+        inventoryServer.addEnvVar("WLP_LOGGING_MESSAGE_LOGLEVEL", "info");
+        inventoryServer.addEnvVar("WLP_LOGGING_MESSAGE_SOURCE", "message");
+        inventoryServer.startServer();
+        
+        List<String> responseLines = executeWebService(inventoryServer, "inventory/systems/localhost");
+        FATLogging.info(CLASS, methodName, "Response ", responseLines);
+
+        String systemEvent = systemServer.waitForStringInLog("io\\.openliberty\\.guides\\.system\\.SystemResource");
+        assertNotNull("System service event not found", systemEvent);
+        FATLogging.info(CLASS, methodName, "System event:", systemEvent);
+        assertTrue(TRACE_ID_KEY + " not found", systemEvent.contains(TRACE_ID_KEY));
+        assertTrue(SPAN_ID_KEY + " not found", systemEvent.contains(SPAN_ID_KEY));
+
+        String inventoryEvent = inventoryServer.waitForStringInLog("io\\.openliberty\\.guides\\.inventory\\.InventoryResource");
+        assertNotNull("Inventory service event not found", inventoryEvent);
+        FATLogging.info(CLASS, methodName, "System event:", inventoryEvent);
+        assertTrue(TRACE_ID_KEY + " not found", inventoryEvent.contains(TRACE_ID_KEY));
+        assertTrue(SPAN_ID_KEY + " not found", inventoryEvent.contains(SPAN_ID_KEY));
+    }
+    
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() +
@@ -108,13 +150,13 @@ public class JaegerTraceTest {
         return FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
     }
     
-    @AfterClass
-    public static void shutdown() throws Exception {
-        if (server1.isStarted()) {
-            server1.stopServer();
+    @After
+    public void stopServers() throws Exception {
+        if (systemServer.isStarted()) {
+            systemServer.stopServer();
         }
-        if (server2.isStarted()) {
-            server2.stopServer("CWMOT0009W", "CWMOT0010W");
+        if (inventoryServer.isStarted()) {
+            inventoryServer.stopServer("CWMOT0009W", "CWMOT0010W");
         }
     }
 }
