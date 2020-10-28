@@ -178,7 +178,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     }
 
     // The value for a ServiceBindingVariable is only read when it is used
-    private final class ServiceBindingVariable extends AbstractLibertyVariable {
+    protected final class ServiceBindingVariable extends AbstractLibertyVariable {
         final File variableFile;
         String value;
 
@@ -541,20 +541,25 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         return Collections.unmodifiableCollection(variables);
     }
 
+    public boolean removeServiceBindingVariable(File f) {
+        return removeServiceBindingVariable(getServiceBindingVariableName(f));
+    }
+
     public boolean removeServiceBindingVariable(String name) {
         LibertyVariable var = serviceBindingVariables.remove(name);
         return var == null ? false : true;
     }
 
-    public void addServiceBindingVariable(File value) {
+    public ServiceBindingVariable addServiceBindingVariable(File value) {
         ServiceBindingVariable sbv = new ServiceBindingVariable(value);
         serviceBindingVariables.put(sbv.getName(), sbv);
-
+        return sbv;
     }
 
-    public void modifyServiceBindingVariable(File f) {
+    public ServiceBindingVariable modifyServiceBindingVariable(File f) {
         ServiceBindingVariable var = new ServiceBindingVariable(f);
         serviceBindingVariables.put(var.getName(), var);
+        return var;
     }
 
     @Override
@@ -565,7 +570,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     public String getServiceBindingVariableName(File f) {
         String name = f.getName();
 
-        if ( f.getParentFile().compareTo(bindingRootDirectoryFile) == 0)
+        if (f.getParentFile().compareTo(bindingRootDirectoryFile) == 0)
             return name;
 
         return f.getParentFile().getName() + "/" + name;
