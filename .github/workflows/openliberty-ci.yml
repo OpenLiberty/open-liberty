@@ -17,7 +17,7 @@ on:
       - 'images/**'
       - 'logos/**'
 env:
-  LANG: en_US
+  LANG: en_US.UTF-8
 jobs:
   build:
     name: Build Open Liberty
