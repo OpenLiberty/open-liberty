@@ -9,14 +9,16 @@ chmod +x gradlew
 chmod 777 build.image/wlp/bin/*
 echo "org.gradle.daemon=false" >> gradle.properties
 
-FAT_ARGS=""
+# Override default LITE mode per-bucket timeout to 45m
+FAT_ARGS="-Dfattest.timeout=2700000"
 
 # If this is the special 'MODIFIED_*_MODE' job, figure out which buckets 
 # were directly modfied (if any) so they can be launched
 if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
   if [[ $CATEGORY == 'MODIFIED_FULL_MODE' ]]; then
     echo "FAT buckets in this job will run in FULL mode"
-    FAT_ARGS="-Dfat.test.mode=FULL"
+    # Give FULL mode buckets a 2h timeout each
+    FAT_ARGS="-Dfat.test.mode=FULL -Dfattest.timeout=7200000"
   fi
   git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
   echo "Modified files are:"
@@ -39,7 +41,7 @@ done
 
 # For PR type events, set the git_diff for the change detector tool so unreleated FATs do not run
 if [[ $GH_EVENT_NAME == 'pull_request' && ! $CATEGORY =~ MODIFIED_.*_MODE ]]; then
-  FAT_ARGS="-Dgit_diff=HEAD^...HEAD^2"
+  FAT_ARGS="$FAT_ARGS -Dgit_diff=HEAD^...HEAD^2"
   echo "This event is a pull request. Will run FATs with: $FAT_ARGS"
 fi
 
