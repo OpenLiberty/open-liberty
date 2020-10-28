@@ -10,9 +10,10 @@
  *******************************************************************************/
 package test.concurrent.work;
 
-/**
- * A mock work manager interface
- */
-public interface WorkManager {
-    public WorkItem schedule(Work work) throws WorkRejectedException;
+public class WorkRejectedException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    public WorkRejectedException(Throwable cause) {
+        super(cause);
+    }
 }

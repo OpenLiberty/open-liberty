@@ -9,16 +9,31 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <featureManager>
-        <feature>componenttest-1.0</feature>
-        <feature>jndi-1.0</feature>
-        <!--<feature>osgiconsole-1.0</feature>-->
-        <feature>servlet-4.0</feature>
-        <feature>usr:workManager-1.0</feature>
-    </featureManager>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <!--<feature>osgiconsole-1.0</feature>-->
+    <feature>servlet-4.0</feature>
+    <feature>usr:workManager-1.0</feature>
+  </featureManager>
 
-    <include location="../fatTestPorts.xml"/>
+  <include location="../fatTestPorts.xml"/>
 
-    <managedExecutorService jndiName="wm/executor"/>
-    <managedScheduledExecutorService jndiName="wm/scheduledExecutor"/>
+  <managedExecutorService jndiName="wm/executor">
+    <concurrencyPolicy max="1" maxQueueSize="2"/>
+    <contextService>
+      <classloaderContext/>
+    </contextService>
+  </managedExecutorService>
+
+  <managedScheduledExecutorService jndiName="wm/scheduledExecutor">
+    <concurrencyPolicy max="2" maxQueueSize="1"/>
+    <contextService>
+      <classloaderContext/>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedScheduledExecutorService>
+
+  <javaPermission codebase="${server.config.dir}/dropins/WorkTestApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
 </server>
