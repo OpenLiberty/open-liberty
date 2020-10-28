@@ -38,6 +38,13 @@
  	      <load-on-startup>1</load-on-startup>
     </servlet>
     
+   <servlet>
+        <servlet-name>URIOverlappingServlet</servlet-name>
+ 	      <servlet-class>basic.war.servlet.URIOverlappingServlet</servlet-class>
+ 	      <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    
     <filter> 
        <filter-name>UpgradeFilter</filter-name>
        <filter-class>basic.war.UpgradeFilter</filter-class>
