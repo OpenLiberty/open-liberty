@@ -15,5 +15,13 @@
             <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
             </package>
         </packages>
+        <classes>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
+                <methods>
+                    <!-- Unreliable in 2.x TCK and covered in 3.0 TCK -->
+                    <exclude name="testNoRetriesWithoutRetryOn"/>
+                </methods>
+            </class>
+        </classes>
     </test>
 </suite>
