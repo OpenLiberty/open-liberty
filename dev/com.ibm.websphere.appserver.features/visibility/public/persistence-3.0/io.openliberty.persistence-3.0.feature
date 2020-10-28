@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.jpa-3.0
+symbolicName=io.openliberty.persistence-3.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: uninstall, \
@@ -221,11 +221,12 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
  org.eclipse.persistence.transaction.was; type="third-party", \
  org.eclipse.persistence.transaction; type="third-party", \
  org.eclipse.persistence; type="third-party"
-IBM-ShortName: jpa-3.0
+IBM-ShortName: persistence-3.0
+IBM-AlsoKnownAs: jpa-3.0
 Subsystem-Name: Jakarta Persistence API 3.0
 -features=com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
- io.openliberty.jpaContainer-3.0,\
+ io.openliberty.persistenceContainer-3.0,\
  io.openliberty.jakarta.persistence-3.0
 -bundles=com.ibm.websphere.appserver.thirdparty.eclipselink.3.0; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:3.0.0", \
  com.ibm.ws.jpa.container.eclipselink.jakarta

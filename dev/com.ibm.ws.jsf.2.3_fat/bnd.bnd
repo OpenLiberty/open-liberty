@@ -21,7 +21,7 @@ tested.features: \
  beanvalidation-3.0,\
  jaxb-3.0,\
  jpacontainer-3.0,\
- jpa-3.0
+ persistence-3.0
 
 
 src: \

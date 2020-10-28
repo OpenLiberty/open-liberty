@@ -14,7 +14,7 @@ Subsystem-Name: Jakarta EE Application Client
   io.openliberty.jakartaeePlatform-9.0, \
   io.openliberty.jakarta.jndiClient-2.0, \
   io.openliberty.jaxb-3.0, \
-  io.openliberty.jpa-3.0, \
+  io.openliberty.persistence-3.0, \
   io.openliberty.jsonb-2.0, \
   io.openliberty.jsonp-2.0, \
   io.openliberty.mail-2.0, \
