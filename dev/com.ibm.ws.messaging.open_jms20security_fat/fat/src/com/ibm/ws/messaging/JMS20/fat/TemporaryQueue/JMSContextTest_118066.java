@@ -21,9 +21,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -31,7 +32,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@Ignore //Porting from closed liberty not completed
 @RunWith(FATRunner.class)
 public class JMSContextTest_118066 {
 
@@ -97,6 +97,7 @@ public class JMSContextTest_118066 {
 
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
+        TestUtils.addDropinsWebApp(server, "TemporaryQueue", "web");
         server.startServer("JMSContextTest_118066_Client.log");
         String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", waitFor);
@@ -162,12 +163,16 @@ public class JMSContextTest_118066 {
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping server");
+            System.out.println("Stopping client server");
             server.stopServer();
-            server1.stopServer();
-
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("Stopping engine server");
+            server1.stopServer();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
