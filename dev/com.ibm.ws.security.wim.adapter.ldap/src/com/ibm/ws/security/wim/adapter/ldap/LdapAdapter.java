@@ -1467,8 +1467,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     while (groups.hasMore()) {
                         if (entity != null) {
                             String groupDN = String.valueOf(groups.next());
-                            LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
-                            createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            if (LdapHelper.isUnderBases(groupDN, bases)) {
+                                LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
+                                createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            }
                         }
                     }
                 } catch (NamingException e) {
