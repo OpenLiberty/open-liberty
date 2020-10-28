@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpRestClient-2.0
+symbolicName=com.ibm.websphere.appserver.mpRestClient-2.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -18,7 +18,7 @@ Subsystem-Name: MicroProfile Rest Client 2.0
  com.ibm.websphere.appserver.jaxrsClient-2.1, \
  com.ibm.websphere.appserver.jsonp-1.1, \
  com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
- io.openliberty.mpConfig-2.0
+ com.ibm.websphere.appserver.mpConfig-2.0
 -bundles=com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3; apiJar=false; location:="lib/"
 kind=beta
 edition=core
