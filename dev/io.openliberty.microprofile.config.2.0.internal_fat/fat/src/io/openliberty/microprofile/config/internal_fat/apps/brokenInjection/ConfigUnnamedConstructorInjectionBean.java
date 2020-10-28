@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.badobserver;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@Dependent
-public class BadObserverBean {
+@RequestScoped
+public class ConfigUnnamedConstructorInjectionBean {
 
+    private String SIMPLE_KEY4 = null;
+
+    //this will fail
     @Inject
-    @ConfigProperty(defaultValue = "hello")
-    String property;
-
-    public void dummyTest() {
-        throw new RuntimeException("This test should not have been run");
+    public ConfigUnnamedConstructorInjectionBean(@ConfigProperty String SIMPLE_KEY4) {
+        this.SIMPLE_KEY4 = SIMPLE_KEY4;
     }
+
+    public String getSIMPLE_KEY4() {
+        return SIMPLE_KEY4;
+    }
+
 }

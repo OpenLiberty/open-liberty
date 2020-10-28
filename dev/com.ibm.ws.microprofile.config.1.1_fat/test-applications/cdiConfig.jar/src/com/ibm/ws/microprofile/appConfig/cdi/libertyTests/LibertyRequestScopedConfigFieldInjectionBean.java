@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.badobserver;
+package com.ibm.ws.microprofile.appConfig.cdi.libertyTests;
 
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
 
-import componenttest.app.FATServlet;
-
-/**
- *
- */
-@WebServlet("/")
-public class BadObserverServlet extends FATServlet {
-
-    @Inject
-    BadObserverBean bean;
-
-    public void dummyTest() {
-        bean.dummyTest();
-    }
-}
+@RequestScoped
+public class LibertyRequestScopedConfigFieldInjectionBean extends LibertyConfigFieldInjectionBean {}

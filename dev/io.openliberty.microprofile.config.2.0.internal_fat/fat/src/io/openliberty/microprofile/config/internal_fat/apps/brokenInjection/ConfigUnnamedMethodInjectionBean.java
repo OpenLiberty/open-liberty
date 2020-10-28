@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,31 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.characterInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
 
-import org.junit.Test;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import componenttest.app.FATServlet;
+@RequestScoped
+public class ConfigUnnamedMethodInjectionBean {
 
-/**
- *
- */
-@WebServlet("/")
-public class CharacterInjectionServlet extends FATServlet {
+    private String SIMPLE_KEY6 = null;
 
+    //this will fail
     @Inject
-    CharacterInjectionBean bean;
-
-    @Test
-    public void characterInjectionTest() {
-        bean.characterInjectionTest();
+    public void setSimpleKey6(@ConfigProperty String SIMPLE_KEY6) {
+        this.SIMPLE_KEY6 = SIMPLE_KEY6;
     }
 
-    @Test
-    public void charInjectionTest() {
-        bean.charInjectionTest();
+    public String getSIMPLE_KEY6() {
+        return SIMPLE_KEY6;
     }
+
 }
