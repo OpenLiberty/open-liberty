@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
-import java.security.PublicKey;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,14 +25,18 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever.JwkKeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 public class JWKSet {
     private static final TraceComponent tc = Tr.register(JWKSet.class);
 
+    @Sensitive
     private Map<String, Map<String, JWK>> pemJwksBySetId = Collections.synchronizedMap(new HashMap<String, Map<String, JWK>>());
 
+    @Sensitive
     private Map<String, Set<JWK>> jwksBySetId = Collections.synchronizedMap(new HashMap<String, Set<JWK>>());
 
     private final long Stale = 10 * 60 * 1000; //10 minutes
@@ -41,11 +45,12 @@ public class JWKSet {
 
     }
 
+    @Sensitive
     public List<JWK> getJWKs() {
         return null;// jwks;
     }
 
-    synchronized void removeStaleEntries(Collection<JWK> collection) {
+    synchronized void removeStaleEntries(@Sensitive Collection<JWK> collection) {
         long current = (new Date()).getTime();
         List<JWK> jwksToBeRemoved = new ArrayList<JWK>();
         Iterator<JWK> it = collection.iterator();
@@ -63,7 +68,7 @@ public class JWKSet {
         }
     }
 
-    synchronized void removeStalePemEntries(Map<String, JWK> pemsForLocation) {
+    synchronized void removeStalePemEntries(@Sensitive Map<String, JWK> pemsForLocation) {
         long currentTime = (new Date()).getTime();
         List<String> pemJwksToRemove = new ArrayList<String>();
         for (Entry<String, JWK> entry : pemsForLocation.entrySet()) {
@@ -77,7 +82,8 @@ public class JWKSet {
         }
     }
 
-    private JSONWebKey getJWKByKidInCollection(String kid, Collection<JWK> jwkCollection) {
+    @Sensitive
+    private JSONWebKey getJWKByKidInCollection(String kid, @Sensitive Collection<JWK> jwkCollection) {
         if (kid == null) {
             if (jwkCollection.size() == 1) {
                 // If kid is not included in token, and if the subset of keys contains one key, then return the single key
@@ -99,7 +105,8 @@ public class JWKSet {
         return null;
     }
 
-    private JSONWebKey getJWKByx5tInCollection(String x5t, Collection<JWK> jwkCollection) {
+    @Sensitive
+    private JSONWebKey getJWKByx5tInCollection(String x5t, @Sensitive Collection<JWK> jwkCollection) {
         Iterator<JWK> it = jwkCollection.iterator();
         JSONWebKey jwk = null;
         while (it.hasNext()) {
@@ -111,7 +118,8 @@ public class JWKSet {
         return null;
     }
 
-    private JSONWebKey getJWKByUseInCollection(String use, Collection<JWK> jwkCollection) {
+    @Sensitive
+    private JSONWebKey getJWKByUseInCollection(String use, @Sensitive Collection<JWK> jwkCollection) {
         if (use == null) {
             return null;
         }
@@ -134,7 +142,8 @@ public class JWKSet {
         return key;
     }
 
-    private JSONWebKey getPEMKey(String location, String keyTextOrKid) {
+    @Sensitive
+    private JSONWebKey getPEMKey(@Sensitive String location, @Sensitive String keyTextOrKid) {
         if (keyTextOrKid == null) {
             return null;
         }
@@ -148,68 +157,103 @@ public class JWKSet {
         return null;
     }
 
-    public PublicKey getPublicKeyBySetId(String setId) {
-        PublicKey publicKey = null;
-        Set<JWK> jwks = jwksBySetId.get(setId);
-
-        if (jwks != null && jwks.size() == 1) {
-            JSONWebKey jwk = jwks.iterator().next();
-            publicKey = jwk.getPublicKey();
+    @Sensitive
+    public Key getKeyBySetId(@Sensitive String setId, JwkKeyType keyType) {
+        Key key = null;
+        JSONWebKey jwk = getJsonWebKeyBySetId(setId);
+        if (jwk != null) {
+            key = getKeyForJwkKeyType(jwk, keyType);
         }
-
-        return publicKey;
+        return key;
     }
 
-    public PublicKey getPublicKeyBySetIdAndKid(String setId, String kid) {
-        PublicKey publicKey = null;
-        Set<JWK> jwks = jwksBySetId.get(setId);
-
-        if (jwks != null) {
-            JSONWebKey jwk = getJWKByKidInCollection(kid, jwks);
-            if (jwk != null) {
-                publicKey = jwk.getPublicKey();
-            }
+    @Sensitive
+    public Key getKeyBySetIdAndKid(@Sensitive String setId, String kid, JwkKeyType keyType) {
+        Key key = null;
+        JSONWebKey jwk = getJsonWebKeyBySetIdAndKid(setId, kid);
+        if (jwk != null) {
+            key = getKeyForJwkKeyType(jwk, keyType);
         }
-
-        return publicKey;
+        return key;
     }
 
-    public PublicKey getPublicKeyBySetIdAndx5t(String setId, String x5t) {
-        PublicKey publicKey = null;
-        Set<JWK> jwks = jwksBySetId.get(setId);
-
-        if (jwks != null) {
-            JSONWebKey jwk = getJWKByx5tInCollection(x5t, jwks);
-            if (jwk != null) {
-                publicKey = jwk.getPublicKey();
-            }
+    @Sensitive
+    public Key getKeyBySetIdAndx5t(@Sensitive String setId, String x5t, JwkKeyType keyType) {
+        Key key = null;
+        JSONWebKey jwk = getJsonWebKeyBySetIdAndx5t(setId, x5t);
+        if (jwk != null) {
+            key = getKeyForJwkKeyType(jwk, keyType);
         }
-
-        return publicKey;
+        return key;
     }
 
-    public PublicKey getPublicKeyBySetIdAndUse(String setId, String use) {
-        PublicKey publicKey = null;
-        Set<JWK> jwks = jwksBySetId.get(setId);
-        if (jwks != null) {
-            JSONWebKey jwk = getJWKByUseInCollection(use, jwks);
-            if (jwk != null) {
-                publicKey = jwk.getPublicKey();
-            }
+    @Sensitive
+    public Key getKeyBySetIdAndUse(@Sensitive String setId, String use, JwkKeyType keyType) {
+        Key key = null;
+        JSONWebKey jwk = getJsonWebKeyBySetIdAndUse(setId, use);
+        if (jwk != null) {
+            key = getKeyForJwkKeyType(jwk, keyType);
         }
-        return publicKey;
+        return key;
     }
 
-    public PublicKey getPublicKeyBySetIdAndKeyText(String setId, String keyText) {
-        PublicKey publicKey = null;
+    @Sensitive
+    public Key getKeyBySetIdAndKeyText(@Sensitive String setId, @Sensitive String keyText, JwkKeyType keyType) {
+        Key key = null;
         JSONWebKey jwk = getPEMKey(setId, keyText);
         if (jwk != null) {
-            publicKey = jwk.getPublicKey();
+            key = getKeyForJwkKeyType(jwk, keyType);
         }
-        return publicKey;
+        return key;
     }
 
-    public void add(String setId, JWK jwk) {
+    @Sensitive
+    JSONWebKey getJsonWebKeyBySetId(@Sensitive String setId) {
+        Set<JWK> jwks = jwksBySetId.get(setId);
+        if (jwks != null && jwks.size() == 1) {
+            return jwks.iterator().next();
+        }
+        return null;
+    }
+
+    @Sensitive
+    JSONWebKey getJsonWebKeyBySetIdAndKid(@Sensitive String setId, String kid) {
+        JSONWebKey jwk = null;
+        Set<JWK> jwks = jwksBySetId.get(setId);
+        if (jwks != null) {
+            jwk = getJWKByKidInCollection(kid, jwks);
+        }
+        return jwk;
+    }
+
+    @Sensitive
+    JSONWebKey getJsonWebKeyBySetIdAndx5t(@Sensitive String setId, String x5t) {
+        Set<JWK> jwks = jwksBySetId.get(setId);
+        if (jwks != null) {
+            return getJWKByx5tInCollection(x5t, jwks);
+        }
+        return null;
+    }
+
+    @Sensitive
+    JSONWebKey getJsonWebKeyBySetIdAndUse(@Sensitive String setId, String use) {
+        Set<JWK> jwks = jwksBySetId.get(setId);
+        if (jwks != null) {
+            return getJWKByUseInCollection(use, jwks);
+        }
+        return null;
+    }
+
+    @Sensitive
+    private Key getKeyForJwkKeyType(@Sensitive JSONWebKey jwk, JwkKeyType keyType) {
+        if (keyType == JwkKeyType.PRIVATE) {
+            return jwk.getPrivateKey();
+        } else {
+            return jwk.getPublicKey();
+        }
+    }
+
+    public void add(@Sensitive String setId, @Sensitive JWK jwk) {
         if (jwksBySetId.containsKey(setId) == false) {
             jwksBySetId.put(setId, Collections.synchronizedSet(new HashSet<JWK>()));
         } else {
@@ -218,7 +262,7 @@ public class JWKSet {
         jwksBySetId.get(setId).add(jwk);
     }
 
-    public void addPemKey(String location, String keyTextOrKid, JWK jwk) {
+    public void addPemKey(@Sensitive String location, @Sensitive String keyTextOrKid, @Sensitive JWK jwk) {
         if (location == null) {
             location = keyTextOrKid;
         }
