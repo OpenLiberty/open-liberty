@@ -413,7 +413,8 @@ public class ChangeDetector2 {
         if (fPath == null)
             return FileType.UNKNOWN;
 
-        if (fPath.contains("dependabot"))
+        if (fPath.contains("dependabot") ||
+            fPath.startsWith(".github/test-categories/"))
             return FileType.UNIT_BVT_TEST;
 
         if (!fPath.startsWith("dev/"))
