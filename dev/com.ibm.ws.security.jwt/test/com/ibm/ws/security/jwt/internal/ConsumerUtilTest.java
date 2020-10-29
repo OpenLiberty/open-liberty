@@ -98,6 +98,7 @@ public class ConsumerUtilTest {
     private static final String MSG_JWT_CONSUMER_MALFORMED_CLAIM = "CWWKS6043E";
     private static final String MSG_JWT_IAT_AFTER_CURRENT_TIME = "CWWKS6044E";
     private static final String MSG_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
+    private static final String MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS = "CWWKS6063E";
 
     private static final String JOSE_EXCEPTION = "org.jose4j.lang.JoseException";
     private static final String PARSE_EXCEPTION = "org.jose4j.json.internal.json_simple.parser.ParseException";
@@ -576,18 +577,20 @@ public class ConsumerUtilTest {
     public void testParseJwtWithoutValidation_singlePartTokenString() {
         try {
             final String tokenString = "test";
+            final String configId = testName.getMethodName();
             try {
                 mockery.checking(new Expectations() {
                     {
-                        one(jwtConfig).getClockSkew();
-                        will(returnValue(0L));
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
+                        one(jwtConfig).getId();
+                        will(returnValue(configId));
                     }
                 });
                 JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
-                // TODO - anything we can wrap this open source exception with?
-                validateException(e, JOSE_EXCEPTION + ".+" + INVALID_COMPACT_SERIALIZATION + ".+" + tokenString);
+                validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -601,18 +604,20 @@ public class ConsumerUtilTest {
     public void testParseJwtWithoutValidation_twoPartTokenString() {
         try {
             final String tokenString = "test.test";
+            final String configId = testName.getMethodName();
             try {
                 mockery.checking(new Expectations() {
                     {
-                        one(jwtConfig).getClockSkew();
-                        will(returnValue(0L));
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
+                        one(jwtConfig).getId();
+                        will(returnValue(configId));
                     }
                 });
                 JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
-                // TODO - anything we can wrap this open source exception with?
-                validateException(e, JOSE_EXCEPTION + ".+" + INVALID_COMPACT_SERIALIZATION + ".+" + tokenString);
+                validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -629,6 +634,8 @@ public class ConsumerUtilTest {
             try {
                 mockery.checking(new Expectations() {
                     {
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
                         one(jwtConfig).getClockSkew();
                         will(returnValue(0L));
                     }

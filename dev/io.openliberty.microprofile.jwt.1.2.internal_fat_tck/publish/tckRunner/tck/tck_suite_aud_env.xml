@@ -28,7 +28,6 @@
              
               <!-- MP JWT 1.1 that need audiences set. They contain a key but do not define mp.jwt.verify.publickey.location or issuer. 
                    Passes if key and issuer are overridden with server.env.  -->  
-              
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ClaimValueInjectionTest" />
 	          <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.JsonValueInjectionTest" />            
 	          <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ProviderInjectionTest" />
@@ -39,13 +38,10 @@
  			  <!-- MP JWT 1.2 JAXRS tests   --> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.PrincipalInjectionTest" /> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ApplicationScopedInjectionTest" />
-             
-              
-              <!--  MP JWT 1.2 JAXRS JWE tests  - Need to enable when JWE support is delivered
-              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedEncryptTest" />
+
+              <!--  MP JWT 1.2 JAXRS JWE tests -->
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedSignEncryptTest" />
-              -->
-             
+
         </classes>
     </test>
 
