@@ -1,13 +1,8 @@
 # Params:
-# FAT_BUCKETS: a comma separate list of fat bucket names
 # CATEGORY:    the category name (e.g. CDI_1)
 # GH_EVENT_NAME: the event triggering this workflow. Will be 'pull_request' if a PR triggered it
 
 set +e
-cd dev
-chmod +x gradlew
-chmod 777 build.image/wlp/bin/*
-echo "org.gradle.daemon=false" >> gradle.properties
 
 # Override default LITE mode per-bucket timeout to 45m
 FAT_ARGS="-Dfattest.timeout=2700000"
@@ -28,13 +23,20 @@ if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
     echo "No FATs were directly modfied. Skipping this job."
     exit 0
   fi
+else
+  # This is a regular category defined in .github/test-categories/
+  if [[ ! -f .github/test-categories/$CATEGORY ]]; then
+    echo "::error::Test category [$CATEGORY] does not exist. A file containing a list of FAT buckets was not found at .github/test-categories/$CATEGORY";
+    exit 1;
+  fi
+  FAT_BUCKETS=$(cat .github/test-categories/$CATEGORY)
 fi
 
 echo "Will be running buckets $FAT_BUCKETS"
 for FAT_BUCKET in $FAT_BUCKETS
 do
-  if [[ ! -d "$FAT_BUCKET" ]]; then
-    echo "::error::Bucket $FAT_BUCKET does not exist.";
+  if [[ ! -d "dev/$FAT_BUCKET" ]]; then
+    echo "::error::FAT bucket [$FAT_BUCKET] does not exist.";
     exit 1;
   fi
 done
@@ -51,6 +53,11 @@ echo "\n## Ant version:"
 ant -version
 echo "\n## Java version:"
 java -version
+
+cd dev
+chmod +x gradlew
+chmod 777 build.image/wlp/bin/*
+echo "org.gradle.daemon=false" >> gradle.properties
   
 ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
 for FAT_BUCKET in $FAT_BUCKETS

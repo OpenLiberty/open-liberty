@@ -1,0 +1,5 @@
+com.ibm.ws.microprofile.reactive.messaging_fat
+com.ibm.ws.microprofile.reactive.messaging_fat_tck
+com.ibm.ws.microprofile.reactive.messaging_git_fat_tck
+com.ibm.ws.microprofile.reactive.streams.operators_fat
+com.ibm.ws.microprofile.reactive.streams.operators_fat_tck
