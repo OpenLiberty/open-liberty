@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.common.jwk.impl;
@@ -30,6 +30,7 @@ import org.jose4j.lang.JoseException;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
@@ -115,7 +116,7 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
     }
 
     // alg, use, publicKey, privateKey
-    public static Jose4jRsaJWK getInstance(String alg, String use, PublicKey publicKey, PrivateKey privateKey, String kid) {
+    public static Jose4jRsaJWK getInstance(String alg, String use, PublicKey publicKey, @Sensitive PrivateKey privateKey, String kid) {
 
         //String kid = RandomUtils.getRandomAlphaNumeric(KID_LENGTH);
         RSAPublicKey pubKey = (RSAPublicKey) publicKey;
