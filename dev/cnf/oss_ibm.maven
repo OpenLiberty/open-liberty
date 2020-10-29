@@ -95,7 +95,7 @@ org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.cxf:cxf-core:3.4.1-20201002
 org.apache.cxf:cxf-rt-frontend-jaxrs:3.4.1-20201006
 org.apache.cxf:cxf-rt-rs-client:3.4.1-20201002
-org.apache.cxf:cxf-rt-rs-mp-client:3.4.1-20201002
+org.apache.cxf:cxf-rt-rs-mp-client:3.4.1-20201029
 org.apache.cxf:cxf-rt-transports-http:3.4.1-20201002
 org.apache.cxf:cxf-rt-ws-mex:2.6.2-ibm-s20180529-1900
 org.apache.cxf:cxf-rt-ws-security:2.6.2-ibm-s20180529-1900
