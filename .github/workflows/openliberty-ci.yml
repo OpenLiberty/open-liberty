@@ -28,6 +28,11 @@ jobs:
       test-java: ${{ steps.gen-params.outputs.test-java }}
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Validate copyright headers
+      if: "github.event_name == 'pull_request'"
+      run: .github/workflow-scripts/validate-copyright-headers.sh
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
