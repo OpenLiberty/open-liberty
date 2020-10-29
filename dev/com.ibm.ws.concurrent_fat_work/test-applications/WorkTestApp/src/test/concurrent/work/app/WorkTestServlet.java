@@ -426,7 +426,11 @@ public class WorkTestServlet extends FATServlet {
         assertEquals(3, workStarted.awaitAdvanceInterruptibly(2, TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         Work w;
-        for (long start = System.nanoTime(); (w = blockedItem1.getResult()) == null && System.nanoTime() - start < TIMEOUT_NS; )
+        for (long start = System.nanoTime();
+                ((w = blockedItem1.getResult()) == null ||
+                 blockingItem1.getResult() == null ||
+                 blockingItem2.getResult() == null)
+                && System.nanoTime() - start < TIMEOUT_NS; )
             Thread.sleep(POLL_INTERVAL);
         assertEquals(blockedWork, w);
         assertEquals(blockingWork, blockingItem1.getResult());
