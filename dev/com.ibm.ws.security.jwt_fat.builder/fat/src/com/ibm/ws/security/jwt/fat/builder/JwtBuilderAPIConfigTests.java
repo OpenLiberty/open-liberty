@@ -2244,7 +2244,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
-        expectations.addExpectation(new ServerMessageExpectation(builderServer, "ECPublicKey", "Message log did not contain an error indicating that an EC public key can not be encrypted.")); // String may not be in msgs on all platforms
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "InvalidKeyException", "Message log did not contain an error indicating that an EC public key can not be encrypted."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
