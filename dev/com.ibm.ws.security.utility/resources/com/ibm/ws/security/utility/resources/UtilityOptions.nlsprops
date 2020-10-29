@@ -258,6 +258,11 @@ tlsProfiler.required-key.host=\
 \ \ \ \ --host
 tlsProfiler.required-desc.host=\
 \tSpecify the host.
+tlsProfiler.option-key.file=\
+\ \ \ \ --file
+tlsProfiler.option-desc.file=\
+\tOptional. The result will be written to the file specified \n\
+\tinstead of the console screen.
 tlsProfiler.option-key.verbose=\
 \ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\
