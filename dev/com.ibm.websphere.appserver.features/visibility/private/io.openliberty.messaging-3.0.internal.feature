@@ -11,3 +11,4 @@ IBM-API-Package: jakarta.jms; version="3.0"; type="spec"
 -bundles=com.ibm.ws.messaging.jmsspec.common.jakarta
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

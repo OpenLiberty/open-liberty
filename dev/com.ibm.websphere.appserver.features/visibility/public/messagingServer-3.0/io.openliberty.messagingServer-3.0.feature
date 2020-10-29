@@ -20,3 +20,4 @@ Subsystem-Name: Message Server 3.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
 kind=noship
 edition=full
+WLP-Activation-Type: parallel
