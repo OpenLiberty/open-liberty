@@ -224,7 +224,10 @@ public class JwKRetriever {
         if (keyText != null) {
             return jwkSet.getKeyBySetIdAndKeyText(setId, keyText, keyType);
         }
-        return jwkSet.getKeyBySetId(setId, keyType);
+        if (kid == null) {
+            return jwkSet.getKeyBySetId(setId, keyType);
+        }
+        return key;
     }
 
     protected boolean remoteHttpCall(String jwksUri, @Sensitive String keyText, @Sensitive String keyLocation) {

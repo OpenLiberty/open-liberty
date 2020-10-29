@@ -345,12 +345,24 @@ public class ConsumerUtil {
             String errorMsg = Tr.formatMessage(tc, "JWT_CONSUMER_NULL_OR_EMPTY_STRING", new Object[] { config.getId(), jwtString });
             throw new InvalidTokenException(errorMsg);
         }
+        checkJwtFormatAgainstConfigRequirements(jwtString, config);
         if (JweHelper.isJwe(jwtString)) {
             jwtString = JweHelper.extractJwsFromJweToken(jwtString, config, mpConfigProps);
         }
         JwtConsumerBuilder builder = initializeJwtConsumerBuilderWithoutValidation(config);
         JwtConsumer firstPassJwtConsumer = builder.build();
         return firstPassJwtConsumer.process(jwtString);
+    }
+
+    void checkJwtFormatAgainstConfigRequirements(String jwtString, JwtConsumerConfig config) throws InvalidTokenException {
+        if (JweHelper.isJwsRequired(config, mpConfigProps) && !JweHelper.isJws(jwtString)) {
+            String errorMsg = Tr.formatMessage(tc, "JWS_REQUIRED_BUT_TOKEN_NOT_JWS", new Object[] { config.getId() });
+            throw new InvalidTokenException(errorMsg);
+        }
+        if (JweHelper.isJweRequired(config, mpConfigProps) && !JweHelper.isJwe(jwtString)) {
+            String errorMsg = Tr.formatMessage(tc, "JWE_REQUIRED_BUT_TOKEN_NOT_JWE", new Object[] { config.getId() });
+            throw new InvalidTokenException(errorMsg);
+        }
     }
 
     protected JwtContext parseJwtWithValidation(String jwtString, JwtContext jwtContext, JwtConsumerConfig config,
