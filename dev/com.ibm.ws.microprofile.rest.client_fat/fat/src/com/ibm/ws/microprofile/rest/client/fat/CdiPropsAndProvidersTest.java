@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -25,12 +26,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpRestClient11.cdiPropsAndProviders.CdiPropsAndProvidersClient;
 import mpRestClient11.cdiPropsAndProviders.CdiPropsAndProvidersTestServlet;
+import mpRestClient11.cdiPropsAndProviders.UnusedBeanWithMPRestClient;
+import mpRestClient11.cdiPropsAndProviders.UnusedClient;
 
 @RunWith(FATRunner.class)
 public class CdiPropsAndProvidersTest extends FATServletClient {
@@ -68,6 +70,9 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
             assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
             assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",
                          1, requestScopedIntfMsgs.size());
+            String requestScopedIntfMsg = requestScopedIntfMsgs.get(0);
+            assertTrue("Did not find expected @Dependent interface injected into @RequestScoped bean in CWWKW0750I message: " + requestScopedIntfMsg,
+                       requestScopedIntfMsg.contains(UnusedClient.class.getName() + "(" + UnusedBeanWithMPRestClient.class.getName() + ")"));
         } finally {
             server.stopServer();
             remoteAppServer.stopServer();

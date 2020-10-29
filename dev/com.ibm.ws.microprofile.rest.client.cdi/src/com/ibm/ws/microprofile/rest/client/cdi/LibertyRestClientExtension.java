@@ -12,12 +12,14 @@ package com.ibm.ws.microprofile.rest.client.cdi;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -25,8 +27,10 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.apache.cxf.microprofile.client.cdi.RestClientBean;
@@ -48,7 +52,9 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
 
     private final Map<ClassLoader, Set<Class<?>>> restClientClasses = new WeakHashMap<>();
     private final Set<Throwable> errors = new LinkedHashSet<>();
-    private final Set<Class<?>> requestScopedInterfaces = new LinkedHashSet<>();
+    private final Set<String> requestScopedInterfaces = new LinkedHashSet<>();
+    private final Set<InjectionPoint> requestScopedClientInjectionPoints = new LinkedHashSet<>();
+    private final Set<RestClientBean> allClientBeans = new LinkedHashSet<>();
 
     private static ClassLoader getContextClassLoader() {
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
@@ -88,32 +94,60 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Registering RestClients from classloader: " + tccl, classes);
             }
-            classes.stream().map(c -> new RestClientBean(c, beanManager)).forEach(afterBeanDiscovery::addBean);
+            classes.stream().map(c -> new RestClientBean(c, beanManager)).forEach(bean -> {
+                afterBeanDiscovery.addBean(bean);
+                allClientBeans.add(bean);
+            });
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Attempting to register RestClient for unknown app classloader: " + tccl);
         }
     }
 
-    public void registerErrors(@Observes AfterDeploymentValidation afterDeploymentValidation) {
+    public void registerErrors(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager beanManager) {
         errors.forEach(afterDeploymentValidation::addDeploymentProblem);
-        if (!requestScopedInterfaces.isEmpty()) {
-            
-            Tr.info(tc, "rest.client.interface.using.request.scope", 
-                    requestScopedInterfaces.stream().map(c -> c.getName()).collect(Collectors.joining(" ")));
+        try {
+            for (InjectionPoint point : requestScopedClientInjectionPoints) {
+                for (Bean<?> clientIntfBean : allClientBeans) {
+                    if (clientIntfBean.getBeanClass().equals(point.getType()) &&
+                        Dependent.class.isAssignableFrom(clientIntfBean.getScope())) {
+                        Class<?> clientClass = clientIntfBean.getBeanClass();
+                        requestScopedInterfaces.add(clientClass.getName() + "(" + point.getBean().getBeanClass().getName() + ")");
+                    }
+                }
+            }
+            if (!requestScopedInterfaces.isEmpty() || !requestScopedClientInjectionPoints.isEmpty()) {
+                Tr.info(tc, "rest.client.interface.using.request.scope", 
+                        requestScopedInterfaces.stream().collect(Collectors.joining(" ")));
+            }
+        } finally {
+            allClientBeans.clear();
+            requestScopedClientInjectionPoints.clear();
+            requestScopedInterfaces.clear();
         }
-        
     }
 
+    @SuppressWarnings("unchecked")
     public void logRequestScopedClientInterfaces(@Observes ProcessBean<?> processBean) {
         Bean<?> bean = processBean.getBean();
         ClassLoader tccl = getContextClassLoader();
         Set<Class<?>> classes;
         synchronized(restClientClasses) {
-            classes = restClientClasses.get(tccl);
+            classes = restClientClasses.getOrDefault(tccl, Collections.EMPTY_SET);
         }
         Class<?> beanClass = bean.getBeanClass();
-        if (classes.contains(beanClass) && RequestScoped.class.isAssignableFrom(bean.getScope())) {
-            requestScopedInterfaces.add(beanClass);
+        if (classes.contains(beanClass)) {
+            Class<?> beanScope = bean.getScope();
+            if (RequestScoped.class.isAssignableFrom(beanScope)) {
+                requestScopedInterfaces.add(beanClass.getName());
+            }
+        }
+    }
+    
+    public void logDependentScopedInterfacesInjectedIntoRequestScopedBeans(@Observes ProcessInjectionPoint<?, ?> pip) {
+        InjectionPoint point = pip.getInjectionPoint();
+        Bean<?> bean = point.getBean();
+        if (bean != null && RequestScoped.class.isAssignableFrom(bean.getScope())) {
+            requestScopedClientInjectionPoints.add(point);
         }
     }
 }
