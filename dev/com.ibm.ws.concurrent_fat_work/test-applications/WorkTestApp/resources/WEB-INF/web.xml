@@ -9,5 +9,16 @@
     <res-type>test.concurrent.work.WorkManager</res-type>
     <lookup-name>wm/scheduledExecutor</lookup-name>
   </resource-ref>
-  
+
+  <resource-ref>
+    <res-ref-name>java:module/env/wm/executorRef</res-ref-name>
+    <res-type>test.concurrent.work.WorkManager</res-type>
+    <!-- see ibm-web-bnd.xml file for binding -->
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>wm/executor</res-ref-name>
+    <res-type>test.concurrent.work.WorkManager</res-type>
+    <!-- uses default binding -->
+  </resource-ref>
 </web-app>

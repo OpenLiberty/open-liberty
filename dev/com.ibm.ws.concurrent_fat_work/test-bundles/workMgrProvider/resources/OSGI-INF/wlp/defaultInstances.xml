@@ -10,4 +10,10 @@
  -->
 <server>
   <concurrencyService extensionProvider.component.name="test.concurrent.work.wm.WorkManagerProvider"/>
+
+  <variable name="io.openliberty.concurrency.mes.objectClasses"
+            value="java.util.concurrent.ExecutorService, javax.enterprise.concurrent.ManagedExecutorService, org.eclipse.microprofile.context.ManagedExecutor, test.concurrent.work.WorkManager"/>
+
+  <variable name="io.openliberty.concurrency.mses.objectClasses"
+            value="java.util.concurrent.ExecutorService, java.util.concurrent.ScheduledExecutorService, javax.enterprise.concurrent.ManagedExecutorService, javax.enterprise.concurrent.ManagedScheduledExecutorService, test.concurrent.work.WorkManager"/>
 </server>

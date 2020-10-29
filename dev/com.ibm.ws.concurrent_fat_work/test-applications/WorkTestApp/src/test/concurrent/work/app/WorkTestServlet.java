@@ -15,7 +15,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,6 +40,7 @@ import componenttest.app.FATServlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -66,13 +69,29 @@ public class WorkTestServlet extends FATServlet {
     @Resource(lookup = "wm/scheduledExecutor", name = "java:app/env/wm/scheduledExecutorServiceRef")
     private ScheduledExecutorService scheduledExecutorService;
 
+    @Resource(lookup = "java:comp/DefaultManagedExecutorService")
+    private WorkManager wmDefaultExecutor;
+
+    @Resource(lookup = "java:comp/DefaultManagedScheduledExecutorService")
+    private WorkManager wmDefaultScheduledExecutor;
+
     @Resource(lookup = "wm/executor", name = "java:global/env/wm/wmExecutorRef")
     private WorkManager wmExecutor;
 
     @Resource(lookup = "wm/scheduledExecutor")
     private WorkManager wmScheduledExecutor;
 
-    // Defined in web.xml: java:comp/env/wm/scheduledExecutorRef
+    @Resource(name = "wm/scheduledExecutor")
+    private WorkManager wmScheduledExecutorDefaultBinding;
+
+    // Defined in web.xml:
+    // java:comp/env/wm/executor
+    // java:module/env/wm/executorRef
+    // java:comp/env/wm/scheduledExecutorRef
+
+    // The following is not supported. This pattern only works for EE spec-defined default resources.
+    // @Resource
+    // private WorkManager workManager;
 
     /**
      * Direct lookup of a configured managedExecutorService as a WorkManager.
@@ -111,6 +130,66 @@ public class WorkTestServlet extends FATServlet {
             }
         });
         assertNotNull(result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Inject the default instance java:comp/env/DefaultManagedExecutorService as a WorkManager.
+     */
+    @Test
+    public void testInjectDefaultManagedExecutorAsWorkManager(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        assertNotNull(wmDefaultExecutor);
+        assertTrue(wmDefaultExecutor.toString(), wmDefaultExecutor instanceof ExecutorService);
+        assertTrue(wmDefaultExecutor.toString(), wmDefaultExecutor instanceof ManagedExecutorService);
+
+        // Use as both WorkManager and ManagedExecutorService
+        CountDownLatch workCompleted = new CountDownLatch(1);
+        Work work = () -> workCompleted.countDown();
+
+        Future<WorkItem> future = ((ManagedExecutorService) wmDefaultExecutor).submit(() -> {
+            return wmDefaultExecutor.schedule(work);
+        });
+
+        assertTrue(workCompleted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        WorkItem workItem = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        for (long start = System.nanoTime(); workItem.getResult() == null && System.nanoTime() - start < TIMEOUT_NS;)
+            Thread.sleep(POLL_INTERVAL);
+
+        assertEquals(work, workItem.getResult());
+    }
+
+    /**
+     * Inject the default instance java:comp/env/DefaultManagedScheduledExecutorService as a WorkManager.
+     */
+    @Test
+    public void testInjectDefaultManagedScheduledExecutorAsWorkManager(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        assertNotNull(wmDefaultScheduledExecutor);
+        assertTrue(wmDefaultScheduledExecutor.toString(), wmDefaultScheduledExecutor instanceof ScheduledExecutorService);
+        assertTrue(wmDefaultScheduledExecutor.toString(), wmDefaultScheduledExecutor instanceof ManagedScheduledExecutorService);
+
+        // Use as both WorkManager and ManagedScheduledExecutorService
+        AtomicReference<WorkManager> result = new AtomicReference<>();
+        Work work = () -> {
+            try {
+                // Requires JEE metadata context of the application:
+                result.set(InitialContext.doLookup("java:module/env/wm/executorServiceRef"));
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        Future<WorkItem> future = ((ManagedScheduledExecutorService) wmDefaultScheduledExecutor).schedule(() -> {
+            return wmDefaultScheduledExecutor.schedule(work);
+        }, 100, TimeUnit.MILLISECONDS);
+
+        WorkItem workItem = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        for (long start = System.nanoTime(); workItem.getResult() == null && System.nanoTime() - start < TIMEOUT_NS;)
+            Thread.sleep(POLL_INTERVAL);
+
+        assertEquals(work, workItem.getResult());
+        assertNotNull(result.get());
     }
 
     /**
@@ -325,6 +404,21 @@ public class WorkTestServlet extends FATServlet {
     }
 
     /**
+     * Inject a WorkManager where the resource reference specifies only the type (WorkManager) and name,
+     * from which the default binding implies the managedScheduledExecutorService instance to use.
+     */
+    @Test
+    public void testWorkManagerInjectionWithDefaultBinding(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        WorkManager wm = wmScheduledExecutorDefaultBinding;
+        assertNotNull(wm);
+        assertTrue(wm.toString(), wm instanceof ExecutorService);
+        assertTrue(wm.toString(), wm instanceof ManagedExecutorService);
+
+        // Verify we received the correct instance rather than the default one
+        assertTrue(wm.toString(), wm.toString().endsWith(" wm/scheduledExecutor"));
+    }
+
+    /**
      * Perform a lookup of a managedExecutorService using an annotatively-defined resource reference
      * that specifies the resource type as WorkManager.
      */
@@ -432,5 +526,88 @@ public class WorkTestServlet extends FATServlet {
         assertEquals(blockingWork, blockingItem1.getResult());
         assertEquals(blockingWork, blockingItem2.getResult());
         assertEquals(3, workStarted.getPhase());
+    }
+
+    /**
+     * Perform a lookup using a deployment descriptor defined resource reference that specifies the
+     * resource type as WorkManager and uses binding-name rather than lookup-name to identify the
+     * managedExecutorService instance to use.
+     */
+    @Test
+    public void testWorkManagerResourceReferenceLookupWithBindingToManagedExecutorService(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        WorkManager wm = InitialContext.doLookup("java:module/env/wm/executorRef");
+        assertNotNull(wm);
+        assertTrue(wm.toString(), wm instanceof ExecutorService);
+        assertTrue(wm.toString(), wm instanceof ManagedExecutorService);
+
+        // Verify we received the correct instance
+        assertTrue(wm.toString(), wm.toString().endsWith(" wm/executor"));
+    }
+
+    /**
+     * Perform a lookup using a deployment descriptor defined resource reference that specifies the
+     * resource type as WorkManager and relies on default bindings rather than binding-name or lookup-name
+     * to identify the managedExecutorService instance to use.
+     */
+    @Test
+    public void testWorkManagerResourceReferenceLookupWithDefaultBinding(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        WorkManager wm = InitialContext.doLookup("java:comp/env/wm/executor");
+        assertNotNull(wm);
+        assertTrue(wm.toString(), wm instanceof ExecutorService);
+        assertTrue(wm.toString(), wm instanceof ManagedExecutorService);
+
+        // Verify we received the correct instance rather than the default one
+        assertTrue(wm.toString(), wm.toString().endsWith(" wm/executor"));
+
+        LinkedBlockingQueue<String> threadNames = new LinkedBlockingQueue<>();
+        Exchanger<String> status = new Exchanger<>();
+        Work work1 = () -> {
+            try {
+                threadNames.add(Thread.currentThread().getName());
+                assertEquals("waiting for work to start", status.exchange("work started", TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertEquals("waiting for work to complete", status.exchange("work completed", TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (InterruptedException | TimeoutException x) {
+                throw new CompletionException(x);
+            }
+        };
+        WorkItem item1 = wm.schedule(work1);
+
+        // The next 2 scheduled work items should be stuck in queue:
+        Work work2 = () -> threadNames.add(Thread.currentThread().getName());
+        WorkItem item2 = wm.schedule(work2);
+
+        assertEquals("work started", status.exchange("waiting for work to start", TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        Work work3 = () -> threadNames.add(Thread.currentThread().getName());
+        WorkItem item3 = wm.schedule(work3);
+
+        // No more work should fit in the queue
+        Work work4 = () -> threadNames.add(Thread.currentThread().getName());
+        try {
+            WorkItem item4 = wm.schedule(work4);
+            fail(item4 + " exceeded the maxQueueSize of 2 if the following are null: " //
+                    + item1.getResult() + ", " + item2.getResult() + ", " + item3.getResult());
+        } catch (WorkRejectedException x) {
+            // expected
+        }
+
+        // no work should have completed yet
+        assertNull(item1.getResult());
+        assertNull(item2.getResult());
+        assertNull(item3.getResult());
+
+        assertEquals("work completed", status.exchange("waiting for work to complete", TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // all work should complete now, and should have run on the Liberty thread pool
+        String threadName;
+        assertNotNull(threadName = threadNames.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertNotNull(threadName = threadNames.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertNotNull(threadName = threadNames.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+
+        // work item 4 should not have run
+        assertNull(threadNames.poll());
     }
 }
