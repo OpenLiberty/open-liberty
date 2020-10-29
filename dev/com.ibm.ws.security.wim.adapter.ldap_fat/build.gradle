@@ -33,10 +33,12 @@ dependencies {
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 

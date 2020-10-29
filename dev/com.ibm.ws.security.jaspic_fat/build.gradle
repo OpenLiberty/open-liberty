@@ -246,8 +246,8 @@ assemble.dependsOn JASPIWrappingServlet_WAR
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:jar'
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
 autoFVT.doLast {
 
   /*

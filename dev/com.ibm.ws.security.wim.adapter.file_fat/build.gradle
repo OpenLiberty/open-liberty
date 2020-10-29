@@ -14,7 +14,7 @@ dependencies {
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.servlet')
 }
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.doLast {
   /* 
    * Copy test.file.adapter bundle to autoFVT files so that it can later be copied to Liberty root 

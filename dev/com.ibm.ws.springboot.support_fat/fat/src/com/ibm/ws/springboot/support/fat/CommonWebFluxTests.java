@@ -66,7 +66,7 @@ public class CommonWebFluxTests extends CommonWebServerTests {
         con.setDoOutput(true);
         con.setUseCaches(false);
         con.setRequestMethod("POST");
-        con.setConnectTimeout(0);
+        con.setConnectTimeout(30 * 1000); // 30s
         con.connect();
 
         OutputStream out = con.getOutputStream();
