@@ -83,16 +83,12 @@ task addRequiredLibraries(type: Copy) {
   into new File(autoFvtDir, 'lib')
 }
 
-task addJakartaTransformerRules {
+task addJakartaTransformerRules(type: Copy) {
   mustRunAfter jar
 
-  doLast{
-    copy {
-      from project(':wlp-jakartaee-transform').file('rules')
-      include 'jakarta*.properties'
-      into new File(autoFvtDir, 'autoFVT-templates')
-    }
-  }
+  from project(':wlp-jakartaee-transform').file('rules')
+  include 'jakarta*.properties'
+  into new File(autoFvtDir, 'autoFVT-templates')
 }
 
 task addJakartaTransformer(type: Copy) {
@@ -128,15 +124,15 @@ task copyDatabaseRotationDrivers(type: Copy) {
   into new File(autoFvtDir, 'lib')
 }
 
-task copyFattestDatabases {
-  mustRunAfter jar
-  
-  doLast{
-    copy {
-        from project(':fattest.databases').buildDir
-        include 'fattest*.*'
-        into new File(autoFvtDir, 'lib')
-    }
+if (findProject(':fattest.databases') != null) {
+  // Not all projects include fattest.databases, so we must conditionally define the task
+  // otherwise project(':fattest.databases') will not be found and raise an error
+  task copyFattestDatabases(type: Copy) {
+    mustRunAfter jar
+    dependsOn ':fattest.databases:assemble'
+    from new File(project(':fattest.databases').buildDir, 'libs')
+    include 'fattest.databases.jar'
+    into new File(autoFvtDir, 'lib')
   }
 }
 
@@ -257,7 +253,7 @@ task autoFVT {
     
     // By default, load up all properties with certain prefixes from System
     System.getProperties().each { k, v ->
-      if(k.startsWith("test.") || k.startsWith("fat."))
+      if(k.startsWith("test.") || k.startsWith("fat.") || k.startsWith("fattest."))
         sysProps.setProperty(k, v);
     }
     
@@ -405,8 +401,32 @@ if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
   }
 }
 
+task trySkipFat(type: JavaExec) {
+  enabled = System.getProperty('git_diff') != null
+  dependsOn autoFVT
+  dependsOn ':build.changeDetector:assemble'
+  inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
+  
+  main = 'com.ibm.ws.infra.depchain.ChangeDetector'
+  classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
+    
+  args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
+       '--git-diff', System.getProperty('git_diff', 'UNSET'),
+       '--deps', autoFvtDir.toString() + '/fat-metadata.json',
+       '--fat-name', project.name,
+       '--output', autoFvtDir.toString() + '/canSkipFat'
+       
+  doLast {
+    if (new File(autoFvtDir, 'canSkipFat').exists()) {
+      println "Disabling FAT bucket " + project.name + " from running based on modified files"
+      tasks['runfat'].enabled = false
+    }
+  }
+}
+
 task runfat(type: Exec) {
   dependsOn cleanBeforeRun
+  dependsOn trySkipFat
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
