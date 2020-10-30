@@ -14,3 +14,4 @@ Subsystem-Name: Jakarta Message Service 3.0
 -bundles=com.ibm.ws.jms20.feature
 kind=noship
 edition=full
+WLP-Activation-Type: parallel
