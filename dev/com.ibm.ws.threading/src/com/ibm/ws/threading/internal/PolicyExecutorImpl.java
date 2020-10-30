@@ -76,7 +76,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
      * maxConcurrency and maxConcurrencyConstraint, and to maxQueueSize and maxQueueSizeConstraint.
      */
-    private final Integer configLock = new Integer(0); // new instance required to avoid sharing
+    private static class ConfigLock {
+        // EMPTY
+    }
+
+    private final ConfigLock configLock = new ConfigLock(); // new instance required to avoid sharing
 
     private int expedite;
 
