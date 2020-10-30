@@ -379,7 +379,10 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         overrideCacheConfig(convert(map));
         determineCacheProvider();
         _passedInProperties.putAll(map);
-        _passedInProperties.putAll(System.getProperties());
+        Map props = System.getProperties();
+        synchronized (props) {
+            _passedInProperties.putAll(props);
+        }
 
         WsLocationAdmin locAdmin = Scheduler.getLocationAdmin();
         // allow to run outside of OSGI for Unit tests
@@ -460,7 +463,10 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         FieldInitializer.initFromSystemProperties(this);
         overrideCacheConfig(properties);
         _passedInProperties.putAll(properties);
-        _passedInProperties.putAll(System.getProperties());
+        Map props = System.getProperties();
+        synchronized (props) {
+            _passedInProperties.putAll(props);
+        }
         determineCacheProvider();
 
         if (tc.isDebugEnabled()) {
