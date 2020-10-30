@@ -82,7 +82,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 ADNestedGroupsWithRange.class,
                 JNDIOutputTest.class,
                 LDAPMemberAttributeScopeTest.class,
-                OperationalAttributeTest.class
+                OperationalAttributeTest.class,
+                LoginPropertyTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

@@ -122,8 +122,9 @@
 		            	required="false" type="String" cardinality="2147483347" />        	
 		
 		<!-- Made the plural loginProperties to loginProperty for consumability -->
-		<AD id="loginProperty" name="internal" description="internal use only"
-				required="false" type="String" default="uid"/>
+		<AD id="loginProperty" name="%ldap.loginProperty" description="%loginProperty.desc"
+		        ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.config.loginProperty"
+				required="false" type="String" cardinality="2147483647"/>
 		<!-- Made the plural ldapEntityTypes to ldapEntityType for consumability -->				
 		<AD id="ldapEntityType" name="%ldapEntityType" description="%ldapEntityType.desc"
 			  	required="false" type="String" cardinality="2147483347" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.entityType"/>
@@ -198,6 +199,15 @@
 
     <Designate factoryPid="com.ibm.ws.security.registry.ldap.config.failoverServers.server">
         <Object ocdref="com.ibm.ws.security.registry.ldap.config.failoverServers.server.metatype" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.registry.ldap.config.loginProperty.metatype" name="%ldap.loginProperty" description="%loginProperty.desc">
+        <AD id="name" name="%loginProperty" description="%loginProperty.desc"
+            required="true" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.config.loginProperty">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.config.loginProperty.metatype" />
     </Designate>
 
 

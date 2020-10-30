@@ -59,7 +59,7 @@
         <propertiesNotSupported name="homeAddress"/>
         <propertiesNotSupported name="businessAddress"/>
       </attributeConfiguration>
-      <loginProperty>uid</loginProperty>
+      <loginProperty name="uid"/>
       <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
           waitTime="3000ms" preferredSize="3"/>
       <ldapCache>

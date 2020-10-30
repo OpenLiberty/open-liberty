@@ -49,7 +49,8 @@
         <propertiesNotSupported name="homeAddress"/>
         <propertiesNotSupported name="businessAddress"/>
       </attributeConfiguration>
-      <loginProperty>mail;cn</loginProperty>
+      <loginProperty name="mail"/>
+      <loginProperty name="cn"/>
       <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
           waitTime="3000ms" preferredSize="3"/>
       <ldapCache>
