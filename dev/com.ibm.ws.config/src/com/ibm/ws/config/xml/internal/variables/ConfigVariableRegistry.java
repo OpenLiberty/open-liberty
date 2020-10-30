@@ -232,6 +232,11 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         }
     }
 
+    @Sensitive
+    public Map<String, LibertyVariable> getConfigVariables() {
+        return this.configVariables;
+    }
+
     /*
      * Override system variables.
      */

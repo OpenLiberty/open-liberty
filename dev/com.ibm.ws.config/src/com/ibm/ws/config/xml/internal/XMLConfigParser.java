@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import javax.xml.stream.Location;
@@ -32,6 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory;
@@ -645,29 +647,35 @@ public class XMLConfigParser {
     private String resolvePath(String path) {
 
         if (PathUtils.isSymbol(path)) {
-            variableRegistry.updateSystemVariables(tempVariables.getVariables());
 
-            // Look for normal variables of the form $(variableName)
-            Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(path);
+            Map<String, LibertyVariable> currentVariables = variableRegistry.getConfigVariables();
+            try {
+                variableRegistry.updateSystemVariables(tempVariables.getVariables());
 
-            while (matcher.find()) {
-                String var = matcher.group(1);
+                // Look for normal variables of the form $(variableName)
+                Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(path);
 
-                // Try to resolve the variable normally ( for ${var-Name} resolve var-Name }
-                String rep = variableRegistry.lookupVariable(var);
+                while (matcher.find()) {
+                    String var = matcher.group(1);
 
-                if (rep == null) {
-                    rep = variableRegistry.lookupVariableFromAdditionalSources(var);
+                    // Try to resolve the variable normally ( for ${var-Name} resolve var-Name }
+                    String rep = variableRegistry.lookupVariable(var);
+
+                    if (rep == null) {
+                        rep = variableRegistry.lookupVariableFromAdditionalSources(var);
+                    }
+
+                    if (rep == null) {
+                        rep = variableRegistry.lookupVariableDefaultValue(var);
+                    }
+
+                    if (rep != null) {
+                        path = path.replace(matcher.group(0), rep);
+                        matcher.reset(path);
+                    }
                 }
-
-                if (rep == null) {
-                    rep = variableRegistry.lookupVariableDefaultValue(var);
-                }
-
-                if (rep != null) {
-                    path = path.replace(matcher.group(0), rep);
-                    matcher.reset(path);
-                }
+            } finally {
+                variableRegistry.updateSystemVariables(currentVariables);
             }
         } else {
             return locationService.resolveString(path);
