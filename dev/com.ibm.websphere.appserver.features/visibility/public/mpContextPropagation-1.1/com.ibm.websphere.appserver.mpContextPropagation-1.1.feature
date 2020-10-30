@@ -14,5 +14,5 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.1
 -bundles=\
   com.ibm.ws.microprofile.contextpropagation.1.0
-kind=beta
-edition=core
+kind=noship
+edition=full
