@@ -40,11 +40,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
            service = { ExecutorService.class, ManagedExecutorService.class, //
                        ResourceFactory.class, ApplicationRecycleComponent.class, //
                        ScheduledExecutorService.class, ManagedScheduledExecutorService.class },
-           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
-           property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class))
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
 
     private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
