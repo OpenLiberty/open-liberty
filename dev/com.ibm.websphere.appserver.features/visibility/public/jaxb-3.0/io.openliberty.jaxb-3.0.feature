@@ -24,3 +24,4 @@ Subsystem-Name: Jakarta XML Bindings 3.0
   io.openliberty.jaxb.3.0.internal.tools
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
