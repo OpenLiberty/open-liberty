@@ -5,7 +5,7 @@ bSymbolicName=io.openliberty.org.hibernate.validator.7.0
 
 Bundle-Name: Hibernate Validator Engine
 Bundle-SymbolicName: io.openliberty.org.hibernate.validator.7.0
-Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=7.0.0.Alpha2
+Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=7.0.0.Alpha6
 
 # Provide these as resources to applications
 app-resources= \
@@ -20,7 +20,7 @@ app-resources= \
   META-INF/validation-configuration-3.0.xsd
 
 Export-Package: \
-  org.hibernate.validator.*;version="7.0.0.Alpha2";thread-context=true
+  org.hibernate.validator.*;version="7.0.0.Alpha6";thread-context=true
 
 Import-Package: \
   !jakarta.persistence, \
@@ -61,8 +61,8 @@ DynamicImport-Package: \
  jakarta.persistence
  
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator;7.0.0.Alpha2}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;7.0.0.Alpha2}!/META-INF/services/*, \
+  @${repo;org.hibernate.validator:hibernate-validator;7.0.0.Alpha6}!/META-INF/*.xsd, \
+  @${repo;org.hibernate.validator:hibernate-validator;7.0.0.Alpha6}!/META-INF/services/*, \
   org=resources/org
   
 Service-Component:\

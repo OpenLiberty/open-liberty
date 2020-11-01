@@ -12,12 +12,10 @@ package com.ibm.ws.concurrent.persistent.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
@@ -27,15 +25,14 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
-import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-
 import web.SchedulerFATServlet;
 
 @AllowedFFDC({
     "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-    "javax.transaction.RollbackException" // due to transaction timeout from infra slowness
+    "javax.transaction.RollbackException", // due to transaction timeout from infra slowness
+    "javax.transaction.xa.XAException" // due to transaction timeout from infra slowness
     })
 @RunWith(FATRunner.class)
 public class PersistentExecutorTest extends FATServletClient {
@@ -45,31 +42,17 @@ public class PersistentExecutorTest extends FATServletClient {
     @Server("com.ibm.ws.concurrent.persistent.fat")
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
-
-    @ClassRule
+    
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
-    /**
-     * Before running any tests, start the server
-     *
-     * @throws Exception
-     */
     @BeforeClass
     public static void setUp() throws Exception {
-    	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
-        Machine machine = server.getMachine();
-        String installRoot = server.getInstallRoot();
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
-
-    	//Get driver type
+    	testContainer.start();
+    	
     	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
-    	//testContainer.stop();
-    	//testContainer.start();
-    	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-	//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         server.startServer();
@@ -77,20 +60,22 @@ public class PersistentExecutorTest extends FATServletClient {
 
     /**
      * After completing all tests, stop the server.
-     *
-     * @throws Exception
      */
     @AfterClass
     public static void tearDown() throws Exception {
         try {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
-            if (server != null && server.isStarted())
-                server.stopServer("CWWKC1500W", //Task rolled back
-                                  "CWWKC1501W", //Task rolled back due to failure ...
-                                  "CWWKC1510W", //Task rolled back and aborted
-                                  "CWWKC1511W", //Task rolled back and aborted. Failure is ...
-                                  "DSRA0174W"); //Generic Datasource Helper
+        	try {
+	            if (server.isStarted())
+	                server.stopServer("CWWKC1500W", //Task rolled back
+	                                  "CWWKC1501W", //Task rolled back due to failure ...
+	                                  "CWWKC1510W", //Task rolled back and aborted
+	                                  "CWWKC1511W", //Task rolled back and aborted. Failure is ...
+	                                  "DSRA0174W"); //Generic Datasource Helper
+        	} finally {
+        		testContainer.stop();
+        	}
         }
     }
 

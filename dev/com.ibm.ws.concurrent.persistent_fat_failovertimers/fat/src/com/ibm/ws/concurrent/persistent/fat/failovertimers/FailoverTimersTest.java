@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -63,6 +64,7 @@ import failovertimers.web.FailoverTimersTestServlet;
  */
 @RunWith(FATRunner.class)
 @SkipIfSysProp(DB_Oracle) //TODO investigate running these tests causes an FFDC java.lang.IllegalStateException: Attempting to execute an operation on a closed EntityManagerFactory.
+@AllowedFFDC
 public class FailoverTimersTest extends FATServletClient {
     private static final Class<FailoverTimersTest> c = FailoverTimersTest.class;
     private static final String APP_NAME = "failoverTimersApp";
@@ -122,15 +124,15 @@ public class FailoverTimersTest extends FATServletClient {
 
         // Transform serverB's app to Jakarta:
         Path javaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA", "apps", APP_NAME + ".war");
-        Path jakartaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps", APP_NAME + ".jakarta.war"); // TODO omit jakarta in name
+        Path jakartaEEApp = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps", APP_NAME + ".war");
         // /apps/ folder must exist for transform to run
-        Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile().mkdir();
+        File apps = Paths.get("publish", "servers", "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB", "apps").toFile();
+        apps.mkdir();
 
         JakartaEE9Action.transformApp(javaEEApp, jakartaEEApp);
         Log.info(c, "setUp", "Transformed app " + javaEEApp + " to " + jakartaEEApp);
-
-        // TODO remove the following line to make the test app use Jakarta (and also update server.xml)
-        ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
+        serverB.copyFileToLibertyServerRoot(apps.toString(), "apps", APP_NAME + ".war");
+        Log.info(c, "setUp", "Copied from " + apps + " to " + serverB.getServerRoot() + "/apps/");
     }
 
     /**
@@ -138,37 +140,23 @@ public class FailoverTimersTest extends FATServletClient {
      */
     @Before
     public void setUpPerTest() throws Exception {
-        // TODO Test infrastructure is unable to start multiple servers at once. Intermittent errors occur while processing fatFeatureList.xml
-        boolean startInParallel = false;
-
-        if (startInParallel) {
-            ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
-            if (!serverA.isStarted()) {
-                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                startActions.add(() -> serverA.startServer(testName.getMethodName()));
-            }
-            if (!serverB.isStarted()) {
-                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                startActions.add(() -> serverB.startServer(testName.getMethodName()));
-            }
-
-            testThreads.invokeAll(startActions).forEach(f -> {
-                try {
-                    f.get();
-                } catch (ExecutionException | InterruptedException x) {
-                    throw new CompletionException(x);
-                }
-            });
-        } else {
-            if (!serverA.isStarted()) {
-                serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                serverA.startServer(testName.getMethodName());
-            }
-            if (!serverB.isStarted()) {
-                serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                serverB.startServer(testName.getMethodName());
-            }
+        ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
+        if (!serverA.isStarted()) {
+            serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            startActions.add(() -> serverA.startServer(testName.getMethodName() + ".log"));
         }
+        if (!serverB.isStarted()) {
+            serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+            startActions.add(() -> serverB.startServer(testName.getMethodName() + ".log"));
+        }
+
+        testThreads.invokeAll(startActions).forEach(f -> {
+            try {
+                f.get();
+            } catch (ExecutionException | InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        });
     }
 
     @AfterClass
@@ -189,11 +177,6 @@ public class FailoverTimersTest extends FATServletClient {
      * and verify that the timer starts running on the same application on a different server.
      * This should occur even if a retryInterval is configured on the server where the failure occurs.
      */
-    @AllowedFFDC({
-                   "java.util.concurrent.CompletionException", // intentionally raised by timer to force a rollback
-                   "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
-                   "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
-    })
     @Test
     public void testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer() throws Exception {
         runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -267,7 +250,7 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                            "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                           "CWWKC1503W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry]
+                           "CWWKC1503W.*", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry] OR timer rolls back for trying to run while server is stopping
                            "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
         );
     }
@@ -359,6 +342,7 @@ public class FailoverTimersTest extends FATServletClient {
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer(
                                               "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                                              "CWWKC1503W.*AutoCountingSingletonTimer", // timer not invoking due to server stop
                                               "DSRA.*", "J2CA.*", "WTRN.*" // transaction in progress across server stop
             );
         }
@@ -406,5 +390,7 @@ public class FailoverTimersTest extends FATServletClient {
 
         runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
                 "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
+
+        serverForFailover.stopServer("CWWKC1503W.*AutoCountingSingletonTimer");
     }
 }

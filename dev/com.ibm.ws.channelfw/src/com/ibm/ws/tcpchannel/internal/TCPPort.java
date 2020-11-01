@@ -51,6 +51,8 @@ public class TCPPort {
     private TCPChannelConfiguration channelConfigX = null;
     private InetSocketAddress socketAddressX = null;
 
+    private int currentTry = 1;
+    private int portOpenRetries = 0;
     private final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     private static final TraceComponent tc = Tr.register(TCPPort.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
@@ -260,66 +262,92 @@ public class TCPPort {
         TCPChannelConfiguration channelConfig = tcpChannel.getConfig();
         channelConfigX = channelConfig;
 
+        currentTry = 1;
+        portOpenRetries = channelConfigX.getPortOpenRetries(); // make this configurable - default is 0
+        boolean stayInLoop = true;
+
         BindInfo earlyBind = portBoundEarly(channelConfig.getPort());
 
         if (earlyBind == null) {
-            InetSocketAddress socketAddress = null;
 
-            if (channelConfig.getHostname() == null) {
-                socketAddress = new InetSocketAddress((InetAddress) null, channelConfig.getPort());
-            } else {
-                socketAddress = new InetSocketAddress(channelConfig.getHostname(), channelConfig.getPort());
-            }
+            while ((stayInLoop) && (currentTry <= portOpenRetries + 1)) {
 
-            if (!socketAddress.isUnresolved()) {
+                stayInLoop = false;
+                InetSocketAddress socketAddress = null;
 
-                socketAddressX = socketAddress;
-                // initially set the list port to what is configured, since the port opening will be delayed.
-                listenPort = channelConfig.getPort();
-                serverSocket = openServerSocket();
-
-                if (channelConfig.getWaitToAccept() != true) {
-                    try {
-                        CHFWBundle.runWhenServerStarted(new Callable<Void>() {
-                            @Override
-                            public Void call() {
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "CHFW signaled- finishInitServerSocket() to be called");
-                                }
-                                try {
-                                    finishInitServerSocket();
-                                } catch (Exception x) {
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "CHFW signaled- caught exception from finishInitServerSocket(): " + x);
-                                    }
-
-                                    tcpChannel.takeDownChain();
-
-                                }
-
-                                return null;
-                            }
-                        });
-                    } catch (Exception x) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "CHFW signaled- caught exception:: " + x);
-                        }
-                    }
+                if (channelConfig.getHostname() == null) {
+                    socketAddress = new InetSocketAddress((InetAddress) null, channelConfig.getPort());
                 } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "CHFW signaled- waitToAccept is true - finishInitServerSocket()");
-                    }
-                    finishInitServerSocket();
+                    socketAddress = new InetSocketAddress(channelConfig.getHostname(), channelConfig.getPort());
                 }
 
-            } else { // unresolved socket address
-                String displayableHostName = channelConfig.getDisplayableHostname();
-                Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
-                         new Object[] { channelConfig.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfig.getPort()) });
+                if (!socketAddress.isUnresolved()) {
 
-                throw new RetryableChannelException(new IOException("local address unresolved"));
+                    socketAddressX = socketAddress;
+                    // initially set the list port to what is configured, since the port opening will be delayed.
+                    listenPort = channelConfig.getPort();
+                    serverSocket = openServerSocket();
+
+                    if (channelConfig.getWaitToAccept() != true) {
+                        try {
+                            CHFWBundle.runWhenServerStarted(new Callable<Void>() {
+                                @Override
+                                public Void call() {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "CHFW signaled- finishInitServerSocket() to be called");
+                                    }
+                                    try {
+                                        finishInitServerSocket();
+                                    } catch (Exception x) {
+                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                            Tr.debug(tc, "CHFW signaled- caught exception from finishInitServerSocket(): " + x);
+                                        }
+
+                                        tcpChannel.takeDownChain();
+
+                                    }
+
+                                    return null;
+                                }
+                            });
+                        } catch (Exception x) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "CHFW signaled- caught exception:: " + x);
+                            }
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "CHFW signaled- waitToAccept is true - finishInitServerSocket()");
+                        }
+                        finishInitServerSocket();
+                    }
+
+                } else if (currentTry > portOpenRetries) {
+                    // unresolved socket address
+                    String displayableHostName = channelConfig.getDisplayableHostname();
+                    Tr.error(tc, TCPChannelMessageConstants.LOCAL_HOST_UNRESOLVED,
+                             new Object[] { channelConfig.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfig.getPort()) });
+
+                    throw new RetryableChannelException(new IOException("local address unresolved"));
+
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "attempt " + currentTry + " of " + (portOpenRetries + 1) + " failed to resolve InetSocketAddress, will try again after wait interval");
+                    }
+
+                    currentTry++;
+                    stayInLoop = true;
+
+                    try {
+                        Thread.sleep(timeBetweenRetriesMsec);
+                    } catch (InterruptedException x) {
+                        // do nothing but debug
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
+                        }
+                    }
+                }
             }
-
         } else {
             // this port was bound earlier by a different service
             Exception e = earlyBind.getBindException();
@@ -358,9 +386,6 @@ public class TCPPort {
     }
 
     public synchronized void finishInitServerSocket() throws IOException, RetryableChannelException {
-
-        int currentTry = 1;
-        int portOpenRetries = channelConfigX.getPortOpenRetries(); // make this configurable - default is 0
 
         while (currentTry <= portOpenRetries + 1) {
             IOException bindError = null;

@@ -1279,7 +1279,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         }
     }
 
-    protected static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
+    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
         boolean custom1 = p1.isCustom();
         int result = Boolean.compare(p2.isCustom(), custom1);
         if (result == 0 && custom1) {

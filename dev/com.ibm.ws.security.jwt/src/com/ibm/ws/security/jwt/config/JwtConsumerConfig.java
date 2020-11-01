@@ -32,6 +32,8 @@ public interface JwtConsumerConfig {
 
     String getTrustStoreRef();
 
+    String getKeyStoreRef();
+
     String getTrustedAlias();
 
     long getClockSkew();
@@ -55,4 +57,7 @@ public interface JwtConsumerConfig {
     boolean getUseSystemPropertiesForHttpClientConnections();
 
     List<String> getAMRClaim();
+
+    public String getKeyManagementKeyAlias();
+
 }

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -34,7 +37,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
                 PropsTest.class
 })
 public class FATSuite {
-    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3", "1.4"};
+    private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3", "1.4", "2.0"};
 
     static FeatureReplacementAction MP_REST_CLIENT(String version, String serverName) {
         return MP_REST_CLIENT(new FeatureReplacementAction(), version, serverName);
@@ -54,14 +57,14 @@ public class FATSuite {
         action = use(action, "mpRestClient", version)
                         .withID("mpRestClient-" + version)
                         .forServers(serverName);
-        if ("1.0".equals(version) || "1.1".equals(version)) {
-            return use(action, "mpConfig", "1.1", "1.3", "1.4");
-        }
-        else if ("1.2".equals(version) || "1.3".equals(version)) {
-            return use(action, "mpConfig", "1.3", "1.1", "1.4");
-        }
-        else {
-            return use(action, "mpConfig", "1.4", "1.1", "1.3");
+        switch(version) {
+            case "1.0":
+            case "1.1": return use(action, "mpConfig", "1.1", "1.0", "1.2", "1.3", "1.4", "2.0");
+            case "1.2":
+            case "1.3": return use(action, "mpConfig", "1.3", "1.0", "1.1", "1.2", "1.4", "2.0");
+            case "1.4": return use(action, "mpConfig", "1.4", "1.0", "1.1", "1.2", "1.3", "2.0");
+            case "2.0":
+            default:    return use(action, "mpConfig", "2.0", "1.0", "1.1", "1.2", "1.3", "1.4");
         }
     }
 
@@ -70,13 +73,14 @@ public class FATSuite {
     }
 
     private static FeatureReplacementAction use(FeatureReplacementAction action, String featureName, String version, String... versionsToRemove) {
-        String feature = featureName + "-" + version;
         action = action.addFeature(featureName + "-" + version);
+        Set<String> featuresToRemove = new HashSet<>();
         for (String remove : versionsToRemove) {
             if (!version.equals(remove)) {
-                action = action.removeFeature(featureName + "-" + remove);
+                featuresToRemove.add(featureName + "-" + remove);
             }
         }
+        action = action.removeFeatures(featuresToRemove);
         return action;
     }
 }

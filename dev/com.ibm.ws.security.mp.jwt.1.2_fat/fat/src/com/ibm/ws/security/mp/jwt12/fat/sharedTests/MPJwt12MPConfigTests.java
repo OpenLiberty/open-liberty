@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
@@ -349,8 +350,8 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
                                                                                           mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256));
             // let's create an app with mp config properties that over ride the 1.1 and 1.2 alg settings
-            MP12ConfigSettings overrideMpConfigSettings = new MP12ConfigSettings(mpConfigSettings.getPublicKeyLocation(), MP12ConfigSettings
-                            .getComplexKey(server, MP12ConfigSettings.es256PubKey), mpConfigSettings
+            MP12ConfigSettings overrideMpConfigSettings = new MP12ConfigSettings(mpConfigSettings.getPublicKeyLocation(), JwtKeyTools
+                            .getComplexPublicKeyForSigAlg(server, MpJwtFatConstants.SIGALG_ES256), mpConfigSettings
                                             .getIssuer(), MpJwt12FatConstants.X509_CERT, mpConfigSettings
                                                             .getHeader(), mpConfigSettings.getCookie(), mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm());
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_KEY_AND_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,

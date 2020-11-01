@@ -29,14 +29,14 @@ dependencies {
 }
 
 task copySharedPostgres(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/shared/resources/postgres')
   rename 'postgresql-.*.jar', 'postgresql.jar'
 }
 
 task copyAnonymousPostgres(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/servers/ssl-recovery/jdbc')
   rename 'postgresql-.*.jar', 'driver.jar'
@@ -44,3 +44,4 @@ task copyAnonymousPostgres(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn copyAnonymousPostgres
+addRequiredLibraries.dependsOn copyFattestDatabases

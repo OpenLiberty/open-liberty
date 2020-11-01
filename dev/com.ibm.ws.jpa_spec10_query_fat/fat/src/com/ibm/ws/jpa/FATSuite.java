@@ -28,8 +28,8 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 @SuiteClasses({
                 TestOLGH8014_EJB.class,
                 TestOLGH8014_Web.class,
-                TestOLGH8294_EJB.class,
-                TestOLGH8294_Web.class,
+                TestOLGH14137_EJB.class,
+                TestOLGH14137_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,

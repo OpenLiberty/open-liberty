@@ -47,7 +47,8 @@ public class AsyncMethodTest extends FATServletClient {
     public static RepeatTests r = RepeatTests.withoutModification()
         .andWith(FATSuite.MP_REST_CLIENT("1.2", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("2.0", SERVER_NAME));
 
     private static final String appName = "asyncApp";
 

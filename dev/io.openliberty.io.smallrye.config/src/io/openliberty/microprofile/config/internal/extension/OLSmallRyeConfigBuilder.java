@@ -14,12 +14,20 @@ import java.util.List;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.openliberty.microprofile.config.internal.serverxml.AppPropertyConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
+import io.smallrye.config.ProfileConfigSourceInterceptor;
+import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
 
 public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
+
+    private static final TraceComponent tc = Tr.register(OLSmallRyeConfigBuilder.class);
 
     @Override
     protected List<ConfigSource> getDefaultSources() {
@@ -31,6 +39,18 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
         defaultSources.add(new ServerXMLDefaultVariableConfigSource());
 
         return defaultSources;
+    }
+
+    @Override
+    @Trivial
+    public SmallRyeConfig build() {
+        SmallRyeConfig config = super.build();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
+            String profileName = config.getRawValue(ProfileConfigSourceInterceptor.SMALLRYE_PROFILE);
+            Tr.event(this, tc, "Config created with profile: " + profileName, config);
+        }
+        return config;
     }
 
 }

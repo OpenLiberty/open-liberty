@@ -172,7 +172,7 @@ public class JSF22ViewActionAndPhaseIdTests {
 
             // enter a valid number between 1 and 100
             HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:inputNumber");
-            input.type("8", false, false, false);
+            input.type("8");
 
             HtmlElement button = (HtmlElement) page.getElementById("form1:button1");
             page = button.click();
@@ -203,7 +203,7 @@ public class JSF22ViewActionAndPhaseIdTests {
 
             // enter an invalid number between 1 and 100
             HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:inputNumber");
-            input.type("9999", false, false, false);
+            input.type("9999");
 
             HtmlElement button = (HtmlElement) page.getElementById("form1:button1");
             page = button.click();

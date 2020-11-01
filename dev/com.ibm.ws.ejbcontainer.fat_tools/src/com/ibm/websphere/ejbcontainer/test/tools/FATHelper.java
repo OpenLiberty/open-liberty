@@ -241,7 +241,7 @@ public abstract class FATHelper {
     /**
      * Returns the local home or business interface from JNDI lookup to "jndiName".
      * This method will prefix local lookups with ejblocal:
-     * 
+     *
      * @param jndiName home JNDI name to lookup.
      * @return Local interface object found.
      */
@@ -268,7 +268,7 @@ public abstract class FATHelper {
     /**
      * Returns the local home interface from JNDI lookup to "jndiName".
      * This method will prefix local lookups with local:ejb
-     * 
+     *
      * @param jndiName home JNDI name to lookup.
      * @return Local interface object found.
      */
@@ -344,7 +344,7 @@ public abstract class FATHelper {
      * Returns the remote home or business interface from JNDI lookup to "jndiName".
      * This method is intended for "short name" default bindings. For example:
      * <tt> suite.r70.base.ejb3.defbnd.RemoteBusiness</tt>
-     * 
+     *
      * @param jndiName home JNDI name to lookup.
      * @return Remote interface object found.
      */
@@ -458,5 +458,13 @@ public abstract class FATHelper {
     public static Object lookupDefaultBindingsEJBRemoteInterface(Class<?> interfaceClass, String application, String module, String bean) throws NamingException {
         String jndiName = "java:global/" + application + "/" + module + "/" + bean + "!" + interfaceClass.getName();
         return lookupRemoteBinding(jndiName, interfaceClass);
+    }
+
+    public static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
     }
 }

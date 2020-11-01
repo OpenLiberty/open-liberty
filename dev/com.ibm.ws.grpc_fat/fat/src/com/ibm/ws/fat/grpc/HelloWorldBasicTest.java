@@ -13,7 +13,6 @@ package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.junit.Rule;
@@ -26,7 +25,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -49,7 +47,7 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, "grpcClient");
+            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, getURLPath());
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -89,7 +87,7 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, "grpcClient");
+            URL url = GrpcTestUtils.createHttpUrl(serverRef, contextRoot, getURLPath());
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -133,12 +131,7 @@ public abstract class HelloWorldBasicTest extends FATServletClient {
         }
     }
 
-    protected boolean checkJavaVersion() throws IOException {
-        if (JavaInfo.forServer(serverRef).majorVersion() < 9) {
-            Log.info(c, name.getMethodName(), "IBM JDK8 ALPN is not yet supported by the netty grpc client;"
-                                              + " this test will be skipped until that support is added");
-            return false;
-        }
-        return true;
+    protected String getURLPath() {
+        return "grpcClient";
     }
 }

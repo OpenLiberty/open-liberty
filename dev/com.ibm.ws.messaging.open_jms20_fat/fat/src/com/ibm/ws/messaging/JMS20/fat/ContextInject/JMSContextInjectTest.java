@@ -23,7 +23,9 @@ import java.net.URL;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -31,6 +33,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSContextInjectTest {
 
@@ -138,7 +141,7 @@ public class JMSContextInjectTest {
     }
 
     @Mode(TestMode.FULL)
-    // @Test
+    // @Test // TODO
     public void testMessageOrder_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testMessageOrder_TCP_SecOff");
         assertTrue("testMessageOrder_TCP_SecOff failed", testResult);
@@ -166,7 +169,7 @@ public class JMSContextInjectTest {
     }
 
     @Mode(TestMode.FULL)
-    // @Test
+    // @Test // TODO
     public void testBrowser_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testBrowser_TCP_SecOff");
         assertTrue("testBrowser_TCP_SecOff failed", testResult);

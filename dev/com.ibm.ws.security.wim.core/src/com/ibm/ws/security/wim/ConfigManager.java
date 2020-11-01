@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -26,6 +27,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -33,8 +35,13 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.runtime.update.RuntimeUpdateListener;
+import com.ibm.ws.runtime.update.RuntimeUpdateManager;
+import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.security.wim.util.StringUtil;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
+import com.ibm.ws.threading.FutureMonitor;
+import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.InvalidArgumentException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
@@ -47,9 +54,9 @@ import com.ibm.wsspi.security.wim.model.PersonAccount;
 
 @Component(configurationPid = "com.ibm.ws.security.wim.core.config",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           service = { ConfigManager.class },
+           service = { ConfigManager.class, RuntimeUpdateListener.class },
            property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=WIM", "config.id=default-WIM" })
-public class ConfigManager {
+public class ConfigManager implements RuntimeUpdateListener {
 
     private static final TraceComponent tc = Tr.register(ConfigManager.class);
 
@@ -101,6 +108,11 @@ public class ConfigManager {
 
     private RepositoryManager repositoryManager = null;
 
+    private volatile boolean modified = false;
+
+    // futureMonitor is needed to track the outcome of the configFuture
+    private volatile FutureMonitor _futureMonitor;
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         this.originalConfig = properties;
@@ -111,15 +123,13 @@ public class ConfigManager {
     protected void modify(ComponentContext cc, Map<String, Object> newProperties) {
         this.originalConfig = newProperties;
         config = processConfig();
-        if (listeners != null) {
-            for (RealmConfigChangeListener listener : listeners)
-                listener.notifyRealmConfigChange();
-        }
+        modified = true;
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc,
                               Map<String, Object> newProperties) {
+        modified = false;
         originalConfig = null;
         config = null;
         listeners.clear();
@@ -425,9 +435,18 @@ public class ConfigManager {
     }
 
     /**
+     * Deregister a RealmConfigChangeListener by removing it from the list of listeners.
+     *
+     * @param listener
+     */
+    public void deregisterRealmConfigChangeListener(RealmConfigChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    /**
      * Gets the default parent node that is for the specified entity type in specified realm.
      *
-     * @param entType The entity type. e.g. Person, Group...
+     * @param entType   The entity type. e.g. Person, Group...
      * @param realmName The name of the realm
      * @return The default parent node.
      */
@@ -496,4 +515,57 @@ public class ConfigManager {
     void setRepositoryManager(RepositoryManager repositoryManager) {
         this.repositoryManager = repositoryManager;
     }
+
+    /**
+     * Set service to capture completed configuration checks
+     */
+    @Reference(service = FutureMonitor.class)
+    protected void setFutureMonitor(FutureMonitor futureMonitor) {
+        _futureMonitor = futureMonitor;
+    }
+
+    /**
+     * Unset service to capture completed configuration checks
+     */
+    protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
+        _futureMonitor = null;
+    }
+
+    /**
+     * After a configuration modification, run a RealConfigChange check which will verify the participatingBaseEntries.
+     *
+     * We used to do this directly from the modify command, but timing change during startup/modify and we would process the check
+     * before the user registries activated, leading to misleading error messages being printed.
+     */
+    @Trivial
+    @Override
+    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+            _futureMonitor.onCompletion(notification.getFuture(), new CompletionListener<Boolean>() {
+                @Override
+                public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                    if (modified) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "RuntimeUpdate completed on config update, calling notifyRealmConfigChange. " + notification.getName());
+                        }
+                        if (listeners != null) {
+                            for (RealmConfigChangeListener listener : listeners)
+                                listener.notifyRealmConfigChange();
+                        }
+                    }
+                }
+
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "RuntimeUpdate completed with error on config update, not calling notifyRealmConfigChange, "
+                                           + notification.getName());
+                    }
+                }
+
+            });
+
+        }
+    }
+
 }

@@ -19,7 +19,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.sharedTests.ConsumeMangledJWTTests;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
@@ -27,6 +26,7 @@ import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
 import com.ibm.ws.security.jwt.fat.consumer.utils.ConsumerHelpers;
+import com.ibm.ws.security.jwt.fat.consumer.utils.JwtConsumerMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -46,7 +46,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
@@ -62,6 +61,7 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
+        skipRestoreServerTracker.addServer(consumerServer);
         consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_jwtConsumer.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
@@ -130,47 +130,47 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
     // get error messages
     @Override
     protected String getJtiReusedMsg() {
-        return JwtMessageConstants.CWWKS6045E_JTI_REUSED;
+        return JwtConsumerMessageConstants.CWWKS6045E_JTI_REUSED;
     }
 
     @Override
     protected String getIssuerNotTrustedMsg() {
-        return JwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED;
+        return JwtConsumerMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED;
     }
 
     @Override
     protected String getSignatureNotValidMsg() {
-        return JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID;
+        return JwtConsumerMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID;
     }
 
     @Override
     protected String getTokenExpiredMsg() {
-        return JwtMessageConstants.CWWKS6025E_TOKEN_EXPIRED;
+        return JwtConsumerMessageConstants.CWWKS6025E_TOKEN_EXPIRED;
     }
 
     @Override
     protected String getMalformedClaimMsg() {
-        return JwtMessageConstants.CWWKS6043E_MALFORMED_CLAIM;
+        return JwtConsumerMessageConstants.CWWKS6043E_MALFORMED_CLAIM;
     }
 
     @Override
     protected String getIatAfterExpMsg() {
-        return JwtMessageConstants.CWWKS6024E_IAT_AFTER_EXP;
+        return JwtConsumerMessageConstants.CWWKS6024E_IAT_AFTER_EXP;
     }
 
     @Override
     protected String getIatAfterCurrentTimeMsg() {
-        return JwtMessageConstants.CWWKS6044E_IAT_AFTER_CURRENT_TIME;
+        return JwtConsumerMessageConstants.CWWKS6044E_IAT_AFTER_CURRENT_TIME;
     }
 
     @Override
     protected String getBadAudienceMsg() {
-        return JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE;
+        return JwtConsumerMessageConstants.CWWKS6023E_BAD_AUDIENCE;
     }
 
     @Override
     protected String getBadNotBeforeMsg() {
-        return JwtMessageConstants.CWWKS6026E_FUTURE_NBF;
+        return JwtConsumerMessageConstants.CWWKS6026E_FUTURE_NBF;
     }
 
     /**************************************************************
@@ -191,7 +191,7 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT));
-        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6040E_JWT_STRING_EMPTY + ".+" + JwtConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG, "Response did not show the expected failure."));
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtConsumerMessageConstants.CWWKS6040E_JWT_STRING_EMPTY + ".+" + JwtConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG, "Response did not show the expected failure."));
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, null, null);
         validationUtils.validateResult(response, currentAction, expectations);

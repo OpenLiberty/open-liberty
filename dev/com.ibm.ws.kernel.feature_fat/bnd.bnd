@@ -36,7 +36,7 @@ tested.features: needsNewEe-1.0, newEe-1.0, \
 	ejb-3.2, ejbHome-3.2, ejbLite-3.2, ejbPersistentTimer-3.2, ejbRemote-3.2, el-3.0, \
 	j2eeManagement-1.1, jacc-1.5, jakartaee-8.0, jaspic-1.1, javaMail-1.6, jaxb-2.2, jaxrs-2.1, \
 	jaxrsClient-2.1, jaxws-2.2, jca-1.7, jcaInboundSecurity-1.0, jdbc-4.2, jms-2.0, jndi-1.0, \
-	jpa-2.2, jpaContainer-2.2, jpaContainer-2.1, jpa-2.1, jpaContainer-3.0, jdbc-4.2, jsp-2.2, \
+	jpa-2.2, jpaContainer-2.2, jpaContainer-2.1, jpa-2.1, persistenceContainer-3.0, jdbc-4.2, jsp-2.2, \
 	jsfContainer-2.3, jsf-2.3, jsonb-1.0, jsonp-1.1, jsp-2.3, \
 	managedBeans-1.0, mdb-3.2, \
 	servlet-5.0, ssl-1.0, \

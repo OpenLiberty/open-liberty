@@ -13,6 +13,9 @@ bVersion=1.0
 
 src: \
 	fat/src, \
+	test-applications/EJB1XSFRemoteSpecEJB.jar/src, \
+	test-applications/EJB1XSLRemoteSpecEJB.jar/src, \
+	test-applications/EJB1XRemoteSpecWeb.war/src, \
 	test-applications/EJB2xInWARBean.war/src, \
 	test-applications/EJB2XSFLocalSpecEJB.jar/src, \
 	test-applications/EJB2XSLLocalSpecEJB.jar/src, \

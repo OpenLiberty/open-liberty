@@ -51,7 +51,7 @@ public class InAppConfigSource implements ConfigSource {
     @Override
     public String getValue(String key) {
         String value = PROPERTIES.get(key);
-        LOG.info("getValue -> " + value);
+        LOG.info("getValue (" + key + ") -> " + value);
         return value;
     }
 

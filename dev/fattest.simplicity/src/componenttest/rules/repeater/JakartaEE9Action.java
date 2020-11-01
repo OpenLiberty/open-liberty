@@ -65,7 +65,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
                                                  "connectorsInboundSecurity-2.0",
-                                                 "el-4.0",
+                                                 "expressionLanguage-4.0",
                                                  "enterpriseBeans-4.0",
                                                  "enterpriseBeansHome-4.0",
                                                  "enterpriseBeansLite-4.0",
@@ -76,13 +76,13 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jaspic-2.0",
                                                  "mail-2.0",
                                                  "jaxb-3.0",
-                                                 "jpa-3.0",
+                                                 "persistence-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
                                                  "jsonpContainer-2.0",
                                                  "jsonbContainer-2.0",
                                                  "faces-3.0",
-                                                 "jsp-3.0",
+                                                 "pages-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",
                                                  "messaging-3.0",
@@ -208,7 +208,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
      * name the initially transformed application. However,
      * that application is renamed to the initial application name.
      *
-     * @param appPath The application path of file to be transformed to Jakarta
+     * @param appPath    The application path of file to be transformed to Jakarta
      * @param newAppPath The application path of the transformed file (or <code>null<code>)
      */
     public static void transformApp(Path appPath, Path newAppPath) {
@@ -270,7 +270,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
 
-            args[2] = "-v"; // verbose
+            args[2] = "-q"; // quiet output
 
             // override jakarta default properties, which are
             // packaged in the transformer jar

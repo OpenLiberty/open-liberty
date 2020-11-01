@@ -67,7 +67,7 @@ public class IMAPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testInlineMail() throws Exception {
+    public void testIMAPInlineMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/IMAPInlineServlet");
         Log.info(c, "testInlineMail",
@@ -93,7 +93,7 @@ public class IMAPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testJNDIMail() throws Exception {
+    public void testIMAPJNDIMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/IMAPJNDIServlet");
         Log.info(c, "testJNDIMail",
@@ -120,7 +120,7 @@ public class IMAPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testMailSessionMail() throws Exception {
+    public void testIMAPMailSessionMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/IMAPMailSessionServlet");
         Log.info(c, "testAutoInstall",
@@ -171,6 +171,8 @@ public class IMAPTest {
         // Need to add -D to the start of the property name
         System.out.println("Starting IMAP server on port " + imapPort);
         ServerSetup imapSetup = new ServerSetup(imapPort, "localhost", "imap");
+        imapSetup.setVerbose(true);
+
         imapServer = new GreenMail(imapSetup);
         // Start the imapServer, the GreenMail server is now listening for connections
         imapServer.start();

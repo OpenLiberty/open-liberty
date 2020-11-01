@@ -1,5 +1,13 @@
 <server>
 
+  <variable name="onError" value="FAIL"/>
+
+  <!--
+  <logging
+    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
+    maxFileSize="200"/>
+    -->
+
   <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
@@ -10,27 +18,24 @@
     <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
-  
-  <variable name="onError" value="FAIL"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
   <!-- Avoid MissingDoPrivDetectionSecurityManager warnings -->
   <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,connect"/>
 
-  <!--
-  <logging
-    traceSpecification="*=info:com.ibm.ws.jndi.*=all:jmx.rest.server.connector=all:com.ibm.ws.jmx.connector.server.rest.*=all:Naming=all:NamingService=all:SIBCommunications=all:SIBJFapChannel=all:SIBJms*=all:SIBJmsRa=all:SIBMatchSpace=all:SIBMessageStore=all:SIBMessageTrace=all:SIBMfp=all:SIBProcessor=all:SIBRa=all:SIBTrm=all"
-    maxFileSize="200"/>
-    -->
-
-  <!--
-      tcfBindings = (TopicConnectionFactory)
-          new InitialContext().lookup("java:comp/env/eis/tcf");
-      tcfTCP = (TopicConnectionFactory)
-          new InitialContext().lookup("java:comp/env/eis/tcf1");
-      topic1 = (Topic) new InitialContext().lookup("eis/topic1");
-      topic2 = (Topic) new InitialContext().lookup("eis/topic2");
-    -->
+  <!-- JMS endpoint configuration -->
 
   <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr3">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
@@ -49,5 +54,14 @@
   <jmsTopic jndiName="eis/topic2">
     <properties.wasJms topicSpace="NewTopic2" timeToLive="100"/>
   </jmsTopic>
+
+  <!--
+      tcfBindings = (TopicConnectionFactory)
+          new InitialContext().lookup("java:comp/env/eis/tcf");
+      tcfTCP = (TopicConnectionFactory)
+          new InitialContext().lookup("java:comp/env/eis/tcf1");
+      topic1 = (Topic) new InitialContext().lookup("eis/topic1");
+      topic2 = (Topic) new InitialContext().lookup("eis/topic2");
+    -->
 
 </server>

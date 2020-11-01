@@ -17,6 +17,6 @@ IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
  bin/tools/ws-generateddlutil.jar, \
  bin/ddlGen.bat, \
  bin/ddlGen; ibm.file.encoding:=ebcdic
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel

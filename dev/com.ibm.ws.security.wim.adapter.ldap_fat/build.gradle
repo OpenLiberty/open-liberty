@@ -33,10 +33,12 @@ dependencies {
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -104,7 +106,9 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.ETSFforGroupM',
     'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
     'com.ibm.ws.security.wim.adapter.ldap.fat.input.output.mapping',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.loginproperty',
     'com.ibm.ws.security.wim.adapter.ldap.fat.multipleldaps',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.operationalattribute',
     'com.ibm.ws.security.wim.adapter.ldap.fat.realm.mapping',
     'com.ibm.ws.security.wim.adapter.ldap.fat.referral',
     'com.ibm.ws.security.wim.adapter.ldap.fat.search.paging',

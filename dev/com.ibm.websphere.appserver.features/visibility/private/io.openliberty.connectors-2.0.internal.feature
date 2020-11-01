@@ -22,3 +22,4 @@ IBM-API-Package: \
   com.ibm.ws.jca.feature.jakarta
 kind=beta
 edition=base
+WLP-Activation-Type: parallel

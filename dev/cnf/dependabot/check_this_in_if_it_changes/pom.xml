@@ -344,17 +344,7 @@
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>jakarta.mail</artifactId>
-      <version>2.0.0-RC5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.5.6</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
+      <version>2.0.0-RC6</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
@@ -844,7 +834,7 @@
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
-      <version>2.0.0-RC5</version>
+      <version>2.0.0-RC6</version>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -879,7 +869,7 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
-      <version>5.0.0-M1</version>
+      <version>5.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.transaction</groupId>
@@ -889,7 +879,7 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.0-M1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
@@ -1067,6 +1057,11 @@
       <version>2.5.2</version>
     </dependency>
     <dependency>
+      <groupId>net.sf.jtidy</groupId>
+      <artifactId>jtidy</artifactId>
+      <version>4aug2000r7-dev</version>
+    </dependency>
+    <dependency>
       <groupId>net.sourceforge.cssparser</groupId>
       <artifactId>cssparser</artifactId>
       <version>0.9.23</version>
@@ -1080,6 +1075,16 @@
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>htmlunit-core-js</artifactId>
       <version>2.27</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit-core-js</artifactId>
+      <version>2.44.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit-cssparser</artifactId>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
@@ -1103,6 +1108,11 @@
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <version>2.44.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
       <version>2.27</version>
     </dependency>
@@ -1110,6 +1120,16 @@
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
       <version>2.28</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>neko-htmlunit</artifactId>
+      <version>2.44.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>webdriver</artifactId>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
@@ -1140,6 +1160,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math</artifactId>
       <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.9</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -1444,17 +1469,17 @@
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.core5</groupId>
       <artifactId>httpcore5-h2</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.core5</groupId>
       <artifactId>httpcore5</artifactId>
-      <version>5.0</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -1484,12 +1509,22 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
+      <version>4.5.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
       <version>4.5.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.5.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore-nio</artifactId>
+      <version>4.4.13</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -1500,6 +1535,11 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
       <version>4.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.4.13</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -1647,6 +1687,11 @@
       <version>1.61</version>
     </dependency>
     <dependency>
+      <groupId>org.brotli</groupId>
+      <artifactId>dec</artifactId>
+      <version>0.1.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.checkerframework</groupId>
       <artifactId>checker-compat-qual</artifactId>
       <version>2.5.2</version>
@@ -1792,19 +1837,14 @@
       <version>1.4</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.config</groupId>
-      <artifactId>microprofile-config-api</artifactId>
-      <version>2.0-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.config</groupId>
-      <artifactId>microprofile-config-tck</artifactId>
-      <version>2.0-RC1</version>
+      <groupId>org.eclipse.microprofile.context-propagation</groupId>
+      <artifactId>microprofile-context-propagation-api</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>
       <artifactId>microprofile-context-propagation-api</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
@@ -2179,7 +2219,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator-cdi</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Alpha6</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -2189,7 +2229,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Alpha6</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -2645,6 +2685,11 @@
       <groupId>org.rnorth.duct-tape</groupId>
       <artifactId>duct-tape</artifactId>
       <version>1.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.webdriver</groupId>
+      <artifactId>webdriver-common</artifactId>
+      <version>0.9.7376</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

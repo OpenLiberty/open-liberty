@@ -35,15 +35,6 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
 
     static private String MP_VERSION = "1.2";
 
-    public static Set<String> ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES = new HashSet<String>();
-    static {
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.PUBLIC_KEY_ALG);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.DECRYPT_KEY_LOCATION);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.VERIFY_AUDIENCES);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.TOKEN_HEADER);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.TOKEN_COOKIE);
-    }
-
     @Override
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
@@ -70,16 +61,14 @@ public class MpConfigProxyServiceImpl extends com.ibm.ws.security.mp.jwt.v11.con
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
         Set<String> allSupportedProps = super.getSupportedConfigPropertyNames();
-        allSupportedProps.addAll(ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES);
+        Set<String> acceptableMpConfigPropNames12 = new HashSet<String>();
+        acceptableMpConfigPropNames12.add(MpConstants.PUBLIC_KEY_ALG);
+        acceptableMpConfigPropNames12.add(MpConstants.DECRYPT_KEY_LOCATION);
+        acceptableMpConfigPropNames12.add(MpConstants.VERIFY_AUDIENCES);
+        acceptableMpConfigPropNames12.add(MpConstants.TOKEN_HEADER);
+        acceptableMpConfigPropNames12.add(MpConstants.TOKEN_COOKIE);
+        allSupportedProps.addAll(acceptableMpConfigPropNames12);
         return allSupportedProps;
-    }
-
-    @Override
-    protected boolean isAcceptableMpConfigProperty(String propertyName) {
-        if (ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.contains(propertyName)) {
-            return true;
-        }
-        return super.isAcceptableMpConfigProperty(propertyName);
     }
 
 }

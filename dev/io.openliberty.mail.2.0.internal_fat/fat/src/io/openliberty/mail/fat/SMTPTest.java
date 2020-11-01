@@ -57,7 +57,7 @@ public class SMTPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testInlineMail() throws Exception {
+    public void testSMTPInlineMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/SMTPInlineServlet");
 
@@ -84,7 +84,7 @@ public class SMTPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testJNDIMail() throws Exception {
+    public void testSMTPJNDIMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/SMTPJNDIServlet");
         Log.info(c, "testJNDIMail",
@@ -109,7 +109,7 @@ public class SMTPTest {
      * This test is for FatSuiteLite
      */
     @Test
-    public void testMailSessionMail() throws Exception {
+    public void testSMTPMailSessionMail() throws Exception {
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestingApp/SMTPMailSessionServlet");
         Log.info(c, "testMailSessionMail",
@@ -142,6 +142,7 @@ public class SMTPTest {
 
         System.out.println("Starting SMTP server on port " + smtpPort);
         ServerSetup smtpSetup = new ServerSetup(smtpPort, "localhost", "smtp");
+        smtpSetup.setVerbose(true);
 
         smtpServer = new GreenMail(smtpSetup);
         // Start the mailTestServer

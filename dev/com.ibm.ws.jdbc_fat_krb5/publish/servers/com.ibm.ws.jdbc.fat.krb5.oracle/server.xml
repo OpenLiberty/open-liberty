@@ -3,7 +3,6 @@
     <feature>componenttest-1.0</feature>
     <feature>servlet-4.0</feature>
     <feature>jdbc-4.2</feature>
-    <feature>jca-1.7</feature>
   </featureManager>
     
   <include location="../fatTestPorts.xml"/>

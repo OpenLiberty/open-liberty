@@ -23,3 +23,4 @@ IBM-API-Package: \
   com.ibm.ws.jca.feature
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

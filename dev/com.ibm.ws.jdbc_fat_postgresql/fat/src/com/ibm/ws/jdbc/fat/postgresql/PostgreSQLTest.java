@@ -15,9 +15,7 @@ import java.sql.Statement;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -25,8 +23,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.SimpleLogConsumer;
 import jdbc.fat.postgresql.web.PostgreSQLTestServlet;
 
 @RunWith(FATRunner.class)
@@ -42,16 +42,16 @@ public class PostgreSQLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    @ClassRule
-    public static CustomPostgreSQLContainer<?> postgre = new CustomPostgreSQLContainer<>("postgres:11.2-alpine")
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:11.2-alpine")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
-                    .withConfigOption("max_prepared_transactions", "2")
-                    .withLogConsumer(PostgreSQLTest::log);
+                    .withLogConsumer(new SimpleLogConsumer(c, "postgre"));
 
     @BeforeClass
     public static void setUp() throws Exception {
+        postgre.start();
+
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.postgresql.web");
 
         String host = postgre.getContainerIpAddress();
@@ -78,16 +78,13 @@ public class PostgreSQLTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("DSRA0302E", // DSRA0302E:  XAException occurred.  Error code is: XAER_RMFAIL (-7).  Exception is: Error rolling back prepared transaction.
-                          "DSRA0304E", // DSRA0304E:  XAException occurred. XAException contents and details are: Caused by org.postgresql.util.PSQLException: This connection has been closed.
-                          "J2CA0027E" // J2CA0027E: An exception occurred while invoking rollback on an XA Resource Adapter from DataSource jdbc/postgres/xa
-        );
-    }
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(c, "postgresql", msg);
+        try {
+            server.stopServer("DSRA0302E", // DSRA0302E:  XAException occurred.  Error code is: XAER_RMFAIL (-7).  Exception is: Error rolling back prepared transaction.
+                              "DSRA0304E", // DSRA0304E:  XAException occurred. XAException contents and details are: Caused by org.postgresql.util.PSQLException: This connection has been closed.
+                              "J2CA0027E" // J2CA0027E: An exception occurred while invoking rollback on an XA Resource Adapter from DataSource jdbc/postgres/xa
+            );
+        } finally {
+            postgre.stop();
+        }
     }
 }

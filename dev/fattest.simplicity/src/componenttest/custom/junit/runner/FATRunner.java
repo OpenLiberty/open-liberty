@@ -67,7 +67,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private static final Class<?> c = FATRunner.class;
 
     // Used to reduce timeouts to a sensible level when FATs are running locally
-    public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+    public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun") && !Boolean.parseBoolean(System.getenv("CI"));
 
     private static final int MAX_FFDC_LINES = 1000;
     private static final boolean DISABLE_FFDC_CHECKING = Boolean.getBoolean("disable.ffdc.checking");
@@ -632,7 +632,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             if (JakartaEE9Action.isActive()) {
                 String[] exceptionClasses = ffdc.value();
                 for (String exceptionClass : exceptionClasses) {
-                    if(ee9Helper == null){
+                    if (ee9Helper == null) {
                         ee9Helper = new EE9PackageReplacementHelper();
                     }
                     exceptionClass = ee9Helper.replacePackages(exceptionClass);
@@ -682,7 +682,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 if (JakartaEE9Action.isActive()) {
                     String[] exceptionClasses = ffdc.value();
                     for (String exceptionClass : exceptionClasses) {
-                        if(ee9Helper == null){
+                        if (ee9Helper == null) {
                             ee9Helper = new EE9PackageReplacementHelper();
                         }
                         exceptionClass = ee9Helper.replacePackages(exceptionClass);
@@ -762,7 +762,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 serverField.set(testClass, serv);
                 Log.info(c, method, "Injected LibertyServer " + serv.getServerName() + " to class " + testClass.getCanonicalName());
             } catch (Exception e) {
-                
+
                 throw new RuntimeException(e);
             }
         }

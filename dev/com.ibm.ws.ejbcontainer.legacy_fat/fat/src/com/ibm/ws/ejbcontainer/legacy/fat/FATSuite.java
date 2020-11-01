@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.EJB1XStatefulTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.EJBinWAR2xTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.PassivationRegressionTest;
 import com.ibm.ws.ejbcontainer.legacy.fat.tests.SFLocalTest;
@@ -24,6 +25,7 @@ import com.ibm.ws.ejbcontainer.legacy.fat.tests.SLRemoteTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                EJB1XStatefulTest.class,
                 EJBinWAR2xTest.class,
                 PassivationRegressionTest.class,
                 SFLocalTest.class,

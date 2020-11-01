@@ -481,16 +481,16 @@ public class JwtBuilderSetApisClient extends HttpServlet {
      */
     protected void setEncryptWith(PrintWriter pw, JSONObject attrs) throws Exception {
 
-        if (attrs.containsKey(JWTBuilderConstants.KEY_MGMT_ALG) || attrs.containsKey(JWTBuilderConstants.ENCRYPT_KEY) || attrs.containsKey(JWTBuilderConstants.CONTENT_ENCRYPT_ALG)) {
-            String keyMgmtAlg = (String) attrs.get(JWTBuilderConstants.KEY_MGMT_ALG);
-            String encryptKeyString = (String) attrs.get(JWTBuilderConstants.ENCRYPT_KEY);
-            String contentEncryptAlg = (String) attrs.get(JWTBuilderConstants.CONTENT_ENCRYPT_ALG);
+        if (attrs.containsKey(JWTBuilderConstants.PARAM_KEY_MGMT_ALG) || attrs.containsKey(JWTBuilderConstants.PARAM_ENCRYPT_KEY) || attrs.containsKey(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG)) {
+            String keyMgmtAlg = (String) attrs.get(JWTBuilderConstants.PARAM_KEY_MGMT_ALG);
+            String encryptKeyString = (String) attrs.get(JWTBuilderConstants.PARAM_ENCRYPT_KEY);
+            String contentEncryptAlg = (String) attrs.get(JWTBuilderConstants.PARAM_CONTENT_ENCRYPT_ALG);
 
             // to allow calling test case to test all possible combinations of good/bad values passed to the encryptWith method,
             //  allow caller to pass any subset of parms - we'll pass null for any missing
             // this means that for positive tests, caller needs to pass values for all parms even the "defaults"
             if (keyMgmtAlg != null || encryptKeyString != null || contentEncryptAlg != null) {
-                Key encryptKey = KeyTools.getPublicKeyFromPem(encryptKeyString);
+                Key encryptKey = KeyTools.getKeyFromPem(encryptKeyString);
                 appUtils.logIt(pw, "Calling encryptWith with parms: keyManagementAlg=" + keyMgmtAlg + ", keyManagementKey=" + encryptKey + ", contentEncryptionAlg=" + contentEncryptAlg);
                 myJwtBuilder.encryptWith(keyMgmtAlg, encryptKey, contentEncryptAlg);
             }

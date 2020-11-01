@@ -65,6 +65,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
     private static final String GRPC_CLIENT_HTP_NOMATCH = "grpc.client.htp.nomatch.server.xml";
     private static final String GRPC_CLIENT_SECHEADER = "grpc.client.secheader.server.xml";
     private static final int SHORT_TIMEOUT = 500; // .5 seconds
+    private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
 
     @Server("GrpcServer")
     public static LibertyServer GrpcServer;
@@ -108,8 +109,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         LOG.info("ClientHeaderPropagationTests : testNoHeaderMatches() : test no match in headersToPropagate.");
 
         // First set a config with a <grpcTarget> that wouldn't match a header
-        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_HTP_NOMATCH, null, LOG);
-        GrpcServer.waitForConfigUpdateInLogUsingMark(appName_srv);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcServer, serverConfigurationFile, GRPC_CLIENT_HTP_NOMATCH, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -174,8 +174,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         LOG.info("ClientHeaderPropagationTests : testSingleHeaderMatch() : test a single match in headersToPropagate.");
 
         // First set a config with a <grpcTarget> that matches a header
-        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_HTP_MATCH, null, LOG);
-        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcServer, serverConfigurationFile, GRPC_CLIENT_HTP_MATCH, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -240,8 +239,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         LOG.info("ClientHeaderPropagationTests : testMultipleHeaderMatches() : test multiple matches in headersToPropagate.");
 
         // First set a config with a <grpcTarget> that matches a header
-        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_HTP_MULTIMATCH, null, LOG);
-        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcServer, serverConfigurationFile, GRPC_CLIENT_HTP_MULTIMATCH, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -313,8 +311,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         LOG.info("ClientHeaderPropagationTests : testOverrideAuthority() : test overrideAuthority is propagated.");
 
         // First set a config with a <grpcTarget> that matches a header
-        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_SECHEADER, null, LOG);
-        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcServer, serverConfigurationFile, GRPC_CLIENT_SECHEADER, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {
@@ -377,8 +374,7 @@ public class ClientHeaderPropagationTests extends FATServletClient {
         LOG.info("ClientHeaderPropagationTests : testUserAgent() : test userAgent is propagated.");
 
         // First set a config with a <grpcTarget> that matches a header
-        GrpcTestUtils.setServerConfiguration(GrpcServer, DEFAULT_CONFIG_FILE, GRPC_CLIENT_SECHEADER, null, LOG);
-        GrpcServer.waitForConfigUpdateInLogUsingMark(appName);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(GrpcServer, serverConfigurationFile, GRPC_CLIENT_SECHEADER, appName, LOG);
 
         String contextRoot = "HelloWorldClient";
         try (WebClient webClient = new WebClient()) {

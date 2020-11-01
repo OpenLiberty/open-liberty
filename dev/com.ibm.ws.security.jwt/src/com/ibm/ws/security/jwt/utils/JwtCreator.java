@@ -90,7 +90,7 @@ public class JwtCreator {
             jwt = JwsSigner.getSignedJwt(claims, jwtData);
 
             if (jwtData.isJwe()) {
-                jwt = JweSigner.getSignedJwt(jwt, jwtData);
+                jwt = JweHelper.createJweString(jwt, jwtData);
             }
 
             return new JwtResult(jwt, claims);
@@ -183,11 +183,11 @@ public class JwtCreator {
         }
 
         // Sets nbf claim to elapsedNbf since token issued
-        long elapsedNbfInSeconds = jwtData.getConfig().getElapsedNbfTime();
-        if (elapsedNbfInSeconds >= 0) {
-            claims.setNotBefore(NumericDate.fromSeconds(claims.getIssuedAt().getValue() + elapsedNbfInSeconds));
+        long nbfOffsetInSeconds = jwtData.getConfig().getNbfOffsetTime();
+        if (nbfOffsetInSeconds >= 0) {
+            claims.setNotBefore(NumericDate.fromSeconds(claims.getIssuedAt().getValue() + nbfOffsetInSeconds));
         }
-
+        
         return claims;
     }
 

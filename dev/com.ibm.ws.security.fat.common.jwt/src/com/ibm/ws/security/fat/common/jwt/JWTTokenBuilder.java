@@ -21,6 +21,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import org.jose4j.base64url.SimplePEMEncoder;
+import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.JsonWebSignature;
@@ -60,6 +61,7 @@ public class JWTTokenBuilder {
     protected static Class<?> thisClass = JWTTokenBuilder.class;
     JwtClaims _claims = null;
     JsonWebSignature _jws = null;
+    JsonWebEncryption _jwe = null;
     RsaJsonWebKey _rsajwk = null;
     String _jwt = null;
 //    private final Key _signingKey = null;
@@ -78,6 +80,8 @@ public class JWTTokenBuilder {
     public JWTTokenBuilder() {
         _claims = new JwtClaims();
         _jws = new JsonWebSignature();
+        _jwe = new JsonWebEncryption();
+
         try {
             _rsajwk = RsaJwkGenerator.generateJwk(2048); // this generates new pub and private key pair but we will replace them.
             _rsajwk.setKeyId("keyid");
@@ -288,6 +292,30 @@ public class JWTTokenBuilder {
         return this;
     }
 
+    public JWTTokenBuilder setKeyManagementKey(Key key) {
+        _jwe.setKey(key);
+        return this;
+    }
+
+    public JWTTokenBuilder setContentEncryptionAlg(String alg) {
+        _jwe.setEncryptionMethodHeaderParameter(alg);
+        return this;
+    }
+
+    public JWTTokenBuilder setKeyManagementKeyAlg(String alg) {
+        _jwe.setAlgorithmHeaderValue(alg);
+        return this;
+    }
+
+    public JWTTokenBuilder setPayload(String payload) {
+        _jwe.setPayload(payload);
+        return this;
+    }
+    
+    // does not currently support building JWE's 
+    // The tests have been using the built in builder (with encryptWith)
+    // to generate encrypted tokens
+    // Use apps such as JwtBuilderSetApisClient and JwtBuilderServlet
     public String build() {
         String thisMethod = "build";
 
@@ -314,6 +342,26 @@ public class JWTTokenBuilder {
             Log.info(thisClass, thisMethod, "jws: " + _jws.getKey());
 //            _jws.setKey(this.fromPemEncoded(privKey));
             _jwt = _jws.getCompactSerialization();
+            Log.info(thisClass, thisMethod, "after compact");
+            return _jwt;
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+    }
+
+    // builds a JWE with a simple payload
+    // caller needs to have already used the set methods to
+    // set:  keyManagementKeyAlgorithm, keyManagementKeyAlias,
+    // contentEncryptionAlgorithm and payload 
+    public String buildAlternateJWE() {
+        String thisMethod = "build";
+
+        try {
+            _jwe.setHeader("typ", "JOSE");
+            _jwe.setHeader("cty", "jwt");
+            _jwt = _jwe.getCompactSerialization();
             Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {

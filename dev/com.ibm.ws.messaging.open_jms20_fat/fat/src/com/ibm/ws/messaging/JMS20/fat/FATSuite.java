@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -22,44 +23,55 @@ import com.ibm.ws.messaging.JMS20.fat.JMSContextTest.JMSEjbJarXmlMdbTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSContextTest.JMSRedeliveryTest_120846;
 import com.ibm.ws.messaging.JMS20.fat.JMSDCFTest.JMSDCFVarTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSDCFTest.JMSDCFTest;
+import com.ibm.ws.messaging.JMS20.fat.JMSMBeanTest.JMSMBeanTest;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducerTest_118071;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducerTest_118073;
 import com.ibm.ws.messaging.JMS20.fat.JMSProducerTest.JMSProducer_Test118073;
-import com.ibm.ws.messaging.JMS20.fat.JMSMBeanTest.JMSMBeanTest;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionTest_129623;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionTest_129626;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithMsgSelTest_129623;
 import com.ibm.ws.messaging.JMS20.fat.SharedSubscription.SharedSubscriptionWithMsgSelTest_129626;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
+                DummyTest.class,
 
-        DummyTest.class,
-        LiteBucketSet1Test.class,
-        LiteBucketSet2Test.class,
-        JMSMBeanTest.class,
+                LiteBucketSet1Test.class,
+                LiteBucketSet2Test.class,
 
-        JMSProducerTest_118071.class, //full
-        JMSProducerTest_118073.class, //full
-        SharedSubscriptionTest_129623.class,
+                JMSMBeanTest.class, // javax only; j2ee-management is not available in jakarta
 
-        JMSConsumerTest_118076.class, //full
-        JMSConsumerTest_118077.class, //full
-        JMSRedeliveryTest_120846.class,
+                JMSProducerTest_118071.class, //full
+                JMSProducerTest_118073.class, //full
+                SharedSubscriptionTest_129623.class,
 
-        SharedSubscriptionWithMsgSelTest_129623.class,
-        SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
-        SharedSubscriptionTest_129626.class, //full 2nd
-        JMSProducer_Test118073.class, //full
+                JMSConsumerTest_118076.class, //full
+                JMSConsumerTest_118077.class, //full
+                JMSRedeliveryTest_120846.class,
 
-        DurableUnsharedTest.class,
-        JMSContextInjectTest.class, //full // JMSContextTest
+                SharedSubscriptionWithMsgSelTest_129623.class,
+                SharedSubscriptionWithMsgSelTest_129626.class, //full 2nd
+                SharedSubscriptionTest_129626.class, //full 2nd
+                JMSProducer_Test118073.class, //full
 
-// xx JMSDCFTest.class,
-        JMSDCFVarTest.class //full 2nd
+                DurableUnsharedTest.class,
+                JMSContextInjectTest.class, //full
 
-// xx JMSEjbJarXmlMdbTest.class, // MDBMDB
+                JMSDCFTest.class,
+                JMSDCFVarTest.class, //full 2nd
+
+                JMSEjbJarXmlMdbTest.class
 })
+
 public class FATSuite {
-    // EMPTY
+    // Run only during the Jakarta repeat for now.  When
+    // the tests are removed from WS-CD-Open, the pre-jakarta
+    // repeat can be re-enabled in open-liberty.
+
+    @ClassRule
+    public static RepeatTests repeater =
+        RepeatTests.with( new JakartaEE9Action() );
 }

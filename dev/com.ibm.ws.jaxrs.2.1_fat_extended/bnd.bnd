@@ -19,6 +19,7 @@ src: \
   test-applications/jsonbapp/src,\
   test-applications/jsonbCharsetApp/src,\
   test-applications/jsonbContextResolverApp/src,\
+  test-applications/jsonpApp/src,\
   test-applications/mutableHeadersApp/src,\
   test-applications/patchapp/src,\
   test-applications/providerPriorityApp/src,\
@@ -29,11 +30,11 @@ tested.features: cdi-2.0, cdi-1.2, jaxrs-2.1, jaxrs-2.0, mpconfig-1.4, restfulWS
 
 
 -buildpath: \
-  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+  com.ibm.websphere.javaee.annotation.1.3;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-  com.ibm.websphere.javaee.jsonb.1.0,\
-  com.ibm.websphere.javaee.jsonp.1.1,\
-  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+  com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest,\
   fattest.simplicity

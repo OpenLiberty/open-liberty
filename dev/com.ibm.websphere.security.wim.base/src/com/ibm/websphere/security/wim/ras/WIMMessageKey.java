@@ -1624,4 +1624,9 @@ public interface WIMMessageKey {
      * CWIMK0011E: The user registry operation could not be completed. A valid user registry or repository was not found.
      */
     String MISSING_REGISTRY_DEFINITION = "MISSING_REGISTRY_DEFINITION";
+
+    /**
+     * The defined userFilter attribute will be ignored since there are loginProperty attributes defined.
+     */
+    String LOGINPROPERTY_OVERRIDE_USERFILTER = "LOGINPROPERTY_OVERRIDE_USERFILTER";
 }

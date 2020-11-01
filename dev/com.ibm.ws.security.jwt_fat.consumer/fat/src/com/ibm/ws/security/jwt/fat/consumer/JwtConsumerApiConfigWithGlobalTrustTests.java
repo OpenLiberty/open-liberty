@@ -36,7 +36,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtConsumerApiConfigWithGlobalTrustTests extends CommonSecurityFat {
@@ -56,6 +55,7 @@ public class JwtConsumerApiConfigWithGlobalTrustTests extends CommonSecurityFat 
     public static void setUp() throws Exception {
 
         serverTracker.addServer(consumerServer);
+        skipRestoreServerTracker.addServer(consumerServer);
         consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_configGlobalTrust.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);

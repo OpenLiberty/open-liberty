@@ -10,8 +10,6 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
-import static org.junit.Assert.fail;
-
 import java.lang.reflect.Constructor;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -25,34 +23,34 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
-    DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container", "Properties_db2_jcc"),
-    Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer", "Properties_derby_embedded"),
-    DerbyClient("derbyclient.jar", "componenttest.topology.database.container.", "DerbyClientNoopContainer", "Properties_derby_client"),
-    Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.", "OracleContainer", "Properties_oracle"),
-    Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer", "Properties_postgresql"),
-    SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer", "Properties_microsoft_sqlserver");
+    DB2("jcc.jar", "org.testcontainers.containers.Db2Container", "Properties_db2_jcc"),
+    Derby("derby.jar", "componenttest.topology.database.container.DerbyNoopContainer", "Properties_derby_embedded"),
+    DerbyClient("derbyclient.jar", "componenttest.topology.database.container.DerbyClientContainer", "Properties_derby_client"),
+    Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.OracleContainer", "Properties_oracle"),
+    Postgres("postgresql.jar", "org.testcontainers.containers.PostgreSQLContainer", "Properties_postgresql"),
+    SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.SQLServerContainer", "Properties_microsoft_sqlserver");
 
-    private String driverName;
-    private Class<DataSourceProperties> dsPropsClass;
-    private Class<? extends JdbcDatabaseContainer> containerClass;
+    private final String driverName;
+    private final Class<DataSourceProperties> dsPropsClass;
+    private final Class<? extends JdbcDatabaseContainer> containerClass;
     
 
     @SuppressWarnings("unchecked")
-	DatabaseContainerType(final String driverName, final String packageName, final String containerClassName, final String dataSourcePropertiesClassName) {
+	DatabaseContainerType(final String driverName, final String containerClassName, final String dataSourcePropertiesClassName) {
         this.driverName = driverName;
         
         //Use reflection to get classes at runtime.
         Class containerClass = null, dsPropsClass  = null;
 		try {
-			containerClass = (Class<? extends JdbcDatabaseContainer>) Class.forName(packageName + containerClassName);
+			containerClass = (Class<? extends JdbcDatabaseContainer>) Class.forName(containerClassName);
 		} catch (ClassNotFoundException e) {
-			fail("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name());
+			throw new IllegalArgumentException("Could not find the container class: " + containerClassName + " for testconatiner type: " + this.name(), e);
 		}
 		
 		try {
 			dsPropsClass = (Class<DataSourceProperties>) Class.forName("com.ibm.websphere.simplicity.config.dsprops." + dataSourcePropertiesClassName);
 		} catch (ClassNotFoundException e) {
-			fail("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name());
+			throw new IllegalArgumentException("Could not find the datasource properties class: " + dataSourcePropertiesClassName + " for testconatiner type: " + this.name(), e);
 		}
 		
         this.containerClass = containerClass;
@@ -121,6 +119,6 @@ public enum DatabaseContainerType {
         String msg = frame.getUtf8String();
         if (msg.endsWith("\n"))
             msg = msg.substring(0, msg.length() - 1);
-        Log.info(this.containerClass, "output", msg);
+        Log.info(this.containerClass, "[" + name() + "]", msg);
     }
 }

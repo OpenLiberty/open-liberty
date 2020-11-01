@@ -64,7 +64,8 @@ public class EECompatibilityTest {
     static final String CONFLICT = "CWWKF0033E.*",
                     SAME_EE_CONFLICT = "CWWKF0043E.*",
                     DIFF_EE_CONFLICT = "CWWKF0044E.*",
-                    EE_CONFLICT = SAME_EE_CONFLICT + "|" + DIFF_EE_CONFLICT,
+                    SAME_INDIRECT_MODEL_CONFLICT = "CWWKF0047E.*",
+                    EE_CONFLICT = SAME_EE_CONFLICT + "|" + DIFF_EE_CONFLICT + "|" + SAME_INDIRECT_MODEL_CONFLICT,
                     ANY_CONFLICT = CONFLICT + "|" + EE_CONFLICT;
 
     static final String RESOLUTION_ERROR = "CWWKE0702E.*";
@@ -86,7 +87,7 @@ public class EECompatibilityTest {
 
     @Test
     public void testCompatibleFeaturesEE9() throws Exception {
-        server.changeFeatures(Arrays.asList("jpaContainer-3.0", "servlet-5.0"));
+        server.changeFeatures(Arrays.asList("persistenceContainer-3.0", "servlet-5.0"));
         server.startServer();
         msg = server.waitForStringInLogUsingMark(ANY_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should not report any conflict for the configured EE 9 features, but it did: msg=" + msg,
@@ -148,7 +149,7 @@ public class EECompatibilityTest {
     public void testConflictingEeCompatibleFeaturesEE8and7() throws Exception {
         server.changeFeatures(Arrays.asList("servlet-4.0", "jpa-2.1"));
         server.startServer();
-        msg = server.waitForStringInLogUsingMark(SAME_EE_CONFLICT, shortTimeOut);
+        msg = server.waitForStringInLogUsingMark(SAME_INDIRECT_MODEL_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report an EE compatibility conflict for the configured features, but it did not: msg=" + msg,
                    msg != null && msg.contains("servlet-4.0") && msg.contains("jpa-2.1"));
         server.stopServer(ANY_CONFLICT + "|" + RESOLUTION_ERROR);
@@ -198,11 +199,11 @@ public class EECompatibilityTest {
     @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingEeCompatibleFeaturesEE9and8() throws Exception {
         // These configuration causes one conflict, only: the ee conflict
-        server.changeFeatures(Arrays.asList("jpaContainer-3.0", "jsf-2.3")); // Conflict: -->ee9, -->ee8
+        server.changeFeatures(Arrays.asList("persistenceContainer-3.0", "jsf-2.3")); // Conflict: -->ee9, -->ee8
         server.startServer(name.getMethodName() + ".log", true, true, false);
         msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
-        assertTrue("The feature manager should report an EE compatibility conflict for the configured jpaContainer-3.0 (jakarta) and jsf-2.3 (javaee) features, but it did not: msg="
-                   + msg, msg != null && msg.contains("jpaContainer-3.0") && msg.contains("jsf-2.3"));
+        assertTrue("The feature manager should report an EE compatibility conflict for the configured persistenceContainer-3.0 (jakarta) and jsf-2.3 (javaee) features, but it did not: msg="
+                   + msg, msg != null && msg.contains("persistenceContainer-3.0") && msg.contains("jsf-2.3"));
         assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
         server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }

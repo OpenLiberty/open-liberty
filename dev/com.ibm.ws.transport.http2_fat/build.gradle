@@ -11,9 +11,9 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs  'org.apache.httpcomponents.client5:httpclient5:5.0',
-    'org.apache.httpcomponents.core5:httpcore5:5.0',
-    'org.apache.httpcomponents.core5:httpcore5-h2:5.0',
+  requiredLibs  'org.apache.httpcomponents.client5:httpclient5:5.0.2',
+    'org.apache.httpcomponents.core5:httpcore5:5.0.2',
+    'org.apache.httpcomponents.core5:httpcore5-h2:5.0.2',
     'commons-logging:commons-logging:1.1.3',
     'commons-codec:commons-codec:1.6'
 }

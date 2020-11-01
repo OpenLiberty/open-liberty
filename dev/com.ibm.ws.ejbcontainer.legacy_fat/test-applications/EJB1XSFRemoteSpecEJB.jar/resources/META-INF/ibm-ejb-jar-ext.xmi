@@ -1,0 +1,45 @@
+<ejbext:EJBJarExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbext="ejbext.xmi" xmlns:ejb="ejb.xmi" xmi:id="ejb-jar_ID_Ext">
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_1" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1"/>
+    <structure xmi:id="BeanStructure_1" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_1" activateAt="ONCE"/>
+    <internationalization xmi:id="BeanInternationalization_1" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_1" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_2" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_2"/>
+    <structure xmi:id="BeanStructure_2" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_2" activateAt="ONCE"/>
+    <internationalization xmi:id="BeanInternationalization_2" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_2" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_3" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_3"/>
+    <structure xmi:id="BeanStructure_3" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_3" activateAt="ONCE"/>
+    <internationalization xmi:id="BeanInternationalization_3" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_3" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_4" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_4"/>
+    <structure xmi:id="BeanStructure_4" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_4" activateAt="ONCE"/>
+    <internationalization xmi:id="BeanInternationalization_4" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_4" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_5" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_5"/>
+    <structure xmi:id="BeanStructure_5" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_5" activateAt="TRANSACTION"/>
+    <internationalization xmi:id="BeanInternationalization_5" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_5" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+  <ejbExtensions xmi:type="ejbext:SessionExtension" xmi:id="SessionExtension_6" timeout="600">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_6"/>
+    <structure xmi:id="BeanStructure_6" inheritenceRoot="false"/>
+    <beanCache xmi:id="BeanCache_6" activateAt="TRANSACTION"/>
+    <internationalization xmi:id="BeanInternationalization_6" invocationLocale="CALLER"/>
+    <localTran xmi:id="LocalTran_6" boundary="BEAN_METHOD" unresolvedAction="ROLLBACK"/>
+  </ejbExtensions>
+</ejbext:EJBJarExtension>

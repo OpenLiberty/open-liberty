@@ -12,10 +12,8 @@ package sharedsubscriptionwithmsgsel.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
 import java.util.Set;
 
 import javax.jms.InvalidDestinationRuntimeException;
@@ -24,21 +22,17 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
 import javax.jms.JMSRuntimeException;
-import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnectionFactory;
 import javax.management.InstanceNotFoundException;
-import javax.management.MBeanServer;
+import javax.management.MBeanServerConnection;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
-import javax.management.MalformedObjectNameException;
 import javax.management.openmbean.CompositeData;
-import javax.management.remote.JMXServiceURL;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
-import javax.management.MBeanServerConnection;
+import javax.management.remote.JMXServiceURL;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -64,24 +58,22 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         super.init();
 
         try {
-            jmsTCFBindings = (TopicConnectionFactory)
-                new InitialContext().lookup("java:comp/env/eis/tcf");
-        } catch ( NamingException e ) {
+            jmsTCFBindings = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/eis/tcf");
+        } catch (NamingException e) {
             e.printStackTrace();
         }
         System.out.println("Topic connection factory 'java:comp/env/eis/tcf':\n" + jmsTCFBindings);
 
         try {
-            jmsTCFTCP = (TopicConnectionFactory)
-                new InitialContext() .lookup("java:comp/env/eis/tcf1");
-        } catch ( NamingException e ) {
+            jmsTCFTCP = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/eis/tcf1");
+        } catch (NamingException e) {
             e.printStackTrace();
         }
         System.out.println("Topic connection factory 'java:comp/env/eis/tcf1':\n" + jmsTCFTCP);
 
         try {
             jmsTopic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
-        } catch ( NamingException e ) {
+        } catch (NamingException e) {
             e.printStackTrace();
         }
         System.out.println("Topic 'java:comp/env/eis/topic1':\n" + jmsTopic1);
@@ -89,20 +81,20 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             jmsTopic2_Expiry = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
 
-        } catch ( NamingException e ) {
+        } catch (NamingException e) {
             e.printStackTrace();
         }
         System.out.println("Topic 'java:comp/env/eis/topic2' (expiry):\n" + jmsTopic2_Expiry);
 
         try {
             jmsTopic3 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic3");
-        } catch ( NamingException e ) {
+        } catch (NamingException e) {
             e.printStackTrace();
         }
         System.out.println("Topic 'java:comp/env/eis/topic3':\n" + jmsTopic3);
 
-        if ( (jmsTCFBindings == null) || (jmsTCFTCP == null) ||
-             (jmsTopic1 == null) ||(jmsTopic2_Expiry == null) || (jmsTopic3 == null) ) {
+        if ((jmsTCFBindings == null) || (jmsTCFTCP == null) ||
+            (jmsTopic1 == null) || (jmsTopic2_Expiry == null) || (jmsTopic3 == null)) {
             throw new ServletException("Failed JMS initialization");
         }
     }
@@ -132,7 +124,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     private JMXConnector openLocalConnector() throws MalformedURLException, IOException {
-        JMXServiceURL localConnectorURL = new JMXServiceURL( getLocalAddress() ); // throws MalformedURLException
+        JMXServiceURL localConnectorURL = new JMXServiceURL(getLocalAddress()); // throws MalformedURLException
         System.out.println("JMX Service URL [ " + localConnectorURL + " ]");
         // System.out.println("  Protocol [ " + localConnectorURL.getProtocol() + " ]");
         // System.out.println("  Port     [ " + localConnectorURL.getPort() + " ]");
@@ -140,7 +132,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
 
         // String localURLPath = localConnectorURL.getURLPath();
         // System.out.println("  Path     [ " + localURLPath + " ]");
-		
+
         JMXConnector localConnector = JMXConnectorFactory.connect(localConnectorURL); // throws IOException
         System.out.println("JMX Connector [ " + localConnector + " ]");
         // System.out.println("JMX Connector ID [ " + localConnector.getConnectionId() + " ]");
@@ -170,22 +162,21 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         // [ com.ibm.ws.sib.admin.internal.JsQueue ] [ 1295428529 ]
         // [ WebSphere:feature=wasJmsServer,type=Queue,name=_PSIMP.TDRECEIVER_0DF1DC7B8ADD27AF ]
 
-        for ( ObjectInstance mbean : mbeans ) {
+        for (ObjectInstance mbean : mbeans) {
             String mbeanPrintString = mbean.toString();
-            if ( !mbeanPrintString.contains("feature=wasJmsServer") ) {
+            if (!mbeanPrintString.contains("feature=wasJmsServer")) {
                 continue;
             }
             System.out.println(
-                "[ " + mbean.getClassName() + " ]" +
-                " [ " + mbean.hashCode() + " ] [ " + mbean.getObjectName() + " ]");
+                               "[ " + mbean.getClassName() + " ]" +
+                               " [ " + mbean.hashCode() + " ] [ " + mbean.getObjectName() + " ]");
             System.out.println(
-                "  [ " + mbeanPrintString + " ]");
+                               "  [ " + mbeanPrintString + " ]");
         }
     }
 
     private CompositeData[] listSubscriptions(String nameText) throws Exception {
-        JMXConnector localConnector =
-            openLocalConnector(); // throws MalformedURLException, IOException
+        JMXConnector localConnector = openLocalConnector(); // throws MalformedURLException, IOException
 
         try {
             MBeanServerConnection localEngine = localConnector.getMBeanServerConnection(); // throws IOException
@@ -212,20 +203,20 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
      * Handle a GET request to this servlet: Invoke the test method specified as
      * request paramater "test".
      *
-     * The test method throws an exception when it fails.  If no exception
+     * The test method throws an exception when it fails. If no exception
      * is thrown by the test method, indicate success through the response
-     * output.  If an exception is thrown, omit the success indication.
+     * output. If an exception is thrown, omit the success indication.
      * Instead, display an error indication and display the exception stack
      * to the response output.
      *
-     * @param request The HTTP request which is being processed.
+     * @param request  The HTTP request which is being processed.
      * @param response The HTTP response which is being processed.
      *
      * @throws ServletException Thrown in case of a servlet processing error.
-     * @throws IOException Thrown in case of an input/output error.
+     * @throws IOException      Thrown in case of an input/output error.
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String test = request.getParameter("test");
         setTest(test);
@@ -238,21 +229,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         out.println("Starting " + test + "<br>");
 
         // The injection engine doesn't like this at the class level.
-        TraceComponent tc = Tr.register( getClass() );
+        TraceComponent tc = Tr.register(getClass());
 
         Tr.entry(this, tc, test);
         try {
             System.out.println(" Starting : " + test);
-            getClass()
-                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
-                .invoke(this, request, response);
+            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
 
             Tr.exit(this, tc, test);
 
-        } catch ( Throwable e ) {
-            if ( e instanceof InvocationTargetException ) {
+        } catch (Throwable e) {
+            if (e instanceof InvocationTargetException) {
                 e = e.getCause();
             }
 
@@ -271,7 +260,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     //
 
     public void testCreateSharedDurableConsumerWithMsgSelector_create(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextSender = jmsTCFBindings.createContext();
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
@@ -288,14 +277,14 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_consume(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                       HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(jmsTopic1, "SUBID00", "Company = 'IBM'");
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn == null ) {
+        if (msgIn == null) {
             testFailed = true;
         }
 
@@ -303,13 +292,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("SUBID00");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_consume failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_create_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextSender = jmsTCFTCP.createContext();
         JMSContext jmsContextReceiver = jmsTCFTCP.createContext();
@@ -326,14 +315,14 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_consume_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFTCP.createContext();
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(jmsTopic1, "SUBID01", "Company = 'IBM'");
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn == null ) {
+        if (msgIn == null) {
             testFailed = true;
         }
 
@@ -341,13 +330,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("SUBID01");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_consume_TCP failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_create_Expiry(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextSender = jmsTCFBindings.createContext();
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
@@ -364,7 +353,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // The topic timeToLive is set to 200ms;
         // wait twice that long to force the message to expire.
@@ -375,7 +364,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn != null ) {
+        if (msgIn != null) {
             testFailed = true;
         }
 
@@ -383,13 +372,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("SUBID02");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_create_Expiry_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // The topic timeToLive is set to 200ms;
         // wait twice that long to force the message to expire.
@@ -412,7 +401,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // The topic timeToLive is set to 200ms;
         // wait twice that long to force the message to expire.
@@ -423,7 +412,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn != null ) {
+        if (msgIn != null) {
             testFailed = true;
         }
 
@@ -431,13 +420,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("SUBID03");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_consumeAfterExpiry_TCP failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_unsubscribe(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
 
@@ -461,7 +450,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
                 String obn = (String) localEngine.getAttribute(name, "Id");
                 testFailed = true;
                 System.out.println("Unexpectedly retrieved attribute [ " + name + " ] [ " + "Id" + " ] as [ " + obn + " ]");
-            } catch ( InstanceNotFoundException ex ) {
+            } catch (InstanceNotFoundException ex) {
                 ex.printStackTrace();
             }
         } finally {
@@ -470,13 +459,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
 
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                               HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFTCP.createContext();
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(jmsTopic1, "DURATEST0", "Company = 'IBM'");
@@ -496,7 +485,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
                 String obn = (String) localEngine.getAttribute(name, "Id");
                 testFailed = true;
                 System.out.println("Unexpectedly retrieved attribute [ " + name + " ] [ " + "Id" + " ] as [ " + obn + " ]");
-            } catch ( InstanceNotFoundException ex ) {
+            } catch (InstanceNotFoundException ex) {
                 ex.printStackTrace();
             }
         } finally {
@@ -507,13 +496,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("DURATEST0");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_unsubscribe_TCP failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_2Subscribers(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                            HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
 
@@ -529,7 +518,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         CompositeData[] obn = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
         boolean testFailed = false;
-        if ( obn.length != 1 ) {
+        if (obn.length != 1) {
             testFailed = true;
         }
 
@@ -538,13 +527,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContextReceiver.unsubscribe("DURATEST1");
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers failed [ " + obn.length + " ] [ " + obn + " ]");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -561,7 +550,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         CompositeData[] obn = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
         boolean testFailed = false;
-        if ( obn.length != 1 ) {
+        if (obn.length != 1) {
             testFailed = true;
         }
 
@@ -570,14 +559,14 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST2");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_2Subscribers_TCP failed");
         }
 
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -597,7 +586,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         CompositeData[] obn2 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
         boolean testFailed = false;
-        if ( obn2.length != 1 ) {
+        if (obn2.length != 1) {
             testFailed = true;
         }
 
@@ -605,13 +594,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("2SUBS");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic failed [ " + obn2.length + " ] [ " + obn2 + " ]");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -632,7 +621,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         CompositeData[] obn2 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
         boolean testFailed = false;
-        if ( obn2.length != 1 ) {
+        if (obn2.length != 1) {
             testFailed = true;
         }
 
@@ -640,13 +629,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST3");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
 
@@ -654,19 +643,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(jmsTopic1, "SUBID04", "BAD SELECTOR");
             testFailed = true;
-        } catch ( InvalidSelectorRuntimeException ex ) {
+        } catch (InvalidSelectorRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
 
@@ -674,19 +663,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(jmsTopic1, "SUBID05", "BAD SELECTOR");
             testFailed = true;
-        } catch ( InvalidSelectorRuntimeException ex ) {
+        } catch (InvalidSelectorRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -694,19 +683,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(null, "DURATEST4", "Company = 'IBM'");
             testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
+        } catch (InvalidDestinationRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -714,19 +703,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(null, "DURATEST5", "Company = 'IBM'");
             testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
+        } catch (InvalidDestinationRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_InvalidDestination failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_Null(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                    HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -735,26 +724,26 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, null, "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, "", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_Null failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_Null_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -763,20 +752,20 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, null, "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, "", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_Null_TCP failed");
         }
     }
@@ -802,7 +791,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // then a JMSRuntimeException will be thrown.
 
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                           HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -817,7 +806,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(jmsTopic3, "DURATEST6", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
@@ -825,13 +814,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST6");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_JRException failed");
         }
     }
 
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                               HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -846,7 +835,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(jmsTopic3, "DURATEST7", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
@@ -854,7 +843,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST7");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableConsumerWithMsgSelector_JRException_TCP failed");
         }
     }
@@ -865,7 +854,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // client identifier (if set) then a JMSRuntimeException is thrown.
 
     public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                    HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
         JMSConsumer jmsConsumer1 = jmsContext.createSharedDurableConsumer(jmsTopic1, "DURATEST8", "Company = 'IBM'");
@@ -880,7 +869,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "DURATEST8");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
@@ -888,13 +877,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST8");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException failed");
         }
     }
 
     public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -910,7 +899,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createDurableConsumer(jmsTopic1, "DURATEST9");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
@@ -918,13 +907,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsContext.unsubscribe("DURATEST9");
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_TCP failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_create(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextSender = jmsTCFBindings.createContext();
 
@@ -942,7 +931,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_create_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextSender = jmsTCFTCP.createContext();
 
@@ -960,41 +949,41 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_consume(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFBindings.createContext();
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(jmsTopic1, "SUBID06", "Company = 'IBM'");
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn != null ) {
+        if (msgIn != null) {
             testFailed = true;
         }
 
         jmsConsumer.close();
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_consume failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_consume_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextReceiver = jmsTCFTCP.createContext();
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(jmsTopic1, "SUBID07", "Company = 'IBM'");
         TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
         boolean testFailed = false;
-        if ( msgIn != null ) {
+        if (msgIn != null) {
             testFailed = true;
         }
 
         jmsConsumer.close();
         jmsContextReceiver.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_consume_TCP failed");
         }
     }
@@ -1005,7 +994,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // creates a JMSConsumer on the existing subscription.
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                               HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContextTCFBindings = jmsTCFBindings.createContext();
 
@@ -1026,7 +1015,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         int added = Math.abs(obn2.length - obn1.length);
 
         boolean testFailed = false;
-        if ( added != 1 ) {
+        if (added != 1) {
             testFailed = true;
         }
 
@@ -1034,13 +1023,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsConsumer2.close();
         jmsContextTCFBindings.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                   HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -1061,7 +1050,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         int added = Math.abs(obn2.length - obn1.length);
 
         boolean testFailed = false;
-        if ( added != 1 ) {
+        if (added != 1) {
             testFailed = true;
         }
 
@@ -1069,7 +1058,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsConsumer2.close();
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP failed");
         }
     }
@@ -1089,7 +1078,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // the subscription, then a JMSRuntimeException will be thrown.
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_JRException(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -1105,20 +1094,20 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createSharedConsumer(jmsTopic3, "SUBID08", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsConsumer1.close();
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_JRException failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_JRException_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -1134,14 +1123,14 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer2 = jmsContext.createSharedConsumer(jmsTopic3, "SUBID09", "Company = 'IBM'");
             testFailed = true;
-        } catch ( JMSRuntimeException ex ) {
+        } catch (JMSRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsConsumer1.close();
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_JRException_TCP failed");
         }
     }
@@ -1150,7 +1139,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // the same name and clientId (which may be unset). Such subscriptions would be completely separate.
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_coexist(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -1171,7 +1160,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         msg1 = (TextMessage) jmsConsumer2.receive(30000);
 
         boolean testFailed = false;
-        if ( (msg == null) || (msg1 == null) ) {
+        if ((msg == null) || (msg1 == null)) {
             testFailed = true;
         }
 
@@ -1179,13 +1168,13 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsConsumer2.close();
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumer_coexist failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_coexist_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -1206,7 +1195,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         msg1 = (TextMessage) jmsConsumer2.receive(30000);
 
         boolean testFailed = false;
-        if ( (msg == null) || (msg1 == null) ) {
+        if ((msg == null) || (msg1 == null)) {
             testFailed = true;
         }
 
@@ -1214,7 +1203,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         jmsConsumer2.close();
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumer_coexist_TCP failed");
         }
     }
@@ -1222,7 +1211,7 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     // 129626_1_9  InvalidDestinationRuntimeException - if an invalid topic is specified.
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_InvalidDestination(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -1230,19 +1219,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedConsumer(null, "DURATEST10", "Company = 'IBM'");
             testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
+        } catch (InvalidDestinationRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_InvalidDestination failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_InvalidDestination_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -1250,19 +1239,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedConsumer(null, "DURATEST10", "Company = 'IBM'");
             testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
+        } catch (InvalidDestinationRuntimeException ex) {
             ex.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_InvalidDestination_TCP failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_InvalidMsgSelector(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -1270,19 +1259,19 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, "SUBID12", "BAD SELECTOR");
             testFailed = true;
-        } catch ( InvalidSelectorRuntimeException e ) {
+        } catch (InvalidSelectorRuntimeException e) {
             e.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_InvalidMsgSelector failed");
         }
     }
 
     public void testCreateSharedNonDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                                                                         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -1290,29 +1279,27 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         try {
             JMSConsumer jmsConsumer = jmsContext.createSharedDurableConsumer(jmsTopic1, "SUBID13", "BAD SELECTOR");
             testFailed = true;
-        } catch ( InvalidSelectorRuntimeException e ) {
+        } catch (InvalidSelectorRuntimeException e) {
             e.printStackTrace();
         }
 
         jmsContext.close();
 
-        if ( testFailed ) {
+        if (testFailed) {
             throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP failed");
         }
     }
 
     public void testBasicMDBTopic(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
-            new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
-        Topic fatTopic = (Topic)
-            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
+        Topic fatTopic = (Topic) new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
         JMSContext jmsContext = fatTCF.createContext();
         JMSProducer jmsPublisher = jmsContext.createProducer();
 
-        int msgs = 10;
-        for ( int msgNo = 0; msgNo < msgs; msgNo++ ) {
+        int msgs = 20;
+        for (int msgNo = 0; msgNo < msgs; msgNo++) {
             jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
         }
 
@@ -1322,17 +1309,16 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
     }
 
     public void testBasicMDBTopic_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
-            new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
-        Topic fatTopic = (Topic)
-            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/jms/FAT_COMMS_TCF");
+
+        Topic fatTopic = (Topic) new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
         JMSContext jmsContext = fatTCF.createContext();
         JMSProducer jmsPublisher = jmsContext.createProducer();
 
-        int msgs = 10;
-        for ( int msgNo = 0; msgNo < msgs; msgNo++ ) {
+        int msgs = 20;
+        for (int msgNo = 0; msgNo < msgs; msgNo++) {
             jmsPublisher.send(fatTopic, "testBasicMDBTopic_TCP:" + msgNo);
         }
 

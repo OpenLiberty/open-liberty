@@ -29,6 +29,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 IfaceTest.class,
                 IgnoreTest.class,
                 InputFieldsTest.class,
+                JarInWarTest.class,
                 MetricsTest.class,
                 OutputFieldsTest.class,
                 RolesAuthTest.class,

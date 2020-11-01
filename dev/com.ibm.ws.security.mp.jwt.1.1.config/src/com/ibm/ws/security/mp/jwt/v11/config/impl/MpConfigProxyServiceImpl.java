@@ -13,6 +13,7 @@ package com.ibm.ws.security.mp.jwt.v11.config.impl;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
@@ -36,13 +37,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.1";
-
-    public static Set<String> ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES = new HashSet<String>();
-    static {
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.ISSUER);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.PUBLIC_KEY);
-        ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.add(MpConstants.KEY_LOCATION);
-    }
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
@@ -81,18 +75,26 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     @Override
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         if (isAcceptableMpConfigProperty(propertyName)) {
-            return getConfig(cl).getValue(propertyName, propertyType);
+            Optional<T> value = getConfig(cl).getOptionalValue(propertyName, propertyType);
+            if (value != null && value.isPresent()) {
+                return value.get();
+            }
+            return null;
         }
         return null;
     }
 
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
-        return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES;
+        Set<String> acceptableMpConfigPropNames = new HashSet<String>();
+        acceptableMpConfigPropNames.add(MpConstants.ISSUER);
+        acceptableMpConfigPropNames.add(MpConstants.PUBLIC_KEY);
+        acceptableMpConfigPropNames.add(MpConstants.KEY_LOCATION);
+        return acceptableMpConfigPropNames;
     }
 
     protected boolean isAcceptableMpConfigProperty(String propertyName) {
-        return ACCEPTABLE_MP_CONFIG_PROPERTY_NAMES.contains(propertyName);
+        return getSupportedConfigPropertyNames().contains(propertyName);
     }
 
     protected Config getConfig(ClassLoader cl) {

@@ -6,6 +6,6 @@ singleton=true
  com.ibm.websphere.appserver.javax.jaxrs-2.1, \
  io.openliberty.org.eclipse.microprofile.config-2.0
 -bundles=io.openliberty.org.eclipse.microprofile.rest.client.2.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0-RC2"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

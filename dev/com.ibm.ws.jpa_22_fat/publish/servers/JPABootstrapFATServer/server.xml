@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="new server">
+<server description="BootstrapServer">
 
 	<featureManager>
 		<feature>jpa-2.2</feature>

@@ -80,6 +80,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", FATSuite.authHeaderPrefix + " ");
         deployRSServerApiTestApps(server);
         serverTracker.addServer(server);
+        skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH, MpJwtMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED));

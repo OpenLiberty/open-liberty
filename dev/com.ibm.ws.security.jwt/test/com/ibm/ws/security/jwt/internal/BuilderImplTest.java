@@ -17,40 +17,31 @@ import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
 
-public class BuilderImplTest {
+public class BuilderImplTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.jwt.*=all:com.ibm.ws.security.common.*=all");
 
-    public final Mockery mockery = new JUnit4Mockery() {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
+    static final String MSG_UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM = "CWWKS6056E";
+    static final String MSG_UNSUPPORTED_CONTENT_ENCRYPTION_ALGORITHM = "CWWKS6057E";
+    static final String MSG_KEY_MANAGEMENT_KEY_MISSING = "CWWKS6058W";
 
     private BuilderImpl builder = null;
 
     private final PublicKey publicKey = mockery.mock(PublicKey.class);
     private final PrivateKey privateKey = mockery.mock(PrivateKey.class);
-
-    @Rule
-    public final TestName testName = new TestName();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -60,7 +51,6 @@ public class BuilderImplTest {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
-        outputMgr.resetStreams();
         outputMgr.restoreStreams();
     }
 
@@ -72,8 +62,8 @@ public class BuilderImplTest {
 
     @After
     public void tearDown() throws Exception {
-        mockery.assertIsSatisfied();
         System.out.println("Exiting test: " + testName.getMethodName());
+        mockery.assertIsSatisfied();
     }
 
     @Test
@@ -82,12 +72,96 @@ public class BuilderImplTest {
             String keyManagementAlg = null;
             Key keyManagementKey = publicKey;
             String contentEncryptionAlg = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getKeyManagementAlg();
+            assertEquals("Key management algorithm was not set to the expected default value.", BuilderImpl.DEFAULT_KEY_MANAGEMENT_ALGORITHM, setAlg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_unknownKeyManagementAlg() {
+        try {
+            String keyManagementAlg = "does not exist";
+            Key keyManagementKey = publicKey;
+            String contentEncryptionAlg = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getKeyManagementAlg();
+            assertEquals("Key management algorithm did not equal expected value.", keyManagementAlg, setAlg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_nonDefaltKeyManagementAlg() {
+        try {
+            String keyManagementAlg = KeyManagementAlgorithmIdentifiers.ECDH_ES_A128KW;
+            Key keyManagementKey = publicKey;
+            String contentEncryptionAlg = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getKeyManagementAlg();
+            assertEquals("Key management algorithm did not equal expected value.", keyManagementAlg, setAlg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_nullKeyManagementKey() {
+        try {
+            String keyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            Key keyManagementKey = null;
+            String contentEncryptionAlg = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
             try {
                 builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
                 fail("Should have thrown a KeyException, but did not.");
             } catch (KeyException e) {
-                // TODO
+                verifyException(e, MSG_KEY_MANAGEMENT_KEY_MISSING);
             }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_nullContentEncryptionAlg() {
+        try {
+            String keyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            Key keyManagementKey = publicKey;
+            String contentEncryptionAlg = null;
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getContentEncryptionAlg();
+            assertEquals("Content encryption algorithm was not set to the expected default value.", BuilderImpl.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM, setAlg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_unknownContentEncryptionAlg() {
+        try {
+            String keyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            Key keyManagementKey = publicKey;
+            String contentEncryptionAlg = "some random string";
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getContentEncryptionAlg();
+            assertEquals("Content encryption algorithm did not equal expected value.", contentEncryptionAlg, setAlg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_encryptWith_nonDefaultContentEncryptionAlg() {
+        try {
+            String keyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            Key keyManagementKey = publicKey;
+            String contentEncryptionAlg = ContentEncryptionAlgorithmIdentifiers.AES_192_CBC_HMAC_SHA_384;
+            builder = (BuilderImpl) builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+            String setAlg = builder.getContentEncryptionAlg();
+            assertEquals("Content encryption algorithm did not equal expected value.", contentEncryptionAlg, setAlg);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

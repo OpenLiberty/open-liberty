@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -46,7 +46,12 @@ generate.replacement: true
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.jwt;version=latest,\
 	javax.ws.rs:javax.ws.rs-api;version=2.0,\
-	net.sourceforge.htmlunit:htmlunit;version=2.27,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+	net.sourceforge.htmlunit:webdriver;version=2.6,\
+    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+    org.brotli:dec;version=0.1.2,\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	org.apache.httpcomponents:httpmime;version=4.3.1,\
 	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
@@ -58,16 +63,17 @@ generate.replacement: true
 	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-    org.apache.commons.codec, \
+	org.apache.commons.codec,\
 	commons-logging:commons-logging;version=1.1.3,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-   	com.ibm.json4j;version=latest,\
+	com.ibm.json4j;version=latest,\
 	com.ibm.ws.org.glassfish.json.1.1,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	org.glassfish:javax.json;version=1.0,\
 	com.ibm.ws.security.token;version=latest,\
-	fattest.simplicity;version=latest
+	fattest.simplicity;version=latest,\
+	org.bitbucket.b_c.jose4j
     

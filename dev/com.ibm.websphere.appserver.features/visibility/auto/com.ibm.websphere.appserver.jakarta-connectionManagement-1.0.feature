@@ -8,3 +8,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jca.cm.jakarta
 kind=beta
 edition=core
+WLP-Activation-Type: parallel

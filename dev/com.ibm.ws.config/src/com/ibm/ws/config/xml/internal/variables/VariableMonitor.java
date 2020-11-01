@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
 import com.ibm.ws.config.xml.internal.ConfigRefresher;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry.ServiceBindingVariable;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -41,7 +42,6 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
     private String monitorType;
     private final BundleContext bundleContext;
     private final ConfigRefresher configRefresher;
-    private final int directoryPathLength;
 
     private final ConfigVariableRegistry variableRegistry;
 
@@ -51,7 +51,6 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
         this.bundleContext = bc;
         ServiceReference<WsLocationAdmin> sr = bc.getServiceReference(WsLocationAdmin.class);
         String serviceBindingRoot = bc.getService(sr).resolveString(WsLocationConstants.SYMBOL_SERVICE_BINDING_ROOT);
-        this.directoryPathLength = serviceBindingRoot.length();
         this.monitoredDirectories = new ArrayList<String>();
         monitoredDirectories.add(serviceBindingRoot);
         this.monitorInterval = monitorInterval;
@@ -122,29 +121,26 @@ public class VariableMonitor implements com.ibm.ws.kernel.filemonitor.FileMonito
 
         for (File f : deletedFiles) {
             // Only create a delta if a variable is actually removed (otherwise it's a directory)
-            if (variableRegistry.removeServiceBindingVariable(getServiceBindingVariableName(f))) {
+            if (variableRegistry.removeServiceBindingVariable(f)) {
                 deltaMap.put(f.getName(), DeltaType.REMOVED);
             }
 
         }
         for (File f : createdFiles) {
             if (f.isFile()) {
-                variableRegistry.addServiceBindingVariable(f);
-                deltaMap.put(getServiceBindingVariableName(f), DeltaType.ADDED);
+                ServiceBindingVariable sbv = variableRegistry.addServiceBindingVariable(f);
+                deltaMap.put(sbv.getName(), DeltaType.ADDED);
             }
         }
+
         for (File f : modifiedFiles) {
             if (f.isFile()) {
-                variableRegistry.modifyServiceBindingVariable(f);
-                deltaMap.put(getServiceBindingVariableName(f), DeltaType.MODIFIED);
+                ServiceBindingVariable sbv = variableRegistry.modifyServiceBindingVariable(f);
+                deltaMap.put(sbv.getName(), DeltaType.MODIFIED);
             }
         }
 
         configRefresher.variableRefresh(deltaMap);
-    }
-
-    private String getServiceBindingVariableName(File f) {
-        return f.getAbsolutePath().substring(directoryPathLength);
     }
 
     @Override

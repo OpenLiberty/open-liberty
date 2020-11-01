@@ -23,12 +23,21 @@ import java.net.URL;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
+// This test cannot be run under jakarta, as jakarta has no replacement
+// for j2ee-management.
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+// The FAT runner must be used explicitly to trigger the necessary
+// repeat steps, including filtering based on 'SkipForRepeat'.
+@RunWith(FATRunner.class)
 public class JMSMBeanTest {
 
     private static LibertyServer server =
@@ -54,7 +63,6 @@ public class JMSMBeanTest {
         TestUtils.addDropinsWebApp(server, mbeanAppName, mbeanPackages);
         server.startServer("JMSMBeanTest_Server.log");
     }
-
 
     @org.junit.AfterClass
     public static void tearDown() {

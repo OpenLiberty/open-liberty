@@ -13,9 +13,9 @@ package com.ibm.ws.ejbcontainer.ejblink.client;
 
 import java.util.logging.Logger;
 
-import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 
+import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 import com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote;
 
 /**
@@ -86,7 +86,6 @@ public class EjbLinkClient {
     private static final Logger logger = Logger.getLogger(CLASS_NAME);
 
     private static final String PASSED = "Passed";
-    private static final String EXCEPTION_CLASS_NAME = "AmbiguousEJBReferenceException";
 
     // Name of application and modules... for lookup.
     private static final String Application = "EjbLinkTest";
@@ -902,8 +901,7 @@ public class EjbLinkClient {
                                                                                                         JarModule, "TestDupBean");
 
             bean.verifyStyle1BeanInJarAndWar();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             exc.printStackTrace();
             result = PASSED;
         }
@@ -1049,8 +1047,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAutoLinkToOtherJarAndWar();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1073,8 +1070,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAutoLinkToWarAndOtherWar();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1127,8 +1123,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAutoLinkToOtherJarAndWar();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1151,8 +1146,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAutoLinkToJarAndOtherJar();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1176,8 +1170,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         } finally {
             if (result.equals(PASSED)) {
@@ -1202,8 +1195,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1227,8 +1219,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1252,8 +1243,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1278,8 +1268,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 
@@ -1303,8 +1292,7 @@ public class EjbLinkClient {
                 return;
 
             bean.verifyAmbiguousEJBReferenceException();
-            // Change to AmbiguousEJBReferenceException once defect 174107 is resolved
-        } catch (EJBException exc) {
+        } catch (AmbiguousEJBReferenceException exc) {
             result = PASSED;
         }
 

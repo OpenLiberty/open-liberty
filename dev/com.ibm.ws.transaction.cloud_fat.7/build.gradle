@@ -39,21 +39,21 @@ task addDerbyToSharedDir(type: Copy) {
 }
 
 task copySharedPostgres(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/shared/resources/postgres')
   rename 'postgresql-.*.jar', 'postgresql.jar'
 }
 
 task copyAnonymousPostgres1(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/servers/postgreSQL1/jdbc')
   rename 'postgresql-.*.jar', 'driver.jar'
 }
 
 task copyAnonymousPostgres2(type: Copy) {
-  shouldRunAfter jar
+  mustRunAfter jar
   from configurations.postgres
   into new File(autoFvtDir, 'publish/servers/postgreSQL2/jdbc')
   rename 'postgresql-.*.jar', 'driver.jar'
@@ -89,6 +89,7 @@ addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn copyAnonymousPostgres1
 addRequiredLibraries.dependsOn copyAnonymousPostgres2
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyFattestDatabases
 
 jar {
   dependsOn copyCommonFiles
