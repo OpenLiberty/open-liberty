@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,15 +23,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.UTLocationHelper;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
+
+import test.UTLocationHelper;
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -49,6 +49,7 @@ public class LTPAToken2FactoryTest {
 
     private static final String KEYIMPORTFILE_CORRECT = "${server.config.dir}/resources/security/security.token.ltpa.keys.correct.txt";
     private static final byte[] KEYPASSWORD_CORRECT = "WebAS".getBytes();
+    private static final String REALM = "TestRealm";
     private static final String decodedSharedKey = "Three can keep a secret when two are no longer there";
     private static final String encodedSharedKey = Base64Coder.base64Encode(decodedSharedKey);
     private LTPAPrivateKey ltpaPrivateKey;
@@ -67,7 +68,8 @@ public class LTPAToken2FactoryTest {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
         keyInfoManager.prepareLTPAKeyInfo(UTLocationHelper.getLocationManager(),
                                           KEYIMPORTFILE_CORRECT,
-                                          KEYPASSWORD_CORRECT);
+                                          KEYPASSWORD_CORRECT,
+                                          REALM);
         ltpaPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(KEYIMPORTFILE_CORRECT));
         ltpaPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(KEYIMPORTFILE_CORRECT));
     }

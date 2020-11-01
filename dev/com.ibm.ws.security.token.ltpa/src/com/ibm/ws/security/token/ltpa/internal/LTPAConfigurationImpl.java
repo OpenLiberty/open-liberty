@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,11 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.security.registry.RegistryException;
+import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -43,7 +46,7 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
  * is finished creating the LTPA keys.
  * <p>
  * This class collaborates very closely with the LTPAKeyCreator.
- * 
+ *
  * @see LTPAKeyCreateTask
  */
 public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedActionable {
@@ -53,11 +56,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String KEY_LOCATION_SERVICE = "locationService";
     static final String KEY_EXECUTOR_SERVICE = "executorService";
     static final String KEY_CHANGE_SERVICE = "ltpaKeysChangeNotifier";
+    static final String KEY_USER_REGISTYR_SERVICE = "userRegistryService";
     static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
     private final AtomicServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierService = new AtomicServiceReference<LTPAKeysChangeNotifier>(KEY_CHANGE_SERVICE);
+    private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTYR_SERVICE);
     private ServiceRegistration<LTPAConfiguration> registration = null;
     private volatile ComponentContext cc = null;
     private LTPAKeyCreateTask createTask;
@@ -98,11 +103,20 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         ltpaKeysChangeNotifierService.unsetReference(ref);
     }
 
+    protected void setUserRegistryService(ServiceReference<UserRegistryService> reference) {
+        userRegistryServiceRef.setReference(reference);
+    }
+
+    protected void unsetUserRegistryService(ServiceReference<UserRegistryService> reference) {
+        userRegistryServiceRef.unsetReference(reference);
+    }
+
     protected void activate(ComponentContext context, Map<String, Object> props) {
         cc = context;
         locationService.activate(context);
         executorService.activate(context);
         ltpaKeysChangeNotifierService.activate(context);
+        userRegistryServiceRef.activate(context);
 
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
@@ -181,6 +195,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /**
      * When the configuration is modified,
+     *
      * <pre>
      * 1. If file name and expiration changed,
      * then remove the file monitor registration and reload LTPA keys.
@@ -231,6 +246,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         executorService.deactivate(context);
         locationService.deactivate(context);
         ltpaKeysChangeNotifierService.deactivate(context);
+        userRegistryServiceRef.deactivate(context);
     }
 
     protected void unsetFileMonitorRegistration() {
@@ -242,7 +258,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /**
      * Sets the LTPA file monitor registration.
-     * 
+     *
      * @param ltpaFileMonitorRegistration
      */
     protected void setFileMonitorRegistration(ServiceRegistration<FileMonitor> ltpaFileMonitorRegistration) {
@@ -253,7 +269,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * Retrieves the BundleContext, assuming we're still valid. If we've been
      * deactivated, then the registration no longer needs / can happen and in
      * that case return null.
-     * 
+     *
      * @return The BundleContext if available, {@code null} otherwise.
      */
     @Override
@@ -274,7 +290,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * It is possible this method never gets called if the LTPA keys could not
      * be read or created.
-     * 
+     *
      * @param registration ServiceRegistration to eventually unregister
      */
     void setRegistration(ServiceRegistration<LTPAConfiguration> registration) {
@@ -286,7 +302,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * The LTPAKeyCreator will create the TokenFactory which corresponds to
      * this instance of the LTPAConfiguration.
-     * 
+     *
      * @param factory TokenFactory which corresponds to this configuration
      */
     void setTokenFactory(TokenFactory factory) {
@@ -316,7 +332,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <p>
      * The LTPAKeyCreator will create the LTPAKeyInfoManager and set it
      * within the LTPAConfigurationImpl instance.
-     * 
+     *
      * @param ltpaKeyInfoManager
      */
     void setLTPAKeyInfoManager(LTPAKeyInfoManager ltpaKeyInfoManager) {
@@ -368,6 +384,24 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     protected LTPAKeysChangeNotifier getLTPAKeysChangeNotifier() {
         return ltpaKeysChangeNotifierService.getService();
+    }
+
+    /**
+     * Obtains the realm name of the configured UserRegistry, if one is available.
+     *
+     * @return The configured realm name, or "defaultRealm" if no UserRegistry is present
+     */
+    @FFDCIgnore(RegistryException.class)
+    protected String getRealm() {
+        UserRegistryService userRegistryService = userRegistryServiceRef.getService();
+        try {
+            return userRegistryService.getUserRegistry().getRealm();
+        } catch (RegistryException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Cannot get the UR service since it may not be available so use the default value for the realm.", e);
+            }
+            return "defaultRealm";
+        }
     }
 
 }
