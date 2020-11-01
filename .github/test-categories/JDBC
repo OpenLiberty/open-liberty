@@ -1,0 +1,11 @@
+com.ibm.ws.jdbc_fat
+com.ibm.ws.jdbc_fat_db2
+com.ibm.ws.jdbc_fat_derby
+com.ibm.ws.jdbc_fat_driver
+com.ibm.ws.jdbc_fat_krb5
+com.ibm.ws.jdbc_fat_loadfromapp
+com.ibm.ws.jdbc_fat_oracle
+com.ibm.ws.jdbc_fat_postgresql
+com.ibm.ws.jdbc_fat_sqlserver
+com.ibm.ws.jdbc_fat_v41
+com.ibm.ws.jdbc_fat_v43

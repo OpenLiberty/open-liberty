@@ -1,0 +1,7 @@
+com.ibm.ws.kernel.filemonitor_fat
+com.ibm.ws.osgi.console_fat
+com.ibm.ws.rest.handler.config_fat
+com.ibm.ws.rest.handler.validator.cloudant_fat
+com.ibm.ws.rest.handler.validator_fat
+com.ibm.ws.runtime.update_fat
+com.ibm.ws.threading_policy_fat
