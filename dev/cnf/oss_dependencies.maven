@@ -20,7 +20,6 @@ com.fasterxml.jackson.core:jackson-databind:2.2.3
 com.fasterxml.jackson.core:jackson-databind:2.4.1
 com.fasterxml.jackson.core:jackson-databind:2.9.1
 com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.1
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.1
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2
@@ -32,7 +31,6 @@ com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1
 com.google.api.grpc:proto-google-common-protos:1.18.1
 com.google.code.findbugs:jsr305:3.0.2
-com.google.code.gson:gson:2.2.4
 com.google.code.gson:gson:2.8.6
 com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:failureaccess:1.0.1
@@ -67,8 +65,6 @@ com.sun.istack:istack-commons-tools:4.0.0-M3
 com.sun.mail:jakarta.mail:2.0.0-RC6
 com.sun.xml.bind.external:relaxng-datatype:3.0.0-M4
 com.sun.xml.bind.external:rngom:3.0.0-M3
-com.sun.xml.bind:jaxb-core:2.2.10
-com.sun.xml.bind:jaxb-core:2.3.0.1
 com.sun.xml.bind:jaxb-impl:2.2.10
 com.sun.xml.bind:jaxb-impl:2.3.0.1
 com.sun.xml.bind:jaxb-jxc:2.2.10
@@ -76,10 +72,8 @@ com.sun.xml.bind:jaxb-jxc:2.3.0.1
 com.sun.xml.bind:jaxb-xjc:2.2.10
 com.sun.xml.bind:jaxb-xjc:2.3.0.1
 com.sun.xml.fastinfoset:FastInfoset:1.2.16
-com.sun.xml.messaging.saaj:saaj-impl:1.4.0
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-tools:2.2.10
-com.sun.xml.ws:policy:2.4
 com.unboundid:unboundid-ldapsdk:5.1.0
 commons-cli:commons-cli:1.4
 commons-codec:commons-codec:1.10
@@ -123,16 +117,10 @@ io.netty:netty-transport:4.1.51.Final
 io.opencensus:opencensus-api:0.27.0
 io.opencensus:opencensus-contrib-grpc-metrics:0.27.0
 io.opentracing:opentracing-api:0.30.0
-io.opentracing:opentracing-api:0.31.0
-io.opentracing:opentracing-api:0.33.0
 io.opentracing:opentracing-mock:0.30.0
 io.opentracing:opentracing-mock:0.31.0
 io.opentracing:opentracing-mock:0.33.0
-io.opentracing:opentracing-noop:0.31.0
-io.opentracing:opentracing-noop:0.33.0
 io.opentracing:opentracing-util:0.30.0
-io.opentracing:opentracing-util:0.31.0
-io.opentracing:opentracing-util:0.33.0
 io.perfmark:perfmark-api:0.22.0
 io.projectreactor:reactor-core:3.1.8.RELEASE
 io.reactivex.rxjava2:rxjava:2.2.19
@@ -142,14 +130,9 @@ io.smallrye.common:smallrye-common-classloader:1.4.0
 io.smallrye.common:smallrye-common-constraint:1.4.0
 io.smallrye.common:smallrye-common-expression:1.4.0
 io.smallrye.common:smallrye-common-function:1.4.0
-io.smallrye:smallrye-graphql-api:1.0.9
-io.smallrye:smallrye-graphql-cdi:1.0.9
 io.smallrye:smallrye-graphql-client-api:1.0.9
 io.smallrye:smallrye-graphql-client:1.0.9
-io.smallrye:smallrye-graphql-schema-builder:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9
-io.smallrye:smallrye-graphql-servlet:1.0.9
-io.smallrye:smallrye-graphql:1.0.9
 jakarta.activation:jakarta.activation-api:2.0.0-RC3
 jakarta.annotation:jakarta.annotation-api:2.0.0-RC1
 jakarta.authorization:jakarta.authorization-api:2.0.0
@@ -177,10 +160,8 @@ jakarta.ws.rs:jakarta.ws.rs-api:3.0.0-M1
 jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3
 jakarta.xml.soap:jakarta.xml.soap-api:2.0.0-RC3
 jakarta.xml.ws:jakarta.xml.ws-api:3.0.0-RC3
-javax.annotation:javax.annotation-api:1.3.1
 javax.cache:cache-api:1.1.0
 javax.ejb:javax.ejb-api:3.2
-javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0
 javax.faces:javax.faces-api:2.3
 javax.json.bind:javax.json.bind-api:1.0
 javax.json:javax.json-api:1.1.4
@@ -189,19 +170,14 @@ javax.mail:javax.mail-api:1.5.6
 javax.mail:javax.mail-api:1.6.2
 javax.persistence:persistence-api:1.0.2
 javax.security.enterprise:javax.security.enterprise-api:1.0
-javax.security.jacc:javax.security.jacc-api:1.5
 javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b01
 javax.servlet:javax.servlet-api:3.1.0
-javax.transaction:javax.transaction-api:1.2
 javax.validation:validation-api:1.1.0.Final
-javax.websocket:javax.websocket-api:1.0
-javax.websocket:javax.websocket-api:1.1
 javax.ws.rs:javax.ws.rs-api:2.0
 javax.ws.rs:javax.ws.rs-api:2.1-m09
 javax.xml.bind:jaxb-api:2.2.12-b140109.1041
 javax.xml.bind:jaxb-api:2.2.7
 javax.xml.bind:jaxb-api:2.3.0
-javax.xml.soap:javax.xml.soap-api:1.4.0
 javax.xml.ws:jaxws-api:2.3.0
 javax:javaee-api:7.0
 joda-time:joda-time:1.6.2
@@ -229,7 +205,6 @@ org.apache.commons:commons-compress:1.19
 org.apache.commons:commons-lang3:3.8
 org.apache.commons:commons-math:2.2
 org.apache.commons:commons-text:1.9
-org.apache.commons:commons-weaver-privilizer:1.1
 org.apache.cxf.xjc-utils:cxf-xjc-runtime:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-boolean:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-bug671:2.6.0
@@ -262,7 +237,6 @@ org.apache.cxf:cxf-rt-transports-http:3.1.18
 org.apache.cxf:cxf-rt-transports-http:3.3.0
 org.apache.cxf:cxf-rt-ws-addr:3.3.0
 org.apache.cxf:cxf-rt-ws-addr:3.3.3
-org.apache.cxf:cxf-rt-ws-policy:2.6.2
 org.apache.cxf:cxf-rt-ws-policy:3.3.0
 org.apache.cxf:cxf-rt-ws-policy:3.3.3
 org.apache.cxf:cxf-rt-ws-security:2.6.2
@@ -288,7 +262,6 @@ org.apache.felix:org.apache.felix.http.base:2.2.0
 org.apache.felix:org.apache.felix.scr:2.1.24
 org.apache.felix:org.osgi.service.obr:1.0.2
 org.apache.geronimo.specs:geronimo-jaxb_2.2_spec:1.0.1
-org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.httpcomponents.client5:httpclient5:5.0.2
 org.apache.httpcomponents.core5:httpcore5-h2:5.0.2
 org.apache.httpcomponents.core5:httpcore5:5.0.2
@@ -296,13 +269,11 @@ org.apache.httpcomponents:fluent-hc:4.3.1
 org.apache.httpcomponents:httpclient-cache:4.1.2
 org.apache.httpcomponents:httpclient-cache:4.3.1
 org.apache.httpcomponents:httpclient:4.1.2
-org.apache.httpcomponents:httpclient:4.3.1
 org.apache.httpcomponents:httpclient:4.5.13
 org.apache.httpcomponents:httpclient:4.5.4
 org.apache.httpcomponents:httpclient:4.5.7
 org.apache.httpcomponents:httpcore-nio:4.4.13
 org.apache.httpcomponents:httpcore:4.1.2
-org.apache.httpcomponents:httpcore:4.3
 org.apache.httpcomponents:httpcore:4.4.13
 org.apache.httpcomponents:httpmime:4.1.2
 org.apache.httpcomponents:httpmime:4.3.1
@@ -404,7 +375,6 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.4.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:2.0-RC2
 org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0-SNAPSHOT
 org.eclipse.transformer:org.eclipse.transformer:0.2.0-SNAPSHOT
-org.eclipse:yasson:1.0.8
 org.eclipse:yasson:2.0.0-M2
 org.ektorp:org.ektorp:1.4.1
 org.fusesource.jansi:jansi:1.18
@@ -498,7 +468,6 @@ org.mongodb:mongo-java-driver:2.10.1
 org.mongodb:mongo-java-driver:2.13.3
 org.mongodb:mongo-java-driver:2.9.3
 org.objenesis:objenesis:1.0
-org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.compendium:4.2.0
 org.osgi:org.osgi.core:6.0.0
@@ -537,7 +506,6 @@ org.seleniumhq.webdriver:webdriver-common:0.9.7376
 org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.28
 org.slf4j:slf4j-api:1.7.7
-org.slf4j:slf4j-jdk14:1.7.7
 org.slf4j:slf4j-simple:1.7.30
 org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
@@ -574,7 +542,6 @@ org.springframework:spring-beans:5.1.4.RELEASE
 org.springframework:spring-beans:5.2.4.RELEASE
 org.springframework:spring-beans:5.2.6.RELEASE
 org.springframework:spring-context:3.0.7.RELEASE
-org.springframework:spring-context:5.0.4.RELEASE
 org.springframework:spring-context:5.0.8.RELEASE
 org.springframework:spring-context:5.1.4.RELEASE
 org.springframework:spring-context:5.2.4.RELEASE
@@ -587,7 +554,6 @@ org.springframework:spring-core:5.1.4.RELEASE
 org.springframework:spring-core:5.2.4.RELEASE
 org.springframework:spring-core:5.2.6.RELEASE
 org.springframework:spring-expression:3.0.7.RELEASE
-org.springframework:spring-expression:5.0.4.RELEASE
 org.springframework:spring-web:3.0.7.RELEASE
 org.springframework:spring-web:5.0.8.RELEASE
 org.springframework:spring-web:5.1.4.RELEASE
