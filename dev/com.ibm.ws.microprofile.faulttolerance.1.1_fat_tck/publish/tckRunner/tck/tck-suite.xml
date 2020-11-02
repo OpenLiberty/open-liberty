@@ -84,6 +84,11 @@
                      // AsyncTimeoutTest
                      // Some tests in this class were broken in the FT 1.1 TCK and were fixed for FT 2.0
                      !method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
+                     
+                     // AsynchronousTest
+                     // This test is unreliable in FT 1.1 TCK but was improved in FT 2.0 TCK
+                     // Functionality covered by FATs in AsyncServlet
+                     !method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
                 ]]>
                 </script>
             </method-selector>
