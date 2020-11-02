@@ -17,4 +17,4 @@ Subsystem-Icon: OSGI-INF/admincenter_200x200.png,OSGI-INF/admincenter_200x200.pn
     com.ibm.ws.org.owasp.esapi.2.1.0,\
     com.ibm.ws.org.joda.time.1.6.2
 kind=ga
-edition=base
+edition=core
