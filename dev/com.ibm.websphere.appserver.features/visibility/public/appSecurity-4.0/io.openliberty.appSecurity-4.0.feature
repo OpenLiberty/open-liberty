@@ -20,7 +20,9 @@ Subsystem-Name: Application Security 4.0
 -bundles=io.openliberty.jakarta.security.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2", \
  io.openliberty.security.jakartasec.2.0.internal, \
  io.openliberty.security.jakartasec.2.0.internal.cdi, \
+ io.openliberty.security.authentication.internal.filter, \
  io.openliberty.security.authentication.internal.tai, \
+ io.openliberty.security.sso.internal, \
  io.openliberty.jakarta.jaspic.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1", \
  io.openliberty.security.jaspic.2.0.internal
 kind=beta

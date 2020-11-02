@@ -82,7 +82,7 @@ public class SSOAuthenticatorTest {
             }
         });
 
-        ssoAuth = new SSOAuthenticator(authService, smd, webAppSecConfig, ssoCookieHelper);
+        ssoAuth = new SSOAuthenticator(authService, smd, webAppSecConfig, ssoCookieHelper, null);
     }
 
     @After
@@ -92,7 +92,7 @@ public class SSOAuthenticatorTest {
 
     @Test
     public void constructorNullSecurityMetadata() {
-        assertNotNull(new SSOAuthenticator(authService, null, webAppSecConfig, ssoCookieHelper));
+        assertNotNull(new SSOAuthenticator(authService, null, webAppSecConfig, ssoCookieHelper, null));
     }
 
     /**
