@@ -18,6 +18,7 @@ src: \
 fat.project: true
 
 -dependson: \
+    build.changeDetector
 	com.ibm.ws.kernel.feature
 
 -buildpath: \
