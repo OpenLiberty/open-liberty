@@ -1,0 +1,17 @@
+name: Cleanup Duplicate Builds
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '*/5 * * * *'
+
+jobs:
+  cleanup-prs:
+    if: github.repository == 'OpenLiberty/open-liberty'
+    name: "Cleanup Duplicate Builds"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: n1hility/cancel-previous-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: openliberty-ci.yml
