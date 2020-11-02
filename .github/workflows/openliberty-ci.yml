@@ -1,0 +1,189 @@
+name: OpenLiberty CI
+
+on:
+  pull_request:
+    branches: 
+    - integration
+    - gh-actions
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '.gitignore'
+      - '.dockerignore'
+      - '*.md'
+      - '*.adoc'
+      - '*.txt'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.dependabot/**'
+      - 'cla/**'
+      - 'images/**'
+      - 'logos/**'
+env:
+  LANG: en_US.UTF-8
+jobs:
+  build:
+    name: Build Open Liberty
+    runs-on: ubuntu-latest
+    outputs:
+      test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
+      test-os: ${{ steps.gen-params.outputs.test-os }}
+      test-java: ${{ steps.gen-params.outputs.test-java }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Validate copyright headers
+      if: "github.event_name == 'pull_request'"
+      run: .github/workflow-scripts/validate-copyright-headers.sh
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: 11
+        openjdk_impl: openj9
+    - name: Generate output
+      id: gen-params
+      run: |
+        cat > .github/pull_request_body.txt << END_OF_PR_BODY
+        ${{ github.event.pull_request.body }}
+        END_OF_PR_BODY
+        echo "PR Summary is:"
+        cat .github/pull_request_body.txt
+
+        echo "::set-output name=test-os::ubuntu-latest"
+        echo "::set-output name=test-java::11"
+
+        MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
+        echo "MATRIX_RESULT is $MATRIX_RESULT"
+        echo "::set-output name=test-matrix::$MATRIX_RESULT"
+    - name: Apply repository caches
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Build with Gradle
+      run: |
+        cd dev
+        chmod +x gradlew
+        ./gradlew cnf:initialize assemble
+    - name: Upload liberty image
+      uses: actions/upload-artifact@v2
+      with:
+        name: liberty-image
+        if-no-files-found: error
+        path: |
+          dev/build.image/wlp/
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v2
+#    - uses: testspace-com/setup-testspace@v1
+#      with:
+#        domain: ${{ github.repository_owner }}  
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: 11
+        openjdk_impl: openj9
+    - name: Apply repository caches
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Run unit tests
+      run: |
+        cd dev
+        chmod +x gradlew
+        ./gradlew --continue cnf:initialize testResults
+    - name: Upload test report
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: Unit test logs
+        path: dev/cnf/generated/testReports/allUnitTests
+    - name: Upload unit test results
+      shell: bash
+      if: always()
+      run: .github/workflow-scripts/upload-unit-tests.sh
+  fat_tests:
+    name: FAT Tests - ${{matrix.category}}
+    # temporarily disable FATs
+    if: "false"
+    needs: build
+    runs-on: ${{ needs.build.outputs.test-os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix: ${{fromJson(needs.build.outputs.test-matrix)}}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Reclaim disk space
+      run: .github/workflow-scripts/reclaim-disk-space.sh
+#    - uses: testspace-com/setup-testspace@v1
+#      with:
+#        domain: ${{ github.repository_owner }}
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: ${{ needs.build.outputs.test-java }}
+        openjdk_impl: openj9
+    - name: Apply repository caches
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Download liberty image
+      uses: actions/download-artifact@v2
+      with:
+        name: liberty-image
+        path: dev/build.image/wlp/
+    - name: Run FAT buckets
+      timeout-minutes: 150
+      shell: bash
+      env:
+        CATEGORY: ${{matrix.category}}
+        GH_EVENT_NAME: ${{github.event_name}}
+      run: .github/workflow-scripts/run-fat-build.sh
+    - name: Check for FAT failures
+      shell: bash
+      if: always()
+      env:
+        CATEGORY: ${{matrix.category}}
+      run: .github/workflow-scripts/check-fat-failures.sh
+    - name: Upload failing FAT artifacts
+      if: failure()
+      uses: aguibert/upload-artifact@v1.0
+      with:
+        name: ${{matrix.category}}
+        path: dev/failing_buckets/*.zip
+        single-archive: "false"
+      
