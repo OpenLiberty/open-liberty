@@ -3,7 +3,7 @@ name: Cleanup Duplicate Builds
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '*/5 * * * *'
+    - cron:  '*/15 * * * *'
 
 jobs:
   cleanup-prs:
@@ -15,3 +15,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           workflow: openliberty-ci.yml
+
