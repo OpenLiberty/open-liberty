@@ -11,7 +11,7 @@
 package mpRestClient11.cdiPropsAndProviders;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
@@ -28,18 +28,15 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import mpRestClient10.basicCdi.BasicClientTestServlet;
-import mpRestClient10.basicCdi.BasicServiceClient;
-import mpRestClient10.basicCdi.DuplicateWidgetException;
-import mpRestClient10.basicCdi.MyFilter;
-import mpRestClient10.basicCdi.UnknownWidgetException;
-import mpRestClient10.basicCdi.Widget;
 
 @SuppressWarnings("serial")
 @ApplicationScoped
 @WebServlet(urlPatterns = "/CdiPropsAndProvidersTestServlet")
 public class CdiPropsAndProvidersTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(CdiPropsAndProvidersTestServlet.class.getName());
+
+    @Inject
+    private UnusedBeanWithMPRestClient unusedBean;
 
     @Inject
     @RestClient
@@ -71,5 +68,6 @@ public class CdiPropsAndProvidersTestServlet extends FATServlet {
         assertEquals("Filter1", bag.filtersInvoked.get(1).getSimpleName());
         assertEquals("Filter3", bag.filtersInvoked.get(2).getSimpleName());
         assertEquals("Filter4", bag.filtersInvoked.get(3).getSimpleName());
+        assertNotNull(unusedBean);
     }
 }
