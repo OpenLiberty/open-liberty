@@ -12,17 +12,16 @@
 package com.ibm.ws.security.mp.jwt.impl.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -46,7 +45,7 @@ public class MicroProfileJwtTaiRequest {
     MicroProfileJwtConfig microProfileJwtConfig = null;
     MicroProfileJwtConfig jwtssoConfig = null;
     MpJwtProcessingException taiException = null;
-    Map<String, String> mpConfigProps = new HashMap<String, String>();
+    MpConfigProperties mpConfigProps = new MpConfigProperties();
 
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
 
@@ -59,13 +58,13 @@ public class MicroProfileJwtTaiRequest {
         this.request = request;
     }
 
-    public void setMpConfigProps(Map<String, String> mpConfigProps) {
+    public void setMpConfigProps(MpConfigProperties mpConfigProps) {
         if (mpConfigProps != null) {
-            this.mpConfigProps = new HashMap<String, String>(mpConfigProps);
+            this.mpConfigProps = new MpConfigProperties(mpConfigProps);
         }
     }
 
-    public Map<String, String> getMpConfigProps() {
+    public MpConfigProperties getMpConfigProps() {
         return mpConfigProps;
     }
 
