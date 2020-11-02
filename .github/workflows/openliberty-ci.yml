@@ -125,8 +125,6 @@ jobs:
       run: .github/workflow-scripts/upload-unit-tests.sh
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
-    # temporarily disable FATs
-    if: "false"
     needs: build
     runs-on: ${{ needs.build.outputs.test-os }}
     strategy:
