@@ -29,7 +29,7 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class Mpjwt12TCKLauncher_noaud_noenv {
 
-    @Server("tckNoaudNoEnv")
+    @Server("jwt12tckNoaudNoEnv")
     public static LibertyServer server;
 
     @BeforeClass
