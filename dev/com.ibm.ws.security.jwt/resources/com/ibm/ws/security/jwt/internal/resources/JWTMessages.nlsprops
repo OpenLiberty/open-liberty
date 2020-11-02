@@ -335,9 +335,10 @@ ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: The [{0}] JWT consumer encount
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=The JWE token might be malformed or might be missing information. The key management key that is used to decrypt the JWE token might be missing or might not be capable of decrypting the token.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=See the error in the message for more information. Verify that the JWE is well formed. Verify that the JWT consumer configuration references the key management key that corresponds to the key that is used to encrypt the JWE token.
 
-#
-# CWWKS6057E is available
-#
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: The JSON Web Encryption (JWE) token contains a nested JSON Web Signature (JWS) token, but the {0} header in the JWE is set to [{1}]. The {0} JWE header must be set to {2} if the JWE payload is a JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=The MicroProfile JSON Web Token 1.2 specification requires that JWE tokens must have their content type header set to the value that is specified in the message if the content of the token is a JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Ensure that the content type header of the JWE token is set to the required value.
 
 # Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
 # 0=Builder config ID
