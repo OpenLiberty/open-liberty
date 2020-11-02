@@ -55,10 +55,10 @@ public class WebXmlParser
 
     private static final String WEB_APP_2_2_J2EE_SYSTEM_ID = "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd";
     private static final String WEB_APP_2_2_SYSTEM_ID = "http://java.sun.com/dtd/web-app_2_2.dtd";
-    private static final String WEB_APP_2_2_RESOURCE  = "javax/servlet/resources/web-app_2_2.dtd";
+    private static final String WEB_APP_2_2_RESOURCE  = "jakarta/servlet/resources/web-app_2_2.dtd";
 
     private static final String WEB_APP_2_3_SYSTEM_ID = "http://java.sun.com/dtd/web-app_2_3.dtd";
-    private static final String WEB_APP_2_3_RESOURCE  = "javax/servlet/resources/web-app_2_3.dtd";
+    private static final String WEB_APP_2_3_RESOURCE  = "jakarta/servlet/resources/web-app_2_3.dtd";
     
     private ExternalContext _context;
     private org.apache.myfaces.shared.webapp.webxml.WebXml _webXml;

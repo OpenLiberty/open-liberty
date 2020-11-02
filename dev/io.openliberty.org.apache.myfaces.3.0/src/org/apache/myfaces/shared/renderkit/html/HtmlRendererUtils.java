@@ -2890,7 +2890,7 @@ public final class HtmlRendererUtils
         // create and configure HtmlMessages component
         HtmlMessages messages = (HtmlMessages) facesContext.getApplication()
                 .createComponent(HtmlMessages.COMPONENT_TYPE);
-        messages.setId("javax_faces_developmentstage_messages");
+        messages.setId("jakarta_faces_developmentstage_messages");
         messages.setTitle("Project Stage[Development]: Unhandled Messages");
         messages.setStyle("color:orange");
         messages.setRedisplay(false);
