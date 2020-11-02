@@ -3,6 +3,7 @@ name: OpenLiberty CI
 on:
   pull_request:
     branches: 
+    - integration
     - gh-actions
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
@@ -124,6 +125,8 @@ jobs:
       run: .github/workflow-scripts/upload-unit-tests.sh
   fat_tests:
     name: FAT Tests - ${{matrix.category}}
+    # temporarily disable FATs
+    if: "false"
     needs: build
     runs-on: ${{ needs.build.outputs.test-os }}
     strategy:
