@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.transaction.SystemException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -72,8 +71,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
 
-    private RecoveryLog _transactionLog = null;
-    private RecoveryLog _partnerLog = null;
+    private RecoveryLog _transactionLog;
+    private RecoveryLog _partnerLog;
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
 
@@ -84,7 +83,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {}
+    protected TxRecoveryAgentImpl() {
+    }
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -123,7 +123,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -219,8 +220,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
             } else {
                 try {
-                    fsc = new FailureScopeController(fs);
-                } catch (SystemException exc) {
+                    fsc = createFailureScopeController(fs);
+                } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
@@ -536,7 +537,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void prepareForRecovery(FailureScope failureScope) {}
+    public void prepareForRecovery(FailureScope failureScope) {
+    }
 
     /**
      * @param fs
