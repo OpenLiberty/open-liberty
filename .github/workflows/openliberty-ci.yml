@@ -47,6 +47,9 @@ jobs:
         END_OF_PR_BODY
         echo "PR Summary is:"
         cat .github/pull_request_body.txt
+        git diff --name-only HEAD^...HEAD^2 >> .github/modified_files.diff
+        echo "Modified files in this PR are:"
+        cat .github/modified_files.diff
 
         echo "::set-output name=test-os::ubuntu-latest"
         echo "::set-output name=test-java::11"
