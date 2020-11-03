@@ -54,6 +54,7 @@ ant -version
 echo "\n## Java version:"
 java -version
 
+unzip -q openliberty-image.zip
 cd dev
 chmod +x gradlew
 chmod 777 build.image/wlp/bin/*
