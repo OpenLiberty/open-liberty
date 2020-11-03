@@ -64,6 +64,8 @@ public class Http2SecureTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         server.stopServer(true);
     }
 
