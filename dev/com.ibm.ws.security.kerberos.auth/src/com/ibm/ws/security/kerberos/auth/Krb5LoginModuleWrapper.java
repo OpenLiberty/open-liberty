@@ -83,8 +83,11 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         this.sharedState = (Map<String, Object>) sharedState;
         this.options = new HashMap<>(opts);
 
+        final String IBM_JDK_USE_KEYTAB = "useKeytab"; // URL
+        final String OPENJDK_USE_KEYTAB = "useKeyTab"; // boolean
+
         if (!isIBMJdk8)
-            useKeytabValue = options.get("useKeyTab");
+            useKeytabValue = options.get(OPENJDK_USE_KEYTAB);
 
         if (isIBMJdk8) {
             // Sanitize any OpenJDK-only config options
@@ -96,10 +99,11 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             }
             options.remove("doNotPrompt");
             options.remove("refreshKrb5Config");
+
+            options.remove(OPENJDK_USE_KEYTAB);
             if (options.containsKey("keyTab")) {
                 String keytab = (String) options.remove("keyTab");
-                options.remove("useKeyTab");
-                options.put("useKeytab", keytab);
+                options.put(IBM_JDK_USE_KEYTAB, keytab);
             }
             options.remove("clearPass");
             boolean useTicketCache = Boolean.valueOf((String) options.remove("useTicketCache"));
