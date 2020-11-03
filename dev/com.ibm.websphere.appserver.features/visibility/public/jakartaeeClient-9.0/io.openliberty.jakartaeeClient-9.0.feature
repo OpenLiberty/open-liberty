@@ -18,6 +18,7 @@ Subsystem-Name: Jakarta EE Application Client
   io.openliberty.jsonb-2.0, \
   io.openliberty.jsonp-2.0, \
   io.openliberty.mail-2.0, \
-  io.openliberty.managedBeans-2.0 
+  io.openliberty.managedBeans-2.0, \
+  io.openliberty.messagingClient-3.0 
 kind=beta
 edition=base

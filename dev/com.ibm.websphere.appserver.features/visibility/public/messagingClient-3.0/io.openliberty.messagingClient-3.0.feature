@@ -17,6 +17,6 @@ Subsystem-Name: Jakarta Messaging 3.0 Client for Message Server
  com.ibm.ws.messaging.jms.common.jakarta, \
  com.ibm.ws.messaging.jms.2.0.jakarta, \
  com.ibm.ws.messaging.comms.client
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel

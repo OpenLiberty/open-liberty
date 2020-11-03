@@ -19,6 +19,10 @@ Subsystem-Name: Jakarta EE Platform 9.0
  io.openliberty.jacc-2.0,\
  io.openliberty.jaxb-3.0,\
  io.openliberty.mail-2.0,\
+ io.openliberty.messaging-3.0,\
+ io.openliberty.messagingClient-3.0,\
+ io.openliberty.messagingSecurity-3.0,\
+ io.openliberty.messagingServer-3.0,\
  io.openliberty.webProfile-9.0
 kind=beta
 edition=base
