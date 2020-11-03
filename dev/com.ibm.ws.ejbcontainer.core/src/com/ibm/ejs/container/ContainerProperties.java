@@ -499,12 +499,6 @@ public final class ContainerProperties {
     public static OnError customBindingsOnErr;
 
     /**
-     * Temporary property to gate custom bindings behind until feature is out of beta
-     */
-    // TODO: #13338 remove this
-    public static boolean customBindingsEnabledBeta;
-
-    /**
      * Static constructor that will initialize all of the 'constants' based
      * on the corresponding system property. <p>
      *
@@ -761,7 +755,6 @@ public final class ContainerProperties {
                        ExtendSetRollbackOnlyBehaviorBeyondInstanceFor);
         writer.println("Property: LimitSetRollbackOnlyBehaviorToInstanceFor = " +
                        LimitSetRollbackOnlyBehaviorToInstanceFor);
-        writer.println("Property: customBindingsEnabledBeta = " + customBindingsEnabledBeta);
         writer.end();
     }
 

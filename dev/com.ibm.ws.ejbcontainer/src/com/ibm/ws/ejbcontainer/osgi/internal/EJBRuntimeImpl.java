@@ -148,7 +148,6 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -393,38 +392,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
-
-        // TODO: #13338 remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
-        boolean isBeta = false;
-        try {
-            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
-
-            for (ProductInfo info : productInfos.values()) {
-                if ("EARLY_ACCESS".equals(info.getEdition())) {
-                    isBeta = true;
-                }
-            }
-        } catch (Exception e) {
-            Tr.debug(tc, "Exception getting InstalledProductInfo: ");
-            e.printStackTrace();
-        }
-        boolean customBindingsBetaEnabled = false;
-        if (properties.get(BIND_TO_SERVER_ROOT) != null) {
-            if ((Boolean) properties.get(BIND_TO_SERVER_ROOT)) {
-                if (isTraceOn && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Custom Bindings Beta Enabled: ");
-                }
-                customBindingsBetaEnabled = true;
-            }
-        } else if (isBeta) {
-            if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Custom Bindings Beta Enabled: ");
-            }
-            customBindingsBetaEnabled = true;
-        }
-        ContainerProperties.customBindingsEnabledBeta = customBindingsBetaEnabled;
-
-        // End of beta block ------------------------------------------------------------------------
 
         // Overwrite the JVM properties if config is set, otherwise we will use the JVM props or the JVM property defaults
         ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : System.getProperty(bindToServerRoot,
