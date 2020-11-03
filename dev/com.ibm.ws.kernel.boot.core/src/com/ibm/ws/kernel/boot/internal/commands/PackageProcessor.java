@@ -133,7 +133,9 @@ public class PackageProcessor implements ArchiveProcessor {
         mf.getMainAttributes().putValue("Extract-Installer", "false");
 
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
-        mf.write(new FileOutputStream(newMani));
+        try (FileOutputStream out = new FileOutputStream(newMani)) {
+            mf.write(out);
+        }
 
         return newMani;
     }
@@ -178,7 +180,9 @@ public class PackageProcessor implements ArchiveProcessor {
         }
 
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
-        mf.write(new FileOutputStream(newMani));
+        try (FileOutputStream out = new FileOutputStream(newMani)) {
+            mf.write(out);
+        }
 
         return newMani;
     }
@@ -726,6 +730,7 @@ public class PackageProcessor implements ArchiveProcessor {
     // include option values
     public enum IncludeOption {
         ALL("all"), USR("usr"), MINIFY("minify"), WLP("wlp"), RUNNABLE("runnable");
+
         private final String value;
 
         private IncludeOption(String value) {
