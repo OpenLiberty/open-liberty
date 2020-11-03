@@ -66,6 +66,8 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.xml.resolver.1.2, \
  com.ibm.ws.org.jvnet.mimepull; require-java:="9", \
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ com.ibm.ws.javaee.ddmodel.ws, \
+ com.ibm.ws.webservices.javaee.common
 
 -files=\
  bin/jaxws/tools/ws-wsgen.jar, \

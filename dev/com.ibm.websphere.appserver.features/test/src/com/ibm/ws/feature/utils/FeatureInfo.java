@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.ws.feature.tasks.FeatureBnd;
 import com.ibm.ws.feature.tasks.FeatureBuilder;
 
 import aQute.bnd.header.Attrs;
@@ -39,6 +40,9 @@ public class FeatureInfo {
 	private boolean isInit = false;
 	private File feature;
 	private String name;
+	private boolean isAutoFeature = false;
+	private boolean isParallelActivationEnabled = false;
+	private boolean isDisableOnConflictEnabled = true;
 
 
 	public FeatureInfo(File feature) {
@@ -59,6 +63,26 @@ public class FeatureInfo {
 		return this.name;
 	}
 
+	public boolean isAutoFeature() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isAutoFeature;
+	}
+
+    public boolean isParallelActivationEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isParallelActivationEnabled;
+    }
+
+    public boolean isDisableOnConflictEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isDisableOnConflictEnabled;
+    }
 
 	//Activating autofeature just means "I'm an autofeature, and i *might* activate this other feature
 	//So it's like a "Sometimes" dependency, but is potentially useful for figuring out a superset of
@@ -124,6 +148,11 @@ public class FeatureInfo {
             String edition = builder.getProperty("edition");
             String kind = builder.getProperty("kind");
             this.name = builder.getProperty("symbolicName");
+            this.isAutoFeature = builder.getProperty(FeatureBnd.IBM_PROVISION_CAPABILITY) != null;
+            String activationType = builder.getProperty("WLP-Activation-Type");
+            this.isParallelActivationEnabled = activationType != null && "parallel".equals(activationType.trim());
+            String disableOnConflict = builder.getProperty("WLP-DisableAllFeatures-OnConflict");
+            this.isDisableOnConflictEnabled = disableOnConflict == null || "true".equals(disableOnConflict);
 
             this.edition = edition;
             this.kind = kind;
