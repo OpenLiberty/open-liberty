@@ -296,6 +296,9 @@ public class ServiceSupportTests extends FATServletClient {
 
         grpcServer.setMarkToEndOfLog();
 
+        // sleep for 1s to ensure that the following app "update" will cause the war timestamp to change
+        Thread.sleep(1000);
+
         // Add the same application to the dropins folder again so that it is updated
         ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
