@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -440,7 +441,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         // Get all of the managed connections wrappers.
         Set<ManagedConnection> mcSet = new HashSet<ManagedConnection>();
-        ArrayList<MCWrapper> invalidMCWList = new ArrayList<MCWrapper>();
+        LinkedList<MCWrapper> invalidMCWList = new LinkedList<MCWrapper>();
         // We do not allow other destroy processing to occur at the same time, so get the destroyMCWrapperListLock
         synchronized (destroyMCWrapperListLock) {
             for (int j = 0; j < gConfigProps.getMaxFreePoolHashSize(); ++j) {
@@ -458,9 +459,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                     // Only add valid managed connections to this set.
                                     mcSet.add(mcw.getManagedConnection());
                                     mcw.setPoolState(50); // set the state to 50, which basically means we are interacting with the resource adapter
-                                    Set<?> set = null;
+                                    Set<?> invalidConnectionsSet = null;
                                     try {
-                                        set = ((ValidatingManagedConnectionFactory) managedConnectionFactory).getInvalidConnections(mcSet);
+                                        invalidConnectionsSet = ((ValidatingManagedConnectionFactory) managedConnectionFactory).getInvalidConnections(mcSet);
                                     } catch (ResourceException e) {
                                         Object[] parms = new Object[] { "validateConnections", CommonFunction.exceptionList(e), "ResourceException", gConfigProps.cfName };
                                         Tr.error(tc, "ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285", parms);
@@ -471,7 +472,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                         mcw.setPoolState(MCWrapper.ConnectionState_freePool);
                                     }
 
-                                    if (set != null && !set.isEmpty()) {
+                                    if (invalidConnectionsSet != null && !invalidConnectionsSet.isEmpty()) {
                                         freePool[j].mcWrapperList.remove(k);
                                         mcw.setPoolState(0);
                                         invalidMCWList.add(mcw);
