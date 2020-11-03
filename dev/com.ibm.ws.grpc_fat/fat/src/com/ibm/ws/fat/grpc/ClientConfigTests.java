@@ -647,6 +647,10 @@ public class ClientConfigTests extends FATServletClient {
             //Make sure the expected error is logged
             String hitMeta = GrpcClientOnly.waitForStringInLog("INTERNAL: http2 exception",
                                                                SHORT_TIMEOUT);
+
+            // give the possible GrpcServerOnly IOException time to get thrown so it can be caught and ignored by this test case
+            Thread.sleep(SHORT_TIMEOUT);
+
             if (hitMeta == null) {
                 Assert.fail(c + ": server.xml with <grpcClient> element: did not get expected metadata size exceeded in " + SHORT_TIMEOUT + "ms");
             }
