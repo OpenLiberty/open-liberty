@@ -46,6 +46,19 @@ public final class MicroProfileClientProviderFactory extends ProviderFactory {
     private List<ProviderInfo<ResponseExceptionMapper<?>>> responseExceptionMappers = new ArrayList<>(1);
     private List<ProviderInfo<Object>> asyncInvocationInterceptorFactories = new ArrayList<>();
     private final Comparator<ProviderInfo<?>> comparator;
+    private static final Class<?> ASYNC_II_FACTORY_CLASS = getAsyncIIFactoryClass();
+
+    @FFDCIgnore(ClassNotFoundException.class)
+    private static Class<?> getAsyncIIFactoryClass() {
+        try {
+            return ClassLoaderUtils.loadClass("org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory",
+                                           MicroProfileClientProviderFactory.class);
+        } catch (ClassNotFoundException ex) {
+            // expected if using the MP Rest Client 1.0 APIs
+            Tr.debug(tc, "Caught ClassNotFoundException - expected if using MP Rest Client 1.0 APIs", ex);
+        }
+        return null;
+    }
 
     private MicroProfileClientProviderFactory(Bus bus, Comparator<ProviderInfo<?>> comparator) {
         super(bus);
@@ -77,7 +90,6 @@ public final class MicroProfileClientProviderFactory extends ProviderFactory {
         return new ContractComparator(bean, parent);
     }
 
-    @FFDCIgnore(ClassNotFoundException.class)
     @Override
     protected void setProviders(boolean custom, boolean busGlobal, Object... providers) {
 
@@ -90,20 +102,10 @@ public final class MicroProfileClientProviderFactory extends ProviderFactory {
             if (ResponseExceptionMapper.class.isAssignableFrom(providerCls)) {
                 addProviderToList(responseExceptionMappers, provider);
             }
-            String className = "org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactory";
-            try {
-                
-                Class<?> asyncIIFactoryClass = ClassLoaderUtils.loadClass(className,
-                                                                          MicroProfileClientProviderFactory.class);
-                if (asyncIIFactoryClass.isAssignableFrom(providerCls)) {
-                    addProviderToList(asyncInvocationInterceptorFactories, provider);
-                }
-            } catch (ClassNotFoundException ex) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Could not load " + className + " - this is expected in MP Rest Client 1.0", ex);
-                }
-            }
 
+            if (ASYNC_II_FACTORY_CLASS != null && ASYNC_II_FACTORY_CLASS.isAssignableFrom(providerCls)) {
+                addProviderToList(asyncInvocationInterceptorFactories, provider);
+            }
         }
         responseExceptionMappers.sort(comparator);
         asyncInvocationInterceptorFactories.sort(comparator);

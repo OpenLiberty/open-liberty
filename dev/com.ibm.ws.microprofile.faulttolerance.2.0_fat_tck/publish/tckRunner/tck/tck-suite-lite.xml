@@ -92,7 +92,13 @@
                     <include name="testBulkheadExceptionThrownWhenQueueFullAsync"/>
                 </methods>
             </class>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadFutureTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadFutureTest">
+                <methods>
+                    <!-- Unreliable in 2.x, fixed in 3.0 TCK -->
+                    <exclude name="testBulkheadMethodAsynchFutureDoneAfterGet"/>
+                    <exclude name="testBulkheadClassAsynchFutureDoneAfterGet"/>
+                </methods>
+            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchConfigTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest">
                 <methods>

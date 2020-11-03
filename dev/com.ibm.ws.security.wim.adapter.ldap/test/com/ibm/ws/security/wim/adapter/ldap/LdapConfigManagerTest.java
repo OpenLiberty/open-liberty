@@ -93,7 +93,8 @@ public class LdapConfigManagerTest {
         configProps.put("userIdMap", "user:sn");
         configProps.put("activedFilters.0.groupMemberIdMap", "uniqueMemberOf:uniqueMember");
         configProps.put("baseDN", "cn=users,dc=vmm,dc=com");
-        configProps.put("loginProperty", "uid;sn");
+        configProps.put("loginProperty.0.name", "uid");
+        configProps.put("loginProperty.1.name", "sn");
 
     }
 

@@ -463,7 +463,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String errorMessage = null;
         Throwable errorCaught = null;
         String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
-        int readyLoopMax = 50;
+        int readyLoopMax = 400; // allow a 20s timeout for the first message; set to 250ms thereafter
         int readyLoopCount = 0;
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -517,6 +517,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
 
             readyLoopCount = 0;
+
             while (clientStreamAX.isReady() != true) {
                 if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false, sleep "
@@ -536,10 +537,16 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 if (CONCURRENT_TEST_ON) {
                     System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + clientStreamAX.hashCode());
                 }
+                log.warning("Producer: grpcClientStreamApp(): timed out waiting for isReady()");
                 break;
             }
 
             clientStreamAX.onNext(nextRequest);
+
+            // reset ready loop count and max
+            readyLoopCount = 0;
+            readyLoopMax = 50;
+
             try {
                 if (timeBetweenMessagesMsec > 0) {
                     Thread.sleep(timeBetweenMessagesMsec);

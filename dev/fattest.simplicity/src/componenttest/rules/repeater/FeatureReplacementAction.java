@@ -65,12 +65,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jaxrsClient", "restfulWSClient");
         featureNameMapping.put("jca", "connectors");
         featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
+        featureNameMapping.put("jpa", "persistence");
+        featureNameMapping.put("jpaContainer", "persistenceContainer");
         featureNameMapping.put("jmsMdb", "mdb");
         featureNameMapping.put("jms", "messaging");
         featureNameMapping.put("wasJmsClient", "messagingClient");
         featureNameMapping.put("wasJmsServer", "messagingServer");
         featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
         featureNameMapping.put("jsf", "faces");
+        featureNameMapping.put("jsp", "pages");
+        featureNameMapping.put("el", "expressionLanguage");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -495,8 +499,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
                 return replacementFeature;
             }
         }
-        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesnt match
-        // the original feature name it replaces. We also check viceversa if the feature is an EE9 feature that involves a name change
+        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesn't match
+        // the original feature name it replaces. We also check vice versa if the feature is an EE9 feature that involves a name change
         // to update from EE9 to EE7/EE8
         Log.info(c, methodName, "No feature replacement found for [ " + originalFeature + " ]. Verifying if feature name was changed on EE9.");
         // Reset base feature to not include the "-"

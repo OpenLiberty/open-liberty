@@ -13,5 +13,5 @@ Subsystem-Name: Jakarta EE Connector Architecture Security Inflow 2.0
 -bundles=\
    io.openliberty.connectors.security.internal.inbound, \
    io.openliberty.jakarta.jaspic.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1"
-kind=noship
-edition=full
+kind=beta
+edition=base

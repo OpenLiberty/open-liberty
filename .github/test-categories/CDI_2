@@ -1,0 +1,7 @@
+com.ibm.ws.cdi.extension_fat
+com.ibm.ws.cdi.jee_fat
+com.ibm.ws.cdi.jndi_fat
+com.ibm.ws.cdi.lifecycle_fat
+com.ibm.ws.cdi.noncontextual_fat
+com.ibm.ws.cdi.third.party_fat
+com.ibm.ws.cdi.visibility_fat

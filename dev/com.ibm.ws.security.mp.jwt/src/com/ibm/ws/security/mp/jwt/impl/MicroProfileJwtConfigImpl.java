@@ -318,6 +318,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public String getTrustStoreRef() {
         if (this.sslRefInfo == null) {
             sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
         }
         try {
             return sslRefInfo.getTrustStoreName();
@@ -333,6 +336,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public String getKeyStoreRef() {
         if (this.sslRefInfo == null) {
             sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
         }
         try {
             return sslRefInfo.getKeyStoreName();

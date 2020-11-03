@@ -13,3 +13,4 @@ Subsystem-Name: Message Server Security 3.0
  com.ibm.ws.messaging.security.common
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

@@ -63,7 +63,9 @@ instrument.classesExcludes: com/ibm/ws/security/wim/util/resources/*.class
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
 	com.ibm.ws.bnd.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.runtime.update;version=latest, \
+	com.ibm.ws.threading;verison=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\

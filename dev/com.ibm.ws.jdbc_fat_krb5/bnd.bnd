@@ -19,6 +19,10 @@ src: \
 
 fat.project: true
 
+tested.features: \
+  connectors-2.0, \
+  jaxb-3.0
+
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 

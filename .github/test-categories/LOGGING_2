@@ -1,0 +1,4 @@
+com.ibm.ws.request.probe.jdbc_fat
+com.ibm.ws.request.probe.servlet_fat
+com.ibm.ws.request.probes_fat
+com.ibm.ws.request.timing_fat

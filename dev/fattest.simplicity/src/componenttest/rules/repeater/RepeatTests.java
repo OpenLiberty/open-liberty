@@ -124,6 +124,8 @@ public class RepeatTests extends ExternalResource {
                     // Contrary to the javadoc for @ClassRule, a class statement may throw an exception
                     // Catch it to ensure we still run all repeats
                     errors.add(t);
+                } finally {
+                    RepeatTestFilter.CURRENT_REPEAT_ACTION = null;
                 }
             }
 

@@ -24,8 +24,8 @@ fat.project: true
 #Java EE 8 Features 
 #Jakarta EE 9 Features 
 tested.features:\
-	appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0, beanvalidation-2.0, \
-        el-4.0, appsecurity-4.0, mdb-4.0, servlet-5.0, concurrent-2.0, cdi-3.0, connectors-2.0, messaging-3.0, jaxb-3.0, beanvalidation-3.0, enterprisebeanslite-4.0, connectorsinboundsecurity-2.0
+        appsecurity-3.0, servlet-4.0, cdi-2.0, el-3.0, beanvalidation-2.0, \
+        expressionLanguage-4.0, appsecurity-4.0, mdb-4.0, servlet-5.0, concurrent-2.0, cdi-3.0, connectors-2.0, messaging-3.0, jaxb-3.0, beanvalidation-3.0, enterprisebeanslite-4.0, connectorsinboundsecurity-2.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

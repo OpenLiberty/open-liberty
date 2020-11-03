@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,11 +38,12 @@ import com.ibm.ws.webcontainer.security.WebAuthenticator;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * This class perform authentication for web request using single sign on cookie.
  */
-
 public class SSOAuthenticator implements WebAuthenticator {
     public static final String DEFAULT_SSO_COOKIE_NAME = "LtpaToken2";
     private static final String Authorization_Header = "Authorization";
@@ -58,6 +59,7 @@ public class SSOAuthenticator implements WebAuthenticator {
     private final WebAppSecurityConfig webAppSecurityConfig;
     private final SSOCookieHelper ssoCookieHelper;
     private final String challengeType;
+    private final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
 
     /**
      * @param authenticationServ
@@ -66,10 +68,12 @@ public class SSOAuthenticator implements WebAuthenticator {
     public SSOAuthenticator(AuthenticationService authenticationService,
                             SecurityMetadata securityMetadata,
                             WebAppSecurityConfig webAppSecurityConfig,
-                            SSOCookieHelper ssoCookieHelper) {
+                            SSOCookieHelper ssoCookieHelper,
+                            AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
         this.authenticationService = authenticationService;
         this.webAppSecurityConfig = webAppSecurityConfig;
         this.ssoCookieHelper = ssoCookieHelper;
+        this.ssoAuthFilterRef = ssoAuthFilterRef;
 
         LoginConfiguration loginConfig = securityMetadata == null ? null : securityMetadata.getLoginConfiguration();
         challengeType = loginConfig == null ? null : loginConfig.getAuthenticationMethod();
@@ -100,7 +104,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param res
      * @return authResult
      */
-    @FFDCIgnore({ AuthenticationException.class })
+    //@FFDCIgnore({ AuthenticationException.class })
     public AuthenticationResult handleSSO(HttpServletRequest req, HttpServletResponse res) {
         AuthenticationResult authResult = null;
         Cookie[] cookies = req.getCookies();
@@ -122,6 +126,27 @@ public class SSOAuthenticator implements WebAuthenticator {
             return authResult;
         }
 
+        if (isLtpaAuthFilterAccept(req)) {
+            authResult = handleLtpaSSO(req, res, cookies);
+            if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+                return authResult;
+            }
+        }
+
+        ssoCookieHelper.createLogoutCookies(req, res);
+        return authResult;
+    }
+
+    /**
+     * @param req
+     * @param res
+     * @param authResult
+     * @param cookies
+     * @return
+     */
+    @FFDCIgnore({ AuthenticationException.class })
+    private AuthenticationResult handleLtpaSSO(HttpServletRequest req, HttpServletResponse res, Cookie[] cookies) {
+        AuthenticationResult authResult = null;
         String cookieName = ssoCookieHelper.getSSOCookiename();
         String[] hdrVals = CookieHelper.getCookieValues(cookies, cookieName);
         boolean useOnlyCustomCookieName = webAppSecurityConfig != null && webAppSecurityConfig.isUseOnlyCustomCookieName();
@@ -154,8 +179,6 @@ public class SSOAuthenticator implements WebAuthenticator {
                 }
             }
         }
-
-        ssoCookieHelper.createLogoutCookies(req, res);
         return authResult;
     }
 
@@ -298,6 +321,19 @@ public class SSOAuthenticator implements WebAuthenticator {
             return hdrValue.substring(bearerAuthzMethod.length());
         }
         return null;
+    }
+
+    /*
+     */
+    protected boolean isLtpaAuthFilterAccept(HttpServletRequest req) {
+        if (ssoAuthFilterRef != null) {
+            SSOAuthFilter ssoAuthFilter = ssoAuthFilterRef.getService();
+            if (ssoAuthFilter != null) {
+                return ssoAuthFilter.processRequest(req);
+            }
+        }
+        //If no SSO authFilter service, then we will process all request
+        return true;
     }
 
 }

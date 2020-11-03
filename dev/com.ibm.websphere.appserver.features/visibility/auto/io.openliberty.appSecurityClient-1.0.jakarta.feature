@@ -7,5 +7,5 @@ IBM-Provision-Capability:\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.servlet.api-5.0))"
 -bundles=\
   io.openliberty.security.jaas.internal.common
-kind=noship
-edition=full
+kind=beta
+edition=base

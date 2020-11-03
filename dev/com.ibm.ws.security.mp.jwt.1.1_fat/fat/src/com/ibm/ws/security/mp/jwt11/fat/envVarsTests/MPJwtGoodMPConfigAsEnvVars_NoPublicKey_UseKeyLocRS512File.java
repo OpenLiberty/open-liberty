@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtWithGoodAltSigAlgMPConfig;
 import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
@@ -48,7 +49,7 @@ public class MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS512File extends M
     public static void setUp() throws Exception {
 
         String sigAlg = MpJwtFatConstants.SIGALG_RS512;
-        commonSetup(envVarsResourceServer, sigAlg, MP11ConfigSettings.getDefaultKeyFileLoc(envVarsResourceServer) + MP11ConfigSettings.getKeyFileNameForAlg(sigAlg),
+        commonSetup(envVarsResourceServer, sigAlg, JwtKeyTools.getDefaultKeyFileLoc(envVarsResourceServer) + JwtKeyTools.getPublicKeyFileNameForAlg(sigAlg),
                     MP11ConfigSettings.PublicKeyNotSet, MPConfigLocation.ENV_VAR);
 
     }

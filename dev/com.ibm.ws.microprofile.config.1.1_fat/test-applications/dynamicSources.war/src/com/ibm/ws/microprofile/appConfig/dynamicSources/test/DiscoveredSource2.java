@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 
 package com.ibm.ws.microprofile.appConfig.dynamicSources.test;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class DiscoveredSource2 implements org.eclipse.microprofile.config.spi.ConfigSource {
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+public class DiscoveredSource2 implements ConfigSource {
 
     public ConcurrentMap<String, String> props;
     public int ordinal;
@@ -85,5 +88,11 @@ public class DiscoveredSource2 implements org.eclipse.microprofile.config.spi.Co
             Integer i = new Integer(new Integer(value).intValue() + 1);
             props.put(key, i.toString());
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }

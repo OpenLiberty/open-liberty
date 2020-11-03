@@ -19,6 +19,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonIOUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
@@ -227,7 +228,7 @@ public class MPJwt11MPConfigTests extends MPJwtMPConfigTests {
 
         try {
             String fixedJwksUri = resolvedJwksUri(jwtBuilderServer, MP11ConfigSettings.jwksUri);
-            String fileLoc = mpConfigSettings.getDefaultKeyFileLoc(server);
+            String fileLoc = JwtKeyTools.getDefaultKeyFileLoc(server);
 
             // the microprofile-config.properties files will have xxx_<attr>_xxx values that need to be replaced
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,

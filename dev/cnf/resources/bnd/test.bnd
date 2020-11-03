@@ -31,3 +31,6 @@ mockito: \
   fattest.simplicity\\;version=latest, \
   com.ibm.ws.componenttest:public.api\\;version=1.0.0, \
   com.ibm.ws.componenttest\\;version=latest}
+
+-dependson: ${if;${matches;${project};.*_fat.*}; \
+  build.changeDetector\\;version=latest}

@@ -16,13 +16,16 @@ import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.web.SimpleServlet;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -89,6 +92,117 @@ public class SimpleTest extends FATServletClient {
                 return null;
             }
         });
+    }
+
+    @Test
+    // TODO: Remove skip when injection is enabled for jakartaee9
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    public void testAsyncFallback() throws Exception {
+        runTest("testAsyncFallback");
+    }
+
+    @Test
+    public void testUserTranLookup() throws Exception {
+        runTest("testUserTranLookup");
+    }
+
+    @Test
+    public void testUserTranFactory() throws Exception {
+        runTest("testUserTranFactory");
+    }
+
+    @Test
+    public void testTranSyncRegistryLookup() throws Exception {
+        runTest("testTranSyncRegistryLookup");
+    }
+
+    /**
+     * Test of basic database connectivity
+     */
+    @Test
+    public void testBasicConnection() throws Exception {
+        runTest("testBasicConnection");
+    }
+
+    /**
+     * Test enlistment in transactions.
+     *
+     * @param request HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    @Test
+    public void testTransactionEnlistment() throws Exception {
+        runTest("testTransactionEnlistment");
+    }
+
+    /**
+     * Test that rolling back a newly started UserTransaction doesn't affect the previously implicitly committed
+     * LTC transaction.
+     */
+    @Test
+    public void testImplicitLTCCommit() throws Exception {
+        runTest("testImplicitLTCCommit");
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
+    public void testNEW() throws Exception {
+        runTest("testNEW");
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
+    public void testNEW2() throws Exception {
+        runTest("testNEW2");
+    }
+
+    /**
+     * Test that rolling back a newly started UserTransaction doesn't affect the previously explicitly committed
+     * LTC transaction.
+     */
+    @Test
+    public void testExplicitLTCCommit() throws Exception {
+        runTest("testExplicitLTCCommit");
+    }
+
+    @Test
+    public void testLTCAfterGlobalTran() throws Exception {
+        runTest("testLTCAfterGlobalTran");
+    }
+
+    @Test
+    public void testUOWManagerLookup() throws Exception {
+        runTest("testUOWManagerLookup");
+    }
+
+    @Test
+    public void testUserTranRestriction() throws Exception {
+        runTest("testUserTranRestriction");
+    }
+
+    @Test
+    public void testSetTransactionTimeout() throws Exception {
+        runTest("testSetTransactionTimeout");
+    }
+
+    @Test
+    public void testSingleThreading() throws Exception {
+        runTest("testSingleThreading");
+    }
+
+    /**
+     * Runs the test
+     */
+    private void runTest(String testName) throws Exception {
+        StringBuilder sb = null;
+        try {
+            sb = runTestWithResponse(server, SERVLET_NAME, testName);
+
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), testName, testName + " returned: " + sb);
+
     }
 
 }

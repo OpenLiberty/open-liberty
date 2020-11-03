@@ -25,6 +25,7 @@ import com.ibm.websphere.security.audit.AuditAuthenticationResult;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.security.audit.utils.AuditUtils;
+import com.ibm.ws.security.audit.utils.ParameterUtils;
 import com.ibm.ws.webcontainer.security.WebRequest;
 
 /**
@@ -125,7 +126,7 @@ public class EJBAuthorizationEvent extends AuditEvent {
             }
 
             if (request.get("methodParameters") != null) {
-                set(AuditEvent.TARGET_EJB_METHOD_PARAMETERS, request.get("methodParameters").toString());
+                set(AuditEvent.TARGET_EJB_METHOD_PARAMETERS, ParameterUtils.format(request.get("methodParameters")).toString());
             }
 
             if (request.get(AuditEvent.REASON_TYPE) != null)

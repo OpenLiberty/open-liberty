@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import com.ibm.ws.webcontainer.security.oauth20.OAuth20Service;
 import com.ibm.ws.webcontainer.security.openid20.OpenidClientService;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
+import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -83,8 +84,9 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                  CollaboratorUtils collabUtils,
                                                  ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                                  ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
-                                                 UnauthenticatedSubjectService unauthSubjectService) {
-        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthSubjectService);
+                                                 UnauthenticatedSubjectService unauthSubjectService,
+                                                 AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
+        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthSubjectService, ssoAuthFilterRef);
     }
 
     @Override
@@ -92,8 +94,9 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                                              AtomicServiceReference<TAIService> taiServiceRef,
                                                                              ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                                              WebAppSecurityConfig webAppSecConfig,
-                                                                             ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
-        providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, oauthServiceRef, openidClientRef, oidcServerRef, oidcClientRef, webAuthenticatorRef);
+                                                                             ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                                                             AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
+        providerAuthenticatorProxy = new WebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, oauthServiceRef, openidClientRef, oidcServerRef, oidcClientRef, webAuthenticatorRef, ssoAuthFilterRef);
         return providerAuthenticatorProxy;
     }
 

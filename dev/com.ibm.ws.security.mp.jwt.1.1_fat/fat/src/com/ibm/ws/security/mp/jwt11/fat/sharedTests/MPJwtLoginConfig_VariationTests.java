@@ -83,6 +83,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerLoginConfigApps(server);
         serverTracker.addServer(server);
+        skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
     }

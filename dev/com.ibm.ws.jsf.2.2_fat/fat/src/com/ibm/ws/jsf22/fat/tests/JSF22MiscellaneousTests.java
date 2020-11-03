@@ -188,7 +188,7 @@ public class JSF22MiscellaneousTests {
             //   Click "Reset" and this should reset the first name.    Prior to JSF2.2, the
             //   first name still held the text.
             HtmlTextInput firstName = (HtmlTextInput) page.getElementById("form1:firstName");
-            firstName.type("John", false, false, false);
+            firstName.type("John");
 
             //  Save the form which should cause an error to be reported.
             HtmlElement button = (HtmlElement) page.getElementById("form1:save");

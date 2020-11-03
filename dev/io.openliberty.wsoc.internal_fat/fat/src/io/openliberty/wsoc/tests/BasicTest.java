@@ -145,6 +145,14 @@ public class BasicTest extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+
+        // give the system 10 seconds to settle down before stopping
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException x) {
+
+        }
+
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E");
         }
@@ -167,6 +175,25 @@ public class BasicTest extends LoggingTest {
     @Test
     public void testSSCAnnotatedByteArraySuccess() throws Exception {
         this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedByteArraySuccess");
+    }
+
+    // move these overlapping test up high in the file, to get the overlapping servlet to load and initialize early
+    @Mode(TestMode.FULL)
+    @Test
+    public void testURIOverlappingWithHtml() throws Exception {
+        String[] expectedInResponse = {
+                                        "Simple Vanilla HTML to test overlapping URL mapping"
+        };
+        this.verifyResponse("/basic/URIOverlapping.html", expectedInResponse);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testURIOverlappingWithServlet() throws Exception {
+        String[] expectedInResponse = {
+                                        "Hello World"
+        };
+        this.verifyResponse("/basic/URIOverlapping", expectedInResponse);
     }
 
     @Mode(TestMode.FULL)
@@ -1160,24 +1187,6 @@ public class BasicTest extends LoggingTest {
     @Test
     public void TCKTestEncoderRuntimeException() throws Exception {
         oet.TCKTestEncoderRuntimeException();
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void testURIOverlappingWithHtml() throws Exception {
-        String[] expectedInResponse = {
-                                        "Simple Vanilla HTML to test overlapping URL mapping"
-        };
-        this.verifyResponse("/basic/URIOverlapping.html", expectedInResponse);
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void testURIOverlappingWithServlet() throws Exception {
-        String[] expectedInResponse = {
-                                        "Hello World"
-        };
-        this.verifyResponse("/basic/URIOverlapping", expectedInResponse);
     }
 
     //  Tests for new WsWsocServerContainer upgrade API

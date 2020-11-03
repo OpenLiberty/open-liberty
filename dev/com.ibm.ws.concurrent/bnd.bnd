@@ -43,6 +43,8 @@ jakartaeeMe: true
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
+-dsannotations-inherit: true
+
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
     provide:='\

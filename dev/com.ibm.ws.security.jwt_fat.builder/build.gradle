@@ -15,11 +15,14 @@ dependencies {
 	project(':com.ibm.ws.org.jose4j'),
      project(':com.ibm.ws.com.unboundid'),
 	  'commons-logging:commons-logging:1.1.3',
-      'org.apache.httpcomponents:httpclient:4.5.4',
-      'org.apache.httpcomponents:httpcore:4.4.9',
-      'net.sourceforge.htmlunit:htmlunit:2.27',
-      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
-      'net.sourceforge.cssparser:cssparser:0.9.23',
+      project(':com.ibm.ws.org.apache.httpcomponents'),
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+      'org.brotli:dec:0.1.2',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
       'org.apache.commons:commons-lang3:3.8',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
@@ -30,6 +33,8 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
+      'xalan:xalan:2.7.2',
+      'commons-io:commons-io:2.6',
       'org.slf4j:slf4j-api:1.7.7',
       'com.unboundid:unboundid-ldapsdk:4.0.9'
       
@@ -40,7 +45,11 @@ dependencies {
  */
 def appBuildDir = "${buildDir}/test-applications"
 
-task jwtbuilderclient(type: War, dependsOn: classes) {
+task jwtbuilderclient(type: War) {
+  dependsOn classes
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
+  dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+
   def appName = "jwtbuilderclient"
   destinationDir file("${appBuildDir}")
   archiveName "${appName}.war"
@@ -75,9 +84,11 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
 }
 
 assemble {
-  dependsOn \
-    jwtbuilderclient
+  dependsOn jwtbuilderclient
 }
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 
 autoFVT.doLast {
 

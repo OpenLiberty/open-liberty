@@ -59,4 +59,5 @@ addRequiredLibraries {
   dependsOn copyDB2
   dependsOn copyOracle
   dependsOn copyPostgresql
+  dependsOn addJakartaTransformer
 }

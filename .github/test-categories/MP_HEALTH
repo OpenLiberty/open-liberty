@@ -1,0 +1,8 @@
+com.ibm.ws.microprofile.health.1.0_fat_tck
+com.ibm.ws.microprofile.health.2.0_fat
+com.ibm.ws.microprofile.health.2.0_fat_tck
+com.ibm.ws.microprofile.health.2.1_fat_tck
+com.ibm.ws.microprofile.health.2.2_fat_tck
+com.ibm.ws.microprofile.health_fat
+io.openliberty.microprofile.health.3.0.internal_fat
+io.openliberty.microprofile.health.3.0.internal_fat_tck

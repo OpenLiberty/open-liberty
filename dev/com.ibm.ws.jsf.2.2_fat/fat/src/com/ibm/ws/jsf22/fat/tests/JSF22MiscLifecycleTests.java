@@ -87,7 +87,7 @@ public class JSF22MiscLifecycleTests {
 
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22ActionListener/testActionListener.jsf");
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:value2");
-            input.type("2", false, false, false);
+            input.type("2");
 
             HtmlElement button = (HtmlElement) page.getElementById("testForm:button1");
             page = button.click();

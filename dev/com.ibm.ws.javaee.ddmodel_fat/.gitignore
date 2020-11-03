@@ -1,7 +1,4 @@
 *.class
-*.jar
-*.ear
-*.war
 *.zip
 autoFVT/*
 /build/

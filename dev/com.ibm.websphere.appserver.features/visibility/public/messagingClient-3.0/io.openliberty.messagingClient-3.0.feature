@@ -19,3 +19,4 @@ Subsystem-Name: Jakarta Messaging 3.0 Client for Message Server
  com.ibm.ws.messaging.comms.client
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

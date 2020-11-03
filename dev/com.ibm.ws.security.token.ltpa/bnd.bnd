@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ WS-TraceGroup: \
   Token
 
 Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Export-Package: com.ibm.ws.security.token.ltpa
 
 Private-Package: \
   com.ibm.ws.security.token.ltpa.internal.*
@@ -47,7 +49,7 @@ Service-Component: \
     activate:=activate; \
     deactivate:=deactivate; \
     configuration-policy:=ignore; \
-    ltpaConfig=com.ibm.ws.security.token.ltpa.internal.LTPAConfiguration; \
+    ltpaConfig=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     properties:='service.vendor=IBM,tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
