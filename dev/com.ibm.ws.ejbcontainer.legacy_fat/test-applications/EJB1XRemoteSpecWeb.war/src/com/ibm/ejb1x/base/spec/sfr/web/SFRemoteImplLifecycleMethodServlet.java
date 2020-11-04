@@ -343,14 +343,6 @@ public class SFRemoteImplLifecycleMethodServlet extends FATServlet {
         SFRa ejb = fhome3.create();
         assertNotNull("Create EJB was null.", ejb);
 
-        // Unlike distributed, zOS has a local tran even for older EJB 1.x modules;
-        // so this method should match what r50 does when running on zOS.  d702025
-        if (FATHelper.isZOS()) {
-            ejb.verify_ejbActivate();
-            ejb.remove();
-            return;
-        }
-
         try {
             ejb.verify_ejbActivate();
             ejb.remove();
@@ -391,14 +383,6 @@ public class SFRemoteImplLifecycleMethodServlet extends FATServlet {
     public void test1XSFBMTLifecycle_ejbPassivate() throws Exception {
         SFRa ejb = fhome3.create(true, (byte) 9, 'C', (short) 0, 0, 0, (float) 0.0, 0.0, "String stringValue");
         assertNotNull("Create EJB was null.", ejb);
-
-        // Unlike distributed, zOS has a local tran even for older EJB 1.x modules;
-        // so this method should match what r50 does when running on zOS.  d702025
-        if (FATHelper.isZOS()) {
-            ejb.verify_ejbPassivate();
-            ejb.remove();
-            return;
-        }
 
         try {
             ejb.verify_ejbPassivate();
