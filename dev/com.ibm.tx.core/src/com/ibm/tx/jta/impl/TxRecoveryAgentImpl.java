@@ -84,8 +84,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {
-    }
+    protected TxRecoveryAgentImpl() {}
+
+    private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -109,6 +110,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // RTC 179941
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
+        // Set the default value of the ThreadLocal to false. It will be set to true in the thread driving replay.
+        _replayThread.set(new Boolean(false));
+
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
         if (cp.getApplId() == null) {
@@ -124,8 +128,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -538,8 +541,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void prepareForRecovery(FailureScope failureScope) {
-    }
+    public void prepareForRecovery(FailureScope failureScope) {}
 
     /**
      * @param fs
@@ -1041,5 +1043,26 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryManager", _recoveryManager);
         return _recoveryManager;
+    }
+
+    @Override
+    public boolean isReplayThread() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isReplayThread");
+
+        boolean isReplayThread = false;
+        if (_replayThread.get() != null)
+            isReplayThread = _replayThread.get();
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isReplayThread", isReplayThread);
+        return isReplayThread;
+    }
+
+    @Override
+    public void setReplayThread() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setReplayThread");
+        _replayThread.set(Boolean.TRUE);
     }
 }

@@ -311,14 +311,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Tran Logging to an RDBMS, recoveryAgent is: " + _recoveryAgent);
             if (_recoveryAgent != null) {
-                RecoveryManager rm = _recoveryAgent.getRecoveryManager();
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Have retrieved recoveryManager: " + rm);
-                if (rm != null) {
-                    if (rm.isReplayThread()) {
-                        Tr.debug(tc, "Thread on which replay will be done - skip recovery processing");
-                        skipRecovery = true;
-                    }
+                if (_recoveryAgent.isReplayThread()) {
+                    Tr.debug(tc, "Thread on which replay will be done - skip recovery processing");
+                    skipRecovery = true;
                 }
             }
         }

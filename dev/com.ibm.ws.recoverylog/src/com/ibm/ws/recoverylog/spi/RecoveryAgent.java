@@ -243,4 +243,16 @@ public interface RecoveryAgent {
      * RDBMS and supports heartbeating.
      */
     public HeartbeatLog getHeartbeatLog(FailureScope fs);
+
+    /**
+     * Allows the setting of a thread local to signify that replay/recovery is occurring on this thread
+     */
+    public void setReplayThread();
+
+    /**
+     * Queries whether a thread local has been set to signify that replay/recovery is occurring on this thread
+     *
+     * @return boolean
+     */
+    public boolean isReplayThread();
 }

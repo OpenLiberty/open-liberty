@@ -151,8 +151,6 @@ public class RecoveryManager implements Runnable {
 
     protected boolean _cleanRemoteShutdown;
 
-    private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
-
     public RecoveryManager(FailureScopeController fsc, RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId,
                            int defaultEpoch)/*
                                              * throws
@@ -177,9 +175,6 @@ public class RecoveryManager implements Runnable {
         _ourEpoch = defaultEpoch;
 
         _recoveringTransactions = new HashSet<TransactionImpl>();
-
-        // Set the default value of the ThreadLocal to false. It will be set to true in the thread driving replay.
-        _replayThread.set(new Boolean(false));
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "RecoveryManager", this);
@@ -1208,19 +1203,6 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "replayComplete");
     }
 
-    public boolean isReplayThread() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isReplayThread");
-
-        boolean isReplayThread = false;
-        if (_replayThread.get() != null)
-            isReplayThread = _replayThread.get();
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isReplayThread", isReplayThread);
-        return isReplayThread;
-    }
-
     protected FailureScopeLifeCycle makeFailureScopeActive(FailureScope fs, boolean isLocal) {
         return FailureScopeLifeCycleHelper.addToActiveList(fs, isLocal);
     }
@@ -1735,7 +1717,7 @@ public class RecoveryManager implements Runnable {
                 Tr.debug(tc, "Performing recovery for " + serverName);
 
             // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
-            _replayThread.set(new Boolean(true));
+            _agent.setReplayThread();
 
             // Lets update our entry in the leaseLog early
             if (_leaseLog != null) {
