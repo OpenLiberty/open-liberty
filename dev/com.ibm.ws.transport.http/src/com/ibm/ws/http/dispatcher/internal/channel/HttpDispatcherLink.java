@@ -242,7 +242,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             try {
                 super.close(conn, e);
             } finally {
-                //
+                // must decrement once and only once to avoid quiesce problems later on shutdown
                 if (!decrementedOneTime.getAndSet(true)) {
                     this.myChannel.decrementActiveConns();
                 }
