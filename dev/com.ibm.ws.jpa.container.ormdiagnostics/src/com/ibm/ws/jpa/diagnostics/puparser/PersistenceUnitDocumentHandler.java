@@ -20,17 +20,22 @@ public class PersistenceUnitDocumentHandler extends DefaultHandler {
     private static final String VERSION_ATTRIBUTE_NAME = "version";
 
     private JPA_Schema jpaSchema = null;
-    
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {       
-        if (PERSISTENCE_LOCAL_NAME.equalsIgnoreCase(localName) && 
-                (Constants.SUN_NAMESPACE.equalsIgnoreCase(uri) || Constants.JCP_NAMESPACE.equalsIgnoreCase(uri))) {
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+        if (PERSISTENCE_LOCAL_NAME.equalsIgnoreCase(localName) &&
+            (Constants.SUN_NAMESPACE.equalsIgnoreCase(uri) ||
+             Constants.JCP_NAMESPACE.equalsIgnoreCase(uri) ||
+             Constants.JAKARTA_NAMESPACE.equalsIgnoreCase(uri))
+
+        ) {
             // TODO: Should resolve by schema location, not by what value is put in version field
             if (jpaSchema == null) {
                 jpaSchema = JPA_Schema.resolveByVersion(atts.getValue("", VERSION_ATTRIBUTE_NAME));
             }
         }
     }
-    
+
     public JPA_Schema getJpaSchema() {
         return jpaSchema;
     }
