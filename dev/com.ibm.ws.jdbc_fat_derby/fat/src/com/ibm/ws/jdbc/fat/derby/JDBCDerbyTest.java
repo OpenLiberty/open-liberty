@@ -33,6 +33,8 @@ public class JDBCDerbyTest extends FATServletClient {
         server.startServer();
     }
 
+    // sample FAT change
+
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0701E", //expected by testTransactionalSetting

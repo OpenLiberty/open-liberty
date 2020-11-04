@@ -80,6 +80,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + ".0.".length();
     private static final TraceComponent tc = Tr.register(DataSourceService.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+    
+    // sample product code change
 
     /**
      * Name of reference to the ConnectionManagerService
