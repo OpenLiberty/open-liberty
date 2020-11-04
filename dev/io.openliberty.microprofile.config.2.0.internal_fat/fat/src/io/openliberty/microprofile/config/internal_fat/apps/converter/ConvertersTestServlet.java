@@ -10,8 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal_fat.apps.converter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
@@ -27,6 +29,9 @@ import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
 @WebServlet("/")
 public class ConvertersTestServlet extends FATServlet {
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
+
+    @Inject
+    DuplicateConvertersBean duplicateConvertersBean;
 
     /**
      * Test what happens when a converter raises an exception for mpConfig > 1.4.
@@ -60,6 +65,18 @@ public class ConvertersTestServlet extends FATServlet {
         } catch (IllegalArgumentException e) {
             TestUtils.assertEquals("Converter throwing intentional exception", e.getMessage());
         }
+    }
+
+    /**
+     * If multiple Converters are registered for the same Type with the same priority, the result should be deterministic.
+     *
+     * For mpConfig > 1.4, the first of the duplicate converters in org.eclipse.microprofile.config.spi.Converter will be used.
+     */
+    @Test
+    public void testDuplicateConverters() throws Exception {
+        assertEquals("Output from Converter 1", duplicateConvertersBean.getDUPLICATE_CONVERTERS_KEY_1().toString());
+        assertEquals("Output from Converter 1", duplicateConvertersBean.getDUPLICATE_CONVERTERS_KEY_2().toString());
+        assertEquals("Output from Converter 1", duplicateConvertersBean.getDUPLICATE_CONVERTERS_KEY_3().toString());
     }
 
 }

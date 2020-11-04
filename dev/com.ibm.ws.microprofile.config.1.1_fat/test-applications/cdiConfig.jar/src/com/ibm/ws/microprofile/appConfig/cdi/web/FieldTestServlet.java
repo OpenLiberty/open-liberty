@@ -99,8 +99,6 @@ public class FieldTestServlet extends AbstractBeanServlet {
 
     /**
      * This is a good test to test the pizza converter functioning correctly. The key exists in the config source and is correctly converted to a pizza object.
-     *
-     * @throws Exception
      */
     @Test
     public void testGoodPizza() throws Exception {

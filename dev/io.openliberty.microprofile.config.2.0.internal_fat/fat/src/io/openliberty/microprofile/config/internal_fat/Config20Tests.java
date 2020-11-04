@@ -93,7 +93,9 @@ public class Config20Tests extends FATServletClient {
 
         WebArchive convertersWar = ShrinkWrap.create(WebArchive.class, CONVERTER_LOADER_APP_NAME + ".war")
                         .addPackages(true, ConvertersTestServlet.class.getPackage())
-                        .addClass(TestUtils.class);
+                        .addClass(TestUtils.class)
+                        .addAsManifestResource(new File("publish/resources/convertersWar/org.eclipse.microprofile.config.spi.Converter"),
+                                               "services/org.eclipse.microprofile.config.spi.Converter");
 
         PropertiesAsset config = new PropertiesAsset()
                         .addProperty("value1DefinedInTwoPlaces", "value1b")

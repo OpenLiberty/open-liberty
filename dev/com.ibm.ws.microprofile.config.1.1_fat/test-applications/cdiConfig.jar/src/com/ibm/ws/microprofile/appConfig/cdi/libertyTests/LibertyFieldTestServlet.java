@@ -40,10 +40,14 @@ public class LibertyFieldTestServlet extends AbstractBeanServlet {
 
     /**
      * Deriving converters from child classes is extra functionality beyond the MP specification, hence don't test this against mpConfig > 1.4
+     *
+     * The Animal class has two converters, one for each child class: Converter<Ant> and Converter<Dog>.
+     *
+     * The former is registered first and therefore will be used.
      */
     @Test
     public void testAnimal() throws Exception {
-        test("ANIMAL_KEY", "A Black Dog called Bob");
+        test("ANIMAL_KEY", "A Red Ant called Bob");
     }
 
     /**
@@ -62,6 +66,18 @@ public class LibertyFieldTestServlet extends AbstractBeanServlet {
     @Test
     public void testPartialPizza() throws Exception {
         test("PIZZA_MISSING_KEY", "null");
+    }
+
+    /**
+     * If multiple Converters are registered for the same Type with the same priority, the result should be deterministic.
+     *
+     * For mpConfig < 2.0, the last duplicate converter in org.eclipse.microprofile.config.spi.Converter will be used.
+     */
+    @Test
+    public void testDuplicateConverters() throws Exception {
+        test("DUPLICATE_CONVERTERS_KEY_1", "Output from Converter 2");
+        test("DUPLICATE_CONVERTERS_KEY_2", "Output from Converter 2");
+        test("DUPLICATE_CONVERTERS_KEY_3", "Output from Converter 2");
     }
 
 }
