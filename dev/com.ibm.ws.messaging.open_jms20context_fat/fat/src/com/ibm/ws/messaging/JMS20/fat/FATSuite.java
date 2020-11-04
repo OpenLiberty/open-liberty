@@ -40,7 +40,7 @@ import componenttest.rules.repeater.RepeatTests;
 
         JMSContextTest_118067.class, // JMSContext_118067 App
         JMSContextTest_118070.class, // JMSContext_118070 App
-        // JMSContextTest_118075.class, // JMSContext_118075 App
+        JMSContextTest_118075.class, // JMSContext_118075 App
 
         // The temporary queue tests use different client and engine server configurations:
         //   JMSContextEngine_TQ.xml, JMSContextClient_TQ.xml; 

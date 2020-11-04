@@ -49,7 +49,7 @@ public class JMSContextTest_118075 {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("JMSContextServer.xml");
+        engineServer.setServerConfigurationFile("JMSContextEngine.xml");
 
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features",
