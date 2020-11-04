@@ -40,6 +40,8 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @SkipForRepeat(EE9_FEATURES)
+//Skipping the test class for jakartaee testing since it is beyond the scope of what is needed
+//TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
 public class JsonUserFeatureTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonp.container.userfeature.fat")

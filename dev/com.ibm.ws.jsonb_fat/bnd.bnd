@@ -27,7 +27,8 @@ tested.features: servlet-5.0,\
 				 jsonpContainer-2.0,\
 				 jsonbContainer-2.0,\
 				 jsonb-2.0,\
-				 jsonp-2.0
+				 jsonp-2.0,\
+				 cdi-3.0
 
 -buildpath: \
 	com.ibm.wsspi.org.osgi.core;version=latest,\
