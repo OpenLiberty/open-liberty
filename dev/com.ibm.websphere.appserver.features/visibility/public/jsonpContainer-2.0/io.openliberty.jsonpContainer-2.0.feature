@@ -8,5 +8,5 @@ IBM-ShortName: jsonpContainer-2.0
 Subsystem-Name: JavaScript Object Notation Processing 2.0 via Bells
 -features=io.openliberty.jsonpImpl-2.0.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
-kind=noship
-edition=full
+kind=beta
+edition=core
