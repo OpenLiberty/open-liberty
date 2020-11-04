@@ -19,6 +19,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -113,6 +114,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private final Object WebConnCanCloseSync = new Object();
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
+
+    private final AtomicBoolean decrementedOneTime = new AtomicBoolean(false);
 
     /**
      * Constructor.
@@ -236,8 +239,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
         if (myChannel.getStop0Called() == false) {
-            super.close(conn, e);
-            this.myChannel.decrementActiveConns();
+            try {
+                super.close(conn, e);
+            } finally {
+                //
+                if (!decrementedOneTime.getAndSet(true)) {
+                    this.myChannel.decrementActiveConns();
+                }
+            }
         }
     }
 
@@ -687,7 +696,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request        the inbound request
+     * @param request the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -718,8 +727,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request        the inbound request
-     * @param localPort      the server port where the client connection was accepted on.
+     * @param request the inbound request
+     * @param localPort the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -1266,13 +1275,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
         if (this.isc != null) {
             this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
-        }
-        else{
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to set isc zero byte chunk because isc is null");
             }
         }
-        
+
     }
 
 }
