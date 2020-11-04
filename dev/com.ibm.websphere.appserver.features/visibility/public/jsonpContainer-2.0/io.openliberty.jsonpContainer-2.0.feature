@@ -10,3 +10,4 @@ Subsystem-Name: JavaScript Object Notation Processing 2.0 via Bells
  com.ibm.websphere.appserver.eeCompatible-9.0
 kind=beta
 edition=core
+WLP-Activation-Type: parallel

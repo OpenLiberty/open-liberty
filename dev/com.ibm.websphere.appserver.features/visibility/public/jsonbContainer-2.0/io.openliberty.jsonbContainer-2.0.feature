@@ -14,3 +14,4 @@ Subsystem-Name: JavaScript Object Notation Binding 2.0 via Bells
 -bundles=com.ibm.ws.jsonb.service
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
