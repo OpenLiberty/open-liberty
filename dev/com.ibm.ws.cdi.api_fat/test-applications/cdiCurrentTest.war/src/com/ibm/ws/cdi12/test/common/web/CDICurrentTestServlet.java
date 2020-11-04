@@ -12,7 +12,10 @@ package com.ibm.ws.cdi12.test.common.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.annotation.WebServlet;
 
@@ -24,6 +27,12 @@ import componenttest.app.FATServlet;
 public class CDICurrentTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static Boolean wasCDICurrentFound = null;
+    private static Boolean wasCDICurrentFoundViaMOE = null;
+
+    @Resource
+    ManagedExecutorService managedExecutorService;
 
     public void testCDICurrent() {
 
@@ -37,4 +46,45 @@ public class CDICurrentTestServlet extends FATServlet {
 
     }
 
+    /*
+     * CDI.current() requires access to contextual information from the thread. ManagedExecutor will propagate that
+     * context onto a newly created thread. This test ensures that works correctly and CDI.current() returns a value
+     * when called from a new thread.
+     *
+     * Note that threads created via new Thread() will not have the required context and CDI.current() will return null
+     */    
+    public void testCDICurrentViaMES() throws Exception {
+
+        assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
+
+        managedExecutorService.submit(new callCDICurrent());
+
+        int i = 10;
+
+        while (i > 0) {
+            i--;
+            if (wasCDICurrentFoundViaMOE != null) {
+                assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMOE);
+                return;
+            }
+            Thread.sleep(5);
+        }
+
+        assertTrue("The thread with CDI.current never completed", false);
+    }
+
+
+    public class callCDICurrent implements Runnable {
+ 
+        @Override
+        public void run() {
+            CDI cdi = CDI.current();
+            System.out.println("GREP MOE + " + CDI.current());
+            if (cdi != null) {
+                CDICurrentTestServlet.wasCDICurrentFoundViaMOE = true;
+            } else {
+                CDICurrentTestServlet.wasCDICurrentFoundViaMOE = false;
+            }
+        }
+    }
 }
