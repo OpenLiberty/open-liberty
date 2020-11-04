@@ -1,3 +1,4 @@
+
 <server>
 
 	<include location="${shared.config.dir}/mpConfigFeatures.xml" />
@@ -7,17 +8,16 @@
 	<include location="${shared.config.dir}/goodSSLSettings.xml" />
 
 	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
-	
-	<include location="${shared.config.dir}/microProfileMP12ConfigApps.xml"/>
+		
+	<include location="${shared.config.dir}/microProfileMPConfigNotInApps.xml"/>
 
 	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
-	
+
 	<mpJwt
 		id="mpJwt_1"
         authFilterRef="mpJwtAppAuthFilter"
 		jwksUri="${mpJwt_jwksUri}"
-		sslRef="ssl_allSigAlg"
-		issuer="testIssuer">
+		sslRef="ssl_allSigAlg">
 	</mpJwt>
 
     <authFilter id="mpJwtAppAuthFilter">
@@ -26,5 +26,5 @@
              urlPattern="MicroProfileApp"
              matchType="contains" />
     </authFilter>
-
+    
 </server>

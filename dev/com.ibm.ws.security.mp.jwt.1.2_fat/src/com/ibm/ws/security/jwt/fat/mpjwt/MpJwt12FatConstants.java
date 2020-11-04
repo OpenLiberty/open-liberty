@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ * IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.jwt.fat.mpjwt;
 
 public class MpJwt12FatConstants extends MpJwtFatConstants {
@@ -26,5 +36,16 @@ public class MpJwt12FatConstants extends MpJwtFatConstants {
     public static final String BAD_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileBadAlgorithmInMP-ConfigUnderWEB-INF";
     public static final String GOOD_KEY_AND_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodKeyAndAlgorithmInMP-ConfigInMETA-INF";
     public static final String GOOD_KEY_AND_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodKeyAndAlgorithmInMP-ConfigUnderWEB-INF";
+
+    public static final String GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodRelativeDecryptKeyRS256InMP-ConfigInMETA-INF";
+    public static final String GOOD_FILE_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodFileDecryptKeyRS256InMP-ConfigUnderWEB-INF";
+    public static final String GOOD_URL_DECRYPT_KEY_RS384_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodUrlDecryptKeyRS384InMP-ConfigInMETA-INF";
+    public static final String GOOD_RELATIVE_DECRYPT_KEY_RS384_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativeDecryptKeyRS384InMP-ConfigUnderWEB-INF";
+    public static final String GOOD_FILE_DECRYPT_KEY_RS512_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodFileDecryptKeyRS512InMP-ConfigInMETA-INF";
+    public static final String GOOD_URL_DECRYPT_KEY_RS512_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodUrlDecryptKeyRS512InMP-ConfigUnderWEB-INF";
+    public static final String BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileBadDecryptKeyES256InMP-ConfigInMETA-INF";
+    public static final String BAD_DECRYPT_KEY_ES256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileBadDecryptKeyES256InMP-ConfigUnderWEB-INF";
+    public static final String BAD_PLAINTEXT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileBadPlaintextDecryptKeyRS256InMP-ConfigInMETA-INF";
+    public static final String BAD_JWKSURI_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileBadJwksUriDecryptKeyRS256InMP-ConfigUnderWEB-INF";
 
 }

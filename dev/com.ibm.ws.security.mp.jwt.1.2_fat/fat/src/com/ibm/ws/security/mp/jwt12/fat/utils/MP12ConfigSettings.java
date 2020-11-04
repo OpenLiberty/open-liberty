@@ -22,23 +22,26 @@ public class MP12ConfigSettings extends MP11ConfigSettings {
     public final static String AudiencesNotSet = "";
     public final static String DefaultAlgorithm = MpJwt12FatConstants.SIGALG_RS256;
     public final static String AlgorithmNotSet = "";
+    public final static String DecryptKeyLocNotSet = "";
 
     private String header = DefaultHeader;
     private String cookie = DefaultCookieName;
     private String audience = AudiencesNotSet;
     private String algorithm = AlgorithmNotSet;
+    private String decryptKeyLoc = DecryptKeyLocNotSet;
 
     public MP12ConfigSettings() {
     }
 
     public MP12ConfigSettings(String inPublicKeyLocation, String inPublicKey, String inIssuer, String inCertType, String inHeader, String inCookie, String inAudience,
-                              String inAlgorithm) {
+                              String inAlgorithm, String inDecryptKeyLoc) {
 
         super(inPublicKeyLocation, inPublicKey, inIssuer, inCertType);
         header = inHeader;
         cookie = inCookie;
         audience = inAudience;
         algorithm = inAlgorithm;
+        decryptKeyLoc = inDecryptKeyLoc;
     }
 
     public void setHeader(String inHeader) {
@@ -71,5 +74,13 @@ public class MP12ConfigSettings extends MP11ConfigSettings {
 
     public String getAlgorithm() {
         return algorithm;
+    }
+
+    public void setDecryptKeyLoc(String inDecryptKeyLoc) {
+        decryptKeyLoc = inDecryptKeyLoc;
+    }
+
+    public String getDecryptKeyLoc() {
+        return decryptKeyLoc;
     }
 }

@@ -46,7 +46,8 @@ public class MPJwtGoodMP12ConfigAsEnvVars_Audiences extends GenericEnvVarsAndSys
     public static void setUp() throws Exception {
 
         commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.COOKIE,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, "client01, client02", MP12ConfigSettings.AlgorithmNotSet, MPConfigLocation.ENV_VAR);
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, "client01, client02", MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
+                           MPConfigLocation.ENV_VAR);
 
     }
 
