@@ -18,6 +18,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -841,7 +842,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String[] parts = jwtToken.split("\\.");
         String badToken = parts[1] + "." + parts[2];
 
-        Expectations expectations = buildNegativeAttributeExpectations(".+JoseException.+was 2");
+        Expectations expectations = buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS);
 
         Page response = consumeToken(badToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -861,7 +862,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String[] parts = jwtToken.split("\\.");
         String badToken = parts[0] + "." + parts[2];
 
-        Expectations expectations = buildNegativeAttributeExpectations(".+JoseException.+was 2");
+        Expectations expectations = buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS);
 
         Page response = consumeToken(badToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -881,7 +882,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String[] parts = jwtToken.split("\\.");
         String badToken = parts[0] + "." + parts[1];
 
-        Expectations expectations = buildNegativeAttributeExpectations(".+JoseException.+was 2");
+        Expectations expectations = buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS);
 
         Page response = consumeToken(badToken);
         validationUtils.validateResult(response, currentAction, expectations);
