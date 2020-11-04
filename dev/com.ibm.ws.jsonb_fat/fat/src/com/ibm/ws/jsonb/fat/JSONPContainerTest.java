@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,8 @@ public class JSONPContainerTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(EE9_FEATURES) //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
+    @SkipForRepeat(EE9_FEATURES)
+    //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
     //TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonpProviderAvailableJohnzon() throws Exception {
         runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
