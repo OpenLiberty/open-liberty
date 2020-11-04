@@ -352,7 +352,10 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             try {
                 ZipEntry entry = zipInputStream.getNextEntry();
                 if ( entry == null ) {
-                    Tr.error(tc, "bad.zip.data", getPhysicalPath(artifactEntry));
+                    JavaArchive javaArchive = new JavaArchive(getPhysicalPath(artifactEntry));
+                    if ( !javaArchive.isValid() ) {
+                        Tr.error(tc, "bad.zip.data", getPhysicalPath(artifactEntry));
+                    }
                 } else {
                     validZip = true;
                 }
@@ -448,8 +451,11 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             try {
                 ZipEntry entry = zipInputStream.getNextEntry(); // throws IOException
                 if ( entry == null ) {
-                    Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
-                    return false;
+                    JavaArchive javaArchive = new JavaArchive(file.getAbsolutePath());
+                    if ( !javaArchive.isValid() ) {
+                       Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
+                       return false;
+                    }
                 }
                 return true;
             } catch ( IOException e ) {

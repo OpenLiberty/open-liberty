@@ -1,0 +1,575 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************
+ *
+ * The purpose of this class is to test if a Java archive is valid without actually reading the entire JAR.
+ * This is especially useful in cases where the archive has a script attached at the front of the file.
+ * Of course, this is more of a sanity check than a rigorous validation, which would require reading the whole file.
+ * 
+ *     [ script ]                   <---- start of file  (optional)
+ *     [ local file header 1 ]      <---- actual start of archive
+ *     [ encryption header 1 ]
+ *     [ file data 1 ]
+ *     [ data descriptor 1 ]
+ *     . 
+ *     .
+ *     .
+ *     [ local file header n ]
+ *     [ encryption header n ]
+ *     [ file data n ]
+ *     [ data descriptor n ]
+ *     [ archive decryption header ] 
+ *     [ archive extra data record ] 
+ *     [ central directory header 1 ]       <---- start of central directory
+ *     .
+ *     .
+ *     .
+ *     [ central directory header n ]
+ *     [ zip64 end of central directory record ]
+ *     [ zip64 end of central directory locator ] 
+ *     [ end of central directory record ]
+ * 
+ *  The validation calculates the size of the last 4 records listed above (as well as doing some
+ *  validation checks on the sizes and signatures) and then calculates the actual offset
+ *  of the archive within the file (which will normally be 0).  The final step is to check
+ *  the signature at the beginning of the archive.
+ *  
+ *  The actual archive offset is calculated :
+ *  
+ *    fileLength - eocdRecordSize - zip64RecLengths - CentralDirectorySize - offsetOfCentralDirectory
+ *   
+ *   Note the offsetOfCentralDirectory is relative to the beginning of the actual archive (not an offset  
+ *   from the beginning of the file.)  Subtracting away all of the known pieces gives us the unknown 
+ *   piece which is the actual archive offset.
+ *  
+ */
+
+package com.ibm.ws.artifact.zip.internal;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+
+public class JavaArchive {
+    
+    // EOCDR is End-of-Central-Directory-Record
+	private static final int EOCDR_MIN_SIZE = 22;
+	private static final int EOCDR_MAX_COMMENT_LEN = 0xFFFF;
+	private static final int EOCDR_MAX_SIZE = EOCDR_MIN_SIZE + EOCDR_MAX_COMMENT_LEN;
+	private static final int EOCDR_SIGNATURE = 0x504b0506; 
+	private static final int EOCDR_TOTAL_ENTRIES_OFFSET = 10;
+	private static final int ZIP64_INDICATOR = 0xFFFF;               // Indicates Zip64 when found at offset EOCDR_TOTAL_ENTRIES_OFFSET 
+	private static final int EOCDR_CENTRAL_DIR_SIZE_OFFSET = 12;     // Offset to size of central directory
+	private static final int EOCDR_CENTRAL_DIR_OFFSET = 16;          // Offset to central directory relative to beginning of archive
+	private static final int EOCDR_COMMENT_LENGTH_OFFSET = 20; 	     // Offset to comment length
+	
+	// ZIP64_EOCDR is Zip64-End-of-Central-Directory-Record
+	private static final int ZIP64_EOCDR_SIGNATURE = 0x504b0606;
+	private static final int ZIP64_EOCDR_MINIMUM_SIZE = 56;
+	private static final int ZIP64_EOCDR_HEADER_SIZE = 12;           // 4 bytes for the signature and 8 bytes for the length
+	private static final int ZIP64_EOCDR_SIZE_OFFSET = 4;            // The size at this offset is the size of the zip64 EOCDR minus 12. (Meaning it does NOT include the 12-byte header)
+	private static final int ZIP64_EOCDR_SIZE_FIELD_LENGTH = 8;      // Number of bytes for size field.
+
+	// ZIP64_LOCATOR is Zip64-End-of-Central-Directory-Record-Locator
+	private static final int ZIP64_LOCATOR_SIGNATURE = 0x504b0607;
+	private static final int ZIP64_LOCATOR_SIZE = 20;                // Fixed size.
+	private static final int ZIP64_LOCATOR_EOCD_OFFSET_OFFSET = 8;   // Position in the locator of the offset of the Zip64-End-of-Central-Direcory-Record
+	
+	private static final int LOCAL_FILE_HEADER_SIGNATURE = 0x504b0304;
+	private static final int BLOCK_SIZE = 256;
+	private static final int FORWARD_BLOCK_SIZE = 8192;
+	
+	// Maximum amount of data (usually a script) that is allowed by this implementation to be 
+	// attached to the beginning of the archive. This value may be increased, but it will 
+	// increase the time it takes to fail when the zip is corrupted.
+	private static final int MAX_PREFIX_ALLOWED = 1024*1024*5;       
+	
+	private byte[] _endOfCentralDirectoryRecord; // Only the minimum size is stored.  Does not include the comment 
+	private int    _eocdRecordSize;              // Actual size of End-of-Central-Directory-Record - including comment
+	private byte[] _zip64EoCDRLocator;           // 20 bytes;
+	private long   _zip64EoCDRLocatorOffset;     // Offset (from end of file) of the Zip64 Locator
+	private byte[] _zip64EoCDR;                  // Only the minimum size is stored.  Does not include any extra fields.  
+	private long   _zip64EoCDRecSize;            // Size of Zip64-End-of-Central-Directory-Record
+    private String _archiveFileName;
+	private long   _fileLength;                  // Length of the archive file
+	
+    JavaArchive(String archiveFileName) {
+    	_archiveFileName = archiveFileName;
+    }
+    
+    public boolean isValid() {
+    	
+    	try (  RandomAccessFile file = new RandomAccessFile(_archiveFileName, "r") ) {
+
+    		_fileLength = file.length();
+    		_endOfCentralDirectoryRecord = getEndOfCentralDirectoryRecord(file);
+    		
+    		if ( isZip64() ) {
+    		   _zip64EoCDRLocator = getZip64EoCDLocator(file);
+    		   _zip64EoCDRLocatorOffset = _fileLength - _eocdRecordSize - ZIP64_LOCATOR_SIZE;
+    		   _zip64EoCDR = getZip64EndOfCentralDirectoryRecord(file);
+    		   _zip64EoCDRecSize = getZip64EoCDRecordSize( _zip64EoCDR, 0 );
+    		}
+    		
+    		int archiveOffset = (int)getActualArchiveOffset();
+
+    		if (archiveStartsWithSignature(file, archiveOffset)) {
+    			return true;
+    		} 
+
+    	} catch (Exception e) {
+    		//e.printStackTrace();
+    	}
+
+    	return false;
+    }
+    
+    /**
+     * Find the End-of-Central-Director-Record which is always at the end of the file.
+     * It is usually 22 bytes but may contain a comment up to 64K in size.
+     * Reads from the end of the file looking backwards for the EoCDR signature.
+     * 
+     * The implementation reads the file in BLOCK_SIZE blocks from the end of the file
+     * and searches each block.  Note that there is some overlap of the successive 
+     * blocks; EOCDR_MIN_SIZE bytes of overlap to be precise.  This is because the 
+     * record might start at the end of one block and finish in the next.
+     * 
+     * @param file
+     * @throws IOException
+     */
+	private byte[] getEndOfCentralDirectoryRecord(RandomAccessFile file) throws IOException {
+		
+		byte[] block = getBlockFromEndOfFile(file, BLOCK_SIZE);
+		int size = EOCDR_MIN_SIZE ;
+		int offset = block.length - size;
+		int offsetFromEnd = block.length - offset;   // offset from the end of the block (not the file)
+		
+		if ( block.length < EOCDR_MIN_SIZE ) {
+			throw new IOException("Not a valid zip file.  Less than minimum required length.");
+		}
+		
+		// We will only enter this loop if a comment is attached to the End-of-Central-Directory-Record
+		// ... or if the zip is invalid (doesn't have an End-of-Central-Directory-Record.
+		// Note that isValidEoCDRec must have EOCDR_MIN_SIZE available at the end of the block
+		// to avoid an exception because of a read past the end of the block.
+		while ( !isValidEoCDRec( block, offset, size ) ) {
+			size++;
+			if (size == 0xFFFF) {
+				int i = 0;
+			}
+			offsetFromEnd++;
+			 
+			if ( size > EOCDR_MAX_SIZE || size > _fileLength ) {
+				throw new IOException(
+						"Cannot find central directory end record in zip");
+			}
+			
+			if ( offsetFromEnd > block.length ) {
+
+				block = this.getBlockFromEndOfFile(file, size + BLOCK_SIZE - EOCDR_MIN_SIZE, BLOCK_SIZE);
+				offsetFromEnd = EOCDR_MIN_SIZE;
+			}
+			offset = block.length - offsetFromEnd;			
+		}
+		
+		// Copy only the minimum end-of-central-directory-record, but record the actual size.  
+		// We don't need to store the comment, which could be up to 64k.		
+		_eocdRecordSize = size;
+		return Arrays.copyOfRange(block, offset, offset + EOCDR_MIN_SIZE ); 
+	}
+	
+//  Alternative implementation that avoids the overlapping blocks, but always reads to the end of
+//  when retrieving a new block.  Thus the block size grows and can get quite large.	
+//
+//
+//	private byte[] getEndOfCentralDirectoryRecord(RandomAccessFile file) throws IOException {
+//		
+//		byte[] block = getBlockFromEndOfFile(file, BLOCK_SIZE);
+//		int blockLength = block.length;  // for debugging !!!!!!!!!!!!!!!!1
+//		int size = EOCDR_MIN_SIZE ;
+//		int offset = block.length - size;
+//		
+//		if ( block.length < EOCDR_MIN_SIZE ) {
+//			throw new IOException("Not a valid zip file.  Less than minimum required length.");
+//		}
+//		
+//		// We will only enter this loop if a comment is attached to the End-of-Central-Directory-Record
+//		// ... or if the zip is invalid (doesn't have an End-of-Central-Directory-Record.
+//		while ( !isValidEoCDRec( block, offset, size ) ) {
+//			size++;
+//			if ( size > block.length ) {
+//				if ( size >= EOCDR_MAX_SIZE || size > _fileLength ) {
+//					throw new IOException(
+//							"Cannot find central directory end record in zip");
+//				}
+//				block = this.getBlockFromEndOfFile(file, size + BLOCK_SIZE);
+//			}
+//			blockLength = block.length;
+//			offset = block.length - size;
+//		}
+//		
+//		// Copy only the minimum end-of-central-directory-record, but record the actual size.  
+//		// We don't need the comment, which could be up to 64k.		
+//		_eocdRecordSize = size;
+//		return Arrays.copyOfRange(block, offset, offset + EOCDR_MIN_SIZE ); 
+//	}
+	
+	/**
+	 * Get the 20-byte Zip64 Locator.  It must sit 20 bytes before the End-of-Central-Directory-Record.
+	 * @param file the zip file
+	 * @return
+	 * @throws IOException
+	 */
+	private byte[] getZip64EoCDLocator(RandomAccessFile file) throws IOException {
+
+		if ( !isZip64() ) {
+			return null;
+		}
+
+	    byte[] block = getBlockFromEndOfFile(file, 
+	    		                             _eocdRecordSize + ZIP64_LOCATOR_SIZE, 
+	    		                             ZIP64_LOCATOR_SIZE);	
+
+		if ( !isValid_Zip64EoCDRLocator(block, 0)) {
+			throw new IOException("Invalid Zip64-End-of-Central-Direcytory-Locator.");
+		}
+
+		return Arrays.copyOfRange(block, 0, ZIP64_LOCATOR_SIZE);
+	}
+	
+	/**
+	 * Locates the Zip64-End-of-Central-Directory-Record by using the offset 
+	 * in the Zip64 Locator.  If not found there, it is assumed that data has
+	 * been prepended to the archive, and a forward search begins until we find the
+	 * correct signature.  Of course, a false signature could appear just about  
+	 * anywhere in the zip.  So the record must pass additional validation.
+	 * @param file a zip file
+	 * @return a copy of the Zip64-End-of-Central-Directory-Record
+	 * @throws IOException
+	 */
+	private byte[] getZip64EndOfCentralDirectoryRecord(RandomAccessFile file ) throws IOException {
+		
+		if ( !isZip64() ) {
+			return null;
+		}
+
+		// The offset of the Zip64-End-of-Central-Directory-Record is found in the Zip64 locator at offset 8.
+		// That offset will not be correct if data (i.e. a script) has been attached in front of the archive.
+		long zip64EoCDOffset = this.getLittleEndianValue( _zip64EoCDRLocator, ZIP64_LOCATOR_EOCD_OFFSET_OFFSET, 4);
+		
+		byte [] block = getBlockFromBeginningOfFile(file, zip64EoCDOffset, ZIP64_EOCDR_MINIMUM_SIZE);
+		if (block.length < ZIP64_EOCDR_MINIMUM_SIZE) {
+			throw new IOException("Offset to Zip64-End-of-Central-Directory-Record does not correct.  Reached end of file.");
+		}
+		
+		long offsetFromBeginningOfFile = zip64EoCDOffset;
+		int offsetInBlock = 0;
+		int offsetFromStartingPoint = 0;   // The starting point is zip64EoCDOffset;
+
+		// We will only enter this loop if data has been attached to the front of the archive (or if
+		// the archive is invalid.)  The loop searches forward in the file starting at the point where
+		// the Zip64 Locator indicates the Zip64-End-of-Central-Directory-Record should be.
+		while ( !isValid_Zip64EoCDRecord( block, offsetInBlock, offsetFromBeginningOfFile ) ) {
+			offsetInBlock++;
+			offsetFromBeginningOfFile++;
+			offsetFromStartingPoint++;
+			
+			// An artificial limit is placed on the size of data allowed to be prepended to an archive.
+			// This is because this implementation searches through the file.  A fruitless search through
+			// a large file would cause an unacceptable delay if we did not set a limit.
+			if (offsetFromStartingPoint > MAX_PREFIX_ALLOWED) {
+			     throw new IOException("Failed to find the Zip64-End-of-Central-Directory-Record after searching " + MAX_PREFIX_ALLOWED + " bytes.");	
+			}
+			
+			if ( offsetInBlock > block.length - 4 ) {  // Must allow 4 bytes at end of block to read signature
+
+				block = getBlockFromBeginningOfFile(file, offsetFromBeginningOfFile, FORWARD_BLOCK_SIZE);
+				if (block.length < 4) {
+					throw new IOException("Reached end of file while searching for to Zip64-End-of-Central-Directory-Record does not correct.");
+				}
+				offsetInBlock = 0;
+			}
+		}
+
+		if (block.length < (offsetInBlock + ZIP64_EOCDR_MINIMUM_SIZE ))  {
+			block = getBlockFromBeginningOfFile(file, offsetFromBeginningOfFile, ZIP64_EOCDR_MINIMUM_SIZE);
+		    return  Arrays.copyOfRange(block, 0, ZIP64_EOCDR_MINIMUM_SIZE);
+		} 
+		
+		// Only store the minimum size for this record.  We don't need to store any extra data.
+		return Arrays.copyOfRange(block, offsetInBlock , offsetInBlock + ZIP64_EOCDR_MINIMUM_SIZE);
+	}
+	
+	/**
+	 * @param file a zip file
+	 * @param size number of bytes to read from end of file.
+	 * @return byte[] an array of data of 'size' bytes from the end of the file
+	 * @throws IOException
+	 */
+	private byte[] getBlockFromEndOfFile(RandomAccessFile file, int size) throws IOException {
+
+		int blockLength =  size >_fileLength ? (int)_fileLength : size;
+		long offset = _fileLength - blockLength;
+
+		file.seek(offset);
+
+		byte[] bytes = new byte[blockLength];
+		file.read(bytes, 0, blockLength );
+		return bytes;
+	}
+	
+	/**
+	 * 
+	 * @param file  a zip file
+	 * @param offsetFromEnd Offset from end of file where reading begins
+	 * @param size number of bytes of data to read
+	 * @return Returns an array of 'size' bytes that starts from 'offsetFromEnd' of file.
+	 * @throws IOException
+	 */
+	private byte[] getBlockFromEndOfFile(RandomAccessFile file, int offsetFromEnd, int size) throws IOException {
+		
+		// Have offset from end.  Get offset from beginning.
+		long offset = _fileLength >= offsetFromEnd ? _fileLength - offsetFromEnd : 0;
+
+		file.seek(offset);
+
+		byte[] bytes = new byte[size];
+		file.read(bytes, 0, size );
+		return bytes;
+	}
+
+	/**
+	 * 
+	 * @param file a zip file
+	 * @param offset Position from beginning of file, where data is to be read
+	 * @param size number of bytes to read
+	 * @return Returns an array of size 'size' read from file beginning at 'offset'
+	 * @throws IOException
+	 */
+	private byte[] getBlockFromBeginningOfFile(RandomAccessFile file, long offset, int size) throws IOException {
+		
+		file.seek(offset);
+
+		byte[] bytes = new byte[size];
+		file.read(bytes, 0, size );
+		return bytes;	
+	}
+	
+	/** 
+	 * Test for valid signature and size.
+	 * @return true if the offset points to a valid End-of-Central-Directory-Record within "bytes"
+	 */
+	private boolean isValidEoCDRec(byte[] bytes, int offset, int centralDirEndRecSize) {
+		if ( !isSignature(bytes, offset, EOCDR_SIGNATURE) 
+			 || !isValidEoCDRecSize(bytes, offset + EOCDR_COMMENT_LENGTH_OFFSET, centralDirEndRecSize)) {
+			return false;
+		}
+        return true;
+	}
+	
+	/**
+	 * 
+	 * @return true if the signature parameter matches the bytes at offset
+	 */
+	private boolean isSignature(byte[] bytes, int offset, int signature) {
+
+		long value = getSignature(bytes, offset);
+
+		return (value == signature);
+	}
+	
+	private boolean isValidEoCDRecSize(byte[] bytes, int offset, int size) {
+		// Size of central directory must be the structure size + comment
+		// First put length in little endian form (reverse the bytes).
+		long commentLength = getLittleEndianValue(bytes, offset, 2);
+		return size == (EOCDR_MIN_SIZE + commentLength);
+	}
+	
+	/** 
+	 * @param bytes the data
+	 * @param offsetInByteArray pointer to a possible Zip64-End-Of-Central-Directory-Record
+	 * @return true if the offset points to a valid Zip64-End-of-Central-Directory-Record within "bytes"
+	 */
+	private boolean isValid_Zip64EoCDRecord(byte[] bytes, int offsetInByteArray, long offsetInFile) {
+		
+		if ( !isSignature(bytes, offsetInByteArray, ZIP64_EOCDR_SIGNATURE)) {
+			return false;
+		} 
+	     
+		if ( !isValid_Zip64EoCDRecordSize(bytes, offsetInByteArray, offsetInFile) ) {
+			return false;
+		}
+		
+        return true;
+	}
+	
+	private boolean isValid_Zip64EoCDRLocator(byte[] bytes, int offset) {
+		// Calculate length of Ziop64-End-of-Central-Directory-Record
+		//int zipLocatorOffset = bytes.length - _eocdRecordSize - ZIP64_LOCATOR_SIZE;
+		if ( !isSignature(bytes, offset, ZIP64_LOCATOR_SIGNATURE)) {
+           return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * This method assumes you've already found a valid signature for the Zip64-End-Of-Central-Directory-Record.
+	 * Of course, the signature might just randomly appear anywhere in the data.  So this method
+	 * tests to see if the length field makes sense.
+	 * @param bytes the data
+	 * @param offsetInArray pointer to Zip64-End-Of-Central-Directory-Record in the data
+	 * @return true if the size makes sense for a 
+	 */
+	private boolean isValid_Zip64EoCDRecordSize(byte[] bytes, int offsetInArray, long offsetInFile) {
+
+		long specifiedZip64EoCDRecSize = getZip64EoCDRecordSize( bytes, offsetInArray );
+
+		if (specifiedZip64EoCDRecSize > (_fileLength - _eocdRecordSize - ZIP64_LOCATOR_SIZE)) {
+			return false;
+		}
+		
+		long calculatedZip64EoCDRecSize = _zip64EoCDRLocatorOffset - offsetInFile;
+
+		return (calculatedZip64EoCDRecSize == specifiedZip64EoCDRecSize);
+	}
+	
+	/**
+	 * @param bytes
+	 * @param offsetInArray pointer to Zip64-End-Of-Central-Directory-Record in the data
+	 * @return
+	 */
+	private long getZip64EoCDRecordSize(byte[] bytes, int offsetInArray ) {
+
+		long specifiedZip64EoCDRecSize = getLittleEndianValue(bytes, offsetInArray + ZIP64_EOCDR_SIZE_OFFSET, ZIP64_EOCDR_SIZE_FIELD_LENGTH);
+		
+		// The recorded size does not include the 12-byte header.   So let's add that
+		return specifiedZip64EoCDRecSize + ZIP64_EOCDR_HEADER_SIZE;
+	}
+		
+	/**
+	 * @param bytes   array of byte
+	 * @param offset  beginning of value in array of bytes
+	 * @param length  Must be <= 4
+	 * @return the bytes at the offset in reversed order
+	 */
+	private long getLittleEndianValue(byte[] bytes, int offset, int length) {
+		long value = 0;
+		for (int i = length - 1; i >= 0; i--) {
+			value = ((value << 8) | (bytes[offset + i] & 0xFF));
+		}
+		return value;
+	}
+	
+	/**
+	 * @return 4-byte signature using offset into byte array.
+	 */
+	private long getSignature(byte[] bytes, int offset) {
+		long value = 0;
+		for (int i = 0; i < 4; i++) {
+			value = ((value << 8) | (bytes[offset + i] & 0xFF));
+		}
+		return value;
+	}
+	
+	/**
+	 * @return true if the "total # of entries" offset in the End-of-Central-Directory-Record contains 0xFFFF
+	 */
+	private boolean isZip64() {
+		return (int) getLittleEndianValue(_endOfCentralDirectoryRecord, EOCDR_TOTAL_ENTRIES_OFFSET, 2) == ZIP64_INDICATOR;
+	}
+	
+	/**
+	 * Checks if the beginning of the actual archive, which might not be at the beginning of the
+	 * file contains the appropriate local-file-header-signature
+	 * @param file the zip file
+	 * @param archiveOffset the offset to the beginning of the archive within the file (Usually 0, but data might be attached in front of the archive).
+	 * @return true if valid
+	 * @throws IOException
+	 */
+	private boolean archiveStartsWithSignature(RandomAccessFile file, int archiveOffset) throws IOException {
+			
+		System.out.println("Archive offset is " + archiveOffset);
+		
+		file.seek(archiveOffset);
+		byte[] localFileHeaderSigBytes = new byte[ 4];
+		file.read(localFileHeaderSigBytes, 0, 4);
+		
+		if (isSignature(localFileHeaderSigBytes, 0, LOCAL_FILE_HEADER_SIGNATURE)) {
+			return true;
+		}
+		
+		return false;
+	}
+		
+	/**
+	 * @return 	 The location in the file where the archive actually starts. That will normally
+	 * be 0, but often scripts are pre-pended to the archive; for example to make
+	 * a self-extracting zip.
+	 * @throws IOException
+	 */
+	public long getActualArchiveOffset() throws IOException {
+		
+		// At offset 12 into the End-of-Central-Directory-Record is the size of the Central Directory 
+		long lengthOfCentralDirectory = getLittleEndianValue( _endOfCentralDirectoryRecord, EOCDR_CENTRAL_DIR_SIZE_OFFSET, 4 );
+		
+		// Offset 16 contains the relative offset from the beginning of the actual archive to the Central Directory
+		long offsetOfCentralDirectory = getLittleEndianValue( _endOfCentralDirectoryRecord, EOCDR_CENTRAL_DIR_OFFSET, 4 );
+		
+		long zip64RecLengths = isZip64() ? ( _zip64EoCDRecSize + ZIP64_LOCATOR_SIZE ) : 0;
+		
+		return _fileLength - _eocdRecordSize - zip64RecLengths - lengthOfCentralDirectory - offsetOfCentralDirectory;
+	}
+	
+	public static void main(String[] args) {
+
+		String dir = "/Users/jimblye/temp/";
+		
+	    String[] testJarPaths = {
+
+	    		dir + "tree_Plus_255Byte_Comment.jar",
+	    		dir + "tree_Plus_Script_Plus_FFFF_Comment.jar",
+	    		dir + "tiny.jar",
+	    		dir + "tinyJar_1ByteScript.jar",
+	    		dir + "bigWithOneHugeFile.jar",
+	    	    dir + "bigWithManySmallFiles_Zip64.jar",
+	    		dir + "tree_Plus_64K_Comment.jar",
+	    	    dir + "tree_Plus_01CommentLength_1ByteComment.jar",
+	    		dir + "tree_Plus_02CommentLength_1ByteComment_INVALID.jar",
+	    		dir + "tree_Plus_64KCommentLength_NoComment_INVALID.jar",
+	    		dir + "tree_Plus_01CommentLength_2ByteComment_INVALID.jar",
+
+//	    		
+//	    		dir + "tree_Plus_0100_Comment.jar",
+//	    		dir + "tree_Plus_32KCommentLength_NoComment_INVALID.jar",
+//	    		dir + "tree_Plus_32K_Comment.jar",
+//	    		dir + "tree_Plus_64K-1_Comment.jar",
+//	    		dir + "tree_Plus_script_Plus_32K_Comment.jar",
+//	    		dir + "tree_minus_EOCDR_INVALID.jar",
+//	    		dir + "tree_Plus_Zip64Extra_64k+6Bytes.jar",
+//	    		dir + "tree_Plus_script_Plus_Zip64Extra_31Bytes.jar",
+//	    		dir + "tree_Plus_Zip64Extra_31Bytes.jar",
+//	    		dir + "tree_Plus_script_Plus_Zip64Extra_64k+6Bytes.jar",
+//	    		dir + "tree_Plus_script_Zip64Extra_64k+6Bytes_INVALID_LENGTH.jar",
+//	    		dir + "tree_Plus_4096Kscript_Plus_32K_Comment.jar"
+	   };
+	
+	    for (int i = 0; i < testJarPaths.length; i++) {
+	    	System.out.println("--------------------------------------");
+	    	System.out.println("Testing: " + testJarPaths[i]);
+	    	JavaArchive javaArchive = new JavaArchive(testJarPaths[i]);
+
+	    	if (javaArchive.isValid()) {
+	    		System.out.println("Valid - " + testJarPaths[i]);
+	    	} else {
+	    		System.out.println("NOT valid - " + testJarPaths[i]);
+	    	}
+	    }
+	}
+}
