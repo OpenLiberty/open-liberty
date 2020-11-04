@@ -58,13 +58,12 @@
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
             -->
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
-       
-            <!-- MP JWT 1.2 - need to enable when JWE support is delivered 
+
+            <!-- Waiting on updates to TCK 
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKSClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsPEMClasspathTest" />
             -->
-
 
 		</classes>
     </test>

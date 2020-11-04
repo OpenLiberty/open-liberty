@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.1" 
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+  <resource-ref>
+    <res-ref-name>java:comp/env/wm/scheduledExecutorRef</res-ref-name>
+    <res-type>test.concurrent.work.WorkManager</res-type>
+    <lookup-name>wm/scheduledExecutor</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>java:module/env/wm/executorRef</res-ref-name>
+    <res-type>test.concurrent.work.WorkManager</res-type>
+    <!-- see ibm-web-bnd.xml file for binding -->
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>wm/executor</res-ref-name>
+    <res-type>test.concurrent.work.WorkManager</res-type>
+    <!-- uses default binding -->
+  </resource-ref>
+</web-app>

@@ -123,6 +123,15 @@ public class FATBase {
       Util.TRACE_EXIT();
     }
   }
+  
+  protected static void undeployApplication(String appName) throws Exception {
+    try {
+      Util.TRACE_ENTRY();
+      client_.deleteFileFromLibertyClientRoot("apps/" + appName + ".ear" );
+    } finally {
+      Util.TRACE_EXIT();
+    }
+  }
 
   protected static void start() throws Exception {
     try {

@@ -9,5 +9,6 @@ IBM-API-Package: jakarta.jms; version="3.0"; type="spec"
  io.openliberty.jakartaeePlatform-9.0, \
  com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.messaging.jmsspec.common.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=base
+WLP-Activation-Type: parallel

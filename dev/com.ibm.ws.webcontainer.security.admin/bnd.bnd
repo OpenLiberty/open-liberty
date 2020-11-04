@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ Service-Component: \
     configuration-policy:=optional; \
     immediate:=true; \
     securityService='com.ibm.ws.security.SecurityService(Authentication=*)'; \
+    ssoAuthFilter=com.ibm.ws.webcontainer.security.util.SSOAuthFilter; \
     taiService=com.ibm.ws.security.authentication.tai.TAIService; \
     interceptorService='com.ibm.wsspi.security.tai.TrustAssociationInterceptor(id=*)'; \
 	webAuthenticator=com.ibm.ws.webcontainer.security.WebAuthenticator; \
@@ -36,9 +37,9 @@ Service-Component: \
     unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner; \
     multiple:='interceptorService,webAuthenticator'; \
-    greedy:='interceptorService,webAuthenticator,authenticatorFactory'; \
+    greedy:='ssoAuthFilter,interceptorService,webAuthenticator,authenticatorFactory'; \
     optional:='taiService,interceptorService,webAuthenticator'; \
-    dynamic:='taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
+    dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
     properties:="service.vendor=IBM,com.ibm.ws.security.type=com.ibm.ws.management"
 
 -buildpath: \

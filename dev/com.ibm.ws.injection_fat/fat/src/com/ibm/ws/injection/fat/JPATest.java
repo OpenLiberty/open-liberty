@@ -72,10 +72,10 @@ public class JPATest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, JPAInjectionTest);
 
-        // When repeated with EE 8/9 features, jpa-2.2/jpa-3.0 requires jdbc-4.2 instead of jdbc-4.1
+        // When repeated with EE 8/9 features, jpa-2.2/persistence-3.0 requires jdbc-4.2 instead of jdbc-4.1
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
-        if ((features.contains("jpa-2.2") | features.contains("jpa-3.0")) && features.remove("jdbc-4.1"))
+        if ((features.contains("jpa-2.2") | features.contains("persistence-3.0")) && features.remove("jdbc-4.1"))
             features.add("jdbc-4.2");
         server.updateServerConfiguration(config);
 

@@ -197,9 +197,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     /**
      * Test Purpose:
-     * <LI>Invoke the JWT Builder using a config that does define elapsedNBF.
-     * <LI>What this means is that the token we create will use the "elapsedNBF" to calculate the time passed since token issued
-     * and set that as the NBF claim.
+     * <LI>Invoke the JWT Builder using a config that does define nbfOffset.
+     * <LI>What this means is that the token we create will use the "nbfOffset" to calculate the time passed since token issued and set that as the NBF claim.
      *
      * </UL>
      * <P>
@@ -210,9 +209,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void JwtBuilderAPIConfigTests_specificElapsedNotBefore() throws Exception {
+    public void JwtBuilderAPIConfigTests_specificNotBeforeOffset() throws Exception {
 
-        String builderId = "specificElapsedNBF";
+        String builderId = "specificNbfOffset";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // override the default expiration time
         expectationSettings.put(PayloadConstants.NOT_BEFORE, BuilderHelpers.setNowLong() + (1800));
@@ -2244,7 +2243,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6020E_CAN_NOT_CAST, "Message log did not contain an error indicating a problem trying to encrypt the token."));
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6060E_CAN_NOT_CREATE_JWE, "Message log did not contain an error indicating that the key was not large enough."));
-        expectations.addExpectation(new ServerMessageExpectation(builderServer, "ECPublicKey", "Message log did not contain an error indicating that an EC public key can not be encrypted.")); // String may not be in msgs on all platforms
+        expectations.addExpectation(new ServerMessageExpectation(builderServer, "InvalidKeyException", "Message log did not contain an error indicating that an EC public key can not be encrypted."));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);

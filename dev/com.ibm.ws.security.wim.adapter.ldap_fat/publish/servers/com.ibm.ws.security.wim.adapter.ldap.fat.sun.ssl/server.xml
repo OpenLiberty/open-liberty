@@ -53,7 +53,7 @@
         <propertiesNotSupported name="businessAddress"/>
         <propertiesNotSupported name="sn"/>
       </attributeConfiguration>
-      <loginProperty>mail</loginProperty>
+      <loginProperty name="mail"/>
       <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
           waitTime="3000ms" preferredSize="3"/>
       <ldapCache>

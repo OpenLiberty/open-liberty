@@ -415,7 +415,7 @@ public abstract class AbstractTestLogic {
 
     protected boolean isUsingJPA30Feature() {
         Set<String> instFeatureSet = getInstalledFeatures();
-        return instFeatureSet.contains("jpa-3.0");
+        return instFeatureSet.contains("persistence-3.0");
     }
 
     protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
@@ -434,8 +434,8 @@ public abstract class AbstractTestLogic {
 
     protected boolean isUsingJPA30ContainerFeature(boolean onlyContainerFeature) {
         Set<String> instFeatureSet = getInstalledFeatures();
-        if (onlyContainerFeature && instFeatureSet.contains("jpa-3.0"))
+        if (onlyContainerFeature && instFeatureSet.contains("persistence-3.0"))
             return false;
-        return instFeatureSet.contains("jpaContainer-3.0");
+        return instFeatureSet.contains("persistenceContainer-3.0");
     }
 }

@@ -1,0 +1,7 @@
+IBM-Feature-Version: 2
+Subsystem-ManifestVersion: 1
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-SymbolicName: test.compatible.modelB.eeCompatible-2.0; visibility:=private; singleton:=true
+Subsystem-Version: 1.0.0
+WLP-DisableAllFeatures-OnConflict: true
+Subsystem-Name: Model B

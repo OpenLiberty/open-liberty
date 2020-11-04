@@ -12,12 +12,12 @@ package com.ibm.ws.cache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.cache.DistributedObjectCache;
 import com.ibm.websphere.ras.Tr;
@@ -337,7 +337,7 @@ public class CacheConfig implements DCacheConfig, Cloneable {
     // -----------------------------------------------------------
     DistributedObjectCache distributedObjectCache = null;
     DCache cache = null;
-    Map _passedInProperties = new HashMap();
+    ConcurrentHashMap _passedInProperties = new ConcurrentHashMap();
     // -----------------------------------------------------------
 
     boolean refCountTracking = false;
@@ -379,7 +379,10 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         overrideCacheConfig(convert(map));
         determineCacheProvider();
         _passedInProperties.putAll(map);
-        _passedInProperties.putAll(System.getProperties());
+        Map props = System.getProperties();
+        synchronized (props) {
+            _passedInProperties.putAll(props);
+        }
 
         WsLocationAdmin locAdmin = Scheduler.getLocationAdmin();
         // allow to run outside of OSGI for Unit tests
@@ -460,7 +463,10 @@ public class CacheConfig implements DCacheConfig, Cloneable {
         FieldInitializer.initFromSystemProperties(this);
         overrideCacheConfig(properties);
         _passedInProperties.putAll(properties);
-        _passedInProperties.putAll(System.getProperties());
+        Map props = System.getProperties();
+        synchronized (props) {
+            _passedInProperties.putAll(props);
+        }
         determineCacheProvider();
 
         if (tc.isDebugEnabled()) {

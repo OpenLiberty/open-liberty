@@ -10,5 +10,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.security.csiv2.common, \
   com.ibm.ws.security.csiv2
-kind=noship
-edition=full
+kind=beta
+edition=base

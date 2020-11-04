@@ -68,6 +68,7 @@ public class LdapRegistry extends ConfigElement {
     private Integer searchPageSize; // PRIVATE
     private String certificateMapperId;
     private String timestampFormat;
+    private ConfigElementList<LoginProperty> loginProperties;
 
     /**
      * @return the activedFilters
@@ -179,6 +180,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public ConfigElementList<FailoverServers> getFailoverServers() {
         return (failoverServers == null) ? (failoverServers = new ConfigElementList<FailoverServers>()) : failoverServers;
+    }
+
+    /**
+     * @return the loginProperties
+     */
+    public ConfigElementList<LoginProperty> getLoginProperties() {
+        return (loginProperties == null) ? (loginProperties = new ConfigElementList<LoginProperty>()) : loginProperties;
     }
 
     /**
@@ -491,6 +499,36 @@ public class LdapRegistry extends ConfigElement {
     public void setFailoverServer(FailoverServers failoverServers) {
         this.failoverServers = new ConfigElementList<FailoverServers>();
         this.failoverServers.add(failoverServers);
+    }
+
+    /**
+     * @param loginProperties the loginProperties to set
+     */
+    @XmlElement(name = "loginProperty")
+    public void setLoginProperties(ConfigElementList<LoginProperty> loginProperties) {
+        this.loginProperties = loginProperties;
+    }
+
+    /**
+     * Convenience method to set the the list of loginProperties list to a single entry.
+     *
+     * @param loginProperties The single instance of {@link LoginProperty} to set.
+     */
+    public void setLoginProperties(LoginProperty loginProperty) {
+        this.loginProperties = new ConfigElementList<LoginProperty>();
+        this.loginProperties.add(loginProperty);
+    }
+
+    /**
+     * Convenience method to add to the list of loginProperties.
+     *
+     * @param loginProperties The instance of {@link LoginProperty} to add.
+     */
+    public void addLoginProperty(LoginProperty loginProperty) {
+        if (loginProperties == null || loginProperties.isEmpty()) {
+            this.loginProperties = new ConfigElementList<LoginProperty>();
+        }
+        this.loginProperties.add(loginProperty);
     }
 
     /**
@@ -837,6 +875,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (timestampFormat != null) {
             sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");
+        }
+        if (loginProperties != null) {
+            sb.append("loginProperty=\"").append(loginProperties).append("\" ");
         }
 
         sb.append("}");

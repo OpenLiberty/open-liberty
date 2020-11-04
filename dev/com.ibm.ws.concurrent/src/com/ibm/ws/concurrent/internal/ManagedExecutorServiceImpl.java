@@ -80,10 +80,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, //
                        ResourceFactory.class, ApplicationRecycleComponent.class },
-           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
-           property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class))
 public class ManagedExecutorServiceImpl implements ExecutorService, //
                 ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
@@ -424,7 +421,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             applications.add(cData.getJ2EEName().getApplication());
 
         ConcurrencyExtensionProvider provider = concurrencySvc.extensionProvider;
-        if (provider == null || ref == null)
+        if (provider == null)
             return this;
         else
             return provider.provide(this, ref);

@@ -23,9 +23,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -35,7 +33,6 @@ public class StressTestServlet extends FATServlet {
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testLargeConfigSources() throws Exception {
         int size = 1000;
         Config config = setupLargeConfigSource(size);
@@ -104,7 +101,6 @@ public class StressTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) //temporarily disabled for MP Config 2.0
     public void testLargeDynamicUpdates() throws Exception {
         Config config = setupDynamicConfigSource();
 

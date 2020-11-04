@@ -10,9 +10,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.serverxml;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -51,9 +50,13 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
             // We must request all Liberty variables, rather than all user defined defaults,
             // since we want to know the default values of any variables which have been overwritten.
-            return configVariables.getAllLibertyVariables().stream()
-                            .filter(v -> v.getDefaultValue() != null)
-                            .collect(toMap(LibertyVariable::getName, LibertyVariable::getDefaultValue));
+            HashMap<String, String> result = new HashMap<>();
+            for (LibertyVariable var : configVariables.getAllLibertyVariables()) {
+                if (var.getDefaultValue() != null) {
+                    result.put(var.getName(), var.getDefaultValue());
+                }
+            }
+            return result;
         } else {
             return Collections.emptyMap();
         }

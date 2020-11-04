@@ -14,6 +14,8 @@ apply plugin: 'war'
 // We aren't making a war for the entire project
 war { enabled false }
 
+assemble.dependsOn war
+
 /* 
  * This is where all application ZIP and WARs will be built.
  */

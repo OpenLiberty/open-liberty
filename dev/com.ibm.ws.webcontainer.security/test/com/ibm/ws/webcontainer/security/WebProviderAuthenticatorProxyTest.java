@@ -551,7 +551,7 @@ public class WebProviderAuthenticatorProxyTest {
         public WebProviderAuthenticatorProxyTestDouble(AtomicServiceReference<SecurityService> securityServiceRef, AtomicServiceReference<TAIService> taiServiceRef,
                                                        ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                        WebAppSecurityConfig webAppSecurityConfig, ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
-            super(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecurityConfig, null, null, null, null, webAuthenticatorRef);
+            super(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecurityConfig, null, null, null, null, webAuthenticatorRef, null);
         }
 
         @Override

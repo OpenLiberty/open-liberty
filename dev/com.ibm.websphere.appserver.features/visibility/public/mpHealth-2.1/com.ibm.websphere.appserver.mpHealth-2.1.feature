@@ -12,7 +12,6 @@ IBM-ShortName: mpHealth-2.1
 Subsystem-Name: MicroProfile Health 2.1
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.health-2.1, \
  com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
- com.ibm.websphere.appserver.classloaderContext-1.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
@@ -21,7 +20,6 @@ Subsystem-Name: MicroProfile Health 2.1
 -bundles=\
  com.ibm.websphere.org.eclipse.microprofile.health.2.1; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:2.1", \
  com.ibm.websphere.jsonsupport, \
- com.ibm.ws.classloader.context, \
  com.ibm.ws.microprofile.health.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
 kind=ga

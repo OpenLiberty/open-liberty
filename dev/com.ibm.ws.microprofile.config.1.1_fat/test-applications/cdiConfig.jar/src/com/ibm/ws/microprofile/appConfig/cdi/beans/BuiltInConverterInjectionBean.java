@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,14 +74,6 @@ public class BuiltInConverterInjectionBean {
     @Inject
     @ConfigProperty(name = "BIG_DECIMAL_KEY")
     BigDecimal BIG_DECIMAL_KEY;
-
-    @Inject
-    @ConfigProperty(name = "ATOMIC_INTEGER_KEY")
-    AtomicInteger ATOMIC_INTEGER_KEY;
-
-    @Inject
-    @ConfigProperty(name = "ATOMIC_LONG_KEY")
-    AtomicLong ATOMIC_LONG_KEY;
 
     @Inject
     @ConfigProperty(name = "DURATION_KEY")
@@ -196,20 +188,6 @@ public class BuiltInConverterInjectionBean {
     }
 
     /**
-     * @return the aTOMIC_INTEGER_KEY
-     */
-    public AtomicInteger getATOMIC_INTEGER_KEY() {
-        return ATOMIC_INTEGER_KEY;
-    }
-
-    /**
-     * @return the aTOMIC_LONG_KEY
-     */
-    public AtomicLong getATOMIC_LONG_KEY() {
-        return ATOMIC_LONG_KEY;
-    }
-
-    /**
      * @return the dURATION_KEY
      */
     public Duration getDURATION_KEY() {
@@ -291,5 +269,13 @@ public class BuiltInConverterInjectionBean {
      */
     public URL getURL_KEY() {
         return URL_KEY;
+    }
+
+    public AtomicInteger getATOMIC_INTEGER_KEY() {
+        return null;
+    }
+
+    public AtomicLong getATOMIC_LONG_KEY() {
+        return null;
     }
 }

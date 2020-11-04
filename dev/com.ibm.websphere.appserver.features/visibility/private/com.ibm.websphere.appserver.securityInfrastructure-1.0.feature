@@ -12,6 +12,7 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.ws.management.security, \
  com.ibm.ws.security.ready.service, \
  com.ibm.ws.security.mp.jwt.proxy, \
- com.ibm.websphere.security.authentication
+ com.ibm.websphere.security.authentication, \
+ com.ibm.ws.security.token.s4u2
 kind=ga
 edition=core
