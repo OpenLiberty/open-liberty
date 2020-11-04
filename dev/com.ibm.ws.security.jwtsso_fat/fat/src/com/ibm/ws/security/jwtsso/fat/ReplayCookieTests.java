@@ -281,7 +281,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
-                                                                                        + "Invalid JOSE Compact Serialization"));
+                                                                                        + MessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS));
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, cookieWithoutSignature);
         validationUtils.validateResult(response, currentAction, expectations);
