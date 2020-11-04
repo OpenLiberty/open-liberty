@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Specificare un alias dei dati di
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Si \u00e8 verificato un errore di configurazione. \u00c8 necessario definire l''attributo {0}.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=L'attributo specificato deve essere definito.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Specificare il valore per l'attributo mancante.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: Gli attributi {0} e {1} erano entrambi configurati sull''elemento authData {2}. \u00c8 possibile configurare solo {0} o {1}, non entrambi.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Gli attributi specificati si escludono a vicenda.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Specificare solo uno dei due attributi.
+ 

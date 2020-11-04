@@ -221,6 +221,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Eine bereits vorhandene Featuredefiniti
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Der Feature-Manager kann keine Definition f\u00fcr ein in der Serverkonfiguration angegebenes Feature finden. Der angegebene Name stimmt m\u00f6glicherweise mit einer bereits vorhandenen Featuredefinition \u00fcberein.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Versuchen Sie, stattdessen die angegebene, bereits vorhandene Featuredefinition anzugeben. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von Features. Daher hat der Feature-Manager keine Features installiert.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von Features. Der Feature-Manager hat alle Features inaktiviert, um ung\u00fcltiges Verhalten zu vermeiden.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Geben Sie eine andere Version der konfigurierten Features an, die den Konflikt verursacht haben.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Das Feature {0} ist bereits vorhanden. Es wird nicht erneut installiert. Um ein bereits vorhandenes Feature zu \u00e4ndern, m\u00fcssen Sie es zuerst manuell deinstallieren.

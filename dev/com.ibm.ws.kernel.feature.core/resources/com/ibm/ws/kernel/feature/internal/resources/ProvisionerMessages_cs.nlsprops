@@ -227,6 +227,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Existuj\u00edc\u00ed definice funkce, {
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Spr\u00e1vce funkc\u00ed nem\u016f\u017ee naj\u00edt definici funkce ur\u010denou v konfiguraci serveru. Zadan\u00fd n\u00e1zev se m\u016f\u017ee shodovat s existuj\u00edc\u00ed definic\u00ed funkce.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=M\u00edsto toho zva\u017ete ur\u010den\u00ed pojmenovan\u00e9 existuj\u00edc\u00ed definice funkce. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Konfigurace zahrnuje nekompatibiln\u00ed kombinaci funkc\u00ed. V\u00fdsledkem je, \u017ee spr\u00e1vce funkc\u00ed nenainstaloval \u017e\u00e1dn\u00e9 funkce.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Konfigurace zahrnuje nekompatibiln\u00ed kombinaci funkc\u00ed. Aby se zabr\u00e1nilo neplatn\u00e9mu chov\u00e1n\u00ed, zak\u00e1zal spr\u00e1vce funkc\u00ed v\u0161echny funkce.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Uve\u010fte jinou verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Funkce {0} ji\u017e existuje. Nebude p\u0159einstalov\u00e1na. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.

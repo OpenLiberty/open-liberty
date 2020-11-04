@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Geben Sie einen g\u00fcltigen Au
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Ein Konfigurationsfehler ist aufgetreten. Das Attribut {0} muss definiert werden.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Das angegebene Attribut muss definiert werden.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Geben Sie einen Wert f\u00fcr das fehlende Attribut an.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: Die Attribute {0} und {1} wurden mit dem authData-Element {2} konfiguriert. Sie k\u00f6nnen nur das Attribut {0} oder das Attribut {1} konfigurieren, jedoch nicht beide zusammen.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Die angegebenen Attribute schlie\u00dfen sich gegenseitig aus.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Geben Sie nur eines der beiden Attribute an.
+ 

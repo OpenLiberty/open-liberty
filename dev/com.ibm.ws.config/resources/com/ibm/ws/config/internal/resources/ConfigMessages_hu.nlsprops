@@ -477,5 +477,10 @@ error.root.must.be.server=CWWKG0105E: A(z) {0} konfigur\u00e1ci\u00f3s dokumentu
 error.root.must.be.server.explanation=A konfigur\u00e1ci\u00f3t vagy egy kiszolg\u00e1l\u00f3elemnek, vagy egy \u00fcgyf\u00e9lelemnek kell tartalmaznia. 
 error.root.must.be.server.useraction=Adjon hozz\u00e1 egy kiszolg\u00e1l\u00f3- vagy \u00fcgyf\u00e9lelemet a konfigur\u00e1ci\u00f3s f\u00e1jl gy\u00f6kerek\u00e9nt. 
 
+error.bad.variable.file=CWWKG0106E: A(z) {0} f\u00e1jl nem olvashat\u00f3. 
+error.bad.variable.file.explanation=A f\u00e1jl nem t\u00f6lthet\u0151 be v\u00e1ltoz\u00f3k\u00e9nt, mivel nem olvashat\u00f3. 
+error.bad.variable.file.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl tartalmaz sz\u00f6veges tartalmat, \u00e9s ellen\u0151rizze a f\u00e1jl oper\u00e1ci\u00f3s rendszer enged\u00e9lyeit.
+
+
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.
