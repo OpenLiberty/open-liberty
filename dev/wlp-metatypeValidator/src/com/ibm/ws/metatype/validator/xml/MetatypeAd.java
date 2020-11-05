@@ -222,6 +222,17 @@ public class MetatypeAd extends MetatypeBase {
         }
     }
 
+    private void validateFinal() {
+        if (ibmFinal != null) {
+            String trimmed = ibmFinal.trim();
+
+            if (Boolean.valueOf(trimmed)) {
+                if (defaultValue == null)
+                    logMsgWithContext(MessageType.Error, "ibm:final", "default.value.missing");
+            }
+        }
+    }
+
     private void validateIbmCopyOf() {
         if (ibmCopyOf != null) {
             String trimmed = ibmCopyOf.trim();

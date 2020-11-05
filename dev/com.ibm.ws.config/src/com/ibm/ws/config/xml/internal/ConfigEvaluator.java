@@ -161,7 +161,9 @@ class ConfigEvaluator {
                     String attributeName = entry.getKey();
                     if (XMLConfigConstants.CFG_INSTANCE_ID.equals(attributeName)) {
                         rawValue = config.getAttribute(XMLConfigConstants.CFG_INSTANCE_ID);
-                        if (!attributeDef.getDefaultValue()[0].equals(rawValue)) {
+                        String defaultValue = attributeDef.getDefaultValue()[0];
+                        // defaultValue == null is an error condition that should be caught in metatype validation
+                        if (defaultValue != null && !defaultValue.equals(rawValue)) {
                             // User has overridden a ibm:final value in server.xml
                             if (rawValue != null) {
                                 Tr.warning(tc, "warning.supplied.config.not.valid", attributeName, rawValue);
