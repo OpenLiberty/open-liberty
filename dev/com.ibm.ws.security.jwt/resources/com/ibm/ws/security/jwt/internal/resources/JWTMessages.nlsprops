@@ -361,3 +361,24 @@ ERROR_BUILDING_SIGNED_JWE.useraction=Check the error that is included in the mes
 KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: The [{0}] JWT builder cannot create a JSON Web Encryption (JWE) token because a key management key cannot be found. They key management key alias is [{1}], and the configured trust store is [{2}].
 KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=A key management key is a key that is used to encrypt the Content Encryption Key of a JWE token. A key management key must be specified so the JWT builder can create JWE tokens. A key management key can be specified by using the key alias and configured trust store values that are specified in the message or by using the JwtBuilder API.
 KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verify that a key with the alias that is specified in the message exists in the trust store that is specified in the message. If the JwtBuilder API is used, ensure that a key management key is provided.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: The value for the [{0}] MicroProfile Config property appears to include a private key string, which is not a supported configuration.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=The MicroProfile JWT feature does not support specifying private key strings in the MicroProfile Config property that is specified in the message. The value of this property must be a relative path or URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Use a relative path or URL as the value for the MicroProfile Config property that is specified in the message. The location values that are supported are the same as the mp.jwt.verify.publickey.location property.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: The token in the request is not in JSON Web Signature (JWS) format, but the [{0}] JWT consumer only accepts tokens that are in JWS format.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The token in the request might be malformed or might be in JSON Web Encryption (JWE) format. Tokens must be in JWS format if the JWE decryption key location is not configured.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWS tokens are sent to this resource.
+
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: The token in the request is not in JSON Web Encryption (JWE) format, but the [{0}] JWT consumer only accepts tokens that are in JWE format.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=The token in the request might be malformed or might be in JSON Web Signature (JWS) format. Tokens must be in JWE format if the JWE decryption key location is configured.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=To accept JWS tokens instead of JWE tokens, remove the mp.jwt.decrypt.key.location MicroProfile Config property and the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWE tokens are sent to this resource.
+
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: The payload of the JSON Web Encryption (JWE) token that is included in the request is not a JSON Web Signature (JWS) token.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=The payload of a JWE token must be a valid JSON Web Token (JWT) in JWS format.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ensure that the payload of the JWE token is a valid JWT in JWS format.
