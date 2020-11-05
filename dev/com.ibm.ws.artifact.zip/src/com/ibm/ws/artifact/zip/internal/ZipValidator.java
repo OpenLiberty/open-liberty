@@ -289,19 +289,19 @@ public class ZipValidator {
      */
     private byte[] getBlockFromEndOfFile(RandomAccessFile file, byte[] bytes, int offsetFromEnd, int size) throws IOException {
 
-    	if (offsetFromEnd >= _fileLength) {
-    		return new byte[0];
-    	}
-    	
+        if (offsetFromEnd >= _fileLength) {
+            return new byte[0];
+        }
+
         // Have offset from end.  Get offset from beginning.
         long offset = _fileLength > offsetFromEnd ? (_fileLength - offsetFromEnd) : 0;
-        
-    	// Adjust the amount to allocate for the array based on the offset and file length
+
+        // Adjust the amount to allocate for the array based on the offset and file length
         int blockLength;
         if ((size + offsetFromEnd)  > _fileLength) {
-        	blockLength = ((int)_fileLength - offsetFromEnd);
+            blockLength = ((int)_fileLength - offsetFromEnd);
         } else {
-        	blockLength = size;
+            blockLength = size;
         }
 
         file.seek(offset);
@@ -318,7 +318,7 @@ public class ZipValidator {
 
         int bytesRead = file.read(bytes, 0, size );
         if (bytesRead != bytes.length) {
-        	throw new IOException("Not enough bytes were read to fill the array.");       	  
+            throw new IOException("Not enough bytes were read to fill the array.");       	  
         }
         return bytes;
     }
@@ -334,19 +334,19 @@ public class ZipValidator {
      */
     private byte[] getBlockFromBeginningOfFile(RandomAccessFile file, byte[] bytes, long offset, int size) throws IOException {
 
-    	if (offset >= _fileLength) {
-    		return new byte[0];
-    	}
-    	
-    	// Adjust the amount to allocate for the array based on the offset and file length
-    	int blockLength;
-    	if ((size + offset) > _fileLength) {
-    		blockLength = (int)(_fileLength - offset);
-    	}
-    	else {
-    		blockLength = size;
-    	}
-    	    	
+        if (offset >= _fileLength) {
+            return new byte[0];
+        }
+
+        // Adjust the amount to allocate for the array based on the offset and file length
+        int blockLength;
+        if ((size + offset) > _fileLength) {
+            blockLength = (int)(_fileLength - offset);
+        }
+        else {
+            blockLength = size;
+        }
+
         file.seek(offset);
 
         // if bytes == null, caller is asking us to allocate the array.
@@ -360,7 +360,7 @@ public class ZipValidator {
 
         int bytesRead = file.read(bytes, 0, size );
         if (bytesRead != bytes.length) {
-        	throw new IOException("Not enough bytes were read to fill the array.");       	  
+            throw new IOException("Not enough bytes were read to fill the array.");       	  
         }
         return bytes;	
     }
