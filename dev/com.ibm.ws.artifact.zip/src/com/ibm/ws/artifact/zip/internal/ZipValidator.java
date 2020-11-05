@@ -56,7 +56,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 
-public class JavaArchive {
+public class ZipValidator {
 
     // EOCDR is End-of-Central-Directory-Record
     private static final int EOCDR_MIN_SIZE = 22;
@@ -100,7 +100,7 @@ public class JavaArchive {
     private String _archiveFileName;
     private long   _fileLength;                  // Length of the archive file
 
-    JavaArchive(String archiveFileName) {
+    ZipValidator(String archiveFileName) {
         _archiveFileName = archiveFileName;
     }
 
@@ -479,52 +479,5 @@ public class JavaArchive {
         long zip64RecLengths = isZip64() ? ( _zip64EoCDRecSize + ZIP64_LOCATOR_SIZE ) : 0;
 
         return _fileLength - _eocdRecordSize - zip64RecLengths - lengthOfCentralDirectory - offsetOfCentralDirectory;
-    }
-
-    public static void main(String[] args) {
-
-        String dir = "/Users/jimblye/temp/";
-
-        String[] testJarPaths = {
-                                 dir + "bigWithManySmallFiles_Zip64_PlusHugePrefix.jar",
-                                 dir + "bigWithOneHugeFile_PlusHugePrefix.jar",
-                                 dir + "tree_Plus_255Byte_Comment.jar",
-                                 dir + "tree_Plus_Script_Plus_FFFF_Comment.jar",
-                                 dir + "tiny.jar",
-                                 dir + "tinyJar_1ByteScript.jar",
-                                 dir + "bigWithOneHugeFile.jar",
-                                 dir + "bigWithManySmallFiles_Zip64.jar",
-                                 dir + "tree_Plus_64K_Comment.jar",
-                                 dir + "tree_Plus_01CommentLength_1ByteComment.jar",
-                                 dir + "tree_Plus_02CommentLength_1ByteComment_INVALID.jar",
-                                 dir + "tree_Plus_64KCommentLength_NoComment_INVALID.jar",
-                                 dir + "tree_Plus_01CommentLength_2ByteComment_INVALID.jar",
-
-
-                                 dir + "tree_Plus_0100_Comment.jar",
-                                 dir + "tree_Plus_32KCommentLength_NoComment_INVALID.jar",
-                                 dir + "tree_Plus_32K_Comment.jar",
-                                 dir + "tree_Plus_64K-1_Comment.jar",
-                                 dir + "tree_Plus_script_Plus_32K_Comment.jar",
-                                 dir + "tree_minus_EOCDR_INVALID.jar",
-                                 dir + "tree_Plus_Zip64Extra_64k+6Bytes.jar",
-                                 dir + "tree_Plus_script_Plus_Zip64Extra_31Bytes.jar",
-                                 dir + "tree_Plus_Zip64Extra_31Bytes.jar",
-                                 dir + "tree_Plus_script_Plus_Zip64Extra_64k+6Bytes.jar",
-                                 dir + "tree_Plus_script_Zip64Extra_64k+6Bytes_INVALID_LENGTH.jar",
-                                 dir + "tree_Plus_4096Kscript_Plus_32K_Comment.jar"
-        };
-
-        for (int i = 0; i < testJarPaths.length; i++) {
-            System.out.println("--------------------------------------");
-            System.out.println("Testing: " + testJarPaths[i]);
-            JavaArchive javaArchive = new JavaArchive(testJarPaths[i]);
-
-            if (javaArchive.isValid()) {
-                System.out.println("Valid - " + testJarPaths[i]);
-            } else {
-                System.out.println("NOT valid - " + testJarPaths[i]);
-            }
-        }
     }
 }

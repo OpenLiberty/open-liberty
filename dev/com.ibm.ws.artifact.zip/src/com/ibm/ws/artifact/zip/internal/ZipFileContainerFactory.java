@@ -352,7 +352,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             try {
                 ZipEntry entry = zipInputStream.getNextEntry();
                 if ( entry == null ) {
-                    JavaArchive javaArchive = new JavaArchive(getPhysicalPath(artifactEntry));
+                    ZipValidator javaArchive = new ZipValidator(getPhysicalPath(artifactEntry));
                     if ( !javaArchive.isValid() ) {
                         Tr.error(tc, "bad.zip.data", getPhysicalPath(artifactEntry));
                     }
@@ -451,7 +451,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             try {
                 ZipEntry entry = zipInputStream.getNextEntry(); // throws IOException
                 if ( entry == null ) {
-                    JavaArchive javaArchive = new JavaArchive(file.getAbsolutePath());
+                    ZipValidator javaArchive = new ZipValidator(file.getAbsolutePath());
                     if ( !javaArchive.isValid() ) {
                        Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
                        return false;
