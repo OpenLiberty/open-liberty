@@ -150,7 +150,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void close(VirtualConnection conn, Exception e) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Close called , vc ->" + this.vc);
+            Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
         if (this.vc == null) {
@@ -242,7 +242,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             try {
                 super.close(conn, e);
             } finally {
-                // must decrement once and only once to avoid quiesce problems later on shutdown
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrement active connection count if needed");
+                }
+                // must decrement once, and only once, per everytime ready is called
                 if (!decrementedOneTime.getAndSet(true)) {
                     this.myChannel.decrementActiveConns();
                 }
@@ -318,10 +321,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @FFDCIgnore(Throwable.class)
     public void ready(VirtualConnection inVC) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Received HTTP connection: " + inVC);
+            Tr.debug(tc, "Received HTTP connection: " + inVC + " hc: " + this.hashCode());
         }
 
         this.myChannel.incrementActiveConns();
+        decrementedOneTime.set(false);
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
 
