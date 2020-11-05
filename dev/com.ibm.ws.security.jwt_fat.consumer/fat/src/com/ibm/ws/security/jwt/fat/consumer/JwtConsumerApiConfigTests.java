@@ -1874,17 +1874,19 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
-     * server.xml has a config that does not specify a keyManagementKeyAlias - this test ensures that after building a jwt
-     * that is encrypted, we can not decrypt the token because there is not keyManagementKeyAlg
-     *
-     * @throws Exception
+     * server.xml has a config that does not specify a keyManagementKeyAlias - this test ensures that we do not accept encrypted
+     * tokens when there is no keyManagementKeyAlias.
+     * 
+     * See
+     * https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens
      */
     @Test
     public void JwtConsumerApiConfigTests_encryptedToken_consumerDoesNotDecrypt() throws Exception {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+        String serverLogMsg = JwtConsumerMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS;
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(serverLogMsg, currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, JwtConsumerConstants.SIGALG_RS256, jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1892,18 +1894,19 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     }
 
     /**
-     * server.xml has a config that specifies a key management key alias - this test ensures that
-     * after building a jwt that is not encrypted can be parsed by a consumer that can handle
-     * encryption (but should NOT require an encrypted token)
-     *
-     * @throws Exception
+     * server.xml has a config that specifies a key management key alias - this test ensures that we do not accept unencrypted
+     * tokens when keyManagementKeyAlias is configured.
+     * 
+     * See
+     * https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens
      */
     @Test
     public void JwtConsumerApiConfigTests_tokenNotEncrypted_consumerDecrypts() throws Exception { // this test would be the same as null keyManagementKeyAlias
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "sigAlg_RS256", null);
 
-        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
+        String serverLogMsg = JwtConsumerMessageConstants.CWWKS6064E_JWE_REQUIRED_BUT_TOKEN_NOT_JWE;
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(serverLogMsg, currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
