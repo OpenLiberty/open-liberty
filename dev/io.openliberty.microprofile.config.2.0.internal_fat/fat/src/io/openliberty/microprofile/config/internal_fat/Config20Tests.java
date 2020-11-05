@@ -13,9 +13,9 @@ package io.openliberty.microprofile.config.internal_fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
+import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -37,6 +37,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ValidConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.classLoader.ClassLoadersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.converter.ConvertersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.defaultSources.DefaultSourcesTestServlet;
@@ -73,30 +74,34 @@ public class Config20Tests extends FATServletClient {
         WebArchive badObserverWar = ShrinkWrap.create(WebArchive.class, BAD_OBSERVER_APP_NAME + ".war")
                         .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.badobserver");
 
-        WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.defaultSources");
-
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
                         .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
-                        .addAsManifestResource(new File("publish/servers/Config20Server/org.eclipse.microprofile.config.spi.Converter"),
-                                               "services/org.eclipse.microprofile.config.spi.Converter");
+                        .addAsServiceProvider(Converter.class, ValidConverter.class);
+
+        WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
+                        .addPackages(true, DefaultSourcesTestServlet.class.getPackage());
 
         WebArchive classLoadersWar = ShrinkWrap.create(WebArchive.class, CLASS_LOADER_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.classLoader")
+                        .addPackages(true, ClassLoadersTestServlet.class.getPackage())
                         .addClass(TestUtils.class);
 
         WebArchive convertersWar = ShrinkWrap.create(WebArchive.class, CONVERTER_LOADER_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.converter")
+                        .addPackages(true, ConvertersTestServlet.class.getPackage())
                         .addClass(TestUtils.class);
 
-        ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY);
+        WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
+                        .addPackages(true, PropertyExpressionTestServlet.class.getPackage());
+
+        // The first 2 wars should throw deployment exceptions, hence don't validate.
+        ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+
         ShrinkHelper.exportDropinAppToServer(server, defaultSourcesWar, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, classLoadersWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, convertersWar, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.defaultApp(server, PROPERTY_EXPRESSION_APP_NAME, "io.openliberty.microprofile.config.internal_fat.apps.propertyExpression");
+        ShrinkHelper.exportAppToServer(server, propertyExpressionWar, DeployOptions.SERVER_ONLY);
 
-        server.startServerAndValidate(true, true, false);
+        server.startServer();
 
     }
 
