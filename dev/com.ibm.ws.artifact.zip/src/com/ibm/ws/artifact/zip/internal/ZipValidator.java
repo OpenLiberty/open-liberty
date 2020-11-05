@@ -155,13 +155,13 @@ public class ZipValidator {
     private byte[] getEndOfCentralDirectoryRecord(RandomAccessFile file) throws IOException {
 
         byte[] block = getBlockFromEndOfFile(file, null, BLOCK_SIZE, BLOCK_SIZE);
-        int size = EOCDR_MIN_SIZE ;
-        int offset = block.length - size;
-        int offsetFromEnd = block.length - offset;   // offset from the end of the block (not the file)
-
         if ( block.length < EOCDR_MIN_SIZE ) {
             throw new ZipException("Not a valid zip file.  Less than minimum required length. File [ " + _archiveFileName + " ]");
         }
+
+        int size = EOCDR_MIN_SIZE ;
+        int offset = block.length - size;
+        int offsetFromEnd = block.length - offset;   // offset from the end of the block (not the file)
 
         // We will only enter this loop if a comment is attached to the End-of-Central-Directory-Record
         // ... or if the zip is invalid (doesn't have an End-of-Central-Directory-Record.
@@ -287,42 +287,44 @@ public class ZipValidator {
      * @param file  a zip file
      * @param bytes  a byte array of length 'size'.  If null, a byte array of 'size' is allocated
      * @param offsetFromEnd  Offset from end of file where reading begins
-     * @param size  number of bytes of data to read
+     * @param sizeRequested  number of bytes of data to read
      * @return  an array of 'size' bytes that starts from 'offsetFromEnd' of file.
      *          if 'offsetFromEnd' >= file length, returns an empty array.
      *          if 'size' + 'offsetFromEnd' > file length, returns an array with length of data read from the file
      * 
      */
-    private byte[] getBlockFromEndOfFile(RandomAccessFile file, byte[] bytes, int offsetFromEnd, int size) throws IOException {
+    private byte[] getBlockFromEndOfFile(RandomAccessFile file, byte[] bytes, long offsetFromEnd, int sizeRequested) throws IOException {
 
-        if (offsetFromEnd >= _fileLength) {
-            return new byte[0];
+        int sizeToRead = sizeRequested;
+        if (offsetFromEnd > _fileLength) {
+            if (offsetFromEnd - sizeRequested >= _fileLength) {
+                return new byte[0];
+            }
+            long adjustment = offsetFromEnd - _fileLength ;
+            offsetFromEnd = _fileLength;
+            sizeToRead -= adjustment;
+            if  (sizeToRead < 0) {
+                return new byte[0];
+            }
         }
 
         // Have offset from end.  Get offset from beginning.
         long offset = _fileLength > offsetFromEnd ? (_fileLength - offsetFromEnd) : 0;
 
-        // Adjust the amount to allocate for the array based on the offset and file length
-        int blockLength;
-        if ((size + offsetFromEnd)  > _fileLength) {
-            blockLength = ((int)_fileLength - offsetFromEnd);
-        } else {
-            blockLength = size;
-        }
-
         file.seek(offset);
 
-        // if bytes == null, caller is asking us to allocate the array.
-        // if blockLength != size, then there are not enough bytes between offsetFromEnd 
-        // and the beginning of the file to fill the array.  We need the array length 
-        // to match the amount data.
-        if ((bytes == null) || (blockLength != size)) {
-            bytes = new byte[blockLength];
-        } else if (bytes.length != size) {
-            throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length. File [ " + _archiveFileName + " ]");
+        // if bytes == null, caller is asking to allocate the array.
+        // if sizeToRead != sizeRequested, then there are not enough bytes between  
+        // offsetFromEnd and the beginning of the file to fill the array.  We need  
+        // the array length to match the amount data.
+        if ((bytes == null) || (sizeToRead != sizeRequested)) {
+            bytes = new byte[sizeToRead];
+
+        } else if (bytes.length != sizeRequested) {
+            throw new IllegalArgumentException("The 'bytes' array parameter must be 'size' bytes in length. File [ " + _archiveFileName + " ]");
         }
 
-        int bytesRead = file.read(bytes, 0, size );
+        int bytesRead = file.read(bytes, 0, sizeToRead );
         if (bytesRead != bytes.length) {
             throw new ZipException("Not enough bytes were read to fill the array. File [ " + _archiveFileName + " ]");       	  
         }
@@ -366,7 +368,7 @@ public class ZipValidator {
 
         int bytesRead = file.read(bytes, 0, size );
         if (bytesRead != bytes.length) {
-            throw new ZipException("Not enough bytes were read to fill the array.");       	  
+            throw new ZipException("Not enough bytes were read to fill the array. File [ " + _archiveFileName + " ]");       	  
         }
         return bytes;	
     }
@@ -503,7 +505,7 @@ public class ZipValidator {
         System.out.println("Archive offset is " + archiveOffset);
 
         file.seek(archiveOffset);
-        byte[] localFileHeaderSigBytes = new byte[ 4];
+        byte[] localFileHeaderSigBytes = new byte[4];
         file.read(localFileHeaderSigBytes, 0, 4);
 
         if (isSignature(localFileHeaderSigBytes, 0, LOCAL_FILE_HEADER_SIGNATURE)) {
