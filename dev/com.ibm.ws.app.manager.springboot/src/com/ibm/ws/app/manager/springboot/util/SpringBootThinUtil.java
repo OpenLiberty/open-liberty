@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -103,6 +104,7 @@ public class SpringBootThinUtil implements Closeable {
         this.libIndexCache = libIndexCache;
         this.libIndexCacheParent = libIndexCacheParent;
 
+        SpringBootManifest sbmf = null;
         Manifest mf = this.sourceFatJar.getManifest();
         String bsn = mf.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
         if (LIBERTY_EXEC_JAR_BSN.equals(bsn)) {
@@ -113,7 +115,7 @@ public class SpringBootThinUtil implements Closeable {
             this.springStarterFilter = null;
 
         } else {
-            SpringBootManifest sbmf = new SpringBootManifest(this.sourceFatJar.getManifest());
+            sbmf = new SpringBootManifest(this.sourceFatJar.getManifest());
             String springBootLibPath = sbmf.getSpringBootLib();
             if (!springBootLibPath.endsWith("/")) {
                 springBootLibPath += "/";
@@ -127,6 +129,17 @@ public class SpringBootThinUtil implements Closeable {
             this.springBootLibPath = springBootLibPath;
             this.springBootLibProvidedPath = springBootLibProvidedPath;
             this.springStarterFilter = getStarterFilter(this.sourceFatJar);
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "sourceFatJar: " + sourceFatJar.getAbsolutePath());
+            Tr.debug(tc, "targetThinJar: " + targetThinJar.getAbsolutePath());
+            Tr.debug(tc, "libIndexCache: " + libIndexCache.getAbsolutePath());
+            Tr.debug(tc, "libIndexCacheParent: ", Objects.toString(libIndexCacheParent));
+            Tr.debug(tc, "libertyServer: " + libertyServer);
+            Tr.debug(tc, "libertyRoot: " + libertyRoot);
+            Tr.debug(tc, "springBootLibPath: " + springBootLibPath);
+            Tr.debug(tc, "springBootLibProvidedPath: " + springBootLibProvidedPath);
+            Tr.debug(tc, "springStarterFilter: " + Objects.toString(springStarterFilter));
         }
     }
 
@@ -592,6 +605,11 @@ public class SpringBootThinUtil implements Closeable {
             // return true iff jarName is a starter artifact
             return starterArtifactIds.contains(getArtifactId(jarName));
         }
+
+        @Override
+        public String toString() {
+            return starterName;
+        }
     }
 
     public static String getArtifactId(String jarName) {
@@ -646,11 +664,11 @@ public class SpringBootThinUtil implements Closeable {
                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.33:compile");
 
         private final static List<String> mvnSpringBoot23TomcatStarterDeps = Arrays.asList(
-                                                                                            "org.springframework.boot:spring-boot-starter-tomcat:jar:2.3.0.RELEASE:compile",
-                                                                                            "jakarta.annotation:jakarta.annotation-api:jar:1.3.5:compile",
-                                                                                            "org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.35:compile",
-                                                                                            "org.glassfish:jakarta.el:jar:3.0.3:compile",
-                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.35:compile");
+                                                                                           "org.springframework.boot:spring-boot-starter-tomcat:jar:2.3.0.RELEASE:compile",
+                                                                                           "jakarta.annotation:jakarta.annotation-api:jar:1.3.5:compile",
+                                                                                           "org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.35:compile",
+                                                                                           "org.glassfish:jakarta.el:jar:3.0.3:compile",
+                                                                                           "org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.35:compile");
 
         private final static List<String> mvnSpringBoot15JettyStarterDeps = Arrays.asList(
                                                                                           "org.springframework.boot:spring-boot-starter-jetty:jar:1.5.10.RELEASE:compile",
@@ -768,35 +786,35 @@ public class SpringBootThinUtil implements Closeable {
                                                                                           "org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:9.4.27.v20200227:compile",
                                                                                           "org.mortbay.jasper:apache-el:jar:8.5.49:compile");
         private final static List<String> mvnSpringBoot23JettyStarterDeps = Arrays.asList(
-                                                                                            "org.springframework.boot:spring-boot-starter-jetty:jar:2.3.0.RELEASE:compile",
-                                                                                            "jakarta.servlet:jakarta.servlet-api:jar:4.0.3:compile",
-                                                                                            "jakarta.websocket:jakarta.websocket-api:jar:1.1.2:compile",
-                                                                                            "org.eclipse.jetty:jetty-servlets:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-continuation:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-http:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-util:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-io:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-webapp:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-xml:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-servlet:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-security:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-server:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:websocket-server:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:websocket-common:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:websocket-api:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:websocket-client:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-client:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty.websocket:javax-websocket-server-impl:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-annotations:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-plus:jar:9.4.28.v20200408:compile",
-                                                                                            "org.eclipse.jetty:jetty-jndi:jar:9.4.28.v20200408:compile",
-                                                                                            "org.ow2.asm:asm:jar:7.2:compile",
-                                                                                            "org.ow2.asm:asm-commons:jar:7.2:compile",
-                                                                                            "org.ow2.asm:asm-tree:jar:7.2:compile",
-                                                                                            "org.ow2.asm:asm-analysis:jar:7.2:compile",
-                                                                                            "org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:9.4.28.v20200408:compile",
-                                                                                            "org.glassfish:jakarta.el:jar:3.0.3:compile");
+                                                                                          "org.springframework.boot:spring-boot-starter-jetty:jar:2.3.0.RELEASE:compile",
+                                                                                          "jakarta.servlet:jakarta.servlet-api:jar:4.0.3:compile",
+                                                                                          "jakarta.websocket:jakarta.websocket-api:jar:1.1.2:compile",
+                                                                                          "org.eclipse.jetty:jetty-servlets:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-continuation:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-http:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-util:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-io:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-webapp:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-xml:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-servlet:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-security:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-server:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-server:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-common:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-api:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-client:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-client:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty.websocket:javax-websocket-server-impl:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-annotations:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-plus:jar:9.4.28.v20200408:compile",
+                                                                                          "org.eclipse.jetty:jetty-jndi:jar:9.4.28.v20200408:compile",
+                                                                                          "org.ow2.asm:asm:jar:7.2:compile",
+                                                                                          "org.ow2.asm:asm-commons:jar:7.2:compile",
+                                                                                          "org.ow2.asm:asm-tree:jar:7.2:compile",
+                                                                                          "org.ow2.asm:asm-analysis:jar:7.2:compile",
+                                                                                          "org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:9.4.28.v20200408:compile",
+                                                                                          "org.glassfish:jakarta.el:jar:3.0.3:compile");
 
         private final static List<String> mvnSpringBoot15UndertowStarterDeps = Arrays.asList(
                                                                                              "org.jboss.xnio:xnio-api:jar:3.3.8.Final:compile",
@@ -847,20 +865,20 @@ public class SpringBootThinUtil implements Closeable {
                                                                                              "jakarta.servlet:jakarta.servlet-api:jar:4.0.3:compile",
                                                                                              "org.glassfish:jakarta.el:jar:3.0.3:compile");
         private final static List<String> mvnSpringBoot23UndertowStarterDeps = Arrays.asList(
-                                                                                            "org.springframework.boot:spring-boot-starter-undertow:jar:2.3.0.RELEASE:compile",
-                                                                                            "io.undertow:undertow-core:jar:2.1.0.Final:compile",
-                                                                                            "org.jboss.logging:jboss-logging:jar:3.4.1.Final:compile",
-                                                                                            "org.jboss.xnio:xnio-api:jar:3.8.0.Final:compile",
-                                                                                            "org.wildfly.common:wildfly-common:jar:1.5.2.Final:compile",
-                                                                                            "org.wildfly.client:wildfly-client-config:jar:1.0.1.Final:compile",
-                                                                                            "org.jboss.xnio:xnio-nio:jar:3.8.0.Final:runtime",
-                                                                                            "org.jboss.threads:jboss-threads:jar:3.1.0.Final:compile",
-                                                                                            "io.undertow:undertow-servlet:jar:2.1.0.Final:compile",
-                                                                                            "org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec:jar:2.0.1.Final:compile",
-                                                                                            "io.undertow:undertow-websockets-jsr:jar:2.1.0.Final:compile",
-                                                                                            "org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec:jar:2.0.0.Final:compile",
-                                                                                            "jakarta.servlet:jakarta.servlet-api:jar:4.0.3:compile",
-                                                                                            "org.glassfish:jakarta.el:jar:3.0.3:compile");
+                                                                                             "org.springframework.boot:spring-boot-starter-undertow:jar:2.3.0.RELEASE:compile",
+                                                                                             "io.undertow:undertow-core:jar:2.1.0.Final:compile",
+                                                                                             "org.jboss.logging:jboss-logging:jar:3.4.1.Final:compile",
+                                                                                             "org.jboss.xnio:xnio-api:jar:3.8.0.Final:compile",
+                                                                                             "org.wildfly.common:wildfly-common:jar:1.5.2.Final:compile",
+                                                                                             "org.wildfly.client:wildfly-client-config:jar:1.0.1.Final:compile",
+                                                                                             "org.jboss.xnio:xnio-nio:jar:3.8.0.Final:runtime",
+                                                                                             "org.jboss.threads:jboss-threads:jar:3.1.0.Final:compile",
+                                                                                             "io.undertow:undertow-servlet:jar:2.1.0.Final:compile",
+                                                                                             "org.jboss.spec.javax.annotation:jboss-annotations-api_1.3_spec:jar:2.0.1.Final:compile",
+                                                                                             "io.undertow:undertow-websockets-jsr:jar:2.1.0.Final:compile",
+                                                                                             "org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec:jar:2.0.0.Final:compile",
+                                                                                             "jakarta.servlet:jakarta.servlet-api:jar:4.0.3:compile",
+                                                                                             "org.glassfish:jakarta.el:jar:3.0.3:compile");
 
         // NOTE that we leave netty itself on the classpath in order to allow WebClient to still be used.
         private final static List<String> mvnSpringBoot20NettyStarterDeps = Arrays.asList(

@@ -151,15 +151,15 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Override
     public Map<String, String> getBootStrapProperties() {
+        Map<String, String> properties = new HashMap<>(super.getBootStrapProperties());
         String methodName = testName.getMethodName();
         if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
-            Map<String, String> properties = new HashMap<>();
             properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
             properties.put("server.ssl.key-store-password", "secret");
             properties.put("server.ssl.key-password", "secret");
-            return properties;
         }
-        return super.getBootStrapProperties();
+        properties.put("com.ibm.ws.logging.trace.specification", "*=info:com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil=all");
+        return properties;
     }
 
     @Override
@@ -428,11 +428,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
             @Override
             public void checkClientTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
 
             @Override
             public void checkServerTrusted(
-                                           java.security.cert.X509Certificate[] certs, String authType) {}
+                                           java.security.cert.X509Certificate[] certs, String authType) {
+            }
         } };
 
         return trustAllCerts;
