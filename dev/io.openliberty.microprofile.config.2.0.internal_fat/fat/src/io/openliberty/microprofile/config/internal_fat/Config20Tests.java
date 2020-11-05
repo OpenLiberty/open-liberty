@@ -24,6 +24,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
@@ -89,8 +90,10 @@ public class Config20Tests extends FATServletClient {
                         .addPackages(true, ConvertersTestServlet.class.getPackage())
                         .addClass(TestUtils.class);
 
+        PropertiesAsset config = new PropertiesAsset().addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
         WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
-                        .addPackages(true, PropertyExpressionTestServlet.class.getPackage());
+                        .addPackages(true, PropertyExpressionTestServlet.class.getPackage())
+                        .addAsResource(config, "META-INF/microprofile-config.properties");
 
         // The first 2 wars should throw deployment exceptions, hence don't validate.
         ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);

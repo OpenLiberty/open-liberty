@@ -14,7 +14,7 @@
     <variable name="keyFromVariableInServerXML" value="${value1DefinedInBootstrapProperties}" />
     <webApplication location="propertyExpressionApp.war"> 
 	   <appProperties> 
-	         <property name="keyFromAppPropertyInServerXML" value="${value2DefinedInBootstrapProperties}"/> 
+	         <property name="keyFromAppPropertyInServerXML" value="${value2DefinedInMicroprofileConfigProperties}"/> 
 	   </appProperties> 
 	</webApplication>
     
