@@ -279,46 +279,89 @@ public class ZipValidator {
 
     /**
      * @param file  a zip file
-     * @param bytes  a byte array of length size.  If null, a byte array of size is allocated
+     * @param bytes  a byte array of length 'size'.  If null, a byte array of 'size' is allocated
      * @param offsetFromEnd  Offset from end of file where reading begins
      * @param size  number of bytes of data to read
      * @return  an array of 'size' bytes that starts from 'offsetFromEnd' of file.
+     *          if 'offsetFromEnd' >= file length, returns an empty array.
+     *          if 'size' + 'offsetFromEnd' > file length, returns an array with length of data read from the file
+     * 
      */
     private byte[] getBlockFromEndOfFile(RandomAccessFile file, byte[] bytes, int offsetFromEnd, int size) throws IOException {
 
+    	if (offsetFromEnd >= _fileLength) {
+    		return new byte[0];
+    	}
+    	
         // Have offset from end.  Get offset from beginning.
-        long offset = _fileLength > offsetFromEnd ? _fileLength - offsetFromEnd : 0;
+        long offset = _fileLength > offsetFromEnd ? (_fileLength - offsetFromEnd) : 0;
+        
+    	// Adjust the amount to allocate for the array based on the offset and file length
+        int blockLength;
+        if ((size + offsetFromEnd)  > _fileLength) {
+        	blockLength = ((int)_fileLength - offsetFromEnd);
+        } else {
+        	blockLength = size;
+        }
 
         file.seek(offset);
 
-        if (bytes == null) {
-            bytes = new byte[size];
+        // if bytes == null, caller is asking us to allocate the array.
+        // if blockLength != size, then there are not enough bytes between offsetFromEnd 
+        // and the beginning of the file to fill the array.  We need the array length 
+        // to match the amount data.
+        if ((bytes == null) || (blockLength != size)) {
+            bytes = new byte[blockLength];
         } else if (bytes.length != size) {
             throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length.");
         }
 
-        file.read(bytes, 0, size );
+        int bytesRead = file.read(bytes, 0, size );
+        if (bytesRead != bytes.length) {
+        	throw new IOException("Not enough bytes were read to fill the array.");       	  
+        }
         return bytes;
     }
 
     /**
      * @param file  a zip file
-     * @param bytes  a byte array of length size.  If null, a byte array of size is allocated
+     * @param bytes  a byte array of length 'size'.  If null, a byte array of 'size' is allocated
      * @param offset  Position from beginning of file, where data is to be read
      * @param size  number of bytes to read
-     * @return an array of size 'size' read from file beginning at 'offset'
+     * @return an array of size 'size' read from file, beginning at 'offset'.
+     *         if 'offset' >= file length, returns an empty array.
+     *         if 'size' + 'offset' > file length, returns an array with length of data read from the file
      */
     private byte[] getBlockFromBeginningOfFile(RandomAccessFile file, byte[] bytes, long offset, int size) throws IOException {
 
+    	if (offset >= _fileLength) {
+    		return new byte[0];
+    	}
+    	
+    	// Adjust the amount to allocate for the array based on the offset and file length
+    	int blockLength;
+    	if ((size + offset) > _fileLength) {
+    		blockLength = (int)(_fileLength - offset);
+    	}
+    	else {
+    		blockLength = size;
+    	}
+    	    	
         file.seek(offset);
 
-        if (bytes == null) {
-            bytes = new byte[size];
+        // if bytes == null, caller is asking us to allocate the array.
+        // if blockLength != size, then there are not enough bytes from offset to end of file
+        // to fill the array.  We want the array length to match the amount data.
+        if ((bytes == null) || (blockLength != size)) {
+            bytes = new byte[blockLength];
         } else if (bytes.length != size) {
             throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length.");
         }
 
-        file.read(bytes, 0, size );
+        int bytesRead = file.read(bytes, 0, size );
+        if (bytesRead != bytes.length) {
+        	throw new IOException("Not enough bytes were read to fill the array.");       	  
+        }
         return bytes;	
     }
 
