@@ -55,9 +55,14 @@ package com.ibm.ws.artifact.zip.internal;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.zip.ZipException;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class ZipValidator {
-
+    static final TraceComponent tc = Tr.register(ZipFileContainerFactory.class);
+    
     // EOCDR is End-of-Central-Directory-Record
     private static final int EOCDR_MIN_SIZE = 22;
     private static final int EOCDR_MAX_COMMENT_LEN = 0xFFFF;
@@ -128,7 +133,8 @@ public class ZipValidator {
             } 
 
         } catch (Exception e) {
-            //ffdc
+            // FFDC
+            Tr.error(tc, "bad.zip.data", _archiveFileName);
         }
 
         return false;
@@ -154,7 +160,7 @@ public class ZipValidator {
         int offsetFromEnd = block.length - offset;   // offset from the end of the block (not the file)
 
         if ( block.length < EOCDR_MIN_SIZE ) {
-            throw new IOException("Not a valid zip file.  Less than minimum required length.");
+            throw new ZipException("Not a valid zip file.  Less than minimum required length. File [ " + _archiveFileName + " ]");
         }
 
         // We will only enter this loop if a comment is attached to the End-of-Central-Directory-Record
@@ -166,7 +172,7 @@ public class ZipValidator {
             offsetFromEnd++;
 
             if ( size > EOCDR_MAX_SIZE || size > _fileLength ) {
-                throw new IOException("Cannot find central directory end record in zip.");
+                throw new ZipException("Cannot find central directory end record in zip. File [ " + _archiveFileName + " ]");
             }
 
             if ( offsetFromEnd > block.length ) {
@@ -199,7 +205,7 @@ public class ZipValidator {
                                              ZIP64_LOCATOR_SIZE);	
 
         if ( !isValid_Zip64EoCDRLocator(block, 0)) {
-            throw new IOException("Invalid Zip64-End-of-Central-Direcytory-Locator.");
+            throw new ZipException("Invalid Zip64-End-of-Central-Direcytory-Locator. File [ " + _archiveFileName + " ]");
         }
 
         return Arrays.copyOfRange(block, 0, ZIP64_LOCATOR_SIZE);
@@ -227,7 +233,7 @@ public class ZipValidator {
 
         byte [] block = getBlockFromBeginningOfFile(file, null, zip64EoCDOffset, ZIP64_EOCDR_MINIMUM_SIZE);
         if (block.length < ZIP64_EOCDR_MINIMUM_SIZE) {
-            throw new IOException("Offset to Zip64-End-of-Central-Directory-Record is not correct.  Reached end of file.");
+            throw new ZipException("Offset to Zip64-End-of-Central-Directory-Record is not correct.  Reached end of file. File [ " + _archiveFileName + " ]");
         }
 
         long offsetFromBeginningOfFile = zip64EoCDOffset;
@@ -247,7 +253,7 @@ public class ZipValidator {
             // in Zip64 format. This is because this implementation searches through the file.  A fruitless 
             // search through a large file would cause an unacceptable delay if we did not set a limit.
             if (offsetFromStartingPoint > MAX_PREFIX_ALLOWED_FOR_ZIP64) {
-                throw new IOException("Failed to find the Zip64-End-of-Central-Directory-Record after searching " + MAX_PREFIX_ALLOWED_FOR_ZIP64 + " bytes.");	
+                throw new ZipException("Failed to find the Zip64-End-of-Central-Directory-Record after searching " + MAX_PREFIX_ALLOWED_FOR_ZIP64 + " bytes. File [ " + _archiveFileName + " ]");	
             }
 
             // Must allow 4 bytes at end of block to read signature
@@ -262,7 +268,7 @@ public class ZipValidator {
 
                 block = getBlockFromBeginningOfFile(file, block, offsetFromBeginningOfFile, FORWARD_BLOCK_SIZE); // re-use block allocation
                 if (block.length < 4) {
-                    throw new IOException("Reached end of file while searching for Zip64-End-of-Central-Directory-Record.");
+                    throw new ZipException("Reached end of file while searching for Zip64-End-of-Central-Directory-Record. File [ " + _archiveFileName + " ]");
                 }
                 offsetInBlock = 0;
             }
@@ -313,12 +319,12 @@ public class ZipValidator {
         if ((bytes == null) || (blockLength != size)) {
             bytes = new byte[blockLength];
         } else if (bytes.length != size) {
-            throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length.");
+            throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length. File [ " + _archiveFileName + " ]");
         }
 
         int bytesRead = file.read(bytes, 0, size );
         if (bytesRead != bytes.length) {
-            throw new IOException("Not enough bytes were read to fill the array.");       	  
+            throw new ZipException("Not enough bytes were read to fill the array. File [ " + _archiveFileName + " ]");       	  
         }
         return bytes;
     }
@@ -355,12 +361,12 @@ public class ZipValidator {
         if ((bytes == null) || (blockLength != size)) {
             bytes = new byte[blockLength];
         } else if (bytes.length != size) {
-            throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length.");
+            throw new IllegalArgumentException("The 'bytes' array must be 'size' bytes in length. File [ " + _archiveFileName + " ]");
         }
 
         int bytesRead = file.read(bytes, 0, size );
         if (bytesRead != bytes.length) {
-            throw new IOException("Not enough bytes were read to fill the array.");       	  
+            throw new ZipException("Not enough bytes were read to fill the array.");       	  
         }
         return bytes;	
     }
