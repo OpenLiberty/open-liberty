@@ -468,7 +468,7 @@ public class ZipValidator {
      * @return  The location in the file where the archive actually starts. That will normally
      * be 0, but often scripts are prepended to the archive; for example to make a self-extracting zip.
      */
-    public long getActualArchiveOffset() throws IOException {
+    private long getActualArchiveOffset() throws IOException {
 
         // At offset 12 into the End-of-Central-Directory-Record is the size of the Central Directory 
         long lengthOfCentralDirectory = getLittleEndianValue( _endOfCentralDirectoryRecord, EOCDR_CENTRAL_DIR_SIZE_OFFSET, 4 );
