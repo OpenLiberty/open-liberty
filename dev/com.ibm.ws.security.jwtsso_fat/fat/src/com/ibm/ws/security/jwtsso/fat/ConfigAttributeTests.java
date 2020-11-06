@@ -81,7 +81,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction());
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);

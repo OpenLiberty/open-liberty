@@ -103,8 +103,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     @Override
     protected String testName(FrameworkMethod method) {
         String testName = super.testName(method);
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null && !RepeatTestFilter.CURRENT_REPEAT_ACTION.equals("NO_MODIFICATION_ACTION")) {
-            testName = testName + "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        if (RepeatTestFilter.isAnyRepeatActionActive() && !RepeatTestFilter.isRepeatActionActive("NO_MODIFICATION_ACTION")) {
+            testName = testName + RepeatTestFilter.getRepeatActionsAsString();
         }
         return testName;
     }
@@ -638,9 +638,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     exceptionClass = ee9Helper.replacePackages(exceptionClass);
                     annotationListPerClass.add(exceptionClass);
                 }
-            } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+            } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
                 for (String repeatAction : ffdc.repeatAction()) {
-                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
                         String[] exceptionClasses = ffdc.value();
                         for (String exceptionClass : exceptionClasses) {
                             annotationListPerClass.add(exceptionClass);
@@ -688,9 +688,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                         exceptionClass = ee9Helper.replacePackages(exceptionClass);
                         annotationListPerClass.add(exceptionClass);
                     }
-                } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
                             String[] exceptionClasses = ffdc.value();
                             for (String exceptionClass : exceptionClasses) {
                                 annotationListPerClass.add(exceptionClass);

@@ -184,7 +184,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     public static boolean isActive() {
-        return ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
     /**

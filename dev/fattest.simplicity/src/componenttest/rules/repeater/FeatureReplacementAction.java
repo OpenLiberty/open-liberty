@@ -110,6 +110,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> addFeatures = new HashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
+    private final Set<String> serverConfigPaths = new HashSet<String>();
+    private boolean calledForServers = false;
+    private boolean calledForServerConfigPaths = false;
+
+    private static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
+    private static final String pathToAutoFVTTestServers = "publish/servers/";
+    private static final String pathToAutoFVTTestClients = "publish/clients/";
 
     public FeatureReplacementAction() {}
 
@@ -122,7 +129,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
-        this(addFeature);
+        this();
+        addFeature(addFeature);
         removeFeature(removeFeature);
     }
 
@@ -135,7 +143,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
-        this(addFeatures);
+        this();
+        addFeatures(addFeatures);
         removeFeatures(removeFeatures);
     }
 
@@ -150,6 +159,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> addFeatures) {
+        this();
         addFeatures(addFeatures);
     }
 
@@ -164,6 +174,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature the feature to add.
      */
     public FeatureReplacementAction(String addFeature) {
+        this();
         addFeature(addFeature);
     }
 
@@ -255,14 +266,22 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Specify a list of server names to include in the feature replace action and any server configuration
      * files under "publish/servers/SERVER_NAME/" will be scanned.
      * By default, all server config files in publish/servers/ and publish/files/ will be scanned for updates.
+     *
+     * Call only one of {@link #forServers(String...)} and {@link #forServerConfigPaths(String...)}. An {@link IllegalStateException} will be thrown if both are called.
      */
     public FeatureReplacementAction forServers(String... serverNames) {
+        if (calledForServerConfigPaths) {
+            throw new IllegalStateException("Use only one of forServers(...) and forServerConfigPaths(...)");
+        }
+
         if (NO_SERVERS.equals(serverNames[0])) {
             servers.clear();
         } else {
             servers.remove(ALL_SERVERS);
             servers.addAll(Arrays.asList(serverNames));
         }
+
+        calledForServers = true;
         return this;
     }
 
@@ -278,6 +297,42 @@ public class FeatureReplacementAction implements RepeatTestAction {
             clients.remove(ALL_CLIENTS);
             clients.addAll(Arrays.asList(clientNames));
         }
+        return this;
+    }
+
+    /**
+     * Overrides the paths to search for server XML files which will be altered by this feature replacement action. The default is "publish/servers" and "publish/files".
+     *
+     * Call only one of {@link #forServers(String...)} and {@link #forServerConfigPaths(String...)}. An {@link IllegalStateException} will be thrown if both are called.
+     *
+     * @param  serverPaths The directories and / or files to search for server XML files.
+     * @return             This {@link FeatureReplacementAction} instance.
+     */
+    public FeatureReplacementAction forServerConfigPaths(String... serverPaths) {
+        if (calledForServers) {
+            throw new IllegalStateException("Use only one of forServers(...) and forServerConfigPaths(...)");
+        }
+
+        Log.info(c, "forServerConfigPaths", "Adding the following server configuration paths: " + Arrays.toString(serverPaths));
+
+        servers.remove(ALL_SERVERS);
+        if (serverPaths != null && serverPaths.length > 0) {
+            for (String path : serverPaths) {
+                if (path.startsWith("publish/files")) {
+                    path = path.replace("publish/files", "lib/LibertyFATTestFiles");
+                }
+
+                File f = new File(path);
+                if (!f.exists()) {
+                    throw new IllegalArgumentException("The path specified in the forServerConfigPaths(...) does not exist: "
+                                                       + f.getAbsolutePath());
+                }
+
+                this.serverConfigPaths.add(path);
+            }
+            calledForServerConfigPaths = true;
+        }
+
         return this;
     }
 
@@ -314,41 +369,68 @@ public class FeatureReplacementAction implements RepeatTestAction {
     @Override
     public void setup() throws Exception {
         final String m = "setup";
-        final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
-        final String pathToAutoFVTTestServers = "publish/servers/";
-        final String pathToAutoFVTTestClients = "publish/clients/";
 
         //check that there are actually some features to be added or removed
         assertFalse("No features were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0);
 
         // Find all of the server configurations to replace features in
         Set<File> serverConfigs = new HashSet<>();
-        File serverFolder = new File(pathToAutoFVTTestServers);
-        File filesFolder = new File(pathToAutoFVTTestFiles);
-        if (servers.contains(ALL_SERVERS)) {
-            // Find all *.xml in this test project
-            serverConfigs.addAll(findFile(filesFolder, ".xml"));
-            servers.remove(ALL_SERVERS);
-            if (serverFolder.exists())
-                for (File f : serverFolder.listFiles())
-                    if (f.isDirectory())
-                        servers.add(f.getName());
-        }
-        for (String serverName : servers) {
-            serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+        Set<File> locationsChecked = new HashSet<>(); // Directories we checked for client/server XML files.
+        if (!calledForServerConfigPaths) {
+            Log.info(c, m, "Checking the following servers for server configuration files: " + servers);
+            File serverFolder = new File(pathToAutoFVTTestServers);
+            File filesFolder = new File(pathToAutoFVTTestFiles);
+            locationsChecked.add(serverFolder);
+            locationsChecked.add(filesFolder);
+            if (servers.contains(ALL_SERVERS)) {
+                // Find all *.xml in this test project
+                serverConfigs.addAll(findFile(filesFolder, ".xml"));
+                servers.remove(ALL_SERVERS);
+                if (serverFolder.exists()) {
+                    for (File f : serverFolder.listFiles()) {
+                        if (f.isDirectory()) {
+                            servers.add(f.getName());
+                        }
+                    }
+                }
+            }
+            for (String serverName : servers) {
+                serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+            }
+        } else {
+            Log.info(c, m, "Checking the following paths for server configuration files: " + serverConfigPaths);
+            for (String path : serverConfigPaths) {
+                File f = new File(path);
+                if (f.exists()) {
+                    if (f.isDirectory()) {
+                        locationsChecked.add(f); // Only need to add and not the flat file.
+                        serverConfigs.addAll(findFile(f, ".xml"));
+                    } else {
+                        serverConfigs.add(f);
+                    }
+                } else {
+                    throw new IllegalStateException("The specified server configuration path does not exist "
+                                                    + "(it existed when added - possibly deleted?): "
+                                                    + f.getAbsolutePath());
+                }
+            }
         }
 
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
         File clientFolder = new File(pathToAutoFVTTestClients);
         if (clients.contains(ALL_CLIENTS)) {
+            locationsChecked.add(clientFolder);
             // Find all *.xml in this test project
             clientConfigs.addAll(findFile(clientFolder, ".xml"));
             clients.remove(ALL_CLIENTS);
-            if (clientFolder.exists())
-                for (File f : clientFolder.listFiles())
-                    if (f.isDirectory())
+            if (clientFolder.exists()) {
+                for (File f : clientFolder.listFiles()) {
+                    if (f.isDirectory()) {
                         clients.add(f.getName());
+                    }
+                }
+            }
         }
         for (String clientName : clients) {
             clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
@@ -358,8 +440,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
 
         // change all the server.xml files
-        assertTrue("There were no servers/clients (*.xml) in " + serverFolder.getAbsolutePath() + " or " + filesFolder.getAbsolutePath() + " or " + clientFolder.getAbsolutePath()
-                   + ". To use a FeatureReplacementAction, there must be 1 or more servers/clients in any of the above locations.",
+        assertTrue("There were no servers/clients (*.xml) in the following folders."
+                   + ". To use a FeatureReplacementAction, there must be 1 or more servers/clients in any of the following locations: " + locationsChecked,
                    (serverConfigs.size() > 0 || clientConfigs.size() > 0));
 
         Set<File> configurations = new HashSet<>();

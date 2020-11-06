@@ -77,6 +77,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO openidConnectClient-1.0 has not been transformed.
 public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
@@ -101,6 +102,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
+    	FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
 
         // Start server that will build the JWT Token
         serverTracker.addServer(builderServer);

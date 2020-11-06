@@ -15,6 +15,16 @@ Bundle-Name: WebSphere Security JWT Builder and Consumer
 Bundle-SymbolicName: com.ibm.ws.security.jwt
 Bundle-Description: WebSphere Security JWT Builder and Consumer, version=${bVersion}
 
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.jwt.internal.jar
+#JakartaEE-Bundle-Name: Liberty Security JWT Builder and Consumer
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jwt.internal
+#JakartaEE-Bundle-Description: Liberty Security JWT Builder and Consumer, version=${bVersion} 
+#JakartaEE-Bundle-Version: 
+
 Web-ContextPath: /jwt
 WS-TraceGroup: \
   JWTBUILDER

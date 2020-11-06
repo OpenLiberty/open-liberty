@@ -84,7 +84,7 @@ public class AmbiguousBindingsTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, AmbiguousTestApp);
 
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EJBCBOnErr_FAIL") {
+        if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
             // don't validate apps loaded like default startServer() does
             server.startServerAndValidate(true, true, false);
         } else {
@@ -104,13 +104,13 @@ public class AmbiguousBindingsTest extends FATServletClient {
     @AllowedFFDC("javax.naming.NamingException")
     public void testAmbiguousBindings() throws Exception {
 
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EJBCBOnErr_FAIL") {
+        if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
             // make sure application stopped with correct error
             String message = "CWWKZ0106E:";
             assertNotNull("Application AmbiguousTestApp should have been stopped", server.waitForStringInLog(message));
             message = "CNTR4002E:.*com.ibm.ambiguous.ejb.AmbiguousOtherNameRemoteHome";
             assertNotNull("Application AmbiguousTestApp did not get correct error", server.waitForStringInLog(message));
-        } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION == "EJBCBOnErr_IGNORE") {
+        } else if (RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_IGNORE")) {
             // make sure warning is not there
             String message = "CNTR0338W:";
             assertTrue("Application AmbiguousTestApp should not have got ambiguous warning", server.findStringsInLogs(message).isEmpty());
