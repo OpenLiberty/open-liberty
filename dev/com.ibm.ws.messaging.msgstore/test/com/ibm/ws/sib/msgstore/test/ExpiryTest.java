@@ -44,9 +44,12 @@ import com.ibm.ws.sib.msgstore.ItemStream;
 import com.ibm.ws.sib.msgstore.MessageStore;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
 import com.ibm.ws.sib.msgstore.MessageStoreException;
+import com.ibm.ws.sib.msgstore.ReferenceStream;
 import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
 import com.ibm.ws.sib.msgstore.Statistics;
+import com.ibm.ws.sib.msgstore.transactions.ExternalLocalTransaction;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
+import com.ibm.ws.sib.transactions.LocalTransaction;
 import com.ibm.ejs.util.am.AlarmManager;
 import com.ibm.ws.sib.utils.DataSlice;
 
@@ -92,32 +95,7 @@ public class ExpiryTest extends MessageStoreTestCase {
         return suite;
     }
 
-    /**
-     * Capture stdout/stderr output to the manager.
-     *
-     * @throws Exception
-     */
-    @BeforeClass
-    public static void setUpBefore() throws Exception {
-        // Configure tracing.
-        SharedOutputManager outputMgr = SharedOutputManager.getInstance();
-        //outputMgr.trace("com.ibm.ws.sib.*=all:com.ibm.ejs.util.am.*=all");
-        //outputMgr.trace("com.ibm.ws.sib.msgstore.expiry.*=all:com.ibm.ejs.util.am.*=all");
-        outputMgr.captureStreams();
-        print("Tracing to: .../build/trace-logs/");
-    }
-
-    /**
-     * Final teardown work when class is exiting.
-     *
-     * @throws Exception
-     */
-    @AfterClass
-    public static void tearDownAfter() throws Exception {
-        SharedOutputManager outputMgr = SharedOutputManager.getInstance();
-        // Make stdout and stderr "normal"
-        outputMgr.restoreStreams();
-    }
+    
 
     @Test
     public void testStoreNeverItemExpiry() {
@@ -144,6 +122,76 @@ public class ExpiryTest extends MessageStoreTestCase {
         assertTrue("No items expired, itemsRemoved="+itemsRemoved , itemsRemoved.get() > 0);
     }
 
+    @Test
+    public void testLockedItemExpiry() {
+        SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+        //outputMgr.trace("com.ibm.ws.sib.*=all:com.ibm.ejs.util.am.*=all");
+        outputMgr.trace("com.ibm.ws.sib.msgstore.expiry.*=all:com.ibm.ejs.util.am.*=all");
+        outputMgr.captureStreams();
+        print("Tracing to: .../com.ibm.ws.messaging.msgstore/build/libs/trace-logs/");
+        
+        storageStrategy = AbstractItem.STORE_NEVER;
+        
+        // Provide an executor for theExpirers alarmManager to use, note that the Alarm Manager only uses one thread.
+        AlarmManager alarmManager = new TestAlarmManager(Executors.newScheduledThreadPool(10));
+        
+        MessageStore messageStore = null;
+        try {
+            // Make the expirer run almost continuously, an expiry interval < 1 means stop the expirer.
+            System.setProperty(MessageStoreConstants.STANDARD_PROPERTY_PREFIX + MessageStoreConstants.PROP_EXPIRY_INTERVAL, Integer.toString(1));
+            messageStore = createAndStartMessageStore(true, PERSISTENCE);
+            Transaction tran = messageStore.getTransactionFactory().createAutoCommitTransaction();
+            ItemStream itemStream = new ItemStream();
+            messageStore.add(itemStream, tran);
+            
+            // Put an item on the ItemStream and the consume it under a transaction, before it expires.
+            long expiryMilliseconds = 1000;
+            ExpiryTestItem item1 = new ExpiryTestItem(expiryMilliseconds);
+            itemStream.addItem(item1, tran);
+            ExternalLocalTransaction tran1 = messageStore.getTransactionFactory().createLocalTransaction();           
+            Item item = itemStream.removeFirstMatchingItem(alwaysMatchesFilter, tran1);
+            assertNotNull("First item not retrieved, itemsExpired="+itemsExpired , item );
+           
+            // Put another item on the stream. 
+            ExpiryTestItem item2 = new ExpiryTestItem(expiryMilliseconds);
+            itemStream.addItem(item2, tran);
+            
+            // Wait for item2 to expire, item1 cannot expire because it is being retrieved in a transaction..
+            expiryStartedLock.lock();
+            print(new Date()+" Waiting for item2 to expire, itemsExpired="+itemsExpired);
+            try {
+                if (!expiryStarted) {
+                   expiryStartedCondition.await(10, TimeUnit.SECONDS);
+                   assertTrue("Expiry not started itemsExpired=" + itemsExpired, expiryStarted);          
+                }
+                
+            } finally {
+                expiryStartedLock.unlock();
+            }
+            
+            // Finish retrieving the first item.
+            tran1.commit();
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            fail(exception.toString());
+        } finally {
+            try {
+                stopMessageStore(messageStore);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.toString());
+            }
+        }  
+
+        outputMgr.dumpStreams();
+        // Make stdout and stderr "normal"
+        outputMgr.restoreStreams();
+            
+        // We should see only the first item has expired, the second one was removed before it expired.
+        assertTrue("Incorrect items expired, itemsExpired="+itemsExpired , itemsExpired.get() ==1);     
+    }
+    
     private void itemExpiry() {
 
         print("---------- "+this.getClass().getSimpleName()+" arguments ----------");
