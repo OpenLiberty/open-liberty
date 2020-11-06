@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,129 +72,92 @@ public class AutoCloseableTest {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-
-        server.copyFileToLibertyInstallRoot("lib/features",
-                                            "features/testjmsinternals-1.0.mf");
+        server.copyFileToLibertyInstallRoot("lib/features", "features/testjmsinternals-1.0.mf");
 
         server.setServerConfigurationFile("Qclose.xml");
 
         TestUtils.addDropinsWebApp(server, "AutoCloseable", "web");
 
         server.startServer("AutoCloseable.log");
-
     }
 
     // This test case will test the AutoCloseable feature for QueueConnection
-
     @Test
     public void testQConnClose() throws Exception {
-
         testResult = runInServlet("testQueueConnectionClose");
         assertTrue("testQConnClose Failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for QueueSession
-
     @Test
     public void testQSessionClose() throws Exception {
         testResult = runInServlet("testQueueSessionClose");
         assertTrue("testQSessionClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for QueueSender
-
     @Test
     public void testQSenderClose() throws Exception {
         testResult = runInServlet("testQueueSenderClose");
-
         assertTrue("testQSenderClose Failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for QueueBrowser
-
     @Test
     public void testQBrowserClose() throws Exception {
         testResult = runInServlet("testQueueBrowserClose");
-
         assertTrue("testQBrowserClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for TopicConnection
-
     @Test
     public void testTConnectionClose() throws Exception {
         testResult = runInServlet("testTopicConnectionClose");
-
         assertTrue("testTConnectionClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for TopicSession
-
     @Test
     public void testTSessionClose() throws Exception {
         testResult = runInServlet("testTopicSessionClose");
-
         assertTrue("testTSessionClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for TopicSubscriber
-
     @Test
     public void testTSubscriberClose() throws Exception {
         testResult = runInServlet("testTopicSubscriberClose");
-
         assertTrue("testTSubscriberClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for TopicPublisher
-
     @Test
     public void testTPublisherClose() throws Exception {
-
         testResult = runInServlet("testTopicPublisherClose");
-
         assertTrue("testTopicPublisherClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for QueueReceiver
-
     @Test
     public void testQReceiverClose() throws Exception {
-
         testResult = runInServlet("testQueueReceiverClose");
-
         assertTrue("testQueueReceiverClose failed", testResult);
 
     }
 
     // This test case will test the AutoCloseable feature for JMSContext
-
     @ExpectedFFDC(value = "javax.jms.JMSException")
     @Test
     public void testJMSContextClose() throws Exception {
-
         testResult = runInServlet("testJMSContextClose");
         assertTrue("testJMSContextClose failed", testResult);
-
     }
 
     // This test case will test the AutoCloseable feature for JMSConsumer
-
     @Test
     public void testJMSConsumerClose() throws Exception {
-
         testResult = runInServlet("testJMSConsumerClose");
-
         assertTrue("testJMSConsumerClose failed", testResult);
-
     }
 
     @org.junit.AfterClass
