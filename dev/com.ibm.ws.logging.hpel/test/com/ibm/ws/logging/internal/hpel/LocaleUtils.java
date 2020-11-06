@@ -324,7 +324,8 @@ public class LocaleUtils {
             || currentLocale.equalsIgnoreCase("hi_IN") || currentLocale.equalsIgnoreCase("pa_IN")
             || currentLocale.equalsIgnoreCase("mr_IN") || currentLocale.equalsIgnoreCase("kn_IN")
             || currentLocale.equalsIgnoreCase("pa") || currentLocale.equalsIgnoreCase("mr")
-            || currentLocale.equalsIgnoreCase("kn") || currentLocale.equalsIgnoreCase("zh_SG"))
+            || currentLocale.equalsIgnoreCase("kn") || currentLocale.equalsIgnoreCase("zh_SG")
+            || currentLocale.equalsIgnoreCase("c.u_US"))
             return false;
         else
 
