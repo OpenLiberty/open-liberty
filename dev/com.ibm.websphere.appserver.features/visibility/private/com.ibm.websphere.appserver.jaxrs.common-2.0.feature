@@ -2,6 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.jaxrs.common-2.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
