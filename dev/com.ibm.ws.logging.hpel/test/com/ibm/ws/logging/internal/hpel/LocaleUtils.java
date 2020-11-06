@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,7 +324,8 @@ public class LocaleUtils {
             || currentLocale.equalsIgnoreCase("hi_IN") || currentLocale.equalsIgnoreCase("pa_IN")
             || currentLocale.equalsIgnoreCase("mr_IN") || currentLocale.equalsIgnoreCase("kn_IN")
             || currentLocale.equalsIgnoreCase("pa") || currentLocale.equalsIgnoreCase("mr")
-            || currentLocale.equalsIgnoreCase("kn") || currentLocale.equalsIgnoreCase("zh_SG"))
+            || currentLocale.equalsIgnoreCase("kn") || currentLocale.equalsIgnoreCase("zh_SG")
+            || currentLocale.equalsIgnoreCase("c.u_US"))
             return false;
         else
 
