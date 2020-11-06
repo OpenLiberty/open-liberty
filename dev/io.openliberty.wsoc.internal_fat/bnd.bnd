@@ -17,7 +17,10 @@ src:\
     test-applications/basic.war/src,\
     test-applications/websocket11.war/src,\
     test-applications/cdi.war/src,\
-    test-applications/context.war/src
+    test-applications/context.war/src,\
+    test-applications/miscellaneous.war/src,\
+    test-applications/secure.war/src,\
+    test-applications/trace.war/src,\
 
 fat.project: true
 
