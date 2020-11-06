@@ -57,7 +57,7 @@ com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.ojdbc:ojdbc8_g:19.3.0.0
 com.oracle.ojdbc:ucp:19.3.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
-com.sun.activation:jakarta.activation:2.0.0-RC3
+com.sun.activation:jakarta.activation:2.0.0
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.istack:istack-commons-runtime:4.0.0-M3
@@ -133,7 +133,7 @@ io.smallrye.common:smallrye-common-function:1.4.0
 io.smallrye:smallrye-graphql-client-api:1.0.9
 io.smallrye:smallrye-graphql-client:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9
-jakarta.activation:jakarta.activation-api:2.0.0-RC3
+jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.0.0-RC1
 jakarta.authorization:jakarta.authorization-api:2.0.0
 jakarta.ejb:jakarta.ejb-api:4.0.0-RC2
