@@ -502,8 +502,6 @@ public class ZipValidator {
      */
     private boolean archiveStartsWithSignature(RandomAccessFile file, long archiveOffset) throws IOException {
 
-        System.out.println("Archive offset is " + archiveOffset);
-
         file.seek(archiveOffset);
         byte[] localFileHeaderSigBytes = new byte[4];
         file.read(localFileHeaderSigBytes, 0, 4);
