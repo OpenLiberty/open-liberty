@@ -277,13 +277,13 @@ public class JMSContextTest_118061 {
     // 118061_16 Verify set and get operation on Message header field
     // JMSRedelivered
 
-    // @Test
+    // @Test // Disabled in commercial liberty
     public void testJMSRedelivered_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testJMSRedelivered_B_SecOff");
         assertTrue("Test testJMSRedelivered_B_SecOff failed", testResult);
     }
 
-    //@Test
+    // @Test // Disabled in commercial liberty
     public void testJMSRedelivered_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testJMSRedelivered_TCP_SecOff");
         assertTrue("Test testJMSRedelivered_TCP_SecOff failed", testResult);

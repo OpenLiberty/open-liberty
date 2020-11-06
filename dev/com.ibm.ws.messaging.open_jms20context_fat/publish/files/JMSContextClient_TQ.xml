@@ -84,7 +84,7 @@
   </jmsTopicConnectionFactory>
   <connectionManager id="ConMgr4" maxPoolSize="2"/>
     
-  <jmsQueue jndiName="jndi_INPUT_Q">
+  <jmsQueue id="jndi_INPUT_Q" jndiName="jndi_INPUT_Q">
     <properties.wasJms queueName="QUEUE1" 
                        timeToLive="500000"  
                        busName="defaultBus"/>

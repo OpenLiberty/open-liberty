@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,1791 +52,1958 @@ import com.ibm.websphere.ras.TraceComponent;
 
 @SuppressWarnings("serial")
 public class JMSContextServlet extends HttpServlet {
-    public static final String JMXMessage = "This is MessagingMBeanServlet.";
 
-    public final static String MBEAN_TYPE_ME = "WEMMessagingEngine";
-
-    public boolean sessionValue = false;
-    public boolean connectionStart = false;
-    public boolean flag = false;
-    public boolean compFlag = false;
-    public boolean exp = false;
-
-    public QueueConnectionFactory QCFBindings;
-    public QueueConnectionFactory QCFTCP;
-
-    public TopicConnectionFactory TCFBindings;
-    public TopicConnectionFactory TCFTCP;
-
+    public QueueConnectionFactory jmsQCFBindings;
+    public QueueConnectionFactory jmsQCFTCP;
     public Queue queue;
     public Queue queue1;
     public Queue queue2;
     public Queue queue3;
+
+    public TopicConnectionFactory jmsTCFBindings;
+    public TopicConnectionFactory jmsTCFTCP;
     public Topic topic;
+
+    public QueueConnectionFactory getQCF(String name) {
+        QueueConnectionFactory qcf;
+        try {
+            qcf = (QueueConnectionFactory) new InitialContext().lookup(name);
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+            qcf = null;
+        }
+        System.out.println("Queue connection factory '" + name + "' [ " + qcf + " ]");
+        return qcf;
+    }
+
+    public Queue getQueue(String name) {
+        Queue queue;
+        try {
+            queue = (Queue) new InitialContext().lookup(name);
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+            queue = null;
+        }
+        System.out.println("Queue '" + name + "' [ " + queue + " ]");
+        return queue;
+    }
+
+    public static TopicConnectionFactory getTCF(String name) {
+        TopicConnectionFactory tcf;
+        try {
+            tcf = (TopicConnectionFactory) new InitialContext().lookup(name);
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+            tcf = null;
+        }
+        System.out.println("Topic connection factory '" + name + "' [ " + tcf + " ]");
+        return tcf;
+    }
+
+    public Topic getTopic(String name) {
+        Topic topic;
+        try {
+            topic = (Topic) new InitialContext().lookup(name);
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+            topic = null;
+        }
+        System.out.println("Topic '" + name + "' [ " + topic + " ]");
+        return topic;
+    }
+
+    public int getMessageCount(QueueBrowser qb) throws JMSException {
+        int numMsgs = 0;
+        Enumeration e = qb.getEnumeration();
+        while ( e.hasMoreElements() ) {
+            e.nextElement();
+            numMsgs++;
+        }
+        return numMsgs;
+    }
+
+    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
+        JMSContext jmsContext = qcf.createContext();
+
+        try {
+            QueueBrowser qb = jmsContext.createBrowser(q);
+            Enumeration e = qb.getEnumeration();
+
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(q);
+
+            try {
+                int numMsgs = 0;
+                while ( e.hasMoreElements() ) {
+                    e.nextElement();
+                    numMsgs++;
+                }
+
+                for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+                    jmsConsumer.receive();
+                }
+
+            } finally {
+                jmsConsumer.close();
+            }
+
+        } finally {
+            jmsContext.close();
+        }
+    }
 
     @Override
     public void init() throws ServletException {
-        // TODO Auto-generated method stub
-
         super.init();
-        try {
 
-            QCFBindings = getQCFBindings();
-            TCFBindings = getTCFBindings();
-            QCFTCP = getQCFTCP();
-            TCFTCP = getTCFTCP();
-            queue = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q");
+        jmsQCFBindings = getQCF("java:comp/env/jndi_JMS_BASE_QCF");
+        jmsQCFTCP = getQCF("java:comp/env/jndi_JMS_BASE_QCF1");
+        queue = getQueue("java:comp/env/jndi_INPUT_Q");
+        queue1 = getQueue("java:comp/env/eis/queue1");
+        queue2 = getQueue("java:comp/env/eis/queue2");
+        queue3 = getQueue("java:comp/env/eis/queue3");
 
-            queue1 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q1");
+        jmsTCFBindings = getTCF("java:comp/env/eis/tcf");
+        jmsTCFTCP = getTCF("java:comp/env/eis/tcf1");
+        topic = getTopic("java:comp/env/eis/topic1");
 
-            queue2 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q2");
-
-            queue3 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q3");
-
-            topic = (Topic) new InitialContext()
-                            .lookup("java:comp/env/eis/topic1");
-
-        } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if ( jmsQCFBindings == null ) {
+            throw new ServletException("Null 'jmsQCFBindings'");
+        }
+        if ( jmsQCFTCP == null ) {
+            throw new ServletException("Null 'jmsQCFTCP'");
+        }
+        if ( queue == null ) {
+            throw new ServletException("Null 'queue'");
+        }
+        if ( queue1 == null ) {
+            throw new ServletException("Null 'queue1'");
+        }
+        if ( queue2 == null ) {
+            throw new ServletException("Null 'queue2'");
+        }
+        if ( queue3 == null ) {
+            throw new ServletException("Null 'queue3'");
         }
 
+        if ( jmsTCFBindings == null ) {
+            throw new ServletException("Null 'jmsTCFBindings'");
+        }
+        if ( jmsTCFTCP == null ) {
+            throw new ServletException("Null 'jmsTCFTCP'");
+        }
+        if ( topic == null ) {
+            throw new ServletException("Null 'topic'");
+        }
     }
 
+    /**
+     * Handle a GET request to this servlet: Invoke the test method specified as
+     * request paramater "test".
+     *
+     * The test method throws an exception when it fails.  If no exception
+     * is thrown by the test method, indicate success through the response
+     * output.  If an exception is thrown, omit the success indication.
+     * Instead, display an error indication and display the exception stack
+     * to the response output.
+     *
+     * @param request The HTTP request which is being processed.
+     * @param response The HTTP response which is being processed.
+     *
+     * @throws ServletException Thrown in case of a servlet processing error.
+     * @throws IOException Thrown in case of an input/output error.
+     */
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
         String test = request.getParameter("test");
+
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-        final TraceComponent tc = Tr.register(JMSContextServlet.class); // injection
-        // engine
-        // doesn't
-        // like
-        // this
-        // at
-        // the
-        // class
-        // level
+
+        // The injection engine doesn't like this at the class level.
+        TraceComponent tc = Tr.register(JMSContextServlet.class);
+
         Tr.entry(this, tc, test);
         try {
+            getClass()
+                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                .invoke(this, request, response);
+
             System.out.println(" Starting : " + test);
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class).invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
             Tr.exit(this, tc, test);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            Tr.exit(this, tc, test, x);
+
+        } catch ( Throwable e ) {
+            if ( e instanceof InvocationTargetException ) {
+                e = e.getCause();
+            }
+
             out.println("<pre>ERROR in " + test + ":");
             System.out.println(" Ending : " + test);
-            x.printStackTrace(out);
+            System.out.println(" <ERROR> " + e.getMessage() + " </ERROR>");
+            e.printStackTrace(out);
             out.println("</pre>");
+
+            Tr.exit(this, tc, test, e);
         }
     }
 
-    public void testCreateContext_B_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    //
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        if (!(jmsContextQCFBindings.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE && jmsContextQCFBindings.getAutoStart() == true))
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateContext_B_SecOff failed");
+    public void testCreateContext_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    }
+        JMSContext jmsContext = jmsQCFBindings.createContext();
 
-    public void testCreateContext_TCP_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        if (!(jmsContextQCFTCP.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE && jmsContextQCFTCP.getAutoStart() == true))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateContext_TCP_SecOff failed");
-
-    }
-
-    public void testGetMetadata_B_SecOff(HttpServletRequest request,
-                                         HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        ConnectionMetaData metadata = jmsContextQCFBindings.getMetaData();
-        if (!(metadata.getJMSVersion().equals("2.0")
-              && metadata.getJMSMajorVersion() == 2
-              && metadata.getJMSMinorVersion() == 0
-              && metadata.getJMSProviderName().equals("IBM")
-              && metadata.getProviderVersion().equals("1.0")
-              && metadata.getProviderMajorVersion() == 1
-              && metadata.getProviderMinorVersion() == 0))
-        {
-            exceptionFlag = true;
-
-        }
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testGetMetadata_B_SecOff failed");
-
-    }
-
-    public void testGetMetadata_TCP_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        ConnectionMetaData metadata = jmsContextQCFTCP.getMetaData();
-        if (!(metadata.getJMSVersion().equals("2.0")
-              && metadata.getJMSMajorVersion() == 2
-              && metadata.getJMSMinorVersion() == 0
-              && metadata.getJMSProviderName().equals("IBM")
-              && metadata.getProviderVersion().equals("1.0")
-              && metadata.getProviderMajorVersion() == 1
-              && metadata.getProviderMinorVersion() == 0))
-        {
-            exceptionFlag = true;
-
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) ||
+             !jmsContext.getAutoStart() ) {
+            testFailed = true;
         }
 
-        jmsContextQCFTCP.close();
+        jmsContext.close();
 
-        if (exceptionFlag)
-            throw new WrongException("testGetMetadata_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateContext_B_SecOff failed");
+        }
     }
 
-    public void testSetGetAutoStart_B_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testCreateContext_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        boolean testFailed = false;
 
-        jmsContextQCFBindings.setAutoStart(false);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) ||
+             !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getAutoStart() == false))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testSetGetAutoStart_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateContext_TCP_SecOff failed");
+        }
     }
 
-    public void testSetGetAutoStart_TCP_SecOff(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    private boolean verifyMetadata(ConnectionMetaData metadata) throws JMSException {
+        return ( metadata.getJMSVersion().equals("2.0") &&
+                 (metadata.getJMSMajorVersion() == 2) &&
+                 (metadata.getJMSMinorVersion() == 0) &&
+                 metadata.getJMSProviderName().equals("IBM") &&
+                 metadata.getProviderVersion().equals("1.0") &&
+                 (metadata.getProviderMajorVersion() == 1) &&
+                 (metadata.getProviderMinorVersion() == 0) );
+    }
+        
+    public void testGetMetadata_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
 
-        jmsContextQCFTCP.setAutoStart(false);
+        boolean testFailed = false;
+        if ( !verifyMetadata( jmsContext.getMetaData() ) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getAutoStart() == false))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
+        jmsContext.close();
 
-        if (exceptionFlag)
-            throw new WrongException("testSetGetAutoStart_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testGetMetadata_B_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_B_SecOff(HttpServletRequest request,
-                                                   HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testGetMetadata_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
+        boolean testFailed = false;
+        if ( !verifyMetadata( jmsContext.getMetaData() ) ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetMetadata_TCP_SecOff failed");
+        }
+    }
+
+    public void testSetGetAutoStart_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        jmsContext.setAutoStart(false);
+
+        boolean testFailed = false;
+        if ( jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testSetGetAutoStart_B_SecOff failed");
+        }
+    }
+
+    public void testSetGetAutoStart_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        jmsContext.setAutoStart(false);
+
+        boolean testFailed = false;
+        if ( jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testSetGetAutoStart_TCP_SecOff failed");
+        }
+    }
+
+    public void testcreateContextwithUser_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) || !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE) && (jmsContextQCFBindings.getAutoStart() == true))
+        jmsContext.close();
 
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_B_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_empty_B_SecOff(HttpServletRequest request,
-                                                         HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithUser_empty_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "";
         String password = "";
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password);
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getAutoStart() == true)
-            && (jmsContextQCFBindings.getSessionMode() == jmsContextQCFBindings.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_empty_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_empty_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_empty_B_SecOff(
-                                                                    HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "";
         String password = "";
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password);
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() || 
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getAutoStart() == true
-        && jmsContextQCFBindings.getSessionMode() == jmsContextQCFBindings.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_empty_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_empty_B_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_null_B_SecOff(HttpServletRequest request,
-                                                        HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithUser_null_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = null;
         String password = null;
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password);
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getAutoStart() == true)
-            && (jmsContextQCFBindings.getSessionMode() == jmsContextQCFBindings.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_null_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_null_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_null_B_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = null;
         String password = null;
-
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password, smode);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password, smode);
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getAutoStart() == true
-        && jmsContextQCFBindings.getSessionMode() == jmsContextQCFBindings.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_null_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_null_B_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_empty_TCP_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithUser_empty_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
         String userName = "";
         String password = "";
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password);
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getAutoStart() == true)
-            && (jmsContextQCFTCP.getSessionMode() == jmsContextQCFTCP.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_empty_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_empty_TCP_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_empty_TCP_SecOff(
-                                                                      HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
         String userName = "";
         String password = "";
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password);
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getAutoStart() == true
-        && jmsContextQCFTCP.getSessionMode() == jmsContextQCFTCP.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_empty_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_empty_TCP_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_null_TCP_SecOff(HttpServletRequest request,
-                                                          HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithUser_null_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = null;
         String password = null;
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password);
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getAutoStart() == true)
-            && (jmsContextQCFTCP.getSessionMode() == jmsContextQCFTCP.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_null_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_null_TCP_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_null_TCP_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
         String userName = null;
         String password = null;
-
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password, smode);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password, smode);
+        if ( !jmsContext.getAutoStart() ||
+             (jmsContext.getSessionMode() != jmsContext.AUTO_ACKNOWLEDGE) ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getAutoStart() == true
-        && jmsContextQCFTCP.getSessionMode() == jmsContextQCFTCP.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_null_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_null_TCP_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithUser_TCP_SecOff(HttpServletRequest request,
-                                                     HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithUser_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) ||
+             !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE) && (jmsContextQCFTCP.getAutoStart() == true))
+        jmsContext.close();
 
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUser_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUser_B_SecOff failed");
+        }
     }
 
-    public void testcreateContextwithsessionMode_B_SecOff(HttpServletRequest request,
-                                                          HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testcreateContextwithsessionMode_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         int smode = JMSContext.DUPS_OK_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFBindings.createContext(smode);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(smode);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != smode) || !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getSessionMode() == smode && jmsContextQCFBindings.getAutoStart() == true))
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithsessionMode_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithsessionMode_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithsessionMode_TCP_SecOff(
-                                                            HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         int smode = JMSContext.DUPS_OK_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFTCP.createContext(smode);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(smode);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != smode) || !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getSessionMode() == smode && jmsContextQCFTCP.getAutoStart() == true))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithsessionMode_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithsessionMode_TCP_SecOff failed");
+        }
     }
 
     public void testcreateContextwithInvalidsessionMode_B_SecOff(
-                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = JMSContext.CLIENT_ACKNOWLEDGE;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextQCFBindings = null;
+        JMSContext jmsContext = null;
+
+        boolean testFailed = false;
         try {
-            jmsContextQCFBindings = QCFBindings.createContext(smode);
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            int smode = JMSContext.CLIENT_ACKNOWLEDGE;
+            jmsContext = jmsQCFBindings.createContext(smode);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // Expected
         }
-        if (exceptionFlag == false)
-            throw new WrongException("testcreateContextwithInvalidsessionMode_B_SecOff failed: Expected exception was not thrown.");
+
+        if ( jmsContext != null ) {
+            jmsContext.close();
+        }
+
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithInvalidsessionMode_B_SecOff failed: Expected exception was not thrown.");
+        }
     }
 
-    public void testcreateContextwithNegsessionMode_B_SecOff(HttpServletRequest request,
-                                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = -1;
-        int smod = 10000;
-        boolean val = false;
-        boolean val1 = false;
+    public void testcreateContextwithNegsessionMode_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        int smode0 = -1;
+        int smode1 = 10000;
+
+        boolean testFailed = false;
 
         try {
-            QCFBindings.createContext(smode);
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            val = true;
+            jmsQCFBindings.createContext(smode0);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
 
         try {
-            QCFBindings.createContext(smod);
-        } catch (JMSRuntimeException ex)
-        {
-            ex.printStackTrace();
-
-            val1 = true;
+            jmsQCFBindings.createContext(smode1);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
-        System.out.println("Val:" + val);
-        System.out.println("Val1:" + val1);
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
 
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithNegsessionMode_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithNegsessionMode_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithInvalidsessionMode_TCP_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         int smode = JMSContext.CLIENT_ACKNOWLEDGE;
 
-        try {
-            JMSContext jmsContextQCFTCP = QCFTCP.createContext(smode);
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+        boolean testFailed = false;
 
+        try {
+            JMSContext jmsContext = jmsQCFTCP.createContext(smode);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
-        if (exceptionFlag == false)
-            throw new WrongException("testcreateContextwithInvalidsessionMode_TCP_SecOff failed: Expected exception was not thrown.");
+
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithInvalidsessionMode_TCP_SecOff failed: Expected exception was not thrown.");
+        }
     }
 
     public void testcreateContextwithNegsessionMode_TCP_SecOff(
-                                                               HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = -1;
-        int smod = 10000;
-        boolean val = false;
-        boolean val1 = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        int smode0 = -1;
+        int smode1 = 10000;
+
+        boolean testFailed = false;
 
         try {
-            QCFTCP.createContext(smode);
-        } catch (JMSRuntimeException ex) {
-
-            val = true;
+            jmsQCFTCP.createContext(smode0);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // Expected
         }
+
         try {
-            QCFTCP.createContext(smod);
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            val1 = true;
+            jmsQCFTCP.createContext(smode1);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // Expected
         }
-        System.out.println("Val:" + val);
-        System.out.println("Val1:" + val1);
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
 
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithNegsessionMode_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithNegsessionMode_TCP_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserNegsessionMode_B_SecOff(
-                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = -1;
-        int smod = 10000;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
+        int smode0 = -1;
+        int smode1 = 10000;
 
-        boolean val = false;
-        boolean val1 = false;
+        boolean testFailed = false;
 
         try {
-            QCFBindings.createContext(userName, password, smode);
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            val = true;
+            jmsQCFBindings.createContext(userName, password, smode0);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
 
         try {
-            TCFBindings.createContext(userName, password, smod);
-        } catch (JMSRuntimeException ex) {
-
-            val1 = true;
+            jmsTCFBindings.createContext(userName, password, smode1);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
-        System.out.println("Val:" + val);
-        System.out.println("Val1:" + val1);
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
 
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserNegsessionMode_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserNegsessionMode_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserNegsessionMode_TCP_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = -1;
-        int smod = 10000;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        int smode0 = -1;
+        int smode1 = 10000;
         String userName = "user1";
         String password = "user1pwd";
 
-        boolean val = false;
-        boolean val1 = false;
+        boolean testFailed = false;
 
         try {
-            QCFTCP.createContext(userName, password, smode);
-
-        } catch (JMSRuntimeException ex)
-        {
-
-            ex.printStackTrace();
-            val = true;
+            jmsQCFTCP.createContext(userName, password, smode0);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
 
         try {
-            TCFTCP.createContext(userName, password, smod);
-        } catch (JMSRuntimeException ex) {
-
-            ex.printStackTrace();
-
-            val1 = true;
+            jmsTCFTCP.createContext(userName, password, smode1);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            // expected
         }
-        System.out.println("Val:" + val);
-        System.out.println("Val1:" + val1);
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
 
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserNegsessionMode_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserNegsessionMode_TCP_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_B_SecOff(
-                                                              HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password, smode);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password,
-                                                                     smode);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) ||
+             !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFBindings.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE && jmsContextQCFBindings.getAutoStart() == true))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_B_SecOff failed");
+        }
     }
 
     public void testcreateContextwithUserSessionMode_TCP_SecOff(
-                                                                HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password, smode);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password,
-                                                           smode);
+        boolean testFailed = false;
+        if ( (jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE) ||
+             !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (!(jmsContextQCFTCP.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE && jmsContextQCFTCP.getAutoStart() == true))
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateContextwithUserSessionMode_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testcreateContextwithUserSessionMode_TCP_SecOff failed");
+        }
     }
 
-    public void testautoStart_B_SecOff(HttpServletRequest request,
-                                       HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        if (!(jmsContextQCFBindings.getAutoStart() == true))
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testautoStart_B_SecOff failed");
+    public void testautoStart_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testautoStart_B_SecOff failed");
+        }
     }
 
     public void testSetGetAutoStart_createContextwithUser_B_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
-        boolean val = false;
-        boolean val1 = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext(userName, password);
-        jmsContextQCFBindings.setAutoStart(false);
+        boolean testFailed = false;
 
-        if (jmsContextQCFBindings.getAutoStart() == false)
-            val = true;
+        jmsContext.setAutoStart(false);
+        if ( jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.setAutoStart(true);
+        jmsContext.setAutoStart(true);
+        if ( !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
-        if (jmsContextQCFBindings.getAutoStart() == true)
-            val1 = true;
+        jmsContext.close();
 
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testSetGetAutoStart_createContextwithUser_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testSetGetAutoStart_createContextwithUser_B_SecOff failed");
+        }
     }
 
     public void testSetGetAutoStart_createContextwithUser_TCP_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        String userName = "user1";
-        String password = "user1pwd";
-        boolean val = false;
-        boolean val1 = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext(userName, password);
-        jmsContextQCFTCP.setAutoStart(false);
-
-        if (jmsContextQCFTCP.getAutoStart() == false)
-            val = true;
-
-        jmsContextQCFTCP.setAutoStart(true);
-
-        if (jmsContextQCFTCP.getAutoStart() == true)
-            val1 = true;
-
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testSetGetAutoStart_createContextwithUser_TCP_SecOff failed");
-
-    }
-
-    public void testautoStart_TCP_SecOff(HttpServletRequest request,
-                                         HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        if (!(jmsContextQCFTCP.getAutoStart() == true))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testautoStart_TCP_SecOff failed");
-
-    }
-
-    public void testGetSessionMode_B_SecOff(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        if (!(jmsContextQCFBindings.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetSessionMode_B_SecOff failed");
-
-    }
-
-    public void testGetSessionMode_TCP_SecOff(HttpServletRequest request,
-                                              HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        if (!(jmsContextQCFTCP.getSessionMode() == JMSContext.AUTO_ACKNOWLEDGE))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetSessionMode_TCP_SecOff failed");
-
-    }
-
-    public void testClose_B_SecOff(HttpServletRequest request,
-                                   HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        jmsContextQCFBindings.close();
-
-        if ((exceptionFlag))
-            throw new WrongException("testClose_B_SecOff failed.");
-
-    }
-
-    public void testClose_TCP_SecOff(HttpServletRequest request,
-                                     HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        jmsContextQCFTCP.close();
-
-        if ((exceptionFlag))
-            throw new WrongException("testClose_TCP_SecOff failed.");
-
-    }
-
-    public void testcreateContextfromJMSContext_B_SecOff(HttpServletRequest request,
-                                                         HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        int smode = JMSContext.AUTO_ACKNOWLEDGE;
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        try {
-            jmsContextQCFBindings.createContext(smode);
-
-        } catch (JMSRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
-
-        }
-
-        if (exceptionFlag == false)
-            throw new WrongException("testcreateContextfromJMSContext_B_SecOff failed:Expected exception was not thrown.");
-
-    }
-
-    public void testcreateContextfromJMSContext_TCP_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-        int smode = JMSContext.AUTO_ACKNOWLEDGE;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();;
-        try {
-            jmsContextQCFTCP.createContext(smode);
-
-        } catch (JMSRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
-
-        }
-
-        if (exceptionFlag == false)
-            throw new WrongException("testcreateContextfromJMSContext_TCP_SecOff failed:Expected exception was not thrown.");
-
-    }
-
-    public void testsetClientID_B_SecOff(HttpServletRequest request,
-                                         HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-        try {
-            jmsContextTCFBindings.setClientID("TestID");
-
-        } catch (IllegalStateRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
-        }
-
-        jmsContextTCFBindings.close();
-        if (exceptionFlag == false)
-            throw new WrongException("testsetClientID_B_SecOff failed:Expected exception was not thrown.");
-
-    }
-
-    public void testsetClientID_TCP_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-        try {
-            jmsContextTCFTCP.setClientID("TestID");
-
-        } catch (IllegalStateRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
-        }
-        jmsContextTCFTCP.close();
-        if (exceptionFlag == false)
-            throw new WrongException("testsetClientID_TCP_SecOff failed:Expected exception was not thrown.");
-
-    }
-
-    public void testsetClientID_createContextUser_B_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = true;
         String userName = "user1";
         String password = "user1pwd";
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext(userName, password);
-        try {
-            jmsContextTCFBindings.setClientID("TestID");
+        JMSContext jmsContext = jmsQCFTCP.createContext(userName, password);
 
-        } catch (IllegalStateRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+        boolean testFailed = false;
+
+        jmsContext.setAutoStart(false);
+        if ( jmsContext.getAutoStart() ) {
+            testFailed = true;
         }
 
-        jmsContextTCFBindings.close();
-        if (exceptionFlag == false)
-            throw new WrongException("testsetClientID_createContextUser_B_SecOff failed:Expected exception was not thrown.");
+        jmsContext.setAutoStart(true);
+        if ( !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testSetGetAutoStart_createContextwithUser_TCP_SecOff failed");
+        }
+    }
+
+    public void testautoStart_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
+        boolean testFailed = false;
+        if ( !jmsContext.getAutoStart() ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testautoStart_TCP_SecOff failed");
+        }
+    }
+
+    public void testGetSessionMode_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        boolean testFailed = false;
+        if ( jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetSessionMode_B_SecOff failed");
+        }
+    }
+
+    public void testGetSessionMode_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
+        boolean testFailed = false;
+
+        if ( jmsContext.getSessionMode() != JMSContext.AUTO_ACKNOWLEDGE ) {
+            testFailed = true;
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetSessionMode_TCP_SecOff failed");
+        }
+    }
+
+    public void testClose_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        jmsContext.close();
+    }
+
+    public void testClose_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        jmsContext.close();
+    }
+
+    public void testcreateContextfromJMSContext_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        boolean testFailed = false;
+        try {
+            int smode = JMSContext.AUTO_ACKNOWLEDGE;
+            jmsContext.createContext(smode);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex3 ) {
+            // expected
+        }
+
+        if ( testFailed ) {
+            throw new Exception("testcreateContextfromJMSContext_B_SecOff failed: Expected exception was not thrown.");
+        }
+    }
+
+    public void testcreateContextfromJMSContext_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();;
+
+        boolean testFailed = false;
+        try {
+            int smode = JMSContext.AUTO_ACKNOWLEDGE;
+            jmsContext.createContext(smode);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex3 ) {
+            // expected
+        }
+
+        if ( testFailed ) {
+            throw new Exception("testcreateContextfromJMSContext_TCP_SecOff failed: Expected exception was not thrown.");
+        }
+    }
+
+    public void testsetClientID_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsTCFBindings.createContext();
+
+        boolean testFailed = false;
+        try {
+            jmsContext.setClientID("TestID");
+            testFailed = true;
+        } catch ( IllegalStateRuntimeException ex ) {
+            // expected
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testsetClientID_B_SecOff failed: Expected exception was not thrown.");
+        }
+    }
+
+    public void testsetClientID_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsTCFTCP.createContext();
+
+        boolean testFailed = false;
+        try {
+            jmsContext.setClientID("TestID");
+            testFailed = true;
+        } catch ( IllegalStateRuntimeException ex ) {
+            // expected
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testsetClientID_TCP_SecOff failed: Expected exception was not thrown.");
+        }
+    }
+
+    public void testsetClientID_createContextUser_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String userName = "user1";
+        String password = "user1pwd";
+        JMSContext jmsContext = jmsTCFBindings.createContext(userName, password);
+
+        boolean testFailed = false;
+        try {
+            jmsContext.setClientID("TestID");
+            testFailed = true;
+        } catch ( IllegalStateRuntimeException ex ) {
+            // expected
+        }
+
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testsetClientID_createContextUser_B_SecOff failed: Expected exception was not thrown.");
+        }
     }
 
     public void testsetClientID_createContextUser_TCP_SecOff(
-                                                             HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = true;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
+        JMSContext jmsContext = jmsTCFTCP.createContext(userName, password);
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext(userName, password);
+        boolean testFailed = false;
         try {
-            jmsContextTCFTCP.setClientID("TestID");
-
-        } catch (IllegalStateRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            jmsContext.setClientID("TestID");
+            testFailed = true;
+        } catch ( IllegalStateRuntimeException ex ) {
+            // expected
         }
 
-        jmsContextTCFTCP.close();
-        if (exceptionFlag == false)
-            throw new WrongException("testsetClientID_createContextUser_TCP_SecOff failed:Expected exception was not thrown.");
+        jmsContext.close();
 
+        if ( testFailed  ) {
+            throw new Exception("testsetClientID_createContextUser_TCP_SecOff failed: Expected exception was not thrown.");
+        }
     }
 
-    public void testGetClientID_B_SecOff(HttpServletRequest request,
-                                         HttpServletResponse response) throws Throwable {
+    public void testGetClientID_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        String cid = null;
-        String clid = "clientID";
+        String expectedId = "clientID";
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-        cid = jmsContextTCFBindings.getClientID();
+        JMSContext jmsContext = jmsTCFBindings.createContext();
+        String actualId = jmsContext.getClientID();
 
-        if (!(cid.equals(clid)))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( !actualId.equals(expectedId) ) {
+            testFailed = true;
+        }
 
-        jmsContextTCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetClientID_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testGetClientID_B_SecOff failed");
+        }
     }
 
-    public void testGetClientID_TCP_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
+    public void testGetClientID_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        String cid = null;
-        String clid = "clientID";
+        String expectedId = "clientID";
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-        cid = jmsContextTCFTCP.getClientID();
+        JMSContext jmsContext = jmsTCFTCP.createContext();
+        String actualId = jmsContext.getClientID();
 
-        if (!(cid.equals(clid)))
-            exceptionFlag = true;
-        jmsContextTCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetClientID_TCP_SecOff failed");
+        boolean testFailed = false;
+        if ( !actualId.equals(expectedId) ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetClientID_TCP_SecOff failed");
+        }
     }
 
-    public void testGetClientID_createContextUser_B_SecOff(HttpServletRequest request,
+    public void testGetClientID_createContextUser_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-                                                           HttpServletResponse response) throws Throwable {
+        
+        String expectedId = "clientID";
 
-        boolean exceptionFlag = false;
-        String cid = null;
-        String clid = "clientID";
         String userName = "user1";
         String password = "user1pwd";
+        JMSContext jmsContext = jmsTCFBindings.createContext(userName, password);
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext(userName, password);
+        String actualId = jmsContext.getClientID();
 
-        cid = jmsContextTCFBindings.getClientID();
+        boolean testFailed = false;
+        if ( !actualId.equals(expectedId) ) {
+            testFailed = true;
+        }
 
-        if (!(cid.equals(clid)))
-            exceptionFlag = true;
-        jmsContextTCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetClientID_createContextUser_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testGetClientID_createContextUser_B_SecOff failed");
+        }
     }
 
     public void testGetClientID_createContextUser_TCP_SecOff(
-                                                             HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        String cid = null;
-        String clid = "clientID";
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+        String expectedId = "clientID";
+
         String userName = "user1";
         String password = "user1pwd";
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext(userName, password);
+        JMSContext jmsContext = jmsTCFTCP.createContext(userName, password);
 
-        cid = jmsContextTCFTCP.getClientID();
+        String actualId = jmsContext.getClientID();
 
-        if (!(cid.equals(clid)))
-            exceptionFlag = true;
-        jmsContextTCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetClientID_createContextUser_TCP_SecOff failed");
+        boolean testFailed = false;
+        if ( !actualId.equals(expectedId) ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetClientID_createContextUser_TCP_SecOff failed");
+        }
     }
 
-    public void testConnStartAuto_B_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testConnStartAuto_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-        JMSConsumer jmsConsumerTCFBindings = jmsContextTCFBindings.createConsumer(topic);
-        JMSProducer jmsProducerTCFBindings = jmsContextTCFBindings.createProducer();
-        TextMessage msg = jmsContextTCFBindings.createTextMessage("Hello");
+        boolean testFailed = false;
 
-        jmsProducerTCFBindings.send(topic, msg);
+        JMSContext jmsContext = jmsTCFBindings.createContext();
 
-        TextMessage m1 = (TextMessage) jmsConsumerTCFBindings.receive(30000);
-        if (!(m1.getText().equals("Hello")))
-            exceptionFlag = true;
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        jmsConsumerTCFBindings.close();
-        jmsContextTCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_B_SecOff failed");
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
+        jmsProducer.send(topic, sendmsg);
 
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
+
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
+        }
+
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_B_SecOff failed");
+        }
     }
 
-    public void testConnStartAuto_TCP_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testConnStartAuto_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-        JMSConsumer jmsConsumerTCFTCP = jmsContextTCFTCP.createConsumer(topic);
-        JMSProducer jmsProducerTCFTCP = jmsContextTCFTCP.createProducer();
-        TextMessage msg = jmsContextTCFTCP.createTextMessage("Hello");
+        JMSContext jmsContext = jmsTCFTCP.createContext();
 
-        jmsProducerTCFTCP.send(topic, msg);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        TextMessage m1 = (TextMessage) jmsConsumerTCFTCP.receive(30000);
-        if (!(m1.getText().equals("Hello")))
-            exceptionFlag = true;
-        jmsContextTCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_TCP_SecOff failed");
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
+        jmsProducer.send(topic, sendmsg);
 
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
+
+        boolean testFailed = false;
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
+        }
+
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_TCP_SecOff failed");
+        }
     }
 
-    public void testConnStartAuto_createContextUser_B_SecOff(HttpServletRequest request,
-                                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testConnStartAuto_createContextUser_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext(userName, password);
-        JMSConsumer c1 = jmsContextTCFBindings.createConsumer(topic);
+        JMSContext jmsContext = jmsTCFBindings.createContext(userName, password);
 
-        TextMessage msg = jmsContextTCFBindings.createTextMessage("Hello");
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        jmsContextTCFBindings.createProducer().send(topic, msg);
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
 
-        TextMessage m1 = (TextMessage) c1.receive(30000);
-        if (!(m1.getText().equals("Hello")))
-            exceptionFlag = true;
+        jmsContext.createProducer().send(topic, sendmsg);
 
-        jmsContextTCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_createContextUser_B_SecOff failed");
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
 
+        boolean testFailed = false;
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
+        }
+
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_createContextUser_B_SecOff failed");
+        }
     }
 
     public void testConnStartAuto_createContextUser_TCP_SecOff(
-                                                               HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String userName = "user1";
         String password = "user1pwd";
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext(userName, password);
-        JMSConsumer c1 = jmsContextTCFTCP.createConsumer(topic);
+        JMSContext jmsContext = jmsTCFTCP.createContext(userName, password);
 
-        TextMessage msg = jmsContextTCFTCP.createTextMessage("Hello");
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        jmsContextTCFTCP.createProducer().send(topic, msg);
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
+        jmsContext.createProducer().send(topic, sendmsg);
 
-        TextMessage m1 = (TextMessage) c1.receive(30000);
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
 
-        if (m1 == null)
-            exceptionFlag = true;
-        else {
-            if ((!(m1.getText().equals("Hello"))))
-                exceptionFlag = true;
+        boolean testFailed = false;
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
         }
 
-        jmsContextTCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_createContextUser_TCP_SecOff failed, message received is :" + m1);
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_createContextUser_TCP_SecOff failed");
+        }
     }
 
     public void testConnStartAuto_createContextUserSessionMode_B_SecOff(
-                                                                        HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String userName = "user1";
         String password = "user1pwd";
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsTCFBindings.createContext(userName, password, smode);
 
-        JMSContext jmsContextT = TCFBindings.createContext(userName, password,
-                                                           smode);
-        JMSConsumer jmsConsumer = jmsContextT.createConsumer(topic);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        TextMessage msg = jmsContextT.createTextMessage("Hello");
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
+        jmsContext.createProducer().send(topic, sendmsg);
 
-        jmsContextT.createProducer().send(topic, msg);
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
 
-        TextMessage message = (TextMessage) jmsConsumer.receive(30000);
-        if (!(message.getText().equals("Hello")))
-            exceptionFlag = true;
-        jmsContextT.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_createContextUserSessionMode_B_SecOff failed");
+        boolean testFailed = false;
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
+        }
 
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_createContextUserSessionMode_B_SecOff failed");
+        }
     }
 
     public void testConnStartAuto_createContextUserSessionMode_TCP_SecOff(
-                                                                          HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        boolean exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String userName = "user1";
         String password = "user1pwd";
         int smode = JMSContext.AUTO_ACKNOWLEDGE;
+        JMSContext jmsContext = jmsTCFTCP.createContext(userName, password, smode);
 
-        JMSContext jmsContextT = TCFTCP.createContext(userName, password,
-                                                      smode);
-        JMSConsumer jmsConsumer = jmsContextT.createConsumer(topic);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-        TextMessage msg = jmsContextT.createTextMessage("Hello");
+        TextMessage sendmsg = jmsContext.createTextMessage("Hello");
+        jmsContext.createProducer().send(topic, sendmsg);
 
-        jmsContextT.createProducer().send(topic, msg);
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
 
-        TextMessage message = (TextMessage) jmsConsumer.receive(30000);
-        if (!(message.getText().equals("Hello")))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( (recmsg == null) ||
+             (recmsg.getText() == null) ||
+             !recmsg.getText().equals("Hello") ) {
+            testFailed = true;
+        }
 
-        jmsContextT.close();
-        if (exceptionFlag)
-            throw new WrongException("testConnStartAuto_createContextUserSessionMode_TCP_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testConnStartAuto_createContextUserSessionMode_TCP_SecOff failed");
+        }
     }
 
     // 118061_1 Verify creation of message from JMSContext. createMessage()
 
-    public void testCreateMessage_B_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
+    public void testCreateMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        Message msg = jmsContext.createMessage();
+        jmsContext.createProducer().send(queue, msg);
 
-        Message msg = jmsContextQCFBindings.createMessage();
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
-
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateMessage_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateMessage_TCP_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
+    public void testCreateMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
+        Message msg = jmsContext.createMessage();
+        jmsContext.createProducer().send(queue, msg);
 
-        emptyQueue(QCFTCP, queue);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        Message msg = jmsContextQCFTCP.createMessage();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
-
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
-
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateMessage_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateMessage_TCP_SecOff failed");
+        }
     }
 
-    public void testCreateObjectMessage_B_SecOff(HttpServletRequest request,
-                                                 HttpServletResponse response) throws Throwable {
+    public void testCreateObjectMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        ObjectMessage msg = jmsContextQCFBindings.createObjectMessage();
+        ObjectMessage msg = jmsContext.createObjectMessage();
         msg.setBooleanProperty("BooleanValue", true);
         msg.setObject(new StockObject("TestStock", 1234.5));
         msg.getObject();
         msg.getBody(java.io.Serializable.class);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
+        jmsContext.createProducer().send(queue, msg);
 
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateObjectMessage_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateObjectMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateObjectMessage_TCP_SecOff(HttpServletRequest request,
-                                                   HttpServletResponse response) throws Throwable {
+    public void testCreateObjectMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        ObjectMessage msg = jmsContextQCFTCP.createObjectMessage();
+        ObjectMessage msg = jmsContext.createObjectMessage();
         msg.setBooleanProperty("BooleanValue", true);
         msg.setObject(new StockObject("TestStock", 1234.5));
         msg.getObject();
         msg.getBody(java.io.Serializable.class);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
+        jmsContext.createProducer().send(queue, msg);
 
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        QueueBrowser queueBrowserjmsQCFTCP = jmsContext.createBrowser(queue);
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        int numMsgs = getMessageCount(queueBrowserjmsQCFTCP);
 
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateObjectMessage_TCP_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateObjectMessage_TCP_SecOff failed");
+        }
     }
 
-    public void testCreateObjectMessageSer_B_SecOff(HttpServletRequest request,
-                                                    HttpServletResponse response) throws Throwable {
+    public void testCreateObjectMessageSer_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        ObjectMessage msg = jmsContextQCFBindings.createObjectMessage(new StockObject("TEST STOCK", 134.567));
+        ObjectMessage msg = jmsContext.createObjectMessage(new StockObject("TEST STOCK", 134.567));
         msg.setBooleanProperty("BooleanValue", true);
-
         msg.getObject();
         msg.getBody(StockObject.class);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateObjectMessageSer_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateObjectMessageSer_B_SecOff failed");
+        }
     }
 
-    public void testCreateObjectMessageSer_TCP_SecOff(HttpServletRequest request,
-                                                      HttpServletResponse response) throws Throwable {
+    public void testCreateObjectMessageSer_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        ObjectMessage msg = jmsContextQCFTCP.createObjectMessage(new StockObject("TEST STOCK", 134.567));
+        ObjectMessage msg = jmsContext.createObjectMessage(new StockObject("TEST STOCK", 134.567));
         msg.setBooleanProperty("BooleanValue", true);
-
         msg.getObject();
         msg.getBody(StockObject.class);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateObjectMessageSer_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateObjectMessageSer_TCP_SecOff failed");
+        }
     }
 
     // 118061_4 Verify creation of Stream Message from
     // JMSContext.createStreamMessage(), Perform operation for setdata and
     // reading data.
 
-    public void testCreateStreamMessage_B_SecOff(HttpServletRequest request,
-                                                 HttpServletResponse response) throws Throwable {
+    public void testCreateStreamMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        StreamMessage sendmsg = jmsContext.createStreamMessage();
+        sendmsg.setBooleanProperty("BooleanValue", true);
+        sendmsg.writeBoolean(true);
+        sendmsg.writeString("Test case to create a Stream Message");
+        sendmsg.reset();
+        jmsContext.createProducer().send(queue, sendmsg);
 
-        emptyQueue(QCFBindings, queue);
-        StreamMessage msg = jmsContextQCFBindings.createStreamMessage();
+        QueueBrowser queueBrowserjmsQCFBindings = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowserjmsQCFBindings);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        StreamMessage recmsg = (StreamMessage) jmsConsumer.receive(30000);
 
-        msg.setBooleanProperty("BooleanValue", true);
+        recmsg.readString();
+        recmsg.readBoolean();
 
-        msg.writeBoolean(true);
-        msg.writeString("Test case to create a Stream Message");
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        msg.reset();
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
-
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
-
-        StreamMessage msg1 = (StreamMessage) jmsContextQCFBindings.createConsumer(queue)
-                        .receive(30000);
-
-        System.out.println(msg1.readString());
-        System.out.println(msg1.readBoolean());
-
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateStreamMessage_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateStreamMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateStreamMessage_TCP_SecOff(HttpServletRequest request,
-                                                   HttpServletResponse response) throws Throwable {
+    public void testCreateStreamMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-
-        StreamMessage msg = jmsContextQCFTCP.createStreamMessage();
-
+        StreamMessage msg = jmsContext.createStreamMessage();
         msg.setBooleanProperty("BooleanValue", true);
-
         msg.writeBoolean(true);
         msg.writeString("Test case to create a Stream Message");
-
         msg.reset();
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
+        QueueBrowser queueBrowserjmsQCFTCP = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowserjmsQCFTCP);
 
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        StreamMessage recmsg = (StreamMessage) jmsConsumer.receive(30000);
 
-        StreamMessage msg1 = (StreamMessage) jmsContextQCFTCP.createConsumer(queue)
-                        .receive(30000);
+        recmsg.readString();
+        recmsg.readBoolean();
 
-        System.out.println(msg1.readString());
-        System.out.println(msg1.readBoolean());
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateStreamMessage_TCP_SecOff failed");
-
+        jmsContext.close();
+        if ( testFailed ) {
+            throw new Exception("testCreateStreamMessage_TCP_SecOff failed");
+        }
     }
 
     // 118061_5 Verify creation of Text Message from
     // JMSContext.createTextMessage().Perform setText and getTest operations.
 
-    public void testCreateTextMessage_B_SecOff(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
+    public void testCreateTextMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        String compare = "Hello this is a test case for TextMessage ";
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-
-        emptyQueue(QCFBindings, queue);
-        TextMessage msg = jmsContextQCFBindings.createTextMessage();
-
+        String msgText = "Hello this is a test case for TextMessage ";
+        TextMessage msg = jmsContext.createTextMessage();
         msg.setBooleanProperty("BooleanValue", true);
-        msg.setText(compare);
-        if (msg.getText() == compare)
-            flag = true;
+        msg.setText(msgText);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (numMsgs == 1)
-            val = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateTextMessage_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateTextMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateTextMessage_TCP_SecOff(HttpServletRequest request,
-                                                 HttpServletResponse response) throws Throwable {
+    public void testCreateTextMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        String compare = "Hello this is a test case for TextMessage ";
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        TextMessage msg = jmsContextQCFTCP.createTextMessage();
+        String msgText = "Hello this is a test case for TextMessage ";
 
+        TextMessage msg = jmsContext.createTextMessage();
         msg.setBooleanProperty("BooleanValue", true);
-        msg.setText(compare);
-        if (msg.getText() == compare)
-            flag = true;
+        msg.setText(msgText);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (numMsgs == 1)
-            val = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateTextMessage_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateTextMessage_TCP_SecOff failed");
+        }
     }
 
     // 118061_6 Verify creation of Text Message from
     // JMSContext.createTextMessage(String text).
 
-    public void testCreateTextMessageStr_B_SecOff(HttpServletRequest request,
-                                                  HttpServletResponse response) throws Throwable {
+    public void testCreateTextMessageStr_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean comp = false;
-        String compare = "Hello";
-        String str = "Hello this is a test case for TextMessage";
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        String msgText0 = "Hello this is a test case for TextMessage";
+        String msgText1 = "Hello";
 
-        TextMessage msg = jmsContextQCFBindings.createTextMessage(str);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
+        TextMessage msg = jmsContext.createTextMessage(msgText0);
         msg.setBooleanProperty("BooleanValue", true);
+        msg.setText(msgText1);
 
-        msg.setText(compare);
-        if (msg.getText() == compare)
-            flag = true;
+        boolean testFailed = false;
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        if ( msg.getText() != msgText1 ) {
+            testFailed = true;
+        }
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        jmsContext.createProducer().send(queue, msg);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (numMsgs == 1)
-            comp = true;
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (!(flag == true && comp == true))
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateTextMessageStr_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateTextMessageStr_B_SecOff failed");
+        }
     }
 
-    public void testCreateTextMessageStr_TCP_SecOff(HttpServletRequest request,
-                                                    HttpServletResponse response) throws Throwable {
+    public void testCreateTextMessageStr_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean comp = false;
-        String compare = "Hello";
-        String str = "Hello this is a test case for TextMessage";
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        TextMessage msg = jmsContextQCFTCP.createTextMessage(str);
+        String msgText0 = "Hello this is a test case for TextMessage";
+        String msgText1 = "Hello";
 
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
+
+        TextMessage msg = jmsContext.createTextMessage(msgText0);
         msg.setBooleanProperty("BooleanValue", true);
+        msg.setText(msgText1);
 
-        msg.setText(compare);
-        if (msg.getText() == compare)
-            flag = true;
+        boolean testFailed = false;
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        if ( msg.getText() != msgText1 ) {
+            testFailed = true;
+        }
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        jmsContext.createProducer().send(queue, msg);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (numMsgs == 1)
-            comp = true;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (!(flag == true && comp == true))
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateTextMessageStr_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateTextMessageStr_TCP_SecOff failed");
+        }
     }
 
     // 118061_7 Verify creation of Map Message from
     // JMSContext.createMapMessage() .Perform set and get operation.
-    public void testCreateMapMessage_B_SecOff(HttpServletRequest request,
-                                              HttpServletResponse response) throws Throwable {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean comp = false;
+    public void testCreateMapMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String valname = "Valuepair";
-        long val1 = 22222222;
+        String name = "Valuepair";
+        long value = 22222222;
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        MapMessage msg = jmsContextQCFBindings.createMapMessage();
-        msg.setLong(valname, val1);
-        if (msg.getLong(valname) == val1)
-            flag = true;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
+        MapMessage msg = jmsContext.createMapMessage();
+        msg.setLong(name, value);
 
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
+        boolean testFailed = false;
+        if ( msg.getLong(name) != value ) {
+            testFailed = true;
+        }
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        if (numMsgs == 1)
-            comp = true;
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (!(flag == true && comp == true))
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateMapMessage_B_SecOff failed");
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testCreateMapMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateMapMessage_TCP_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
+    public void testCreateMapMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean comp = false;
+        String name = "Valuepair";
+        long value = 22222222;
 
-        String valname = "Valuepair";
-        long val1 = 22222222;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        MapMessage msg = jmsContextQCFTCP.createMapMessage();
-        msg.setLong(valname, val1);
-        if (msg.getLong(valname) == val1)
-            flag = true;
+        MapMessage msg = jmsContext.createMapMessage();
+        msg.setLong(name, value);
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
+        boolean testFailed = false;
+        if ( msg.getLong(name) != value ) {
+            testFailed = true;
+        }
 
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
+        jmsContext.createProducer().send(queue, msg);
 
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        jmsConsumer.receive(30000);
 
-        if (numMsgs == 1)
-            comp = true;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        if (!(flag == true && comp == true))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateMapMessage_TCP_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateMapMessage_TCP_SecOff failed");
+        }
     }
 
     // 118061_8 Verify creation of ByteMessage from
     // JMSContext.createBytesMessage(). Peform writeBytes, readBytes and getBody
     // operation.
 
-    public void testCreateBytesMessage_B_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
+    public void testCreateBytesMessage_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
         byte[] content = "test".getBytes();
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        emptyQueue(QCFBindings, queue);
+        BytesMessage sendmsg = jmsContext.createBytesMessage();
+        sendmsg.writeBytes(content);
+        sendmsg.reset();
+        sendmsg.readBytes(content);
+        sendmsg.getBodyLength();
 
-        BytesMessage msg = jmsContextQCFBindings.createBytesMessage();
-        msg.writeBytes(content);
+        jmsContext.createProducer().send(queue, sendmsg);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        msg.reset();
-        System.out.print(msg.readBytes(content));
-        System.out.print(msg.getBodyLength());
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        Message recmsg = jmsConsumer.receive(30000);
 
-        jmsContextQCFBindings.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue);
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        Message recv = jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateBytesMessage_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testCreateBytesMessage_B_SecOff failed");
+        }
     }
 
-    public void testCreateBytesMessage_TCP_SecOff(HttpServletRequest request,
-                                                  HttpServletResponse response) throws Throwable {
+    public void testCreateBytesMessage_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
         byte[] content = "test".getBytes();
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        BytesMessage msg = jmsContextQCFTCP.createBytesMessage();
-        msg.writeBytes(content);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        msg.reset();
-        System.out.print(msg.readBytes(content));
-        System.out.print(msg.getBodyLength());
+        BytesMessage sendmsg = jmsContext.createBytesMessage();
+        sendmsg.writeBytes(content);
+        sendmsg.reset();
+        sendmsg.readBytes(content);
+        sendmsg.getBodyLength();
 
-        jmsContextQCFTCP.createProducer().send(queue, msg);
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue);
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
+        jmsContext.createProducer().send(queue, sendmsg);
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        Message recv = jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        Message recmsg = jmsConsumer.receive(30000);
 
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testCreateBytesMessage_B_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateBytesMessage_B_SecOff failed");
+        }
     }
 
     // 118061_9 Test with JMSDestination - setJMSDestination and
     // getJMSDestination
 
-    public void testJMSDestination_B_SecOff(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
+    public void testJMSDestination_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        Message msg0 = jmsContext.createMessage(); // TODO: What is this message for?
 
-        Message tmsg = jmsContextQCFBindings.createMessage();
+        Message msg1 = jmsContext.createMessage();
+        msg1.setJMSDestination(queue1);
 
-        tmsg.setJMSDestination(queue1);
+        boolean testFailed = false;
+        if ( !msg1.getJMSDestination().toString().equalsIgnoreCase("queue://QUEUE1") ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.createProducer().send(queue, tmsg);
+        jmsContext.createProducer().send(queue, msg1);
 
-        Message message = jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        Message recmsg = jmsConsumer.receive(30000);
 
-        Destination queueAfterReceive = message.getJMSDestination();
+        Destination jmsDestination = recmsg.getJMSDestination();
 
-        String qrecv = queueAfterReceive.toString();
+        if ( !jmsDestination.toString().equalsIgnoreCase("queue://newQueue") ) {
+            testFailed = true;
+        }
 
-        if (!(qrecv.equalsIgnoreCase("queue://QUEUE1")))
+        jmsConsumer.close();
+        jmsContext.close();
 
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testJMSDestination_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDestination_B_SecOff failed:" +
+                                " destination [ " + msg1.getJMSDestination() + ", " + jmsDestination + " ]");
+        }
     }
 
     // 118061_9 Test with JMSDestination - setJMSDestination and
     // getJMSDestination
 
-    public void testJMSDestination_TCP_SecOff(HttpServletRequest request,
-                                              HttpServletResponse response) throws Throwable {
+    public void testJMSDestination_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        Message tmsg = jmsContextQCFTCP.createMessage();
+        Message msg0 = jmsContext.createMessage(); // TODO: What is this message for?
 
-        tmsg.setJMSDestination(queue1);
+        Message msg1 = jmsContext.createMessage();
+        msg1.setJMSDestination(queue1);
 
-        jmsContextQCFTCP.createProducer().send(queue, tmsg);
+        boolean testFailed = false;
+        if ( !msg1.getJMSDestination().toString().equalsIgnoreCase("queue://QUEUE1") ) {
+            testFailed = true;
+        }
 
-        Message message = jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        jmsContext.createProducer().send(queue, msg1);
 
-        Destination queueAfterReceive = message.getJMSDestination();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        Message message = jmsConsumer.receive(30000);
 
-        String qrecv = queueAfterReceive.toString();
+        Destination jmsDestination = message.getJMSDestination();
 
-        if (!(qrecv.equalsIgnoreCase("queue://QUEUE1")))
+        if ( !jmsDestination.toString().equalsIgnoreCase("queue://newQueue") ) {
+            testFailed = true;
+        }
 
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFTCP.createConsumer(queue).close();
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testJMSDestination_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDestination_TCP_SecOff failed:" +
+                                " destination [ " + msg1.getJMSDestination() + ", " + jmsDestination + " ]");
+        }
     }
 
-    public void testJMSDeliveryMode_B_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
+    public void testJMSDeliveryMode_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        TextMessage msg = jmsContext.createTextMessage("Hello");
+        msg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 
-        emptyQueue(QCFBindings, queue);
+        jmsContext.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(queue, msg);
 
-        TextMessage tmsg = jmsContextQCFBindings.createTextMessage("Hello");
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        int dmode = jmsConsumer.receive(30000).getJMSDeliveryMode();
 
-        tmsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+        boolean testFailed = false;
+        if ( dmode != DeliveryMode.NON_PERSISTENT ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(queue, tmsg);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        int dmodeAfter = jmsContextQCFBindings.createConsumer(queue).receive(30000).getJMSDeliveryMode();
-
-        if (!(dmodeAfter == DeliveryMode.NON_PERSISTENT))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.createConsumer(queue).close();
-        jmsContextQCFBindings.close();
-
-        if ((exceptionFlag))
-            throw new WrongException("testJMSDeliveryMode_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDeliveryMode_B_SecOff failed");
+        }
     }
 
-    public void testJMSDeliveryMode_TCP_SecOff(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable {
+    public void testJMSDeliveryMode_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        TextMessage msg = jmsContext.createTextMessage("Hello");
+        msg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+        jmsContext.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(queue, msg);
 
-        TextMessage tmsg = jmsContextQCFTCP.createTextMessage("Hello");
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        int dmode = jmsConsumer.receive(30000).getJMSDeliveryMode();
 
-        tmsg.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
+        boolean testFailed = false;
+        if ( dmode != DeliveryMode.NON_PERSISTENT ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.createProducer().setDeliveryMode(DeliveryMode.NON_PERSISTENT).send(queue, tmsg);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        int dmodeAfter = jmsContextQCFTCP.createConsumer(queue).receive(30000).getJMSDeliveryMode();
-        System.out.println("---dmodeAfter--" + dmodeAfter);
-
-        if (!(dmodeAfter == DeliveryMode.NON_PERSISTENT))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.createConsumer(queue).close();
-        jmsContextQCFTCP.close();
-        if ((exceptionFlag))
-            throw new WrongException("testJMSDeliveryMode_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDeliveryMode_TCP_SecOff failed");
+        }
     }
 
     // 118061_11 Verify set and get operation on Message header field
@@ -1845,310 +2012,295 @@ public class JMSContextServlet extends HttpServlet {
     // 118061_11 Test with JMSMessageID - setJMSMessageID ,getJMSMessageID and
     // setDisableMessageID
 
-    public void testJMSMessageID_B_SecOff(HttpServletRequest request,
-                                          HttpServletResponse response) throws Throwable {
+    public void testJMSMessageID_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        String msg = "Hello this is a test case for TextMessage ";
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        TextMessage tmsg = jmsContextQCFBindings.createTextMessage(msg);
+        JMSProducer jmsProducer = jmsContext.createProducer();
 
-        tmsg.setJMSMessageID("MSGID");
+        String msgText = "Hello this is a test case for TextMessage";
+        TextMessage msg0 = jmsContext.createTextMessage(msgText);
+        msg0.setJMSMessageID("MSGID");
+        jmsProducer.send(queue, msg0);
 
-        JMSProducer jmsProducerQCFBindings = jmsContextQCFBindings.createProducer();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        String msgid0 = jmsConsumer.receive(30000).getJMSMessageID();
 
-        jmsProducerQCFBindings.send(queue, tmsg);
+        boolean testFailed = false;
+        if ( !msgid0.startsWith("ID:") ) {
+            testFailed = true;
+        }
 
-        String msgid = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSMessageID();
+        jmsProducer.setDisableMessageID(true);
 
-        if (msgid != "MSGID" && msgid.startsWith("ID:"))
-            flag = true;
+        TextMessage msg1 = jmsContext.createTextMessage(msgText);
+        jmsProducer.send(queue, msg1);
 
-        TextMessage tmessage = jmsContextQCFBindings.createTextMessage(msg);
+        String msgid1 = jmsConsumer.receive(30000).getJMSMessageID();
 
-        jmsProducerQCFBindings.setDisableMessageID(true).send(queue, tmessage);
+        if ( msgid1 != null ) {
+            testFailed = true;
+        }
 
-        msgid = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSMessageID();
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (msgid == null)
-            val = true;
-
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.createConsumer(queue).close();
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testJMSMessageID_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSMessageID_B_SecOff failed");
+        }
     }
 
-    public void testJMSMessageID_TCP_SecOff(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
+    public void testJMSMessageID_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        String msg = "Hello this is a test case for TextMessage ";
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        JMSProducer jmsProducer = jmsContext.createProducer();
 
-        TextMessage tmsg = jmsContextQCFTCP.createTextMessage(msg);
+        String msgText = "Hello this is a test case for TextMessage";
+        TextMessage msg0 = jmsContext.createTextMessage(msgText);
+        msg0.setJMSMessageID("MSGID");
+        jmsProducer.send(queue, msg0);
 
-        tmsg.setJMSMessageID("MSGID");
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
 
-        JMSProducer jmsProducerQCFTCP = jmsContextQCFTCP.createProducer();
+        String msgid0 = jmsConsumer.receive(30000).getJMSMessageID();
 
-        jmsProducerQCFTCP.send(queue, tmsg);
+        boolean testFailed = false;
+        if ( !msgid0.startsWith("ID:") ) {
+            testFailed = true;
+        }
 
-        String msgid = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSMessageID();
-        System.out.println("1 ---------msgid---------" + msgid);
-        System.out.println("2 ---------msgid startswith---------" + msgid.startsWith("ID:"));
+        jmsProducer.setDisableMessageID(true);
 
-        if (msgid != "MSGID" && msgid.startsWith("ID:"))
-            flag = true;
+        TextMessage msg1 = jmsContext.createTextMessage(msgText);
+        jmsProducer.send(queue, msg1);
 
-        TextMessage tmessage = jmsContextQCFTCP.createTextMessage(msg);
+        String msgid1 = jmsConsumer.receive(30000).getJMSMessageID();
 
-        jmsProducerQCFTCP.setDisableMessageID(true).send(queue, tmessage);
+        if ( msgid1 != null ) {
+            testFailed = true;
+        }
 
-        msgid = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSMessageID();
-        System.out.println("1 ---------msgid---------" + msgid);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        if (msgid == null)
-            val = true;
-
-        System.out.println("1 ---------flag---------" + flag);
-        System.out.println("2 ---------val---------" + val);
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.createConsumer(queue).close();
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testJMSMessageID_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSMessageID_TCP_SecOff failed");
+        }
     }
 
     // 118061_12 Verify set and get operation on Message header field
     // JMSTimeStamp
 
-    public void testJMSTimestamp_B_SecOff(HttpServletRequest request,
-                                          HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        String msg = "Hello this is a test case for TextMessage ";
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+    public void testJMSTimestamp_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        TextMessage tmsg = jmsContextQCFBindings.createTextMessage(msg);
+        boolean testFailed = false;
 
-        tmsg.setJMSTimestamp(1234567);
+        String msgText = "Hello this is a test case for TextMessage ";
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
+        Message msg0 = jmsContext.createMessage();
+
+        TextMessage msg1 = jmsContext.createTextMessage(msgText);
+        msg1.setJMSTimestamp(1234567);
 
         long beforeSend = System.currentTimeMillis();
-        JMSProducer jmsProducerQCFBindings = jmsContextQCFBindings.createProducer();
-        jmsProducerQCFBindings.send(queue, tmsg);
-
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        jmsProducer.send(queue, msg1);
         long afterSend = System.currentTimeMillis();
 
-        long gts = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSTimestamp();
+        JMSConsumer jmsConsumer =jmsContext.createConsumer(queue);
+        long timestamp0 = jmsConsumer.receive(30000).getJMSTimestamp();
 
-        if ((gts >= beforeSend) && (gts <= afterSend) && (gts != 1234567))
-            flag = true;
+        if ( (timestamp0 < beforeSend) ||
+             (timestamp0 > afterSend) ||
+             (timestamp0 == 1234567) ) {
+            testFailed = true;
+        }
 
-        jmsProducerQCFBindings.setDisableMessageTimestamp(true);
-        jmsProducerQCFBindings.send(queue, tmsg);
+        jmsProducer.setDisableMessageTimestamp(true);
+        jmsProducer.send(queue, msg1);
 
-        long dts = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSTimestamp();
+        long timestamp1 = jmsConsumer.receive(30000).getJMSTimestamp();
 
-        if (dts == 0)
-            val = true;
+        if ( timestamp1 != 0 ) {
+            testFailed = true;
+        }
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-        jmsContextQCFBindings.createConsumer(queue).close();
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testJMSTimestamp_B_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSTimestamp_B_SecOff failed");
+        }
     }
 
     // 118061_12 Verify set and get operation on Message header field
     // JMSTimeStamp
 
-    public void testJMSTimestamp_TCP_SecOff(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
+    public void testJMSTimestamp_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        String msg = "Hello this is a test case for TextMessage ";
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        boolean testFailed = false;
 
-        TextMessage tmsg = jmsContextQCFTCP.createTextMessage(msg);
+        String msgText = "Hello this is a test case for TextMessage ";
 
-        tmsg.setJMSTimestamp(1234567);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
+
+        Message msg0 = jmsContext.createMessage();
+
+        TextMessage msg1 = jmsContext.createTextMessage(msgText);
+        msg1.setJMSTimestamp(1234567);
 
         long beforeSend = System.currentTimeMillis();
-        JMSProducer jmsProducerQCFTCP = jmsContextQCFTCP.createProducer();
-        jmsProducerQCFTCP.send(queue, tmsg);
-
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        jmsProducer.send(queue, msg1);
         long afterSend = System.currentTimeMillis();
 
-        long gts = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSTimestamp();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        long timestamp0 = jmsConsumer.receive(30000).getJMSTimestamp();
 
-        if ((gts >= beforeSend) && (gts <= afterSend) && (gts != 1234567))
-            flag = true;
+        if ( (timestamp0 < beforeSend) ||
+             (timestamp0 > afterSend) ||
+             (timestamp0 == 1234567) ) {
+            testFailed = true;
+        }
 
-        jmsProducerQCFTCP.setDisableMessageTimestamp(true);
-        jmsProducerQCFTCP.send(queue, tmsg);
+        jmsProducer.setDisableMessageTimestamp(true);
+        jmsProducer.send(queue, msg1);
 
-        long dts = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSTimestamp();
+        long timestamp1 = jmsConsumer.receive(30000).getJMSTimestamp();
 
-        if (dts == 0)
-            val = true;
+        if ( timestamp1 != 0 ) {
+            testFailed = true;
+        }
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFTCP.createConsumer(queue).close();
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSTimestamp_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSTimestamp_TCP_SecOff failed");
+        }
     }
 
     // 118061_13 Test with JMSCorrelationID- setJMSCorrelationID
     // ,getJMSCorrelationID
 
-    public void testJMSCorrelationID_B_SecOff(HttpServletRequest request,
-                                              HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean val = false;
-        boolean val1 = false;
-        String correl = "MyCorrelID";
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+    public void testJMSCorrelationID_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        emptyQueue(QCFBindings, queue);
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        String startCorrel = messageQCFBindings.getJMSCorrelationID();
+        Message msg = jmsContext.createMessage();
+        String defaultCorrel = msg.getJMSCorrelationID();
 
-        if (startCorrel == null) {
+        boolean testFailed = false;
 
-            messageQCFBindings.setJMSCorrelationID(correl);
-            String got = messageQCFBindings.getJMSCorrelationID();
-
-            if (correl.equals(got))
-                val = true;
+        if ( defaultCorrel != null ) {
+            testFailed = true;
         }
 
-        jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
+        String correl = "MyCorrelID";
 
-        String afterRecv = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSCorrelationID();
+        msg.setJMSCorrelationID(correl);
+        String setCorrel = msg.getJMSCorrelationID();
 
-        if (afterRecv.equals(correl))
-            val1 = true;
+        if ( !correl.equals(setCorrel) ) {
+            testFailed = true;
+        }
 
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFBindings.createConsumer(queue).close();
-        jmsContextQCFBindings.close();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        String recCorrel = jmsConsumer.receive(30000).getJMSCorrelationID();
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSCorrelationID_B_SecOff failed");
+        if ( !correl.equals(recCorrel) ) {
+            testFailed = true;
+        }
 
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testJMSCorrelationID_B_SecOff failed");
+        }
     }
 
     // 118061_13 Test with JMSCorrelationID- setJMSCorrelationID
     // ,getJMSCorrelationID
 
-    public void testJMSCorrelationID_TCP_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean val = false;
-        boolean val1 = false;
+    public void testJMSCorrelationID_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String correl = "MyCorrelID";
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
 
-        String startCorrel = messageQCFTCP.getJMSCorrelationID();
-        System.out.println("1 ------startCorrel ------" + startCorrel);
-        System.out.println("2 ------correl ------" + correl);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        if (startCorrel == null) {
+        Message msg = jmsContext.createMessage();
+        String defaultCorrel = msg.getJMSCorrelationID();
 
-            messageQCFTCP.setJMSCorrelationID(correl);
-            String got = messageQCFTCP.getJMSCorrelationID();
-            System.out.println("3 ------got ------" + got);
-            if (correl.equals(got))
-                val = true;
+        boolean testFailed = false;
+
+        if ( defaultCorrel != null) {
+            testFailed = true;
         }
-        System.out.println("4 ------messageQCFTCP ------" + messageQCFTCP);
 
-        jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
+        msg.setJMSCorrelationID(correl);
+        String setCorrel = msg.getJMSCorrelationID();
 
-        String afterRecv = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSCorrelationID();
-        System.out.println("4 ------afterRecv ------" + afterRecv);
+        if ( !correl.equals(setCorrel) ) {
+            testFailed = true;
+        }
 
-        if (afterRecv.equals(correl))
-            val1 = true;
+        jmsContext.createProducer().send(queue, msg);
 
-        if (!(val == true && val1 == true))
-            exceptionFlag = true;
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        String recCorrel = jmsConsumer.receive(30000).getJMSCorrelationID();
 
-        jmsContextQCFTCP.createConsumer(queue).close();
-        jmsContextQCFTCP.close();
+        if ( !correl.equals(recCorrel) ) {
+            testFailed = true;
+        }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSCorrelationID_B_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSCorrelationID_B_SecOff failed");
+        }
     }
 
     // 118061_14 Test with JMSCorrelationID- setJMSCorrelationIDAsbytes
     // ,getJMSCorrelationIDAsBytes
-    public void testJMSCorrelationIDAsBytes_B_SecOff(HttpServletRequest request,
-                                                     HttpServletResponse response) throws Throwable {
 
-        boolean exceptionFlag = false;
+    public void testJMSCorrelationIDAsBytes_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        boolean testFailed = false;
 
-        emptyQueue(QCFBindings, queue);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        Message msg = jmsContext.createMessage();
 
-        byte[] defBytes = messageQCFBindings.getJMSCorrelationIDAsBytes();
+        byte[] defBytes = msg.getJMSCorrelationIDAsBytes();
 
-        String startCorrel = messageQCFBindings.getJMSCorrelationID();
+        String startCorrel = msg.getJMSCorrelationID();
 
         // set and retrieve a byte[]
         byte[] testA = { 1, 2, 3, 4 };
-        messageQCFBindings.setJMSCorrelationIDAsBytes(testA);
+        msg.setJMSCorrelationIDAsBytes(testA);
 
-        byte[] resultA = messageQCFBindings.getJMSCorrelationIDAsBytes();
+        byte[] resultA = msg.getJMSCorrelationIDAsBytes();
 
         boolean testComp = false;
 
@@ -2164,14 +2316,14 @@ public class JMSContextServlet extends HttpServlet {
         // check that multiple set sequences always return the last set
         // value
         // a) set bytes then string
-        messageQCFBindings.setJMSCorrelationIDAsBytes(testA);
-        messageQCFBindings.setJMSCorrelationID(correl);
-        byte[] resultE = messageQCFBindings.getJMSCorrelationIDAsBytes();
+        msg.setJMSCorrelationIDAsBytes(testA);
+        msg.setJMSCorrelationID(correl);
+        byte[] resultE = msg.getJMSCorrelationIDAsBytes();
 
         // b) set string then bytes
-        messageQCFBindings.setJMSCorrelationID(correl);
-        messageQCFBindings.setJMSCorrelationIDAsBytes(testA);
-        byte[] resultF = messageQCFBindings.getJMSCorrelationIDAsBytes();
+        msg.setJMSCorrelationID(correl);
+        msg.setJMSCorrelationIDAsBytes(testA);
+        byte[] resultF = msg.getJMSCorrelationIDAsBytes();
 
         boolean testComp1 = false;
         for (int j = 0; j < testA.length; j++) {
@@ -2181,309 +2333,294 @@ public class JMSContextServlet extends HttpServlet {
                 testComp = true;
         }
 
-        if (resultE != null && testComp == true && testComp1 == true)
+        if (resultE != null && testComp && testComp1) {
+            testFailed = true;
+        }
 
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
+        if ( testFailed ) {
+            throw new Exception("testJMSCorrelationIDAsBytes_B_SecOff failed");
+        }
+    }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSCorrelationIDAsBytes_B_SecOff failed");
-
+    private boolean equals(byte[] bytesA, byte[] bytesB) {
+        if ( bytesA == null ) {
+            return ( bytesB == null );
+        } else if ( bytesB == null ) {
+            return false;
+        } else {
+            int lengthA = bytesA.length;
+            int lengthB = bytesB.length;
+            if ( lengthA != lengthB ) {
+                return false;
+            } else {
+                for ( int byteNo = 0; byteNo < lengthA; byteNo++ ) {
+                    if ( bytesA[byteNo] != bytesB[byteNo] ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
     }
 
     // 118061_14 Test with JMSCorrelationID- setJMSCorrelationIDAsbytes
     // ,getJMSCorrelationIDAsBytes
-    public void testJMSCorrelationIDAsBytes_TCP_SecOff(HttpServletRequest request,
-                                                       HttpServletResponse response) throws Throwable {
+    public void testJMSCorrelationIDAsBytes_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        Message msg = jmsContext.createMessage();
 
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        byte[] defBytes = msg.getJMSCorrelationIDAsBytes();
+        String defCorrel = msg.getJMSCorrelationID();
 
-        byte[] defBytes = messageQCFTCP.getJMSCorrelationIDAsBytes();
-
-        String startCorrel = messageQCFTCP.getJMSCorrelationID();
-
-        // set and retrieve a byte[]
         byte[] testA = { 1, 2, 3, 4 };
-        messageQCFTCP.setJMSCorrelationIDAsBytes(testA);
+        msg.setJMSCorrelationIDAsBytes(testA);
+        byte[] resultA = msg.getJMSCorrelationIDAsBytes();
 
-        byte[] resultA = messageQCFTCP.getJMSCorrelationIDAsBytes();
+        boolean testFailed = false;
 
-        boolean testComp = false;
-
-        for (int i = 0; i < testA.length; i++) {
-            if (testA[i] != resultA[i]) {
-                testComp = false;
-            } else
-                testComp = true;
+        if ( !equals(testA, resultA) ) {
+            testFailed = true;
         }
 
         String correl = "CorrelID";
 
-        // check that multiple set sequences always return the last set
-        // value
-        // a) set bytes then string
-        messageQCFTCP.setJMSCorrelationIDAsBytes(testA);
-        messageQCFTCP.setJMSCorrelationID(correl);
-        byte[] resultE = messageQCFTCP.getJMSCorrelationIDAsBytes();
+        // check that multiple set sequences always return the last set value
 
-        // b) set string then bytes
-        messageQCFTCP.setJMSCorrelationID(correl);
-        messageQCFTCP.setJMSCorrelationIDAsBytes(testA);
-        byte[] resultF = messageQCFTCP.getJMSCorrelationIDAsBytes();
+        msg.setJMSCorrelationIDAsBytes(testA);
+        msg.setJMSCorrelationID(correl);
+        byte[] resultB = msg.getJMSCorrelationIDAsBytes();
 
-        boolean testComp1 = false;
-        for (int j = 0; j < testA.length; j++) {
-            if (testA[j] != resultF[j]) {
-                testComp = false;
-            } else
-                testComp = true;
+        if ( equals(testA, resultB) ) {
+            testFailed = true;
         }
 
-        if (resultE != null && testComp == true && testComp1 == true)
+        msg.setJMSCorrelationID(correl);
+        msg.setJMSCorrelationIDAsBytes(testA);
+        byte[] resultC = msg.getJMSCorrelationIDAsBytes();
 
-            exceptionFlag = true;
+        if ( !equals(testA, resultC) ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
+        jmsContext.close();
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSCorrelationIDAsBytes_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSCorrelationIDAsBytes_TCP_SecOff failed");
+        }
     }
 
-    public void testJMSReplyTo_B_SecOff(HttpServletRequest request,
-                                        HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean val = false;
-        boolean val1 = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+    public void testJMSReplyTo_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        messageQCFBindings.setJMSReplyTo(queue);
-        Queue gotReplyQueue = (Queue) messageQCFBindings.getJMSReplyTo();
+        boolean testFailed = false;
 
-        messageQCFBindings.setJMSReplyTo(topic);
-        Topic gotReplyTopic = (Topic) messageQCFBindings.getJMSReplyTo();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        if (queue == gotReplyQueue && topic == gotReplyTopic)
-            val = true;
+        Message msg = jmsContext.createMessage();
 
-        // now try setting a null destination and check the value stays null
-        messageQCFBindings.setJMSReplyTo(null);
-        if (messageQCFBindings.getJMSReplyTo() == null)
-            val1 = true;
+        msg.setJMSReplyTo(queue);
+        if ( msg.getJMSReplyTo() != queue ) {
+            testFailed = true;
+        }
 
-        if (!(val1 == true && val1 == true))
-            exceptionFlag = true;
+        msg.setJMSReplyTo(topic);
+        if ( msg.getJMSReplyTo() != topic ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.close();
+        msg.setJMSReplyTo(null);
+        if ( msg.getJMSReplyTo() != null ) {
+            testFailed = true;
+        }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSReplyTo_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSReplyTo_B_SecOff failed");
+        }
     }
 
-    public void testJMSReplyTo_TCP_SecOff(HttpServletRequest request,
-                                          HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean val = false;
-        boolean val1 = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+    public void testJMSReplyTo_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        messageQCFTCP.setJMSReplyTo(queue);
-        Queue gotReplyQueue = (Queue) messageQCFTCP.getJMSReplyTo();
+        boolean testFailed = false;
 
-        messageQCFTCP.setJMSReplyTo(topic);
-        Topic gotReplyTopic = (Topic) messageQCFTCP.getJMSReplyTo();
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        if (queue == gotReplyQueue && topic == gotReplyTopic)
-            val = true;
+        Message msg = jmsContext.createMessage();
 
-        // now try setting a null destination and check the value stays null
-        messageQCFTCP.setJMSReplyTo(null);
-        if (messageQCFTCP.getJMSReplyTo() == null)
-            val1 = true;
+        msg.setJMSReplyTo(queue);
+        if ( msg.getJMSReplyTo() != queue ) {
+            testFailed = true;
+        }
 
-        if (!(val1 == true && val1 == true))
-            exceptionFlag = true;
+        msg.setJMSReplyTo(topic);
+        if ( msg.getJMSReplyTo() != topic ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
+        msg.setJMSReplyTo(null);
+        if ( msg.getJMSReplyTo() != null ) {
+            testFailed = true;
+        }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSReplyTo_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSReplyTo_B_SecOff failed");
+        }
     }
 
     // 118061_16 Test with JMSRedelivered- setJMSRedelivered and
     // getJMSRedelivered
 
-    public void testJMSRedelivered_B_SecOff(HttpServletRequest request,
-                                            HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+    public void testJMSRedelivered_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        emptyQueue(QCFBindings, queue);
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        boolean testFailed = false;
 
-        if (messageQCFBindings.getJMSRedelivered() == true) {
-            messageQCFBindings.setJMSRedelivered(false);
-            jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-            Message msgrecv = jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
 
-            if (!(msgrecv.getJMSRedelivered() != false))
-                exceptionFlag = true;
+        Message msg = jmsContext.createMessage();
 
+        boolean defRedelivered = msg.getJMSRedelivered();
+
+        msg.setJMSRedelivered( !defRedelivered );
+
+        jmsContext.createProducer().send(queue, msg);
+
+        Message recmsg = jmsConsumer.receive(30000);
+        if ( recmsg.getJMSRedelivered() == defRedelivered ) {
+            testFailed = true;
         }
 
-        else {
+        jmsConsumer.close();
+        jmsContext.close();
 
-            messageQCFBindings.setJMSRedelivered(true);
-
-            jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
-
-            Message msgrecv = jmsContextQCFBindings.createConsumer(queue).receive(30000);
-
-            if (!(msgrecv.getJMSRedelivered() != true))
-                exceptionFlag = true;
-
+        if ( testFailed ) {
+            throw new Exception("testJMSRedelivered_B_SecOff failed");
         }
-
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSRedelivered_B_SecOff failed");
-
     }
 
-    public void testJMSRedelivered_TCP_SecOff(HttpServletRequest request,
-                                              HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+    public void testJMSRedelivered_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        boolean testFailed = false;
 
-        if (messageQCFTCP.getJMSRedelivered() == true) {
-            messageQCFTCP.setJMSRedelivered(false);
-            jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-            Message msgrecv = jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        Message msg = jmsContext.createMessage();
 
-            if (!(msgrecv.getJMSRedelivered() != false))
-                exceptionFlag = true;
+        boolean defRedelivered = msg.getJMSRedelivered();
+        msg.setJMSRedelivered( !defRedelivered );
+        jmsContext.createProducer().send(queue, msg);
 
+        Message recmsg = jmsConsumer.receive(30000);
+        if ( recmsg.getJMSRedelivered() == defRedelivered ) {
+            testFailed = true;
         }
 
-        else {
+        jmsConsumer.close();
+        jmsContext.close();
 
-            messageQCFTCP.setJMSRedelivered(true);
-
-            jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
-
-            Message msgrecv = jmsContextQCFTCP.createConsumer(queue).receive(30000);
-
-            if (!(msgrecv.getJMSRedelivered() != true))
-                exceptionFlag = true;
-
+        if ( testFailed ) {
+            throw new Exception("testJMSRedelivered_B_SecOff failed");
         }
-
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSRedelivered_B_SecOff failed");
-
     }
 
     // 118061_17 Verify set and get operation on Message header field JMSType
 
-    public void testJMSType_B_SecOff(HttpServletRequest request,
-                                     HttpServletResponse response) throws Throwable
+    public void testJMSType_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        boolean testFailed = false;
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+
+        Message msg = jmsContext.createMessage();
+
         String type1 = "type 1";
+        msg.setJMSType(type1);
+        jmsContext.createProducer().send(queue, msg);
+
+        String t1 = jmsConsumer.receive(30000).getJMSType();
+
+        if ( !t1.equals(type1) ){
+            testFailed = true;
+        }
+
         String type2 = "type 2";
+        msg.setJMSType(type2);
+        jmsContext.createProducer().send(queue, msg);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        String t2 = jmsConsumer.receive(30000).getJMSType();
 
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        if ( !t2.equals(type2) ) {
+            testFailed = true;
+        }
 
-        messageQCFBindings.setJMSType(type1);
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
-
-        String t1 = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSType();
-
-        messageQCFBindings.setJMSType(type2);
-
-        jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
-
-        String t2 = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSType();
-
-        if (!(t1.equals(type1) && t2.equals(type2)))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSType_B_secOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSType_B_secOff failed");
+        }
     }
 
     // 118061_17 Test with JMSType- setJMSType and getJMSType
 
-    public void testJMSType_TCP_SecOff(HttpServletRequest request,
-                                       HttpServletResponse response) throws Throwable
+    public void testJMSType_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        boolean testFailed = false;
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+
+        Message msg = jmsContext.createMessage();
+
         String type1 = "type 1";
+        msg.setJMSType(type1);
+        jmsContext.createProducer().send(queue, msg);
+        String t1 = jmsConsumer.receive(30000).getJMSType();
+
+        if ( !t1.equals(type1) ) {
+            testFailed = true;
+        }
+
         String type2 = "type 2";
+        msg.setJMSType(type2);
+        jmsContext.createProducer().send(queue, msg);
+        String t2 = jmsConsumer.receive(30000).getJMSType();
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        if ( !t2.equals(type2) ) {
+            testFailed = true;
+        }
 
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        jmsConsumer.close();
+        jmsContext.close();
 
-        messageQCFTCP.setJMSType(type1);
-        System.out.println("1 --------messageQCFTCP -------" + messageQCFTCP);
-
-        jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
-
-        String t1 = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSType();
-        System.out.println("2 -------t1 -------" + t1);
-
-        messageQCFTCP.setJMSType(type2);
-
-        jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
-
-        String t2 = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSType();
-        System.out.println("3 --------t2 -------" + t2);
-
-        if (!(t1.equals(type1) && t2.equals(type2)))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSType_TCP_secOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSType_TCP_secOff failed");
+        }
     }
 
     // 118061_18 Verify set and get operation on Message header field
@@ -2491,1485 +2628,1292 @@ public class JMSContextServlet extends HttpServlet {
 
     // 118061_18 Test with JMSExpiration- setJMSExpiration and getJMSExpiration
 
-    public void testJMSExpiration_B_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable
+    public void testJMSExpiration_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        boolean testFailed = false;
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        Message msg = jmsContext.createMessage();
+        long defexp = msg.getJMSExpiration();
 
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
-        long defexpValue = messageQCFBindings.getJMSExpiration();
+        if ( defexp != 0 ) {
+            testFailed = true;
+        }
 
-        messageQCFBindings.setJMSExpiration(1);
+        msg.setJMSExpiration(1);
+        jmsContext.createProducer().send(queue, msg);
 
-        jmsContextQCFBindings.createProducer().send(queue, messageQCFBindings);
-        long expValue = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSExpiration();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        long exp = jmsConsumer.receive(30000).getJMSExpiration();
 
-        if (!(expValue == 0) && (defexpValue == 0))
-            exceptionFlag = true;
+        if ( exp != 0 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.close();
+        jmsContext.close();
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSExpiration_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSExpiration_B_SecOff failed; defexp [ " + defexp + " ] exp [ " + exp + " ]");
+        }
     }
 
-    public void testJMSExpiration_TCP_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable
+    public void testJMSExpiration_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        boolean testFailed = false;
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
-        long defexpValue = messageQCFTCP.getJMSExpiration();
+        Message msg = jmsContext.createMessage();
+        long defexp = msg.getJMSExpiration();
 
-        messageQCFTCP.setJMSExpiration(1);
+        if ( defexp != 0 ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.createProducer().send(queue, messageQCFTCP);
-        long expValue = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSExpiration();
+        msg.setJMSExpiration(1);
+        jmsContext.createProducer().send(queue, msg);
 
-        if (!(expValue == 0) && (defexpValue == 0))
-            exceptionFlag = true;
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        long exp = jmsConsumer.receive(30000).getJMSExpiration();
 
-        jmsContextQCFTCP.close();
+        if ( exp != 0 ) {
+            testFailed = true;
+        }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSExpiration_TCP_SecOff failed");
-        // jmsContextQCFTCP.createConsumer(queue).close();
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSExpiration_TCP_SecOff failed: defexp [ " + defexp + " ] exp [ " + exp + " ]");
+        }
     }
 
     // 118061_19 Test with JMSPriority- setJMSPriority and getJMSPriority
 
-    public void testJMSPriority_B_SecOff(HttpServletRequest request,
-                                         HttpServletResponse response) throws Throwable
+    public void testJMSPriority_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
+        Message msg = jmsContext.createMessage();
+        msg.setJMSPriority(9);
 
-        messageQCFBindings.setJMSPriority(9);
+        jmsContext.createProducer().setPriority(1).send(queue, msg);
 
-        jmsContextQCFBindings.createProducer().setPriority(1).send(queue, messageQCFBindings);
-        int pri = jmsContextQCFBindings.createConsumer(queue).receive(30000)
-                        .getJMSPriority();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
 
-        if (!(pri == 1))
-            exceptionFlag = true;
+        int pri = jmsConsumer.receive(30000).getJMSPriority();
 
-        jmsContextQCFBindings.close();
+        boolean testFailed = false;
+        if ( pri != 1 ) {
+            testFailed = true;
+        }
 
-        if (exceptionFlag)
-            throw new WrongException("testJMSPriority_B_SecOff failed");
-        // jmsContextQCFBindings.createConsumer(queue).close();
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testJMSPriority_B_SecOff failed");
+        }
     }
 
-    public void testJMSPriority_TCP_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable
+    public void testJMSPriority_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
+        Message msg = jmsContext.createMessage();
+        msg.setJMSPriority(9);
 
-        messageQCFTCP.setJMSPriority(9);
+        jmsContext.createProducer().setPriority(1).send(queue, msg);
 
-        jmsContextQCFTCP.createProducer().setPriority(1).send(queue, messageQCFTCP);
-        int pri = jmsContextQCFTCP.createConsumer(queue).receive(30000)
-                        .getJMSPriority();
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+        int pri = jmsConsumer.receive(30000).getJMSPriority();
 
-        System.out.println("--1 -- pri-----" + pri);
+        boolean testFailed = false;
+        if ( pri != 1 ) {
+            testFailed = true;
+        }
 
-        if (!(pri == 1))
-            exceptionFlag = true;
+        jmsConsumer.close();
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSPriority_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSPriority_TCP_SecOff failed");
+        }
     }
 
     // 118061_20 Verify set and get operation on Message header field
     // JMSDeliveryTime
 
-    public void testJMSDeliveryTime_B_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable
+    public void testJMSDeliveryTime_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        boolean exceptionFlag = false;
+        Message msg = jmsContext.createMessage();
+
         long toSet = 12345;
+        msg.setJMSDeliveryTime(toSet);
+        long afterSet = msg.getJMSDeliveryTime();
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+        boolean testFailed = false;
+        if ( afterSet != toSet ) {
+            testFailed = true;
+        }
 
-        Message messageQCFBindings = jmsContextQCFBindings.createMessage();
-        // long beforeSet = messageQCFBindings.getJMSDeliveryTime();
-        messageQCFBindings.setJMSDeliveryTime(toSet);
+        jmsContext.close();
 
-        long afterSet = messageQCFBindings.getJMSDeliveryTime();
-
-        if (!(afterSet == toSet))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSDeliveryTime_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDeliveryTime_B_SecOff failed");
+        }
     }
 
-    public void testJMSDeliveryTime_TCP_SecOff(HttpServletRequest request,
-                                               HttpServletResponse response) throws Throwable
+    public void testJMSDeliveryTime_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    {
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        boolean exceptionFlag = false;
+        Message msg = jmsContext.createMessage();
+
         long toSet = 12345;
+        msg.setJMSDeliveryTime(toSet);
+        long afterSet = msg.getJMSDeliveryTime();
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        boolean testFailed = false;
+        if ( afterSet != toSet ) {
+            testFailed = true;
+        }
 
-        Message messageQCFTCP = jmsContextQCFTCP.createMessage();
-        // long beforeSet = messageQCFTCP.getJMSDeliveryTime();
-        messageQCFTCP.setJMSDeliveryTime(toSet);
+        jmsContext.close();
 
-        long afterSet = messageQCFTCP.getJMSDeliveryTime();
-
-        if (!(afterSet == toSet))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSDeliveryTime_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testJMSDeliveryTime_TCP_SecOff failed");
+        }
     }
 
     // 118062_1_1 Creates a QueueBrowser object to peek at the messages on the
     // specified queue.
 
-    public void testcreateBrowser_B_SecOff(HttpServletRequest request,
-                                           HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue2);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue2);
+        jmsContext.createProducer().send(queue2, "Tester");
 
-        jmsContextQCFBindings.createProducer().send(queue2, "Tester");
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue2);
+        int numMsgs = getMessageCount(queueBrowser);
 
-        QueueBrowser queueBrowserQCFBindings = jmsContextQCFBindings.createBrowser(queue2);
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue2);
+        jmsConsumer.receive(30000);
 
-        int numMsgs = getMessageCount(queueBrowserQCFBindings);
-
-        jmsContextQCFBindings.createConsumer(queue2).receive(30000);
-
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testcreateBrowser_B_SecOff failed");
-
-    }
-
-    public void testcreateBrowser_TCP_SecOff(HttpServletRequest request,
-                                             HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue2);
-
-        jmsContextQCFTCP.createProducer().send(queue2, "Tester");
-
-        QueueBrowser queueBrowserQCFTCP = jmsContextQCFTCP.createBrowser(queue2);
-
-        int numMsgs = getMessageCount(queueBrowserQCFTCP);
-
-        jmsContextQCFTCP.createConsumer(queue2).receive(30000);
-
-        if (!(numMsgs == 1))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testcreateBrowser_TCP_SecOff failed");
-
-    }
-
-    public void testcreateBrowserNEQueue_B_SecOff(HttpServletRequest request,
-                                                  HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        //emptyQueue(QCFBindings, queue);
-        try {
-            QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue3);
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
         }
 
-        finally {
-            jmsContextQCFBindings.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowserNEQueue_B_SecOff failed");
+        jmsConsumer.close();
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_B_SecOff failed");
         }
-
     }
 
-    public void testcreateBrowserNEQueue_TCP_SecOff(HttpServletRequest request,
-                                                    HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        //emptyQueue(QCFTCP, queue);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue2);
+
+        jmsContext.createProducer().send(queue2, "Tester");
+
+        QueueBrowser queueBrowser = jmsContext.createBrowser(queue2);
+        int numMsgs = getMessageCount(queueBrowser);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue2);
+        jmsConsumer.receive(30000);
+
+        boolean testFailed = false;
+        if ( numMsgs != 1 ) {
+            testFailed = true;
+        }
+
+        jmsConsumer.close();
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_TCP_SecOff failed");
+        }
+    }
+
+    public void testcreateBrowserNEQueue_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
         try {
-            QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue3);
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
+            QueueBrowser qb = jmsContext.createBrowser(null);
+            testFailed = true;
+
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
+
         } finally {
-            jmsContextQCFTCP.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowserNEQueue_TCP_SecOff failed");
+            jmsContext.close();
 
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowserNEQueue_B_SecOff failed");
+            }
         }
     }
 
-    public void testcreateBrowser_MessageSelector_InvalidQ_B_SecOff(HttpServletRequest request,
-                                                                    HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
+    public void testcreateBrowserNEQueue_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
+
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
         try {
-            QueueBrowser qb = jmsContextQCFBindings.createBrowser(null, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
+            QueueBrowser qb = jmsContext.createBrowser(null);
+            testFailed = true;
+
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
+
         } finally {
-            jmsContextQCFBindings.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowser_MessageSelector_InvalidQ_B_SecOff failed");
+            jmsContext.close();
 
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowserNEQueue_TCP_SecOff failed");
+            }
         }
     }
 
-    public void testcreateBrowser_MessageSelector_InvalidQ_TCP_SecOff(HttpServletRequest request,
-                                                                      HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_MessageSelector_InvalidQ_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
+        boolean testFailed = false;
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
         try {
-            QueueBrowser qb = jmsContextQCFTCP.createBrowser(null, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
-            exceptionFlag = true;
+            QueueBrowser qb = jmsContext.createBrowser(null, "colour = 'red'");
+            testFailed = true;
+
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
+
         } finally {
+            jmsContext.close();
 
-            jmsContextQCFTCP.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowser_MessageSelector_InvalidQ_TCP_SecOff failed");
-
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_InvalidQ_B_SecOff failed");
+            }
         }
     }
 
-    public void testcreateBrowser_MessageSelector_B_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_MessageSelector_InvalidQ_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        boolean testFailed = false;
 
-        final int NMSGS = 5;
-
-        //jmsContextQCFBindings.createConsumer(queue).receive(30000);
-
-        emptyQueue(QCFBindings, queue);
-
-        TextMessage msg = jmsContextQCFBindings
-                        .createTextMessage("browse selector test message");
-
-        QueueBrowser qb1 = null;
-        try {
-
-            qb1 = jmsContextQCFBindings.createBrowser(queue, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
-        }
-
-        QueueBrowser qb2 = null;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
         try {
-            qb2 = jmsContextQCFBindings.createBrowser(queue, "colour = 'blue'");
-        } catch (InvalidDestinationRuntimeException ex3) {
+            QueueBrowser qb = jmsContext.createBrowser(null, "colour = 'red'");
+            testFailed = true;
 
-            ex3.printStackTrace();
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
+
+        } finally {
+            jmsContext.close();
+
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_InvalidQ_TCP_SecOff failed");
+            }
+        }
+    }
+
+    public void testcreateBrowser_MessageSelector_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        boolean testFailed = false;
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
+        TextMessage sendmsg = jmsContext.createTextMessage("browse selector test message");
+
+        int numMsgs = 5;
+
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            sendmsg.setStringProperty("colour", "red");
+            jmsContext.createProducer().send(queue, sendmsg);
+
+            sendmsg.setStringProperty("colour", "blue");
+            jmsContext.createProducer().send(queue, sendmsg);
         }
 
-        for (int i = 0; i < NMSGS; i++) {
-            msg.setStringProperty("colour", "red");
-            jmsContextQCFBindings.createProducer().send(queue, msg);
-
-            msg.setStringProperty("colour", "blue");
-            jmsContextQCFBindings.createProducer().send(queue, msg);
-        }
-
-        // now use two browsers to scan the queue
-
-        Enumeration e1 = qb1.getEnumeration();
-
-        Enumeration e2 = qb2.getEnumeration();
-
-        int numMsgs = 0;
-        // count number of messages
         int nMsgRed = 0;
         int nWrongRed = 0;
 
-        while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
+        QueueBrowser qb1 = jmsContext.createBrowser(queue, "colour = 'red'");
+        Enumeration e1 = qb1.getEnumeration();
+        while ( e1.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e1.nextElement();
+            String colour = recmsg.getStringProperty("colour");
 
-            String colour1 = msg1.getStringProperty("colour");
-
-            if (colour1 != null && colour1.equals("red")) {
-                System.out.println("browsed a message of the red colour: "
-                                   + colour1);
-
+            if ( (colour != null) && colour.equals("red")) {
                 nMsgRed++;
             } else {
-
                 nWrongRed++;
             }
-
         }
-        System.out.println("correct msgs: " + nMsgRed + ", incorrect msgs: "
-                           + nWrongRed);
 
         int nMsgBlue = 0;
         int nWrongBlue = 0;
-        System.out.println("Examine the contents of 2nd enumeration");
-        while (e2.hasMoreElements()) {
-            TextMessage msg2 = (TextMessage) e2.nextElement();
-            String colour2 = msg2.getStringProperty("colour");
 
-            if (colour2 != null && colour2.equals("blue")) {
-                System.out.println("browsed a message of the blue colour: "
-                                   + colour2);
+        QueueBrowser qb2 = jmsContext.createBrowser(queue, "colour = 'blue'");
+        Enumeration e2 = qb2.getEnumeration();
+        while ( e2.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e2.nextElement();
+            String colour = recmsg.getStringProperty("colour");
 
+            if ( (colour != null) && colour.equals("blue") ) {
                 nMsgBlue++;
-
             } else {
-
                 nWrongBlue++;
             }
-
         }
-        System.out.println("correct msgs: " + nMsgBlue + ", incorrect msgs: "
-                           + nWrongBlue);
 
-        if (!(nMsgRed == NMSGS && nMsgBlue == NMSGS) && (nWrongRed == 0 || nWrongBlue == 0))
-            exceptionFlag = true;
+        if ( ((nMsgRed != numMsgs) || (nWrongRed != 0)) ||
+             ((nMsgBlue != numMsgs) || (nWrongBlue != 0)) ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.close();
-        if ((exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_MessageSelector_B_SecOff failed");
+        }
     }
 
     public void testcreateBrowser_MessageSelector_TCP_SecOff(
-                                                             HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
+        boolean testFailed = false;
 
-        final int NMSGS = 5;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        // jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        int numMsgs = 5;
 
-        emptyQueue(QCFTCP, queue);
-        TextMessage msg = jmsContextQCFTCP
-                        .createTextMessage("browse selector test message");
+        TextMessage sendmsg = jmsContext.createTextMessage("browse selector test message");
 
-        QueueBrowser qb1 = null;
-        try {
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            sendmsg.setStringProperty("colour", "red");
+            jmsContext.createProducer().send(queue, sendmsg);
 
-            qb1 = jmsContextQCFTCP.createBrowser(queue, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
-            ex3.printStackTrace();
+            sendmsg.setStringProperty("colour", "blue");
+            jmsContext.createProducer().send(queue, sendmsg);
         }
 
-        QueueBrowser qb2 = null;
-
-        try {
-            qb2 = jmsContextQCFTCP.createBrowser(queue, "colour = 'blue'");
-        } catch (InvalidDestinationRuntimeException ex3) {
-
-            ex3.printStackTrace();
-        }
-
-        for (int i = 0; i < NMSGS; i++) {
-            msg.setStringProperty("colour", "red");
-            jmsContextQCFTCP.createProducer().send(queue, msg);
-
-            msg.setStringProperty("colour", "blue");
-            jmsContextQCFTCP.createProducer().send(queue, msg);
-        }
-
-        // now use two browsers to scan the queue
-
-        Enumeration e1 = qb1.getEnumeration();
-
-        Enumeration e2 = qb2.getEnumeration();
-
-        int numMsgs = 0;
-        // count number of messages
         int nMsgRed = 0;
         int nWrongRed = 0;
 
-        while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
+        QueueBrowser qb1 = jmsContext.createBrowser(queue, "colour = 'red'");
+        Enumeration e1 = qb1.getEnumeration();
+        while ( e1.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e1.nextElement();
+            String colour = recmsg.getStringProperty("colour");
 
-            String colour1 = msg1.getStringProperty("colour");
-
-            if (colour1 != null && colour1.equals("red")) {
-                System.out.println("browsed a message of the red colour: "
-                                   + colour1);
-
+            if ( (colour != null) && colour.equals("red") ) {
                 nMsgRed++;
             } else {
-
                 nWrongRed++;
             }
-
         }
-        System.out.println("correct msgs: " + nMsgRed + ", incorrect msgs: "
-                           + nWrongRed);
 
         int nMsgBlue = 0;
         int nWrongBlue = 0;
-        System.out.println("Examine the contents of 2nd enumeration");
-        while (e2.hasMoreElements()) {
-            TextMessage msg2 = (TextMessage) e2.nextElement();
-            String colour2 = msg2.getStringProperty("colour");
 
-            if (colour2 != null && colour2.equals("blue")) {
-                System.out.println("browsed a message of the blue colour: "
-                                   + colour2);
+        QueueBrowser qb2 = qb2 = jmsContext.createBrowser(queue, "colour = 'blue'");
+        Enumeration e2 = qb2.getEnumeration();
+        while ( e2.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e2.nextElement();
+            String colour = recmsg.getStringProperty("colour");
 
+            if ( (colour != null) && colour.equals("blue") ) {
                 nMsgBlue++;
-
             } else {
-
                 nWrongBlue++;
             }
-
         }
-        System.out.println("correct msgs: " + nMsgBlue + ", incorrect msgs: "
-                           + nWrongBlue);
 
-        if (!(nMsgRed == NMSGS && nMsgBlue == NMSGS) && (nWrongRed == 0 || nWrongBlue == 0))
-            exceptionFlag = true;
+        if ( ((nMsgRed != numMsgs) || (nWrongRed != 0)) ||
+             ((nMsgBlue != numMsgs) || (nWrongBlue != 0)) ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
-        if ((exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_MessageSelector_TCP_SecOff failed");
+        }
     }
 
     public void testcreateBrowser_MessageSelector_NullQueue_B_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        boolean testFailed = false;
+
         try {
+            jmsContext.createBrowser(null, "colour = 'red'");
+            testFailed = true;
 
-            QueueBrowser qb = jmsContextQCFBindings.createBrowser(null, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
 
-            ex3.printStackTrace();
-            exceptionFlag = true;
-        } finally
-        {
-            jmsContextQCFBindings.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowser_MessageSelector_NullQueue_B_SecOff failed");
+        } finally {
+            jmsContext.close();
 
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_NullQueue_B_SecOff failed");
+            }
         }
-
     }
 
     public void testcreateBrowser_MessageSelector_NullQueue_TCP_SecOff(
-                                                                       HttpServletRequest request, HttpServletResponse response)
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-                    throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
+        boolean testFailed = false;
+
         try {
+            jmsContext.createBrowser(null, "colour = 'red'");
+            testFailed = true;
 
-            QueueBrowser qb = jmsContextQCFTCP.createBrowser(null, "colour = 'red'");
-        } catch (InvalidDestinationRuntimeException ex3) {
+        } catch ( InvalidDestinationRuntimeException ex3 ) {
+            // expected
 
-            ex3.printStackTrace();
-            exceptionFlag = true;
+        } finally {
+            jmsContext.close();
+
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_NullQueue_TCP_SecOff failed");
+            }
         }
-
-        finally {
-            jmsContextQCFTCP.close();
-            if (!(exceptionFlag))
-
-                throw new WrongException("testcreateBrowser_MessageSelector_NullQueue_TCP_SecOff failed");
-
-        }
-
     }
 
     public void testcreateBrowser_MessageSelector_Empty_B_SecOff(
-                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        //jmsContextQCFBindings.createConsumer(queue).receive(30000);
-        emptyQueue(QCFBindings, queue);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        QueueBrowser qb1 = jmsContextQCFBindings.createBrowser(queue, "");
-        QueueBrowser qb2 = jmsContextQCFBindings.createBrowser(queue, "");
-        QueueBrowser qb3 = jmsContextQCFBindings.createBrowser(queue, "");
+        TextMessage sendmsg = jmsContext.createTextMessage("browse selector test message");
 
-        TextMessage msg = jmsContextQCFBindings
-                        .createTextMessage("browse selector test message");
+        for (int msgNo = 0; msgNo < 3; msgNo++ ) {
+            sendmsg.setStringProperty("Role", "Tester");
+            jmsContext.createProducer().send(queue, sendmsg);
 
-        for (int i = 0; i < 3; i++) {
-            msg.setStringProperty("Role", "Tester");
-            jmsContextQCFBindings.createProducer().send(queue, msg);
+            sendmsg.setStringProperty("Role", "Developer");
+            jmsContext.createProducer().send(queue, sendmsg);
 
-            msg.setStringProperty("Role", "Developer");
-            jmsContextQCFBindings.createProducer().send(queue, msg);
-
-            msg.setStringProperty("Role", "");
-            jmsContextQCFBindings.createProducer().send(queue, msg);
+            sendmsg.setStringProperty("Role", "");
+            jmsContext.createProducer().send(queue, sendmsg);
         }
-
-        Enumeration e1 = qb1.getEnumeration();
 
         int testVar = 0;
         int testWrongVar = 0;
 
-        while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
+        QueueBrowser qb1 = jmsContext.createBrowser(queue, "");
+        Enumeration e1 = qb1.getEnumeration();
+        while ( e1.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e1.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("Tester")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("Tester") ) {
                 testVar++;
             } else {
-
                 testWrongVar++;
             }
-
         }
-
-        Enumeration e2 = qb2.getEnumeration();
 
         int devVar = 0;
         int devWrongVar = 0;
 
-        while (e2.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e2.nextElement();
+        QueueBrowser qb2 = jmsContext.createBrowser(queue, "");
+        Enumeration e2 = qb2.getEnumeration();
+        while ( e2.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e2.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("Developer")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("Developer") ) {
                 devVar++;
             } else {
-
                 devWrongVar++;
             }
-
         }
-
-        Enumeration e3 = qb3.getEnumeration();
 
         int emptyVar = 0;
         int emptyWrongVar = 0;
 
-        while (e3.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e3.nextElement();
+        QueueBrowser qb3 = jmsContext.createBrowser(queue, "");
+        Enumeration e3 = qb3.getEnumeration();
+        while ( e3.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e3.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("") ) {
                 emptyVar++;
             } else {
-
                 emptyWrongVar++;
             }
-
         }
 
-        if (!(testVar == 3 && devVar == 3 && emptyVar == 3) && (testWrongVar == 0 || devWrongVar == 0 || emptyVar == 0))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( !((testVar == 3) && (devVar == 3) && (emptyVar == 3)) ||
+             ((testWrongVar == 0) || (devWrongVar == 0) || (emptyWrongVar == 0)) ) {
+            testFailed = true;
+        }
 
-        /*
-         * for (int i = 0; i < 3; i++)
-         * {
-         * 
-         * jmsContextQCFBindings.createConsumer(queue).receive(30000);
-         * jmsContextQCFBindings.createConsumer(queue).receive(30000);
-         * jmsContextQCFBindings.createConsumer(queue).receive(30000);
-         * 
-         * }
-         */
+        emptyQueue(jmsQCFBindings, queue);
 
-        emptyQueue(QCFBindings, queue);
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if ((exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_Empty_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception(
+                "testcreateBrowser_MessageSelector_Empty_B_SecOff failed:" +
+                " test [ " + testVar + " " + testWrongVar + " ]" +
+                " dev [ " + devVar + " " + devWrongVar + " ] " +
+                " empty [ " + emptyVar + " " + emptyWrongVar + " ]" );
+        }
     }
 
     public void testcreateBrowser_MessageSelector_Empty_TCP_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        // jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        emptyQueue(QCFTCP, queue);
+        TextMessage sendmsg = jmsContext.createTextMessage("browse selector test message");
 
-        QueueBrowser qb1 = jmsContextQCFTCP.createBrowser(queue, "");
-        QueueBrowser qb2 = jmsContextQCFTCP.createBrowser(queue, "");
-        QueueBrowser qb3 = jmsContextQCFTCP.createBrowser(queue, "");
+        for ( int msgNo = 0; msgNo < 3; msgNo++ ) {
+            sendmsg.setStringProperty("Role", "Tester");
+            jmsContext.createProducer().send(queue, sendmsg);
 
-        TextMessage msg = jmsContextQCFTCP
-                        .createTextMessage("browse selector test message");
+            sendmsg.setStringProperty("Role", "Developer");
+            jmsContext.createProducer().send(queue, sendmsg);
 
-        for (int i = 0; i < 3; i++) {
-            msg.setStringProperty("Role", "Tester");
-            jmsContextQCFTCP.createProducer().send(queue, msg);
-
-            msg.setStringProperty("Role", "Developer");
-            jmsContextQCFTCP.createProducer().send(queue, msg);
-
-            msg.setStringProperty("Role", "");
-            jmsContextQCFTCP.createProducer().send(queue, msg);
+            sendmsg.setStringProperty("Role", "");
+            jmsContext.createProducer().send(queue, sendmsg);
         }
-
-        Enumeration e1 = qb1.getEnumeration();
 
         int testVar = 0;
         int testWrongVar = 0;
 
+        QueueBrowser qb1 = jmsContext.createBrowser(queue, "");
+        Enumeration e1 = qb1.getEnumeration();
         while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
+            TextMessage recmsg = (TextMessage) e1.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("Tester")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("Tester") ) {
                 testVar++;
             } else {
-
                 testWrongVar++;
             }
-
         }
-
-        Enumeration e2 = qb2.getEnumeration();
 
         int devVar = 0;
         int devWrongVar = 0;
 
+        QueueBrowser qb2 = jmsContext.createBrowser(queue, "");
+        Enumeration e2 = qb2.getEnumeration();
         while (e2.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e2.nextElement();
+            TextMessage recmsg = (TextMessage) e2.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("Developer")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("Developer") ) {
                 devVar++;
             } else {
-
                 devWrongVar++;
             }
-
         }
-
-        Enumeration e3 = qb3.getEnumeration();
 
         int emptyVar = 0;
         int emptyWrongVar = 0;
 
-        while (e3.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e3.nextElement();
+        QueueBrowser qb3 = jmsContext.createBrowser(queue, "");
+        Enumeration e3 = qb3.getEnumeration();
+        while ( e3.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e3.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName != null && roleName.equals("")) {
-                System.out.println("browsed a message : " + roleName);
+            if ( (roleName != null) && roleName.equals("") ) {
                 emptyVar++;
             } else {
-
                 emptyWrongVar++;
             }
-
         }
 
-        if (!(testVar == 3 && devVar == 3 && emptyVar == 3) && (testWrongVar == 0 || devWrongVar == 0 || emptyVar == 0))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( !((testVar == 3) && (devVar == 3) && (emptyVar == 3)) ||
+             ((testWrongVar == 0) || (devWrongVar == 0) || (emptyWrongVar == 0)) ) {
+            testFailed = true;
+        }
 
-        /*
-         * for (int i = 0; i < 3; i++)
-         * {
-         * 
-         * jmsContextQCFTCP.createConsumer(queue).receive(30000);
-         * jmsContextQCFTCP.createConsumer(queue).receive(30000);
-         * jmsContextQCFTCP.createConsumer(queue).receive(30000);
-         * 
-         * }
-         */
+        emptyQueue(jmsQCFTCP, queue);
 
-        emptyQueue(QCFTCP, queue);
+        jmsContext.close();
 
-        jmsContextQCFTCP.close();
-
-        if ((exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_Empty_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception(
+                "testcreateBrowser_MessageSelector_Empty_TCP_SecOff failed:" + 
+                " test [ " + testVar + " " + testWrongVar + " ]" +
+                " dev [ " + devVar + " " + devWrongVar + " ] " +
+                " empty [ " + emptyVar + " " + emptyWrongVar + " ]" );
+        }
     }
 
     public void testcreateBrowser_MessageSelector_Null_B_SecOff(
-                                                                HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-
-        emptyQueue(QCFBindings, queue);
-
-        QueueBrowser clearBrowser = jmsContextQCFBindings.createBrowser(queue);
-
-        int numMsgs = getMessageCount(clearBrowser);
-
-        for (int i = numMsgs; i > 0; i--) {
-            jmsContextQCFBindings.createConsumer(queue).receive(30000);
-        }
-
-        TextMessage msg = jmsContextQCFBindings
-                        .createTextMessage("browse selector test message");
-
+        TextMessage msg = jmsContext.createTextMessage("browse selector test message");
         msg.setStringProperty("Role", "Tester");
-        jmsContextQCFBindings.createProducer().send(queue, msg);
+        jmsContext.createProducer().send(queue, msg);
 
-        QueueBrowser qb1 = jmsContextQCFBindings.createBrowser(queue, null);
+        boolean testFailed = false;
 
-        Enumeration e1 = qb1.getEnumeration();
+        QueueBrowser qb = jmsContext.createBrowser(queue, null);
+        Enumeration e = qb.getEnumeration();
+        while ( e.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-        while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
-
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName.equals("Tester")) {
-                System.out.println("browsed a message : " + roleName);
-                exceptionFlag = true;
+            if ( (roleName == null) || !roleName.equals("Tester") ) {
+                testFailed = true;
             }
         }
 
-        jmsContextQCFBindings.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_Null_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_MessageSelector_Null_B_SecOff failed");
+        }
     }
 
     public void testcreateBrowser_MessageSelector_Null_TCP_SecOff(
-                                                                  HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-
-        emptyQueue(QCFTCP, queue);
-
-        QueueBrowser clearBrowser = jmsContextQCFTCP.createBrowser(queue);
-
-        int numMsgs = getMessageCount(clearBrowser);
-
-        for (int i = numMsgs; i > 0; i--) {
-            jmsContextQCFTCP.createConsumer(queue).receive(30000);
-        }
-
-        TextMessage msg = jmsContextQCFTCP
-                        .createTextMessage("browse selector test message");
-
+        TextMessage msg = jmsContext.createTextMessage("browse selector test message");
         msg.setStringProperty("Role", "Tester");
-        jmsContextQCFTCP.createProducer().send(queue, msg);
+        jmsContext.createProducer().send(queue, msg);
 
-        QueueBrowser qb1 = jmsContextQCFTCP.createBrowser(queue, null);
+        boolean testFailed = false;
 
-        Enumeration e1 = qb1.getEnumeration();
+        QueueBrowser qb = jmsContext.createBrowser(queue, null);
+        Enumeration e = qb.getEnumeration();
+        while ( e.hasMoreElements() ) {
+            TextMessage recmsg = (TextMessage) e.nextElement();
+            String roleName = recmsg.getStringProperty("Role");
 
-        while (e1.hasMoreElements()) {
-            TextMessage msg1 = (TextMessage) e1.nextElement();
-
-            String roleName = msg1.getStringProperty("Role");
-
-            if (roleName.equals("Tester")) {
-                System.out.println("browsed a message : " + roleName);
-                exceptionFlag = true;
+            if ( (roleName == null) || !roleName.equals("Tester") ) {
+                testFailed = true;
             }
         }
 
-        jmsContextQCFTCP.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testcreateBrowser_MessageSelector_Null_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_MessageSelector_Null_TCP_SecOff failed");
+        }
     }
 
     public void testcreateBrowser_MessageSelector_Invalid_B_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        //jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        emptyQueue(QCFBindings, queue);
+        boolean testFailed = false;
 
         try {
-            QueueBrowser invalidQB = jmsContextQCFBindings.createBrowser(queue,
-                                                                         "bad selector");
-        } catch (InvalidSelectorRuntimeException ex3) {
+            QueueBrowser invalidQB = jmsContext.createBrowser(queue, "bad selector");
+            testFailed = true;
 
-            ex3.printStackTrace();
-            exceptionFlag = true;
+        } catch ( InvalidSelectorRuntimeException ex3 ) {
+            // expected
+
+        } finally {
+            jmsContext.close();
+
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_Null_B_SecOff failed");
+            }
         }
-
-        finally {
-            jmsContextQCFBindings.close();
-            if (!(exceptionFlag))
-
-                throw new WrongException("testcreateBrowser_MessageSelector_Null_B_SecOff failed");
-
-        }
-
     }
 
     public void testcreateBrowser_MessageSelector_Invalid_TCP_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        //jmsContextQCFTCP.createConsumer(queue).receive(30000);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        emptyQueue(QCFTCP, queue);
+        boolean testFailed = false;
 
         try {
-            QueueBrowser invalidQB = jmsContextQCFTCP.createBrowser(queue,
-                                                                    "bad selector");
-        } catch (InvalidSelectorRuntimeException ex3) {
+            QueueBrowser invalidQB = jmsContext.createBrowser(queue, "bad selector");
+            testFailed = true;
+            
+        } catch ( InvalidSelectorRuntimeException ex3 ) {
+            // expected
 
-            ex3.printStackTrace();
-            exceptionFlag = true;
+        } finally {
+            jmsContext.close();
+
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_MessageSelector_Null_TCP_SecOff failed");
+            }
+        }
+    }
+
+    public void testcreateBrowser_getQueue_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        QueueBrowser qb = jmsContext.createBrowser(queue);
+
+        boolean testFailed = false;
+        if ( qb.getQueue() != queue) {
+            testFailed = true;
         }
 
-        finally {
+        jmsContext.close();
 
-            jmsContextQCFTCP.close();
-            if (!(exceptionFlag))
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_getQueue_B_SecOff failed");
+        }
+    }
 
-                throw new WrongException("testcreateBrowser_MessageSelector_Null_TCP_SecOff failed");
+    public void testcreateBrowser_getQueue_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+
+        QueueBrowser qb = jmsContext.createBrowser(queue);
+
+        boolean testFailed = false;
+        if ( qb.getQueue() != queue ) {
+            testFailed = true;
         }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testcreateBrowser_getQueue_TCP_SecOff failed");
+        }
     }
 
-    public void testcreateBrowser_getQueue_B_SecOff(HttpServletRequest request,
-                                                    HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_close_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        if (!(qb.getQueue() == queue))
-            exceptionFlag = true;
+        jmsContext.createProducer().send(queue, "This is a test message.");
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateBrowser_getQueue_B_SecOff failed");
+        QueueBrowser qb = jmsContext.createBrowser(queue);
 
-    }
-
-    public void testcreateBrowser_getQueue_TCP_SecOff(HttpServletRequest request,
-                                                      HttpServletResponse response) throws Throwable {
-
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
-
-        if (!(qb.getQueue() == queue))
-            exceptionFlag = true;
-
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testcreateBrowser_getQueue_TCP_SecOff failed");
-
-    }
-
-    public void testcreateBrowser_close_B_SecOff(HttpServletRequest request,
-                                                 HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-
-        emptyQueue(QCFBindings, queue);
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
-
-        jmsContextQCFBindings.createProducer().send(queue, "This is a test message.");
-
-        Enumeration e = qb.getEnumeration();
-
+        Enumeration e0 = qb.getEnumeration();
         int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            TextMessage message = (TextMessage) e.nextElement();
+        while ( e0.hasMoreElements() ) {
+            TextMessage message = (TextMessage) e0.nextElement();
             numMsgs++;
         }
 
         qb.close();
 
-        int numMsgs1 = 0;
+        boolean testFailed = false;
 
         try {
             Enumeration e1 = qb.getEnumeration();
 
-            while (e1.hasMoreElements()) {
+            int numMsgs1 = 0;
+            while ( e1.hasMoreElements() ) {
                 TextMessage message = (TextMessage) e1.nextElement();
                 numMsgs1++;
             }
 
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            testFailed = true;
+
+        } catch ( JMSException ex ) {
+            // expected
+
         } finally {
+            emptyQueue(jmsQCFBindings, queue);
 
-            //jmsContextQCFBindings.createConsumer(queue).receive(30000);
-            emptyQueue(QCFBindings, queue);
-            jmsContextQCFBindings.close();
+            jmsContext.close();
 
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowser_close_B_SecOff failed");
-
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_close_B_SecOff failed");
+            }
         }
-
     }
 
-    public void testcreateBrowser_close_TCP_SecOff(HttpServletRequest request,
-                                                   HttpServletResponse response) throws Throwable {
+    public void testcreateBrowser_close_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        emptyQueue(QCFTCP, queue);
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
+        jmsContext.createProducer().send(queue, "This is a test message.");
 
-        jmsContextQCFTCP.createProducer().send(queue, "This is a test message.");
+        QueueBrowser qb = jmsContext.createBrowser(queue);
 
-        Enumeration e = qb.getEnumeration();
-
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            TextMessage message = (TextMessage) e.nextElement();
-            numMsgs++;
+        Enumeration e0 = qb.getEnumeration();
+        int numMsgs0 = 0;
+        while ( e0.hasMoreElements() ) {
+            TextMessage message = (TextMessage) e0.nextElement();
+            numMsgs0++;
         }
 
         qb.close();
 
-        int numMsgs1 = 0;
+        boolean testFailed = false;
 
         try {
             Enumeration e1 = qb.getEnumeration();
-
-            while (e1.hasMoreElements()) {
+            int numMsgs1 = 0;
+            while ( e1.hasMoreElements() ) {
                 TextMessage message = (TextMessage) e1.nextElement();
                 numMsgs1++;
             }
 
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            testFailed = true;
+
+        } catch ( JMSException ex ) {
+            // expected
+
         } finally {
+            emptyQueue(jmsQCFTCP, queue);
+            jmsContext.close();
 
-            emptyQueue(QCFTCP, queue);
-            jmsContextQCFTCP.close();
-            if (!(exceptionFlag))
-                throw new WrongException("testcreateBrowser_close_TCP_SecOff failed");
+            if ( testFailed ) {
+                throw new Exception("testcreateBrowser_close_TCP_SecOff failed");
+            }
+        }
+    }
 
+    public void testGetMessageSelector_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+
+        QueueBrowser qb = jmsContext.createBrowser(queue, "colour = 'red'");
+        String msgSelect = qb.getMessageSelector();
+
+        boolean testFailed = false;
+        if ( !msgSelect.equals("colour = 'red'") ) {
+            testFailed = true;
         }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_B_SecOff failed");
+        }
     }
 
-    public void testGetMessageSelector_B_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+    public void testGetMessageSelector_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue, "colour = 'red'");
+        JMSContext jmsContext = jmsQCFTCP.createContext();
 
+        QueueBrowser qb = jmsContext.createBrowser(queue, "colour = 'red'");
         String msgSelect = qb.getMessageSelector();
 
-        if (!(msgSelect.equals("colour = 'red'")))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( !msgSelect.equals("colour = 'red'") ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFBindings.close();
-        if ((exceptionFlag))
-            throw new WrongException("testGetMessageSelector_B_SecOff failed");
+        jmsContext.close();
 
-    }
-
-    public void testGetMessageSelector_TCP_SecOff(HttpServletRequest request,
-                                                  HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue, "colour = 'red'");
-
-        String msgSelect = qb.getMessageSelector();
-
-        if (!(msgSelect.equals("colour = 'red'")))
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if ((exceptionFlag))
-            throw new WrongException("testGetMessageSelector_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_TCP_SecOff failed");
+        }
     }
 
     // 118062_4_2 Test when no message selector exists for the message consumer,
     // it returns null
-    public void testGetMessageSelector_Consumer_B_SecOff(HttpServletRequest request,
-                                                         HttpServletResponse response) throws Throwable {
 
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        // jmsContextQCFBindings.createConsumer(queue).receive(30000);
+    public void testGetMessageSelector_Consumer_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        emptyQueue(QCFBindings, queue);
+        boolean testFailed = false;
 
-        JMSConsumer consumer = jmsContextQCFBindings.createConsumer(queue, "Color='red'");
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        String msgSelect = consumer.getMessageSelector();
+        JMSConsumer jmsConsumer0 = jmsContext.createConsumer(queue, "Color='red'");
+        String msgSelect0 = jmsConsumer0.getMessageSelector();
+        if ( !msgSelect0.equals("Color='red'") ) {
+            testFailed = true;
+        }
 
-        if (msgSelect.equals("Color='red'"))
-            flag = true;
-        JMSConsumer consumer1 = jmsContextQCFBindings.createConsumer(queue);
+        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(queue);
+        String msgSelect1 = jmsConsumer1.getMessageSelector();
 
-        String msgSelect1 = consumer1.getMessageSelector();
+        if ( msgSelect1 != null ) {
+            testFailed = true;
+        }
 
-        if (msgSelect1 == null)
-            val = true;
+        jmsConsumer1.close();
+        jmsConsumer0.close();
+        jmsContext.close();
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
-
-        consumer.close();
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetMessageSelector_Consumer_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_Consumer_B_SecOff failed");
+        }
     }
 
-    public void testGetMessageSelector_Consumer_TCP_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-        boolean flag = false;
-        boolean val = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        //jmsContextQCFTCP.createConsumer(queue).receive(30000);
+    public void testGetMessageSelector_Consumer_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        emptyQueue(QCFTCP, queue);
+        boolean testFailed = false;
 
-        JMSConsumer consumer = jmsContextQCFTCP.createConsumer(queue, "Color='red'");
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        String msgSelect = consumer.getMessageSelector();
+        JMSConsumer jmsConsumer0 = jmsContext.createConsumer(queue, "Color='red'");
+        String msgSelect0 = jmsConsumer0.getMessageSelector();
 
-        if (msgSelect.equals("Color='red'"))
-            flag = true;
-        JMSConsumer consumer1 = jmsContextQCFTCP.createConsumer(queue);
+        if ( !msgSelect0.equals("Color='red'") ) {
+            testFailed = true;
+        }
 
-        String msgSelect1 = consumer1.getMessageSelector();
+        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(queue);
+        String msgSelect1 = jmsConsumer1.getMessageSelector();
 
-        if (msgSelect1 == null)
-            val = true;
+        if ( msgSelect1 != null ) {
+            testFailed = true;
+        }
 
-        if (!(flag == true && val == true))
-            exceptionFlag = true;
+        jmsConsumer1.close();
+        jmsConsumer0.close();
+        jmsContext.close();
 
-        consumer.close();
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetMessageSelector_Consumer_TCP_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_Consumer_TCP_SecOff failed");
+        }
     }
 
     // 118062_4_3 Test when message selector is set to null, it returns null
 
-    public void testGetMessageSelector_null_B_SecOff(HttpServletRequest request,
-                                                     HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_null_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue, null);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
 
+        QueueBrowser qb = jmsContext.createBrowser(queue, null);
         String msgSelect = qb.getMessageSelector();
 
-        if (msgSelect != null)
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetMessageSelector_null_B_SecOff failed");
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_null_B_SecOff failed");
+        }
     }
 
-    public void testGetMessageSelector_null_TCP_SecOff(HttpServletRequest request,
-                                                       HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_null_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue, null);
+        JMSContext jmsContext = jmsQCFTCP.createContext();
 
+        QueueBrowser qb = jmsContext.createBrowser(queue, null);
         String msgSelect = qb.getMessageSelector();
 
-        if (msgSelect != null)
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
-        if (exceptionFlag)
-            throw new WrongException("testGetMessageSelector_null_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_null_TCP_SecOff failed");
+        }
     }
 
     // 118062_4_4 Test when message selector is set to empty string, it returns
     // null
 
-    public void testGetMessageSelector_Empty_B_SecOff(HttpServletRequest request,
-                                                      HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_Empty_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        //jmsContextQCFBindings.createConsumer(queue).receive(30000);
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        emptyQueue(QCFBindings, queue);
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue, "");
-        String msgSelect = "";
+        QueueBrowser qb = jmsContext.createBrowser(queue, "");
+        String msgSelect = qb.getMessageSelector();
 
-        msgSelect = qb.getMessageSelector();
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
-        if (msgSelect == null)
-            exceptionFlag = true;
+        jmsContext.close();
 
-        jmsContextQCFBindings.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testGetMessageSelector_Empty_B_SecOff failed");
-
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_Empty_B_SecOff failed");
+        }
     }
 
-    public void testGetMessageSelector_Empty_TCP_SecOff(HttpServletRequest request,
-                                                        HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_Empty_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFBindings, queue);
-        // jmsContextQCFTCP.createConsumer(queue).receive(30000);
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue, "");
-        String msgSelect = "";
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        msgSelect = qb.getMessageSelector();
+        QueueBrowser qb = jmsContext.createBrowser(queue, "");
+        String msgSelect = qb.getMessageSelector();
 
-        if (msgSelect == null)
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
-        jmsContextQCFTCP.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testGetMessageSelector_Empty_TCP_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_Empty_TCP_SecOff failed");
+        }
     }
 
     // 118062_4_5 Test when message selector is not set , it returns null
 
-    public void testGetMessageSelector_notSet_B_SecOff(HttpServletRequest request,
-                                                       HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_notSet_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        //  jmsContextQCFBindings.createConsumer(queue).receiveNoWait();
-        QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
-        String msgSelect = "";
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        msgSelect = qb.getMessageSelector();
+        QueueBrowser qb = jmsContext.createBrowser(queue);
+        String msgSelect = qb.getMessageSelector();
 
-        if (msgSelect == null)
-            exceptionFlag = true;
-        jmsContextQCFBindings.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testGetMessageSelector_notSet_B_SecOff failed");
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_notSet_B_SecOff failed");
+        }
     }
 
-    public void testGetMessageSelector_notSet_TCP_SecOff(HttpServletRequest request,
-                                                         HttpServletResponse response) throws Throwable {
+    public void testGetMessageSelector_notSet_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
-        JMSContext jmsContextQCFTCP = QCFTCP.createContext();
-        emptyQueue(QCFTCP, queue);
-        // jmsContextQCFTCP.createConsumer(queue).receiveNoWait();
-        QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
-        String msgSelect = "";
+        JMSContext jmsContext = jmsQCFTCP.createContext();
+        emptyQueue(jmsQCFTCP, queue);
 
-        msgSelect = qb.getMessageSelector();
+        QueueBrowser qb = jmsContext.createBrowser(queue);
+        String msgSelect = qb.getMessageSelector();
 
-        if (msgSelect == null)
-            exceptionFlag = true;
-        jmsContextQCFTCP.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testGetMessageSelector_notSet_B_SecOff failed");
+        boolean testFailed = false;
+        if ( msgSelect != null ) {
+            testFailed = true;
+        }
 
+        jmsContext.close();
+
+        if ( testFailed ) {
+            throw new Exception("testGetMessageSelector_notSet_B_SecOff failed");
+        }
     }
 
     //Defect 174395
-    public void testTextMessageGetBody_B_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
+    public void testTextMessageGetBody_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String compare = "Hello this is a test case for TextMessage ";
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        emptyQueue(QCFBindings, queue);
-        TextMessage msg = jmsContextQCFBindings.createTextMessage();
+        TextMessage msg = jmsContext.createTextMessage();
+        String msgText = "Hello this is a test case for TextMessage ";
+        msg.setText(msgText);
 
-        msg.setText(compare);
-
+        boolean testFailed = false;
         try {
-            System.out.println("The obj is :" + msg.getBody(Boolean.class));
-
-        } catch (MessageFormatException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            msg.getBody(Boolean.class);
+            testFailed = true;
+        } catch ( MessageFormatException ex ) {
+            // expected
         }
 
-        jmsContextQCFBindings.close();
-        if (!exceptionFlag)
-            throw new WrongException("testTextMessageGetBody_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testTextMessageGetBody_B_SecOff failed");
+        }
     }
 
-    //Defect 174387
-    public void testByteMessageGetBody_B_SecOff(HttpServletRequest request,
-                                                HttpServletResponse response) throws Throwable {
+    // Defect 174387
 
-        boolean exceptionFlag = false;
+    public void testByteMessageGetBody_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
         byte[] content = "test".getBytes();
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-
-        emptyQueue(QCFBindings, queue);
-
-        BytesMessage msg = jmsContextQCFBindings.createBytesMessage();
+        BytesMessage msg = jmsContext.createBytesMessage();
         msg.writeBytes(content);
 
         msg.reset();
-        System.out.print(msg.readBytes(content));
-        System.out.print(msg.getBodyLength());
+        msg.readBytes(content);
+        msg.getBodyLength();
 
+        boolean testFailed = false;
         try {
             msg.getBody(StringBuffer.class);
-        } catch (MessageFormatException mfe) {
-            mfe.printStackTrace();
-            exceptionFlag = true;
+            testFailed = true;
+        } catch ( MessageFormatException mfe ) {
+            // expected
         }
 
-        jmsContextQCFBindings.close();
-        if (!exceptionFlag)
-            throw new WrongException("testByteMessageGetBody_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testByteMessageGetBody_B_SecOff failed");
+        }
     }
 
     //Defect 174399
-    public void testObjectMessageisBodyAssignable_B_SecOff(HttpServletRequest request,
-                                                           HttpServletResponse response) throws Throwable {
+    public void testObjectMessageisBodyAssignable_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        ObjectMessage msg = jmsContextQCFBindings.createObjectMessage();
+        ObjectMessage msg = jmsContext.createObjectMessage();
 
         msg.setObject(new StockObject("TESTSTOCK", 5467.123));
         msg.getObject();
         msg.getBody(java.io.Serializable.class);
 
+        boolean testFailed = false;
+
         try {
-            if (msg.isBodyAssignableTo(Boolean.class) == false)
-                exceptionFlag = true;
-
-        } catch (Exception ex) {
-            System.out.println("Exception shouldn't be thrown");
+            if ( msg.isBodyAssignableTo(Boolean.class) ) {
+                testFailed = true;
+            }
+        } catch ( Exception ex ) {
             ex.printStackTrace();
-
+            testFailed = true;
         }
 
-        jmsContextQCFBindings.close();
-        if (exceptionFlag != true)
-            throw new WrongException("testObjectMessageisBodyAssignable_B_SecOff failed");
+        jmsContext.close();
 
+        if ( testFailed ) {
+            throw new Exception("testObjectMessageisBodyAssignable_B_SecOff failed");
+        }
     }
 
     //Defect 174397
-    public void testObjectMessagegetBody_B_SecOff(HttpServletRequest request,
-                                                  HttpServletResponse response) throws Throwable {
+    public void testObjectMessagegetBody_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean exceptionFlag = false;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
 
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        ObjectMessage msg = jmsContextQCFBindings.createObjectMessage();
-
+        ObjectMessage msg = jmsContext.createObjectMessage();
         msg.setObject(new StockObject("TESTSTOCK", 678.97));
         msg.getObject();
 
+        boolean testFailed = false;
         try {
             msg.getBody(HashMap.class);
-
-        } catch (MessageFormatException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            testFailed = true;
+        } catch ( MessageFormatException ex ) {
+            // expected
         }
 
-        jmsContextQCFBindings.close();
-        if (!exceptionFlag)
-            throw new WrongException("testObjectMessagegetBody_B_SecOff failed");
+        jmsContext.close();
 
-    }
-
-    //Defect 174403
-    public void testJMSReplyTo(HttpServletRequest request,
-                               HttpServletResponse response) throws Throwable {
-        boolean exceptionFlag = false;
-
-        JMSContext jmsContextQCFBindings = QCFBindings.createContext();
-        emptyQueue(QCFBindings, queue);
-        TextMessage messageQCFBindings = jmsContextQCFBindings.createTextMessage();
-        messageQCFBindings.setText("testJMSReplyTo");
-        messageQCFBindings.setJMSReplyTo(queue);
-
-        JMSProducer producer = jmsContextQCFBindings.createProducer();
-        JMSConsumer consumer = jmsContextQCFBindings.createConsumer(queue);
-
-        producer.send(queue, messageQCFBindings);
-        TextMessage rec_msg = (TextMessage) consumer.receive(30000);
-
-        String replyQ = rec_msg.getJMSReplyTo().toString();
-        System.out.println("ReplyTo Dest on received message is " + replyQ);
-        System.out.println("Expected Dest is " + queue.toString());
-
-        if (!(queue.toString().equals(replyQ))) {
-            System.out.println("Expected value not received");
-            exceptionFlag = true;
+        if ( testFailed ) {
+            throw new Exception("testObjectMessagegetBody_B_SecOff failed");
         }
-        jmsContextQCFBindings.close();
-
-        if (exceptionFlag)
-            throw new WrongException("testJMSReplyTo failed");
     }
 
-    public int getMessageCount(QueueBrowser qb) throws JMSException {
+    // Defect 174403
 
-        Enumeration e = qb.getEnumeration();
+    public void testJMSReplyTo(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            e.nextElement();
-            numMsgs++;
+        JMSContext jmsContext = jmsQCFBindings.createContext();
+        emptyQueue(jmsQCFBindings, queue);
+
+        TextMessage msg = jmsContext.createTextMessage();
+        msg.setText("testJMSReplyTo");
+        msg.setJMSReplyTo(queue);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
+
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        jmsProducer.send(queue, msg);
+
+        TextMessage recmsg = (TextMessage) jmsConsumer.receive(30000);
+
+        String replyQ = recmsg.getJMSReplyTo().toString();
+
+        boolean testFailed = false;
+        if ( !queue.toString().equals(replyQ) ) {
+            testFailed = true;
         }
 
-        return numMsgs;
-    }
+        jmsConsumer.close();
+        jmsContext.close();
 
-    public static QueueConnectionFactory getQCFBindings()
-                    throws NamingException {
-
-        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/jndi_JMS_BASE_QCF");
-
-        return cf1;
-
-    }
-
-    public static QueueConnectionFactory getQCFTCP() throws NamingException {
-
-        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-
-        return cf1;
-
-    }
-
-    public static TopicConnectionFactory getTCFBindings()
-                    throws NamingException {
-
-        TopicConnectionFactory tcf1 = (TopicConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/eis/tcf");
-
-        return tcf1;
-
-    }
-
-    public static TopicConnectionFactory getTCFTCP() throws NamingException {
-
-        TopicConnectionFactory tcf1 = (TopicConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/eis/tcf1");
-
-        return tcf1;
-
-    }
-
-    private static class WrongException extends Exception {
-        WrongException(String str) {
-            super(str);
-            System.out.println(" <ERROR> " + str + " </ERROR>");
+        if ( testFailed ) {
+            throw new Exception("testJMSReplyTo failed");
         }
     }
 
@@ -3978,31 +3922,8 @@ public class JMSContextServlet extends HttpServlet {
         final double stockValue;
 
         StockObject(String stname, double stvalue) {
-            // TODO Auto-generated constructor stub
             this.stockName = stname;
             this.stockValue = stvalue;
         }
-
     }
-
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
-
-        JMSContext context = qcf.createContext();
-        QueueBrowser qb = context.createBrowser(q);
-        Enumeration e = qb.getEnumeration();
-        JMSConsumer consumer = context.createConsumer(q);
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            Message message = (Message) e.nextElement();
-            numMsgs++;
-        }
-
-        for (int i = 0; i < numMsgs; i++) {
-            Message message = consumer.receive();
-        }
-
-        context.close();
-    }
-
 }

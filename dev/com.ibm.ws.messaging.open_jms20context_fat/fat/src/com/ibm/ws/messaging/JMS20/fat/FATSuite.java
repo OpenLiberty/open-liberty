@@ -25,18 +25,18 @@ import componenttest.rules.repeater.RepeatTests;
 
         // Lite mode test classes:
 
-        // LiteBucketSet1Test.class,
-        // LiteBucketSet2Test.class,
-        // LiteBucketSet3Test.class,
+        LiteBucketSet1Test.class, // JMSContext App
+        LiteBucketSet2Test.class, // JMSContext_118067 app, JMSContext_118070 app, JMSContext_118075 app
+        LiteBucketSet3Test.class, // JMSTemporaryQueue app
 
         // Full mode test classes:
 
         // Many of the tests use the same client and engine server configurations?
         //   JMSContextClient.xml, JMSContextEngine.xml
 
-        // JMSContextTest_118058.class, // JMSContext App
-        // JMSContextTest_118061.class, // JMSContext App
-        // JMSContextTest_118062.class, // JMSContext App
+        JMSContextTest_118058.class, // JMSContext App
+        JMSContextTest_118061.class, // JMSContext App
+        JMSContextTest_118062.class, // JMSContext App
 
         JMSContextTest_118067.class, // JMSContext_118067 App
         JMSContextTest_118070.class, // JMSContext_118070 App
@@ -55,12 +55,12 @@ public class FATSuite {
     // the tests are removed from WS-CD-Open, the pre-jakarta
     // repeat can be re-enabled in open-liberty.
 
-    @ClassRule
-    public static RepeatTests repeater = RepeatTests
-        .withoutModification()
-        .andWith( new JakartaEE9Action() );
-
     // @ClassRule
     // public static RepeatTests repeater = RepeatTests
-    //     .with( new JakartaEE9Action() );
+    //     .withoutModification()
+    //     .andWith( new JakartaEE9Action() );
+
+    @ClassRule
+    public static RepeatTests repeater = RepeatTests
+        .with( new JakartaEE9Action() );
 }

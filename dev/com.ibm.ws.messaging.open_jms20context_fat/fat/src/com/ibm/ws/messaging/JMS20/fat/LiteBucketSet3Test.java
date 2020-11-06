@@ -31,6 +31,8 @@ public class LiteBucketSet3Test {
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 
+    private static final String appName = "JMSTemporaryQueue";
+    private static final String[] appPackages = new String[] { "jmstemporaryqueue.web" };
     private static final String contextRoot = "JMSTemporaryQueue";
 
     private boolean runInServlet(String test) throws IOException {
@@ -42,12 +44,13 @@ public class LiteBucketSet3Test {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        engineServer.setServerConfigurationFile("JMSContextEngine_118065.xml");
+        engineServer.setServerConfigurationFile("JMSContextEngine_TQ.xml");
 
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-        clientServer.setServerConfigurationFile("JMSContextClient_118065.xml");
+        clientServer.setServerConfigurationFile("JMSContextClient_TQ.xml");
+        TestUtils.addDropinsWebApp(clientServer, appName, appPackages);
 
         engineServer.startServer("LiteBucketSet3_Engine.log");
         clientServer.startServer("LiteBucketSet3_Client.log");

@@ -31,7 +31,11 @@ public class LiteBucketSet1Test {
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 
-    private boolean runInServlet(String test, String contextRoot) throws IOException {
+    private static final String appName = "JMSContext";
+    private static final String[] appPackages = new String[] { "jmscontext.web" };
+    private static final String contextRoot = "JMSContext";
+
+    private boolean runInServlet(String test) throws IOException {
         return TestUtils.runInServlet(clientHost, clientPort, contextRoot, test); // throws IOException
     }
 
@@ -46,6 +50,7 @@ public class LiteBucketSet1Test {
             "lib/features",
             "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSContextClient.xml");
+        TestUtils.addDropinsWebApp(clientServer, appName, appPackages);
 
         engineServer.startServer("LiteBucketSet1Test_Engine.log");
         clientServer.startServer("LiteBucketSet1Test_Client.log");
@@ -73,13 +78,13 @@ public class LiteBucketSet1Test {
 
     @Test
     public void testCreateContext_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateContext_B_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testCreateContext_B_SecOff");
         assertTrue("Test testCreateContext_B_SecOff failed", testResult);
     }
 
     @Test
     public void testCreateContext_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateContext_TCP_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testCreateContext_TCP_SecOff");
         assertTrue("Test testCreateContext_TCP_SecOff failed", testResult);
     }
 
@@ -87,13 +92,13 @@ public class LiteBucketSet1Test {
 
     @Test
     public void testautoStart_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testautoStart_B_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testautoStart_B_SecOff");
         assertTrue("Test testautoStart_B_SecOff failed", testResult);
     }
 
     @Test
     public void testautoStart_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testautoStart_TCP_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testautoStart_TCP_SecOff");
         assertTrue("Test testautoStart_TCP_SecOff failed", testResult);
     }
 
@@ -102,25 +107,25 @@ public class LiteBucketSet1Test {
 
     @Test
     public void testCreateMessage_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateMessage_B_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testCreateMessage_B_SecOff");
         assertTrue("Test testCreateMessage_B_SecOff failed", testResult);
     }
 
     @Test
     public void testCreateMessage_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testCreateMessage_TCP_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testCreateMessage_TCP_SecOff");
         assertTrue("Test testCreateMessage_TCP_SecOff failed", testResult);
     }
 
     @Test
     public void testTextMessageGetBody_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testTextMessageGetBody_B_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testTextMessageGetBody_B_SecOff");
         assertTrue("Test testTextMessageGetBody_B_SecOff failed", testResult);
     }
 
     @Test
     public void testJMSReplyTo() throws Exception {
-        boolean testResult = runInServlet("testJMSReplyTo", "JMSContext");
+        boolean testResult = runInServlet("testJMSReplyTo");
         assertTrue("Test testJMSReplyTo failed", testResult);
     }
 
@@ -132,13 +137,13 @@ public class LiteBucketSet1Test {
 
     @Test
     public void testcreateBrowser_B_SecOff() throws Exception {
-        boolean testResult = runInServlet("testcreateBrowser_B_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testcreateBrowser_B_SecOff");
         assertTrue("Test testcreateBrowser_B_SecOff failed", testResult);
     }
 
     @Test
     public void testcreateBrowser_TCP_SecOff() throws Exception {
-        boolean testResult = runInServlet("testcreateBrowser_TCP_SecOff", "JMSContext");
+        boolean testResult = runInServlet("testcreateBrowser_TCP_SecOff");
         assertTrue("Test testcreateBrowser_TCP_SecOff failed", testResult);
     }
 }

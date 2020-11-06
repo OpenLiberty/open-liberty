@@ -237,7 +237,7 @@ public class JMSContext_118067Servlet extends HttpServlet {
         boolean testFailed = false;
         if ( (msg == null) ||
              (msg.getText() == null) ||
-             msg.getText().equals("testCreateJmsProducerAndSend_B_SecOff") ) {
+             !msg.getText().equals("testCreateJmsProducerAndSend_B_SecOff") ) {
             testFailed = true;
         }
 

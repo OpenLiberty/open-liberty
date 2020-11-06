@@ -88,7 +88,7 @@
     <properties.wasJms queueName="newQueue"/>
   </jmsQueue>
 
-  <jmsQueue jndiName="eis/queue1">
+  <jmsQueue id="eis/queue1" jndiName="eis/queue1">
     <properties.wasJms queueName="QUEUE1"/>
   </jmsQueue>
 
@@ -100,16 +100,16 @@
     <properties.wasJms queueName="DeletionQueue"/>
   </jmsQueue>
 
-  <jmsQueue jndiName="eis/queue11">
+  <jmsQueue id="eis/queue11" jndiName="eis/queue11">
     <properties.wasJms queueName="InvalidQueue"/>
   </jmsQueue>
 
-  <jmsTopic jndiName="eis/topic1">
-    <properties.wasJms topicSpace="NewTopic1"/>
-  </jmsTopic>
-
   <jmsTopic jndiName="eis/topic">
     <properties.wasJms topicSpace="NewTopic1" timeToLive="1000"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1"/>
   </jmsTopic>
 
   <jmsTopic jndiName="eis/topic2">
