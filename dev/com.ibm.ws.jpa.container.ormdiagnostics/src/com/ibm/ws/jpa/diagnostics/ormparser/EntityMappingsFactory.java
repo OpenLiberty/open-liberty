@@ -114,7 +114,8 @@ public class EntityMappingsFactory {
         V1_0("1.0", Constants.JPA_10_JAXB_PACKAGE),
         V2_0("2.0", Constants.JPA_20_JAXB_PACKAGE),
         V2_1("2.1", Constants.JPA_21_JAXB_PACKAGE),
-        V2_2("2.2", Constants.JPA_21_JAXB_PACKAGE);
+        V2_2("2.2", Constants.JPA_21_JAXB_PACKAGE),
+        V3_0("3.0", Constants.JPA_30_JAXB_PACKAGE);
 
         private final String version;
         private final String jaxbPackage;
