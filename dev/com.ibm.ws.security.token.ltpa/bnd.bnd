@@ -28,7 +28,10 @@ Private-Package: \
 # Update the metatype.xml for your component in the resources/OSGI-INF/metatype folder
 Include-Resource: \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
-    OSGI-INF/l10n=resources/OSGI-INF/l10n
+    OSGI-INF/l10n=resources/OSGI-INF/l10n, \
+    OSGI-INF/wlp=resources/OSGI-INF/wlp
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Service-Component: \
   com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
@@ -36,7 +39,7 @@ Service-Component: \
     activate:=activate; \
     deactivate:=deactivate; \
     modified:=modified; \
-    configuration-policy:=optional; \
+    configuration-policy:=require; \
     immediate:=true; \
     locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     executorService=java.util.concurrent.ExecutorService; \
@@ -63,6 +66,7 @@ Service-Component: \
     multiple:='changeListener'; \
     dynamic:='changeListener'; \
     properties:='service.vendor=IBM'
+
 
 instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.class
 
