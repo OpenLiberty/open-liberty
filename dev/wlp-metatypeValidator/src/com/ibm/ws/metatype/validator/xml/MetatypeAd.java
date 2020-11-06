@@ -185,6 +185,7 @@ public class MetatypeAd extends MetatypeBase {
         validateIbmCopyOf();
         validateIbmRename();
         validateRequiresTF();
+        validateFinal();
         if (validateRefs) {
             validateIbmReference();
             validateIbmService();
