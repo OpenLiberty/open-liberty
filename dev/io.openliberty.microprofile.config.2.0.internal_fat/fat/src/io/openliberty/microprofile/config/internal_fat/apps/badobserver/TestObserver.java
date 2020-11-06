@@ -19,7 +19,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class TestObserver {
 
-    // Should throw a deployment exception
+    //  Should throw a deployment exception
     private static final void observerMethod(@Observes @Initialized(ApplicationScoped.class) final Object obj,
                                              @ConfigProperty(name = "DOESNOTEXIST") final String doesnotexist) {
         throw new RuntimeException("This method should not have been called");
