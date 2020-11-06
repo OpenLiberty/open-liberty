@@ -493,8 +493,13 @@ variables.in.id.not.supported.explanation=Os valores de vari\u00e1veis n\u00e3o 
 variables.in.id.not.supported.useraction=Remova a vari\u00e1vel do valor do atributo de ID.
 
 error.root.must.be.server=CWWKG0105E: O documento de configura\u00e7\u00e3o {0} deve come\u00e7ar com o elemento [{1}].
-error.root.must.be.server.explanation=A configura\u00e7\u00e3o deve estar contida em um elemento do servidor ou em um elemento do cliente. 
-error.root.must.be.server.useraction=Inclua um elemento do servidor ou do cliente como a raiz do arquivo de configura\u00e7\u00e3o. 
+error.root.must.be.server.explanation=A configura\u00e7\u00e3o deve estar contida em um elemento de servidor ou em um elemento cliente. 
+error.root.must.be.server.useraction=Inclua um elemento de servidor ou de cliente como a raiz do arquivo de configura\u00e7\u00e3o. 
+
+error.bad.variable.file=CWWKG0106E: O arquivo {0} n\u00e3o pode ser lido. 
+error.bad.variable.file.explanation=O arquivo n\u00e3o pode ser carregado como uma vari\u00e1vel, porque n\u00e3o \u00e9 poss\u00edvel fazer sua leitura. 
+error.bad.variable.file.useraction=Verifique se h\u00e1 conte\u00fado de texto no arquivo e verifique as permiss\u00f5es do sistema operacional para o arquivo.
+
 
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

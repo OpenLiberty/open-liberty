@@ -327,3 +327,34 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Rufen Sie ein neues Token f\u00fcr einen der 
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Die Konfiguration [{0}] gibt den Signaturalgorithmus {1} an. Dieser Algorithmus ist jedoch nur als Beta-Edition verf\u00fcgbar. Es wird stattdessen der Signaturalgorithmus {2} verwendet.
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Es ist m\u00f6glicherweise f\u00fcr den in der Nachricht angegebenen Signaturalgorithmus keine vollst\u00e4ndige Unterst\u00fctzung vorhanden. Daher kann der Signaturalgorithmus nur in der Beta-Edition verwendet werden.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Konfigurieren Sie einen unterst\u00fctzten Signaturalgorithmus oder verwenden Sie die Beta-Edition dieses Produkts, um den in der Nachricht angegebenen Signaturalgorithmus zu verwenden.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Der JWT-Consumer [{0}] hat einen Fehler beim Extrahieren der JWS-Nutzdaten (JSON Web Signature) aus dem JWE-Token (JSON Web Encryption) festgestellt. {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Das JWE-Token ist m\u00f6glicherweise fehlerhaft oder es fehlen Angaben. Der Schl\u00fcsselmanagementschl\u00fcssel, der f\u00fcr die Entschl\u00fcsselung des JWE-Tokens verwendet wird, fehlt m\u00f6glicherweise oder es ist nicht m\u00f6glich, das Token mit dem Schl\u00fcssel zu entschl\u00fcsseln.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. Vergewissern Sie sich, dass das JWE-Token ordnungsgem\u00e4\u00df formatiert ist. Stellen Sie sicher, dass die JWT-Konsumentenkonfigurationsreferenzen des Schl\u00fcsselmanagementschl\u00fcssels dem Schl\u00fcssel entsprechen, der f\u00fcr die Verschl\u00fcsselung des JWE-Tokens verwendet wird.
+
+#
+# CWWKS6057E is available
+#
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Der JWT-Builder [{0}] kann keine JWE-Tokens (JSON Web Encryption) erstellen, weil kein Schl\u00fcsselmanagementschl\u00fcssel bereitgestellt wurde.
+KEY_MANAGEMENT_KEY_MISSING.explanation=Ein Schl\u00fcsselmanagementschl\u00fcssel ist ein Schl\u00fcssel, der f\u00fcr die Verschl\u00fcsselung eines Content Encryption Key eines JWE-Tokens verwendet wird. Ein Schl\u00fcssel muss angegeben werden, damit der JWT-Builder JWE-Tokens erstellen kann.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Vergewissern Sie sich, dass der Builder-API ein Schl\u00fcssel bereitgestellt wird, wenn der Builder JWE-Tokens erstellen soll.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: In der JWT-Builder-Konfiguration [{0}] fehlt das Attribut {1} f\u00fcr die Erstellung von JWE-Tokens (JSON Web Encryption). Konfigurieren Sie das angegebene Attribut oder entfernen Sie die Attribute {2} und {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=Der Schl\u00fcsselmanagementalias bezieht sich auf einen Schl\u00fcssel, der zum Verschl\u00fcsseln des Content Encryption Key eines JWE-Tokens verwendet wird. Ein Schl\u00fcsselalias muss angegeben werden, damit der JWT-Builder JWE-Tokens erstellen kann.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Wenn der JWT-Builder JWE-Tokens erstellen soll, konfigurieren Sie das Attribut f\u00fcr den Schl\u00fcsselmanagementalias. Wenn der JWT-Builder keine JWE-Tokens erstellen muss, entfernen Sie die anderen in der Nachricht genannten Attribute.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Der JWT-Builder [{0}] kann kein JWE-Token (JSON Web Encryption) erstellen. {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Der JWT-Builder hat beim Erstellen des JWE-Tokens einen Fehler festgestellt. Sehen Sich sich den in der Nachricht genannten Fehler an, um weitere Informationen zu erhalten.
+ERROR_BUILDING_SIGNED_JWE.useraction=Sehen Sich sich den in der Nachricht genannten Fehler an, um weitere Informationen zu erhalten.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Der JWT-Builder [{0}] kann kein JWE-Token (JSON Web Encryption) erstellen, weil der Schl\u00fcsselmanagementschl\u00fcssel nicht gefunden wurde. Der Schl\u00fcsselalias f\u00fcr das Schl\u00fcsselmanagement ist [{1}] und der konfigurierte Truststore ist [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=Ein Schl\u00fcsselmanagementschl\u00fcssel ist ein Schl\u00fcssel, der f\u00fcr die Verschl\u00fcsselung eines Content Encryption Key eines JWE-Tokens verwendet wird. Ein Schl\u00fcsselmanagementschl\u00fcssel muss angegeben werden, damit der JWT-Builder JWE-Tokens erstellen kann. Ein Schl\u00fcsselmanagementschl\u00fcssel kann mithilfe des Schl\u00fcsselalias und der konfigurierten Truststorewerte, die in der Nachricht angegeben sind, angegeben werden. Oder Sie verwenden die JwtBuilder-API.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Vergewissern Sie sich, dass ein Schl\u00fcssel mit dem in der Nachricht angegebenen Alias in dem Truststore vorhanden ist, der in der Nachricht angegeben ist. Wenn die JwtBuilder-API verwendet wird, stellen Sie sicher, dass ein Schl\u00fcsselmanagementschl\u00fcssel bereitgestellt wurde.

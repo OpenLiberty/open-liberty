@@ -239,6 +239,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: O defini\u0163ie de caracteristic\u0103
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Managerul de caracteristici nu poate g\u0103si o defini\u0163ie pentru o caracteristic\u0103 specificat\u0103 \u00een configura\u0163ia de server. Este posibil ca numele specificat s\u0103 se potriveasc\u0103 cu o defini\u0163ie de caracteristic\u0103 existent\u0103.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Lua\u0163i \u00een considerare specificarea \u00een locul ei a numitei defini\u0163ii de caracteristic\u0103 existente. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Configura\u0163ia include o combina\u0163ie incompatibil\u0103 de caracteristici. Ca rezultat, managerul de caracteristici nu a instalat nicio caracteristic\u0103.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Configura\u0163ia include o combina\u0163ie incompatibil\u0103 de caracteristici. Pentru a evita un comportament invalid, managerul de caracteristici a dezactivat toate caracteristicile.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specifica\u0163i o versiune diferit\u0103 a caracteristicilor configurate care au cauzat conflictul.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Caracteristica {0} exist\u0103 deja. Nu va fi reinstalat\u0103. Pentru a modifica o caracteristic\u0103 existent\u0103, trebuie s\u0103 o dezinstala\u0163i manual mai \u00eent\u00e2i.

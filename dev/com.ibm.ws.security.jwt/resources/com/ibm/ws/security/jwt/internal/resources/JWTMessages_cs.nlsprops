@@ -329,3 +329,34 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Z\u00edskejte nov\u00fd token pro jeden d\u01
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Konfigurace [{0}] ur\u010duje podpisov\u00fd algoritmus {1}, ale dan\u00fd algoritmus je dostupn\u00fd pouze ve vyd\u00e1n\u00ed beta. M\u00edsto toho se pou\u017eije podpisov\u00fd algoritmus {2}.
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Podpora podpisov\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b, m\u016f\u017ee b\u00fdt ne\u00fapln\u00e1, tak\u017ee podpisov\u00fd algoritmus lze pou\u017e\u00edt pouze ve vyd\u00e1n\u00ed beta.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Nakonfigurujte podporovan\u00fd podpisov\u00fd algoritmus nebo pou\u017eijte vyd\u00e1n\u00ed beta tohoto produktu pro pou\u017eit\u00ed podpisov\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Spot\u0159ebitel JWT [{0}] zjistil chybu p\u0159i extrakci informa\u010dn\u00edho obsahu JSON Web Signature (JWS) z tokenu JWE (JSON Web Encryption). {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Token JWE m\u016f\u017ee b\u00fdt chybn\u00fd nebo mohou chyb\u011bt informace. Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed tokenu JWE m\u016f\u017ee chyb\u011bt, nebo nemus\u00ed b\u00fdt schopen de\u0161ifrovat token.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, zda je token JWE dob\u0159e formov\u00e1n. Ov\u011b\u0159te, \u017ee konfigurace odb\u011bratele JWT odkazuje na kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f, kter\u00fd odpov\u00edd\u00e1 kl\u00ed\u010di pou\u017eit\u00e9mu k za\u0161ifrov\u00e1n\u00ed tokenu JWE.
+
+#
+# CWWKS6057E is available
+#
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Tv\u016frce JWT [{0}] nem\u016f\u017ee vytvo\u0159it tokeny JSON Web Encryption (JWE), proto\u017ee kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f nen\u00ed poskytnut.
+KEY_MANAGEMENT_KEY_MISSING.explanation=Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f je kl\u00ed\u010d, kter\u00fd se pou\u017e\u00edv\u00e1 k \u0161ifrov\u00e1n\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de obsahu tokenu JWE. Kl\u00ed\u010d mus\u00ed b\u00fdt zad\u00e1n tak, aby tv\u016frce JWT mohl vytvo\u0159it tokeny JWE.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Ov\u011b\u0159te, \u017ee je poskytnut kl\u00ed\u010d rozhran\u00ed API tv\u016frce, pokud tv\u016frce mus\u00ed vytvo\u0159it tokeny JWE.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: V konfiguraci tv\u016frce JWT [{0}] chyb\u00ed atribut {1}, tak\u017ee nem\u016f\u017ee vytvo\u0159it tokeny JSON Web Encryption (JWE). Bu\u010f nakonfigurujte ur\u010den\u00fd atribut, nebo odeberte atributy {2} a {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=Alias spr\u00e1vy kl\u00ed\u010d\u016f odkazuje na kl\u00ed\u010d, kter\u00fd se pou\u017e\u00edv\u00e1 k \u0161ifrov\u00e1n\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de obsahu tokenu JWE. Alias kl\u00ed\u010de mus\u00ed b\u00fdt zad\u00e1n tak, aby tv\u016frce JWT mohl vytvo\u0159it tokeny JWE.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Pokud by m\u011bl tv\u016frce JWT vytvo\u0159it tokeny JWE, nakonfigurujte atribut aliasu spr\u00e1vy kl\u00ed\u010d\u016f. Pokud tv\u016frce JWT nepot\u0159ebuje vytvo\u0159it tokeny JWE, odeberte ostatn\u00ed atributy uveden\u00e9 ve zpr\u00e1v\u011b.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Tv\u016frce JWT [{0}] nem\u016f\u017ee vytvo\u0159it token JSON Web Encryption (JWE). {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Tv\u016frce JWT rozpoznal chybu p\u0159i vytv\u00e1\u0159en\u00ed tokenu JWE. Zkontrolujte chybu ve zpr\u00e1v\u011b a z\u00edskejte dal\u0161\u00ed informace.
+ERROR_BUILDING_SIGNED_JWE.useraction=Zkontrolujte chybu ve zpr\u00e1v\u011b a z\u00edskejte dal\u0161\u00ed informace.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Tv\u016frce JWT [{0}] nem\u016f\u017ee vytvo\u0159it token JSON Web Encryption (JWE), proto\u017ee kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f nelze nal\u00e9zt. Alias kl\u00ed\u010de spr\u00e1vy kl\u00ed\u010d\u016f je [{1}] a nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti je [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f je kl\u00ed\u010d, kter\u00fd se pou\u017e\u00edv\u00e1 k \u0161ifrov\u00e1n\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de obsahu tokenu JWE. Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f mus\u00ed b\u00fdt zad\u00e1n tak, aby tv\u016frce JWT mohl vytvo\u0159it tokeny JWE. Kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f lze zadat s pou\u017eit\u00edm aliasu kl\u00ed\u010de a nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti, kter\u00e9 jsou uvedeny ve zpr\u00e1v\u011b, nebo pomoc\u00ed rozhran\u00ed JwtBuilder API.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee kl\u00ed\u010d s aliasem ur\u010den\u00fdm ve zpr\u00e1v\u011b existuje v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti, kter\u00e9 je uvedeno ve zpr\u00e1v\u011b. Je-li pou\u017eito rozhran\u00ed JwtBuilder API, ujist\u011bte se, \u017ee je poskytnut kl\u00ed\u010d spr\u00e1vy kl\u00ed\u010d\u016f.

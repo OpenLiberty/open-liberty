@@ -22,4 +22,4 @@ invalid.ssl.protocol.useraction=Configure um valor de protocolo SSL do TLSv1.2 o
 
 client.ssl.failed=CWWKT0306W: Uma conex\u00e3o SSL do cliente gRPC n\u00e3o foi criada com a refer\u00eancia SSL {0} devido a {1}.
 client.ssl.failed.explanation=A cria\u00e7\u00e3o do contexto SSL do cliente gRPC falhou.
-client.ssl.failed.useraction=Configure propriedades SSL v\u00e1lidas para o gRPC. 
+client.ssl.failed.useraction=Configure propriedades SSL v\u00e1lidas para o gRPC.
