@@ -19,7 +19,6 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -114,8 +113,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private final Object WebConnCanCloseSync = new Object();
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
-
-    private final AtomicBoolean decrementedOneTime = new AtomicBoolean(false);
 
     /**
      * Constructor.
@@ -243,12 +240,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 super.close(conn, e);
             } finally {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "decrement active connection count if needed");
+                    Tr.debug(tc, "decrement active connection count");
                 }
-                // must decrement once, and only once, per everytime ready is called
-                if (!decrementedOneTime.getAndSet(true)) {
-                    this.myChannel.decrementActiveConns();
-                }
+                this.myChannel.decrementActiveConns();
             }
         }
     }
@@ -322,10 +316,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void ready(VirtualConnection inVC) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Received HTTP connection: " + inVC + " hc: " + this.hashCode());
+            Tr.debug(tc, "increment active connection count");
         }
 
         this.myChannel.incrementActiveConns();
-        decrementedOneTime.set(false);
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
 
