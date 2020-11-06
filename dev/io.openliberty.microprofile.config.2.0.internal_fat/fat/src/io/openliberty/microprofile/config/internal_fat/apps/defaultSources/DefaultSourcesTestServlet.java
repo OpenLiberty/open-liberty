@@ -45,8 +45,8 @@ public class DefaultSourcesTestServlet extends FATServlet {
         }
 
         // From mpConfig > 1.4, Property Expressions may evaluate to unexpected values for this test.
-        // To avoid this, all values including a "$" are removed.
-        systemValues.values().removeIf(v -> v.contains("$"));
+        // To avoid this, all values including a "$" or "\" are removed.
+        systemValues.values().removeIf(v -> v.contains("$") || v.contains("\\"));
 
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.addDefaultSources();
