@@ -58,7 +58,6 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 public class CommonTests {
 
@@ -165,27 +164,36 @@ public class CommonTests {
 
         setupSSLClient();
 
-        server = LibertyServerFactory.getLibertyServer(requestedServer);
+        //11/2020 to be removed, since we're passing in server object from test case caller
+        //server = LibertyServerFactory.getLibertyServer(requestedServer);
 
         String fixedServerName = "server.xml";
         if (serverXML != null) {
+            Log.info(thisClass, thisMethod, "fixedServerName = serverXML");
             fixedServerName = serverXML;
         }
+        Log.info(thisClass, thisMethod, "setting lastServer and origServer");
         lastServer = System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + fixedServerName;
         origServer = System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + fixedServerName;
 
         if (serverXML != null) {
 //            uniqOrigServerXml = serverXML;
+            Log.info(thisClass, thisMethod, "checking when serverXml is not server.xml");
             if (!serverXML.equals("server.xml")) {
-                Log.info(thisClass, thisMethod, "ServerRoot" + server.getServerRoot());
+                Log.info(thisClass, thisMethod, "ServerRoot is: " + server.getServerRoot());
                 String oldServerXml = server.getServerRoot() + File.separator
                                       + "server.xml";
+                Log.info(thisClass, thisMethod, "oldServerXML is : " + oldServerXml);
                 String newServerXml = System.getProperty("user.dir")
                                       + File.separator + server.getPathToAutoFVTNamedServer()
                                       + serverXML;
+                Log.info(thisClass, thisMethod, "newServerXML is: " + newServerXml);
+                Log.info(thisClass, thisMethod, "Copy newServerXml to oldServerXml ");
                 Log.info(thisClass, thisMethod, "Copy: " + newServerXml
                                                 + " to: " + oldServerXml);
+                Log.info(thisClass, thisMethod, "Before updateServerXml.copyFile()");
                 UpdateServerXml.copyFile(newServerXml, oldServerXml);
+                Log.info(thisClass, thisMethod, "After UpdateServerXml.copyFile");
                 // assumes that commonSetUp is called with the original
                 // server.xml (or server_orig.xml)
             }
@@ -194,7 +202,9 @@ public class CommonTests {
         HttpUnitOptions.setLoggingHttpHeaders(true);
 
         // install the callback handler if it exists for this FAT project
-        SharedTools.installCallbackHandler(server);
+        //updated 11/2020 to remove; the callBackhandler is already installed via build.gradle and ShrinkHelper
+        //SharedTools.installCallbackHandler(server);
+
 //        String cbh = "com.ibm.ws.wssecurity.example.cbh_1.0.0";
 //        File f = new File(server.getServerRoot() + File.separator + "publish" + File.separator + "bundles" + File.separator + cbh + ".jar");
 //        if (f.exists()) {
@@ -226,6 +236,7 @@ public class CommonTests {
                         + uniqueUrl;
         ENDPOINT_BASE = "http://localhost:" + portNumber;
 
+        Log.info(thisClass, thisMethod, "****clientHttpUrl is:" + clientHttpUrl);
         Log.info(thisClass, thisMethod, "****portNumber is:" + portNumber);
 
         if (useSSL) {
@@ -286,6 +297,7 @@ public class CommonTests {
             Log.info(thisClass, thisMethod, "clientHttpUrl: " + clientHttpUrl);
             Log.info(thisClass, thisMethod, "clientHttpsUrl: " + clientHttpsUrl);
 
+            //SRVE0274W: Error while adding servlet mapping for path ...
             addIgnoredServerException("SRVE0274W");
 //            server.addIgnoredErrors(regexes);
 //            server.
@@ -353,7 +365,7 @@ public class CommonTests {
 
         printMethodName(thisMethod);
         String respReceived = null;
-        Log.info(thisClass, thisMethod, "In generic CXF client code");
+        Log.info(thisClass, thisMethod, "In CommontTests.genericTestSub: generic CXF client code");
 
         try {
             /*
@@ -382,7 +394,8 @@ public class CommonTests {
             WebConversation wc = new WebConversation();
 
             // Invoke the service client - servlet
-            Log.info(thisClass, thisMethod, "Invoking: " + useThisUrl);
+            //Log.info(thisClass, thisMethod, "useThisUrl is: " + useThisUrl);
+            Log.info(thisClass, thisMethod, "Invoke service client: " + useThisUrl);
             request = new GetMethodWebRequest(useThisUrl);
 
             request.setParameter("testName", thisMethod);
@@ -408,15 +421,19 @@ public class CommonTests {
 //            Log.info(thisClass, thisMethod, "msg" + sendMsg);
 //
 //            Log.info(thisClass, thisMethod, "wc: " + wc);
-            Log.info(thisClass, thisMethod, "request: " + request);
+            Log.info(thisClass, thisMethod, "request is: " + request);
 
             // Invoke the client
+
+            Log.info(thisClass, thisMethod, "Invoke the client - before wc.getResponse");
             response = wc.getResponse(request);
+            Log.info(thisClass, thisMethod, "After wc.getResponse");
 
             if (response == null) {
                 Log.info(thisClass, thisMethod, "Response from CXF x509 Sig Service client was null");
             }
             // Read the response page from client jsp
+            Log.info(thisClass, thisMethod, "Read the response - before response.getText() ");
             respReceived = response.getText();
             Log.info(thisClass, thisMethod, "Response from CXF x509 Sig Service client: " + respReceived);
 
@@ -677,6 +694,7 @@ public class CommonTests {
         String thisMethod = "setupSSLCLient";
 
         printMethodName(thisMethod);
+        Log.info(thisClass, thisMethod, "Inside setupSSLClient but not calling enableSSLv3()");
         Log.info(thisClass, thisMethod, "Setting up global trust");
 
         /*
@@ -726,6 +744,7 @@ public class CommonTests {
             } };
 
             // Install the all-trusting trust manager
+            Log.info(thisClass, thisMethod, "before SSLContext TLS");
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(keyManagers, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
@@ -747,6 +766,8 @@ public class CommonTests {
             // "changeit");
             System.setProperty("javax.net.debug", "ssl");
             Log.info(thisClass, thisMethod, "javax.net.debug is set to: " + System.getProperty("javax.net.debug"));
+
+            Log.info(thisClass, thisMethod, "end of setupSSLClient()");
 
         } catch (Exception e) {
             Log.info(thisClass, "static initializer", "Unable to set default TrustManager", e);

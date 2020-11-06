@@ -12,19 +12,6 @@
 package com.ibm.ws.wssecurity.fat.utils.common;
 
 import java.io.File;
-
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012, 2013
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
-
 import java.security.Security;
 import java.util.HashMap;
 
