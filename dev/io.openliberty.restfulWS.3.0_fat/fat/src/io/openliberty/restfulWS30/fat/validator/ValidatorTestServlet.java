@@ -1,0 +1,91 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.restfulWS30.fat.validator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.constraints.NotNull;
+
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+
+@SuppressWarnings("serial")
+@WebServlet("/ValidatorTestServlet")
+public class ValidatorTestServlet extends FATServlet {
+
+    @Test
+    public void testNotNullViolations() {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        System.out.println("testNotNullViolations validator " + validator.toString());
+        
+        MyBean myBean = new MyBean();
+        myBean.notNull = null;
+        assertViolations(validator.validate(myBean), NotNull.class);
+    }
+    
+    @Test
+    public void testNotNullValidation() throws Exception {
+//        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+//        System.out.println("testNotNullValidation2 validator " + validator.toString());
+        
+        String nullString = null;
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/validator/app/path/" + nullString);
+        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+        conn.setRequestMethod("POST");
+        assertEquals(400, conn.getResponseCode());        
+//        assertEquals("foo " + nullString, readEntity(conn.getInputStream()));
+    }
+ 
+    private String readEntity(InputStream is) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        byte[] b = new byte[256];
+        int i = is.read(b);
+        while (i > 0) {
+            sb.append(new String(b, 0, i));
+            i = is.read(b);
+        }
+        return sb.toString().trim();
+    }
+
+    public static class MyBean {
+
+        @NotNull
+        public String notNull = "";
+
+    }
+
+    private void assertViolations(Set<ConstraintViolation<MyBean>> violations, Class<?>... constraintTypes) {
+        assertEquals(constraintTypes.length, violations.size());
+
+        Set<String> foundConstraints = new HashSet<>();
+        for (ConstraintViolation<MyBean> v : violations) {
+            String constraintAnno = v.getConstraintDescriptor().getAnnotation().toString();
+            System.out.println("Found constraint violation '" + v.getMessage() + "' from annotation " + constraintAnno);
+            foundConstraints.add(constraintAnno);
+        }
+
+        for (Class<?> expectedConstraint : constraintTypes)
+            assertTrue("Did not find expected constraint " + expectedConstraint.getCanonicalName() + " in " + foundConstraints,
+                       foundConstraints.stream().anyMatch(s -> s.contains(expectedConstraint.getCanonicalName())));
+    }
+}

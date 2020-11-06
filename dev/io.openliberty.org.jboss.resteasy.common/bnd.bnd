@@ -116,6 +116,7 @@ Import-Package: \
   !com.sun.xml.bind.marshaller, \
   !org.apache.james.mime4j.*, \
   !org.jboss.resteasy.plugins.providers.jaxb, \
+  !org.jboss.resteasy.plugins.providers.validator, \
   !sun.misc, \
   *
 
@@ -124,6 +125,7 @@ DynamicImport-Package: \
   javax.json.bind.spi, \
   com.sun.xml.bind.marshaller, \
   org.jboss.resteasy.plugins.providers.jaxb, \
+  org.jboss.resteasy.plugins.providers.validator, \
   sun.misc
 
 
