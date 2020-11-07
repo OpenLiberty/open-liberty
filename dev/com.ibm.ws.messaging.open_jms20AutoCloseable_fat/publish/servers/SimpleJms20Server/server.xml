@@ -1,0 +1,10 @@
+<server>
+    <!--  A simple server used to validate test starting.  -->
+    <featureManager>
+      <feature>wasJmsClient-2.0</feature>
+      <feature>wasJmsServer-1.0</feature>
+      <feature>jndi-1.0</feature>
+    </featureManager>
+   
+    <include location="../fatTestPorts.xml"/>
+</server>
