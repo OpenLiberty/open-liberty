@@ -59,6 +59,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
                                                  "txtest-2.0",
+                                                 "appAuthentication-2.0",
+                                                 "appAuthorization-2.0",
                                                  "appSecurity-4.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
@@ -72,8 +74,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "enterpriseBeansPersistentTimer-4.0",
                                                  "enterpriseBeansRemote-4.0",
                                                  "enterpriseBeansTest-2.0",
-                                                 "jacc-2.0",
-                                                 "jaspic-2.0",
                                                  "mail-2.0",
                                                  "jaxb-3.0",
                                                  "persistence-3.0",

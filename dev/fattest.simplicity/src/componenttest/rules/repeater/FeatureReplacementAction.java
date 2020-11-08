@@ -58,6 +58,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("ejbPersistentTimer", "enterpriseBeansPersistentTimer");
         featureNameMapping.put("ejbRemote", "enterpriseBeansRemote");
         featureNameMapping.put("ejbTest", "enterpriseBeansTest");
+        featureNameMapping.put("jacc", "appAuthorization");
+        featureNameMapping.put("jaspic", "appAuthentication");
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
         featureNameMapping.put("javaMail", "mail");

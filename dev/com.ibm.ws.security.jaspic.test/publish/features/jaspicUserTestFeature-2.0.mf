@@ -5,6 +5,6 @@ Subsystem-Version: 2.0.0
 Subsystem-Content: 
    com.ibm.ws.security.jaspic.test.jakarta; version="[1,1.0.100)",
    com.ibm.websphere.appserver.servlet-5.0; type="osgi.subsystem.feature",
-   io.openliberty.jaspic-2.0; type="osgi.subsystem.feature"
+   io.openliberty.appAuthentication-2.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
