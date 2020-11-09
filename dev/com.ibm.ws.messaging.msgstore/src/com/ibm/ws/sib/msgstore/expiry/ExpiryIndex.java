@@ -11,6 +11,7 @@ package com.ibm.ws.sib.msgstore.expiry;
  *******************************************************************************/
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -57,17 +58,16 @@ public class ExpiryIndex
     }
 
     /**
-     * @return the first ExpirableReference in the expiry index, this is the next ExpirableReference to expire.
-     * @throws NoSuchElementException if the index is empty.
+     * @return an iterator over the expiry index, in expiry order.
      */
-    public ExpirableReference first() throws NoSuchElementException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "first");
+    public Iterator<ExpirableReference> iterator() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "iterator");
 
-        ExpirableReference first = tree.first();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "first", first);
-        return first;
+        Iterator<ExpirableReference> iterator = tree.iterator();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "iterator", iterator);
+        return iterator;
     }
-
+    
     /**
      * Remove an ExpirableReference from this ExpiryIndex.
      *
