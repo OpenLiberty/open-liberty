@@ -11,7 +11,7 @@
 package io.openliberty.restfulWS30.fat.validator;
 
 import jakarta.ws.rs.PathParam;
-
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 import jakarta.ws.rs.ApplicationPath;
@@ -27,12 +27,11 @@ import jakarta.ws.rs.core.Application;
 @Produces("text/plain")
 public class Resource extends Application {    
 
-    private String id;
+    private int id;
 
     @POST
-    public String foo(@NotNull @PathParam("id") String id) {
-        System.out.println("foo invoked! with id: " + id);         
-        new Exception("foo is running on " + Thread.currentThread().getName()).printStackTrace(System.out);
+    public String foo(@Min(value = 1) @PathParam("id") int id) {
+        System.out.println("foo invoked! with id: " + id);        
         this.id = id;
         return "foo " + id;
     }

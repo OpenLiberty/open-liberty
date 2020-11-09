@@ -13,11 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.validator.provider
 
-src: src, resources
-
 app-resources= \
-  META-INF/services/javax.ws.rs.ext.Providers| \
-  META-INF/services/javax.validation.spi.ValidationProvider
+  META-INF/services/javax.ws.rs.ext.Providers
   
 -cdiannotations:
 
@@ -38,26 +35,14 @@ Export-Package: \
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   org.jboss.resteasy.api.validation, \
-  org.hibernate.validator.internal,\
   jakarta.persistence,\
   *
-  
-#  javax.activation;version=!, \
-#  javax.annotation;version=!, \
-#  javax.annotation.security;version=!, \
-
-DynamicImport-Package: \
-  jakarta.validation.*, \
-  jakarta.persistence.*, \
-  jakarta.xml.*
 
 Include-Resource:\
-@${repo;org.jboss.resteasy:resteasy-core-spi;4.5.8.Final;EXACT}, \
-@${repo;org.jboss.resteasy:resteasy-validator-provider;4.5.8.Final;EXACT}, \
-META-INF=resources/META-INF
+@${repo;org.jboss.resteasy:resteasy-validator-provider;4.5.8.Final;EXACT}
 
 -buildpath: \
- org.hibernate.validator;version=latest
+ io.openliberty.org.jboss.resteasy.common
 
 jakartaeeMe: true
 

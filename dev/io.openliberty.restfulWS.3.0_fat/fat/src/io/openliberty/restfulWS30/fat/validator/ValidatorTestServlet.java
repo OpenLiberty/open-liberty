@@ -44,16 +44,22 @@ public class ValidatorTestServlet extends FATServlet {
     }
     
     @Test
-    public void testNotNullValidation() throws Exception {
-//        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-//        System.out.println("testNotNullValidation2 validator " + validator.toString());
-        
-        String nullString = null;
-        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/validator/app/path/" + nullString);
+    public void testMinValidation() throws Exception {       
+        int zeroInt = 0;
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/validator/app/path/" + zeroInt);
         HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
         conn.setRequestMethod("POST");
-        assertEquals(400, conn.getResponseCode());        
-//        assertEquals("foo " + nullString, readEntity(conn.getInputStream()));
+        assertEquals(400, conn.getResponseCode());
+    }
+    
+    @Test
+    public void testMinValidation2() throws Exception {       
+        int oneInt = 1;
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/validator/app/path/" + oneInt);
+        HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+        conn.setRequestMethod("POST");
+        assertEquals(200, conn.getResponseCode());        
+        assertEquals("foo " + oneInt, readEntity(conn.getInputStream()));
     }
  
     private String readEntity(InputStream is) throws Exception {

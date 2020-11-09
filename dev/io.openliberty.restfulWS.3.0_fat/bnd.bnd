@@ -25,5 +25,4 @@ fat.project: true
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	com.ibm.ws.componenttest.2.0,\
-	org.hibernate.validator;version=latest,\
 	jakarta.validation.jakarta.validation-api
