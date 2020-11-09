@@ -28,22 +28,24 @@ public class PropertyExpressionBean {
     String key2;
 
     /**
-     * keyFromVariableInServerXML is defined as a variable in the server.xml file as "${value1DefinedInBootstrapProperties}"
+     * keyFromVariableInServerXML is defined as a variable in the server.xml file as "${value1DefinedInTwoPlaces}".
      *
-     * value1DefinedInBootstrapProperties is defined in the bootstrap.properties file as "value1".
+     * value1DefinedInTwoPlaces is defined in the bootstrap.properties as "value1a" and microprofile-config.properties as "value1b".
      *
-     * Hence, by Property Expression, `key1` should have the value of "value1"
+     * Since bootstrap.properties has a higher ordinal than microprofile-config.properties (400>100), value1DefinedInTwoPlaces="value1a".
+     *
+     * Hence, by Property Expression, `key1` should have the value of "value1a".
      */
     public void checkVariable() throws Exception {
-        Assert.assertEquals("value1", key1);
+        Assert.assertEquals("value1a", key1);
     }
 
     /**
-     * keyFromVariableInServerXML is defined as an appProperty in the server.xml file as "${value2DefinedInBootstrapProperties}"
+     * keyFromAppPropertyInServerXML is defined as an appProperty in the server.xml file as "${value2DefinedInBootstrapProperties}"
      *
      * value2DefinedInBootstrapProperties is defined in the bootstrap.properties file as "value2".
      *
-     * Hence, by Property Expression, `key2` should have the value of "value2"
+     * Hence, by Property Expression, `key2` should have the value of "value2".
      */
     public void checkAppProperty() throws Exception {
         Assert.assertEquals("value2", key2);

@@ -90,7 +90,10 @@ public class Config20Tests extends FATServletClient {
                         .addPackages(true, ConvertersTestServlet.class.getPackage())
                         .addClass(TestUtils.class);
 
-        PropertiesAsset config = new PropertiesAsset().addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
+        PropertiesAsset config = new PropertiesAsset()
+                        .addProperty("value1DefinedInTwoPlaces", "value1b")
+                        .addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
+
         WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
                         .addPackages(true, PropertyExpressionTestServlet.class.getPackage())
                         .addAsResource(config, "META-INF/microprofile-config.properties");
