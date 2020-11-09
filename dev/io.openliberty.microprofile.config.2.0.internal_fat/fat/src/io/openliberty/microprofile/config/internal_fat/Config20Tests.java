@@ -13,6 +13,7 @@ package io.openliberty.microprofile.config.internal_fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.microprofile.config.spi.Converter;
@@ -80,7 +81,9 @@ public class Config20Tests extends FATServletClient {
                         .addAsServiceProvider(Converter.class, ValidConverter.class);
 
         WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
-                        .addPackages(true, DefaultSourcesTestServlet.class.getPackage());
+                        .addPackages(true, DefaultSourcesTestServlet.class.getPackage())
+                        .addAsManifestResource(new File("publish/resources/permissions.xml"),
+                                               "permissions.xml");
 
         WebArchive classLoadersWar = ShrinkWrap.create(WebArchive.class, CLASS_LOADER_APP_NAME + ".war")
                         .addPackages(true, ClassLoadersTestServlet.class.getPackage())

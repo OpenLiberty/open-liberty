@@ -82,18 +82,24 @@ public class LibertySpecificConfigTests extends FATServletClient {
                                              .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
                                              .addAsManifestResource(new File("test-applications/" + CONVERTERS_APP_NAME
                                                                              + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter"),
-                                                                    "services/org.eclipse.microprofile.config.spi.Converter");
+                                                                    "services/org.eclipse.microprofile.config.spi.Converter")
+                                             .addAsManifestResource(new File("test-applications/" + CONVERTERS_APP_NAME + ".war/resources/META-INF/permissions.xml"),
+                                                                    "permissions.xml");
 
         WebArchive classLoadersWar = ShrinkWrap.create(WebArchive.class, CLASS_LOADER_APP_NAME + ".war")
                                                .addPackages(true, "com.ibm.ws.microprofile.appConfig.classLoaders.test")
                                                .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
                                                .add(new FileAsset(new File("test-applications/" + CLASS_LOADER_APP_NAME
                                                                            + ".war/resources/CUSTOM-DIR/META-INF/microprofile-config.properties")),
-                                                    "/CUSTOM-DIR/META-INF/microprofile-config.properties");
+                                                    "/CUSTOM-DIR/META-INF/microprofile-config.properties")
+                                               .addAsManifestResource(new File("test-applications/" + CLASS_LOADER_APP_NAME + ".war/resources/META-INF/permissions.xml"),
+                                                                      "permissions.xml");
 
         WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
                                                  .addPackages(true, "com.ibm.ws.microprofile.appConfig.defaultSources.tests")
-                                                 .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar());
+                                                 .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
+                                                 .addAsManifestResource(new File("test-applications/" + DEFAULT_SOURCES_APP_NAME + ".war/resources/META-INF/permissions.xml"),
+                                                                        "permissions.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, cdiConfigWar);
         ShrinkHelper.exportDropinAppToServer(server, convertersWar);
@@ -106,6 +112,9 @@ public class LibertySpecificConfigTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0921W", "CWWKE0912W");
+        //CWWKE0912W: Current Java 2 Security policy reported a potential violation of Java 2 Security Permission.
+        //CWWKE0921W: Current Java 2 Security policy reported a potential violation of Java 2 Security Permission. The application needs to have permissions addedPermission:
+        //("com.ibm.oti.shared.SharedClassPermission" "com.ibm.ws.microprofile.appConfig.classLoaders.test.CustomClassLoaderError" "read")
     }
 
 }
