@@ -52,6 +52,7 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
         return extensionContainerInfo.isExtClassesOnly();
     }
 
+    //This uses Strings rather than class because we want to load the classes as late as possible.
     @Override
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();

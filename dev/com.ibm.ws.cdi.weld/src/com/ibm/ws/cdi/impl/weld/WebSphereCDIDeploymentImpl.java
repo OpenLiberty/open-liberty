@@ -698,7 +698,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     }
 
     @Override
-    public void registerSPIExtension(Set<Extension> extensions) {
+    public void registerSPIExtensions(Set<Extension> extensions) {
         spiExtensions.addAll(extensions);
     }
 
