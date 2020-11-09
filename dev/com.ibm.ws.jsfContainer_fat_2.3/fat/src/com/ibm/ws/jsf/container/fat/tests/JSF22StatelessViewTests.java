@@ -26,10 +26,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
+
+import componenttest.rules.repeater.JakartaEE9Action;
 
 @RunWith(FATRunner.class)
 public class JSF22StatelessViewTests extends FATServletClient {
@@ -63,7 +66,10 @@ public class JSF22StatelessViewTests extends FATServletClient {
 
     @AfterClass
     public static void testCleanup() throws Exception {
+      // Stop the server
+      if (server != null && server.isStarted()) {
         server.stopServer();
+      }
     }
 
     @Test
@@ -71,7 +77,14 @@ public class JSF22StatelessViewTests extends FATServletClient {
         server.resetLogMarks();
         server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+
+        String msgToSearchFor = "MyFaces CDI support enabled";
+
+        if (JakartaEE9Action.isActive()) {
+            msgToSearchFor = "MyFaces Core CDI support enabled";
+        }
+
+        server.waitForStringInLogUsingMark(msgToSearchFor);
     }
 
     @Test
@@ -277,6 +290,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //  SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");
     }
@@ -291,6 +305,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is NOT stateless, the ViewScoped bean should persist through a submit.
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanNotTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_NotTransient.xhtml");
     }

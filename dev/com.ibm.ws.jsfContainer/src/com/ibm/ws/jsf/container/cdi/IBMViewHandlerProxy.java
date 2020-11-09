@@ -32,35 +32,41 @@ import org.jboss.weld.context.http.HttpConversationContext;
 // except for one line of code.  Instead of duplicating the class, we should pull the CAVH
 // class from weld at build-time and copy it here.  Then we can write a class that extends the CAVH.
 // This will allow us to automatically pick up any changes that are delivered into new versions of weld's CAVH
+
 public class IBMViewHandlerProxy extends ViewHandlerWrapper {
 
+
     private static enum Source {
+
         ACTION,
         BOOKMARKABLE,
         REDIRECT,
         RESOURCE
+
     }
 
-    private final String contextID;
     private final ViewHandler delegate;
     private volatile ConversationContext conversationContext;
     private static final ThreadLocal<Source> source = new ThreadLocal<Source>();
     private String contextId;
 
-    public IBMViewHandlerProxy(ViewHandler delegate, String contextID) {
+    public IBMViewHandlerProxy(ViewHandler delegate, String contextId ) {
         this.delegate = delegate;
-        this.contextID = contextID;
+        this.contextId = contextId;
     }
 
     /**
-     * Get conversation context.
+     * Get conversation context. May return null if the container is not available.
      *
-     * @return the conversation context
+     * @return the conversation context or null if the container is not booted
      */
     private ConversationContext getConversationContext(String id) {
         if (conversationContext == null) {
             synchronized (this) {
                 if (conversationContext == null) {
+                    if (!Container.available(id)) {
+                        return null;
+                    }
                     Container container = Container.instance(id);
                     conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
                 }
@@ -75,15 +81,15 @@ public class IBMViewHandlerProxy extends ViewHandlerWrapper {
      * string part of the URL, but only if the request parameter is not already
      * present.
      * <p/>
-     * This covers form actions Ajax calls, and redirect URLs (which we want)
-     * and link hrefs (which we don't)
+     * This covers form actions Ajax calls, and redirect URLs (which we want) and
+     * link hrefs (which we don't)
      *
      * @see {@link ViewHandler#getActionURL(FacesContext, String)}
      */
     @Override
     public String getActionURL(FacesContext facesContext, String viewId) {
         // This line is the only piece of Liberty-specific code
-        facesContext.getAttributes().put(Container.CONTEXT_ID_KEY, contextID);
+        facesContext.getAttributes().put(Container.CONTEXT_ID_KEY, contextId);
         //return super.getActionURL(facesContext, viewId);
 
         if (contextId == null) {
@@ -95,10 +101,10 @@ public class IBMViewHandlerProxy extends ViewHandlerWrapper {
         }
         String actionUrl = super.getActionURL(facesContext, viewId);
         final ConversationContext ctx = getConversationContext(contextId);
-        if (ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && !ctx.getCurrentConversation().isTransient()) {
+        if (ctx!= null && ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && !ctx.getCurrentConversation().isTransient()) {
             return new FacesUrlTransformer(actionUrl, facesContext)
-                            .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), ctx.getCurrentConversation().getId())
-                            .getUrl();
+                .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), ctx.getCurrentConversation().getId())
+                .getUrl();
         } else {
             return actionUrl;
         }

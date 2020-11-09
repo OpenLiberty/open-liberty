@@ -402,6 +402,7 @@ org.glassfish.jersey.core:jersey-server:2.12
 org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava2:2.30.1
 org.glassfish.jersey.ext.rx:jersey-rx-client-rxjava:2.30.1
 org.glassfish.jersey.inject:jersey-hk2:2.26
+org.glassfish:jakarta.faces:3.0.0-RC1
 org.glassfish:jakarta.json:2.0.0-RC3
 org.glassfish:javax.faces:2.3.3
 org.glassfish:javax.json:1.0.4
