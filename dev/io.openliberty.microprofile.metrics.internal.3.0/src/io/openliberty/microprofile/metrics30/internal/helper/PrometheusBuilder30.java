@@ -16,6 +16,7 @@ import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Counting;
 import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
@@ -80,13 +81,6 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
     public static void buildTimer30(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
         buildMetered30(builder, name, description, currentMetricMap);
         double conversionFactor = Constants.NANOSECONDCONVERSION;
-
-        String lineName = name + "_elapsedTime_" + MetricUnits.SECONDS.toString();
-        getPromTypeLine(builder, lineName, "gauge");
-        for (MetricID mid : currentMetricMap.keySet()) {
-
-            getPromValueLine(builder, lineName, ((Timer) currentMetricMap.get(mid)).getElapsedTime().toNanos() * conversionFactor, resolveTagsAsStringWithGlobalTags(mid));
-        }
 
         // Build Histogram
         buildSampling30(builder, name, description, currentMetricMap, conversionFactor, Constants.APPENDEDSECONDS);
@@ -241,10 +235,19 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
         getPromTypeLine(builder, name, "summary", appendUnit);
         getPromHelpLine(builder, name, description, appendUnit);
         for (MetricID mid : currentMetricMap.keySet()) {
+
             Sampling sampling = (Sampling) currentMetricMap.get(mid);
             if (Counting.class.isInstance(sampling)) {
                 getPromValueLine(builder, name, ((Counting) sampling).getCount(), resolveTagsAsStringWithGlobalTags(mid), appendUnit == null ? "_count" : appendUnit + "_count");
             }
+
+            if (Timer.class.isInstance(sampling)) {
+                getPromValueLine(builder, name, ((Timer) sampling).getElapsedTime().toNanos() * conversionFactor, resolveTagsAsStringWithGlobalTags(mid),
+                                 appendUnit == null ? "_sum" : appendUnit + "_sum");
+            } else if (Histogram.class.isInstance(sampling)) {
+                getPromValueLine(builder, name, ((Histogram) sampling).getSum(), resolveTagsAsStringWithGlobalTags(mid), appendUnit == null ? "_sum" : appendUnit + "_sum");
+            }
+
             double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
             double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get75thPercentile()
                                                                           * conversionFactor : sampling.getSnapshot().get75thPercentile();
