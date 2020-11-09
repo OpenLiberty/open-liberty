@@ -453,7 +453,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                     _recoveryGroup,
                                                     this,
                                                     _recoveryDirector,
-                                                    cp.getLeaseLength(),
+                                                    cp.getLeaseLength() * cp.getLeaseRenewalTime() / 100,
                                                     cp.getLeaseCheckInterval());
                 }
             }
