@@ -46,7 +46,9 @@ public class CookieExpirationTests extends CommonSecurityFat {
     protected static Class<?> thisClass = CookieExpirationTests.class;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
