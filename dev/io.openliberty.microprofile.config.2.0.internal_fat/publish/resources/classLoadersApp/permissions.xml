@@ -4,16 +4,18 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
 	version="7">
 	
-    <permission>
-        <class-name>java.io.FilePermission</class-name>
-        <name>/</name>
-        <actions>read</actions>
-    </permission>
-    
-    <permission>
-        <class-name>java.lang.RuntimePermission</class-name>
-        <name>createClassLoader</name>
-        <actions>read</actions>
-    </permission>
+	<!-- Needed for ClassLoadersTestServlet.testUserLoaderErrorsConfig() to call java.io.File("/") -->
+	<permission>
+		<class-name>java.io.FilePermission</class-name>
+		<name>/</name>
+		<actions>read</actions>
+	</permission>
+
+	<!-- Needed for ClassLoadersTestServlet.testUserLoaderErrorsConfig() to call CustomClassLoaderError() -->
+	<permission>
+		<class-name>java.lang.RuntimePermission</class-name>
+		<name>createClassLoader</name>
+		<actions>read</actions>
+	</permission>
 
 </permissions>
