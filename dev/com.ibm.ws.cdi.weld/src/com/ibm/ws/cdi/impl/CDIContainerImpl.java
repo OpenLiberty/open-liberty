@@ -632,10 +632,28 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         Bundle bundle = sr.getBundle();
 
         Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
+        Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
+
+        for (Iterator<Class<? extends Extension>> i = extensionClasses.iterator(); i.hasNext();) {
+            Class extensionClass = i.next();
+            if (extensionClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
+                i.remove();
+                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", extensionClass.getCanonicalName());
+            }
+        }
+
+        for (Iterator<Class<?>> i = beanClasses.iterator(); i.hasNext();) {
+            Class beanClass = i.next();
+            if (beanClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
+                i.remove();
+                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", beanClass.getCanonicalName());
+            }
+        }
+
         Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
 
         //The simpler SPI does not offer these properties.
-        Set<String> extra_classes = webSphereCDIExtensionMetaData.getBeanClasses().stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
+        Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         Set<String> extraAnnotations = Collections.emptySet();
         boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;
