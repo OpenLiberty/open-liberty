@@ -231,6 +231,9 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         // now try it again and we should get a 401
         response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
+        // sleep so that any test that follows will get a uniq token - if tokens are created too quickly, we'll create identical tokens - the cache cleanup for
+        // this logout will end up deleting the token actually created for the next test
+        Thread.sleep(1 * 1000);
         int rc = response.getWebResponse().getStatusCode();
         Assert.assertTrue("expected 401 but got " + rc, rc == 401);
         expectations = new Expectations();
