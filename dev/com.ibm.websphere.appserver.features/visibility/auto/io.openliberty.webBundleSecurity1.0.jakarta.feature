@@ -13,6 +13,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 
 IBM-Install-Policy: when-satisfied
 
-edition=full
-kind=noship
+edition=core
+kind=beta
 WLP-Activation-Type: parallel

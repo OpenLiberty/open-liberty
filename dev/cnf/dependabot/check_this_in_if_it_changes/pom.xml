@@ -729,7 +729,7 @@
     <dependency>
       <groupId>jakarta.jms</groupId>
       <artifactId>jakarta.jms-api</artifactId>
-      <version>3.0.0-RC1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.json.bind</groupId>
@@ -754,7 +754,7 @@
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
-      <version>3.0.0-RC2</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>

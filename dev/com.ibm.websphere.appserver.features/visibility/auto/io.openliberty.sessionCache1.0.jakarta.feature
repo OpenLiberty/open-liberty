@@ -13,6 +13,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 
 IBM-Install-Policy: when-satisfied
 
-kind=noship
-edition=full
-
+kind=beta
+edition=core
