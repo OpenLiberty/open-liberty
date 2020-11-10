@@ -32,16 +32,6 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/ValidatorTestServlet")
 public class ValidatorTestServlet extends FATServlet {
-
-    @Test
-    public void testNotNullViolations() {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        System.out.println("testNotNullViolations validator " + validator.toString());
-        
-        MyBean myBean = new MyBean();
-        myBean.notNull = null;
-        assertViolations(validator.validate(myBean), NotNull.class);
-    }
     
     @Test
     public void testMinValidation() throws Exception {       
