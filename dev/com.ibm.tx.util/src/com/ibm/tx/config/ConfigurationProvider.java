@@ -224,6 +224,8 @@ public interface ConfigurationProvider {
 
     public int getLeaseLength();
 
+    public int getLeaseRenewalTime();
+
     /**
      * Sets the applId of the server.
      *
