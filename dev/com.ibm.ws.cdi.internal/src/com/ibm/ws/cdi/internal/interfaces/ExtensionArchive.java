@@ -33,4 +33,9 @@ public interface ExtensionArchive extends CDIArchive {
      * @return
      */
     boolean isExtClassesOnly();
+
+    /**
+     * @return
+     */
+    Set<String> getSPIExtensionClasses();
 }

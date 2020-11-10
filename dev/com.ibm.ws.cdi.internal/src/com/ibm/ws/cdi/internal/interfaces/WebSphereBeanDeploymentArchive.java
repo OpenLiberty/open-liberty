@@ -286,4 +286,16 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      */
     String getEEModuleDescriptorId();
 
+    /**
+     * Get hold of the class names for extensions registered via the SPI
+     *
+     * @return a set of extension class names. 
+     */
+    Set<String> getSPIExtensionClassNames();
+
+    /**
+     * Register the extensions in this BDA that were aquired via the SPI.
+     */
+    void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames);
+
 }

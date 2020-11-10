@@ -90,6 +90,9 @@ public class BDAFactory {
                                                        extensionCanSeeApplicationBDAs,
                                                        extClassesOnlyBDA,
                                                        eeModuleDescriptor);
+
+        bda.setSPIExtensionClassNames(extensionArchive.getSPIExtensionClasses());
+
         return bda;
     }
 

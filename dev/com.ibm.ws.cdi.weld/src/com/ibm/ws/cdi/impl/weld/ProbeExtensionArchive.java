@@ -175,4 +175,10 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
         return true;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getSPIExtensionClasses() {
+        return Collections.<String>emptySet();
+    }
+
 }

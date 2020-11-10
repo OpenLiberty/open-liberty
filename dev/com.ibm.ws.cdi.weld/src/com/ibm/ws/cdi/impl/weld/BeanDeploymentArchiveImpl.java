@@ -97,6 +97,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<String> additionalBeanDefiningAnnotations = new HashSet<String>();
 
     private final Set<String> extensionClassNames = new HashSet<String>();
+    private final Set<String> spiExtensionClassNames = new HashSet<String>();
 
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
@@ -1011,6 +1012,17 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     public Collection<String> getKnownClasses() {
         return getAllClazzes();
+    }
+
+    @Override
+    public Set<String> getSPIExtensionClassNames() {
+        return spiExtensionClassNames;
+    }
+
+    @Override
+    public void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames) {
+        this.spiExtensionClassNames.clear();
+        this.spiExtensionClassNames.addAll(spiExtensionsClassNames);
     }
 
     private static ClassLoader getContextClassLoader() {
