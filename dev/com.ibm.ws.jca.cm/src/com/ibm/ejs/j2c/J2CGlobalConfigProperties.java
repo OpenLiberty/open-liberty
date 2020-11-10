@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,6 +173,9 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      *
      */
     private int connectionTimeout = 0;
+
+    private boolean enableHandleList;
+
     /**
      * The maximum number of ManagedConnections that can be created in this
      * pool. ManagedConnections represent the physical connection to the backend
@@ -368,6 +371,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                      int agedTimeout,
                                      int holdTimeLimit,
                                      int commitPriority,
+                                     boolean enableHandleList,
                                      int numConnectionsPerThreadLocal,
                                      Integer maxNumberOfMCsAllowableInThread,
                                      Boolean throwExceptionOnMCThreadCheck) {
@@ -408,6 +412,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         this.agedTimeoutMillis = (long) agedTimeout * 1000;
         this.holdTimeLimit = holdTimeLimit;
         this.commitPriority = commitPriority;
+        this.enableHandleList = enableHandleList;
         this.numConnectionsPerThreadLocal = numConnectionsPerThreadLocal;
         this.maxNumberOfMCsAllowableInThread = maxNumberOfMCsAllowableInThread;
         this.throwExceptionOnMCThreadCheck = throwExceptionOnMCThreadCheck;
@@ -441,6 +446,14 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      */
     public String getXpathId() {
         return XpathId;
+    }
+
+    public boolean getEnableHandleList() {
+        return enableHandleList;
+    }
+
+    public void setEnableHandleList(boolean enableHandleList) {
+        this.enableHandleList = enableHandleList;
     }
 
     public int getnumConnectionsPerThreadLocal() {

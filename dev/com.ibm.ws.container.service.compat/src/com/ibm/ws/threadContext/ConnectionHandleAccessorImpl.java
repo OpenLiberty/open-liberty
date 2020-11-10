@@ -24,6 +24,10 @@ public class ConnectionHandleAccessorImpl {
 
     private final ThreadContext<HandleListInterface> threadContext = new ThreadContextImpl<HandleListInterface>();
 
+    public HandleListInterface getHandleList() {
+        return threadContext.getContext();
+    }
+
     public ThreadContext<HandleListInterface> getThreadContext() {
         return threadContext;
     }
