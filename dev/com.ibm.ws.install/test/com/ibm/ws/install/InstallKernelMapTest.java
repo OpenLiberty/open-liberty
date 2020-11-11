@@ -36,6 +36,7 @@ public class InstallKernelMapTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        InstallKernelMap ikm = new InstallKernelMap();
         outputMgr.captureStreams();
     }
 
