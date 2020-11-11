@@ -9,9 +9,11 @@ assignees: ''
 Describe the high level feature, including any external spec links.
 
 
-When ready, add links to the Upcoming Feature Overview document and Feature Test Summary issue:
+When ready, add links to the Upcoming Feature Overview document as well as Feature Test Summary and blog post issues:
 - UFO:
 - FTS:
+- Beta Blog Post (if applicable):
+- Blog Post: 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## List of Steps to complete or get approvals / sign-offs for Onboarding to the Liberty release (GM date)
@@ -30,6 +32,14 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] ID Requirements identified. (Epic owner / Feature owner with ID focal point)
 - [ ] Create a child task of this epic entitled "FAT Approval Test Summary". Add the link in above.
+
+## **Beta**
+If your feature, or portions of it, are going to be included in a beta  
+Before Onboarding the beta
+- [ ] Beta Fence the functionality (`kind=beta`, `ibm:beta`, `ProductInfo.getBetaEdition()`)  
+
+1 week before beta GA
+- [ ] Create, populate, and link to the [Beta blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_beta.md&title=BETA+BLOG+-+title_of_your_update)
 
 ## **Legal**
 3 weeks before Onboarding
@@ -68,6 +78,9 @@ All features (both "Design Approved" and "No Design Approved")
 - [ ] No Stop Ship issues for the feature. (Epic owner / Feature owner / Release PM)
 - [ ] Ship Readiness Review and Release Notes completed (Epic owner / Feature owner / Release PM)
 - [ ] Github Epic and Epic's issues are closed / complete. All PRs are committed to the master branch. (Epic owner / Feature owner / Backlog Subtribe PM)
+
+1 week before GA
+- [ ] Create, populate, and link to the [Blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update)
 
 ## **Other deliverbles**
 - [ ] **OL Guides** - ([Yee-Kang Chang](https://github.com/yeekangc)). Assessment for OL Guides is complete or N/A.
