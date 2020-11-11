@@ -64,7 +64,9 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     protected static Class<?> thisClass = ConfigAttributeTests.class;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -85,6 +87,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
+        skipRestoreServerTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
     }
 
