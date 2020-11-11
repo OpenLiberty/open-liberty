@@ -29,16 +29,18 @@
   <messagingEngine id="defaultME">
     <queue id="newQueue"/>
     <queue id="QUEUE1"/>
-    <queue id="QUEUE2/">
-    <queue id="DeletionQueue/">
-    <queue id="null/">
-    <queue id="/">
-    <queue id="abc.*/">
-    <queue id="abc xyz/">
-    <queue id="_tempXYZ/">
-    <queue id="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/">
-    <queue id="myqueue/">
-    <queue id="QUEUE/queue/">
+    <queue id="QUEUE2"/>
+    <queue id="DeletionQueue"/>
+    <queue id="null"/>
+    <!-- <queue id=""/>
+          The server write removes the ID attribute, causing an error to appear in server logs.
+      -->
+    <queue id="abc.*"/>
+    <queue id="abc xyz"/>
+    <queue id="_tempXYZ"/>
+    <queue id="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <queue id="myqueue"/>
+    <queue id="QUEUE/queue"/>
     
     <topicSpace id="Topic1"/>
     <topicSpace id="NewTopic1"/>

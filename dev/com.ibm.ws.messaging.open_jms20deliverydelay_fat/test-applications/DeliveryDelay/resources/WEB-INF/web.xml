@@ -5,23 +5,19 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
     id="WebApp_ID">
 
-  <display-name>JCABVTWeb</display-name>
+  <display-name>Delivery Delay FAT Servlet</display-name>
 
-  <!-- SERVLET DEFINITIONS -->
   <servlet id="Default">
-    <servlet-name>JMSContext FAT Servlet</servlet-name>
-    <display-name>JMSContext FAT Servlet</display-name>
-    <servlet-class>web.DeliveryDelayServlet</servlet-class>
-   <!-- <load-on-startup></load-on-startup> -->
+    <servlet-name>Delivery Delay FAT Servlet</servlet-name>
+    <display-name>Delivery Delay FAT Servlet</display-name>
+    <servlet-class>deliverydelay.web.DeliveryDelayServlet</servlet-class>
   </servlet>
 
-  <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_Default">
-    <servlet-name>JMSContext FAT Servlet</servlet-name>
+    <servlet-name>Delivery Delay FAT Servlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
-  <!-- RESOURCE REFERENCES -->
   <resource-ref>
     <res-ref-name>eis/cf1</res-ref-name>
     <res-type>javax.jms.ConnectionFactory</res-type>

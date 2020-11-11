@@ -1,7 +1,5 @@
 <server>
 
-  <include location="../fatTestPorts.xml"/>
-
   <variable name="onError" value="FAIL"/>
 
   <!--
@@ -21,6 +19,19 @@
 
   <!-- -->
 
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+                host="*"
+                httpPort="${bvt.prop.HTTP_default}"
+                httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
+
+  <!-- -->
+
   <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}"/>
   <variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}"/>
 
@@ -37,7 +48,9 @@
     <queue id="QUEUE2"/>
     <queue id="DeletionQueue"/>
     <queue id="null"/>
-    <queue id=""/>
+    <!-- <queue id=""/>
+         The server write removes the ID attribute, causing an error to appear in server logs.
+      -->
     <queue id="abc.*"/>
     <queue id="abc xyz"/>
     <queue id="_tempXYZ"/>
@@ -46,7 +59,9 @@
     <queue id="QUEUE/queue"/>
 
     <topicSpace id="NULL"/>
-    <topicSpace id=""/>
+    <!-- <topicSpace id=""/>
+         The server write removes the ID attribute, causing an error to appear in server logs.
+      -->
     <topicSpace id="topic.*"/>
     <topicSpace id="New Topic"/>
     <topicSpace id="_tempTopic"/>
