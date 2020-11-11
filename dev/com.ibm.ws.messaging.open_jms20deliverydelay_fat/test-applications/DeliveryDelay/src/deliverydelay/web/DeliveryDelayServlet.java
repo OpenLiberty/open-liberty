@@ -679,16 +679,16 @@ public class DeliveryDelayServlet extends HttpServlet {
     public void testDeliveryMultipleMsgs(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
+        String failureReason = null;
 
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
         JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
+
+        JMSProducer jmsProducer = jmsContext.createProducer();
+        jmsProducer.setDeliveryDelay(deliveryDelay);
 
         TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgs1");
         sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg1);
@@ -698,43 +698,46 @@ public class DeliveryDelayServlet extends HttpServlet {
         sendAndCheckDeliveryTime(jmsProducer, jmsQueue1, sendMsg2);
         TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
 
-        if ( (recMsg1 != null) || (recMsg2 != null) ) {
-            testFailed = true;
+        if ( recMsg1 != null ) {
+            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
+        } else if ( recMsg2 != null ) {
+            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
         }
 
         recMsg1 = (TextMessage) jmsConsumer.receive(30000);
         recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
 
-        if ( ((recMsg1 != null) ||
-              (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testDeliveryMultipleMsgs1")) ||
-             ((recMsg2 == null) ||
-              (recMsg2.getText() == null) ||
-              !recMsg2.getText().equals("testDeliveryMultipleMsgs2")) ) {
-            testFailed = true;
+        if ( (recMsg1 == null) ||
+             (recMsg1.getText() == null) ||
+             !recMsg1.getText().equals("testDeliveryMultipleMsgs1") ) {
+            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
+        } else if ( (recMsg2 == null) ||
+                    (recMsg2.getText() == null) ||
+                    !recMsg2.getText().equals("testDeliveryMultipleMsgs2") ) {
+            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
         }
 
         jmsConsumer.close();
         jmsConsumer1.close();
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testDeliveryMultipleMsgs failed");
+        if ( failureReason != null ) {
+            throw new Exception("testDeliveryMultipleMsgs failed: " + failureReason);
         }
     }
 
     public void testDeliveryMultipleMsgs_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        boolean testFailed = false;
+        String failureReason = null;
 
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
         JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
+
+        JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setDeliveryDelay(deliveryDelay);
 
         TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgs_Tcp1");
@@ -745,36 +748,38 @@ public class DeliveryDelayServlet extends HttpServlet {
         sendAndCheckDeliveryTime(jmsProducer, jmsQueue1, sendMsg2);
         TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
 
-        if ( (recMsg1 != null) || (recMsg2 != null) ) {
-            testFailed = true;
+        if ( recMsg1 != null ) {
+            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
+        } else if ( recMsg2 != null ) {
+            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
         }
 
         recMsg1 = (TextMessage) jmsConsumer.receive(30000);
         recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
 
-        if ( ((recMsg1 == null) ||
-              (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testDeliveryMultipleMsgs_Tcp1")) ||
-             ((recMsg2 == null) ||
-              (recMsg2.getText() == null) ||
-              !recMsg2.getText().equals("testDeliveryMultipleMsgs_Tcp2")) ) {
-            testFailed = true;
+        if ( (recMsg1 == null) ||
+             (recMsg1.getText() == null) ||
+             !recMsg1.getText().equals("testDeliveryMultipleMsgs_Tcp1") ) {
+            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
+        } else if ( (recMsg2 == null) ||
+                    (recMsg2.getText() == null) ||
+                    !recMsg2.getText().equals("testDeliveryMultipleMsgs_Tcp2") ) {
+            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
         }
 
         jmsConsumer.close();
         jmsConsumer1.close();
-
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testDeliveryMultipleMsgs_TCP failed");
+        if ( failureReason != null ) {
+            throw new Exception("testDeliveryMultipleMsgs_TCP failed: " + failureReason);
         }
     }
 
     public void testDeliveryMultipleMsgsTopic(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
+        String failureReason = null;
 
         JMSContext jmsContext = jmsTCFBindings.createContext();
 
@@ -792,35 +797,38 @@ public class DeliveryDelayServlet extends HttpServlet {
         sendAndCheckDeliveryTime(jmsProducer, jmsTopic1, sendMsg2);
         TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
 
-        if ( (recMsg1 != null) || (recMsg2 != null) ) {
-            testFailed = true;
+        if ( recMsg1 != null ) {
+            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
+        } else if ( recMsg2 != null ) {
+            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
         }
 
         recMsg1 = (TextMessage) jmsConsumer.receive(30000);
         recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
 
-        if ( ((recMsg1 == null) ||
-              (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic1")) ||
-             ((recMsg2 == null) ||
-              (recMsg1.getText() == null) ||
-              !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic2")) ) {
-            testFailed = true;
+        if ( (recMsg1 == null) ||
+             (recMsg1.getText() == null) ||
+             !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic1") ) {
+            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
+        } else if ( (recMsg2 == null) ||
+                    (recMsg2.getText() == null) ||
+                    !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic2") ) {
+            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
         }
 
         jmsConsumer.close();
         jmsConsumer1.close();
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testDeliveryMultipleMsgsTopic failed");
+        if ( failureReason != null ) {
+            throw new Exception("testDeliveryMultipleMsgsTopic failed: " + failureReason);
         }
     }
 
     public void testDeliveryMultipleMsgsTopic_Tcp(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
+        String failureReason = null;
 
         JMSContext jmsContext = jmsTCFTCP.createContext();
 
@@ -838,28 +846,31 @@ public class DeliveryDelayServlet extends HttpServlet {
         sendAndCheckDeliveryTime(jmsProducer, jmsTopic1, sendMsg2);
         TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
 
-        if ( (recMsg1 != null) || (recMsg2 != null) ) {
-            testFailed = true;
+        if ( recMsg1 != null ) {
+            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
+        } else if ( recMsg2 != null ) {
+            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
         }
 
         recMsg1 = (TextMessage) jmsConsumer.receive(30000);
         recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
 
-        if ( ((recMsg1 != null) ||
-              (recMsg1.getText() == null) ||
-              !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic_Tcp1")) ||
-             ((recMsg2 == null) ||
-              (recMsg2.getText() == null) ||
-              !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic_Tcp2")) ) {
-            testFailed = true;
+        if ( (recMsg1 == null) ||
+             (recMsg1.getText() == null) ||
+             !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic_Tcp1") ) {
+            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
+        } else if ( (recMsg2 == null) ||
+                    (recMsg2.getText() == null) ||
+                    !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic_Tcp2") ) {
+            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
         }
 
         jmsConsumer.close();
         jmsConsumer1.close();
         jmsContext.close();
 
-        if ( testFailed ) {
-            throw new Exception("testDeliveryMultipleMsgsTopic_TCP failed");
+        if ( failureReason != null ) {
+            throw new Exception("testDeliveryMultipleMsgsTopic_TCP failed: " + failureReason);
         }
     }
 
@@ -1145,34 +1156,41 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFBindings.createContext(Session.SESSION_TRANSACTED);
         emptyQueue(jmsQCFBindings, jmsQueue);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        Message message = jmsContext.createTextMessage("testTransactedSend_B");
+        JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setDeliveryDelay(2000);
-        jmsProducer.send(jmsQueue, message);
 
+        Message message = jmsContext.createTextMessage("testTransactedSend_B");
+        jmsProducer.send(jmsQueue, message);
         long time_after_send = System.currentTimeMillis() + 2000;
 
         Thread.sleep(1000);
 
         jmsContext.commit();
-
         long time_after_commit = System.currentTimeMillis() + 2000;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
 
         jmsContext.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSend_B")) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100))) {
                 testFailed = true;
             }
+            // send [ (- 1605129389346 1605129389362) -16.0 ]
+            // commit [ (- 1605129389346 1605129390364) -1018.0 ]
+            // received [ 1605129389346 ]
+
+            // send [ (- 1605129391396 1605129391396) 0.0 ]
+            // commit [ (- 1605129391396 1605129392397) -1001.0 ]
+            // received [ 1605129391396 ]
+
         } else {
             testFailed = true;
         }
@@ -1181,8 +1199,16 @@ public class DeliveryDelayServlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSend_B failed");
+            throw new Exception("testTransactedSend_B failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
+    }
+
+    private String describeTimes(long afterSend, long afterCommit, long received) {
+        return
+            "After send [ " + afterSend + " ]" +
+            "; after commit [ " + afterCommit + " ]" +
+            "; received [ " + received + " ]";
     }
 
     public void testTransactedSend_Tcp(
@@ -1193,27 +1219,27 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFTCP.createContext(Session.SESSION_TRANSACTED);
         emptyQueue(jmsQCFTCP, jmsQueue);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        Message message = jmsContext.createTextMessage("testTransactedSend_Tcp");
-
+        JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setDeliveryDelay(2000);
+
+        Message message = jmsContext.createTextMessage("testTransactedSend_Tcp");
         jmsProducer.send(jmsQueue, message);
         long time_after_send = System.currentTimeMillis() + 2000;
+
         Thread.sleep(1000);
         jmsContext.commit();
-
         long time_after_commit = System.currentTimeMillis() + 2000;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSend_Tcp") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -1226,7 +1252,9 @@ public class DeliveryDelayServlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSend_Tcp failed");}
+            throw new Exception("testTransactedSend_Tcp failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
+        }
     }
 
     public void testTransactedSendTopic_B(
@@ -1252,10 +1280,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopic_B") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -1268,7 +1297,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendTopic_B failed");
+            throw new Exception("testTransactedSendTopic_B failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -1294,10 +1324,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopic_Tcp") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -1310,7 +1341,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         jmsContext.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendTopic_Tcp failed");
+            throw new Exception("testTransactedSendTopic_Tcp failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -1335,10 +1367,6 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( jmsDeliveryTime != (jmsTimestamp + 1000) ) {
             testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testTiming_B failed because JMSDeliveryTime header value is not equal to (JMSTimestamp + delivery delay)");
         }
 
         TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(31000);
@@ -1383,14 +1411,10 @@ public class DeliveryDelayServlet extends HttpServlet {
             testFailed = true;
         }
 
-        if ( testFailed ) {
-            throw new Exception("testTiming_Tcp failed because JMSDeliveryTime header value is not equal to (JMSTimestamp + delivery delay)");
-        }
-
         TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(31000);
         long receive_time = System.currentTimeMillis();
 
-        if ((recMsg2.getText() != null) && recMsg2.getText().equals("testTiming_Tcp")) {
+        if ( (recMsg2.getText() != null) && recMsg2.getText().equals("testTiming_Tcp") ) {
             if ( jmsDeliveryTime > receive_time ) {
                 testFailed = true;
             }
@@ -1424,10 +1448,6 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( jmsDeliveryTime != (jmsTimestamp + 1000) ) {
             testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testTimingTopic_B failed because JMSDeliveryTime header value is not equal to (JMSTimestamp + delivery delay)");
         }
 
         TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(31000);
@@ -1467,10 +1487,6 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         if ( jmsDeliveryTime != (jmsTimestamp + 1000) ) {
             testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testTimingTopic_Tcp failed because JMSDeliveryTime header value is not equal to (JMSTimestamp + delivery delay)");
         }
 
         TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(31000);
@@ -1647,6 +1663,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         jmsConsumer1.close();
         jmsConsumer2.close();
+        jmsContext.close();
 
         if ( testFailed ) {
             throw new Exception("testPersistentMessageReceive failed");
@@ -1696,6 +1713,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         jmsConsumer1.close();
         jmsConsumer2.close();
+        jmsContext.close();
 
         if ( testFailed ) {
             throw new Exception("testPersistentMessageReceive_Tcp failed");
@@ -2891,10 +2909,10 @@ public class DeliveryDelayServlet extends HttpServlet {
             e.printStackTrace();
             testFailed = true;
         }
+
         if ( jmsConsumer != null ) {
             jmsConsumer.close();
         }
-
         if ( jmsContext != null ) {
             jmsContext.close();
         }
@@ -3033,7 +3051,6 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(jmsTopic, "SUBID");
 
         TextMessage tmsg = (TextMessage) jmsConsumer.receiveNoWait();
-
         if ( tmsg != null ) {
             testFailed = true;
         }
@@ -3272,16 +3289,15 @@ public class DeliveryDelayServlet extends HttpServlet {
         sendAndCheckDeliveryTime(publisher, jmsTopic, sendMsg);
         TextMessage recMsg = (TextMessage) sub.receiveNoWait();
 
-
         if ( recMsg != null ) {
             testFailed = true;
         }
 
         TextMessage recMsg2 = (TextMessage) sub.receive(30000);
 
-        if ((recMsg2 == null) ||
-            (recMsg2.getText() == null) ||
-            recMsg2.getText().equals("testSetDeliveryDelayTopicDurSubClassicApi") ) {
+        if ( (recMsg2 == null) ||
+             (recMsg2.getText() == null) ||
+             !recMsg2.getText().equals("testSetDeliveryDelayTopicDurSubClassicApi") ) {
             testFailed = true;
         }
 
@@ -3495,7 +3511,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         recMsg1 = (TextMessage) rec.receive(30000);
         recMsg2 = (TextMessage) rec.receive(30000);
 
-        if ( ((recMsg1 != null) ||
+        if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
               !recMsg1.getText().equals("testDeliveryMultipleMsgsClassicApi1")) ||
              ((recMsg2 == null) ||
@@ -3550,7 +3566,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         recMsg1 = (TextMessage) rec.receive(30000);
         recMsg2 = (TextMessage) rec.receive(30000);
 
-        if ( ((recMsg1 != null) ||
+        if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
               !recMsg1.getText().equals("testDeliveryMultipleMsgsClassicApi_Tcp1")) ||
              ((recMsg2 == null) ||
@@ -3599,7 +3615,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         recMsg1 = (TextMessage) sub.receive(30000);
         recMsg2 = (TextMessage) sub.receive(30000);
 
-        if ( ((recMsg1 != null) ||
+        if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
               !recMsg1.getText().equals("testDeliveryMultipleMsgsTopicClassicApi1")) ||
              ((recMsg2 == null) ||
@@ -3649,7 +3665,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         recMsg1 = (TextMessage) sub.receive(30000);
         recMsg2 = (TextMessage) sub.receive(30000);
 
-        if ( ((recMsg1 != null) ||
+        if ( ((recMsg1 == null) ||
               (recMsg1.getText() == null) ||
               !recMsg1.getText().equals("testDeliveryMultipleMsgsTopicClassicApi_Tcp1")) ||
              ((recMsg2 == null) ||
@@ -3989,10 +4005,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendClassicApi_B") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                   ((rec_time - time_after_commit) >= Math.abs(100))) {
                 testFailed = true;
@@ -4005,7 +4022,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         con.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendClassicApi_B failed");
+            throw new Exception("testTransactedSendClassicApi_B failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -4034,10 +4052,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendClassicApi_Tcp") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -4050,7 +4069,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         con.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendClassicApi_Tcp failed");
+            throw new Exception("testTransactedSendClassicApi_Tcp failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -4078,10 +4098,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopicClassicApi_B") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -4096,7 +4117,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         con.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendTopicClassicApi_B failed");
+            throw new Exception("testTransactedSendTopicClassicApi_B failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -4124,10 +4146,11 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
 
+        long rec_time = 0L;
         if ( (recMsg != null) &&
               (recMsg.getText() != null) &&
               recMsg.getText().equals("testTransactedSendTopicClassicApi_Tcp") ) {
-            long rec_time = recMsg.getLongProperty("JMSDeliveryTime");
+            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
             if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
                  ((rec_time - time_after_commit) >= Math.abs(100)) ) {
                 testFailed = true;
@@ -4142,7 +4165,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         con.close();
 
         if ( testFailed ) {
-            throw new Exception("testTransactedSendTopicClassicApi_Tcp failed");
+            throw new Exception("testTransactedSendTopicClassicApi_Tcp failed: " +
+                                describeTimes(time_after_send, time_after_commit, rec_time) );
         }
     }
 
@@ -4176,8 +4200,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg2 = (TextMessage) rec.receive(31000);
         long receive_time = System.currentTimeMillis();
 
-        if ( (recMsg2.getText() != null) &&
-             recMsg2.getText().equals("testTimingClassicApi_B") ) {
+        if ( (recMsg2.getText() != null) && recMsg2.getText().equals("testTimingClassicApi_B") ) {
             if ( jmsDeliveryTime > receive_time ) {
                 testFailed = true;
             }
@@ -4222,8 +4245,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg2 = (TextMessage) rec.receive(31000);
         long receive_time = System.currentTimeMillis();
 
-        if ( (recMsg2.getText() != null) &&
-             recMsg2.getText().equals("testTimingClassicApi_Tcp") ) {
+        if ( (recMsg2.getText() != null) && recMsg2.getText().equals("testTimingClassicApi_Tcp") ) {
             if ( jmsDeliveryTime > receive_time ) {
                 testFailed = true;
             }
@@ -4266,8 +4288,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg2 = (TextMessage) rec.receive(31000);
         long receive_time = System.currentTimeMillis();
 
-        if ( (recMsg2.getText() != null) &&
-             recMsg2.getText().equals("testTimingTopicClassicApi_B") ) {
+        if ( (recMsg2.getText() != null) && recMsg2.getText().equals("testTimingTopicClassicApi_B") ) {
             if ( jmsDeliveryTime > receive_time ) {
                 testFailed = true;
             }
@@ -4313,8 +4334,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage recMsg2 = (TextMessage) rec.receive(31000);
         long receive_time = System.currentTimeMillis();
 
-        if ( (recMsg2.getText() != null) &&
-             recMsg2.getText().equals("testTimingTopicClassicApi_Tcp") ) {
+        if ( (recMsg2.getText() != null) && recMsg2.getText().equals("testTimingTopicClassicApi_Tcp") ) {
             if ( jmsDeliveryTime > receive_time ) {
                 testFailed = true;
             }
@@ -4335,7 +4355,7 @@ public class DeliveryDelayServlet extends HttpServlet {
     public void testGetDeliveryDelayClassicApi(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        boolean testFailed = false;
+        String failureReason = null;
 
         QueueConnection con = jmsQCFBindings.createQueueConnection();
         con.start();
@@ -4347,20 +4367,20 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         long val = send.getDeliveryDelay();
         if ( val != 0 ) {
-            testFailed = true;
+            failureReason = "Incorrect default delivery dalay [ " + val + " ] expecting [ 0 ]";
         }
 
         send.setDeliveryDelay(1000);
         val = send.getDeliveryDelay();
         if ( val != 1000 ) {
-            testFailed = true;
+            failureReason = "Incorrect delivery dalay [ " + val + " ] expecting [ 1000 ]";
         }
 
         sessionSender.close();
         con.close();
 
-        if ( testFailed ) {
-            throw new Exception("testGetDeliveryDelayClassicApi failed");
+        if ( failureReason != null ) {
+            throw new Exception("testGetDeliveryDelayClassicApi failed: " + failureReason);
         }
     }
 
@@ -4410,7 +4430,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         TopicPublisher send = sessionSender.createPublisher(jmsTopic);
 
         long val = send.getDeliveryDelay();
-        if ( val == 0 ) {
+        if ( val != 0 ) {
             testFailed = true;
         }
 
@@ -4512,8 +4532,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         TextMessage msg2 = (TextMessage) jmsConsumer2.receive(30000);
 
         if ( ((msg1 == null) ||
-             (msg1.getText() == null) ||
-             !msg1.getText().equals("testPersistentMessage_PersistentMsgClassicApi")) ||
+              (msg1.getText() == null) ||
+              !msg1.getText().equals("testPersistentMessage_PersistentMsgClassicApi")) ||
              (msg2 != null) ) {
             testFailed = true;
         }

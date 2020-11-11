@@ -31,10 +31,10 @@ import componenttest.annotation.AllowedFFDC;
 @Mode(TestMode.FULL)
 public class DelayFullSecOffTest {
     private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("DelayEngine");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");
 
     private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("DelayClient");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayClient");
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 

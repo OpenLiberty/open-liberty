@@ -33,10 +33,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class DelayFullTest {
     private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("EngineServer");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");
 
     private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("ClientServer");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayClient");
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 

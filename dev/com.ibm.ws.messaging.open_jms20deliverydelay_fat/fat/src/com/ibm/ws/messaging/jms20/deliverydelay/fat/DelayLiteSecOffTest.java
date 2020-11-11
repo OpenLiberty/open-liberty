@@ -26,10 +26,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 public class DelayLiteSecOffTest {
     private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("EngineServer");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");
 
     private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("ClientServer");
+        LibertyServerFactory.getLibertyServer("DeliveryDelayClient");
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
 
