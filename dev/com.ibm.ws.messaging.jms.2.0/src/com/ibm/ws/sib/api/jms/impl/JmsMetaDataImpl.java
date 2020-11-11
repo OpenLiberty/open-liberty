@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class JmsMetaDataImpl implements ConnectionMetaData
     private static TraceComponent tc = SibTr.register(JmsMetaDataImpl.class, ApiJmsConstants.MSG_GROUP_INT, ApiJmsConstants.MSG_BUNDLE_INT);
 
     // ***************************** STATE VARIABLES ****************************
-    private static final int jmsMajorVersion = 2;
+    private static final int jmsMajorVersion = (isJakartaMessaging30()) ? 3 : 2;
     private static final int jmsMinorVersion = 0;
 
     // Initialize this information (which will be dynamically read from the
@@ -173,6 +173,23 @@ public class JmsMetaDataImpl implements ConnectionMetaData
     }
 
     // ******************* IMPLEMENTATION METHODS ***********************
+
+    // This method exists to support the jms20 SIB RA, transformed for jakarta 
+    // messaging 3.0, for use within jakarta ee9 server and client processes.
+    /**
+     * Determine whether the user configured jakarta messaging features.
+     * @return true whenever the jakarta.jms API is accessible to the SIB runtime
+     *  and applications.
+     */
+    private static boolean isJakartaMessaging30() {
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("jakarta.jms.JMSContext");
+        } catch (Throwable t) {
+            // Expect ClassNotFoundException
+        }
+        return clazz != null;
+    };
 
     /**
      * This method retrieves the information stored in the jar manifest and uses

@@ -230,7 +230,7 @@ public class JMSContextTest_118058 {
         assertTrue("Test testsetClientID_createContextUser_TCP_SecOff failed", testResult);
     }
 
-    // / 118058_3_2 : Check if CLIENT_ACKNOWLEDGE session mode is used , then it
+    // 118058_3_2 : Check if CLIENT_ACKNOWLEDGE session mode is used , then it
     // is ignored and AUTO_ACKNOWLEDGE is set
     // Bindings an Security Off
 
