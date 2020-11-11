@@ -30,7 +30,7 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class Mpjwt12TCKLauncher_aud_env {
 
-    @Server("tckAudEnv")
+    @Server("jwt12tckAudEnv")
     public static LibertyServer server;
 
     @BeforeClass

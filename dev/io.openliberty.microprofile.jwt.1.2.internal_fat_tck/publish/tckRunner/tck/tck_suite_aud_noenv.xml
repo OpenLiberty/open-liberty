@@ -54,16 +54,19 @@
             <class name="org.eclipse.microprofile.jwt.tck.config.TokenAsCookieTest" />
 
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
-            <!-- EmptyTokenTest - Blocked 14011
+            
+            <!-- EmptyTokenTest - Blocked 14011 
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
             -->
+            
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
 
-            <!-- Waiting on updates to TCK 
+       
+            <!-- MP JWT 1.2 JWE tests - Awaiting TCK updates -->
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsJWKSClasspathTest" />
             <class name="org.eclipse.microprofile.jwt.tck.config.jwe.PrivateKeyAsPEMClasspathTest" />
-            -->
+            
 
 		</classes>
     </test>
