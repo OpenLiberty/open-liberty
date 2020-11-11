@@ -32,6 +32,7 @@ Export-Package: \
     io.openliberty.microprofile.openapi20.validation
 
 Private-Package: \
+    io.openliberty.microprofile.openapi20.cache,\
     io.openliberty.microprofile.openapi20.resources,\
     io.openliberty.microprofile.openapi20.validation.resources
 
