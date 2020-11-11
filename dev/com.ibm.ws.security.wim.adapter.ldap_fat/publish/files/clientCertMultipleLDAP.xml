@@ -32,8 +32,8 @@
 		certificateMapMode="CERTIFICATE_FILTER"
 		certificateFilter="uid=${SubjectCN}"
 		ldapType="IBM Tivoli Directory Server"
-		searchTimeout="8m"
-		loginProperty="cn">
+		searchTimeout="8m">
+		<loginProperty name = "cn"/>
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
 		   <server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
@@ -46,9 +46,9 @@
 		bindPassword="testuserpwd"
 		certificateMapMode="CERTIFICATE_FILTER"
 		certificateFilter="cn=${SubjectCN}"		
-		ldapType="Microsoft Active Directory"		
-		searchTimeout="8m"
-		loginProperty="cn">
+		ldapType="Microsoft Active Directory"
+		searchTimeout="8m">
+		<loginProperty name = "cn"/>
 		<failoverServers name="failoverLdapServers">
 		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
         </failoverServers>
