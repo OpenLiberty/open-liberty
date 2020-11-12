@@ -33,7 +33,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 public class DelayFullTest {
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");
@@ -137,7 +137,7 @@ public class DelayFullTest {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features", "features/testjmsinternals-1.0.mf");
         TestUtils.addDropinsWebApp(clientServer, ddAppName, ddAppPackages);
-        TestUtils.addDropinsWebApp(clientServer, mdbAppName, mdbAppPackages);
+        TestUtils.addDropinsJavaApp(clientServer, mdbAppName, mdbAppPackages);
 
         startServers();
     }

@@ -116,7 +116,7 @@
   
   <!-- -->
 
-  <jmsActivationSpec id="jmsmdb/jmsmdb/MessageDrivenBean">
+  <jmsActivationSpec id="jmsmdb/jmsmdb/ejb/MessageDrivenBean">
     <properties.wasJms destinationRef="jndi_INPUT_Q"/>
   </jmsActivationSpec>
   
