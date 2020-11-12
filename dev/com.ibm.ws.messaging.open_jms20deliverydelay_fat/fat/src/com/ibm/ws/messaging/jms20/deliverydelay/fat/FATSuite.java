@@ -28,9 +28,9 @@ import componenttest.rules.repeater.RepeatTests;
             //+ DelayLiteSecOnTest.class,
 
             //+ DelayFullSecOffTest.class,
-            DelayFullSecOnTest.class,
+            //+ DelayFullSecOnTest.class,
 
-            // DelayFullTest.class
+            DelayFullTest.class
 })
 public class FATSuite {
     // Run only during the Jakarta repeat for now.  When
