@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi20.fat;
+package io.openliberty.microprofile.openapi20.fat.cache;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
+@ApplicationPath("/")
+public class CacheTestApp extends Application {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    ApplicationProcessorTest.class,
-    CacheTest.class
-})
-public class FATSuite {
 }
