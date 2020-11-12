@@ -149,8 +149,9 @@ public class BadApplicationTests extends AbstractTest {
         // CWNEN0064E - testE4xEnvEntryExistingNonEnumNonClass, testE4aEnvEntryExistingNonEnumNonClass
         // CWWKZ0002E - testApplicationExceptionExtendsThrowable, testApplicationExceptionExtendsThrowableEE8
         // CWWKZ0106E - testApplicationExceptionExtendsThrowable, testApplicationExceptionExtendsThrowableEE8
+        // CNTR0338W - Ambiguous binding warning
         server.stopServer("CNTR0075E", "CNTR0190E", "CNTR4002E", "CNTR4006E", "CNTR5107E", "CWNEN0009E", "CWNEN0011E", "CWNEN0021W", "CWNEN0063E", "CWNEN0064E", "CWWKZ0002E",
-                          "CWWKZ0106E");
+                          "CWWKZ0106E", "CNTR0338W");
     }
 
     // For C2, constant for the bogus class name, which should appear somewhere in the error message:

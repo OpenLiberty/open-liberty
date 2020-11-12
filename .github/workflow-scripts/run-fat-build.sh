@@ -18,7 +18,7 @@ if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
   git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
   echo "Modified files are:"
   cat modified_files.diff
-  FAT_BUCKETS=$(sed -n "s/^dev\/\(.*_fat[^\/]*\)\/.*$/\1/p" modified_files.diff | uniq)
+  FAT_BUCKETS=$(sed -n "s/^dev\/\([^\/]*_fat[^\/]*\)\/.*$/\1/p" modified_files.diff | uniq)
   if [[ -z $FAT_BUCKETS ]]; then
     echo "No FATs were directly modfied. Skipping this job."
     exit 0
@@ -54,6 +54,7 @@ ant -version
 echo "\n## Java version:"
 java -version
 
+unzip -q openliberty-image.zip
 cd dev
 chmod +x gradlew
 chmod 777 build.image/wlp/bin/*

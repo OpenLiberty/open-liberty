@@ -63,7 +63,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {}
+    public JTMConfigurationProvider() {
+    }
 
     /*
      * Called by DS to activate service
@@ -280,6 +281,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public int getLeaseLength() {
         Number num = (Number) _props.get("leaseLength");
+        return num.intValue();
+    }
+
+    @Override
+    public int getLeaseRenewalTime() {
+        Number num = (Number) _props.get("leaseRenewalTime");
         return num.intValue();
     }
 

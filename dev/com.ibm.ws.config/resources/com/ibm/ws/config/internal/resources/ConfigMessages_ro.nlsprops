@@ -485,12 +485,16 @@ warning.supplied.config.not.valid.explanation= Un atribut de configura\u0163ie e
 warning.supplied.config.not.valid.useraction=Actualiza\u0163i configura\u0163ia de server pentru a \u00eenl\u0103tura valoarea de atribut incorect\u0103.
 
 variables.in.id.not.supported=CWWKG0104W: Atributul ID cu valoarea {1} pentru elementul de configura\u0163ie {0} trebuie s\u0103 aib\u0103 o valoare fix\u0103. Variabilele din atributul ID nu vor fi \u00eenlocuite.
-variables.in.id.not.supported.explanation=Nu sunt permise valori de variabile \u00een atributele ID. Toate variabilele din atributele ID vor fi tratate ca \u015firuri literale.  
+variables.in.id.not.supported.explanation=Nu sunt permise valori de variabile \u00een atributele ID. Toate variabilele din atributele ID vor fi tratate ca \u015firuri literale. 
 variables.in.id.not.supported.useraction=\u00cenl\u0103tura\u0163i variabila din valoarea atributului ID.
 
 error.root.must.be.server=CWWKG0105E: Documentul de configura\u0163ie {0} trebuie s\u0103 \u00eenceap\u0103 cu elementul [{1}].
 error.root.must.be.server.explanation=Configura\u0163ia trebuie s\u0103 fie con\u0163inut\u0103 fie \u00eentr-un element server, fie \u00eentr-un element client. 
 error.root.must.be.server.useraction=Ad\u0103uga\u0163i un element server sau client ca \u015fi r\u0103d\u0103cin\u0103 a fi\u015fierului de configura\u0163ie. 
+
+error.bad.variable.file=CWWKG0106E: Fi\u015fierul {0} nu poate fi citit. 
+error.bad.variable.file.explanation=Fi\u015fierul nu poate fi \u00eenc\u0103rcat ca o variabil\u0103 deoarece nu poate fi citit. 
+error.bad.variable.file.useraction=Verifica\u0163i c\u0103 fi\u015fierul are con\u0163inut text \u015fi verifica\u0163i permisiunile sistemului de operare pentru fi\u015fier.
 
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

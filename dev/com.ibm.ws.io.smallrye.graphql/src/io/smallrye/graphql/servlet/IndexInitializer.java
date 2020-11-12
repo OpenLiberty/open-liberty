@@ -30,8 +30,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * This creates an index from the classpath.
- * Based on similar class in LRA
- * (https://github.com/jbosstm/narayana/blob/master/rts/lra/lra-proxy/api/src/main/java/io/narayana/lra/client/internal/proxy/nonjaxrs/ClassPathIndexer.java)
  * 
  * @author Phillip Kruger (phillip.kruger@redhat.com)
  */

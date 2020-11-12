@@ -56,7 +56,9 @@ public class BuilderTests extends CommonSecurityFat {
     protected static Class<?> thisClass = BuilderTests.class;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -72,7 +74,7 @@ public class BuilderTests extends CommonSecurityFat {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction());
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);

@@ -7,6 +7,7 @@
         <feature>servlet-3.1</feature>
         <feature>localConnector-1.0</feature>
         <feature>componentTest-1.0</feature>
+        <feature>concurrent-1.0</feature>
     </featureManager>
 
 </server>

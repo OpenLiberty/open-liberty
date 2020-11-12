@@ -68,6 +68,14 @@ public class PersistentTimerTestHelper {
         // but transaction service has already been shutdown.
         ignoreList.add("J2CA0027E");
 
+        // CWWKC1501W: Persistent executor [EJBPersistentTimerExecutor] rolled back task [task id]
+        //             (!EJBTimerP![j2eename]) due to failure javax.ejb.EJBException: Timeout method
+        //             [method name] will not be invoked because server is stopping
+        //
+        // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
+        // but EJB timer service throws exception due to server stopping.
+        ignoreList.add("CWWKC1501W.*server is stopping");
+
         // CWWKC1503W: Persistent executor [EJBPersistentTimerExecutor] rolled back task [task id]
         //             (!EJBTimerP![j2eename]) due to failure javax.ejb.EJBException: Timeout method
         //             [method name] will not be invoked because server is stopping

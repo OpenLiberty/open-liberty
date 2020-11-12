@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: L'invalidation du c
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Il se peut que les modifications apport\u00e9es dans MicroProfile Config ne soient pas refl\u00e9t\u00e9es dans l'application.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Consultez le journal message.log du serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour identifier le probl\u00e8me.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Source de configuration des propri\u00e9t\u00e9s de l'application XML de serveur
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Source de configuration des variables XML de serveur
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Source de configuration des variables par d\u00e9faut XML de serveur
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

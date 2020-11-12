@@ -14,11 +14,12 @@ package com.ibm.ws.jpa.diagnostics.ormparser;
 public final class Constants {
     public final static String JVM_Property_ORMXML_DIGEST_ALGORITHM = "jpaormviewer.ormxml.digest.algorithm";
     public final static String DEFAULT_DIGEST_ALGORITHM = "MD5";
-    
+
     public final static String JPA_10_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm10xml";
     public final static String JPA_20_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm20xml";
     public final static String JPA_21_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm21xml";
     public final static String JPA_22_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm22xml";
+    public final static String JPA_30_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm30xml";
     public final static String JPA_DEFAULT_JAXB_PACKAGE = JPA_22_JAXB_PACKAGE;
-    
+
 }

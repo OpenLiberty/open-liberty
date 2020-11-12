@@ -98,7 +98,7 @@ public class BndErrorTest extends FATServletClient {
 
         assertNotNull("Expected error message was not logged: " + errorText, server.waitForStringInLogUsingMark(errorText));
 
-        if (appStop || RepeatTestFilter.CURRENT_REPEAT_ACTION == "EJBCBOnErr_FAIL") {
+        if (appStop || RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
             String message = "CWWKZ0106E:";
             assertNotNull("Application " + appName + " should have been stopped", server.waitForStringInLogUsingMark(message));
         } else {

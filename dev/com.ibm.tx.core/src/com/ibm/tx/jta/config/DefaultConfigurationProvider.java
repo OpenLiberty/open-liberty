@@ -402,4 +402,9 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public int getStandardTransientErrorRetryAttempts() {
         return 180;
     }
+
+    @Override
+    public int getLeaseRenewalTime() {
+        return 90;
+    }
 }

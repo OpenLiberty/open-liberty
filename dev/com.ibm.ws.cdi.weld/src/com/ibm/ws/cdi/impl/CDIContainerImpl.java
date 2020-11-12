@@ -593,8 +593,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         //Now do the exact same thing for extensions coming from the SPI
         Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> spiExtensions = cdiRuntime.getSPIExtensionServices();
         while (spiExtensions.hasNext()) {
-            ServiceAndServiceReferencePair<CDIExtensionMetadata> extension = spiExtensions.next();
-            ServiceReference<CDIExtensionMetadata> sr = extension.getServiceReference();
+            ServiceAndServiceReferencePair<CDIExtensionMetadata> extensionMetaData = spiExtensions.next();
+            ServiceReference<CDIExtensionMetadata> sr = extensionMetaData.getServiceReference();
             if (sr != null) {
                 Long serviceID = ServiceReferenceUtils.getId(sr);
                 ExtensionArchive extensionArchive = null;
@@ -602,8 +602,14 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     extensionArchive = runtimeExtensionMap.get(serviceID);
 
                     if (extensionArchive == null) {
-                        extensionArchive = newSPIExtensionArchive(sr, extension.getService(), applicationContext);
+                        extensionArchive = newSPIExtensionArchive(sr, extensionMetaData.getService(), applicationContext);
                         runtimeExtensionMap.put(serviceID, extensionArchive);
+                    } else {
+                        // We don't need to create the extension archive but we do need to register the contained extensions into the deploymnet.
+                        // Since ExtensionArchive doesn't have a method for getting the extension classes, we'll get the extensions from the service.
+
+                        Set<Extension> spiExtensionInstances = getExtensionInstancesFromService(extensionMetaData.getService());
+                        applicationContext.registerSPIExtensions(spiExtensionInstances);
                     }
                 }
                 extensionSet.add(extensionArchive);
@@ -627,12 +633,10 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         return this.probeExtensionArchive;
     }
 
-    private ExtensionArchive newSPIExtensionArchive(ServiceReference<CDIExtensionMetadata> sr,
-                                                    CDIExtensionMetadata webSphereCDIExtensionMetaData, WebSphereCDIDeployment applicationContext) throws CDIException {
-        Bundle bundle = sr.getBundle();
 
+    private Set<Extension> getExtensionInstancesFromService(CDIExtensionMetadata webSphereCDIExtensionMetaData) {
         Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
-        Set<Extension> extensions = new HashSet<Extension>();
+        Set<Extension> spiExtensions = new HashSet<Extension>();
         Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
 
         for (Class<? extends Extension> clazz : extensionClasses) {
@@ -641,13 +645,24 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                     throw new IllegalArgumentException(clazz.getCanonicalName()
                                                        + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
                 }
-                extensions.add(clazz.getDeclaredConstructor().newInstance());
+                spiExtensions.add(clazz.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 Tr.error(tc, "spi.extension.failed.to.construct.CWOWB1010E", clazz.getCanonicalName(), e.toString());
             }
         }
 
-        applicationContext.registerSPIExtension(extensions);
+        return spiExtensions;
+    }
+
+    private ExtensionArchive newSPIExtensionArchive(ServiceReference<CDIExtensionMetadata> sr,
+                                                    CDIExtensionMetadata webSphereCDIExtensionMetaData, WebSphereCDIDeployment applicationContext) throws CDIException {
+        Bundle bundle = sr.getBundle();
+
+        Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
+        Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
+        Set<Extension> spiExtensions = getExtensionInstancesFromService(webSphereCDIExtensionMetaData);
+
+        applicationContext.registerSPIExtensions(spiExtensions);
 
         //The simpler SPI does not offer these properties.
         Set<String> extra_classes = webSphereCDIExtensionMetaData.getBeanClasses().stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());

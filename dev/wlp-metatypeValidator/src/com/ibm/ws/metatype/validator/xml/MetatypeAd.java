@@ -185,6 +185,7 @@ public class MetatypeAd extends MetatypeBase {
         validateIbmCopyOf();
         validateIbmRename();
         validateRequiresTF();
+        validateFinal();
         if (validateRefs) {
             validateIbmReference();
             validateIbmService();
@@ -219,6 +220,17 @@ public class MetatypeAd extends MetatypeBase {
             option.setParentAd(this);
             option.validate(validateRefs);
             setValidityState(option.getValidityState());
+        }
+    }
+
+    private void validateFinal() {
+        if (ibmFinal != null) {
+            String trimmed = ibmFinal.trim();
+
+            if (Boolean.valueOf(trimmed)) {
+                if (defaultValue == null)
+                    logMsgWithContext(MessageType.Error, "ibm:final", "default.value.missing");
+            }
         }
     }
 

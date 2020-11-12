@@ -370,14 +370,15 @@ DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Use a relative path or URL as the val
 
 # Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
 # 0=JWT consumer config ID
-JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: The token in the request is not in JSON Web Signature (JWS) format, but only tokens that are in JWS format are accepted. If the token is in JSON Web Encryption (JWE) format, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the [{0}] JWT consumer configuration.
-JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The MicroProfile JWT specification requires that only tokens in JWS format must be accepted if the JWE decryption key location is not configured. The decryption key location is missing from the MicroProfile Config properties and the server configuration, so only tokens in JWS format are accepted.
-JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=If JWE tokens must be accepted, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWS tokens are sent to this resource.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: The token in the request is not in JSON Web Signature (JWS) format, but the [{0}] JWT consumer only accepts tokens that are in JWS format.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The token in the request might be malformed or might be in JSON Web Encryption (JWE) format. Tokens must be in JWS format if the JWE decryption key location is not configured.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWS tokens are sent to this resource.
 
-JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: The token in the request is not in JSON Web Encryption (JWE) format, but only tokens that are in JWE format are accepted. If the token is in JSON Web Signature (JWS) format, remove the mp.jwt.decrypt.key.location MicroProfile Config property and the keyManagementKeyAlias attribute from the [{0}] JWT consumer configuration.
-JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=The MicroProfile JWT specification requires that only tokens in JWE format must be accepted if the JWE decryption key location is configured. The decryption key location is specified in the MicroProfile Config properties or the server configuration, so only tokens in JWE format are accepted.
-JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=If JWE tokens should not be accepted, remove the mp.jwt.decrypt.key.location MicroProfile Config property and the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWE tokens are sent to this resource.
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: The token in the request is not in JSON Web Encryption (JWE) format, but the [{0}] JWT consumer only accepts tokens that are in JWE format.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=The token in the request might be malformed or might be in JSON Web Signature (JWS) format. Tokens must be in JWE format if the JWE decryption key location is configured.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=To accept JWS tokens instead of JWE tokens, remove the mp.jwt.decrypt.key.location MicroProfile Config property and the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWE tokens are sent to this resource.
 
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: The payload of the JSON Web Encryption (JWE) token that is included in the request is not a JSON Web Signature (JWS) token.
-NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=The payload of a JWE token must be a signed JWS token.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=The payload of a JWE token must be a valid JSON Web Token (JWT) in JWS format.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ensure that the payload of the JWE token is a valid JWT in JWS format.

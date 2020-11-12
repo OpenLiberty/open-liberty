@@ -10,4 +10,12 @@
     <include location="../fatTestPorts.xml"/>
     <sslDefault/>
     <SSLDefault/>
+    
+    <variable name="keyFromVariableInServerXML" value="${value1DefinedInTwoPlaces}" />
+    <webApplication location="propertyExpressionApp.war"> 
+	   <appProperties> 
+	         <property name="keyFromAppPropertyInServerXML" value="${value2DefinedInMicroprofileConfigProperties}"/> 
+	   </appProperties> 
+	</webApplication>
+    
 </server>

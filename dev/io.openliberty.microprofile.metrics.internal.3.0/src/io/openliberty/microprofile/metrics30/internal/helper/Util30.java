@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricID;
@@ -121,7 +122,7 @@ public class Util30 extends Util23 {
     public static Map<String, Number> getTimerNumbers(Timer timer, String tags, double conversionFactor) {
         Map<String, Number> results = new HashMap<String, Number>();
         results.put(Constants.COUNT + tags, timer.getCount());
-        results.put("elapsedTime" + tags, timer.getElapsedTime().toNanos());
+        results.put(Constants.ELAPSED_TIME + tags, timer.getElapsedTime().toNanos());
         results.put(Constants.MEAN_RATE + tags, timer.getMeanRate());
         results.put(Constants.ONE_MINUTE_RATE + tags, timer.getOneMinuteRate());
         results.put(Constants.FIVE_MINUTE_RATE + tags, timer.getFiveMinuteRate());
@@ -143,6 +144,27 @@ public class Util30 extends Util23 {
         return results;
     }
 
+    public static Map<String, Number> getHistogramNumbers(Histogram histogram, String tags) {
+        Map<String, Number> results = new HashMap<String, Number>();
+        results.put(Constants.COUNT + tags, histogram.getCount());
+        results.put(Constants.SUM + tags, histogram.getSum());
+
+        results.put(Constants.MAX + tags, histogram.getSnapshot().getMax());
+        results.put(Constants.MEAN + tags, histogram.getSnapshot().getMean());
+        results.put(Constants.MIN + tags, histogram.getSnapshot().getMin());
+
+        results.put(Constants.STD_DEV + tags, histogram.getSnapshot().getStdDev());
+
+        results.put(Constants.MEDIAN + tags, histogram.getSnapshot().getMedian());
+        results.put(Constants.PERCENTILE_75TH + tags, histogram.getSnapshot().get75thPercentile());
+        results.put(Constants.PERCENTILE_95TH + tags, histogram.getSnapshot().get95thPercentile());
+        results.put(Constants.PERCENTILE_98TH + tags, histogram.getSnapshot().get98thPercentile());
+        results.put(Constants.PERCENTILE_99TH + tags, histogram.getSnapshot().get99thPercentile());
+        results.put(Constants.PERCENTILE_999TH + tags, histogram.getSnapshot().get999thPercentile());
+
+        return results;
+    }
+
     /*
      * To facilitate changes into the MicroProfile Specification in 3.0 we need to return a value that is an
      * Object because the maxTimeDuration or minTimeDuration could be a null object.
@@ -150,7 +172,7 @@ public class Util30 extends Util23 {
     public static Map<String, Object> getSimpleTimerNumbersAsObjects(SimpleTimer simpleTimer, String tags, double conversionFactor) {
         Map<String, Object> results = new HashMap<String, Object>();
         results.put(Constants.COUNT + tags, simpleTimer.getCount());
-        results.put("elapsedTime" + tags, simpleTimer.getElapsedTime().toNanos());
+        results.put(Constants.ELAPSED_TIME + tags, simpleTimer.getElapsedTime().toNanos());
 
         Number value = (simpleTimer.getMaxTimeDuration() != null) ? simpleTimer.getMaxTimeDuration().toNanos() * conversionFactor : null;
         results.put("maxTimeDuration" + tags, value);

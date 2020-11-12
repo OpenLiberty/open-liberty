@@ -11,6 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+quietTransformer=true
+
+tested.features: \
+  enterprisebeanslite-4.0, \
+  facesContainer-3.0, \
+  cdi-3.0, \
+  jaxb-3.0, \
+  concurrent-2.0, \
+  persistenceContainer-3.0, \
+  beanvalidation-3.0, \
+  faces-3.0
 
 src: \
     fat/src,\

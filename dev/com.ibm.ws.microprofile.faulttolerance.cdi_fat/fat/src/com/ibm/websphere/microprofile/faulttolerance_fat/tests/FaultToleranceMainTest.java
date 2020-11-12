@@ -180,7 +180,7 @@ public class FaultToleranceMainTest extends FATServletClient {
         assertThat("Number of successes", successes, hasSize(2));
         assertThat("Number of failures", failures, hasSize(1));
 
-        if (RepeatFaultTolerance.MP20_FEATURES_ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+        if (RepeatTestFilter.isRepeatActionActive(RepeatFaultTolerance.MP20_FEATURES_ID)) {
             // Check for the correct message for FT 1.x
             assertThat("Failure message should have correct code", failures.get(0).value, containsString("CWMFT0001E"));
             // Ensure that the message substitution has happened

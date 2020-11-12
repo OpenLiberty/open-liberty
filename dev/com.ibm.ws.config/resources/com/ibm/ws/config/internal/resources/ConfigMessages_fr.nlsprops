@@ -537,5 +537,10 @@ error.root.must.be.server=CWWKG0105E: Le document de configuration {0} doit comm
 error.root.must.be.server.explanation=La configuration doit se trouver dans un \u00e9l\u00e9ment server ou un \u00e9l\u00e9ment client. 
 error.root.must.be.server.useraction=Ajoutez un \u00e9l\u00e9ment server ou client \u00e0 la racine du fichier de configuration. 
 
+error.bad.variable.file=CWWKG0106E: Le fichier {0} est illisible. 
+error.bad.variable.file.explanation=Le fichier ne peut pas \u00eatre charg\u00e9 en tant que variable car il est illisible. 
+error.bad.variable.file.useraction=Assurez-vous que le fichier contient du texte et v\u00e9rifiez les droits d'acc\u00e8s au fichier sur le syst\u00e8me d'exploitation.
+
+
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

@@ -19,7 +19,7 @@
 
     <groupId>io.openliberty.microprofile.metrics</groupId>
     <artifactId>tck.runner</artifactId>
-    <version>3.0-RC1</version>
+    <version>3.0-RC3</version>
     <packaging>pom</packaging>
     <name>MicroProfile Metrics TCK 3.0 Runner</name>
 

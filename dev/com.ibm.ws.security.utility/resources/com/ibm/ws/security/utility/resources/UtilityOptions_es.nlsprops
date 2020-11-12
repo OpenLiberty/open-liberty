@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -149,6 +149,7 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informaci\u00f3n de extensi\u00f3n de c
 sslCert.option-desc.ext=\tInformaci\u00f3n de extensi\u00f3n de certificado para a\u00f1adir al certificado.\n\
 \tLa extensi\u00f3n predeterminada es una entrada de nombre alternativo de asunto \n\
 \tque utiliza el nombre de host. Este distintivo sigue la misma sintaxis que el distintivo -ext del mandato\n\
+\t \
 Jave Keytool. Este distintivo se puede utilizar varias veces en el mandato\n\
 \ 
 line.
@@ -187,3 +188,19 @@ createLTPAKeys.option-desc.password.key=\tEspecifica una clave que se utilizar\u
 \tsuministrarse al servidor definiendo la variable\n\
 \twlp.password.encryption.key, cuyo valor es la clave. Si no se especifica\n\
 \testa opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tProbar la compatibilidad del puerto y del host de destino con los protocolos TLS y suites de cifrado disponibles.
+tlsProfiler.usage.options=\t{0} tlsProfiler [opciones]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tEspecifique el puerto.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tEspecifique el host.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tIncluya informaci\u00f3n adicional sobre los protocolos no seguros.

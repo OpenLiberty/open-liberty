@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Ur\u010dete platn\u00fd alias da
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Do\u0161lo k chyb\u011b konfigurace. Atribut {0} mus\u00ed b\u00fdt definov\u00e1n.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Ur\u010den\u00fd atribut mus\u00ed b\u00fdt definov\u00e1n.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Ur\u010dete hodnotu chyb\u011bj\u00edc\u00edho atributu.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: Atributy {0} a {1} byly nakonfigurov\u00e1ny v prvku authData {2}. Je mo\u017en\u00e9 nakonfigurovat pouze {0} nebo {1}, nikoli oboj\u00ed.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Uveden\u00e9 atributy se vz\u00e1jemn\u011b vylu\u010duj\u00ed.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Zadejte pouze jeden z jeden z atribut\u016f.
+ 

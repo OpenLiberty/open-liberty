@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Die MicroProfile-Co
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=\u00c4nderungen in MicroProfile Config werden m\u00f6glicherweise nicht in der Anwendung widergespiegelt.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Konfigurationsquelle f\u00fcr Anwendungseigenschaften in der Server-XML
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Konfigurationsquelle f\u00fcr Variablen in der Server-XML
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Konfigurationsquelle f\u00fcr Standardvariablen in der Server-XML
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

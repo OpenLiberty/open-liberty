@@ -221,6 +221,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Une d\u00e9finition de fonction existan
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Le gestionnaire de fonctions ne parvient pas \u00e0 trouver de d\u00e9finition pour une fonction sp\u00e9cifi\u00e9e dans la configuration du serveur. Le nom sp\u00e9cifi\u00e9 peut correspondre \u00e0 une d\u00e9finition de fonction existante.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Envisagez de sp\u00e9cifier la d\u00e9finition de fonction existante nomm\u00e9e \u00e0 la place. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: La configuration inclut une combinaison incompatible de fonctions. Par cons\u00e9quent, le gestionnaire de fonctions n'a install\u00e9 aucun fonction.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=La configuration inclut une combinaison incompatible de fonctions. Pour \u00e9viter tout comportement non valide, le gestionnaire de fonctions a d\u00e9sactiv\u00e9 toutes les fonctions.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Sp\u00e9cifiez une autre version des fonctions configur\u00e9es \u00e0 l'origine du conflit.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La fonction {0} existe d\u00e9j\u00e0. Elle ne sera pas r\u00e9install\u00e9e. Pour modifier une fonction existante, vous devez d''abord la d\u00e9sinstaller manuellement.

@@ -1054,30 +1054,36 @@ public class LdapConfigManager {
 
             if (loginProps != null && !loginProps.isEmpty()) {
                 isLoginPropertyDefined = true;
-                List<String> unsupportedProps = new ArrayList<String>();
-                for (Map<String, Object> propDO : loginProps) {
-                    String propName = (String) propDO.get(ConfigConstants.CONFIG_PROP_NAME);
-                    // Check if the property is supported or not
-                    List<String> props = new ArrayList<String>(1);
-                    props.add(propName);
-                    List<String> supportedProp = getSupportedProperties(acct, props);
-                    if (supportedProp == null || supportedProp.size() == 0) {
-                        unsupportedProps.add(propName);
-                    } else {
-                        iLoginAttrs.add(getAttributeName(acct, propName));
-                        iLoginProps.add(propName);
-                    }
-                }
-                if (!unsupportedProps.isEmpty()) {
-                    String props = "";
-                    for (String prop : unsupportedProps) {
-                        props += prop + ", ";
-                    }
-                    props = props.substring(0, props.lastIndexOf(","));
-                    String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_LOGIN_PROPERTIES, props);
-                    throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg);
+            } else {
+                loginProps = new ArrayList<Map<String, Object>>();
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(ConfigConstants.CONFIG_PROP_NAME, "uid");
+                loginProps.add(map);
+            }
+            List<String> unsupportedProps = new ArrayList<String>();
+            for (Map<String, Object> propDO : loginProps) {
+                String propName = (String) propDO.get(ConfigConstants.CONFIG_PROP_NAME);
+                // Check if the property is supported or not
+                List<String> props = new ArrayList<String>(1);
+                props.add(propName);
+                List<String> supportedProp = getSupportedProperties(acct, props);
+                if (supportedProp == null || supportedProp.size() == 0) {
+                    unsupportedProps.add(propName);
+                } else {
+                    iLoginAttrs.add(getAttributeName(acct, propName));
+                    iLoginProps.add(propName);
                 }
             }
+            if (!unsupportedProps.isEmpty()) {
+                String props = "";
+                for (String prop : unsupportedProps) {
+                    props += prop + ", ";
+                }
+                props = props.substring(0, props.lastIndexOf(","));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_LOGIN_PROPERTIES, props);
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg);
+            }
+
 
             // If no login properties specified, the default RDN property will be used
             if (iLoginAttrs.size() == 0) {

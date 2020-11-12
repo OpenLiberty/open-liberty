@@ -222,6 +222,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Una definizione di funzione esistente, 
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Il gestore funzioni non \u00e8 in grado di trovare una definizione per una funzione specificata nella configurazione del server. Il nome specificato potrebbe corrispondere a una definizione di funzione esistente.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Valutare, invece, di specificare la definizione di funzione esistente denominata. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: La configurazione include una combinazione incompatibile di funzioni. Di conseguenza, il gestore funzioni non ha installato alcuna funzione.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=La configurazione include una combinazione incompatibile di funzioni. Per evitare una modalit\u00e0 di funzionamento non valida, il gestore funzioni ha disabilitato tutte le funzioni.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Specificare una versione differente delle funzioni configurate che hanno causato il conflitto.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La funzione {0} esiste gi\u00e0. Essa non sar\u00e0 reinstallata. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.

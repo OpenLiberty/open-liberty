@@ -106,6 +106,7 @@ Export-Package: \
 instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
 
 -buildpath: \
+    com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.ltc;version=latest,\

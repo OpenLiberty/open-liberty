@@ -39,6 +39,7 @@
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.PrincipalInjectionTest" /> 
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.ApplicationScopedInjectionTest" />
 
+
               <!--  MP JWT 1.2 JAXRS JWE tests -->
               <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.jwe.RolesAllowedSignEncryptTest" />
 

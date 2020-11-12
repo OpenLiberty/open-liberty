@@ -27,7 +27,7 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'commons-logging:commons-logging:1.1.3',
       'xml-apis:xml-apis:1.4.01',
-      'net.sf.jtidy:jtidy:4aug2000r7-dev',
+      'jtidy:jtidy:4aug2000r7-dev',
       'httpunit:httpunit:1.5.4',
       project(':com.ibm.ws.webcontainer.security_test.servlets')
     }

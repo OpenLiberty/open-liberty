@@ -53,6 +53,9 @@
 
         <AD name="internal" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+            
+		<AD name="internal" description="%lease.renewal.time.desc"
+            id="leaseRenewalTime" required="false" type="Integer" min="1" max="100" default="90" />
 
         <AD name="internal" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />

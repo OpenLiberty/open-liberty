@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: \u65e0\u6cd5\u8c03\
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=MicroProfile Config \u4e2d\u7684\u66f4\u6539\u53ef\u80fd\u672a\u53cd\u6620\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=\u670d\u52a1\u5668 XML \u5e94\u7528\u7a0b\u5e8f\u5c5e\u6027\u914d\u7f6e\u6e90
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=\u670d\u52a1\u5668 XML \u53d8\u91cf\u914d\u7f6e\u6e90
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=\u670d\u52a1\u5668 XML \u7f3a\u7701\u53d8\u91cf\u914d\u7f6e\u6e90
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

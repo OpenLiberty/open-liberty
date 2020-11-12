@@ -13,10 +13,19 @@ package com.ibm.ws.ejbcontainer.ejblink.client;
 
 import java.util.logging.Logger;
 
+import javax.ejb.EJB;
+import javax.ejb.EJBs;
+import javax.ejb.Handle;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
+import com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkRemoteJar;
+import com.ibm.ws.ejbcontainer.ejblink.ejb.AutoLinkRemoteWar;
+import com.ibm.ws.ejbcontainer.ejblink.ejb.ComponentRemote;
+import com.ibm.ws.ejbcontainer.ejblink.ejb.ComponentRemoteHome;
 import com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote;
+import com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkRemote;
 
 /**
  * <b>Test Matrix:</b>
@@ -81,6 +90,18 @@ import com.ibm.ws.ejbcontainer.ejblink.ejb.EjbLinkDriverRemote;
  * <li>findBeanFromWar2Jar - AutoLink test two Bean Implementations, both in same jar module
  * </ul>
  */
+@EJBs({
+        @EJB(name = "ejb/ann/OtherJarStyle1", beanInterface = EjbLinkRemote.class, beanName = "OtherJarBean"),
+        @EJB(name = "ejb/ann/OtherJarStyle2", beanInterface = EjbLinkRemote.class, beanName = "../EjbLinkOtherBean.jar#OtherJarBean"),
+        @EJB(name = "ejb/ann/OtherJarStyle3", beanInterface = EjbLinkRemote.class, beanName = "logicalOther/OtherJarBean"),
+        @EJB(name = "ejb/ann/OtherWarStyle1", beanInterface = EjbLinkRemote.class, beanName = "OtherWarBean"),
+        @EJB(name = "ejb/ann/OtherWarStyle2", beanInterface = EjbLinkRemote.class, beanName = "../EjbLinkInOtherWar.war#OtherWarBean"),
+        @EJB(name = "ejb/ann/OtherWarStyle3", beanInterface = EjbLinkRemote.class, beanName = "logicalOtherWar/OtherWarBean"),
+        @EJB(name = "ejb/ann/InJarAndWarStyle1", beanInterface = EjbLinkRemote.class, beanName = "DupBean"),
+        @EJB(name = "ejb/ann/AutoLinkRemoteJar", beanInterface = AutoLinkRemoteJar.class),
+        @EJB(name = "ejb/ann/AutoLinkRemoteWar", beanInterface = AutoLinkRemoteWar.class),
+        @EJB(name = "ejb/ann/ComponentRemoteJar", beanInterface = ComponentRemoteHome.class)
+})
 public class EjbLinkClient {
     private static final String CLASS_NAME = EjbLinkClient.class.getName();
     private static final Logger logger = Logger.getLogger(CLASS_NAME);
@@ -167,6 +188,22 @@ public class EjbLinkClient {
         findBeanFromWar2SameWar();
         findBeanFromWar2OtherWar();
         findBeanFromWar2Jar();
+        testStyle1OtherJarXMLFromClient();
+        testStyle2OtherJarXMLFromClient();
+        testStyle3OtherJarXMLFromClient();
+        testStyle1OtherJarAnnFromClient();
+        testStyle2OtherJarAnnFromClient();
+        testStyle3OtherJarAnnFromClient();
+        testStyle1OtherWarXMLFromClient();
+        testStyle2OtherWarXMLFromClient();
+        testStyle3OtherWarXMLFromClient();
+        testStyle1OtherWarAnnFromClient();
+        testStyle2OtherWarAnnFromClient();
+        testStyle3OtherWarAnnFromClient();
+        testStyle1BeanInJarAndWarFromClient();
+        findBeanFromClientInJar();
+        findBeanFromClientInWar();
+        find2xBeanFromClientInJar();
     }
 
     public Object lookupDefaultBindingEJRemoteInterface(String beanInterface, String application, String module, String bean) throws Exception {
@@ -1300,4 +1337,437 @@ public class EjbLinkClient {
             System.out.println("findBeanFromWar2Jar--PASSED");
         }
     }
+
+    /**
+     * From the client module, test ejb-link in a ejb-ref that specifies only
+     * the name of the target enterprise bean that is in an ejb-jar file that is not
+     * the current client file.
+     *
+     * For example,
+     *
+     * <ejb-local-ref> <ejb-ref-name>ejb/OtherJarStyle1</ejb-ref-name>
+     * <ejb-link>OtherJarBean</ejb-link> </ejb-local-ref>
+     */
+    public void testStyle1OtherJarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherJarStyle1";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle1OtherJarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle1OtherJarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle1OtherJarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test ejb-link in an ejb-ref that specifies the path
+     * name of the ejb-jar file containing the referenced enterprise bean from a
+     * different ejb-jar file and appends the ejb-name of the target bean separated
+     * from the path name by #.
+     *
+     * For example,
+     *
+     * <ejb-ref> <ejb-ref-name>ejb/OtherJarStyle2</ejb-ref-name>
+     * <ejb-link>../OtherEJB.jar#OtherJarBean</ejb-link> </ejb-ref>
+     */
+    public void testStyle2OtherJarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherJarStyle2";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle2OtherJarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle2OtherJarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle2OtherJarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test ejb-link in an ejb-ref that specifies
+     * the module name, as set in the module-name element, of the ejb-jar file
+     * containing the referenced enterprise bean from a different ejb-jar file
+     * and appends the ejb-name of the target bean separated by /.
+     *
+     * For example,
+     *
+     * <ejb-ref> <ejb-ref-name>ejb/OtherJarStyle3</ejb-ref-name>
+     * <ejb-link>logicalOther/OtherJarBean</ejb-link> </ejb-ref>
+     */
+    public void testStyle3OtherJarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherJarStyle3";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle3OtherJarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle3OtherJarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle3OtherJarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation that specifies only
+     * the name of the target enterprise bean that is in an ejb-jar file that
+     * is not the current client file.
+     *
+     * For example,
+     *
+     * @EJB(beanName="OtherJarBean")
+     */
+    public void testStyle1OtherJarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherJarStyle1";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle1OtherJarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle1OtherJarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle1OtherJarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation specified to the path
+     * name of the ejb-jar file containing the referenced enterprise bean from
+     * a different ejb-jar file and appends the ejb-name of the target bean
+     * separated from the path name by # .
+     *
+     * For example,
+     *
+     * @EJB(beanName="../OtherEJB.jar#OtherJarBean")
+     */
+    public void testStyle2OtherJarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherJarStyle2";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle2OtherJarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle2OtherJarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle2OtherJarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation specified to the module name,
+     * as set in the module-name element, of the ejb-jar file containing the referenced
+     * enterprise bean from a different ejb-jar file and appends the ejb-name of
+     * the target bean separated by /.
+     *
+     * For example,
+     *
+     * @EJB(beanName="logicalOther/OtherJarBean")
+     */
+    public void testStyle3OtherJarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherJarStyle3";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle3OtherJarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbo.OtherJarBean".equals(beanName)) {
+            System.out.println("testStyle3OtherJarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle3OtherJarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test ejb-link in a ejb-ref that specifies
+     * only the name of the target enterprise bean that is in a .war file that
+     * is not the current client file.
+     *
+     * For example,
+     *
+     * <ejb-ref> <ejb-ref-name>ejb/OtherWarStyle1</ejb-ref-name>
+     * <ejb-link>OtherWarBean</ejb-link> </ejb-ref>
+     */
+    public void testStyle1OtherWarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherWarStyle1";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle1OtherWarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle1OtherWarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle1OtherWarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test ejb-link in an ejb-ref that specifies the path
+     * name of the .war file containing the referenced enterprise bean from a
+     * different .war file and appends the ejb-name of the target bean separated
+     * from the path name by #.
+     *
+     * For example,
+     *
+     * <ejb-ref> <ejb-ref-name>ejb/OtherWarStyle2</ejb-ref-name>
+     * <ejb-link>../OtherEJB.war#OtherWarBean</ejb-link> </ejb-ref>
+     */
+    public void testStyle2OtherWarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherWarStyle2";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle2OtherWarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle2OtherWarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle2OtherWarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test ejb-link in an ejb-ref that specifies
+     * the module name, as set in the module-name element, of the .war file
+     * containing the referenced enterprise bean from a different .war file and
+     * appends the ejb-name of the target bean separated by /.
+     *
+     * For example,
+     *
+     * <ejb-ref> <ejb-ref-name>ejb/OtherWarStyle3</ejb-ref-name>
+     * <ejb-link>logicalOther/OtherWarBean</ejb-link> </ejb-ref>
+     */
+    public void testStyle3OtherWarXMLFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/OtherWarStyle3";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle3OtherWarXMLFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle3OtherWarXMLFromClient--PASSED");
+        } else {
+            System.out.println("testStyle3OtherWarXMLFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation that specifies only the
+     * name of the target enterprise bean that is in a .war file that is not the
+     * current client file.
+     *
+     * For example,
+     *
+     * @EJB(beanName="OtherWarBean")
+     */
+    public void testStyle1OtherWarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherWarStyle1";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle1OtherWarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle1OtherWarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle1OtherWarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation specified to the path name
+     * of the .war file containing the referenced enterprise bean from a different
+     * .war file and appends the ejb-name of the target bean separated from the path
+     * name by #.
+     *
+     * For example,
+     *
+     * @EJB(beanName="../OtherEJB.war#OtherWarBean")
+     */
+    public void testStyle2OtherWarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherWarStyle2";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle2OtherWarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle2OtherWarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle2OtherWarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, test beanName annotation specified to the module name,
+     * as set in the module-name element, of the .war file containing the referenced
+     * enterprise bean from a different .war file and appends the ejb-name of
+     * the target bean separated by /.
+     *
+     * For example,
+     *
+     * @EJB(beanName="logicalOther/OtherWarBean")
+     */
+    public void testStyle3OtherWarAnnFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/OtherWarStyle3";
+        EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("testStyle3OtherWarAnnFromClient--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwaro.OtherWarBean".equals(beanName)) {
+            System.out.println("testStyle3OtherWarAnnFromClient--PASSED");
+        } else {
+            System.out.println("testStyle3OtherWarAnnFromClient--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * From the client module, verify that when a bean name exists in both a .war and
+     * ejb-jar the appropriate error (AmbiguousException) occurs.
+     */
+    public void testStyle1BeanInJarAndWarFromClient() throws Exception {
+        String envName = "java:comp/env/ejb/ann/InJarAndWarStyle1";
+
+        try {
+            EjbLinkRemote bean = (EjbLinkRemote) new InitialContext().lookup(envName);
+            System.out.println("testStyle1BeanInJarAndWarFromClient--FAILED : bean found - " + bean);
+        } catch (NamingException nex) {
+            String msg = nex.getMessage();
+            System.out.println("testStyle1BeanInJarAndWarFromClient--" + msg);
+            if (msg.contains("CWNEN1001E")) {
+                Throwable cause = nex.getCause();
+                if (cause != null) {
+                    msg = cause.getMessage();
+                    System.out.println("testStyle1BeanInJarAndWarFromClient--" + msg);
+                    if (msg.contains("CWNEN0030E") && msg.contains("AmbiguousEJBReferenceException")) {
+                        System.out.println("testStyle1BeanInJarAndWarFromClient--PASSED");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Verify that when a bean implementation exists only in an ejb-jar module
+     * that is not the current client module AutoLink finds the bean.
+     */
+    public void findBeanFromClientInJar() throws Exception {
+        String envName = "java:comp/env/ejb/ann/AutoLinkRemoteJar";
+        AutoLinkRemoteJar bean = (AutoLinkRemoteJar) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("findBeanFromClientInJar--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejb.TestBean".equals(beanName)) {
+            System.out.println("findBeanFromClientInJar--PASSED");
+        } else {
+            System.out.println("findBeanFromClientInJar--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * Verify that when a bean implementation exists only in an war module
+     * that is not the current client module AutoLink finds the bean.
+     */
+    public void findBeanFromClientInWar() throws Exception {
+        String envName = "java:comp/env/ejb/ann/AutoLinkRemoteWar";
+        AutoLinkRemoteWar bean = (AutoLinkRemoteWar) new InitialContext().lookup(envName);
+        if (bean == null) {
+            System.out.println("findBeanFromClientInWar--FAILED : bean is null");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejbwar.TestBean".equals(beanName)) {
+            System.out.println("findBeanFromClientInWar--PASSED");
+        } else {
+            System.out.println("findBeanFromClientInWar--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
+    /**
+     * Verify that when a 2.x bean implementation exists only in an jar module
+     * that is not the current client module AutoLink finds the bean home.
+     */
+    public void find2xBeanFromClientInJar() throws Exception {
+        String envName = "java:comp/env/ejb/ann/ComponentRemoteJar";
+        ComponentRemoteHome home = (ComponentRemoteHome) new InitialContext().lookup(envName);
+        if (home == null) {
+            System.out.println("find2xBeanFromClientInJar--FAILED : home is null");
+            return;
+        }
+
+        ComponentRemote bean = home.create();
+        if (bean == null) {
+            System.out.println("find2xBeanFromClientInJar--FAILED : bean is null");
+            return;
+        }
+
+        Handle handle = bean.getHandle();
+        if (handle == null) {
+            System.out.println("find2xBeanFromClientInJar--FAILED : handle is null");
+            return;
+        }
+
+        if (!bean.isIdentical(handle.getEJBObject())) {
+            System.out.println("find2xBeanFromClientInJar--FAILED : isIdentical failed");
+            return;
+        }
+
+        String beanName = bean.getBeanName();
+
+        if ("com.ibm.ws.ejbcontainer.ejblink.ejb.ComponentBean".equals(beanName)) {
+            System.out.println("find2xBeanFromClientInJar--PASSED");
+        } else {
+            System.out.println("find2xBeanFromClientInJar--FAILED : wrong bean name : " + beanName);
+        }
+    }
+
 }

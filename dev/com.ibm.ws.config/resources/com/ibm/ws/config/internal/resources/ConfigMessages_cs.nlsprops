@@ -481,5 +481,10 @@ error.root.must.be.server=CWWKG0105E: Dokument typu Konfigurace {0} mus\u00ed za
 error.root.must.be.server.explanation=Konfigurace mus\u00ed b\u00fdt obsa\u017eena bu\u010f v prvku serveru, nebo v prvku klienta. 
 error.root.must.be.server.useraction=P\u0159idejte server nebo prvek klienta jako ko\u0159en konfigura\u010dn\u00edho souboru. 
 
+error.bad.variable.file=CWWKG0106E: Soubor {0} nelze \u010d\u00edst. 
+error.bad.variable.file.explanation=Soubor nelze na\u010d\u00edst jako prom\u011bnnou, proto\u017ee jej nelze \u010d\u00edst. 
+error.bad.variable.file.useraction=Ov\u011b\u0159te, \u017ee soubor obsahuje textov\u00fd obsah a zkontrolujte opr\u00e1vn\u011bn\u00ed opera\u010dn\u00edho syst\u00e9mu pro tento soubor.
+
+
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

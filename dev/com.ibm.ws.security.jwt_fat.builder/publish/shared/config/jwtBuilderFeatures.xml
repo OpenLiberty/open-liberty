@@ -8,6 +8,7 @@
 		<feature>jwt-1.0</feature>
 		<feature>ldapRegistry-3.0</feature>
 		<feature>jaxrs-2.0</feature>
+		<feature>appSecurity-2.0</feature> <!--  Not loaded by auto-feature in jaxrs-2.1 and above -->
 		<feature>jsonp-1.0</feature>
 	</featureManager>
 

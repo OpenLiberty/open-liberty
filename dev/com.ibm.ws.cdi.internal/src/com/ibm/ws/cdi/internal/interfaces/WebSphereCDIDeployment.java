@@ -180,6 +180,6 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
      *
      * @param extensions a set of additional CDI extension classes.
      */
-    void registerSPIExtension(Set<Extension> extensions);
+    void registerSPIExtensions(Set<Extension> extensions);
 
 }

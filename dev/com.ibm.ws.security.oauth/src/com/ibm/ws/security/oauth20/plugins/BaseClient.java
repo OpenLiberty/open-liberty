@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2014 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class BaseClient implements OAuth20Client, Serializable {
         _componentId = componentId;
         _clientId = clientId;
         _clientSecret = clientSecret;
-        _clientName = clientName;
+        _clientName = (clientName == null || clientName.isEmpty()) ? clientId : clientName;
         _redirectURIs = redirectURIs;
         _isEnabled = isEnabled;
         _allowRegexpRedirects = Boolean.valueOf(false);
@@ -112,6 +112,9 @@ public class BaseClient implements OAuth20Client, Serializable {
     }
 
     public void setClientName(String clientName) {
+        if (clientName == null || clientName.isEmpty()) {
+            clientName = getClientId();
+        }
         this._clientName = clientName;
     }
 

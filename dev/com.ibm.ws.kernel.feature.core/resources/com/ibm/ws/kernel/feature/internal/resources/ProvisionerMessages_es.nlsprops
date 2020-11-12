@@ -217,9 +217,13 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=La
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Especifique una versi\u00f3n compatible de las caracter\u00edsticas configuradas que han producido el conflicto en el archivo server.xml y aseg\u00farese de que el archivo server.xml utiliza las caracter\u00edsticas Jakarta EE o Java EE, pero no ambas.
 
 #CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
-MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Una definici\u00f3n de caracter\u00edstica existente, {1}, es una coincidencia posible para la caracter\u00edstica {0} que no se ha encontrado.
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Una definici\u00f3n de caracter\u00edstica existente, {1}, es una coincidencia posible para la caracter\u00edstica {0} que no se ha encontrado. 
 MISSING_FEATURE_HAS_ALT_NAME.explanation=El gestor de caracter\u00edsticas no puede encontrar una definici\u00f3n para una caracter\u00edstica especificada en la configuraci\u00f3n de servidor. Es posible que el nombre especificado coincida con una definici\u00f3n de caracter\u00edstica existente.
-MISSING_FEATURE_HAS_ALT_NAME.useraction=En lugar de ello, considere la posibilidad de especificar la definici\u00f3n de caracter\u00edstica existente mencionada.
+MISSING_FEATURE_HAS_ALT_NAME.useraction=En lugar de ello, considere la posibilidad de especificar la definici\u00f3n de caracter\u00edstica existente mencionada. 
+
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de caracter\u00edsticas. Como resultado, el gestor de caracter\u00edsticas no ha instalado ninguna caracter\u00edstica.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=La configuraci\u00f3n incluye una combinaci\u00f3n incompatible de caracter\u00edsticas. Para evitar un comportamiento no v\u00e1lido, el gestor de caracter\u00edsticas ha inhabilitado todas las caracter\u00edsticas.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Especifique una versi\u00f3n diferente de las caracter\u00edsticas configuradas que han causado el conflicto.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

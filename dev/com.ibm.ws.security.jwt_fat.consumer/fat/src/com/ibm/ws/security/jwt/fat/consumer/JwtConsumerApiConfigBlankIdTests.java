@@ -48,6 +48,7 @@ public class JwtConsumerApiConfigBlankIdTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(consumerServer, "test-apps/jwtbuilder.war", "test-apps/jwtconsumerclient.war", "dropins/testmarker.war");
 
         serverTracker.addServer(consumerServer);
         skipRestoreServerTracker.addServer(consumerServer);

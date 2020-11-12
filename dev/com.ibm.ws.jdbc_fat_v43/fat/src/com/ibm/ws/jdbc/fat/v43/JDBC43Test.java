@@ -126,7 +126,7 @@ public class JDBC43Test extends FATServletClient {
      * using up all of the connections in the pool. Make a third servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
-    //@Test TODO enable once HandleList is added
+    @Test
     public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
@@ -138,7 +138,7 @@ public class JDBC43Test extends FATServletClient {
      * connections from the pool. Make second servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
-    //@Test TODO enable once HandleList is added
+    @Test
     public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnections");
         runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");

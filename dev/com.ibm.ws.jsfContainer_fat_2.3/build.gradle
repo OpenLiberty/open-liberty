@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ configurations {
     mojarra
     myfaces
     myfacesLibs
+    mojarra30
+    myfaces30
 }
 
 dependencies {
@@ -47,6 +49,9 @@ dependencies {
       'commons-beanutils:commons-beanutils:1.9.4',
       'commons-codec:commons-codec:1.11',
       'javax.xml.bind:jaxb-api:2.3.0'
+    mojarra30 'org.glassfish:jakarta.faces:3.0.0-RC3'
+    myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.0-RC1',
+      'org.apache.myfaces.core:myfaces-impl:3.0.0-RC1'
     }
 
 task addMojarra(type: Copy) {
@@ -54,9 +59,19 @@ task addMojarra(type: Copy) {
     into "${buildDir}/autoFVT/publish/files/mojarra/"
 }
 
+task addMojarra30(type: Copy) {
+    from configurations.mojarra30
+    into "${buildDir}/autoFVT/publish/files/mojarra30/"
+}
+
 task addMyFaces(type: Copy) {
     from configurations.myfaces
     into "${buildDir}/autoFVT/publish/files/myfaces"
+}
+
+task addMyFaces30(type: Copy) {
+    from configurations.myfaces30
+    into "${buildDir}/autoFVT/publish/files/myfaces30"
 }
 
 task addMyFacesLibs(type: Copy) {
@@ -72,8 +87,10 @@ task copyPermissionFile(type: Copy) {
 
 addRequiredLibraries {
     dependsOn addMojarra
+    dependsOn addMojarra30
     dependsOn addMyFaces
+    dependsOn addMyFaces30
     dependsOn addMyFacesLibs
     dependsOn copyPermissionFile
+    dependsOn addJakartaTransformer
 }
-

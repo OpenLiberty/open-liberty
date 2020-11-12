@@ -1,0 +1,23 @@
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME io.openlioberty.jakarta.mail.repository/resources/io.openliberty/jakarta/mail/repository/internal/resources/MailMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Jakarta Mail API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+#-----  Jakarta Mail messages
+CWWKX0958I=CWWKX0958I: Obiekt mailSession w pliku server.xml pomy\u015blnie utworzy\u0142 obiekt jakarta.mail.Session.
+CWWKX0958I.explanation= Obiekt jakarta.mail.Session zosta\u0142 pomy\u015blnie utworzony z informacjami, kt\u00f3re zosta\u0142y udost\u0119pnione w pliku server.xml.
+CWWKX0958I.useraction= Nie jest wymagana \u017cadna czynno\u015b\u0107.

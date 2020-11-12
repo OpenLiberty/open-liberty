@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 AppAndResourceTest.class,
                 JsonbTest.class,
+                ValidatorTest.class,
                 XmlWithJaxbTest.class,
                 XmlWithoutJaxbTest.class
 })

@@ -222,6 +222,10 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: A megl\u00e9v\u0151 {1} szolg\u00e1ltat
 MISSING_FEATURE_HAS_ALT_NAME.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1l meghat\u00e1roz\u00e1st egy, a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megadott szolg\u00e1ltat\u00e1shoz. A megadott n\u00e9v megfelelhet egy megl\u00e9v\u0151 szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1snak.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Vegye ink\u00e1bb fontol\u00f3ra a megnevezett, l\u00e9tez\u0151 szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s megad\u00e1s\u00e1t. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: A konfigur\u00e1ci\u00f3 szolg\u00e1ltat\u00e1sok nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza. Ennek eredm\u00e9nyek\u00e9nt a szolg\u00e1ltat\u00e1skezel\u0151 nem telep\u00edt egyetlen szolg\u00e1ltat\u00e1st sem.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=A konfigur\u00e1ci\u00f3 szolg\u00e1ltat\u00e1sok nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza. Az \u00e9rv\u00e9nytelen viselked\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben a szolg\u00e1ltat\u00e1skezel\u0151 letiltotta az \u00f6sszes szolg\u00e1ltat\u00e1st.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Adja meg az \u00fctk\u00f6z\u00e9st okoz\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1sok egy elt\u00e9r\u0151 v\u00e1ltozat\u00e1t.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: A(z) {0} szolg\u00e1ltat\u00e1s m\u00e1r l\u00e9tezik. Ez nem ker\u00fclnek ism\u00e9t telep\u00edt\u00e9sre. Egy megl\u00e9v\u0151 szolg\u00e1ltat\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r k\u00e9zileg el kell t\u00e1vol\u00edtania.

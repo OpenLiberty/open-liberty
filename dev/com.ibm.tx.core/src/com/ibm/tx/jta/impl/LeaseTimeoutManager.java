@@ -91,6 +91,8 @@ public class LeaseTimeoutManager {
         }
 
         void schedule(int delay) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Scheduling lease renewal in " + delay + " seconds");
             _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
         }
 
@@ -142,6 +144,8 @@ public class LeaseTimeoutManager {
         }
 
         void schedule(int delay) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Scheduling lease checker in " + delay + " seconds");
             _alarm = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager().scheduleAlarm(delay * 1000l, this, delay);
         }
 

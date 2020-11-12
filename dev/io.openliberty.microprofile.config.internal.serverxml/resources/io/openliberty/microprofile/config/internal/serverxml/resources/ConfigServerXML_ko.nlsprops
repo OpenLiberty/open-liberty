@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: MicroProfile Config
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=MicroProfile Config \ubcc0\uacbd\uc0ac\ud56d\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ubc18\uc601\ub418\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=\uc11c\ubc84 XML \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud2b9\uc131 \uad6c\uc131 \uc18c\uc2a4
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=\uc11c\ubc84 XML \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=\uc11c\ubc84 XML \uae30\ubcf8 \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

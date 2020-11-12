@@ -55,7 +55,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     H2ConnectionLinkProxy h2ConnectionProxy = null;
     VirtualConnection vc = null;
     boolean isPushPromise = false;
-    private boolean isGrpc = false;
+    private Boolean isGrpc = null;
 
     private HashMap<String, String> pseudoHeaders = null;
     private ArrayList<H2HeaderField> headers = null;
@@ -80,23 +80,30 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     }
 
     /**
-     * If a HTTP/2 handler has been registered Http2Consumers which can handle the current content type,
-     * pass the current HTTP through that handler.
+     * Using the pseudo headers set on this link, check to see if there is a matching gRPC service registered with
+     * the server. If a match is found, the PATH pseudo header will be updated with the correct application context.
+     *
+     * @return true if the request for this link maps to a registered gRPC service
      */
-    @Override
-    public void ready(VirtualConnection inVC) {
-
-        if (getHTTPContext().isH2Connection()) {
+    public boolean setAndGetIsGrpc() {
+        if (isGrpc == null) {
             if (GrpcServletServices.getServletGrpcServices() != null) {
-
                 Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
                 if (servicePaths != null && !servicePaths.isEmpty()) {
                     isGrpc = routeGrpcServletRequest(servicePaths);
                     setIsGrpcInParentLink(isGrpc);
+                } else {
+                    isGrpc = false;
                 }
+            } else {
+                isGrpc = false;
             }
         }
-        super.ready(inVC);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            String currentURL = this.pseudoHeaders.get(HpackConstants.PATH);
+            Tr.exit(tc, "setAndGetIsGrpc returning " + isGrpc + " for request path " + currentURL);
+        }
+        return isGrpc;
     }
 
     /**
@@ -104,6 +111,8 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
      * might come in to "/helloworld.Greeter/SayHello"; so as a convenience, we will automatically append
      * the correct application context root to the request. For this example, the URL will change from
      * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
+     *
+     * @return true if the request for this link maps to a gRPC service regustered in servicePaths
      */
     private boolean routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
         String requestContentType = getContentType();
@@ -124,11 +133,15 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                     if (contextRoot != null && !!!"/".equals(contextRoot)) {
                         String newPath = contextRoot + currentURL;
                         this.pseudoHeaders.put(HpackConstants.PATH, newPath);
-                        Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                        }
                     }
                     return true;
                 }
-                Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                }
             }
         }
         return false;
@@ -565,9 +578,4 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             h2sp.countDownFirstReadLatch();
         }
     }
-
-    public boolean getIsGrpc() {
-        return isGrpc;
-    }
-
 }

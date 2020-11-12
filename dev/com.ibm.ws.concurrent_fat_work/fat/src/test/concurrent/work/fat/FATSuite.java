@@ -20,7 +20,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
-@SuiteClasses(ConcurrentWorkFATTest.class)
+@SuiteClasses({
+    ConcurrentWorkFATTest.class,
+    ConcurrentWorkCDIFATTest.class
+})
 public class FATSuite {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.fat.work");
 
