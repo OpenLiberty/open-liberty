@@ -18,6 +18,7 @@ import java.security.PrivilegedExceptionAction;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,6 +47,7 @@ import com.ibm.ws.j2c.TranWrapper;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.handle.HandleList;
+import com.ibm.ws.jca.cm.handle.HandleListInterface;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 
 /**
@@ -3188,13 +3190,26 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             Tr.debug(this, tc, "Clear the McWrapper handlelist for  the following MCWrapper: " + this);
         }
 
-        // since we know we are only in this method on a destroy or clean up
-        // of a MCWrapper ,we can double check that all the handles that this MCWrapper
-        // owns are removed from the handlelist on thread local storage before clearing the
-        // handlelist in the MCWrapper class.  I tried to be really careful to avoid NPEs
-        //
-        // Liberty doesn't have real HandleList so don't need to remove anything
-        //
+        Object key = null;
+        HandleListInterface HL = null;
+
+        Iterator<?> itr = mcwHandleList.keySet().iterator();
+
+        while (itr.hasNext()) {
+
+            key = itr.next();
+
+            if (key != null) {
+                HL = mcwHandleList.get(key);
+                if (HL != null) {
+                    HL.removeHandle(key);
+                }
+            }
+
+            key = null;
+            HL = null;
+
+        }
 
         mcwHandleList.clear();
 

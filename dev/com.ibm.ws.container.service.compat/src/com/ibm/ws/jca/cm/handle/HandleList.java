@@ -10,21 +10,59 @@
  *******************************************************************************/
 package com.ibm.ws.jca.cm.handle;
 
+import java.util.ArrayList;
+
 /**
- * TODO implementation needed
+ * TODO implementation needed. Still needs to be ported to Liberty.
+ * The ArrayList/synchronized approach is only used temporarily because it
+ * was a quick way of mocking up, in an oversimplified way for experimentation
+ * purposes, what the real handle list does.
  */
-public class HandleList implements HandleListInterface {
-    public void close() {
+public class HandleList extends ArrayList<HandleListInterface.Handle> implements HandleListInterface {
+    private static final long serialVersionUID = -4425328702653290017L;
+
+    private boolean destroyed;
+
+    @Override
+    public synchronized HandleList addHandle(HandleListInterface.Handle a) {
+        super.add(a);
+        return this;
+    }
+
+    public synchronized void close() {
+        destroyed = true;
+
+        for (int length = super.size(); length > 0;)
+            super.remove(--length).close();
+
+        destroyed = false; //reset for re-use
     }
 
     public void componentDestroyed() {
+        close();
     }
 
     @Override
-    public void parkHandle() {
+    public synchronized void removeHandle(Object r) {
+        if (!destroyed)
+            super.remove(r);
     }
 
     @Override
-    public void reAssociate() {
+    public synchronized void parkHandle() {
+        for (int i = super.size(); i > 0;)
+            get(--i).park();
+    }
+
+    @Override
+    public synchronized void reAssociate() {
+        for (int i = super.size(); i > 0;) {
+            get(--i).reassociate();
+        }
+    }
+
+    @Override
+    public synchronized String toString() {
+        return "HandleList@" + Integer.toHexString(System.identityHashCode(this)) + super.toString();
     }
 }
