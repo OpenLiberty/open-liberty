@@ -121,7 +121,9 @@ public class EjbLinkTest extends FATServletClient {
         // then allow the @Startup InitTxRecoveryLog bean to start.
         ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
-        client.addIgnoreErrors("CWWKC0105W");
+        // CWNEN1001E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
+        // CWNEN0030E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
+        client.addIgnoreErrors("CWWKC0105W", "CWNEN1001E", "CWNEN0030E");
         client.startClient();
     }
 
@@ -426,6 +428,86 @@ public class EjbLinkTest extends FATServletClient {
 
     @Test
     public void findBeanFromWar2Jar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1BeanInJarAndWarFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void findBeanFromClientInJar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void findBeanFromClientInWar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void find2xBeanFromClientInJar() throws Exception {
         check();
     }
 
