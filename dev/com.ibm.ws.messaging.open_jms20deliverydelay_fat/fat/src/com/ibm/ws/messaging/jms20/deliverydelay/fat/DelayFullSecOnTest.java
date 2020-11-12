@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.runner.RunWith;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,8 +26,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.custom.junit.runner.FATRunner;
 
-@Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+// @Mode(TestMode.FULL)
 public class DelayFullSecOnTest {
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");

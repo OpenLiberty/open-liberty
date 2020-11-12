@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import org.junit.ClassRule;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -26,8 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
             //+ DelayLiteSecOffTest.class,
             //+ DelayLiteSecOnTest.class,
 
-            DelayFullSecOffTest.class,
-            // DelayFullSecOnTest.class,
+            //+ DelayFullSecOffTest.class,
+            DelayFullSecOnTest.class,
 
             // DelayFullTest.class
 })
