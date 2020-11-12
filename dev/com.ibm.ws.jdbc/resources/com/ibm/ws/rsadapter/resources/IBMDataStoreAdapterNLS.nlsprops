@@ -366,6 +366,20 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 # 8060 deleted
 # 8065 deleted
 
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: mapError
+8066E_MAP_ERROR_INVALID_TARGET=DSRA8066E: Invalid value ''{0}'' specified for the mapError ''to'' attribute. Allowed values are: {1}
+8066E_MAP_ERROR_INVALID_TARGET.explanation=An unknown value was specified for the mapError configuration element.
+8066E_MAP_ERROR_INVALID_TARGET.useraction=Update the configuration to specify one of the allowed values.
+
+# 8067E
+# Do not translate: sqlCode, sqlState, mapError
+8067E_MAP_ERROR_SQLCODE_SQLSTATE=DSRA8067E: Must specify exactly one of the ''sqlCode'' or ''sqlState'' attributes on the mapError element.
+8067E_MAP_ERROR_SQLCODE_SQLSTATE.explanation=The sqlCode and sqlState attributes are mutually exclusive, and one of the attributes must be specified.
+8067E_MAP_ERROR_SQLCODE_SQLSTATE.useraction=Update the configuration to specify exactly one of the sqlCode or sqlState attributes.
+
 # 8100E      JAVAX_CONN_ERR
 # 
 # {0}        Type of Connection: XAConnection or PooledConnection.

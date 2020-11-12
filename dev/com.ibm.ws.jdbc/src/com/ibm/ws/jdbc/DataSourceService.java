@@ -21,6 +21,7 @@ import java.sql.SQLNonTransientException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -61,6 +62,7 @@ import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.DSConfig.MapError;
 import com.ibm.ws.rsadapter.impl.DatabaseHelper;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -237,7 +239,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "activate", PropertyService.hidePasswords(properties));
-
+        
         String jndiName = (String) properties.get(JNDI_NAME);
         id = (String) properties.get("config.displayId");
 
@@ -557,14 +559,14 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         try {
-            PropertyService vProps = new PropertyService();
-            NavigableMap<String, Object> wProps = parseConfiguration(properties, vProps);
+            PropertyService vendorProps = new PropertyService();
+            NavigableMap<String, Object> wasProps = parseConfiguration(properties, vendorProps);
 
             // Clone properties so that we can later detect modifications from the current values
-            vProps = (PropertyService) vProps.clone();
+            vendorProps = (PropertyService) vendorProps.clone();
 
-            String jndiName = (String) wProps.remove(JNDI_NAME);
-            String type = (String) wProps.remove(DSConfig.TYPE);
+            String jndiName = (String) wasProps.remove(JNDI_NAME);
+            String type = (String) wasProps.remove(DSConfig.TYPE);
 
             // Trace some of the most important config settings
             if (trace && tc.isDebugEnabled())
@@ -576,7 +578,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             boolean createdDefaultConnectionManager = false;
             
             if (conMgrSvc == null) {
-                if (wProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
+                if (wasProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
                     SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "MISSING_RESOURCE_J2CA8030",
                                                                                     DSConfig.CONNECTION_MANAGER_REF, "", DATASOURCE, jndiName == null ? id : jndiName);
                     if (failure != null)
@@ -606,26 +608,26 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             if(type == null){
                 boolean atLeastJDBC43 = jdbcRuntime.getVersion().compareTo(JDBCRuntimeVersion.VERSION_4_3) >= 0;
                 vendorImpl = atLeastJDBC43 || id != null && id.contains("dataSource[DefaultDataSource]")
-                                ? jdbcDriverSvc.createAnyPreferXADataSource(vProps, id)
-                                : jdbcDriverSvc.createAnyPreferLegacyOrder(vProps, id);
+                                ? jdbcDriverSvc.createAnyPreferXADataSource(vendorProps, id)
+                                : jdbcDriverSvc.createAnyPreferLegacyOrder(vendorProps, id);
                 ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                     : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                     : vendorImpl instanceof DataSource ? DataSource.class
                     : Driver.class;
             } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                 ifc = ConnectionPoolDataSource.class;
-                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps, id);
+                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vendorProps, id);
             } else if (XADataSource.class.getName().equals(type)) {
                 ifc = XADataSource.class;
-                vendorImpl = jdbcDriverSvc.createXADataSource(vProps, id);
+                vendorImpl = jdbcDriverSvc.createXADataSource(vendorProps, id);
             } else if (DataSource.class.getName().equals(type)) {
                 ifc = DataSource.class;
-                vendorImpl = jdbcDriverSvc.createDataSource(vProps, id);
+                vendorImpl = jdbcDriverSvc.createDataSource(vendorProps, id);
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
-                String url = vProps.getProperty("URL", vProps.getProperty("url"));
+                String url = vendorProps.getProperty("URL", vendorProps.getProperty("url"));
                 if (url != null && !"".equals(url)) {
-                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vendorProps, id);
                 } else 
                     throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
             } else
@@ -633,13 +635,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // Convert isolationLevel constant name to integer
             vendorImplClassName = vendorImpl.getClass().getName();
-            parseIsolationLevel(wProps, vendorImplClassName);
+            parseIsolationLevel(wasProps, vendorImplClassName);
             
-            Object objIsolationLevel = wProps.get(DataSourceDef.isolationLevel.name());
+            Object objIsolationLevel = wasProps.get(DataSourceDef.isolationLevel.name());
             int wIsolationLevel = objIsolationLevel == null ? -1 : (int) objIsolationLevel;
             
             if(wIsolationLevel == Connection.TRANSACTION_NONE) {
-                Object objTransactional = wProps.get(DataSourceDef.transactional.name());
+                Object objTransactional = wasProps.get(DataSourceDef.transactional.name());
                 boolean wTransactional = objTransactional == null ? true : (boolean) objTransactional;
                 
                 if (wTransactional) {
@@ -650,7 +652,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             // Derby Embedded needs a reference count so that we can shutdown databases when no longer used.
             isDerbyEmbedded = vendorImplClassName.startsWith("org.apache.derby.jdbc.Embedded");
             if (isDerbyEmbedded) {
-                String dbName = (String) vProps.get(DataSourceDef.databaseName.name());
+                String dbName = (String) vendorProps.get(DataSourceDef.databaseName.name());
                 if (dbName != null) {
                     // Maintaining compatibility here. Variables are no longer normalized by default, but the ResourceFactoryBuilder is still
                     // using VariableRegistry.resolveString() to resolve variables in data source definitions. 
@@ -668,10 +670,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", connMgrPropsAllowed);
                     sentUCPConnMgrPropsIgnoredInfoMessage = true;
                 }
-                updateConfigForUCP(wProps);
+                updateConfigForUCP(wasProps);
             }
 
-            dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
+            dsConfigRef.set(new DSConfig(id, jndiName, wasProps, vendorProps, connectorSvc));
 
             WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
 
@@ -842,8 +844,18 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
                     vProps.put(key, value);
                 }
-            } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key))
+            } else if (key.length() > 11 && key.startsWith("mapError.")) {
+                @SuppressWarnings("unchecked")
+                Map<Integer,DSConfig.MapError> errorMappings = (Map<Integer, MapError>) wProps.computeIfAbsent(DSConfig.MAP_ERROR, k -> new HashMap<>(3));
+                
+                String unProcessedKey = key.substring(9);
+                int id = Integer.valueOf(unProcessedKey.substring(0, unProcessedKey.indexOf('.'))); // get the '0' in mapError.0.foo
+                MapError errorMapping = errorMappings.computeIfAbsent(id, k -> new MapError());
+                String propertyName = unProcessedKey.substring(unProcessedKey.indexOf('.') + 1); // get the 'foo' in mapError.0.foo
+                errorMapping.setProperty(propertyName, value);
+            } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key)) {
                 wProps.put(key, value);
+            }
         }
         
         //Don't send out auth alias recommendation message with UCP since it may be required to set the 

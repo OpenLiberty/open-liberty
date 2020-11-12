@@ -21,10 +21,12 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
-import java.sql.ResultSet; 
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList; 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map; 
 import java.util.Properties;
 import java.util.Set;
@@ -52,6 +54,8 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.DSConfig.MapError;
+import com.ibm.ws.rsadapter.DSConfig.MapError.Target;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
@@ -89,7 +93,7 @@ public class DatabaseHelper {
     protected boolean holdabilitySupported = true; 
 
     private boolean setCursorNameSupported = true;
-
+    
     /**
      * SQLException error codes that indicate a stale connection.
      */
@@ -135,8 +139,40 @@ public class DatabaseHelper {
                            "40003",
                            "55032",
                            "S1000");
+        
+        customizeStaleStates();
+        
+        // Process user-defined error mappings from the <mapError> config elements
+        List<MapError> errorMappings = mcf.dsConfig.get().errorMappings;
+        if (errorMappings != null) {
+            for (MapError mapping : errorMappings) {
+                if (mapping.sqlCode != null) {
+                    if (mapping.to == Target.NONE) {
+                        staleErrorCodes.remove(mapping.sqlCode);
+                    } else if (mapping.to == Target.STALE_CONNECTION) {
+                        staleErrorCodes.add(mapping.sqlCode);
+                    }
+                } else {
+                    if (mapping.to == Target.NONE) {
+                        staleSQLStates.remove(mapping.sqlState);
+                    } else if (mapping.to == Target.STALE_CONNECTION) {
+                        staleSQLStates.add(mapping.sqlState);
+                    }
+                }
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Stale SQL codes are:  " + staleErrorCodes);
+            Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
+        }
     }
-
+    
+    /**
+     * Override this method to customize vendor-specific SQL States and SQL Codes that should map to stale
+     */
+    void customizeStaleStates() {
+    }
+    
     /**
      * Indicates if setAutoCommit requests should always be sent to the JDBC driver, even
      * if the same as the current value.
@@ -394,7 +430,7 @@ public class DatabaseHelper {
 
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
-
+        
         boolean stale = false;
         for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
             SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;

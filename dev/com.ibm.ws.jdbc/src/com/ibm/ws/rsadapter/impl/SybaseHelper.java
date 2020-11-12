@@ -47,7 +47,12 @@ public class SybaseHelper extends DatabaseHelper
         super(mcf);
 
         mcf.supportsGetTypeMap = false;
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleSQLStates,
                            "JZ0C0",
                            "JZ0C1");

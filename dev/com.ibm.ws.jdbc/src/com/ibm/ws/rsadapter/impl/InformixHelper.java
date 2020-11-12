@@ -44,7 +44,12 @@ public class InformixHelper extends DatabaseHelper {
      */
     InformixHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleErrorCodes,
                            -79735,
                            -79716,

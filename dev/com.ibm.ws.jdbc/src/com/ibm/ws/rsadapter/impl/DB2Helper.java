@@ -86,7 +86,12 @@ public class DB2Helper extends DatabaseHelper {
             threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
             threadSecurity = true;
         }
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleErrorCodes,
                            -30108,
                            -30081
