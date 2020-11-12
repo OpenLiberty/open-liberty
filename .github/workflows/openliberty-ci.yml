@@ -22,6 +22,7 @@ env:
 jobs:
   build:
     name: Build Open Liberty
+    if: "github.event.pull_request.draft == false"
     runs-on: ubuntu-latest
     outputs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
@@ -92,6 +93,7 @@ jobs:
         path: openliberty-image.zip
   unit_tests:
     name: Unit Tests
+    if: "github.event.pull_request.draft == false"
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
