@@ -15,6 +15,16 @@ Bundle-Name: Security Common
 Bundle-SymbolicName: com.ibm.ws.security.common
 Bundle-Description: Common code for security bundles; version=${bVersion}
 
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.common.internal.jar
+#JakartaEE-Bundle-Name: Security Common
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.common.internal
+#JakartaEE-Bundle-Description: Common code for security bundles; version=${bVersion} 
+#JakartaEE-Bundle-Version: 
+
 WS-TraceGroup: SecurityCommon
 
 Export-Package: \

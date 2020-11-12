@@ -151,9 +151,9 @@ public class FATServletClient {
      */
     public String getTestMethodSimpleName() {
         String testMethodName = testName.getMethodName();
-        String currentAction = RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        String currentAction = RepeatTestFilter.getRepeatActionsAsString();
         if (currentAction != null && testMethodName.endsWith(currentAction)) {
-            testMethodName = testMethodName.substring(0, testMethodName.length() - (currentAction.length() + 1));
+            testMethodName = testMethodName.substring(0, testMethodName.length() - (currentAction.length()));
         }
 
         return testMethodName;

@@ -51,11 +51,9 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
-
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
 
         setupLdapServer(builderServer);
 

@@ -52,13 +52,11 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
-
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
         builderServer.startServerUsingExpandedConfiguration("server_minimumConfig.xml");
