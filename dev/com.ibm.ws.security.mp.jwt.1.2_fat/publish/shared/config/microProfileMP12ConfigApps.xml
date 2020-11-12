@@ -548,6 +548,59 @@
 		</application-bnd>
 	</application>		
 	
+ 	<application
+		type="war"
+		id="microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+ 	<application
+		type="war"
+		id="microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+	
+ 	<application
+		type="war"
+		id="microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>				
 <!-- End Encryption -->
     
 </server>    

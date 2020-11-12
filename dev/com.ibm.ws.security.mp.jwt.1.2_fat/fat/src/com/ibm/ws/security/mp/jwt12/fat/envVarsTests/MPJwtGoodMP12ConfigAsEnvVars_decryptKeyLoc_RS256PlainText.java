@@ -55,7 +55,7 @@ public class MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText extends G
 
     @Test
     public void MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText_test() throws Exception {
-        genericBadTest("sign_RS256_enc_RS256", "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", setEncryptMissingKeyExpectations(resourceServer, false));
+        genericBadTest("sign_RS256_enc_RS256", "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", setEncryptPlainTextKeyExpectations(resourceServer, false));
     }
 
     @Test

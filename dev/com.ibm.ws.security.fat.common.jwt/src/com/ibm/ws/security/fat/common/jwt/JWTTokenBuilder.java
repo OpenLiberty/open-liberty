@@ -311,8 +311,8 @@ public class JWTTokenBuilder {
         _jwe.setPayload(payload);
         return this;
     }
-    
-    // does not currently support building JWE's 
+
+    // does not currently support building JWE's
     // The tests have been using the built in builder (with encryptWith)
     // to generate encrypted tokens
     // Use apps such as JwtBuilderSetApisClient and JwtBuilderServlet
@@ -351,16 +351,55 @@ public class JWTTokenBuilder {
 
     }
 
+    public String buildJWE(String type, String contentType) {
+
+        String jwsPart = build();
+        String thisMethod = "buildJWE";
+        try {
+            if (type != null) {
+                _jwe.setHeader("typ", type);
+            }
+            if (contentType != null) {
+                _jwe.setHeader("cty", contentType);
+            }
+            _jwe.setPayload(jwsPart);
+            Log.info(thisClass, thisMethod, "after setPayload");
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+        try {
+            _jwt = _jwe.getCompactSerialization();
+            Log.info(thisClass, thisMethod, "after compact");
+            return _jwt;
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+    }
+
     // builds a JWE with a simple payload
     // caller needs to have already used the set methods to
     // set:  keyManagementKeyAlgorithm, keyManagementKeyAlias,
-    // contentEncryptionAlgorithm and payload 
+    // contentEncryptionAlgorithm and payload
     public String buildAlternateJWE() {
-        String thisMethod = "build";
+
+        return buildAlternateJWESetJWEHeaderValues("JOSE", "jwt");
+
+    }
+
+    public String buildAlternateJWESetJWEHeaderValues(String type, String contentType) {
+        String thisMethod = "buildAlternateJWESetJWEHeaderValues";
 
         try {
-            _jwe.setHeader("typ", "JOSE");
-            _jwe.setHeader("cty", "jwt");
+            if (type != null) {
+                _jwe.setHeader("typ", type);
+            }
+            if (contentType != null) {
+                _jwe.setHeader("cty", contentType);
+            }
             _jwt = _jwe.getCompactSerialization();
             Log.info(thisClass, thisMethod, "after compact");
             return _jwt;

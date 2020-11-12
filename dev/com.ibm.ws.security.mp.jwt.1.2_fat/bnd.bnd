@@ -11,6 +11,14 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Import-Package: \
+	!*.internal.*,\
+	!com.ibm.ws.kernel.boot.cmdline,\
+	com.google.gson.*:resolution:=optional,\
+	org.jose4j.*;version="[0.6,5)", \
+	org.apache.commons.codec.binary,\
+	*
+
 src: \
     src, \
     fat/src

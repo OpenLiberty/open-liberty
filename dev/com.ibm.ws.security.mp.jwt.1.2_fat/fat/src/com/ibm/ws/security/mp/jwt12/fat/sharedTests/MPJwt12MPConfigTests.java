@@ -50,7 +50,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
@@ -444,6 +443,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
                                                                                           mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
                                                                                           fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_ES256)));
 
+            // plain text private key
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_PLAINTEXT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
                                                                                         MP12ConfigSettings.CookieNotSet,
@@ -451,11 +451,30 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
                                                                                         JwtKeyTools.getKeyFromFile(server, JwtKeyTools
                                                                                                         .getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256))));
 
+            // jwks uri
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_JWKSURI_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
                                                                                           MP12ConfigSettings.CookieNotSet,
                                                                                           mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
                                                                                           resolvedJwksUri(jwtBuilderServer, MP12ConfigSettings.jwksUri)));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_STRING_DECRYPT_KEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        "SomeString"));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_DECRYPT_PUBLIC_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getPublicKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_SHORT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getShortPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
 
 //            fileLoc + MP11ConfigSettings.PemFile
             // combinations of file, rel file, url - randonly choose these with meta-inf/web-inf
@@ -640,7 +659,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
     public Expectations setEncryptMissingKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
         expectations.addExpectation(new ServerMessageExpectation(server, "The key must not be null", "Messagelog did not contain an exception indicating that the keyManagementKeyAlias was missing."));
         return expectations;
 
@@ -654,8 +673,23 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @return Expectations - built expectations
      * @throws Exception
      */
+    public Expectations setEncryptPlainTextKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6062E_PLAINTEXT_KEY, "Messagelog did not contain an exception indicating that the mp.jwt.decrypt.key.location contained a plaintext key."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not set
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
     public Expectations setEncryptMismatchExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
         expectations.addExpectation(new ServerMessageExpectation(server, "javax.crypto.AEADBadTagException", "Messagelog did not contain an exception indicating a tag mismatch."));
         return expectations;
 
@@ -670,7 +704,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
     public Expectations setEncryptMismatchKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
         expectations.addExpectation(new ServerMessageExpectation(server, "java.lang.ClassCastException", "Messagelog did not contain an exception indicating a classcast exception due to the key type."));
         return expectations;
 
@@ -685,7 +719,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
     public Expectations setEncryptInvalidKeyTypeExpectations(LibertyServer server, String keyName, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
         expectations.addExpectation(new ServerMessageExpectation(server, "alias.*" + keyName
                                                                          + ".*is not present", "Messagelog did not contain an exception indicating that the key could not be found."));
         return expectations;
@@ -701,8 +735,85 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      * @throws Exception
      */
     public Expectations setEncryptShortKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
         expectations.addExpectation(new ServerMessageExpectation(server, "InvalidKeyException.*bits or larger MUST be used with the all JOSE RSA algorithms", "Messagelog did not contain an exception indicating that the key could not be found."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setNoEncryptNotJWSTokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS, "Messagelog did not contain an exception indicating that the token is NOT in JWS format."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptNotJWETokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6064E_JWE_REQUIRED_BUT_TOKEN_NOT_JWE, "Messagelog did not contain an exception indicating that the token is NOT in JWE format."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptInvalidPayloadExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6065E_JWE_DOES_NOT_CONTAIN_JWS, "Messagelog did not contain an exception indicating that the payload of the JWE was NOT a JWS."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptBadCtyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6057E_BAD_CTY_VALUE, "Messagelog did not contain an exception indicating that the cty was not set to [jwt]."));
+        return expectations;
+
+    }
+
+    /**
+     * Set expectations for tests that have bad Signature Algorithms
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setAllBadEncryptExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS, "Messagelog did not contain an exception indicating a problem extracting the JWS from the JWE."));
+
         return expectations;
 
     }
@@ -724,7 +835,6 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
             expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating a problem creating a JWT with the config and token provided."));
             expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an exception indicating a problem processing the token string."));
         }
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS, "Messagelog did not contain an exception indicating a problem extracting the JWS from the JWE."));
 
         return expectations;
 

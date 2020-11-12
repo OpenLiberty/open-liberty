@@ -20,6 +20,7 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.sharedTests.MPJwt12MPConfigTests;
@@ -53,6 +54,8 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
 
     private static final boolean DoNotExpectExtraMsgs = false;
 
+    public static final JwtTokenBuilderUtils builderHelpers = new JwtTokenBuilderUtils();
+
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -83,7 +86,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsAuthorizationInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -98,7 +101,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsAuthorizationInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -113,7 +116,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -128,7 +131,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -143,7 +146,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithCookieNameInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
@@ -158,7 +161,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithCookieNameInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -173,7 +176,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
@@ -188,7 +191,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -203,7 +206,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_InMetaInf_PassCookieWithNameBearer_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
@@ -218,7 +221,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_UnderWebInf_PassCookieWithNameBearer_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -233,7 +236,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsBadInMPConfig_InMetaInf_test() throws Exception {
 
         String urlCalled = buildAppUrl(resourceServer, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP);
@@ -252,7 +255,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsBadInMPConfig_UnderWebInf_test() throws Exception {
 
         String urlCalled = buildAppUrl(resourceServer, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT, MpJwt12FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP);
@@ -272,7 +275,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsCookieInServerXml_HeaderIsAuthorizationInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Cookie.xml");
@@ -288,7 +291,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsCookieInServerXml_HeaderIsAuthorizationInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Cookie.xml");
@@ -304,7 +307,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsAuthorizationInServerXml_HeaderIsCookieInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Authorization.xml");
@@ -320,7 +323,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsAuthorizationInServerXml_HeaderIsCookieInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Authorization.xml");
@@ -336,7 +339,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsCookieCookieNameSetInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Authorization_withCookie.xml");
@@ -352,7 +355,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_HeaderIsCookieCookieNameSetConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Header_Authorization_withCookie.xml");
@@ -372,7 +375,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAudiencesInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_AUDIENCES_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -388,7 +391,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAudiencesInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_AUDIENCES_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -403,7 +406,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_BadAudiencesInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.BAD_AUDIENCES_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -418,7 +421,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_BadAudiencesInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.BAD_AUDIENCES_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -434,7 +437,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodAudiencesInServerXml_BadAudiencesInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Good_Audiences.xml");
@@ -451,7 +454,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodAudiencesInServerXml_BadAudiencesInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Good_Audiences.xml");
@@ -477,7 +480,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAlgorithmInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -493,7 +496,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAlgorithmInMPConfig_UnderWebInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
@@ -508,7 +511,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_BadAlgorithmInMPConfig_InMetaInf_test() throws Exception {
 
         standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.BAD_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -523,7 +526,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
 
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_BadAlgorithmInMPConfig_UnderWebInf_test() throws Exception {
 
@@ -540,7 +543,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodAlgorithmInServerXml_BadAlgorithmInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Good_Algorithm.xml");
@@ -557,7 +560,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodAlgorithmInServerXml_BadAlgorithmInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Good_Algorithm.xml");
@@ -575,7 +578,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodNonDefaultKeyAndAlgorithmInMPConfig_InMetaInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_No_Key_Algorithm.xml");
@@ -593,7 +596,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void MPJwt12MPConfigInApp_GoodNonDefaultKeyAndAlgorithmInMPConfig_UnderWebInf_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_No_Key_Algorithm.xml");
@@ -608,6 +611,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 private key in META-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -620,6 +624,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER);
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 private key in META-INF.
+     * The token passed in used an RS384 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS384DecryptRS256InMPConfig_InMetaInf_test() throws Exception {
 
@@ -628,6 +639,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMismatchExpectations(resourceServer, DoNotExpectExtraMsgs));
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 private key in META-INF.
+     * The token passed in used an RS512 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS5124DecryptRS256InMPConfig_InMetaInf_test() throws Exception {
 
@@ -639,6 +657,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the fully qualified file location for the RS256 private key under WEB-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -653,6 +672,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the URL file location for the RS384 private key in META-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -667,6 +687,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS384 private key under WEB-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -678,6 +699,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER);
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS384 private key in META-INF.
+     * The token passed in used an RS256 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS2564DecryptRS384InMPConfig_UnderWebInf_test() throws Exception {
 
@@ -686,6 +714,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMismatchExpectations(resourceServer, DoNotExpectExtraMsgs));
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS384 private key in META-INF.
+     * The token passed in used an RS512 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS5124DecryptRS384InMPConfig_UnderWebInf_test() throws Exception {
 
@@ -697,6 +732,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the fully qualified file location for the RS512 private key in META-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -708,6 +744,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER);
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the fully qualified file location for the RS512 private key in META-INF.
+     * The token passed in used an RS256 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS2564DecryptRS512InMPConfig_InMetaInf_test() throws Exception {
 
@@ -716,6 +759,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMismatchExpectations(resourceServer, DoNotExpectExtraMsgs));
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the fully qualified file location for the RS512 private key in META-INF.
+     * The token passed in used an RS384 key to encrypt - decrypt should fail
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_EncryptRS3844DecryptRS512InMPConfig_InMetaInf_test() throws Exception {
 
@@ -727,6 +777,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
      * The app has mp.jwt.decrypt.key.location set to the url file location for the RS512 private key under WEB-INF.
+     * The token was created using the paired public key - decrypt should be good and we should have access to the app
      *
      * @throws Exception
      */
@@ -751,7 +802,6 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
         standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                            MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
-        //TODO - this should be the real failure MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMismatchKeyTypeExpectations(resourceServer));
     }
 
     /**
@@ -767,13 +817,12 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
         standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                            MpJwt12FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF, MpJwt12FatConstants.AUTHORIZATION,
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
-        //TODO - this should be the real failure MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMismatchKeyTypeExpectations(resourceServer));
     }
 
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
-     * The app has mp.jwt.decrypt.key.location set to the relative file location for the ES256 private key in META-INF.
-     * We expect a failure as ES256 is not supported for encryption.
+     * The app has mp.jwt.decrypt.key.location set to plain text version of the RS256 private key in META-INF.
+     * We expect a failure as we do not allow a plain text key.
      *
      * @throws Exception
      */
@@ -782,13 +831,13 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
 
         standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_PLAINTEXT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                            MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptPlainTextKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
     }
 
     /**
      * Test shows that we'll pick up the private key setting from mp config properties
-     * The app has mp.jwt.decrypt.key.location set to the relative file location for the ES256 private key under WEB-INF.
-     * We expect a failure as ES256 is not supported for encryption.
+     * The app has mp.jwt.decrypt.key.location set to jwks uri under WEB-INF.
+     * We expect a failure as the jwks uri will not return the private key.
      *
      * @throws Exception
      */
@@ -800,6 +849,15 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                            MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative key location for the RS256 private key in META-INF.
+     * The token was created using the paired public key, but the keyManagementKeyAlgorithm in the token is set to RSA_OAEP-256
+     * instead of RSA_OAEP - decrypt should be good and we should have access to the app.
+     * The builder doesn't allow that value for keyManagementKeyAlgorithm, but we should accept it.
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_encrypt_mpJwtRS256_token_RSA_OAEP_256_RS256_publicKey_A256GCM() throws Exception {
 
@@ -821,6 +879,15 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
 
     }
 
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative key location for the RS256 private key in META-INF.
+     * The token was created using the paired public key, but the contentEncryptionAlgorith in the token is set to A192AGM
+     * instead of A256AGM - decrypt should be good and we should have access to the app.
+     * The builder doesn't allow that value for contentEncryptionAlgorithm, but we should accept it.
+     *
+     * @throws Exception
+     */
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_encrypt_mpJwtRS256_token_RSA_OAEP_RS256_publicKey_A192GCM() throws Exception {
 
@@ -839,6 +906,180 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
                              MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP),
                  MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.AUTHORIZATION,
                  MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to a plain text string in META-INF.
+     * We expect a failure as a simple string is not valid.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptStringKeyInMPConfig_InMetaInf_test() throws Exception {
+
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_STRING_DECRYPT_KEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the same public key that was used to create the token in META-INF.
+     * We expect a failure as we need to specify the private key.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptPublicKeyInMPConfig_InMetaInf_test() throws Exception {
+
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_PUBLIC_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptMissingKeyExpectations(resourceServer, DoNotExpectExtraMsgs));
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to a private key that is too short (less than 2048 in length) in META-INF.
+     * We expect a failure as the consuming code with determine that the key is too short. (It will fail for that before we
+     * would hit an error where we can't decrypt because the keys don't match (the builder won't allow a short key to be
+     * used to encrypt))
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptShortKeyInMPConfig_InMetaInf_test() throws Exception {
+
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_SHORT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptShortKeyTypeExpectations(resourceServer, DoNotExpectExtraMsgs));
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 key in META-INF.
+     * The token that is used contains a simple Json Payload and not a full JWS.
+     * We expect a failure as we do NOT support this payload at this time.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_simpleJsonPayload_test() throws Exception {
+
+        String jwtToken = builderHelpers
+                        .buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
+
+        useToken(jwtToken,
+                 buildAppUrl(resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                             MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP),
+                 MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.AUTHORIZATION,
+                 MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptInvalidPayloadExpectations(resourceServer, DoNotExpectExtraMsgs));
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 key in META-INF.
+     * The token that is used has the "typ" value in the JWE header set to notJose.
+     * We expect a failure as we expect the value to be set to "JOSE".
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_JweTypeNotJose_test() throws Exception {
+
+        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        String jwtToken = builderHelpers
+                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
+                                                    "notJOSE", "jwt");
+
+        // The test code generates a token that uses HS256 - if we get far enough to fail on that, we haven't failed checking the JWE Type :)
+        useToken(jwtToken,
+                 buildAppUrl(resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                             MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP),
+                 MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.AUTHORIZATION,
+                 MpJwt12FatConstants.TOKEN_TYPE_BEARER, setBadCertExpectations(resourceServer, KeyMismatch));
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 key in META-INF.
+     * The token that is used has the "cty" value in the JWE header set to not_jwt.
+     * We expect the token to be decrypted and that we have access to the protected app. We shouldn't be checking the content of cty
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_JweContentTypeNotJwt_test() throws Exception {
+
+        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        String jwtToken = builderHelpers
+                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
+                                                    "JOSE", "not_jwt");
+
+        useToken(jwtToken,
+                 buildAppUrl(resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                             MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP),
+                 MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.AUTHORIZATION,
+                 MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptBadCtyExpectations(resourceServer, DoNotExpectExtraMsgs));
+
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the RS256 key in META-INF.
+     * The token that is used is a JWS and NOT a JWE
+     * We expect a failure as the mpJwt is expecting (and will only accept a JWE)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_TokenNotEncrypted_test() throws Exception {
+
+        standard12TestFlow("RS256", resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setEncryptNotJWETokenExpectations(resourceServer, DoNotExpectExtraMsgs));
+
+    }
+
+    /**
+     * Test shows that we'll pick up the private key setting from mp config properties
+     * The app does NOT have mp.jwt.decrypt.key.location set in META-INF.
+     * The token that is used is a JWE and NOT a JWS
+     * We expect a failure as the mpJwt is expecting (and will only accept a JWS). It has no way of decrypting the token
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_NoDecryptInMPConfig_InMetaInf_TokenEncrypted_test() throws Exception {
+
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setNoEncryptNotJWSTokenExpectations(resourceServer, DoNotExpectExtraMsgs));
+
+    }
+
+    /**
+     * Test shows that config in server.xml will override the settings in mp config properties
+     * The app has mp.jwt.decrypt.key.location set to the relative file location for the ES256 key in META-INF.
+     * The server.xml config references the RS256 key.
+     * We expect the token to be decrypted and to have access to the protected app as the good server.xml values
+     * will override the bad value in the mp config properties file.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void MPJwt12MPConfigInApp_MPJwt12ConfigInServerXmlOverrides_BadDecryptInMPConfig_InMetaInf_test() throws Exception {
+
+        // config server to use a configuration that has valid decrypt info
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_altConfiginApp_Good_Decrypt.xml");
+
+        // use an app that has an invalid decrypt location
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER);
+
     }
 
     /********************************* End Encryption tests ***********************************/

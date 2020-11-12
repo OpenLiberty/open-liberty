@@ -10,9 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.utils;
 
-import com.ibm.ws.security.fat.common.MessageConstants;
+import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 
-public class MpJwtMessageConstants extends MessageConstants {
+public class MpJwtMessageConstants extends JwtMessageConstants {
 
     //Unsupported JDK Expected Set of messages start
     public static final String MIN_JDK_FEATURE_REQUIREMENT = "CWWKF0032E";

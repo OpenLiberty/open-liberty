@@ -47,5 +47,8 @@ public class MpJwt12FatConstants extends MpJwtFatConstants {
     public static final String BAD_DECRYPT_KEY_ES256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileBadDecryptKeyES256InMP-ConfigUnderWEB-INF";
     public static final String BAD_PLAINTEXT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileBadPlaintextDecryptKeyRS256InMP-ConfigInMETA-INF";
     public static final String BAD_JWKSURI_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileBadJwksUriDecryptKeyRS256InMP-ConfigUnderWEB-INF";
+    public static final String BAD_STRING_DECRYPT_KEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF";
+    public static final String BAD_DECRYPT_PUBLIC_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF";
+    public static final String BAD_SHORT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF";
 
 }

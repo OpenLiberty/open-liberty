@@ -237,8 +237,25 @@ public class Feature11Enabled_ConfigInAppTests extends MPJwt12MPConfigTests {
 
     /******************************* End Signature Algorithm tests *******************************/
 
-// TODO - add encryption tests
     /******************************* Start Encryption tests ************************************/
+    @Test
+    public void Feature11Enabled_ConfigInAppTests_DecryptKeyLocRelativeForRS256InMPConfig_InMetaInf_JWEToken_test() throws Exception {
+
+        standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, setNoEncryptNotJWSTokenExpectations(resourceServer, false));
+    }
+
+    @Test
+    public void Feature11Enabled_ConfigInAppTests_DecryptKeyLocRelativeForRS256InMPConfig_InMetaInf_JWSToken_test() throws Exception {
+
+        standard12TestFlow(MpJwt12FatConstants.SIGALG_RS256, resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                           MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwt12FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER);
+    }
+
     /******************************* End Encryption tests ************************************/
 
 }
