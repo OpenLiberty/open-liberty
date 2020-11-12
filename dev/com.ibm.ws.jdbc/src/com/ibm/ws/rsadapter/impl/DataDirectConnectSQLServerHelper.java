@@ -101,6 +101,28 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        // Default values for the statement properties LongDataCacheSize and QueryTimeout are
+        // configurable as data source properties. These data source properties are supplied to
+        // the data store helper so that we can reset the statement properties to these default
+        // values when caching statements.
+        Properties props = mcf.dsConfig.get().vendorProps;
+        Object value = props.get(LONG_DATA_CACHE_SIZE);
+        try {
+            longDataCacheSize = value instanceof Number ? ((Number) value).intValue()
+                              : value instanceof String ? Integer.parseInt((String) value)
+                              : longDataCacheSize;
+        } catch (NumberFormatException x) {
+            // error paths already covered by data source properties processing code 
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
+            Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleDDErrorCodes,
                            2217,
                            2251,
@@ -128,23 +150,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
                            6002,
                            6005,
                            6006);
-
-        // Default values for the statement properties LongDataCacheSize and QueryTimeout are
-        // configurable as data source properties. These data source properties are supplied to
-        // the data store helper so that we can reset the statement properties to these default
-        // values when caching statements.
-        Properties props = mcf.dsConfig.get().vendorProps;
-        Object value = props.get(LONG_DATA_CACHE_SIZE);
-        try {
-            longDataCacheSize = value instanceof Number ? ((Number) value).intValue()
-                              : value instanceof String ? Integer.parseInt((String) value)
-                              : longDataCacheSize;
-        } catch (NumberFormatException x) {
-            // error paths already covered by data source properties processing code 
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
     }
 
     @Override

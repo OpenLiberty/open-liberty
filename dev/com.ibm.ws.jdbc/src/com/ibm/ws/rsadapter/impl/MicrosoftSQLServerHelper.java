@@ -63,13 +63,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
 
-        Collections.addAll(staleErrorCodes,
-                           230,
-                           6001,
-                           6002,
-                           6005,
-                           6006);
-
         // Default value for the statement property ResponseBuffering is
         // configurable as a data source property. This data source property is supplied to
         // the data store helper so that we can reset the statement properties to the default
@@ -81,6 +74,18 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Default responseBuffering = " + responseBuffering);
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           230,
+                           6001,
+                           6002,
+                           6005,
+                           6006);
     }
 
     @Override
