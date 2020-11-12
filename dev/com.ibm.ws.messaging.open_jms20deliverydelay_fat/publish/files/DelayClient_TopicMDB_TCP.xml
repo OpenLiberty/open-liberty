@@ -122,7 +122,7 @@
 
   <!-- -->
 
-  <jmsActivationSpec id="jmsapp/jmsmdb/FVTMessageDrivenBean">
+  <jmsActivationSpec id="jmsmdb/jmsmdb/ejb/MessageDrivenBean">
     <properties.wasJms destinationRef="eis/topic"
                        remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"
                        destinationType="javax.jms.Topic"

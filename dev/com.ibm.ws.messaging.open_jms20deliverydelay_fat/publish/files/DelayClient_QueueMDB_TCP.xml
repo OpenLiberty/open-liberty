@@ -115,7 +115,7 @@
   
   <!-- -->
   
-  <jmsActivationSpec id="jmsmdb/jmsmdb/MessageDrivenBean">
+  <jmsActivationSpec id="jmsmdb/jmsmdb/ejb/MessageDrivenBean">
     <properties.wasJms destinationRef="jndi_INPUT_Q" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
   </jmsActivationSpec>
   

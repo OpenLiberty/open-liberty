@@ -27,6 +27,7 @@ import java.util.List;
 import static org.junit.Assert.fail;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import componenttest.topology.impl.LibertyServer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -71,6 +72,28 @@ public class TestUtils {
         ShrinkHelper.exportToServer(targetServer, appFolder, webApp);
 
         return webApp;
+    }
+
+    public static JavaArchive addDropinsJavaApp(
+        LibertyServer targetServer,
+        String appName,
+        String... packageNames) throws Exception {
+
+        return addJavaApp(targetServer, IS_DROPIN, appName, packageNames);
+    }
+
+    public static JavaArchive addJavaApp(
+        LibertyServer targetServer,
+        boolean isDropin,
+        String appName,
+        String... packageNames) throws Exception {
+
+        JavaArchive javaApp = ShrinkHelper.buildJavaArchive(appName, packageNames);
+
+        String appFolder = ( isDropin ? "dropins" : "apps" );
+        ShrinkHelper.exportToServer(targetServer, appFolder, javaApp);
+
+        return javaApp;
     }
 
     public static boolean runInServlet(

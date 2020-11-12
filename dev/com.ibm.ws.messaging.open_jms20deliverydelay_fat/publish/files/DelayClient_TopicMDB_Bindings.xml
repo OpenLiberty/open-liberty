@@ -117,7 +117,7 @@
   
   <!-- -->
   
-  <jmsActivationSpec id="jmsmdb/jmsmdb/MessageDrivenBean">
+  <jmsActivationSpec id="jmsmdb/jmsmdb/ejb/MessageDrivenBean">
     <properties.wasJms destinationRef="eis/topic"
                        destinationType="javax.jms.Topic"
                        clientId="cid1" subscriptionName="SID1"/>
