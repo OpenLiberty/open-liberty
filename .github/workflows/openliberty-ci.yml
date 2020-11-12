@@ -20,14 +20,14 @@ on:
 env:
   LANG: en_US.UTF-8
 jobs:
-  build:
-    name: Build Open Liberty
+  setup: #Validates copyright headers, selects test-os, selects java version, and sets up test categories. 
+    name: Setup 
     runs-on: ubuntu-latest
-    outputs:
+    outputs: 
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
-    steps:
+    steps: 
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
@@ -41,22 +41,21 @@ jobs:
         openjdk_impl: openj9
     - name: Generate output
       id: gen-params
-      run: |
-        cat > .github/pull_request_body.txt << END_OF_PR_BODY
-        ${{ github.event.pull_request.body }}
-        END_OF_PR_BODY
-        echo "PR Summary is:"
-        cat .github/pull_request_body.txt
-        git diff --name-only HEAD^...HEAD^2 >> .github/modified_files.diff
-        echo "Modified files in this PR are:"
-        cat .github/modified_files.diff
-
-        echo "::set-output name=test-os::ubuntu-latest"
-        echo "::set-output name=test-java::11"
-
-        MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
-        echo "MATRIX_RESULT is $MATRIX_RESULT"
-        echo "::set-output name=test-matrix::$MATRIX_RESULT"
+      env:
+        PRBODY: ${{ github.event.pull_request.body }}
+      run: .github/workflow-scripts/generate-params.sh
+  build: #Main build always done on linix run in parallel to setup and unit-test
+    name: Build Open Liberty
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: 11
+        openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
@@ -82,27 +81,33 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        ./gradlew cnf:initialize assemble
+        echo "Building Liberty.  This will take approx. 30 minutes"
+        mkdir gradle && touch build.gradle.log
+        ./gradlew cnf:initialize assemble > gradle/build.gradle.log
         cd .. && zip -rq openliberty-image.zip dev/build.image/wlp/
+    - name: Upload build failure
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build failure
+        path: dev/gradle/build.gradle.log
     - name: Upload liberty image
       uses: actions/upload-artifact@v2
       with:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
-  unit_tests:
+  unit_tests: #Unit tests always run linux, but could depends on setup to determine jdk
     name: Unit Tests
+    needs: setup
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v2
-#    - uses: testspace-com/setup-testspace@v1
-#      with:
-#        domain: ${{ github.repository_owner }}  
+    - uses: actions/checkout@v2 
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
-        java-version: 11
+        java-version: ${{ needs.setup.outputs.test-java }}
         openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
@@ -125,42 +130,51 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Run unit tests
-      run: |
-        cd dev
-        chmod +x gradlew
-        ./gradlew --continue cnf:initialize testResults
-    - name: Upload test report
-      if: failure()
+    - name: Run unit tests # This script will NOT fail if test(s) fail
+      id: run-unit-tests
+      run: .github/workflow-scripts/run-unit-tests.sh
+    # If script failures, or gradle failure on last step is hard to debug, consider enabling this step:
+    # - name: Upload run failure 
+    #   if: failure()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: Unit gradle failure
+    #     path: dev/gradle/unit.gradle.log
+    - name: Upload test report # If there was a test failure, archive test report
+      if: success() && steps.run-unit-tests.outputs.status == 'failure'
       uses: actions/upload-artifact@v2
       with:
         name: Unit test logs
         path: dev/cnf/generated/testReports/allUnitTests
-    - name: Upload unit test results
+    - name: Collect unit test results # Regardless of test status, collect test results [total, success, failure]
+      if: success()
       shell: bash
-      if: always()
-      run: .github/workflow-scripts/upload-unit-tests.sh
-  fat_tests:
+      run: .github/workflow-scripts/collect-unit-tests.sh
+    - name: Publish unit test report # Publish those results
+      if: success()
+      uses: mikepenz/action-junit-report@v1
+      with:
+        report_paths: './unit-results/TEST-*.xml'
+        check_name: Unit Test Report
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+  fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
-    needs: build
-    runs-on: ${{ needs.build.outputs.test-os }}
+    needs: [setup, build]
+    runs-on: ${{ needs.setup.outputs.test-os }}
     strategy:
       fail-fast: false
       max-parallel: 19
-      matrix: ${{fromJson(needs.build.outputs.test-matrix)}}
+      matrix: ${{fromJson(needs.setup.outputs.test-matrix)}}
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
     - name: Reclaim disk space
       run: .github/workflow-scripts/reclaim-disk-space.sh
-#    - uses: testspace-com/setup-testspace@v1
-#      with:
-#        domain: ${{ github.repository_owner }}
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
-        java-version: ${{ needs.build.outputs.test-java }}
+        java-version: ${{ needs.setup.outputs.test-java }}
         openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
@@ -187,24 +201,38 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: openliberty-image
-    - name: Run FAT buckets
+    - name: Run FAT buckets #This script will NOT fail if test(s) fail.
       timeout-minutes: 150
       shell: bash
       env:
         CATEGORY: ${{matrix.category}}
         GH_EVENT_NAME: ${{github.event_name}}
       run: .github/workflow-scripts/run-fat-build.sh
-    - name: Check for FAT failures
+    # If script failures, or gradle failure on last step is hard to debug, consider enabling this step:
+    # - name: Upload run failure 
+    #   if: failure()
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: FAT gradle failure
+    #     path: gradle/fats/*.gradle.log
+    - name: Check for FAT failures #Determine if there were test failures
+      id: check-fat-failure
       shell: bash
-      if: always()
       env:
         CATEGORY: ${{matrix.category}}
       run: .github/workflow-scripts/check-fat-failures.sh
-    - name: Upload failing FAT artifacts
-      if: failure()
+    - name: Upload failing FAT artifacts #If test(s) failed upload the results/output directories
+      if: steps.check-fat-failure.outputs.status == 'failure'
       uses: aguibert/upload-artifact@v1.0
       with:
         name: ${{matrix.category}}
         path: dev/failing_buckets/*.zip
         single-archive: "false"
+    - name: Publish FAT report #If test(s) failed publish failures for quick dev access
+      uses: mikepenz/action-junit-report@v1
+      if: steps.check-fat-failure.outputs.status == 'failure'
+      with:
+        report_paths: './fat-results/TEST-*.xml'
+        check_name: ${{matrix.category}} FAT Report
+        github_token: ${{ secrets.GITHUB_TOKEN }}
       
