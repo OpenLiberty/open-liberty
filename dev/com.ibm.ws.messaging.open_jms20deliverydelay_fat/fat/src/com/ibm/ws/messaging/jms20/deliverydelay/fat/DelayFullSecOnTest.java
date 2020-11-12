@@ -53,23 +53,19 @@ public class DelayFullSecOnTest {
     public static void testConfigFileChange() throws Exception {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features", "features/testjmsinternals-1.0.mf");
-
         engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/cert.der");
         engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/ltpa.keys");
         engineServer.copyFileToLibertyServerRoot(
             "resources/security", "engineLTPAKeys/mykey.jks");
-
         engineServer.setServerConfigurationFile("DelayEngine_SSL.xml");
-
 
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features", "features/testjmsinternals-1.0.mf");
-
         clientServer.copyFileToLibertyServerRoot(
             "resources/security", "clientLTPAKeys/mykey.jks");
-
+        TestUtils.addDropinsWebApp(clientServer, appName, appPackages);
         clientServer.setServerConfigurationFile("DelayClient_SSL.xml");
 
         engineServer.startServer("DelayFullOn_Engine.log");

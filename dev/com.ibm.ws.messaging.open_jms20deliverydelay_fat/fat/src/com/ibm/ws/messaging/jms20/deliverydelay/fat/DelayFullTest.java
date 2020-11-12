@@ -450,14 +450,14 @@ public class DelayFullTest {
 
         List<String> featureList1 = new ArrayList<String>();
 
+        featureList1.add("osgiConsole-1.0");
+        featureList1.add("jndi-1.0");
         featureList1.add("servlet-3.1");
         featureList1.add("jsp-2.3");
-        featureList1.add("jndi-1.0");
-        featureList1.add("testjmsinternals-1.0");
-        featureList1.add("wasJmsClient-2.0");
-        featureList1.add("osgiConsole-1.0");
-        featureList1.add("timedexit-1.0");
         featureList1.add("el-3.0");
+        featureList1.add("wasJmsClient-2.0");
+        featureList1.add("testjmsinternals-1.0");
+        featureList1.add("timedexit-1.0");
 
         engineServer.changeFeatures(featureList1);
 
