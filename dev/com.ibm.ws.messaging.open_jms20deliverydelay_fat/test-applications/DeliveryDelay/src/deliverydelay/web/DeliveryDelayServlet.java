@@ -1146,6 +1146,8 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private static final int DELIVERY_DELAY = 2000;
+
     // testTransactedSend_B
 
     public void testTransactedSend_B(
@@ -1159,16 +1161,16 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(2000);
+        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
 
         Message message = jmsContext.createTextMessage("testTransactedSend_B");
         jmsProducer.send(jmsQueue, message);
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
 
         Thread.sleep(1000);
 
         jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
 
@@ -1179,18 +1181,10 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSend_B")) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100))) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000)) {
                 testFailed = true;
             }
-            // send [ (- 1605129389346 1605129389362) -16.0 ]
-            // commit [ (- 1605129389346 1605129390364) -1018.0 ]
-            // received [ 1605129389346 ]
-
-            // send [ (- 1605129391396 1605129391396) 0.0 ]
-            // commit [ (- 1605129391396 1605129392397) -1001.0 ]
-            // received [ 1605129391396 ]
-
         } else {
             testFailed = true;
         }
@@ -1222,15 +1216,15 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(2000);
+        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
 
         Message message = jmsContext.createTextMessage("testTransactedSend_Tcp");
         jmsProducer.send(jmsQueue, message);
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
 
         Thread.sleep(1000);
         jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
@@ -1240,8 +1234,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSend_Tcp") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
@@ -1270,12 +1264,12 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         Message message = jmsContext.createTextMessage("testTransactedSendTopic_B");
 
-        jmsProducer.setDeliveryDelay(2000);
+        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
         jmsProducer.send(jmsTopic, message);
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
         Thread.sleep(1000);
         jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
@@ -1285,8 +1279,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopic_B") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
@@ -1314,12 +1308,12 @@ public class DeliveryDelayServlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
 
         Message message = jmsContext.createTextMessage("testTransactedSendTopic_Tcp");
-        jmsProducer.setDeliveryDelay(2000);
+        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
         jmsProducer.send(jmsTopic, message);
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
         Thread.sleep(1000);
         jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
         jmsContext.commit();
@@ -1329,8 +1323,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopic_Tcp") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
@@ -1830,7 +1824,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         JMSProducer jmsProducer = jmsContext.createProducer();
         jmsProducer.setTimeToLive(1000);
-        jmsProducer.setDeliveryDelay(2000);
+        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
         jmsProducer.send(jmsQueue, "testTimeToLiveWithDeliveryDelay");
 
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
@@ -3994,13 +3988,13 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
         QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(2000);
+        send.setDeliveryDelay(DELIVERY_DELAY);
         send.send( sessionSender.createTextMessage("testTransactedSendClassicApi_B") );
 
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
         Thread.sleep(1000);
         sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
@@ -4010,8 +4004,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendClassicApi_B") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                  ((rec_time - time_after_commit) >= Math.abs(100))) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                  (Math.abs(rec_time - time_after_commit) < 1000)) {
                 testFailed = true;
             }
         } else {
@@ -4041,13 +4035,13 @@ public class DeliveryDelayServlet extends HttpServlet {
         QueueReceiver rec = sessionSender.createReceiver(jmsQueue1);
 
         QueueSender send = sessionSender.createSender(jmsQueue1);
-        send.setDeliveryDelay(2000);
+        send.setDeliveryDelay(DELIVERY_DELAY);
         send.send( sessionSender.createTextMessage("testTransactedSendClassicApi_Tcp") );
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
 
         Thread.sleep(1000);
         sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
@@ -4057,8 +4051,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendClassicApi_Tcp") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
@@ -4087,13 +4081,13 @@ public class DeliveryDelayServlet extends HttpServlet {
         TopicSubscriber rec = sessionSender.createSubscriber(jmsTopic);
 
         TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(2000);
+        send.setDeliveryDelay(DELIVERY_DELAY);
         send.publish( sessionSender.createTextMessage("testTransactedSendTopicClassicApi_B") );
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
 
         Thread.sleep(1000);
         sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
@@ -4103,8 +4097,8 @@ public class DeliveryDelayServlet extends HttpServlet {
              (recMsg.getText() != null) &&
              recMsg.getText().equals("testTransactedSendTopicClassicApi_B") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
@@ -4135,13 +4129,13 @@ public class DeliveryDelayServlet extends HttpServlet {
         TopicSubscriber rec = sessionSender.createSubscriber(jmsTopic);
 
         TopicPublisher send = sessionSender.createPublisher(jmsTopic);
-        send.setDeliveryDelay(2000);
+        send.setDeliveryDelay(DELIVERY_DELAY);
         send.publish( sessionSender.createTextMessage("testTransactedSendTopicClassicApi_Tcp") );
-        long time_after_send = System.currentTimeMillis() + 2000;
+        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
 
         Thread.sleep(1000);
         sessionSender.commit();
-        long time_after_commit = System.currentTimeMillis() + 2000;
+        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
 
         TextMessage recMsg = (TextMessage) rec.receive(40000);
         sessionSender.commit();
@@ -4151,8 +4145,8 @@ public class DeliveryDelayServlet extends HttpServlet {
               (recMsg.getText() != null) &&
               recMsg.getText().equals("testTransactedSendTopicClassicApi_Tcp") ) {
             rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( ((rec_time - time_after_send) <= Math.abs(100)) ||
-                 ((rec_time - time_after_commit) >= Math.abs(100)) ) {
+            if ( (Math.abs(rec_time - time_after_send) > 100) ||
+                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
                 testFailed = true;
             }
         } else {
