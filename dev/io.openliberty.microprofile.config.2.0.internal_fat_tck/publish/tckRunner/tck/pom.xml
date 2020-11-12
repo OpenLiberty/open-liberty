@@ -43,7 +43,17 @@
                 <scope>import</scope>
             </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement> 
+    
+	<repositories>
+		<!-- This TCK is currently using a custom built artifact- microprofile-config-tck:2.0-ibm20201020.
+		If Artifactory is unavailable, the following DHE repository will be searched for the artifact -->
+		<repository>
+			<name>IBM DHE Maven repository</name>
+			<id>DHE</id>
+			<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+		</repository>
+	</repositories>
 
     <dependencies>
 
@@ -58,7 +68,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>2.0-ibm20201020</version> <!--2.0-SNAPSHOT-->
+            <version>2.0-ibm20201020</version> 
         </dependency>
 
         <dependency>
