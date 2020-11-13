@@ -557,7 +557,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 nextMessage = nextMessage + sChars;
             }
 
-            if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+            if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
                 break;
             }
 
@@ -799,7 +799,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                     nextMessage = nextMessage + sChars;
                 }
 
-                if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+                if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
                     break;
                 }
 

@@ -513,7 +513,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
 
-            if (!waitUntilStreamIsReady(clientStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+            if (!waitUntilStreamIsReady(clientStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
                 break;
             }
 
@@ -804,7 +804,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 nextMessage = nextMessage + sChars;
             }
 
-            if (!waitUntilStreamIsReady(twoWayStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+            if (!waitUntilStreamIsReady(twoWayStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
                 break;
             }
 
