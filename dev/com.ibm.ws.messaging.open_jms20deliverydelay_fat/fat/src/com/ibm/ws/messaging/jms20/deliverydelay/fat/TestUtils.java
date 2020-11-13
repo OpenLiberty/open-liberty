@@ -29,8 +29,10 @@ import static org.junit.Assert.fail;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import componenttest.topology.impl.LibertyServer;
+
 import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import componenttest.topology.impl.LibertyServer;
 
 public class TestUtils {
 

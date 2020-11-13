@@ -5,9 +5,7 @@
   <variable name="onError" value="FAIL"/>
 
   <!--  
-  <logging 
-      traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink=all:com.ibm.ws.sib.msgstore.deliverydelay.*=all:com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all:com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all:com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all:com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all:com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all:SIBMessageTrace=all"
-      maxFileSize="200"/>
+  <logging traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.sib.msgstore.cache.links.AbstractItemLink=all:com.ibm.ws.sib.msgstore.deliverydelay.*=all:com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all:com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all:com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all:com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all:com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all:SIBMessageTrace=all" maxFileSize="200"/>
     -->
   
   <!-- -->
@@ -17,6 +15,7 @@
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
     <feature>jsp-2.3</feature> 
+    <feature>ejbLite-3.2</feature>
 
     <feature>wasJmsClient-2.0</feature>
     <feature>wasJmsServer-1.0</feature>
@@ -115,8 +114,11 @@
   
   <!-- -->
   
-  <jmsActivationSpec id="jmsmdb/jmsmdb/ejb/MessageDrivenBean">
-    <properties.wasJms destinationRef="jndi_INPUT_Q" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  <jmsActivationSpec id="jmsapp/jmsmdb/MessageDrivenBean">
+    <properties.wasJms destinationRef="jndi_INPUT_Q"
+                       remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
   </jmsActivationSpec>
+
+  <application type="ear" name="jmsapp" location="jmsapp.ear" id="jmsapp"/>
   
 </server>
