@@ -12,6 +12,7 @@
 package com.ibm.ws.event.logging;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -680,6 +681,7 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeUpdate2() throws Exception {
         server.setServerConfigurationFile("server_logModeExit.xml");
+        assertNotNull(server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000));
         Log.info(c, "testEventLoggingLogModeUpdate2", "--------> Started server with logMode = Exit");
 
         Log.info(c, "testEventLoggingLogModeUpdate2", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
