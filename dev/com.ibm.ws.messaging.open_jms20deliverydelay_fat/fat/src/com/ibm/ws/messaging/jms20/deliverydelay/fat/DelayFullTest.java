@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +24,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 // @Mode(TestMode.FULL)
@@ -47,8 +54,42 @@ public class DelayFullTest {
     private static final String[] ddAppPackages = new String[] { "deliverydelay.web" };
     private static final String ddContextRoot = "DeliveryDelay";
 
-    private static final String mdbAppName = "jmsmdb";
-    private static final String[] mdbAppPackages = new String[] { "jmsmdb.ejb" };
+    private static final String mdbAppName = "jmsapp.ear";
+    private static final String mdbJarName = "jmsmdb";
+    private static final String[] mdbJarPackages = new String[] { "jmsmdb.ejb" };
+
+    //
+
+    private static final String MDB_CONFIG = "DelayClient_MDB.xml";
+
+    private static final String MDB_CONFIG_QUEUE_BINDINGS = "DelayClient_QueueMDB_Bindings.xml";
+    private static final String MDB_CONFIG_QUEUE_TCP = "DelayClient_QueueMDB_TCP.xml";
+
+    private static final String MDB_CONFIG_TOPIC_BINDINGS = "DelayClient_TopicMDB_Bindings.xml";
+    private static final String MDB_CONFIG_TOPIC_TCP = "DelayClient_TopicMDB_TCP.xml";
+
+    private static final String[] TRANSFORMED_CONFIGS = new String[] {
+        MDB_CONFIG,
+
+        MDB_CONFIG_QUEUE_BINDINGS,
+        MDB_CONFIG_QUEUE_TCP,
+
+        MDB_CONFIG_TOPIC_BINDINGS,
+        MDB_CONFIG_TOPIC_TCP
+    };
+
+    private static void transformConfigurations() throws Exception {
+        if ( !JakartaEE9Action.isActive() ) {
+            return;
+        }
+
+        for ( String config : TRANSFORMED_CONFIGS ) {
+            Path configPath = Paths.get("lib/LibertyFATTestFiles", config);
+            JakartaEE9Action.transformApp(configPath);
+        }
+    }
+
+    //
 
     private static final boolean THROW_EXCEPTIONS = true;
 
@@ -99,8 +140,9 @@ public class DelayFullTest {
 
     private static void startClient(String clientConfiguration) throws Exception {
         if ( clientConfiguration == DEFAULT_CLIENT ) {
-            clientConfiguration = "DelayClient.xml";
+            clientConfiguration = MDB_CONFIG;
         }
+
         clientServer.setServerConfigurationFile(clientConfiguration);
         clientServer.startServer("DelayFull_Client.log");
     }
@@ -131,13 +173,20 @@ public class DelayFullTest {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
-        engineServer.copyFileToLibertyInstallRoot(
-            "lib/features", "features/testjmsinternals-1.0.mf");
+        transformConfigurations();
 
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features", "features/testjmsinternals-1.0.mf");
+
+        clientServer.copyFileToLibertyInstallRoot(
+            "lib/features", "features/testjmsinternals-1.0.mf");
+
         TestUtils.addDropinsWebApp(clientServer, ddAppName, ddAppPackages);
-        TestUtils.addDropinsJavaApp(clientServer, mdbAppName, mdbAppPackages);
+
+        JavaArchive mdbJar = ShrinkHelper.buildJavaArchive(mdbJarName, mdbJarPackages);
+        EnterpriseArchive mdbEar =  ShrinkWrap.create(EnterpriseArchive.class, mdbAppName);
+        mdbEar.addAsModule(mdbJar);
+        ShrinkHelper.exportToServer(clientServer, "apps", mdbEar);
 
         startServers();
     }
@@ -155,7 +204,7 @@ public class DelayFullTest {
 
     @Test
     public void testDeliveryDelayForDifferentDelays_B() throws Exception {
-        restartClient("DelayClient_QueueMDB_Bindings.xml");
+        restartClient(MDB_CONFIG_QUEUE_BINDINGS);
 
         runInServlet("testDeliveryDelayForDifferentDelays");
 
@@ -164,7 +213,7 @@ public class DelayFullTest {
         msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueBindingsMessage1");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
-        restartServers("DelayClient_QueueMDB_TCP.xml");
+        restartServers(MDB_CONFIG_QUEUE_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelays_Tcp");
 
@@ -176,9 +225,9 @@ public class DelayFullTest {
         restartServers();
     }
 
-    @Test
+    // @Test
     public void testDeliveryDelayForDifferentDelaysTopic_B() throws Exception {
-        restartClient("DelayClient_TopicMDB_Bindings.xml");
+        restartClient(MDB_CONFIG_TOPIC_BINDINGS);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopic");
 
@@ -187,7 +236,7 @@ public class DelayFullTest {
         msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage1");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
-        restartServers("DelayClient_TopicMDB_TCP.xml");
+        restartServers(MDB_CONFIG_TOPIC_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopic_Tcp");
 
@@ -199,7 +248,7 @@ public class DelayFullTest {
         restartServers();
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStore_B() throws Exception {
         runInServlet("testPersistentMessage");
 
@@ -209,7 +258,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStore_B failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStore_Tcp() throws Exception {
         runInServlet("testPersistentMessage_Tcp");
 
@@ -219,7 +268,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStore_Tcp failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreTopic_B() throws Exception {
         runInServlet("testPersistentMessageTopic");
 
@@ -229,7 +278,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreTopic_Tcp() throws Exception {
         runInServlet("testPersistentMessageTopic_Tcp");
 
@@ -239,10 +288,10 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testDeliveryDelayForDifferentDelaysClassicApi() throws Exception {
-        restartClient("DelayClient_QueueMDB_Bindings.xml");
-        
+        restartClient(MDB_CONFIG_QUEUE_BINDINGS);
+
         runInServlet("testDeliveryDelayForDifferentDelaysClassicApi");
 
         String msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueBindingsMessage2-ClassicApi");
@@ -250,7 +299,7 @@ public class DelayFullTest {
         msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueBindingsMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
-        restartServers("DelayClient_QueueMDB_TCP.xml");
+        restartServers(MDB_CONFIG_QUEUE_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysClassicApi_Tcp");
 
@@ -262,9 +311,9 @@ public class DelayFullTest {
         restartServers();
     }
 
-    @Test
+    // @Test
     public void testDeliveryDelayForDifferentDelaysTopicClassicApi()throws Exception {
-        restartClient("DelayClient_TopicMDB_Bindings.xml");
+        restartClient(MDB_CONFIG_TOPIC_BINDINGS);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopicClassicApi");
 
@@ -273,7 +322,7 @@ public class DelayFullTest {
         msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
-        restartServers("DelayClient_TopicMDB_TCP.xml");
+        restartServers(MDB_CONFIG_TOPIC_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopicClassicApi_Tcp");
         msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicTCPMessage2-ClassicApi");
@@ -284,7 +333,7 @@ public class DelayFullTest {
         restartServers();
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreClassicApi_B() throws Exception {
         runInServlet("testPersistentMessageClassicApi");
 
@@ -294,7 +343,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreClassicApi_B failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreClassicApi_Tcp() throws Exception {
         runInServlet("testPersistentMessageClassicApi_Tcp");
 	
@@ -304,7 +353,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreClassicApi_Tcp failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreTopicClassicApi_B() throws Exception {
         runInServlet("testPersistentMessageTopicClassicApi");
 
@@ -314,7 +363,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopicClassicApi_B failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testPersistentMessageStoreTopicClassicApi_Tcp()throws Exception {
         runInServlet("testPersistentMessageTopicClassicApi_Tcp");
 
@@ -325,7 +374,7 @@ public class DelayFullTest {
     }
 
     // regression tests for durable unshared
-    @Test
+    // @Test
     public void testCreateUnSharedDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
@@ -342,7 +391,7 @@ public class DelayFullTest {
         assertTrue("testCreateSharedDurableExpiry_B_SecOff failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testCreateSharedDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
@@ -359,7 +408,7 @@ public class DelayFullTest {
         assertTrue("testCreateSharedDurableExpiry_B_SecOff failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testCreateSharedNonDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
@@ -376,7 +425,7 @@ public class DelayFullTest {
         assertTrue("Test testCreateSharedNonDurable_B_SecOff failed", testResult);
     }
 
-    @Test
+    // @Test
     public void testDDRestartServer() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage");
         assertTrue("testSendMessage failed", testResult1);
@@ -387,50 +436,7 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage failed", testResult2);
     }
 
-    @Test
-    public void testDDRemoveAddServerFeature() throws Exception {
-        boolean testResult1 = runInServlet("testSendMessage");
-        assertTrue("testSendMessage failed", testResult1);
-
-        List<String> featureList1 = new ArrayList<String>();
-        featureList1.add("servlet-3.1");
-        featureList1.add("jsp-2.3");
-        featureList1.add("jndi-1.0");
-        featureList1.add("testjmsinternals-1.0");
-        featureList1.add("wasJmsClient-2.0");
-        featureList1.add("osgiConsole-1.0");
-        featureList1.add("timedexit-1.0");
-        featureList1.add("el-3.0");
-        clientServer.changeFeatures(featureList1);
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-
-        String changedMessageFromLog = clientServer.waitForStringInLogUsingMark(
-            "CWWKF0013I.*wasJmsServer.*",
-            clientServer.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature removed message in the trace file",
-            changedMessageFromLog);
-
-        featureList1.add("wasJmsServer-1.0");
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        clientServer.changeFeatures(featureList1);
-
-        changedMessageFromLog = clientServer.waitForStringInLogUsingMark(
-	    "CWWKF0012I.*wasJmsServer.*",
-            clientServer.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature added message in the trace file",
-            changedMessageFromLog);
-
-        int appCount = clientServer.waitForMultipleStringsInLog(3,"CWWKT0016I.*DeliveryDelay.*");
-        Log.info(DelayFullTest.class, "CheckApplicationStart", "No. of times App started - " + appCount);
-        assertTrue( "Could not find the application ready message in the log file", (appCount == 3) );
-
-        boolean testResult2 = runInServlet("testReceiveMessage");
-        assertTrue("testReceiveMessage failed", testResult2);
-    }
-
-    @Test
+    // @Test
     public void testDDRestartServer_TCP() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage_TCP");
         assertTrue("testSendMessage_TCP failed", testResult1);
@@ -441,53 +447,113 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage_TCP failed", testResult2);
     }
 
-    // @Test
-    public void testDDRemoveAddServerFeature_TCP() throws Exception {
-        boolean testResult1 = runInServlet("testSendMessage_TCP");
-        assertTrue("testSendMessage_TCP failed", testResult1);
+    private List<String> getClientFeatures() {
+        List<String> features = new ArrayList<String>();
 
-        clientServer.stopServer();
+        features.add("osgiconsole-1.0");
+        features.add("jndi-1.0");
 
-        List<String> featureList1 = new ArrayList<String>();
+        if ( JakartaEE9Action.isActive() ) {
+            features.add("servlet-5.0");
+            features.add("pages-3.0");
+            features.add("messagingClient-3.0");
+            features.add( getServerFeature() );
+        } else {
+            features.add("servlet-3.1");
+            features.add("jsp-2.3");
+            features.add("wasJmsClient-2.0");
+            features.add( getServerFeature() );
+        }
+        
+        features.add("testjmsinternals-1.0");
 
-        featureList1.add("osgiConsole-1.0");
-        featureList1.add("jndi-1.0");
-        featureList1.add("servlet-3.1");
-        featureList1.add("jsp-2.3");
-        featureList1.add("el-3.0");
-        featureList1.add("wasJmsClient-2.0");
-        featureList1.add("testjmsinternals-1.0");
-        featureList1.add("timedexit-1.0");
+        return features;
+    }
 
-        engineServer.changeFeatures(featureList1);
+    private String getServerFeature() {
+        return ( JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
+    }
 
-        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-        String changedMessageFromLog = engineServer.waitForStringInLogUsingMark(
-	    "CWWKF0013I.*wasJmsServer.*",
-            engineServer.getMatchingLogFile("trace.log"));
+    private String getServerMessageFragment() {
+        return ( JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
+    }
+
+    private void verifyRemovedFeature(LibertyServer server, String fragment) throws Exception {
+        String changedMessageFromLog = server.waitForStringInLogUsingMark(
+            "CWWKF0013I.*" + fragment + ".*",
+            server.getMatchingLogFile("trace.log"));
         assertNotNull(
             "Could not find the feature removed message in the trace file",
             changedMessageFromLog);
 
-        featureList1.add("wasJmsServer-1.0");
-        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-        engineServer.changeFeatures(featureList1);
+        verifyFeatureUpdate(server);
+    }
 
-        changedMessageFromLog = engineServer.waitForStringInLogUsingMark(
-	    "CWWKF0012I.*wasJmsServer.*",
-            engineServer.getMatchingLogFile("trace.log"));
+    private void verifyAddedFeature(LibertyServer server, String fragment) throws Exception {
+        String changedMessageFromLog = server.waitForStringInLogUsingMark(
+	    "CWWKF0012I.*" + fragment + ".*",
+            server.getMatchingLogFile("trace.log"));
         assertNotNull(
-	    "Could not find the feature added message in the trace file",
+            "Could not find the feature added message in the trace file",
             changedMessageFromLog);
 
-        changedMessageFromLog = engineServer.waitForStringInLogUsingMark(
+        verifyFeatureUpdate(server);
+    }
+
+    private void verifyFeatureUpdate(LibertyServer server) throws Exception {
+        String changedMessageFromLog = server.waitForStringInLogUsingMark(
             "CWWKF0008I.*",
-            engineServer.getMatchingLogFile("trace.log"));
+            server.getMatchingLogFile("trace.log"));
         assertNotNull(
             "Could not find the feature update completed message in the trace file",
             changedMessageFromLog);
+    }
 
-        clientServer.startServer("DelayFull_Client.log");
+    // @Test
+    public void testDDRemoveAddServerFeature() throws Exception {
+        boolean testResult1 = runInServlet("testSendMessage");
+        assertTrue("testSendMessage failed", testResult1);
+
+        List<String> features = getClientFeatures();
+        String serverFeature = getServerFeature();
+        String serverFragment = getServerMessageFragment();
+
+        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+        features.remove(serverFeature);
+        clientServer.changeFeatures(features);
+        verifyRemovedFeature(clientServer, serverFragment);
+
+        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+        features.add(serverFeature);
+        clientServer.changeFeatures(features);
+        verifyAddedFeature(clientServer, serverFragment);
+
+        int appCount = clientServer.waitForMultipleStringsInLog(3, "CWWKT0016I.*DeliveryDelay.*");
+        Log.info(DelayFullTest.class, "CheckApplicationStart", "No. of times App started - " + appCount);
+        assertTrue( "Could not find the application ready message in the log file", (appCount == 3) );
+
+        boolean testResult2 = runInServlet("testReceiveMessage");
+        assertTrue("testReceiveMessage failed", testResult2);
+    }
+
+    // @Test TODO Disabled in commercial liberty
+    public void testDDRemoveAddServerFeature_TCP() throws Exception {
+        boolean testResult1 = runInServlet("testSendMessage_TCP");
+        assertTrue("testSendMessage_TCP failed", testResult1);
+
+        List<String> features = getClientFeatures();
+        String serverFeature = getServerFeature();
+        String serverFragment = getServerMessageFragment();
+
+        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+        features.remove(serverFeature);
+        clientServer.changeFeatures(features);
+        verifyRemovedFeature(clientServer, serverFragment);
+
+        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+        features.add(serverFeature);
+        clientServer.changeFeatures(features);
+        verifyAddedFeature(clientServer, serverFragment);
 
         boolean testResult2 = runInServlet("testReceiveMessage_TCP");
         assertTrue("testReceiveMessage_TCP failed", testResult2);
