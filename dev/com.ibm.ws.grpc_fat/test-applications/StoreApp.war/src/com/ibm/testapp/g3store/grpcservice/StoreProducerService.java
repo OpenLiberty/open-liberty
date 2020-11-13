@@ -40,6 +40,7 @@ import com.ibm.testapp.g3store.utilsStore.StoreUtils;
 
 import io.grpc.Context;
 import io.grpc.Status;
+import io.grpc.stub.CallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -504,11 +505,14 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     public static int SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
     public static int SERVER_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
     public static int SERVER_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public static int STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
 
     @Override
-    public void serverStreamA(StreamRequestA req, StreamObserver<StreamReplyA> responseObserver) {
+    public void serverStreamA(StreamRequestA req, StreamObserver<StreamReplyA> responseObserverInput) {
 
         log.info("serverStreamA: Service Entry ----------------------------------------------------------");
+
+        CallStreamObserver<StreamReplyA> responseObserver = (CallStreamObserver) responseObserverInput;
 
         // server streaming
         int numberOfMessages = SERVER_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
@@ -553,6 +557,10 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                 nextMessage = nextMessage + sChars;
             }
 
+            if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+                break;
+            }
+
             nextRequest = StreamReplyA.newBuilder().setMessage(nextMessage).build();
             responseObserver.onNext(nextRequest);
             try {
@@ -590,8 +598,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     }
 
     class TwoWayStreamClass implements StreamObserver<StreamRequestA> {
-        Object messageSync = new Object() {
-        };
+        Object messageSync = new Object() {};
         String lastClientMessage = "Nothing yet";
         String responseStringTwoWay = "Response from Server: ";
         int count = 0;
@@ -670,8 +677,7 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     }
 
     class TwoWayStreamAsyncThreadClass implements StreamObserver<StreamRequestA> {
-        Object messageSync = new Object() {
-        };
+        Object messageSync = new Object() {};
         String lastClientMessage = "Nothing yet";
         String responseStringTwoWay = "Response from Server: ";
         int count = 0;
@@ -752,11 +758,11 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
     }
 
     class AsyncStreaming implements Runnable {
-        StreamObserver<StreamReplyA> responseObserver = null;
+        CallStreamObserver<StreamReplyA> responseObserver = null;
         CountDownLatch twoWayAsyncThreadLatch = null;
 
         public AsyncStreaming(StreamObserver<StreamReplyA> observer, CountDownLatch inLatch) {
-            responseObserver = observer;
+            responseObserver = (CallStreamObserver<StreamReplyA>) observer;
             twoWayAsyncThreadLatch = inLatch;
         }
 
@@ -793,6 +799,10 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
                     nextMessage = nextMessage + sChars;
                 }
 
+                if (!waitUntilStreamIsReady(responseObserver, STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+                    break;
+                }
+
                 StreamReplyA reply = StreamReplyA.newBuilder().setMessage(nextMessage).build();
                 responseObserver.onNext(reply);
 
@@ -811,6 +821,37 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             log.info("twoWayStreamAsyncThread: AsyncStreaming Thread: run() completed, countDown the latch");
             twoWayAsyncThreadLatch.countDown();
         }
+    }
+
+    private boolean waitUntilStreamIsReady(CallStreamObserver obs, int sleepTimeMsec, int maxLoopCount) {
+        int readyLoopCount = 0;
+
+        while (obs.isReady() != true) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " isReady() returned false, sleep "
+                                   + sleepTimeMsec + " ms. hc: " + obs.hashCode());
+            }
+            try {
+                log.info("twoWayStreamAsyncThread: isReady() returned false, sleep "
+                         + sleepTimeMsec + " ms. hc: " + obs.hashCode());
+                Thread.sleep(sleepTimeMsec);
+            } catch (Exception x) {
+                // do nothing
+            }
+            readyLoopCount++;
+            if (readyLoopCount > maxLoopCount)
+                break;
+        }
+
+        if (readyLoopCount > maxLoopCount) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + obs.hashCode());
+            }
+            log.warning("Producer: grpcClientStreamApp(): timed out waiting for isReady()");
+            return false;
+        }
+
+        return true;
     }
 
     public String qtf() {

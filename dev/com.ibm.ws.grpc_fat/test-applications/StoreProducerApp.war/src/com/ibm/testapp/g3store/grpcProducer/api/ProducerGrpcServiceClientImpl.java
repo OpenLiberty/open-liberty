@@ -44,7 +44,7 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.CallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -461,10 +461,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     public String grpcClientStreamApp() {
         String replyAfterClientStream = "Null";
         String errorMessage = null;
-        Throwable errorCaught = null;
         String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
-        int readyLoopMax = 400; // allow a 20s timeout for the first message; set to 250ms thereafter
-        int readyLoopCount = 0;
 
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -473,7 +470,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         // This if for sending a stream of data to the server and then get a single reply
         ClientStreamClass csc = new ClientStreamClass(latch);
         // StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(csc);
-        ClientCallStreamObserver<StreamRequestA> clientStreamAX = (ClientCallStreamObserver) (_producerAsyncStub.clientStreamA(csc));
+        CallStreamObserver<StreamRequestA> clientStreamAX = (CallStreamObserver) (_producerAsyncStub.clientStreamA(csc));
 
         // client streaming
         int numberOfMessages = CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
@@ -516,36 +513,11 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
 
-            readyLoopCount = 0;
-
-            while (clientStreamAX.isReady() != true) {
-                if (CONCURRENT_TEST_ON) {
-                    System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false, sleep "
-                                       + CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC + " ms. hc: " + clientStreamAX.hashCode());
-                }
-                try {
-                    Thread.sleep(CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC);
-                } catch (Exception x) {
-                    // do nothing
-                }
-                readyLoopCount++;
-                if (readyLoopCount > readyLoopMax)
-                    break;
-            }
-
-            if (readyLoopCount > readyLoopMax) {
-                if (CONCURRENT_TEST_ON) {
-                    System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + clientStreamAX.hashCode());
-                }
-                log.warning("Producer: grpcClientStreamApp(): timed out waiting for isReady()");
+            if (!waitUntilStreamIsReady(clientStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
                 break;
             }
 
             clientStreamAX.onNext(nextRequest);
-
-            // reset ready loop count and max
-            readyLoopCount = 0;
-            readyLoopMax = 50;
 
             try {
                 if (timeBetweenMessagesMsec > 0) {
@@ -578,7 +550,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         replyAfterClientStream = csc.getReply();
         errorMessage = csc.getErrorMessage();
-        errorCaught = csc.getErrorCaught();
 
         // test that this is what was expected:
         int i1 = replyAfterClientStream.indexOf(firstMessage);
@@ -608,7 +579,6 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
     }
 
     class ClientStreamClass implements StreamObserver<StreamReplyA> {
-        // class ClientStreamClass implements ClientCallStreamObserver<StreamReplyA> {
 
         String replyAfterClientStream = "Null";
         String errorMessage = null;
@@ -792,7 +762,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String errorMessage = null;
         CountDownLatch latch = new CountDownLatch(1);
 
-        StreamObserver<StreamRequestA> twoWayStreamAX = null;
+        CallStreamObserver<StreamRequestA> twoWayStreamAX = null;
         TwoWayStreamClass tws = null;
 
         String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
@@ -810,9 +780,9 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         // This if for sending a stream of data to the server and then getting a stream reply
         tws = new TwoWayStreamClass(latch);
         if (asyncThread == false) {
-            twoWayStreamAX = _producerAsyncStub.twoWayStreamA(tws);
+            twoWayStreamAX = (CallStreamObserver) (_producerAsyncStub.twoWayStreamA(tws));
         } else {
-            twoWayStreamAX = _producerAsyncStub.twoWayStreamAsyncThread(tws);
+            twoWayStreamAX = (CallStreamObserver) (_producerAsyncStub.twoWayStreamAsyncThread(tws));
         }
 
         // client streaming
@@ -832,6 +802,10 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             } else {
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
                 nextMessage = nextMessage + sChars;
+            }
+
+            if (!waitUntilStreamIsReady(twoWayStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 50)) {
+                break;
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
@@ -903,8 +877,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String lastTwoWayMessageReceived = null;
         String errorMessage = null;
         CountDownLatch latch = null;
-        Object messageSync = new Object() {
-        };
+        Object messageSync = new Object() {};
 
         public TwoWayStreamClass(CountDownLatch inLatch) {
             latch = inLatch;
@@ -955,6 +928,35 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 return lastTwoWayMessageReceived;
             }
         }
+    }
+
+    private boolean waitUntilStreamIsReady(CallStreamObserver obs, int sleepTimeMsec, int maxLoopCount) {
+        int readyLoopCount = 0;
+
+        while (obs.isReady() != true) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " isReady() returned false, sleep "
+                                   + sleepTimeMsec + " ms. hc: " + obs.hashCode());
+            }
+            try {
+                Thread.sleep(sleepTimeMsec);
+            } catch (Exception x) {
+                // do nothing
+            }
+            readyLoopCount++;
+            if (readyLoopCount > maxLoopCount)
+                break;
+        }
+
+        if (readyLoopCount > maxLoopCount) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + obs.hashCode());
+            }
+            log.warning("Producer: grpcClientStreamApp(): timed out waiting for isReady()");
+            return false;
+        }
+
+        return true;
     }
 
     public String qtf() {
