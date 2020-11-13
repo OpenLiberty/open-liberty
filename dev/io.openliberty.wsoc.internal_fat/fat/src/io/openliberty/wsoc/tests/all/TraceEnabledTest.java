@@ -8,26 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wsoc.tests.all;
+package io.openliberty.wsoc.tests.all;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
 
-import com.ibm.ws.fat.util.wsoc.MultiClientTestContext;
-import com.ibm.ws.fat.util.wsoc.PublishTask;
-import com.ibm.ws.fat.util.wsoc.TestHelper;
-import com.ibm.ws.fat.util.wsoc.WsocTest;
-import com.ibm.ws.fat.util.wsoc.WsocTestContext;
-import com.ibm.ws.fat.util.wsoc.WsocTestRunner;
-import com.ibm.ws.fat.wsoc.common.Constants;
-import com.ibm.ws.fat.wsoc.common.Utils;
-import com.ibm.ws.fat.wsoc.endpoints.client.basic.AnnotatedClientEP;
-import com.ibm.ws.fat.wsoc.endpoints.client.basic.PathParamClientEP;
-import com.ibm.ws.fat.wsoc.endpoints.client.trace.AnnotatedConfiguratorClientEP;
-import com.ibm.ws.fat.wsoc.endpoints.client.trace.ProgrammaticClientEP; // this should be .trace.
-import com.ibm.ws.fat.wsoc.endpoints.client.trace.ProgrammaticConfiguratorClientEP;
+import io.openliberty.wsoc.util.wsoc.MultiClientTestContext;
+import io.openliberty.wsoc.util.wsoc.PublishTask;
+import io.openliberty.wsoc.util.wsoc.TestHelper;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.util.wsoc.WsocTestContext;
+import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
+import io.openliberty.wsoc.common.Constants;
+import io.openliberty.wsoc.common.Utils;
+import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
+import io.openliberty.wsoc.endpoints.client.basic.PathParamClientEP;
+import io.openliberty.wsoc.endpoints.client.trace.AnnotatedConfiguratorClientEP;
+import io.openliberty.wsoc.endpoints.client.trace.ProgrammaticClientEP; // this should be .trace.
+import io.openliberty.wsoc.endpoints.client.trace.ProgrammaticConfiguratorClientEP;
 
 /**
  * Tests WebSocket Stuff
@@ -145,7 +145,7 @@ public class TraceEnabledTest {
         int numClients = 100;
         Object[] receivers = new TestHelper[numClients];
         for (int x = 0; x < numClients; x++) {
-            receivers[x] = new com.ibm.ws.fat.wsoc.endpoints.client.trace.MultiClientEP.SimplePublisherTest(textValues);
+            receivers[x] = new io.openliberty.wsoc.endpoints.client.trace.MultiClientEP.SimplePublisherTest(textValues);
         }
 
         runMultiTest(receivers, null, "/trace/multiText", textValues);
@@ -162,10 +162,10 @@ public class TraceEnabledTest {
 
         Object[] receivers = new TestHelper[numClients];
         for (int x = 0; x < numClients; x++) {
-            receivers[x] = new com.ibm.ws.fat.wsoc.endpoints.client.trace.MultiClientEP.SimpleReceiverTest();
+            receivers[x] = new io.openliberty.wsoc.endpoints.client.trace.MultiClientEP.SimpleReceiverTest();
         }
 
-        Object publisher = new com.ibm.ws.fat.wsoc.endpoints.client.trace.MultiClientEP.NoPublishNoReceiveTest();
+        Object publisher = new io.openliberty.wsoc.endpoints.client.trace.MultiClientEP.NoPublishNoReceiveTest();
 
         MultiClientTestContext mctr = wsocTest.runMultiClientWsocTest(receivers, publisher,
                                                                       new PublishTask() {

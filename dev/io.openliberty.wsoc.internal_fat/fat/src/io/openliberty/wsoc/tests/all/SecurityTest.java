@@ -8,12 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wsoc.tests.all;
+package io.openliberty.wsoc.tests.all;
 
 import java.io.IOException;
 
-import com.ibm.ws.fat.util.wsoc.WsocTest;
-import com.ibm.ws.fat.wsoc.endpoints.client.secure.SecureClientEP;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.endpoints.client.secure.SecureClientEP;
 
 /**
  * Tests WebSocket Stuff

@@ -32,6 +32,7 @@ tested.features: \
 
 
 -buildpath: \
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.websocket.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.1.0;version=latest,\

@@ -47,6 +47,8 @@ public class MiscNoCDIInjectedServerEP {
             } else {
                 toSend = toSend + "- injected EBJ was null";
             }
+        }else{
+            System.out.println("MiscNoCDIInjectedServerEP: Error: Null ejbBean found");
         }
 
         try {

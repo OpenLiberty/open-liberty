@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.ibm.ws.fat.wsoc.common.Utils;
-
-import test.common.zos.ZFatNativeHelper;
+import io.openliberty.wsoc.common.Utils;
 
 /**
  *
@@ -88,24 +86,6 @@ public class AnnotatedServerEP {
             }
         }
 
-    }
-
-    @ServerEndpoint(value = "/zannotatedText/{boolean-var}")
-    public static class ZosTextTest extends AnnotatedServerEP {
-        //test which shows boolean pair, session, @PathParam and string type message. Parameters can be in any order
-        @OnMessage
-        public String echoText(Session session, String text, boolean last, @PathParam("boolean-var") boolean booleanVar) { //session, msg and last can be at different param index
-            if (session != null && last && booleanVar) {
-                byte[] currentEnclave = ZFatNativeHelper.getCurrentEnclave();
-                //log("After call to getCurrentEnclave:" + currentEnclave);
-                String currentTran = ZFatNativeHelper.getTransactionClass(currentEnclave);
-                //log("After call to getCurrentTransactionClass:" + currentTran);
-
-                return currentTran;
-            }
-            return "FAILED";
-
-        }
     }
 
     @ServerEndpoint(value = "/annotatedInputStream")

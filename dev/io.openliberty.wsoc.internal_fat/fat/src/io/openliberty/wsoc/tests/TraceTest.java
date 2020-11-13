@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,32 +8,41 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.wsoc.tests;
+package io.openliberty.wsoc.tests;
 
+import java.util.Set;
+import java.util.logging.Logger;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.LoggingTest;
-import com.ibm.ws.fat.util.OnlyRunNotOnZRule;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.WebServerSetup;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.fat.util.wsoc.WsocTest;
-import com.ibm.ws.fat.wsoc.tests.all.TraceEnabledTest;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
+import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
+import io.openliberty.wsoc.util.WebServerControl;
+import io.openliberty.wsoc.util.WebServerSetup;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.tests.all.TraceEnabledTest;
 
 /**
  * Tests WebSocket Stuff
  *
  * @author unknown
  */
+@RunWith(FATRunner.class)
 public class TraceTest extends LoggingTest {
 
     @ClassRule
@@ -41,41 +50,79 @@ public class TraceTest extends LoggingTest {
 
     private static WebServerSetup bwst = new WebServerSetup(SS);
 
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
-
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private final WsocTest wt = new WsocTest(SS.getHost(), SS.getPort(), false);
+    private final WsocTest wt = new WsocTest(SS, false);
 
     private final TraceEnabledTest mct = new TraceEnabledTest(wt);
 
+    private static final Logger LOG = Logger.getLogger(SecureTest.class.getName());
+    
+    private static final String TRACE_WAR_NAME = "trace";
+
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
+        int securePort = 0, port = 0;
+        String host="";
+        LibertyServer server = SS.getLibertyServer();
+        if (WebServerControl.isWebserverInFront()) {
+            try {
+                host = WebServerControl.getHostname();
+                securePort = WebServerControl.getSecurePort();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get ports or host from webserver", e);
+            }
+        } else {
+            securePort = server.getHttpDefaultSecurePort();
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
+        // seem odd, but "context" is the root here because the client side app lives in the context war file
         return SS.verifyResponse(createWebBrowserForTestCase(),
-                                 "/trace/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + SS.getHost() + "&targetport=" + SS.getPort()
-                                                                + "&secureport=" + SS.getSecurePort(),
+                                 "/trace/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                                                 + "&secureport=" + securePort,
                                  "SuccessfulTest");
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Build the war app and add the dependencies
+        WebArchive TraceApp = ShrinkHelper.buildDefaultApp(TRACE_WAR_NAME + ".war",
+                                                                         "trace.war",
+                                                                         "trace.war.configurator",
+                                                                         "io.openliberty.wsoc.common",
+                                                                         "io.openliberty.wsoc.util.wsoc",
+                                                                         "io.openliberty.wsoc.tests.all",
+                                                                         "io.openliberty.wsoc.endpoints.client.trace");
+        TraceApp = (WebArchive) ShrinkHelper.addDirectory(TraceApp, "test-applications/"+TRACE_WAR_NAME+".war/resources");
+        // Verify if the apps are in the server before trying to deploy them
+        if (SS.getLibertyServer().isStarted()) {
+            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(TRACE_WAR_NAME);
+            LOG.info("addAppToServer : " + TRACE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), TraceApp);
+        }
+        SS.startIfNotStarted();
+        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TRACE_WAR_NAME);
+        bwst.setUp();
         bwst.setUp();
 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
+        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
+            SS.getLibertyServer().stopServer(null);
+        }
         bwst.tearDown();
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testProgrammaticCloseSuccessOnOpen() throws Exception {
         mct.testProgrammaticCloseSuccessOnOpen();
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testSSCProgrammaticCloseSuccess() throws Exception {
         this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccess");
@@ -87,7 +134,6 @@ public class TraceTest extends LoggingTest {
         this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccessOnOpen");
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testSSCConfiguratorSuccess() throws Exception {
         this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testConfiguratorSuccess");
@@ -113,5 +159,15 @@ public class TraceTest extends LoggingTest {
     //public void testAsyncAnnotatedTextSuccess() throws Exception {
     //    mct.testAsyncAnnotatedTextSuccess();
     //}
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        return SS;
+    }
 
 }
