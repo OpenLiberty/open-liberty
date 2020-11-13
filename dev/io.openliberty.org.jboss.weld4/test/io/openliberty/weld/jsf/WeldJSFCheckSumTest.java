@@ -36,7 +36,7 @@ public class WeldJSFCheckSumTest {
 
     @Test
     public void testCheckSumForFacesUrlTransformer() {
-      long expectedCheckSum  =  1873715018L; // Current as of Nov 12th, 2020
+      long expectedCheckSum  =  1823966370L; // Current as of Nov 6th, 2020
       long actualCheckSum = getChecksum(getPathToWeldBundle(), pathToFacesUrlTransformer);
       assertEquals("The checksum for " + pathToFacesUrlTransformer + " has changed!\n" +
                     "Whatever change was made to this file needs to be investigated and replicated in\n" +
@@ -46,9 +46,9 @@ public class WeldJSFCheckSumTest {
 
     @Test
   	public void testCheckSumForConversationAwareViewHandler() {
-      long expectedCheckSum  =  1674841844L; // Current as of Nov 12th, 2020
+      long expectedCheckSum  =  4109032055L; // Current as of Nov 6th, 2020
       long actualCheckSum = getChecksum(getPathToWeldBundle(), pathToConversationAwareViewHandler);
-      assertEquals("The checksum for " + pathToConversationAwareViewHandler + " has changed!\n" +
+      assertEquals("The checksum for " + pathToFacesUrlTransformer + " has changed!\n" +
                     "Whatever change was made to this file needs to be investigated and replicated in\n" +
                     "com.ibm.ws.jsfContainer/src/com/ibm/ws/jsf/container/cdi/IBMViewHandlerProxy.java\n" +
                     "and then the checksum for this test method can be updated to " + actualCheckSum, expectedCheckSum, actualCheckSum);
