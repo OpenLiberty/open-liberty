@@ -13,11 +13,11 @@ package com.ibm.ws.messaging.security;
 
 import javax.security.auth.Subject;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.security.authentication.MessagingAuthenticationException;
@@ -62,6 +62,13 @@ public class RuntimeSecurityServiceImpl implements RuntimeSecurityService {
             SibTr.exit(tc, methodName);
     }
 
+    @Activate
+    void activate() {
+        final String methodName = "activate";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+          SibTr.debug(tc, methodName, new Object[] {this, messagingSecurityService==null});
+    }
+    
     /** 
      * Start using the MessagingSecurityService 
      * 
@@ -83,27 +90,7 @@ public class RuntimeSecurityServiceImpl implements RuntimeSecurityService {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
           SibTr.exit(tc, methodName);
     }
-    
-    /**
-     * The MessagingSecurityService has been removed, stop using it.
-     * @param messagingSecurityService
-     */
-    protected void unsetMessagingSecurityService(MessagingSecurityService messagingSecurityService) {
-        final String methodName = "unsetMessagingSecurityService";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-          SibTr.entry(tc, methodName, new Object[] {this, this.messagingSecurityService, messagingSecurityService});
-    
-        if (this.messagingSecurityService != messagingSecurityService)
-            throw new Error(methodName + " MessageingSecurityService:" + this.messagingSecurityService + " != "+ messagingSecurityService);
         
-        this.messagingSecurityService = null;
-        authentication.setMessagingAuthenticationService(null);
-        authorization.setMessagingAuthorizationService(null);
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-          SibTr.exit(tc, methodName, messagingSecurityService);
-    }
-    
     /**
      * Check if Messaging Security is enabled or not.
      * This is determined by the existence of the MessagingSecurityService.
@@ -215,5 +202,10 @@ public class RuntimeSecurityServiceImpl implements RuntimeSecurityService {
 
         SibTr.exit(tc, CLASS_NAME + "isUnauthenticated", subject);
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return (messagingSecurityService == null?"-":"+") + super.toString();
     }
 }

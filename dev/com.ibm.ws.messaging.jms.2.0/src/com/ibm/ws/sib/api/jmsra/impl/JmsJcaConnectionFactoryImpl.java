@@ -551,9 +551,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
             Throwable cause = exception.getCause();
 
             if (cause instanceof SIAuthenticationException)
-            {
-                throw new SIAuthenticationException(NLS.getFormattedMessage("APPLICATION_AUTHENTICATION_EXCEPTION_1072",
-                                                                            new Object[] { userName }, null));
+            {     
+                String m = NLS.getFormattedMessage("APPLICATION_AUTHENTICATION_EXCEPTION_1072", new Object[] { userName }, null);
+                throw (SIAuthenticationException) new SIAuthenticationException(m).initCause(exception);
             }
             else if (cause instanceof SIException)
             {
