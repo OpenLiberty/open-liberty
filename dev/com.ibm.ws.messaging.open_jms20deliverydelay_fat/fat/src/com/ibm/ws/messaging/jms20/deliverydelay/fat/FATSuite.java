@@ -24,25 +24,25 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
         DummyTest.class,
 
-            //+ DelayLiteSecOffTest.class,
-            //+ DelayLiteSecOnTest.class,
+        DelayLiteSecOffTest.class,
+        DelayLiteSecOnTest.class,
 
-            //+ DelayFullSecOffTest.class,
-            //+ DelayFullSecOnTest.class,
+        DelayFullSecOffTest.class,
+        DelayFullSecOnTest.class,
 
-            DelayFullTest.class
+        // DelayFullTest.class
 })
 public class FATSuite {
     // Run only during the Jakarta repeat for now.  When
     // the tests are removed from WS-CD-Open, the pre-jakarta
     // repeat can be re-enabled in open-liberty.
 
-     @ClassRule
-     public static RepeatTests repeater = RepeatTests
-         .withoutModification()
-         .andWith( new JakartaEE9Action() );
-
     // @ClassRule
     // public static RepeatTests repeater = RepeatTests
-    //     .with( new JakartaEE9Action() );
+    //     .withoutModification()
+    //     .andWith( new JakartaEE9Action() );
+
+    @ClassRule
+    public static RepeatTests repeater = RepeatTests
+        .with( new JakartaEE9Action() );
 }
