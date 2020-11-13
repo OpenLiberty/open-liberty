@@ -42,7 +42,7 @@ import componenttest.topology.utils.HttpUtils;
  * service.addPort(portName, SOAPBinding.SOAP11HTTP_MTOM_BINDING, mtom11URL) statement.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
+
 public class MTOMTest {
     private static final int REQUEST_TIMEOUT = 10;
 

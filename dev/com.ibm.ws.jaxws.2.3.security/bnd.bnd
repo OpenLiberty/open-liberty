@@ -13,13 +13,12 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.security
 Bundle-Name: JAX-WS Security
-Bundle-Description: JAX-WS Transport Level and Endpoints Security 
-
-
+Bundle-Description: JAX-WS Transport Level and Endpoints Security
 
 Import-Package: \
+   com.ibm.ws.jaxws.metadata;version="[2.3,3)", \
+   com.ibm.ws.jaxws.metadata.builder;version="[2.3,3)", \
    com.ibm.ws.jaxws23.webcontainer, \
-   com.ibm.ws.jaxws.metadata.builder, \
    org.apache.cxf.*;version="[3.2,4)", \
    com.ibm.ws.webcontainer.security.metadata, \
    com.ibm.wsspi.webcontainer.metadata, \
@@ -36,7 +35,7 @@ Service-Component: \
     properties:="service.vendor=IBM", \
   com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
      implementation:=com.ibm.ws.jaxws.security.internal.JaxWsWebAppSecurityConfigurator; \
-     provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'; \
+     provide:='com.ibm.ws.jaxws23.webcontainer.JaxWsWebAppConfigurator'; \
      properties:="service.vendor=IBM"
 
 Private-Package: com.ibm.ws.jaxws.security.internal, \

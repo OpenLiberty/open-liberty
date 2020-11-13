@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.ejb.suite;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -22,6 +23,9 @@ import com.ibm.ws.jaxws.ejb.fat.EJBWSContextTest;
 import com.ibm.ws.jaxws.ejb.fat.EJBWSInterceptorTest;
 import com.ibm.ws.jaxws.ejb.fat.EJBWSLifeCycleTest;
 import com.ibm.ws.jaxws.ejb.fat.EJBWSProviderTest;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Collection of all example tests
@@ -42,4 +46,7 @@ import com.ibm.ws.jaxws.ejb.fat.EJBWSProviderTest;
                 EJBWSInterceptorTest.class
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").removeFeature("jaxwstest-2.2").withID("jaxws-2.3"));
+
 }

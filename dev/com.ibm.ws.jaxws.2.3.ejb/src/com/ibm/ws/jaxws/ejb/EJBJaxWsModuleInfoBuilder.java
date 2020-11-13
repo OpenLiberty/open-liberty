@@ -31,7 +31,6 @@ import com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
 import com.ibm.ws.jaxws.support.JaxWsWebContainerManager;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.wsspi.adaptable.module.Adaptable;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -52,6 +51,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
         super(JaxWsModuleType.EJB);
     }
 
+    @Override
     public ExtendedModuleInfo build(ModuleMetaData moduleMetaData, Container containerToAdapt, JaxWsModuleInfo jaxWsModuleInfo) throws UnableToAdaptException {
 
         EndpointInfoBuilder endpointInfoBuilder = endpointInfoBuilderSRRef.getService();
@@ -62,7 +62,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        EJBEndpoints ejbEndpoints = ((Adaptable) containerToAdapt).adapt(EJBEndpoints.class);
+        EJBEndpoints ejbEndpoints = containerToAdapt.adapt(EJBEndpoints.class);
         if (ejbEndpoints == null || ejbEndpoints.getEJBEndpoints().size() == 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No EJB Web Services is found");
@@ -82,7 +82,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
         try {
             JaxWsServerMetaData jaxWsServerMetaData = JaxWsMetaDataManager.getJaxWsServerMetaData(moduleMetaData);
 
-            EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, (com.ibm.wsspi.adaptable.module.Container) containerToAdapt);
+            EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, containerToAdapt);
 
             EJBJaxWsModuleInfoBuilderHelper.buildEjbWebServiceEndpointInfos(endpointInfoBuilder, endpointInfoBuilderContext, jaxWsServerMetaData, ejbEndpoints.getEJBEndpoints(),
                                                                             jaxWsModuleInfo);
@@ -91,7 +91,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
                 return null;
             }
 
-            JaxWsModuleInfoBuilderContext jaxWsModuleInfoBuilderContext = new JaxWsModuleInfoBuilderContext(moduleMetaData, (com.ibm.wsspi.adaptable.module.Container) containerToAdapt, endpointInfoBuilderContext);
+            JaxWsModuleInfoBuilderContext jaxWsModuleInfoBuilderContext = new JaxWsModuleInfoBuilderContext(moduleMetaData, containerToAdapt, endpointInfoBuilderContext);
             // call the extensions to extra build the jaxWsModuleInfo, eg: set context-root, security.
             for (JaxWsModuleInfoBuilderExtension extension : extensions) {
                 extension.postBuild(jaxWsModuleInfoBuilderContext, jaxWsModuleInfo);
@@ -109,7 +109,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
     }
 
     protected ExtendedModuleInfo createWebRouterModule(Container containerToAdapt, String contextRoot) throws UnableToAdaptException {
-        NonPersistentCache overlayCache = ((Adaptable) containerToAdapt).adapt(NonPersistentCache.class);
+        NonPersistentCache overlayCache = containerToAdapt.adapt(NonPersistentCache.class);
         ExtendedModuleInfo ejbModuleInfo = (ExtendedModuleInfo) overlayCache.getFromCache(EJBModuleInfo.class);
         JaxWsWebContainerManager jaxWsWebContainerManager = jaxWsWebContainerManagerRef.getService();
         if (jaxWsWebContainerManager == null) {

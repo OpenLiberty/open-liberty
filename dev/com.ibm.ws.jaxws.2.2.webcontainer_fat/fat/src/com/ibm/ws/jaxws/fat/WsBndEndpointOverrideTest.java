@@ -31,7 +31,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
-@SkipForRepeat("jaxws-2.3")
+
 public class WsBndEndpointOverrideTest extends WsBndEndpointOverrideTest_Lite {
 
     @Server("EJBinWarOverrideServer")

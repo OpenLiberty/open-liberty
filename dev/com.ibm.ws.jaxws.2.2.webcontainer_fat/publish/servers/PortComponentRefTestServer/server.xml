@@ -16,4 +16,6 @@
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>-->
   	<javaPermission className="java.security.AllPermission" name="*" actions="*"/>
     
+        <logging traceSpecification="com.ibm.ws.jaxws*=all:org.apache.cxf.transport.http.*=all"/>
+    
 </server>

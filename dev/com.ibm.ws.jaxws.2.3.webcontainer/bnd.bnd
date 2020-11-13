@@ -32,7 +32,7 @@ Service-Component: com.ibm.ws.jaxws23.webcontainer.jaxWsWebContainerManager; \
      endpointPublisherManager=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
      jaxWsWebAppConfigurator=com.ibm.ws.jaxws23.webcontainer.JaxWsWebAppConfigurator*; \
      properties:="service.vendor=IBM", \
-  com.ibm.ws.jaxws.webcontainer.webEndpointPublisher; \
+  com.ibm.ws.jaxws23.webcontainer.webEndpointPublisher; \
      implementation:=com.ibm.ws.jaxws23.webcontainer.WebEndpointPublisher; \
      provide:='com.ibm.ws.jaxws.endpoint.EndpointPublisher'; \
      jaxWsEndpointConfiguratorManager=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfiguratorManager;\

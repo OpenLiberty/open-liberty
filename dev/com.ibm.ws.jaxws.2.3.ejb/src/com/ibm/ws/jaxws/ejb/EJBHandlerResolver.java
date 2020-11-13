@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.ejb;
 
-import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ import com.ibm.ws.jaxws.metadata.JaxWsModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.metadata.JaxWsServerMetaData;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
-import com.ibm.wsspi.adaptable.module.Adaptable;
+import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.ejbcontainer.WSEJBHandlerResolver;
 
@@ -52,8 +51,8 @@ public class EJBHandlerResolver implements WSEJBHandlerResolver {
 
         JaxWsModuleInfo jaxWsModuleInfo = null;
         try {
-            Container containerToAdapt = (Container) jaxWsModuleMetaData.getModuleContainer();
-            jaxWsModuleInfo = ((Adaptable) containerToAdapt).adapt(JaxWsModuleInfo.class);
+            Container containerToAdapt = jaxWsModuleMetaData.getModuleContainer();
+            jaxWsModuleInfo = containerToAdapt.adapt(JaxWsModuleInfo.class);
         } catch (UnableToAdaptException e) {
             throw new IllegalStateException(e);
         }

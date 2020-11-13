@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class JaxWsWebConstants {
     public static final String TR_GROUP = "JaxWsWeb";
 
-    public static final String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxws.web.internal.resources.JaxWsWebMessages";
+    public static final String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxws23.web.internal.resources.JaxWsWebMessages";
 
     public static final ResourceBundle messages = ResourceBundle.getBundle(TR_RESOURCE_BUNDLE);
 }

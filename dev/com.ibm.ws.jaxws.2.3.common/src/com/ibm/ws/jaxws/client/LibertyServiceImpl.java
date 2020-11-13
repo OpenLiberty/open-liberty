@@ -46,6 +46,7 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
+import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSSLOutInterceptor;
 
 /**
  * All the Web Service ports and dispatches are created via the class
@@ -158,6 +159,8 @@ public class LibertyServiceImpl extends ServiceImpl {
 
         Set<ConfigProperties> configPropsSet = servicePropertiesMap.get(portName);
         client.getOutInterceptors().add(new LibertyCustomizeBindingOutInterceptor(wsrInfo, securityConfigService, configPropsSet));
+
+        client.getOutInterceptors().add(new LibertyJaxWsClientSSLOutInterceptor(wsrInfo, securityConfigService, configPropsSet, client.getEndpoint().getEndpointInfo()));
         //need to add an interceptor to clean up HTTPTransportActivator.sorted & props via calling HTTPTransportActivator. deleted(String)
         //Memory Leak fix for 130985
         client.getOutInterceptors().add(new LibertyCustomizeBindingOutEndingInterceptor(wsrInfo));

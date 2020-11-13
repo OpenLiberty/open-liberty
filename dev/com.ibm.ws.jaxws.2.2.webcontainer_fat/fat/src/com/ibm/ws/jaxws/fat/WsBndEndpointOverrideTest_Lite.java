@@ -36,7 +36,7 @@ import componenttest.topology.utils.HttpUtils;
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
+
 public class WsBndEndpointOverrideTest_Lite {
     private static final int CONN_TIMEOUT = 5;
 
@@ -82,6 +82,7 @@ public class WsBndEndpointOverrideTest_Lite {
      * - response contains the port welcome message "Hello! This is a CXF Web Service!"
      */
     @Test
+    @SkipForRepeat("jaxws-2.3")
     public void testEJBinWarEndpointAddressOverride() throws Exception {
         String testFilesDir = testFilesRootDir + "/testEJBinWarEndpointAddressOverride";
 

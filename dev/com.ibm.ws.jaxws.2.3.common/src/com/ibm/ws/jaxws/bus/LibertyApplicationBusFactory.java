@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.bus;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,9 +104,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         Bus originalBus = getThreadDefaultBus(false);
 
+        final Map<Class<?>, Object> e1 = e;
+        final Map<String, Object> properties1 = properties;
+        final ClassLoader classLoader1 = classLoader;
         try {
-            LibertyApplicationBus bus = new LibertyApplicationBus(e, properties, classLoader);
-
+            LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
+                @Override
+                public LibertyApplicationBus run() {
+                    return new LibertyApplicationBus(e1, properties1, classLoader1);
+                }
+            });
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
             //Also, it avoids polluting the thread bus.
             //possiblySetDefaultBus(bus);

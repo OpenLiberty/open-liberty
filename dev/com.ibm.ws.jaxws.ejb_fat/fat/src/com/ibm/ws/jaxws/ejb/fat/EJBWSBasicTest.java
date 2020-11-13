@@ -132,9 +132,10 @@ public class EJBWSBasicTest {
     }
 
     protected void runTest(String responseString) throws Exception {
-        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testName.getMethodName());
+        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append((testName.getMethodName()).replace("_jaxws-2.3",
+                                                                                                                                                                                                                                 ""));
         String urlStr = sBuilder.toString();
-        Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + urlStr);
+        Log.info(this.getClass(), (testName.getMethodName()).replace("_jaxws-2.3", ""), "Calling Application with URL=" + urlStr);
 
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, 10);
         BufferedReader br = HttpUtils.getConnectionStream(con);

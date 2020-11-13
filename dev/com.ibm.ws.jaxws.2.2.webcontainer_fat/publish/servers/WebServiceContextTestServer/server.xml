@@ -7,6 +7,7 @@
 
     <include location="../fatTestPorts.xml"/>
     
+    <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws23.*=all:com.ibm.ws.jaxws.*=all:com.ibm.ws.cxf.*=all"/>
     <!-- TESTING THE UPLOAD! -->
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>

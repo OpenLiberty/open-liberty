@@ -20,9 +20,9 @@ import javax.xml.ws.Binding;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.endpoint.Endpoint;
+import org.apache.cxf.endpoint.EndpointException;
 import org.apache.cxf.interceptor.Interceptor;
-//import org.apache.cxf.frontend.MethodDispatcher;
-import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
 import org.apache.cxf.jaxws.handler.logical.LogicalHandlerInInterceptor;
 import org.apache.cxf.jaxws.handler.soap.SOAPHandlerInterceptor;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
@@ -30,6 +30,7 @@ import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
@@ -92,6 +93,10 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
         serviceFactory.setFeatures(jaxWsServerFactory.getFeatures());
         serviceFactory.create();
 
+        if (serviceFactory != null) {
+            Tr.info(tc, "@TJJ serviceFactory wasn't null");
+        }
+
         jaxWsServerFactory.setBus(serverBus);
         jaxWsServerFactory.setAddress(endpointInfo.getAddress(0));
         jaxWsServerFactory.setStart(false);
@@ -109,6 +114,7 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
         //Initialize EJBMethodInvoker
         J2EEName j2EEName = jaxWsModuleMetaData.getServerMetaData().getEndpointJ2EEName(endpointInfo.getPortLink());
         if (implInfo.isWebServiceProvider()) {
+            Tr.info(tc, "@TJJ implInfo.isWebServiceProvider() is true");
             //add ejb pre-invoke interceptor
             EJBPreInvokeInterceptor ejbPreInvokeInterceptor = new EJBPreInvokeInterceptor(j2EEName, implBeanClass, ejbContainer, null);
             ejbPreInvokeInterceptor.setEjbJaxWsWebEndpoint(this);
@@ -117,8 +123,14 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
             outInterceptors.add(new EJBPostInvokeInterceptor());
         } else {
             Service service = serviceFactory.getService();
+            if (service == null) {
+                Tr.info(tc, "@TJJ service was null");
+            }
+
+            if (endpointInfo.getWsdlPort() == null) {
+                Tr.info(tc, "@TJJ endpointInfo.getWsdlPort() was null");
+            }
             org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = service.getEndpointInfo(endpointInfo.getWsdlPort());
-            //MethodDispatcher methodDispatcher = (MethodDispatcher) service.get(MethodDispatcher.class.getName());
             JAXWSMethodDispatcher methodDispatcher = (JAXWSMethodDispatcher) service.get(JAXWSMethodDispatcher.class.getName());
             List<Method> methods = new ArrayList<Method>(cxfEndpointInfo.getBinding().getOperations().size());
             for (BindingOperationInfo bindingOperationInfo : cxfEndpointInfo.getBinding().getOperations()) {

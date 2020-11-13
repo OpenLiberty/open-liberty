@@ -11,6 +11,8 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-xml;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 
+instrument.classesIncludes: org/apache/cxf/*.class
+
 cxfVersion=3.3.3
 
 -includeresource: \

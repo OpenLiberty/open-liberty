@@ -22,6 +22,8 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.http.HTTPConduitConfigurer;
+import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
+import org.apache.cxf.transport.http.asyncclient.AsyncHttpTransportFactory;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 
@@ -30,6 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.jaxws.JaxWsConstants;
+import com.ibm.ws.jaxws.ConduitConfigurer;
 import com.ibm.ws.jaxws.metadata.ConfigProperties;
 import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
@@ -42,8 +45,6 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
     private static final TraceComponent tc = Tr.register(LibertyCustomizeBindingOutInterceptor.class);
 
     private static final String HTTPS_SCHEMA = "https";
-
-    private final JaxWsSecurityConfigurationService securityConfigService;
     private final Set<ConfigProperties> configPropertiesSet;
 
     protected final WebServiceRefInfo wsrInfo;
@@ -52,7 +53,6 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
                                                  Set<ConfigProperties> configPropertiesSet) {
         super(Phase.PREPARE_SEND);
         this.wsrInfo = wsrInfo;
-        this.securityConfigService = securityConfigService;
         this.configPropertiesSet = configPropertiesSet;
     }
 
@@ -71,8 +71,6 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
             customizePortAddress(message);
             customizeClientProperties(message);
         }
-
-        customizeClientSecurity(message);
 
     }
 
@@ -132,62 +130,6 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
         return new QName(namespaceURI, localName);
     }
 
-    protected void customizeClientSecurity(Message message) {
-        QName portName = getPortQName(message);
-
-        // configure the basic-auth
-        if (null == securityConfigService) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The JaxWsSecurityConfigurationService is unavailable");
-            }
-            return;
-        }
-
-        //TODO now only consider https, can add if support other protocols in future 
-        //let's check protocols first, we need prepare their check list for configuration
-
-        //SSL check
-        boolean isSecured = false;
-        String address = (String) message.get(Message.ENDPOINT_ADDRESS);
-        isSecured = address == null ? false : address.startsWith(HTTPS_SCHEMA);
-
-        //process unmanaged service
-        if (null == wsrInfo) {
-
-            //if unmanaged service uses SSL,config default SSL
-            if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), null, null);
-            }
-
-            return;
-        }
-
-        //process managed service
-        PortComponentRefInfo portRefInfo = wsrInfo.getPortComponentRefInfo(portName);
-
-        if (null == portRefInfo) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Could not find the port component: " + portName + " for WebServiceRef: " + wsrInfo.getJndiName());
-            }
-            // try to use the server default ssl configuration, and disableCNcheck is true
-            if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), null, null);
-            }
-
-        } else {
-            String userName = portRefInfo.getUserName();
-            ProtectedString password = portRefInfo.getPassword();
-
-            securityConfigService.configBasicAuth(message.getExchange().getConduit(message), userName, password);
-
-            // configure the ssl
-            if (isSecured) {
-                securityConfigService.configClientSSL(message.getExchange().getConduit(message), portRefInfo.getSSLRef(), portRefInfo.getKeyAlias());
-            }
-        }
-
-    }
-
     /**
      * Customize the client properties.
      * 
@@ -244,17 +186,23 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
     }
 
     private void customizeHttpConduitProperties(Message message, Bus bus, ConfigProperties configProps) {
+        Tr.info(tc, "@TJJ inside customizeHttpConduitProperties()");
         Conduit conduit = message.getExchange().getConduit(message);
-        HTTPConduitConfigurer conduitConfigurer = bus.getExtension(HTTPConduitConfigurer.class);
+        ConduitConfigurer conduitConfigurer = (ConduitConfigurer) bus.getExtension(HTTPConduitConfigurer.class);
 
-        if (conduitConfigurer != null && conduit instanceof HTTPConduit) {
+     
+        if (conduitConfigurer != null && conduit instanceof AsyncHTTPConduit) {
+            Tr.info(tc, "@TJJ httpConduit is instance of " + conduit.getClass().getSimpleName() + " conduitConfiguer is :" + conduitConfigurer);
             HTTPConduit httpConduit = (HTTPConduit) conduit;
             String address = (String) message.get(Message.ENDPOINT_ADDRESS);
-            if (conduitConfigurer instanceof ManagedServiceFactory) {
+            if (conduitConfigurer instanceof ConduitConfigurer) {
+
+                Tr.info(tc, "@TJJ conduitConfigurer is instance of " +  conduitConfigurer);
                 String portQNameStr = getPortQName(message).toString();
                 try {
-                    ((ManagedServiceFactory) conduitConfigurer).updated(portQNameStr, configProps.getProperties());
+                   conduitConfigurer.updated(portQNameStr, configProps.getProperties());
                     conduitConfigurer.configure(portQNameStr, address, httpConduit);
+                    Tr.info(tc, "@TJJ httpConduit has been configured with configProps " + httpConduit.getConduitName() + " conduit Instance: " + httpConduit + " configProps " + configProps.getProperties());
                 } catch (ConfigurationException e) {
                     throw new Fault(e);
                 }

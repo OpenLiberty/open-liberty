@@ -49,11 +49,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.jmx.test.fat.util.ClientConnector;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("jaxws-2.3")
 public class WebServiceMonitorTest {
 
     private static final String REQUEST_STR = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:jax=\"http://monitor.jaxws.ws.ibm.com/\">" +
@@ -86,10 +88,12 @@ public class WebServiceMonitorTest {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         } };
 
         SSLContext sc = SSLContext.getInstance("SSL");

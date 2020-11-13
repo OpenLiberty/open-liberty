@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
+
 public class WebServiceInWebXMLTest_Lite {
 
     public static final int CONN_TIMEOUT = 5;
@@ -161,6 +161,7 @@ public class WebServiceInWebXMLTest_Lite {
     }
 
     @Test
+    @SkipForRepeat("jaxws-2.3")
     public void testSameWebServiceDiffBindingType_WSDL() throws Exception {
         String method = "testSameWebServiceDiffBindingType_WSDL";
         app.addAsWebInfResource(new File(webXmlDir + "webserviceBindType/converter-bindtype-default.wsdl"), "wsdl/converter-bindtype-default.wsdl");
