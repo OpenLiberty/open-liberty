@@ -19,7 +19,7 @@
    </wasJmsOutbound>
     
     <logging 
-  traceSpecification="*=info:logservice=all:SIBMessageTrace=all"
+  traceSpecification="*=info:logservice=all:SIBMessageTrace=all:com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain=all:com.ibm.ws.messaging.security.RuntimeSecurityServiceImpl=all:com.ibm.ws.app.manager.internal.lifecycle.*=all"
  maxFileSize="200"
     />
     	<keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
