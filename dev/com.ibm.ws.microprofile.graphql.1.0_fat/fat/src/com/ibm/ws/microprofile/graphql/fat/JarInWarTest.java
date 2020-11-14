@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.fat;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

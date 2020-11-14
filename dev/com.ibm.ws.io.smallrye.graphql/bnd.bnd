@@ -19,6 +19,9 @@ Bundle-Description: SmallRye implementation of MicroProfile GraphQL
 
 Import-Package: \
   graphql.util,\
+  org.eclipse.microprofile.config;version="[1.0,2.1)",\
+  org.eclipse.microprofile.config.inject;version="[1.0,2.1)",\
+  org.eclipse.microprofile.config.spi;version="[1.0,2.1)",\
   !io.smallrye.metrics,\
   !io.opentracing,\
   !io.smallrye.common.annotation,\

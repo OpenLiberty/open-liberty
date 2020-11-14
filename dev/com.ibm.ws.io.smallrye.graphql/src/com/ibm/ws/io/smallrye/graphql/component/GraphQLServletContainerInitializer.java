@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -130,13 +131,15 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
 
         	@Override
             public Optional<List<String>> getHideErrorMessageList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
         	@Override
             public Optional<List<String>> getShowErrorMessageList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 

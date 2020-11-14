@@ -9,7 +9,7 @@ IBM-API-Package: org.eclipse.microprofile.graphql; type="stable", \
 IBM-ShortName: mpGraphQL-1.0
 Subsystem-Name: MicroProfile GraphQL 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.graphql-1.0, \
- com.ibm.websphere.appserver.mpConfig-1.4,\
+ com.ibm.websphere.appserver.mpConfig-1.4; ibm.tolerates:=2.0,\
  com.ibm.websphere.appserver.cdi-2.0,\
  com.ibm.websphere.appserver.javax.annotation-1.3, \
  com.ibm.websphere.appserver.jsonb-1.0, \
