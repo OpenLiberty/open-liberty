@@ -12,8 +12,13 @@ package com.ibm.ws.messaging.jms20.deliverydelay.fat;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
 public class DummyTest {
-@Test
+    @Test
     public void testDummy() throws Exception {
         // EMPTY
     }
