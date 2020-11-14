@@ -25,11 +25,13 @@ tested.features:\
   wasJmsClient-2.0,\
   wasJmsSecurity-1.0,\
   jmsMdb-3.2,\
+  connectors-2.0,\
+  pages-3.0,\
+  enterpriseBeansLite-4.0,\
   messagingServer-3.0,\
   messagingClient-3.0,\
   messagingSecurity-3.0,\
-  pages-3.0,\
-  enterpriseBeansLite-4.0
+  mdb-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

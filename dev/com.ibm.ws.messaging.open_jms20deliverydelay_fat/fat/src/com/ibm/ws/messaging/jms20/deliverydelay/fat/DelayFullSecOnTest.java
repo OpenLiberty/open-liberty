@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-// @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class DelayFullSecOnTest {
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");

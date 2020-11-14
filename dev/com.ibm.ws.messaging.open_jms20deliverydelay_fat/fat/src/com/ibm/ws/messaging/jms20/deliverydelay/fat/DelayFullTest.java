@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-// @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class DelayFullTest {
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("DeliveryDelayEngine");
@@ -58,8 +58,6 @@ public class DelayFullTest {
     private static final String mdbJarName = "jmsmdb";
     private static final String[] mdbJarPackages = new String[] { "jmsmdb.ejb" };
 
-    //
-
     private static final String MDB_CONFIG = "DelayClient_MDB.xml";
 
     private static final String MDB_CONFIG_QUEUE_BINDINGS = "DelayClient_QueueMDB_Bindings.xml";
@@ -68,12 +66,7 @@ public class DelayFullTest {
     private static final String MDB_CONFIG_TOPIC_BINDINGS = "DelayClient_TopicMDB_Bindings.xml";
     private static final String MDB_CONFIG_TOPIC_TCP = "DelayClient_TopicMDB_TCP.xml";
 
-    private static final String[] TRANSFORMED_CONFIGS = new String[] {
-        MDB_CONFIG,
-
-        MDB_CONFIG_QUEUE_BINDINGS,
-        MDB_CONFIG_QUEUE_TCP,
-
+    private static final String[] EE9_TRANSFORMED_CONFIGS = new String[] {
         MDB_CONFIG_TOPIC_BINDINGS,
         MDB_CONFIG_TOPIC_TCP
     };
@@ -83,20 +76,17 @@ public class DelayFullTest {
             return;
         }
 
-        for ( String config : TRANSFORMED_CONFIGS ) {
+        for ( String config : EE9_TRANSFORMED_CONFIGS ) {
             Path configPath = Paths.get("lib/LibertyFATTestFiles", config);
             JakartaEE9Action.transformApp(configPath);
         }
     }
-
-    //
 
     private static final boolean THROW_EXCEPTIONS = true;
 
     private static void stopClient(boolean throwExceptions) throws Exception {
         if ( throwExceptions ) {
             clientServer.stopServer();
-
         } else {
             try {
                 clientServer.stopServer();
@@ -106,20 +96,22 @@ public class DelayFullTest {
         }
     }
 
+    // This FAT suite requires that the client server be stopped before
+    // the engine server is stopped, and requires that engine server be
+    // started before the client server is started.
+
     private static void stopServers(boolean throwExceptions) throws Exception {
         if ( throwExceptions ) {
-            engineServer.stopServer();
             clientServer.stopServer();
-
+            engineServer.stopServer();
         } else {
             try {
-                engineServer.stopServer();
+                clientServer.stopServer();
             } catch ( Exception e ) {
                 e.printStackTrace();
             }
-
             try {
-                clientServer.stopServer();
+                engineServer.stopServer();
             } catch ( Exception e ) {
                 e.printStackTrace();
             }
@@ -142,7 +134,6 @@ public class DelayFullTest {
         if ( clientConfiguration == DEFAULT_CLIENT ) {
             clientConfiguration = MDB_CONFIG;
         }
-
         clientServer.setServerConfigurationFile(clientConfiguration);
         clientServer.startServer("DelayFull_Client.log");
     }
@@ -182,6 +173,11 @@ public class DelayFullTest {
             "lib/features", "features/testjmsinternals-1.0.mf");
 
         TestUtils.addDropinsWebApp(clientServer, ddAppName, ddAppPackages);
+
+        // Commercial liberty places the MDB EJB JAR in an application, and as a
+        // configured application, not as a drop-ins application.
+        //
+        // Running the MDB EJB JAR as a drop-in JAR does not work.
 
         JavaArchive mdbJar = ShrinkHelper.buildJavaArchive(mdbJarName, mdbJarPackages);
         EnterpriseArchive mdbEar =  ShrinkWrap.create(EnterpriseArchive.class, mdbAppName);
@@ -225,7 +221,7 @@ public class DelayFullTest {
         restartServers();
     }
 
-    // @Test
+    @Test
     public void testDeliveryDelayForDifferentDelaysTopic_B() throws Exception {
         restartClient(MDB_CONFIG_TOPIC_BINDINGS);
 
@@ -248,8 +244,10 @@ public class DelayFullTest {
         restartServers();
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStore_B() throws Exception {
+        // dz restartServers(DEFAULT_CLIENT);
+
         runInServlet("testPersistentMessage");
 
         restartServers();
@@ -258,8 +256,10 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStore_B failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStore_Tcp() throws Exception {
+        // dz restartServers(DEFAULT_CLIENT);
+
         runInServlet("testPersistentMessage_Tcp");
 
         restartServers();
@@ -268,8 +268,17 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStore_Tcp failed", testResult);
     }
 
-    // @Test
+    // TODO: SIB runtime is missing a doPriv.  Test fails without this permission 
+    // in the client xml:
+    //
+    // <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register"/>
+    //
+    // See DelayClient_MDB.xml
+
+    @Test
     public void testPersistentMessageStoreTopic_B() throws Exception {
+        // dz restartServers(DEFAULT_CLIENT);
+
         runInServlet("testPersistentMessageTopic");
 
         restartServers();
@@ -278,8 +287,10 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStoreTopic_Tcp() throws Exception {
+        // dz restartServers(DEFAULT_CLIENT);
+
         runInServlet("testPersistentMessageTopic_Tcp");
 
         restartServers();
@@ -288,52 +299,60 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testDeliveryDelayForDifferentDelaysClassicApi() throws Exception {
         restartClient(MDB_CONFIG_QUEUE_BINDINGS);
 
         runInServlet("testDeliveryDelayForDifferentDelaysClassicApi");
 
-        String msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueBindingsMessage2-ClassicApi");
+        String msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : QueueBindingsMessage2-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueBindingsMessage1-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : QueueBindingsMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers(MDB_CONFIG_QUEUE_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysClassicApi_Tcp");
 
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueTCPMessage2-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : QueueTCPMessage2-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : QueueTCPMessage1-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : QueueTCPMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers();
     }
 
-    // @Test
+    @Test
     public void testDeliveryDelayForDifferentDelaysTopicClassicApi()throws Exception {
         restartClient(MDB_CONFIG_TOPIC_BINDINGS);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopicClassicApi");
 
-        String msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage2-ClassicApi");
+        String msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : TopicBindingsMessage2-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicBindingsMessage1-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : TopicBindingsMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers(MDB_CONFIG_TOPIC_TCP);
 
         runInServlet("testDeliveryDelayForDifferentDelaysTopicClassicApi_Tcp");
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicTCPMessage2-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : TopicTCPMessage2-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
-        msg = clientServer.waitForStringInLogUsingLastOffset("Message received on mdb : TopicTCPMessage1-ClassicApi");
+        msg = clientServer.waitForStringInLogUsingLastOffset(
+            "Message received on mdb : TopicTCPMessage1-ClassicApi");
         assertNotNull("Could not find the upload message in the trace.log", msg);
 
         restartServers();
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStoreClassicApi_B() throws Exception {
         runInServlet("testPersistentMessageClassicApi");
 
@@ -343,17 +362,17 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreClassicApi_B failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStoreClassicApi_Tcp() throws Exception {
         runInServlet("testPersistentMessageClassicApi_Tcp");
-	
+
         restartServers();
 
         boolean testResult = runInServlet("testPersistentMessageReceiveClassicApi_Tcp");
         assertTrue("testPersistentMessageStoreClassicApi_Tcp failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStoreTopicClassicApi_B() throws Exception {
         runInServlet("testPersistentMessageTopicClassicApi");
 
@@ -363,7 +382,7 @@ public class DelayFullTest {
         assertTrue("testPersistentMessageStoreTopicClassicApi_B failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testPersistentMessageStoreTopicClassicApi_Tcp()throws Exception {
         runInServlet("testPersistentMessageTopicClassicApi_Tcp");
 
@@ -374,7 +393,8 @@ public class DelayFullTest {
     }
 
     // regression tests for durable unshared
-    // @Test
+
+    @Test
     public void testCreateUnSharedDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
@@ -391,10 +411,11 @@ public class DelayFullTest {
         assertTrue("testCreateSharedDurableExpiry_B_SecOff failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testCreateSharedDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
+        // TODO: ???
         if ( !runInServlet("testCreateSharedDurableConsumer_create_B_SecOff") ) {
             testResult = false;
         }
@@ -408,11 +429,11 @@ public class DelayFullTest {
         assertTrue("testCreateSharedDurableExpiry_B_SecOff failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testCreateSharedNonDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
-	if ( !runInServlet("testCreateSharedNonDurableConsumer_create_B_SecOff") ) {
+        if ( !runInServlet("testCreateSharedNonDurableConsumer_create_B_SecOff") ) {
             testResult = false;
         }
 
@@ -425,7 +446,7 @@ public class DelayFullTest {
         assertTrue("Test testCreateSharedNonDurable_B_SecOff failed", testResult);
     }
 
-    // @Test
+    @Test
     public void testDDRestartServer() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage");
         assertTrue("testSendMessage failed", testResult1);
@@ -436,7 +457,7 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage failed", testResult2);
     }
 
-    // @Test
+    @Test
     public void testDDRestartServer_TCP() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage_TCP");
         assertTrue("testSendMessage_TCP failed", testResult1);
@@ -446,6 +467,8 @@ public class DelayFullTest {
         boolean testResult2 = runInServlet("testReceiveMessage_TCP");
         assertTrue("testReceiveMessage_TCP failed", testResult2);
     }
+
+    // TODO: Discuss before delivery.
 
     private List<String> getClientFeatures() {
         List<String> features = new ArrayList<String>();
@@ -491,7 +514,7 @@ public class DelayFullTest {
 
     private void verifyAddedFeature(LibertyServer server, String fragment) throws Exception {
         String changedMessageFromLog = server.waitForStringInLogUsingMark(
-	    "CWWKF0012I.*" + fragment + ".*",
+            "CWWKF0012I.*" + fragment + ".*",
             server.getMatchingLogFile("trace.log"));
         assertNotNull(
             "Could not find the feature added message in the trace file",
@@ -509,7 +532,7 @@ public class DelayFullTest {
             changedMessageFromLog);
     }
 
-    // @Test
+    @Test
     public void testDDRemoveAddServerFeature() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage");
         assertTrue("testSendMessage failed", testResult1);
