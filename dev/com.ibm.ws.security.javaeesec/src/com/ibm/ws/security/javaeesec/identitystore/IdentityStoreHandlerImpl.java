@@ -149,10 +149,6 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return AccessController.doPrivileged(action);
     }
 
-    protected CDI<Object> getCDI() {
-        return CDI.current();
-    }
-
     protected Set<IdentityStore> getIdentityStores(ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap) {
         String moduleName = getModuleName();
         Set<IdentityStore> stores = identityStoreMap.get(moduleName);
@@ -173,8 +169,11 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
-        CDI cdi = getCDI();
-        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        Instance<IdentityStore> identityStoreInstances = null;
+        CDI cdi = CDIHelper.getCDI();
+        if (cdi != null) {
+            identityStoreInstances = cdi.select(IdentityStore.class);
+        }
         if (identityStoreInstances != null) {
             for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {

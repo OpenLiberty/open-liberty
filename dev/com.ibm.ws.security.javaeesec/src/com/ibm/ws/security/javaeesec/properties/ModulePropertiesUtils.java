@@ -101,7 +101,7 @@ public class ModulePropertiesUtils {
             // find HAM from BeanManagers
             boolean isCacheable = true;
             BeanManager beanManager = null;
-            CDI cdi = getCDI();
+            CDI cdi = CDIHelper.getCDI();
             if (cdi != null) {
                 beanManager = cdi.getBeanManager();
                 if (beanManager != null) {
@@ -186,11 +186,6 @@ public class ModulePropertiesUtils {
             return elExpression.substring(2, elExpression.length() - 1);
         }
         return elExpression;
-    }
-
-    @SuppressWarnings("rawtypes")
-    protected CDI getCDI() {
-        return CDI.current();
     }
 
     protected WebModuleMetaData getWebModuleMetaData() {
