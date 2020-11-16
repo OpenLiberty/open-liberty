@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 IBM-ShortName: facesContainer-3.0
-Subsystem-Name: Jakarta Faces Container 2.3
+Subsystem-Name: Jakarta Faces Container 3.0
 symbolicName=io.openliberty.facesContainer-3.0
 visibility=public
 singleton=true
