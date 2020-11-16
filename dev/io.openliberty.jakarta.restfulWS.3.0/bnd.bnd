@@ -14,7 +14,7 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.restfulWS.3.0; singleton:=true
 
-Export-Package: jakarta.ws.rs.*; version="3.0.0.M1"
+Export-Package: jakarta.ws.rs.*; version="3.0.0"
 
 Import-Package: !jakarta.xml.bind.annotation,\
   !jakarta.xml.bind.annotation.adapters,\
@@ -31,4 +31,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.ws.rs:jakarta.ws.rs-api;version=3.0.0.M1
+  jakarta.ws.rs:jakarta.ws.rs-api;version=3.0.0
