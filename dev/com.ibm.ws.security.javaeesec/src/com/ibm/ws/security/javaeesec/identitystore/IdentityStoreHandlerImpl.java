@@ -170,7 +170,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
         Instance<IdentityStore> identityStoreInstances = null;
-        CDI cdi = CDIHelper.getCDI();
+        CDI cdi = getCDI();
         if (cdi != null) {
             identityStoreInstances = cdi.select(IdentityStore.class);
         }
@@ -224,6 +224,11 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
 
     protected void clearIdentityStoreMap() {
         identityStoreMap.clear();
+    }
+
+    //This is here so it can be overriden by a unit test.
+    protected CDI getCDI() {
+        return CDIHelper.getCDI();
     }
 
 }

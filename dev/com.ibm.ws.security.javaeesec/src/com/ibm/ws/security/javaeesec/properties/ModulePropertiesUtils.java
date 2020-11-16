@@ -101,7 +101,7 @@ public class ModulePropertiesUtils {
             // find HAM from BeanManagers
             boolean isCacheable = true;
             BeanManager beanManager = null;
-            CDI cdi = CDIHelper.getCDI();
+            CDI cdi = getCDI();
             if (cdi != null) {
                 beanManager = cdi.getBeanManager();
                 if (beanManager != null) {
@@ -218,6 +218,11 @@ public class ModulePropertiesUtils {
             }
         }
         return isCacheable;
+    }
+
+    //This is here so it can be overriden by a unit test.
+    protected CDI getCDI() {
+        return CDIHelper.getCDI();
     }
 
     /**
