@@ -34,8 +34,8 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     // Run only during the Jakarta repeat for now.  When
-    // the tests are removed from WS-CD-Open, the pre-jakarta
-    // repeat can be re-enabled in open-liberty.
+    // the tests are removed from commercial liberty,
+    // the pre-jakarta repeat can be re-enabled.
 
     @ClassRule
     public static RepeatTests repeater = RepeatTests

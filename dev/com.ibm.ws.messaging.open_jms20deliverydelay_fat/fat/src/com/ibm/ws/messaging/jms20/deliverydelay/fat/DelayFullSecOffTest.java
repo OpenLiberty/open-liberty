@@ -251,28 +251,31 @@ public class DelayFullSecOffTest {
     public void testGetDeliveryDelayTopic_Tcp() throws Exception {
         boolean testResult = runInServlet("testGetDeliveryDelayTopic_Tcp");
         assertTrue("testGetDeliveryDelayTopic_Tcp failed", testResult);
-        
     }
 
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelay_() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelay");
         assertTrue("testTimeToLiveWithDeliveryDelay failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelay_Tcp() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelay_Tcp");
         assertTrue("testTimeToLiveWithDeliveryDelay_Tcp failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayTopic_B() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayTopic");
         assertTrue("testTimeToLiveWithDeliveryDelayTopic failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayTopic_Tcp() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayTopic_Tcp");
         assertTrue("testTimeToLiveWithDeliveryDelayTopic_Tcp failed", testResult);
@@ -656,25 +659,29 @@ public class DelayFullSecOffTest {
         assertTrue("testGetDeliveryDelayTopicClassicApi_Tcp failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayClassicApi() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayClassicApi");
         assertTrue("testTimeToLiveWithDeliveryDelayClassicApi failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayClassicApi_Tcp() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayClassicApi_Tcp");
         assertTrue("testTimeToLiveWithDeliveryDelayClassicApi_Tcp failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayTopicClassicApi() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayTopicClassicApi");
         assertTrue("testTimeToLiveWithDeliveryDelayTopicClassicApi failed", testResult);
     }
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testTimeToLiveWithDeliveryDelayTopicClassicApi_Tcp() throws Exception {
         boolean testResult = runInServlet("testTimeToLiveWithDeliveryDelayTopicClassicApi_Tcp");
         assertTrue("testTimeToLiveWithDeliveryDelayTopicClassicApi_Tcp failed", testResult);
@@ -682,7 +689,8 @@ public class DelayFullSecOffTest {
     
     // regression tests for alias destinations
 
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testJSAD_Send_Message() throws Exception {
         clientServer.setServerConfigurationFile("DelayClient_Alias.xml");
 
@@ -704,7 +712,8 @@ public class DelayFullSecOffTest {
     
     // regression tests for modifyMEResources
     
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testP2PMessageInExceptionDestination() throws Exception {
         clientServer.stopServer();
         clientServer.setServerConfigurationFile("DelayClient_1.xml");
@@ -725,7 +734,8 @@ public class DelayFullSecOffTest {
     
     // regression tests for SIM
 
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testBytesMessage() throws Exception {
         boolean testResult = runInServlet("testBytesMessage");
         assertTrue("testBytesMessage failed", testResult);
@@ -733,7 +743,8 @@ public class DelayFullSecOffTest {
 
     // regression tests for Comms
 
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO: Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testComms_Send_Message_P2PTest_Default() throws Exception {
         boolean testResult = runInServlet("testComms_Send_Message_P2PTest_Default");
         assertTrue("testComms_Send_Message_P2PTest_Default failed", testResult);
