@@ -1,0 +1,25 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<include location="imports/spnego/serversettings/standard_config.xml"/>
+	<include location="imports/spnego/configs/spnego_myauthfilter.xml"/>
+
+	<authFilter id="myAuthFilter" >
+		<requestUrl id="myURL" urlPattern="/SimpleServlet" matchType="contains"/>
+		<host id="myHost" name="myhost.kdcdomain.com" matchType="notContain"/>
+		<userAgent id="myAgent" agent="IE" matchType="equals" />
+ 	</authFilter>
+
+
+</server>

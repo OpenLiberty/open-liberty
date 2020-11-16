@@ -83,7 +83,7 @@ public class JDBC43Test extends FATServletClient {
                           "J2CA0081E", // TODO why does Derby think a transaction is still active?
                           "WLTC0018E", // TODO remove once transactions bug is fixed
                           "WLTC0032W", // local tran rolled back, expected when trying to keep unshared connection open across servlet boundary
-                          "WLTC0033W.*poolOf1"); // same reason as above
+                          "WLTC0033W.*poolOf2"); // same reason as above
     }
 
     /**

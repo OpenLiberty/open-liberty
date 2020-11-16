@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,8 @@ public abstract class ServletClientImpl implements ServletClient {
     private static final String WSPRINCIPAL = "WSPrincipal:";
     private static final String EMPLOYEE_ROLE_HEADER = "isUserInRole(Employee): ";
     private static final String MANAGER_ROLE_HEADER = "isUserInRole(Manager): ";
+
+    public static final String DEFAULT_LTPA_COOKIE_NAME = "LtpaToken2";
 
     protected final String contextRoot;
     protected final String host;
@@ -137,6 +139,12 @@ public abstract class ServletClientImpl implements ServletClient {
         return access(url, 200);
     }
 
+    public String accessUnprotectedServlet(String urlPattern, String... dumpSSOCookieNames) {
+        String url = servletURL + urlPattern;
+        logger.info("accessUnprotectedServlet: " + url);
+        return access(url, 200, dumpSSOCookieNames);
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean accessDeniedHttpMethodServlet(String urlPattern, String user, String password) {
@@ -160,6 +168,14 @@ public abstract class ServletClientImpl implements ServletClient {
         String url = servletURL + urlPattern;
         logger.info("accessUnavailableServlet: " + url);
         return accessWithException(url, expectedException);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String accessUnavailableServlet(String urlPattern, Class<?>[] expectedExceptions) {
+        String url = servletURL + urlPattern;
+        logger.info("accessUnavailableServlet: " + url);
+        return accessWithException(url, expectedExceptions);
     }
 
     /** {@inheritDoc} */
@@ -238,6 +254,11 @@ public abstract class ServletClientImpl implements ServletClient {
     }
 
     public String accessProtectedServletWithValidHeaders(String urlPattern, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie) {
+        return accessProtectedServletWithValidHeaders(urlPattern, headers, ignoreErrorContent, handleSSOCookie, null);
+    }
+
+    public String accessProtectedServletWithValidHeaders(String urlPattern, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie,
+                                                         String... dumpSSOCookieNames) {
         String url = servletURL + urlPattern;
 
         Set<String> headerKeys = headers.keySet();
@@ -250,7 +271,7 @@ public abstract class ServletClientImpl implements ServletClient {
 
         logger.info("accessProtectedServletWithValidHeaders: " + url + ", headers=[" + headerStringBuilder.toString() + "]");
 
-        return accessWithHeaders(url, 200, headers, ignoreErrorContent, handleSSOCookie);
+        return accessWithHeaders(url, 200, headers, ignoreErrorContent, handleSSOCookie, dumpSSOCookieNames);
     }
 
     /** {@inheritDoc} */
@@ -306,37 +327,63 @@ public abstract class ServletClientImpl implements ServletClient {
      * Expected behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @return servlet response text, null if access not granted
      */
     protected abstract String access(String url, int expectedStatusCode);
+
+    /**
+     * Access an (un)protected URL pattern that is part of the context root.
+     * Expected behavior is dictated by the expected status code.
+     *
+     * @param url
+     *                               Full URL to the requested resource
+     * @param expectedStatusCode
+     *                               The expected HTTP status code for the request
+     * @param dumpSSOCookieName
+     *                               Name of cookie to output
+     * @return servlet response text, null if access not granted
+     */
+    protected abstract String access(String url, int expectedStatusCode, String... dumpSSOCookieName);
 
     /**
      * Access a URL pattern that should throw the given exception.
      * Expected behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                              Full URL to the requested resource
      * @param expectedException
-     *            The expected exception when accessing the request
+     *                              The expected exception when accessing the request
      * @return exception message, null if exception not thrown
      */
     protected abstract String accessWithException(String url, Class<?> expectedException);
+
+    /**
+     * Access a URL pattern that should throw the given exception.
+     * Expected behavior is dictated by the expected status code.
+     *
+     * @param url
+     *                               Full URL to the requested resource
+     * @param expectedExceptions
+     *                               The expected exception when accessing the request
+     * @return exception message, null if exception not thrown
+     */
+    protected abstract String accessWithException(String url, Class<?>[] expectedExceptions);
 
     /**
      * Access a protected URL pattern that is part of the context root. Expected
      * behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param user
-     *            user to authenticate as
+     *                               user to authenticate as
      * @param password
-     *            password to authenticate with
+     *                               password to authenticate with
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @return servlet response text, null if access not granted
      */
     protected abstract String accessAndAuthenticateForError500(String url,
@@ -347,13 +394,13 @@ public abstract class ServletClientImpl implements ServletClient {
      * behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param user
-     *            user to authenticate as
+     *                               user to authenticate as
      * @param password
-     *            password to authenticate with
+     *                               password to authenticate with
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @return servlet response text, null if access not granted
      */
     protected abstract String accessAndAuthenticate(String url,
@@ -364,11 +411,11 @@ public abstract class ServletClientImpl implements ServletClient {
      * behaviour is a 403 for an internal error.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                     Full URL to the requested resource
      * @param user
-     *            user to authenticate as
+     *                     user to authenticate as
      * @param password
-     *            password to authenticate with
+     *                     password to authenticate with
      * @return servlet response text, null if access not granted
      */
     protected abstract String accessAndAuthenticateForExpectedInternalError(String url,
@@ -422,9 +469,9 @@ public abstract class ServletClientImpl implements ServletClient {
      * Expected behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @return servlet response text, null if access not granted
      */
     protected abstract String accessWithCookie(String urlPattern, String cookie, int expectedStatusCode);
@@ -434,13 +481,13 @@ public abstract class ServletClientImpl implements ServletClient {
      * the passed headers. Expected behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @param headers
-     *            Map of header names and values to be included in the request
+     *                               Map of header names and values to be included in the request
      * @param ignoreErrorContent
-     *            Boolean specifying whether the HTTP response should be set to null if access was unsuccessful
+     *                               Boolean specifying whether the HTTP response should be set to null if access was unsuccessful
      * @return servlet response text
      */
     public String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent) {
@@ -452,18 +499,21 @@ public abstract class ServletClientImpl implements ServletClient {
      * the passed headers. Expected behavior is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @param headers
-     *            Map of header names and values to be included in the request
+     *                               Map of header names and values to be included in the request
      * @param ignoreErrorContent
-     *            Boolean specifying whether the HTTP response should be set to null if access was unsuccessful
+     *                               Boolean specifying whether the HTTP response should be set to null if access was unsuccessful
      * @param handleSSOCookie
-     *            Boolean indicating whether an SSO cookie should be handled for requests
+     *                               Boolean indicating whether an SSO cookie should be handled for requests
      * @return servlet response text
      */
     protected abstract String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie);
+
+    protected abstract String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie,
+                                                String... dumpSSOCookieNames);
 
     /** {@inheritDoc} */
     @Override
@@ -503,6 +553,22 @@ public abstract class ServletClientImpl implements ServletClient {
      */
     protected void setSSOCookieForLastLogin(HttpMessage httpMessage) {
         logger.info("setSSOCookieForLastLogin");
+
+        String cookieValue = getSSOCookie(httpMessage, ssoCookieName);
+        if (cookieValue != null) {
+            ssoCookie = cookieValue;
+            return;
+        }
+
+        fail("Set-Cookie for " + ssoCookieName + " not found in the cookieHeader after login");
+    }
+
+    /**
+     * @param httpMessage
+     */
+    protected String getSSOCookie(HttpMessage httpMessage, String cookieName) {
+        logger.info("getSSOCookie");
+        String cookieValue = null;
         Header[] setCookieHeaders = httpMessage.getHeaders("Set-Cookie");
         if (setCookieHeaders == null) {
             failWithMessage("setCookieHeaders was null and should not be");
@@ -510,13 +576,12 @@ public abstract class ServletClientImpl implements ServletClient {
         for (Header header : setCookieHeaders) {
             logger.info("header: " + header);
             for (HeaderElement e : header.getElements()) {
-                if (e.getName().equals(ssoCookieName)) {
-                    ssoCookie = e.getValue();
-                    return;
+                if (e.getName().equals(cookieName)) {
+                    return e.getValue();
                 }
             }
         }
-        fail("Set-Cookie for " + ssoCookieName + " not found in the cookieHeader after login");
+        return cookieValue;
     }
 
     /** {@inheritDoc} */
@@ -573,11 +638,11 @@ public abstract class ServletClientImpl implements ServletClient {
         }
 
         if (userName != null) {
-            assertTrue("The response did not contain the expected userPrincipal",
-                       response.contains(USER_PRINCIPAL_HEADER + WSPRINCIPAL
-                                         + userName));
-            assertTrue("The response did not contain the expected Principal name",
-                       response.contains(USER_PRINCIPAL_NAME_HEADER + userName));
+
+            assertTrue("The response did not contain the expected Principal name. ",
+                       response.contains(USER_PRINCIPAL_NAME_HEADER + userName)
+                                                                                     || response.contains("\"token_type\":")); // jwtsso
+
         } else {
             assertTrue("The response did not contain the expected userPrincipal",
                        response.contains(USER_PRINCIPAL_HEADER + "null"));

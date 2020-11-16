@@ -67,7 +67,8 @@ public class BasicConfigTests extends FATServletClient {
                     @TestServlet(servlet = ConverterPriorityServlet.class, contextRoot = CONVERTER_PRIORITY_APP_NAME),
                     @TestServlet(servlet = ConvertersTestServlet.class, contextRoot = CONVERTERS_APP_NAME),
                     @TestServlet(servlet = CustomSourcesTestServlet.class, contextRoot = CUSTOM_SOURCES_APP_NAME),
-                    @TestServlet(servlet = TypesTestServlet.class, contextRoot = TYPES_APP_NAME) })
+                    @TestServlet(servlet = TypesTestServlet.class, contextRoot = TYPES_APP_NAME)
+    })
     public static LibertyServer server;
 
     @BeforeClass

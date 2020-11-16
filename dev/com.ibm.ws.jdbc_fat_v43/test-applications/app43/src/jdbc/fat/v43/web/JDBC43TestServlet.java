@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
 import java.sql.ShardingKey;
 import java.sql.ShardingKeyBuilder;
@@ -224,12 +225,13 @@ public class JDBC43TestServlet extends FATServlet {
                             return s;
                         })
                         .whenComplete((s, failure) -> {
-                            try {
-                                s.getConnection().close();
-                            } catch (SQLException x) {
-                                if (failure == null)
-                                    throw new CompletionException(x);
-                            }
+                            if (s != null)
+                                try {
+                                    s.getConnection().close();
+                                } catch (SQLException x) {
+                                    if (failure == null)
+                                        throw new CompletionException(x);
+                                }
                         });
 
         Object previous = completionStages.put("testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary", stage);
@@ -265,7 +267,8 @@ public class JDBC43TestServlet extends FATServlet {
      * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
      */
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1() throws Exception {
-        final Connection con = unsharablePool1DataSource.getConnection();
+        // Use a data source where the HandleList is enabled
+        final Connection con = unsharablePool2DataSource.getConnection();
         con.setAutoCommit(false);
         CompletableFuture<Statement> creationStage = AccessController
                         .doPrivileged((PrivilegedExceptionAction<CompletableFuture<Statement>>) () -> CompletableFuture.completedFuture(con.createStatement()));
@@ -277,7 +280,9 @@ public class JDBC43TestServlet extends FATServlet {
                                 throw new CompletionException(x);
                             }
                             return s;
-                        })
+                        });
+        stage.join(); // ensure that the connection has been enlisted in a local transaction and work has been performed within it
+        stage = stage
                         .thenApplyAsync(s -> {
                             try {
                                 Thread.sleep(5000); // this encourages the current servlet request to go out of scope, if it hasn't already
@@ -296,20 +301,21 @@ public class JDBC43TestServlet extends FATServlet {
                             return s;
                         })
                         .whenComplete((s, failure) -> {
-                            try {
-                                Connection c = s.getConnection();
+                            if (s != null)
                                 try {
+                                    Connection c = s.getConnection();
+                                    try {
+                                        if (failure == null)
+                                            c.commit();
+                                        else
+                                            c.rollback();
+                                    } finally {
+                                        c.close();
+                                    }
+                                } catch (SQLException x) {
                                     if (failure == null)
-                                        c.commit();
-                                    else
-                                        c.rollback();
-                                } finally {
-                                    c.close();
+                                        throw new CompletionException(x);
                                 }
-                            } catch (SQLException x) {
-                                if (failure == null)
-                                    throw new CompletionException(x);
-                            }
                         });
 
         Object previous = completionStages.put("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary", stage);
@@ -322,18 +328,22 @@ public class JDBC43TestServlet extends FATServlet {
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2() throws Exception {
         @SuppressWarnings("unchecked")
         CompletableFuture<Statement> stage = (CompletableFuture<Statement>) completionStages.get("testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary");
-        Statement s = stage.join();
-        assertTrue(s.isClosed());
+        try {
+            Statement s = stage.join();
+            fail("Connection (and its Statement) should have been closed by handle list. " + s);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof SQLRecoverableException)
+                ; // pass - Connection and Statement are closed
+            else
+                throw x;
+        }
 
-        // confirm that the SQL command ran and committed
-        try (Connection con = unsharablePool1DataSource.getConnection();
+        // confirm that the first SQL command rolled back upon exiting the LTC,
+        // and the second SQL command never executed because the connection was closed.
+        try (Connection con = unsharablePool2DataSource.getConnection();
                         Statement st = con.createStatement();
                         ResultSet result = st.executeQuery("SELECT NAME FROM STREETS WHERE NAME LIKE 'Century%'")) {
-            assertTrue(result.next());
-            String name1 = result.getString(1);
-            assertFalse("Found multiple entries, " + name1 + " and " + result.getString(1)
-                        + " which means that the database local transaction was not rolled back when the servlet goes out of scope", result.next());
-            assertEquals("Century Hills Drive NE", name1);
+            assertFalse(result.next());
         }
     }
 
