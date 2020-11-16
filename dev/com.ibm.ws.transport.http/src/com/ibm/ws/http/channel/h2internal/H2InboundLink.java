@@ -517,7 +517,12 @@ public class H2InboundLink extends HttpInboundLink {
                 buf.release();
                 setReadLinkStatusToNotReadingAndNotify();
 
-                throw up;
+                // don't rethrow if we're handling a throwable during a close
+                if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)) {
+                    return;
+                } else {
+                    throw up;
+                }
             }
 
         } else {
