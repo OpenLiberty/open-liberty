@@ -86,9 +86,13 @@ final class ServletServerStream extends AbstractServerStream {
     // race condition that led to a NPE on the first request.  We should fix this upstream.
     this.writer = new AsyncServletOutputStreamWriter(
             asyncCtx, resp.getOutputStream(), transportState, logId);
-    resp.getOutputStream().setWriteListener(new GrpcWriteListener());
   }
 
+  public void setWriteListener() throws IOException {
+	      resp.getOutputStream().setWriteListener(new GrpcWriteListener());
+  }
+
+  
   @Override
   protected ServletTransportState transportState() {
     return transportState;

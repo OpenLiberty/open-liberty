@@ -1,0 +1,7 @@
+com.ibm.ws.microprofile.metrics.2.x.monitor_fat
+com.ibm.ws.microprofile.metrics.monitor_fat
+com.ibm.ws.microprofile.metrics_fat
+com.ibm.ws.microprofile.metrics_fat_tck
+com.ibm.ws.microprofile.mpjwt.1.1_fat_tck
+io.openliberty.microprofile.metrics.internal.3.0_fat_tck
+io.openliberty.microprofile.metrics.internal.3.x.monitor_fat

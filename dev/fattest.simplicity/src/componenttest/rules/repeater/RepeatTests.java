@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,7 @@ public class RepeatTests extends ExternalResource {
 
             for (RepeatTestAction action : actions) {
                 try {
-                    RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
+                    RepeatTestFilter.activateRepeatAction(action.getID());
                     if (shouldRun(action)) {
                         Log.info(c, m, "===================================");
                         Log.info(c, m, "");
@@ -125,7 +125,7 @@ public class RepeatTests extends ExternalResource {
                     // Catch it to ensure we still run all repeats
                     errors.add(t);
                 } finally {
-                    RepeatTestFilter.CURRENT_REPEAT_ACTION = null;
+                    RepeatTestFilter.deactivateRepeatAction();
                 }
             }
 

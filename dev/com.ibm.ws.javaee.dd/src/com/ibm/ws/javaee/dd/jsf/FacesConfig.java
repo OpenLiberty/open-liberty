@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ public interface FacesConfig extends DeploymentDescriptor {
     static final int VERSION_2_2 = 22;
 
     static final int VERSION_2_3 = 23;
+
+    static final int VERSION_3_0 = 30;
 
     /**
      * @return version="..." attribute value

@@ -12,7 +12,7 @@ package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -35,7 +35,7 @@ import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 public class ServerXMLVariableConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
-    private final ConfigAction configAction = new ConfigAction();
+    private final GetServerXMLVariablesAction getServerXMLVariablesAction = new GetServerXMLVariablesAction();
     private BundleContext bundleContext;
     private ConfigVariables configVariables;
 
@@ -56,22 +56,11 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getProperties() {
-
-        Map<String, String> props = new HashMap<>();
-
-        Map<String, String> serverXMLVariables = null;
-
         if (System.getSecurityManager() == null) {
-            serverXMLVariables = getServerXMLVariables();
+            return getServerXMLVariables();
         } else {
-            serverXMLVariables = AccessController.doPrivileged(configAction);
+            return AccessController.doPrivileged(getServerXMLVariablesAction);
         }
-
-        if (serverXMLVariables != null) {
-            props.putAll(serverXMLVariables);
-        }
-
-        return props;
     }
 
     private BundleContext getBundleContext() {
@@ -96,7 +85,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
         return this.configVariables;
     }
 
-    private class ConfigAction implements PrivilegedAction<Map<String, String>> {
+    private class GetServerXMLVariablesAction implements PrivilegedAction<Map<String, String>> {
         /** {@inheritDoc} */
         @Override
         public Map<String, String> run() {
@@ -106,10 +95,12 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     }
 
     protected Map<String, String> getServerXMLVariables() {
-        Map<String, String> props = new HashMap<>();
+        Map<String, String> props;
         ConfigVariables configVariables = getConfigVariables();
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
             props = OSGiConfigUtils.getVariablesFromServerXML(configVariables);
+        } else {
+            props = Collections.emptyMap();
         }
         return props;
     }

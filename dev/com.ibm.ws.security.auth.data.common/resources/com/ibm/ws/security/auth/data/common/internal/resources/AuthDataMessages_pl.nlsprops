@@ -26,3 +26,8 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Podaj poprawny alias danych uwie
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji. Nale\u017cy zdefiniowa\u0107 atrybut {0}.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Podany atrybut musi zosta\u0107 zdefiniowany.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Podaj warto\u015b\u0107 brakuj\u0105cego atrybutu.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: W elemencie authData {2} skonfigurowano zar\u00f3wno atrybut {0}, jak i {1}. Mo\u017cna skonfigurowa\u0107 albo atrybut {0}, albo {1}, ale nie oba.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Okre\u015blone atrybuty wzajemnie si\u0119 wykluczaj\u0105.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Okre\u015bl tylko jeden z dw\u00f3ch atrybut\u00f3w. 

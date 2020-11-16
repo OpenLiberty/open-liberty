@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Invalidarea cache-u
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Modific\u0103rile din MicroProfile Config s-ar putea s\u0103 nu fie reflectate \u00een aplica\u0163ie
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Surs\u0103 configura\u0163ie de propriet\u0103\u0163i aplica\u0163ie XML server
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Surs\u0103 de configura\u0163ie variabile XML server
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Surs\u0103 de configura\u0163ie variabile XML implicite server
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -33,7 +33,6 @@ import com.ibm.ws.jsf23.fat.tests.JSF23FacesDataModelTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23GeneralTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23IterableSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
-import com.ibm.ws.jsf23.fat.tests.JSF23JSF22SingletonFeatureTest;
 import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
@@ -41,6 +40,7 @@ import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
+import com.ibm.ws.jsf23.fat.tests.JSFFeatureConflictTests;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -75,7 +75,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JSF23FacesDataModelTests.class,
                 JSF23ClassLevelBeanValidationTests.class,
                 JSF23ExternalContextStartupShutdownTests.class,
-                JSF23JSF22SingletonFeatureTest.class,
+                JSFFeatureConflictTests.class,
                 JSF23CommandScriptTests.class,
                 JSF23SelectOneRadioGroupTests.class,
                 JSF23JPA22Test.class,
@@ -89,6 +89,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CDIConfigByACPTests.class,
                 Faces30Tests.class
 })
+
 public class FATSuite {
 
     /**

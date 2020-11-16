@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
-import static com.ibm.ws.kernel.feature.internal.FeatureManager.EE_COMPATIBLE_NAME;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -684,15 +682,9 @@ public class FeatureDefinitionUtils {
                 }
 
                 Map<String, Map<String, String>> data = ManifestHeaderProcessor.parseImportString(contents);
-
                 result = new ArrayList<FeatureResource>(data.size());
                 for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    FeatureResourceImpl resource = new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType);
-                    if (entry.getKey().lastIndexOf(EE_COMPATIBLE_NAME) >= 0) {
-                        result.add(0, resource);
-                    } else {
-                        result.add(resource);
-                    }
+                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
                 }
 
                 subsystemContent = result;

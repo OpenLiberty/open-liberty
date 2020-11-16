@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Zneplatn\u011bn\u00
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Zm\u011bny v konfiguraci MicroProfile se nemusej\u00ed v aplikaci projevit.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Zdroj konfigurace vlastnost\u00ed aplikace XML serveru
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Zdroj konfigurace prom\u011bnn\u00fdch XML serveru
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Zdroj konfigurace v\u00fdchoz\u00edch prom\u011bnn\u00fdch XML serveru
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

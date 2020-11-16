@@ -72,7 +72,9 @@ public class ReplayCookieTests extends CommonSecurityFat {
     protected static Class<?> thisClass = ReplayCookieTests.class;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion("mpJwt11")).andWith(new RunWithMpJwtVersion("mpJwt12"));
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
+                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
@@ -98,7 +100,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        fatUtils.updateFeatureFile(server, "jwtSsoFeatures", RepeatTestFilter.getMostRecentRepeatAction());
 
         bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
         bootstrapUtils.writeBootstrapProperty(server, BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
@@ -281,7 +283,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
-                                                                                        + "Invalid JOSE Compact Serialization"));
+                                                                                        + MessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS));
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, cookieWithoutSignature);
         validationUtils.validateResult(response, currentAction, expectations);

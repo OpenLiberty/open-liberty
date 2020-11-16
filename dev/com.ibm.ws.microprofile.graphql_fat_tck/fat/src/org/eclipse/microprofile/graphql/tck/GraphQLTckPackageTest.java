@@ -12,12 +12,15 @@ package org.eclipse.microprofile.graphql.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -27,6 +30,10 @@ import componenttest.topology.utils.MvnUtils;
  */
 @RunWith(FATRunner.class)
 public class GraphQLTckPackageTest {
+
+	@ClassRule
+	public static RepeatTests r = RepeatTests.withoutModification()
+	    .andWith(new FeatureReplacementAction("mpConfig-1.4", "mpConfig-2.0"));
 
     @Server("FATServer")
     public static LibertyServer server;

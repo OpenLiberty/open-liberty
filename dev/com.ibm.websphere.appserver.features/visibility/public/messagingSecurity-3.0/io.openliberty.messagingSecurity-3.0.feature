@@ -11,5 +11,6 @@ Subsystem-Name: Message Server Security 3.0
 -bundles=com.ibm.ws.messaging.utils, \
  com.ibm.ws.messaging.security, \
  com.ibm.ws.messaging.security.common
-kind=noship
-edition=full
+kind=beta
+edition=base
+WLP-Activation-Type: parallel

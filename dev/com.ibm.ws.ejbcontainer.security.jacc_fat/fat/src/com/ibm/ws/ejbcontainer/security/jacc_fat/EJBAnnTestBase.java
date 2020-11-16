@@ -99,7 +99,8 @@ public class EJBAnnTestBase {
             try {
                 server.stopServer("SRVE9967W", // Quite a few
                                   "CWWKS9112W", // PureAnnServletToEJBRunAsTest, EJBJarMixM07ExtTest, EJBJarMixM08ExtTest, EJBJarMixM09ExtTest
-                                  "CWWKS9405E" // EJBJarMixM07ExtTest, EJBJarMixM08ExtTest, EJBJarMixM09ExtTest
+                                  "CWWKS9405E", // EJBJarMixM07ExtTest, EJBJarMixM08ExtTest, EJBJarMixM09ExtTest
+                                  "CNTR0338W" // Quite a few - Ambiguous EJB Binding
                 );
             } finally {
                 JACCFatUtils.uninstallJaccUserFeature(server);

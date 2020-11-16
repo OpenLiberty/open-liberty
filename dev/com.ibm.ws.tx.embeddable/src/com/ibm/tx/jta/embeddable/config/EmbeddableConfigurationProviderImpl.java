@@ -517,4 +517,9 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     public int getStandardTransientErrorRetryAttempts() {
         return 180;
     }
+
+    @Override
+    public int getLeaseRenewalTime() {
+        return 90;
+    }
 }

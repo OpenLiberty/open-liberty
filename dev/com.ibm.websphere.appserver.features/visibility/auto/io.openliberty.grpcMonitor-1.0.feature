@@ -6,6 +6,6 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.grpc-1.0)(osgi.identity=io.openliberty.grpcClient-1.0)))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.grpc.1.0.internal.monitor
-kind=beta
+kind=ga
 edition=full
-
+WLP-Activation-Type: parallel

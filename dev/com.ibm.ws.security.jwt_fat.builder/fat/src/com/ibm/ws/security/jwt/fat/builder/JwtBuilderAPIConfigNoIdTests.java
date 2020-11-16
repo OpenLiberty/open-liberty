@@ -47,14 +47,12 @@ public class JwtBuilderAPIConfigNoIdTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
-
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);

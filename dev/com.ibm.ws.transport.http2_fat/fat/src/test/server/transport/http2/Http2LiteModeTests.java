@@ -70,8 +70,11 @@ public class Http2LiteModeTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
-        server.stopServer(true);
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         runtimeServer.stopServer(true);
+        Thread.sleep(5000);
+        server.stopServer(true);
     }
 
     private void runTest() throws Exception {

@@ -46,6 +46,7 @@
   <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
+  <AD id="creates.objectClass"                   type="String"  ibm:final="true" ibm:variable="io.openliberty.concurrency.mes.objectClasses" default="java.util.concurrent.ExecutorService, javax.enterprise.concurrent.ManagedExecutorService, org.eclipse.microprofile.context.ManagedExecutor" cardinality="10" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
   <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
@@ -65,6 +66,7 @@
   <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
+  <AD id="creates.objectClass"                   type="String"  ibm:final="true" ibm:variable="io.openliberty.concurrency.mses.objectClasses" default="java.util.concurrent.ExecutorService, java.util.concurrent.ScheduledExecutorService, javax.enterprise.concurrent.ManagedExecutorService, javax.enterprise.concurrent.ManagedScheduledExecutorService" cardinality="10" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
   <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>

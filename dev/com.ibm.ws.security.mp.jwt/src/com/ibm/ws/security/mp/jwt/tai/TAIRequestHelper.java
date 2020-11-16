@@ -11,10 +11,8 @@
 package com.ibm.ws.security.mp.jwt.tai;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.http.AuthUtils;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.config.MpConstants;
@@ -113,16 +112,16 @@ public class TAIRequestHelper {
 
     private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) {
         boolean newMpjwtAndMpConfig = false;
-        Map<String, String> mpConfigProps = getMpConfigPropsFromRequestObject(request);
+        MpConfigProperties mpConfigProps = getMpConfigPropsFromRequestObject(request);
         if (mpConfigProps != null && !mpConfigProps.isEmpty()) {
             newMpjwtAndMpConfig = true;
         }
         return newMpjwtAndMpConfig;
     }
 
-    public Map<String, String> getMpConfigPropsFromRequestObject(HttpServletRequest request) {
+    public MpConfigProperties getMpConfigPropsFromRequestObject(HttpServletRequest request) {
         if (request == null) {
-            return new HashMap<String, String>();
+            return new MpConfigProperties();
         }
         MicroProfileJwtTaiRequest mpJwtTaiRequest = (MicroProfileJwtTaiRequest) request.getAttribute(ATTRIBUTE_TAI_REQUEST);
         return mpJwtTaiRequest.getMpConfigProps();
@@ -222,7 +221,7 @@ public class TAIRequestHelper {
     }
 
     String getValueFromMpConfigProps(HttpServletRequest request, String propName, String defaultValue) {
-        Map<String, String> mpConfigProps = getMpConfigPropsFromRequestObject(request);
+        MpConfigProperties mpConfigProps = getMpConfigPropsFromRequestObject(request);
         if (mpConfigProps == null) {
             return defaultValue;
         }

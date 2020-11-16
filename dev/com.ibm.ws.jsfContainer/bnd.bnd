@@ -14,6 +14,7 @@ bVersion=1.0
 Bundle-Name: WAS JSF Container
 Bundle-SymbolicName: com.ibm.ws.jsfContainer
 
+jakartaeeMe:true
 
 Private-Package: \
     com.ibm.ws.jsf.container.*

@@ -86,8 +86,8 @@
                      // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
                      
                      // AsyncTimeoutTest
-                     // This specific test is broken in the FT 1.0 TCK and was fixed for FT 2.0
-                     !method.getName().startsWith("testAsyncClassLevelTimeout")
+                     // Some tests in this class were broken in the FT 1.0 TCK and were fixed for FT 2.0
+                     !method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
                 ]]>
                 </script>
             </method-selector>

@@ -1,0 +1,5 @@
+com.ibm.ws.clientcontainer.8.0_fat
+com.ibm.ws.clientcontainer.beanvalidation_fat
+com.ibm.ws.clientcontainer.cdi_fat
+com.ibm.ws.clientcontainer.javamail_fat
+com.ibm.ws.clientcontainer.json_fat

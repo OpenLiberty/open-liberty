@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
-            <version>1.2-RC1</version>
+            <version>1.2-RC2</version>
         </dependency>
         
         <!--  impl -->
@@ -76,18 +76,18 @@
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.2-RC1</version>
+            <version>1.2-RC2</version>
         </dependency>
        
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.2-RC1</version>
+            <version>1.2-RC2</version>
             <type>test-jar</type>        
-            <!-- <systemPath>C:\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
-            <!-- <scope>system</scope> -->
-           
+           <!-- <systemPath>/Users/kristenclarke/MPJWT12/clone111020_RC212/microprofile-jwt-auth/tck/target/microprofile-jwt-auth-tck-1.2.RC2-SNAPSHOT-tests.jar</systemPath>  -->
+            <!--  <scope>system</scope> -->
+         
            
         </dependency>
         

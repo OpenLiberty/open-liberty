@@ -21,20 +21,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@Ignore //Porting from closed liberty not completed
 @RunWith(FATRunner.class)
 public class JMSConsumerTest {
 
@@ -47,6 +52,8 @@ public class JMSConsumerTest {
     private static final String HOST = server.getHostname();
 
     boolean val;
+
+    private static final Class<?> c = JMSConsumerTest.class;
 
     private static boolean runInServlet(String test) throws IOException {
 
@@ -99,6 +106,7 @@ public class JMSConsumerTest {
                                            "clientLTPAKeys/mykey.jks");
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
+        TestUtils.addDropinsWebApp(server, "JMSConsumer", "web");
         server.startServer("JMSConsumerTestClient.log");
         String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", waitFor);
@@ -424,10 +432,29 @@ public class JMSConsumerTest {
     @Mode(TestMode.FULL)
     @Test
     public void testRDC_BindingsAndTcpIp_SecOn() throws Exception {
+        final String bindingsXML = "120846_Bindings.xml";
 
-        server.stopServer();
-        server1.stopServer();
-        server.setServerConfigurationFile("120846_Bindings.xml");
+        try {
+            System.out.println("Stopping client server");
+            server.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("Stopping engine server");
+            server1.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (JakartaEE9Action.isActive()) {
+            RemoteFile file = server.getFileFromLibertyServerRoot("apps/jmsapp.ear");
+            Path appPath = Paths.get(file.getAbsolutePath());
+            JakartaEE9Action.transformApp(appPath);
+            Log.info(c, "testRDC_BindingsAndTcpIp_SecOn", "Transformed app " + appPath);
+        }
+
+        server.setServerConfigurationFile(bindingsXML);
         server1.startServer();
         String messageFromLog = server1.waitForStringInLog("CWWKF0011I.*",
                                                            server1.getMatchingLogFile("trace.log"));
@@ -451,8 +478,20 @@ public class JMSConsumerTest {
         }
         assertTrue("testRDC_B failed", strings != null && strings.size() == 1);
 
-        server1.stopServer();
-        server.stopServer();
+        try {
+            System.out.println("Stopping engine server");
+            server1.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("Stopping client server");
+            server.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println("Running testRDC_TcpIp_SecOn");
         server1.setServerConfigurationFile("JMSContext_Server.xml");
         server1.startServer();
@@ -460,7 +499,8 @@ public class JMSConsumerTest {
                                                     server1.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find the upload message in the new file",
                       messageFromLog);
-        server.setServerConfigurationFile("120846_Bindings.xml");
+
+        server.setServerConfigurationFile(bindingsXML);
         server.startServer();
         messageFromLog = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", messageFromLog);
@@ -477,8 +517,19 @@ public class JMSConsumerTest {
         }
         assertTrue("testRDC_TcpIp failed", strings != null && strings.size() == 1);
 
-        server1.stopServer();
-        server.stopServer();
+        try {
+            System.out.println("Stopping engine server");
+            server1.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("Stopping client server");
+            server.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
         server1.startServer();
@@ -861,12 +912,16 @@ public class JMSConsumerTest {
     @org.junit.AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping server");
+            System.out.println("Stopping client server");
             server.stopServer();
-            server1.stopServer();
-
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("Stopping engine server");
+            server1.stopServer();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

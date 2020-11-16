@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 import com.ibm.ws.security.utility.utils.StringStartsWithMatcher;
 
@@ -43,10 +44,11 @@ public class TLSProfilerTaskTest {
     private final String host = "--host=ibm.com";
     private final String port = "--port=443";
     private final String verbose = "--verbose";
+    private final IFileUtility fileUtil = mock.mock(IFileUtility.class);
 
     @Before
     public void setUp() {
-        tlsprofiler = new TLSProfilerTask("myScript");
+        tlsprofiler = new TLSProfilerTask(fileUtil, "myScript");
     }
 
     @After
@@ -73,6 +75,8 @@ public class TLSProfilerTaskTest {
     public void handleTask_HostAndPortArgs() {
         mock.checking(new Expectations() {
             {
+                allowing(fileUtil).getServersDirectory();
+                will(returnValue("/tmp/servers/"));
                 one(stdout).println(with(aStringStartsWith("Successful handshakes to the target host and port")));
                 allowing(stdout).println(with(aStringStartsWith("TLS")));
             }

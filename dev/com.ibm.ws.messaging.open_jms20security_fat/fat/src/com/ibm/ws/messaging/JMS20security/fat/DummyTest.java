@@ -10,19 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20security.fat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  */
-@Ignore //Porting from closed liberty not completed
 public class DummyTest {
     @Test
     public void testDummyJMS20Java7Fat() throws Exception {
-        // This is DUMMY JMS20 Fat test case just to make this test suite to
-        // report success
-        // in JDK 1.6 environment
+        // EMPTY
     }
 
 }

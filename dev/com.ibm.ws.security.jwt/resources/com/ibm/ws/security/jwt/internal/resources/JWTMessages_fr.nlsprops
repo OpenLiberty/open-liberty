@@ -329,3 +329,34 @@ JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenez un nouveau jeton pour l'un des AMR di
 BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configuration [{0}] sp\u00e9cifie l''algorithme de signature {1}, mais celui-ci n''est disponible que dans l''\u00e9dition b\u00eata. L''algorithme de signature {2} est utilis\u00e9 \u00e0 la place.
 BETA_SIGNATURE_ALGORITHM_USED.explanation=Il se peut que la prise en charge de l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message soit incompl\u00e8te ; par cons\u00e9quent, l'algorithme de signature ne peut \u00eatre utilis\u00e9 que dans l'\u00e9dition b\u00eata.
 BETA_SIGNATURE_ALGORITHM_USED.useraction=Configurez un algorithme de signature qui est pris en charge ou utilisez l'\u00e9dition b\u00eata de ce produit pour utiliser l'algorithme de signature qui est sp\u00e9cifi\u00e9 dans le message.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Le consommateur de jeton Web JSON (JWT) [{0}] a rencontr\u00e9 une erreur lors de l''extraction du contenu de la signature Web JSON (JWS) depuis le jeton JWE (JSON Web Encryption). {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Le jeton JWE est peut-\u00eatre incorrectement form\u00e9 ou des informations peuvent manquer. La cl\u00e9 de gestion des cl\u00e9s qui est utilis\u00e9e pour d\u00e9chiffrer le jeton JWE peut manquer ou ne pas parvenir \u00e0 d\u00e9chiffrer le jeton.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le jeton JWE est correctement form\u00e9. V\u00e9rifiez que la configuration du consommateur de jeton Web JSON (JWT) r\u00e9f\u00e9rence la cl\u00e9 de gestion des cl\u00e9s qui correspond \u00e0 la cl\u00e9 utilis\u00e9e pour chiffrer le jeton JWE.
+
+#
+# CWWKS6057E is available
+#
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) [{0}] ne peut pas cr\u00e9er de jeton JWE (JSON Web Encryption) car la cl\u00e9 de gestion des cl\u00e9s n''a pas \u00e9t\u00e9 fournie.
+KEY_MANAGEMENT_KEY_MISSING.explanation=La cl\u00e9 de gestion des cl\u00e9s est la cl\u00e9 utilis\u00e9e pour chiffrer la cl\u00e9 Content Encryption Key d'un jeton JWE. Vous devez sp\u00e9cifier une cl\u00e9 pour que le g\u00e9n\u00e9rateur JWT puisse cr\u00e9er des jetons JWE.
+KEY_MANAGEMENT_KEY_MISSING.useraction=V\u00e9rifiez qu'une cl\u00e9 a \u00e9t\u00e9 fournie \u00e0 l'API du g\u00e9n\u00e9rateur si le g\u00e9n\u00e9rateur doit cr\u00e9er des jetons JWE.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: L''attribut {1} manque dans la configuration du g\u00e9n\u00e9rateur JWT [{0}] ; par cons\u00e9quent, celle-ci ne peut pas cr\u00e9er de jeton JWE (JSON Web Encryption). Configurez l''attribut sp\u00e9cifi\u00e9 ou retirez les attributs {2} et {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=L'alias de gestion des cl\u00e9s est une cl\u00e9 utilis\u00e9e pour chiffrer la cl\u00e9 Content Encryption Key d'un jeton JWE. Vous devez sp\u00e9cifier un alias de cl\u00e9 pour que le g\u00e9n\u00e9rateur JWT puisse cr\u00e9er des jetons JWE.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Si le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) doit cr\u00e9er des jetons JWE, configurez l'attribut d'alias de gestion des cl\u00e9s. Si le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) ne doit pas cr\u00e9er de jeton JWE, retirez les autres attributs mentionn\u00e9s dans le message.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) [{0}] ne peut pas cr\u00e9er de jeton JWE (JSON Web Encryption). {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) a rencontr\u00e9 une erreur lors de la cr\u00e9ation du jeton JWE. Reportez-vous \u00e0 l'erreur incluse dans le message pour plus d'informations.
+ERROR_BUILDING_SIGNED_JWE.useraction=Reportez-vous \u00e0 l'erreur incluse dans le message pour plus d'informations.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) [{0}] ne peut pas cr\u00e9er de jeton JWE (JSON Web Encryption) car la cl\u00e9 de gestion des cl\u00e9s est introuvable. L''alias de cl\u00e9 de gestion des cl\u00e9s est [{1}] et le magasin de cl\u00e9s de confiance est [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=La cl\u00e9 de gestion des cl\u00e9s est la cl\u00e9 utilis\u00e9e pour chiffrer la cl\u00e9 Content Encryption Key d'un jeton JWE. Vous devez sp\u00e9cifier une cl\u00e9 de gestion des cl\u00e9s pour que le g\u00e9n\u00e9rateur JWT puisse cr\u00e9er des jetons JWE. Vous pouvez sp\u00e9cifier une cl\u00e9 de gestion des cl\u00e9s en utilisant l'alias de cl\u00e9 et les valeurs de magasin de cl\u00e9s configur\u00e9es qui sont sp\u00e9cifi\u00e9es dans le message ou en utilisant l'API JwtBuilder.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=V\u00e9rifiez qu'une cl\u00e9 associ\u00e9e \u00e0 l'alias sp\u00e9cifi\u00e9 dans le message existe dans le magasin de cl\u00e9s mentionn\u00e9. Si l'API JwtBuilder est utilis\u00e9e, assurez-vous qu'une cl\u00e9 de gestion des cl\u00e9s est fournie.

@@ -12,7 +12,7 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -26,7 +26,7 @@ public class PriorityConverterMap {
 
     private static final TraceComponent tc = Tr.register(PriorityConverterMap.class);
 
-    private final Map<Type, PriorityConverter> converters = new HashMap<>();
+    private final Map<Type, PriorityConverter> converters = new LinkedHashMap<>();
     private boolean unmodifiable = false;
 
     /**

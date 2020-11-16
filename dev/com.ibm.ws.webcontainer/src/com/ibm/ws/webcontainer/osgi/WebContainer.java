@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -229,7 +230,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     private static boolean serverStopping = false;
 
-    private volatile int modulesStarting=0;
+    private final AtomicInteger modulesStarting = new AtomicInteger(0);
     
     // Servlet 4.0
     private URIMatcherFactory uriMatcherFactory;
@@ -350,10 +351,10 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "waitForApplicationInitialization: Number of modules starting = " + modulesStarting );
+            Tr.debug(tc, "waitForApplicationInitialization: Number of modules starting = " + modulesStarting.get() );
         }    
         // if any modules are still starting wait for up to 20 seconds for them to complete.
-        for (int  i=0 ; i<40 && modulesStarting >0 ; i++) {
+        for (int  i=0 ; i<40 && modulesStarting.get() >0 ; i++) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -901,10 +902,10 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         // Track number of modules starting. Rarely a server can begin shutting down while a module is still starting which
         // can result in an NPE. By counting modules in start, if there are module still starting during server quiesce the
         // webcontainer can hold server start while modules finish starting.
-        modulesStarting++;
+        int starting = modulesStarting.incrementAndGet();
         Future<Boolean> result;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "startModule: " + webModule.getName() + " " + webModule.getContextRoot() + ", modulesStarting = " + modulesStarting);
+            Tr.entry(tc, "startModule: " + webModule.getName() + " " + webModule.getContextRoot() + ", modulesStarting = " + starting);
         }
         try {
             
@@ -1004,10 +1005,10 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             this.stopModule(moduleInfo);
             throw new StateChangeException(e);
         } finally {
-            modulesStarting--;
+            starting = modulesStarting.decrementAndGet();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "startModule: ", "modulesStarting = " + modulesStarting);
+            Tr.exit(tc, "startModule: ", "modulesStarting = " + starting);
         }
         return result;
     }

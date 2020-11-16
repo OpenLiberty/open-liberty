@@ -1,0 +1,95 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.spnego;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import test.common.SharedOutputManager;
+
+/**
+ *
+ */
+public class ErrorPageConfigTest {
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    @Rule
+    public TestRule managerRule = outputMgr;
+
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    @After
+    public void tearDown() {
+        mock.assertIsSatisfied();
+        outputMgr.resetStreams();
+    }
+
+    @Test
+    public void testNtlmTokenReceivedErrorPage_default() {
+        final String methodName = "testNtlmTokenReceivedErrorPage_default";
+        final ErrorPageConfig ErrorPageConfig = new ErrorPageConfig(null, null);
+        try {
+            assertTrue("Should contain the default error page CWWKS4307E:", ErrorPageConfig.getNTLMTokenReceivedPage().contains("CWWKS4307E:"));
+            assertEquals("Content type should text/html", "text/html", ErrorPageConfig.getNtlmTokenReceivedPageContentType());
+            assertEquals("Char set should be UTF-8", "UTF-8", ErrorPageConfig.getNtlmTokenReceivedPageCharset());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetNTLMTokenReceivedPage_custom() {
+        final String methodName = "testGetNTLMTokenReceivedPage_custom";
+        final ErrorPageConfig ErrorPageConfig = new ErrorPageConfig(null, "myErrorPage");
+        try {
+            assertNotNull("error page should not be null", ErrorPageConfig.getNTLMTokenReceivedPage());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testSpnegoNotSupportedErrorPage_default() {
+        final String methodName = "testSpnegoNotSupportedErrorPage_default";
+        final ErrorPageConfig ErrorPageConfig = new ErrorPageConfig(null, null);
+        try {
+            assertTrue("Should contain the default error page CWWKS4306E:", ErrorPageConfig.getSpnegoNotSupportedPage().contains("CWWKS4306E:"));
+            assertEquals("Content type should text/html", "text/html", ErrorPageConfig.getSpnegoNotSupportedPageContentType());
+            assertEquals("Char set should be UTF-8", "UTF-8", ErrorPageConfig.getSpnegoNotSupportedPageCharset());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testGetSpnegoNotSupportedPage_custom() {
+        final String methodName = "testGetSpnegoNotSupportedPage_custom";
+        final ErrorPageConfig ErrorPageConfig = new ErrorPageConfig("myErrorPage", null);
+        try {
+            assertNotNull("error page should not be null", ErrorPageConfig.getSpnegoNotSupportedPage());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+}

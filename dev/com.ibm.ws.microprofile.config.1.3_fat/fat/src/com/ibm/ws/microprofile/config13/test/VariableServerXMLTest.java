@@ -88,9 +88,9 @@ public class VariableServerXMLTest extends FATServletClient {
      * @param filename
      * @throws Exception
      */
-    private static void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
+    private static void copyConfigFileToLibertyServerRoot(String srcFile, String destFile) throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot(filename);
+        server.setServerConfigurationFile(srcFile, destFile);
 
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
 
@@ -99,7 +99,7 @@ public class VariableServerXMLTest extends FATServletClient {
 
     @Before
     public void resetConfigFile() throws Exception {
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml", "variableServerXMLApp.xml");
     }
 
     @Test
@@ -109,7 +109,7 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
         //update the config
-        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml", "variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesAfterTest");
@@ -122,7 +122,7 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
 
         //update the config
-        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml", "variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesAfterTest");

@@ -257,9 +257,13 @@ UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.explanation=A 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR.useraction=Especifique uma vers\u00e3o compat\u00edvel dos recursos configurados que causaram o conflito no arquivo server.xml, e certifique-se de que o arquivo server.xml use recursos Jakarta EE ou Java EE, mas n\u00e3o ambos.
 
 #CWWK0045E {0} = feature appearing in server xml; {1} = a real feature def name which is a probable match for name 0.
-MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Uma defini\u00e7\u00e3o de recurso existente, {1}, \u00e9 uma correspond\u00eancia poss\u00edvel para o recurso {0} que n\u00e3o foi localizado.
+MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Uma defini\u00e7\u00e3o de recurso existente, {1}, \u00e9 uma correspond\u00eancia poss\u00edvel para o recurso {0} que n\u00e3o foi localizado. 
 MISSING_FEATURE_HAS_ALT_NAME.explanation=O gerenciador de recursos n\u00e3o pode localizar uma defini\u00e7\u00e3o para um recurso especificado na configura\u00e7\u00e3o do servidor. O nome especificado pode corresponder a uma defini\u00e7\u00e3o de recurso existente.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Considere especificar a defini\u00e7\u00e3o de recurso existente nomeado em vez disso. 
+
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: A configura\u00e7\u00e3o inclui uma combina\u00e7\u00e3o incompat\u00edvel de recursos. Como resultado, o gerenciador de recursos n\u00e3o instalou nenhum recurso.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=A configura\u00e7\u00e3o inclui uma combina\u00e7\u00e3o incompat\u00edvel de recursos. Para evitar um comportamento inv\u00e1lido, o gerenciador de recursos desativou todos os recursos.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Especifique uma vers\u00e3o diferente dos recursos configurados que causaram o conflito.
 
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 

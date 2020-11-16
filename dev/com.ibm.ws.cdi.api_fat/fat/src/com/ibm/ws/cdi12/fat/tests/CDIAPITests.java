@@ -148,6 +148,12 @@ public class CDIAPITests extends FATServletClient {
     }
 
     @Test
+    @Mode(TestMode.LITE)
+    public void testCDICurrentViaMES() throws Exception {
+        runTest(server, CDI_CURRENT_APP_NAME, "testCDICurrentViaMES");
+    }
+
+    @Test
     @Mode(TestMode.FULL)
     public void testConversationFilter() throws Exception {
         WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);

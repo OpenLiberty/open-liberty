@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import com.ibm.ws.webcontainer.security.oauth20.OAuth20Service;
 import com.ibm.ws.webcontainer.security.openid20.OpenidClientService;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServer;
+import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
@@ -74,6 +75,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private final AtomicServiceReference<OpenidClientService> openIdClientServiceRef;
     private final AtomicServiceReference<OidcServer> oidcServerRef;
     private final AtomicServiceReference<OidcClient> oidcClientRef;
+    private final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
     private WebProviderAuthenticatorHelper authHelper;
     private ReferrerURLCookieHandler referrerURLCookieHandler = null;
     private WebAppSecurityConfig webAppSecurityConfig = null;
@@ -88,7 +90,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                                          AtomicServiceReference<OpenidClientService> openIdClientServiceRef,
                                          AtomicServiceReference<OidcServer> oidcServerRef,
                                          AtomicServiceReference<OidcClient> oidcClientRef,
-                                         ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
+                                         ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
+                                         AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
 
         this.securityServiceRef = securityServiceRef;
         this.taiServiceRef = taiServiceRef;
@@ -100,6 +103,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         this.oidcServerRef = oidcServerRef;
         this.openIdClientServiceRef = openIdClientServiceRef;
         this.oidcClientRef = oidcClientRef;
+        this.ssoAuthFilterRef = ssoAuthFilterRef;
 
         authHelper = new WebProviderAuthenticatorHelper(securityServiceRef);
         referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecurityConfig);
@@ -809,6 +813,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         } else {
             cookieHelper = new SSOCookieHelperImpl(webAppSecurityConfig);
         }
-        return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper);
+        return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper, ssoAuthFilterRef);
     }
 }

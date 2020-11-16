@@ -1,0 +1,6 @@
+com.ibm.ws.transaction.db_fat
+com.ibm.ws.transaction.recovery_fat.1
+com.ibm.ws.transaction.recovery_fat.2
+com.ibm.ws.transaction.recovery_fat.3
+com.ibm.ws.tx.jta_fat
+com.ibm.ws.tx.jta_fat_hibernate

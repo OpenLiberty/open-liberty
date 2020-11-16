@@ -25,9 +25,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +57,7 @@ import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.jwt.utils.Constants;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -99,6 +98,7 @@ public class ConsumerUtilTest {
     private static final String MSG_JWT_CONSUMER_MALFORMED_CLAIM = "CWWKS6043E";
     private static final String MSG_JWT_IAT_AFTER_CURRENT_TIME = "CWWKS6044E";
     private static final String MSG_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
+    private static final String MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS = "CWWKS6063E";
 
     private static final String JOSE_EXCEPTION = "org.jose4j.lang.JoseException";
     private static final String PARSE_EXCEPTION = "org.jose4j.json.internal.json_simple.parser.ParseException";
@@ -188,8 +188,8 @@ public class ConsumerUtilTest {
     public void testValidateClaimsReadsConfigProperty() {
         boolean valid = false;
         TestConsumerUtil01 cu = new TestConsumerUtil01();
-        Map<String, String> propsMap = new HashMap<String, String>();
-        propsMap.put(ConsumerUtil.ISSUER, "issuerFromMap");
+        MpConfigProperties propsMap = new MpConfigProperties();
+        propsMap.put(MpConfigProperties.ISSUER, "issuerFromMap");
         cu.setMpConfigProps(propsMap);
         try {
             cu.validateClaims(jwtClaims, jwtContext, null);
@@ -349,305 +349,6 @@ public class ConsumerUtilTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
-    }
-
-    /********************************************* getConfiguredAudiences *********************************************/
-
-    @Test
-    public void test_getConfiguredAudiences_noAudiencesConfigured() {
-        mockery.checking(new Expectations() {
-            {
-                allowing(jwtConfig).getAudiences();
-                will(returnValue(null));
-            }
-        });
-        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
-        assertNull("Should not have gotten any audiences, but got " + result, result);
-    }
-
-    @Test
-    public void test_getConfiguredAudiences_audiencesInServerConfig_emptyList() {
-        final List<String> serverAudiences = new ArrayList<String>();
-        mockery.checking(new Expectations() {
-            {
-                allowing(jwtConfig).getAudiences();
-                will(returnValue(serverAudiences));
-            }
-        });
-        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
-        assertEquals("Returned audiences did not match configured value.", serverAudiences, result);
-    }
-
-    @Test
-    public void test_getConfiguredAudiences_audiencesInServerConfig_nonEmptyList() {
-        final List<String> serverAudiences = new ArrayList<String>();
-        serverAudiences.add("1");
-        serverAudiences.add("2 2");
-        serverAudiences.add(" three ");
-        mockery.checking(new Expectations() {
-            {
-                allowing(jwtConfig).getAudiences();
-                will(returnValue(serverAudiences));
-            }
-        });
-        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
-        assertEquals("Returned audiences did not match configured value.", serverAudiences, result);
-    }
-
-    @Test
-    public void test_getConfiguredAudiences_audiencesInMpConfig() {
-        String audience = "http://www.example.com";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience);
-        consumerUtil.setMpConfigProps(props);
-        mockery.checking(new Expectations() {
-            {
-                allowing(jwtConfig).getAudiences();
-                will(returnValue(null));
-            }
-        });
-
-        List<String> result = consumerUtil.getConfiguredAudiences(jwtConfig);
-        assertEquals("Did not get the expected number of audiences. Got: " + result, 1, result.size());
-        assertTrue("List of audiences did not contain [" + audience + "]. Audiences were: " + result, result.contains(audience));
-    }
-
-    /********************************************* getAudiencesFromMpConfigProps *********************************************/
-
-    @Test
-    public void test_getAudiencesFromMpConfigProps_noMpConfigProps() {
-        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
-        assertNull("Should not have gotten any audiences, but got " + result, result);
-    }
-
-    @Test
-    public void test_getAudiencesFromMpConfigProps_missingAudiences() {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.ISSUER, "blah");
-        consumerUtil.setMpConfigProps(props);
-
-        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
-        assertNull("Should not have gotten any audiences, but got " + result, result);
-    }
-
-    @Test
-    public void test_getAudiencesFromMpConfigProps_singleAudience() {
-        String audience = "my audience";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience);
-        consumerUtil.setMpConfigProps(props);
-
-        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
-        assertNotNull("Should have gotten a non-null list of audiences.", result);
-        assertEquals("Did not get the expected number of audiences. Got: " + result, 1, result.size());
-        assertTrue("List of audiences did not contain [" + audience + "]. Audiences were: " + result, result.contains(audience));
-    }
-
-    @Test
-    public void test_getAudiencesFromMpConfigProps_multipleAudiences() {
-        String audience1 = "aud1";
-        String audience2 = " aud 2";
-        String audience3 = "aud 3 ";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.VERIFY_AUDIENCES, audience1 + "," + audience2 + "," + audience3);
-        consumerUtil.setMpConfigProps(props);
-
-        List<String> result = consumerUtil.getAudiencesFromMpConfigProps();
-        assertNotNull("Should have gotten a non-null list of audiences.", result);
-        assertEquals("Did not get the expected number of audiences. Got: " + result, 3, result.size());
-        assertTrue("List of audiences did not contain [" + audience1 + "]. Audiences were: " + result, result.contains(audience1));
-        assertTrue("List of audiences did not contain [" + audience2 + "]. Audiences were: " + result, result.contains(audience2));
-        assertTrue("List of audiences did not contain [" + audience3 + "]. Audiences were: " + result, result.contains(audience3));
-    }
-
-    /********************************************* getConfiguredSignatureAlgorithm *********************************************/
-
-    @Test
-    public void test_getConfiguredSignatureAlgorithm_sigAlgInServerConfig() {
-        final String serverConfigAlg = "RS512";
-        mockery.checking(new Expectations() {
-            {
-                one(jwtConfig).getSignatureAlgorithm();
-                will(returnValue(serverConfigAlg));
-            }
-        });
-        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
-        assertEquals("Did not get expected signature algorithm value.", serverConfigAlg, result);
-    }
-
-    @Test
-    public void test_getConfiguredSignatureAlgorithm_sigAlgMissingFromServerConfigAndMpConfig() {
-        mockery.checking(new Expectations() {
-            {
-                one(jwtConfig).getSignatureAlgorithm();
-                will(returnValue(null));
-            }
-        });
-        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
-        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
-    }
-
-    @Test
-    public void test_getConfiguredSignatureAlgorithm_mpConfigPropsUnsupportedAlg() {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.PUBLIC_KEY_ALG, "NO256");
-        consumerUtil.setMpConfigProps(props);
-
-        mockery.checking(new Expectations() {
-            {
-                one(jwtConfig).getSignatureAlgorithm();
-                will(returnValue(null));
-            }
-        });
-        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
-        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
-    }
-
-    @Test
-    public void test_getConfiguredSignatureAlgorithm_mpConfigPropsSupportedAlg() {
-        String mpConfigSigAlg = "HS512";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.PUBLIC_KEY_ALG, mpConfigSigAlg);
-        consumerUtil.setMpConfigProps(props);
-
-        mockery.checking(new Expectations() {
-            {
-                one(jwtConfig).getSignatureAlgorithm();
-                will(returnValue(null));
-            }
-        });
-        String result = consumerUtil.getConfiguredSignatureAlgorithm(jwtConfig);
-        assertEquals("Did not get expected signature algorithm value.", mpConfigSigAlg, result);
-    }
-
-    /****************************** getSignatureAlgorithmFromMpConfigProps ******************************/
-
-    @Test
-    public void test_getSignatureAlgorithmFromMpConfigProps_noConfigProps() {
-        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
-        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
-    }
-
-    @Test
-    public void test_getSignatureAlgorithmFromMpConfigProps_emptyConfigProps() {
-        Map<String, String> props = new HashMap<String, String>();
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
-        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
-    }
-
-    @Test
-    public void test_getSignatureAlgorithmFromMpConfigProps_unsupportedAlgorithm() {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.PUBLIC_KEY_ALG, "unknown algorithm");
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
-        assertEquals("Did not get expected default signature algorithm value.", RS256, result);
-    }
-
-    @Test
-    public void test_getSignatureAlgorithmFromMpConfigProps() {
-        String knownAlgorithm = "ES384";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(ConsumerUtil.PUBLIC_KEY_ALG, knownAlgorithm);
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getSignatureAlgorithmFromMpConfigProps();
-        assertEquals("Did not get expected signature algorithm value.", knownAlgorithm, result);
-    }
-
-    /********************************************* getMpConfigProperty *********************************************/
-
-    @Test
-    public void test_getMpConfigProperty_noPropsSet() {
-        String propName = ConsumerUtil.PUBLIC_KEY_ALG;
-        String result = consumerUtil.getMpConfigProperty(propName);
-        assertNull("Returned value should have been null but was [" + result + "].", result);
-    }
-
-    @Test
-    public void test_getMpConfigProperty_nullPropName() {
-        String propName = null;
-        Map<String, String> props = new HashMap<String, String>();
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getMpConfigProperty(propName);
-        assertNull("Returned value should have been null but was [" + result + "].", result);
-    }
-
-    @Test
-    public void test_getMpConfigProperty_missingProperty() {
-        String propName = "some prop";
-        Map<String, String> props = new HashMap<String, String>();
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getMpConfigProperty(propName);
-        assertNull("Returned value should have been null but was [" + result + "].", result);
-    }
-
-    @Test
-    public void test_getMpConfigProperty() {
-        String propName = "some prop";
-        String propValue = "expected prop value";
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(propName, propValue);
-        consumerUtil.setMpConfigProps(props);
-
-        String result = consumerUtil.getMpConfigProperty(propName);
-        assertEquals("Returned value did not match expected value.", propValue, result);
-    }
-
-    /********************************************* isSupportedSignatureAlgorithm *********************************************/
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_nullAlg() {
-        String sigAlg = null;
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_emptyAlg() {
-        String sigAlg = "";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_rs2560() {
-        String sigAlg = "RS2560";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_rs256() {
-        String sigAlg = "RS256";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_rs1024() {
-        String sigAlg = "RS1024";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertFalse("Input algorithm [" + sigAlg + "] should not have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_hs384() {
-        String sigAlg = "HS384";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
-    }
-
-    @Test
-    public void test_isSupportedSignatureAlgorithm_es512() {
-        String sigAlg = "ES512";
-        boolean result = consumerUtil.isSupportedSignatureAlgorithm(sigAlg);
-        assertTrue("Input algorithm [" + sigAlg + "] should have been considered supported.", result);
     }
 
     /********************************************* getSharedSecretKey *********************************************/
@@ -876,18 +577,20 @@ public class ConsumerUtilTest {
     public void testParseJwtWithoutValidation_singlePartTokenString() {
         try {
             final String tokenString = "test";
+            final String configId = testName.getMethodName();
             try {
                 mockery.checking(new Expectations() {
                     {
-                        one(jwtConfig).getClockSkew();
-                        will(returnValue(0L));
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
+                        one(jwtConfig).getId();
+                        will(returnValue(configId));
                     }
                 });
                 JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
-                // TODO - anything we can wrap this open source exception with?
-                validateException(e, JOSE_EXCEPTION + ".+" + INVALID_COMPACT_SERIALIZATION + ".+" + tokenString);
+                validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -901,18 +604,20 @@ public class ConsumerUtilTest {
     public void testParseJwtWithoutValidation_twoPartTokenString() {
         try {
             final String tokenString = "test.test";
+            final String configId = testName.getMethodName();
             try {
                 mockery.checking(new Expectations() {
                     {
-                        one(jwtConfig).getClockSkew();
-                        will(returnValue(0L));
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
+                        one(jwtConfig).getId();
+                        will(returnValue(configId));
                     }
                 });
                 JwtContext context = consumerUtil.parseJwtWithoutValidation(tokenString, jwtConfig);
                 fail("Should have thrown Exception but did not. Got context: " + context);
             } catch (Exception e) {
-                // TODO - anything we can wrap this open source exception with?
-                validateException(e, JOSE_EXCEPTION + ".+" + INVALID_COMPACT_SERIALIZATION + ".+" + tokenString);
+                validateException(e, MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS + ".+" + configId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -929,6 +634,8 @@ public class ConsumerUtilTest {
             try {
                 mockery.checking(new Expectations() {
                     {
+                        allowing(jwtConfig).getKeyManagementKeyAlias();
+                        will(returnValue(null));
                         one(jwtConfig).getClockSkew();
                         will(returnValue(0L));
                     }

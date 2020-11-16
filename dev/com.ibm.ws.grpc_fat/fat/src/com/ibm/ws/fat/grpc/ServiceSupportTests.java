@@ -296,11 +296,14 @@ public class ServiceSupportTests extends FATServletClient {
 
         grpcServer.setMarkToEndOfLog();
 
+        // sleep for 1s to ensure that the following app "update" will cause the war timestamp to change
+        Thread.sleep(1000);
+
         // Add the same application to the dropins folder again so that it is updated
         ShrinkHelper.exportDropinAppToServer(grpcServer, fbsApp, options);
 
         // Make sure the beer service has started
-        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
+        appStarted = grpcServer.waitForStringInLogUsingMark("CWWKZ0001I.*FavoriteBeerService|CWWKZ0003I.*FavoriteBeerService", APP_STARTUP_TIMEOUT);
         if (appStarted == null) {
             Assert.fail(c + ": application " + "FavoriteBeerService" + " failed to update within " + APP_STARTUP_TIMEOUT + "ms");
         }

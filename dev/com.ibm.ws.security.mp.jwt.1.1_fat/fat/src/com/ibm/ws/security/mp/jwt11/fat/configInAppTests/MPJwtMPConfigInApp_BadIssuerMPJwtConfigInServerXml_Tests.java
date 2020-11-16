@@ -48,6 +48,7 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
         // let's pick a default config - use a pemFile located in the app
         MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.PemFile, MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigInApp_badServerXmlIssuer.xml", mpConfigSettings, MPConfigLocation.IN_APP);
+        skipRestoreServerTracker.addServer(resourceServer);
 
     }
 
@@ -64,8 +65,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_GoodMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 
@@ -80,8 +81,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_GoodMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 
@@ -96,8 +97,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_GoodIssuerInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 
@@ -112,8 +113,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_GoodIssuerInMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.GOOD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 
@@ -128,8 +129,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_BadIssuerInMPConfigInMetaInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 
@@ -144,8 +145,8 @@ public class MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests extends MP
     public void MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_BadIssuerInMPConfigUnderWebInf_test() throws Exception {
 
         standard11TestFlow(resourceServer, MpJwtFatConstants.BAD_ISSUER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
-                         MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
-                         setBadIssuerExpectations(resourceServer));
+                           MpJwtFatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MpJwtFatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 

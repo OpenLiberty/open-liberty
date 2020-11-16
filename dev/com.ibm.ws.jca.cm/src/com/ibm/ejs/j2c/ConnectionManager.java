@@ -477,8 +477,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
-            if (_pm != null && (!(_pm.gConfigProps.isSmartHandleSupport() && shareable))) {
-                HandleList hl = null;
+            if (_pm != null && _pm.gConfigProps.getEnableHandleList() && (!(_pm.gConfigProps.isSmartHandleSupport() && shareable))) {
+                HandleList hl = ConnectionHandleManager.addHandle(new HCMDetails(this, rVal, mcWrapper, subj, requestInfo));
 
                 //  store the handle list in the MCWrapper
                 mcWrapper.addToHandleList(rVal, hl);
@@ -1092,6 +1092,212 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             Tr.exit(this, tc, "initializeForUOW");
         }
 
+    }
+
+    // ========================================================
+    // Methods Called on us by the ConnectionHandleManager
+    // ========================================================
+
+    /**
+     * This method will reassociate a handle with an appropriate ManagedConnection
+     * and enlist it appropriately for the current UOW if the CM is configured for
+     * sharable connections. If the CM is configured for unShared connections,
+     * then this method will simply ensure the connection is enlisted with the
+     * current UOW (for Local and XA capable resource adapters).
+     *
+     * If the RA supports smart handles (smartHandlesSupport == true), then
+     * we should not do any re-associating of the connection handles to MCs.  This
+     * will be taken care of by the Handle via the CM.associateConnection() method
+     * invocation when they need to shift from the "inactive" state to an "active"
+     * state.
+     *
+     * @param hcmDetails Contains all the required information needed to either
+     *                       find a new or used connection, and/or enlist that connection
+     *                       with the current UOW scope.
+     */
+    public void reAssociate(HCMDetails hcmDetails) throws ResourceException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "reAssociate");
+
+        if (shareable) {
+            // CM is configured for sharable connections.
+
+            if (hcmDetails._mcWrapper.pm.gConfigProps.isSmartHandleSupport()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "reAssociate", "RA supports smart handles.  Nothing to do.");
+                return;
+            } else {
+                UOWCurrent uowCurrent = (UOWCurrent) _pm.connectorSvc.transactionManager;
+                UOWCoordinator uowCoord = uowCurrent == null ? null : uowCurrent.getUOWCoord();
+                MCWrapper mcWrapper = null;
+
+                Object credTokenObj = null;
+                try {
+                    // Begin processing to get connection
+                    // Perform any security setup that may be needed
+                    // before we proceed to get a connection.
+
+                    credTokenObj = securityHelper.beforeGettingConnection(hcmDetails._subject, hcmDetails._cRequestInfo);
+
+                    // Get an appropriate wrapped ManangedConnection.
+                    mcWrapper = allocateMCWrapper(hcmDetails._mcWrapper.get_managedConnectionFactory(),
+                                                  hcmDetails._cRequestInfo,
+                                                  hcmDetails._subject,
+                                                  uowCoord);
+                } finally {
+                    // A "finally" clause is implemented to ensure
+                    // any thread identity pushed to the OS
+                    // thread is removed and the original identity
+                    // is restored.
+                    if (credTokenObj != null) {
+                        securityHelper.afterGettingConnection(hcmDetails._subject, hcmDetails._cRequestInfo, credTokenObj);
+                    }
+                }
+
+                involveMCInTran(mcWrapper, uowCoord, hcmDetails._cm);
+
+                // We need to reassociate the handle which was passed in with the new ManagedConnnection.
+                reassociateConnectionHandle(hcmDetails._handle,
+                                            hcmDetails._mcWrapper,
+                                            mcWrapper,
+                                            uowCoord);
+                // Next update the mc which is in the mcfDetails object so that it is associated with the
+                // new managed connection.
+                hcmDetails._mcWrapper = mcWrapper;
+            }
+        } else {
+            // CM is configured for unsharable connections.
+
+            // We need to check here
+            // to see if the ManagedConnection which was passed into this method
+            // is already associated with the current UOW.  If so, there is
+            // no work to do.  If NOT, then we need to enlist it here.
+            //
+            // NOTE: since this is the unShared connection case we assume a
+            //  1 to 1 mapping between handle and managedConnection.
+            //
+            // Since NoTransaction wrappers will be "involved in a transaction" until all of its
+            // handles are closed, we need to make this special check on the "else" leg.  We do not
+            // want or need to check if the UOW is the still the same as the one saved in the
+            // wrapper when dealing with NoTransaction wrappers (since we no longer register
+            // for synchronization).
+
+            if (!hcmDetails._mcWrapper.involvedInTransaction()) {
+                // The Managed connection for this handle is not currently associated with a UOW.
+                // Associate it with the current UOW if appropriate.
+                // First of all, we need to re-initialize the UOWCoordinator that is presently in the
+                //   wrapper.  This would normally by null, but why check if we always have to update
+                //   it anyway.
+
+                hcmDetails._mcWrapper.updateUOWCoordinator();
+                initializeForUOW(hcmDetails._mcWrapper, false);
+            } else if (hcmDetails._mcWrapper.getTranWrapperId() != MCWrapper.NOTXWRAPPER) {
+                // The Managed connection for this handle is currently associated with a UOW.
+                // Verify that the UOW it's currently associated with is the same as the current UOW
+                // on the thread.
+                UOWCurrent uowCurrent = (UOWCurrent) _pm.connectorSvc.transactionManager;
+                UOWCoordinator uowCoord = uowCurrent == null ? null : uowCurrent.getUOWCoord();
+                if (hcmDetails._mcWrapper.getUOWCoordinator() == uowCoord) {
+                    // Good to go.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(tc, "reAssociate - nothing to do");
+                    return;
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"A nested transaction was started but this application still has a reference to an open connection that in enlisted in the parent transaction which is currently suspended.");
+                        Tr.debug(tc,"This is not an error but this connection handle should not be used until the application ends the nested transaction and returns control to the partent transaction.");
+                        Tr.debug(tc,"Open connection information is: ", hcmDetails._mcWrapper);
+                    }
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            Tr.exit(tc, "reAssociate");
+    }
+
+    /**
+     * This method will "Park" a handle. Parking is only done for Sharable connections.
+     * Parking consisting of getting a connection to park against from the pool,
+     * we plan on using one connection per pool, and associating the handle with that
+     * connection.  The idea is that the parked connection will never be used, rather,
+     * a later call to reAssociate will reassign the handle to an appropriate, usable,
+     * connection.
+     *
+     * If the RA supports smart handles (smartHandlesSupport == true), then we should
+     * not be doing any parking of the connection handles.  We will leave the handles
+     * associated with the MC and let the cleanup() processing put them into an
+     * "inactive" state.  The Handle will then call back via the CM.associateConnection()
+     * method to re-activate the Handle.
+     *
+     * @param hcmdetails  Passed in because it contains the handle which we need to park.
+     */
+    public void parkHandle(HCMDetails hcmDetails) throws ResourceException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "parkHandle", hcmDetails._handle);
+
+        if (handleToThreadMap != null) {
+            handleToThreadMap.clear();
+            handleToCMDMap.clear();
+        }
+
+        if (!shareable) {
+            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle: non-sharable connection. Nothing to do.");
+            return;
+        }
+        if (hcmDetails._mcWrapper.gConfigProps.isSmartHandleSupport()) {
+            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle: RA supports smart handles. Nothing to do.");
+            return;
+        }
+        else {
+            if (TraceComponent.isAnyTracingEnabled()  && tc.isDebugEnabled())
+                Tr.debug(tc, "parkHandle: RA doesn't support smart handles. Proceed with parkHandle");
+        }
+
+        MCWrapper parkingMCWrapper = null;
+        MCWrapper fromMCWrapper = hcmDetails._mcWrapper;
+        try {
+            parkingMCWrapper = (MCWrapper)(fromMCWrapper.pm.getParkedConnection());
+
+            if (parkingMCWrapper == null) {
+                Tr.error(tc,"NULL_MANAGED_CONNECTION_J2CA0015", fromMCWrapper.gConfigProps.cfName);
+                throw new ResourceException("PoolManager returned null Parked ManagedConnection");
+            }
+
+            // Need to synchronize here in case a Transaction Timeout may be going on at the same time.
+            parkingMCWrapper.associateConnection(hcmDetails._handle, fromMCWrapper);
+        } catch (ResourceException e) {
+            FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "966", this);
+            Tr.error(tc,"FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName});
+            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle", e);
+            throw e;
+        } catch (Exception e) {
+            FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "973", this);
+            Tr.error(tc,"FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName});
+            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle", e);
+            ResourceException re = new ResourceException("parkHandle: Caught an Exception from mc.associateConnection().");
+            re.initCause(e);
+            throw re;
+        }
+
+        if (fromMCWrapper.getHandleCount() == 0) {
+            if (!fromMCWrapper.involvedInTransaction()) {
+                // The ManagedConnection is not associated with a transactional
+                // context so return it to the pool.
+                fromMCWrapper.releaseToPoolManager();
+            }
+        }
+
+        // Next update the mc which is in the mcfDetails object so that it is associated with the
+        // new managed connection.
+        hcmDetails._mcWrapper = parkingMCWrapper;
+
+        if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            Tr.exit(tc, "parkHandle");
     }
 
     /**

@@ -10,16 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.utility.tasks;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.security.Security;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 
+import org.apache.commons.io.FilenameUtils;
+
+import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 
@@ -32,11 +39,14 @@ public class TLSProfilerTask extends BaseCommandTask {
     private static final String ARG_PORT = "--port";
     private static final String ARG_V = "--v";
     private static final String ARG_VERBOSE = "--verbose";
-    private static final List<String> ARG_TABLE = Arrays.asList(ARG_HOST, ARG_PORT, ARG_V, ARG_VERBOSE);
+    private static final String ARG_FILE = "--file";
+    private static final List<String> ARG_TABLE = Arrays.asList(ARG_HOST, ARG_PORT, ARG_V, ARG_VERBOSE, ARG_FILE);
     private static List<String> resultLabel = new ArrayList<String>();
+    private final IFileUtility fileUtility;
 
-    public TLSProfilerTask(String scriptName) {
+    public TLSProfilerTask(IFileUtility fileUtil, String scriptName) {
         super(scriptName);
+        fileUtility = fileUtil;
     }
 
     /** {@inheritDoc} */
@@ -67,7 +77,10 @@ public class TLSProfilerTask extends BaseCommandTask {
         validateArgumentList(args, Arrays.asList(new String[] { ARG_V, ARG_VERBOSE }));
         boolean verbose = checkVerboseArgs(args);
         String host = getArgumentValue(ARG_HOST, args, null);
+        String fileArg = getArgumentValue(ARG_FILE, args, null);
         int port = Integer.parseInt(getArgumentValue(ARG_PORT, args, null));
+
+        File file = generateConfigFileName(fileUtility.getServersDirectory(), fileArg);
 
         List<String> disabledList = new ArrayList<String>();
 
@@ -211,10 +224,51 @@ public class TLSProfilerTask extends BaseCommandTask {
                 }
             }
         }
+
+        String result = "";
         for (String line : resultLabel) {
-            stdout.println(line);
+            result += line + "\n";
         }
+        if (file != null) {
+            stdout.println("Writing file to: " + file.getAbsolutePath());
+            fileUtility.createParentDirectory(stdout, file);
+            fileUtility.writeToFile(stderr, result, file);
+        } else {
+            stdout.println(result);
+        }
+
         return SecurityUtilityReturnCodes.OK;
+    }
+
+    protected File generateConfigFileName(String serverDir, String targetFilepath) {
+        // if no file path was provided, create the config file in the server directory
+        if (targetFilepath == null || targetFilepath.equals("")) {
+            return null;
+        }
+
+        // if the file path is a directory, generate a file name
+        File outputFile = new File(targetFilepath);
+        if (!outputFile.isAbsolute()) {
+            outputFile = new File(serverDir + targetFilepath);
+        }
+        if (fileUtility.isDirectory(outputFile)) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+            Date date = new Date();
+            outputFile = new File(outputFile, "tlsProfiler-" + dateFormat.format(date) + ".txt");
+        }
+
+        // generate a new file name until we have no conflicts
+        if (fileUtility.exists(outputFile)) {
+            String filePath = FilenameUtils.removeExtension(outputFile.getPath());
+            String fileExt = FilenameUtils.getExtension(outputFile.getPath());
+            int counter = 1;
+            do {
+                outputFile = new File(filePath + counter + "." + fileExt);
+                counter++;
+            } while (fileUtility.exists(outputFile));
+        }
+
+        return outputFile;
     }
 
     /**

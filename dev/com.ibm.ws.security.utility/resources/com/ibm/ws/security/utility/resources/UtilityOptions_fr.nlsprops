@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -149,9 +149,8 @@ sslCert.option-desc.keyType=\tFacultatif. Par d\u00e9faut, un magasin de cl\u00e
 sslCert.option-key.ext=\ \ \ \ --extInfo=informations d''extension de certificat
 sslCert.option-desc.ext=\tInformations d''extension de certificat \u00e0 ajouter au certificat.\n\
 \tL''extension par d\u00e9faut est une entr\u00e9e Subject Alternative Name (SAN) qui utilise\n\
-\tle nom d''h\u00f4te. \
-Cet indicateur respecte la m\u00eame syntaxe que l''indicateur -ext de la commande\n\
-Java Keytool. Il peut \u00eatre utilis\u00e9 plusieurs fois sur la ligne de\n\
+\tle nom d''h\u00f4te. Cet indicateur respecte la m\u00eame syntaxe que l''indicateur -ext de la commande\n\
+\tJava Keytool. Il peut \u00eatre utilis\u00e9 plusieurs fois sur la ligne de\n\
 \ \
 commande.
 
@@ -194,3 +193,19 @@ createLTPAKeys.option-desc.password.key=\tIndiquez une cl\u00e9 \u00e0 utiliser 
 \ten d\u00e9finissant la variable twlp.password.encryption.key dont la valeur \n\
 \test la cl\u00e9. Si cette option n''est pas fournie, une cl\u00e9 par d\u00e9faut \n\
 \tsera utilis\u00e9e.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tTestez la compatibilit\u00e9 de l''h\u00f4te cible et du port avec les protocoles TLS et les suites de chiffrement disponibles.
+tlsProfiler.usage.options=\t{0} tlsProfiler [options]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tSp\u00e9cifiez le port.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tSp\u00e9cifiez l''h\u00f4te.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tIncluez des informations suppl\u00e9mentaires sur les protocoles non s\u00e9curis\u00e9s.

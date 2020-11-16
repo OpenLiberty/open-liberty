@@ -12,20 +12,27 @@ package com.ibm.ws.security.jwt.utils;
 
 import java.security.Key;
 import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 
+import org.jose4j.base64url.Base64;
 import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
+import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
+import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.jwt.internal.BuilderImpl;
 import com.ibm.ws.security.jwt.internal.JwtTokenException;
 
@@ -50,6 +57,14 @@ public class JweHelper {
         }
     }
 
+    public static boolean isJws(String jwtString) {
+        if (jwtString == null || jwtString.isEmpty()) {
+            return false;
+        }
+        String notPeriod = "[^\\.]";
+        return jwtString.matches("^(" + notPeriod + "*\\.){2}" + notPeriod + "*$");
+    }
+
     public static boolean isJwe(String jwtString) {
         if (jwtString == null || jwtString.isEmpty()) {
             return false;
@@ -58,21 +73,84 @@ public class JweHelper {
         return jwtString.matches("^(" + notPeriod + "*\\.){4}" + notPeriod + "*$");
     }
 
+    /**
+     * Returns whether the current request must only accept JWS tokens, per the MP JWT 1.2 specification. Per the spec, if the
+     * {@value MpConfigProperties.DECRYPT_KEY_LOCATION} MP Config property (or, in our case, the keyManagementKeyAlias config
+     * attribute) is NOT set, then we must only accept JWS tokens; tokens in JWE format should be rejected.
+     *
+     * For more information, see
+     * {@link https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens}
+     */
+    public static boolean isJwsRequired(JwtConsumerConfig config, MpConfigProperties mpConfigProps) {
+        return !isJweRequired(config, mpConfigProps);
+    }
+
+    /**
+     * Returns whether the current request must only accept JWE tokens, per the MP JWT 1.2 specification. Per the spec, if the
+     * {@value MpConfigProperties.DECRYPT_KEY_LOCATION} MP Config property (or, in our case, the keyManagementKeyAlias config
+     * attribute) is set, then we must only accept JWE tokens; tokens in JWS format should be rejected.
+     *
+     * For more information, see
+     * {@link https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens}
+     */
+    public static boolean isJweRequired(JwtConsumerConfig config, MpConfigProperties mpConfigProps) {
+        String keyAlias = config.getKeyManagementKeyAlias();
+        String keyLocation = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_LOCATION);
+        return (keyAlias != null || keyLocation != null);
+    }
+
     @FFDCIgnore({ Exception.class })
-    public static String extractJwsFromJweToken(String jweString, JwtConsumerConfig config) throws InvalidTokenException {
+    public static String extractJwsFromJweToken(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws InvalidTokenException {
         JweHelper helper = new JweHelper();
-        String jws = null;
+        String payload = null;
         try {
-            Key decryptionKey = helper.getJweDecryptionKey(config);
-            JsonWebEncryption jwe = new JsonWebEncryption();
-            jwe.setKey(decryptionKey);
-            jwe.setCompactSerialization(jweString);
-            jws = jwe.getPayload();
+            payload = helper.getJwePayload(jweString, config, mpConfigProps);
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE", new Object[] { config.getId(), e });
             throw new InvalidTokenException(errorMsg, e);
         }
-        return jws;
+        if (!isJws(payload)) {
+            String errorMsg = Tr.formatMessage(tc, "NESTED_JWS_REQUIRED_BUT_NOT_FOUND");
+            throw new InvalidTokenException(errorMsg);
+        }
+        return payload;
+    }
+
+    String getJwePayload(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws JoseException, Exception, InvalidTokenException {
+        JweHelper helper = new JweHelper();
+        JsonWebEncryption jwe = new JsonWebEncryption();
+        jwe.setCompactSerialization(jweString);
+        Key decryptionKey = helper.getJweDecryptionKey(config, mpConfigProps, helper.getKidFromJweString(jweString));
+        jwe.setKey(decryptionKey);
+        String payload = jwe.getPayload();
+        if (isJws(payload)) {
+            helper.verifyContentType(jwe);
+        }
+        return payload;
+    }
+
+    void verifyContentType(JsonWebEncryption jwe) throws InvalidTokenException {
+        String requiredContentType = "JWT";
+        String cty = jwe.getContentTypeHeaderValue();
+        if (cty == null || !requiredContentType.equalsIgnoreCase(cty)) {
+            String errorMsg = Tr.formatMessage(tc, "CTY_NOT_JWT_FOR_NESTED_JWS", new Object[] { "\"cty\"", cty, "\"" + requiredContentType + "\"" });
+            throw new InvalidTokenException(errorMsg);
+        }
+    }
+
+    @FFDCIgnore(Exception.class)
+    String getKidFromJweString(String jweString) {
+        String kid = null;
+        try {
+            String headerString = jweString.substring(0, jweString.indexOf("."));
+            headerString = new String(Base64.decode(headerString));
+            kid = (String) JwtUtils.claimFromJsonObject(headerString, "kid");
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting kid from JWE string: " + e);
+            }
+        }
+        return kid;
     }
 
     void setJweKeyData(JsonWebEncryption jwe, BuilderImpl builder, JwtConfig jwtConfig) throws KeyStoreException, CertificateException, InvalidTokenException {
@@ -93,17 +171,41 @@ public class JweHelper {
         return keyManagementKey;
     }
 
-    Key getKeyManagementKeyFromTrustStore(JwtConfig jwtConfig) throws KeyStoreException, CertificateException, InvalidTokenException {
+    PublicKey getKeyManagementKeyFromTrustStore(JwtConfig jwtConfig) throws KeyStoreException, CertificateException, InvalidTokenException {
         String keyAlias = jwtConfig.getKeyManagementKeyAlias();
         String trustStoreRef = jwtConfig.getTrustStoreRef();
         return JwtUtils.getPublicKey(keyAlias, trustStoreRef);
     }
 
     @Sensitive
-    Key getJweDecryptionKey(JwtConsumerConfig config) throws KeyStoreException, CertificateException {
+    PrivateKey getJweDecryptionKey(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
         String keyAlias = config.getKeyManagementKeyAlias();
-        String keyStoreRef = config.getKeyStoreRef();
-        return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        if (keyAlias != null) {
+            // Server configuration takes precedence over MP Config property values
+            String keyStoreRef = config.getKeyStoreRef();
+            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        }
+        return getJweDecryptionKeyFromMpConfigProps(config, mpConfigProps, kid);
+    }
+
+    @Sensitive
+    private PrivateKey getJweDecryptionKeyFromMpConfigProps(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+        String keyLocation = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_LOCATION);
+        checkDecryptKeyLocationForInlineKey(keyLocation);
+        JwKRetriever jwkRetriever = new JwKRetriever(config.getJwkSet());
+        jwkRetriever.setSignatureAlgorithm(mpConfigProps.getConfiguredSignatureAlgorithm(config));
+        jwkRetriever.setKeyLocation(keyLocation);
+        return jwkRetriever.getPrivateKeyFromJwk(kid, config.getUseSystemPropertiesForHttpClientConnections());
+    }
+
+    void checkDecryptKeyLocationForInlineKey(@Sensitive String location) throws KeyException {
+        if (location == null || location.isEmpty()) {
+            return;
+        }
+        if (location.contains("BEGIN ")) {
+            String errorMsg = Tr.formatMessage(tc, "DECRYPT_KEY_LOCATION_INLINE_KEY", new Object[] { MpConfigProperties.DECRYPT_KEY_LOCATION });
+            throw new KeyException(errorMsg);
+        }
     }
 
     void setJweKidHeader(JsonWebEncryption jwe, Key keyManagementKey) {

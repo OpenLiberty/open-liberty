@@ -28,8 +28,6 @@ import com.ibm.ws.jdbc.fat.krb5.containers.PostgresKerberosContainer;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -37,7 +35,6 @@ import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.pg.web.PgKerberosTestServlet;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class PostgresKerberosTest extends FATServletClient {
 
     private static final Class<?> c = PostgresKerberosTest.class;
@@ -53,7 +50,8 @@ public class PostgresKerberosTest extends FATServletClient {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action()
-                                    .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql"));
+                                    .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql")
+                                    .fullFATOnly());
 
     @ClassRule
     public static KerberosPlatformRule skipRule = new KerberosPlatformRule();

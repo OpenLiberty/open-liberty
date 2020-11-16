@@ -18,6 +18,6 @@ Subsystem-Name: gRPC 1.0
 -jars=\
   io.openliberty.grpc.1.0; location:="dev/api/ibm/,lib/"
 -files=dev/api/ibm/javadoc/io.openliberty.grpc.1.0_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=full
 WLP-Activation-Type: parallel

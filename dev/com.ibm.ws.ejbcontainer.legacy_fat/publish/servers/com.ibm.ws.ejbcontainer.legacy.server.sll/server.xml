@@ -6,6 +6,4 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
-    <ejbContainer bindToServerRoot="true"/>
 </server>

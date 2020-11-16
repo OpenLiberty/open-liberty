@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Specifica\u0163i un alias valid 
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: A ap\u0103rut o eroare de configurare. Atributul {0} trebuie s\u0103 fie definit.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Atributul specificat trebuie definit.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Specifica\u0163i valoarea pentru atributul lips\u0103.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: Atributele {0} \u015fi {1} au fost ambele configurate pe elementul authData {2}. Doar {0} sau {1} pot fi configurate, nu ambele.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Atributele specificate se exclud reciproc unul cu altul.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Specifica\u0163i doar unul din cele dou\u0103 atribute.
+ 

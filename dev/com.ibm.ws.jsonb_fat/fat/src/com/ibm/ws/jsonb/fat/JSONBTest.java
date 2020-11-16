@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once cdi-3.0 is available, https://github.com/OpenLiberty/open-liberty/issues/11633
 public class JSONBTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonb.fat")
@@ -63,6 +62,9 @@ public class JSONBTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(EE9_FEATURES)
+    //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
+    //TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonbFromUserFeature() throws Exception {
         // Add the jsonb user feature, which will make 'ServiceThatRequiresJsonb' activate
         server.setMarkToEndOfLog();

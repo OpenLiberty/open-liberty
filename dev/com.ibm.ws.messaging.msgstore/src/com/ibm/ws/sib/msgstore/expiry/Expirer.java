@@ -24,6 +24,7 @@ import com.ibm.ws.sib.transactions.LocalTransaction;
 import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -344,8 +345,10 @@ public class Expirer implements AlarmListener,  XmlConstants
 
             try {
                 // Get the first entry from the index and start the cycle
-                ExpirableReference expirableRef = expiryIndex.first();
+            	Iterator<ExpirableReference> iterator = expiryIndex.iterator();
+            	ExpirableReference expirableRef = iterator.next();
                 while (expirableRef.getExpiryTime() <= startTime) {
+                	
                     processed++;
 
                     Expirable expirable = expirableRef.get();
@@ -361,8 +364,8 @@ public class Expirer implements AlarmListener,  XmlConstants
                         }
                         // Tell the expirable to expire. If it returns true, then remove it from the expiry index.
                         if (expirable.expirableExpire((PersistentTransaction)transaction)) {
-                            boolean removed = expiryIndex.remove(expirableRef);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc,"Removed (expired) removed="+removed+" ExpiryTime="+ expirableRef.getExpiryTime()+ " objectId="+ expirableRef.getID());
+                            iterator.remove();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc,"Removed (expired) ExpiryTime="+ expirableRef.getExpiryTime()+ " objectId="+ expirableRef.getID());
                             expired++;
 
                              batchCount++;
@@ -379,12 +382,12 @@ public class Expirer implements AlarmListener,  XmlConstants
                         }
 
                     } else {
-                        boolean removed = expiryIndex.remove(expirableRef);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc,"Removed (gone) removed="+removed+" ExpiryTime="+ expirableRef.getExpiryTime()+ " objectId="+ expirableRef.getID());
-                        if(removed) gone++;
+                        iterator.remove();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(tc,"Removed (gone) ExpiryTime="+ expirableRef.getExpiryTime()+ " objectId="+ expirableRef.getID());
+                        gone++;
 
                     }
-                    expirableRef = expiryIndex.first();
+                    expirableRef = iterator.next();
                 }
             } catch (NoSuchElementException noSuchElementException) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "No more ExpirableReferences, processed="+processed+" expired="+expired+" gone="+gone);

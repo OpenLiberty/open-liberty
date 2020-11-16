@@ -301,6 +301,9 @@ MISSING_FEATURE_HAS_ALT_NAME=CWWKF0045E: Istniej\u0105ca definicja sk\u0142adnik
 MISSING_FEATURE_HAS_ALT_NAME.explanation=Mened\u017cer sk\u0142adnik\u00f3w nie znalaz\u0142 definicji sk\u0142adnika okre\u015blonego w konfiguracji serwera. Mo\u017cliwe, \u017ce podana nazwa pasuje do istniej\u0105cej definicji sk\u0142adnika.
 MISSING_FEATURE_HAS_ALT_NAME.useraction=Spr\u00f3buj okre\u015bli\u0107 istniej\u0105c\u0105 nazwan\u0105 definicj\u0119 sk\u0142adnika. 
 
+UPDATE_DISABLED_FEATURES_ON_CONFLICT=CWWKF0046W: Konfiguracja zawiera niekompatybiln\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w. W efekcie mened\u017cer sk\u0142adnik\u00f3w nie zainstalowa\u0142 \u017cadnych sk\u0142adnik\u00f3w.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.explanation=Konfiguracja zawiera niekompatybiln\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w. Aby unikn\u0105\u0107 niepoprawnego zachowania, mened\u017cer sk\u0142adnik\u00f3w wy\u0142\u0105czy\u0142 wszystkie sk\u0142adniki.
+UPDATE_DISABLED_FEATURES_ON_CONFLICT.useraction=Okre\u015bl inn\u0105 wersj\u0119 skonfigurowanych sk\u0142adnik\u00f3w, kt\u00f3re spowodowa\u0142y konflikt.
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Sk\u0142adnik {0} ju\u017c istnieje. Nie zostanie on ponownie zainstalowany. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.

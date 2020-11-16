@@ -22,8 +22,21 @@ Export-Package: \
 
 instrument.disabled: true
 
+Private-Package: io.openliberty.microprofile.lra.internal
+
+-dsannotations: \
+    io.openliberty.microprofile.lra.internal.CdiExtensionComponent
+
+
 -buildpath: \
-  org.jboss.narayana.rts:lra-client;version=5.10.6.Final, \
-  org.jboss.narayana.rts:narayana-lra;version=5.10.6.Final, \
-  org.jboss.narayana.rts:lra-proxy-api;version=5.10.6.Final, \
-  org.jboss.narayana.rts:lra-service-base;version=5.10.6.Final
+    org.jboss.narayana.rts:lra-client;version=5.10.6.Final,\
+    org.jboss.narayana.rts:narayana-lra;version=5.10.6.Final,\
+    org.jboss.narayana.rts:lra-proxy-api;version=5.10.6.Final,\
+    org.jboss.narayana.rts:lra-service-base;version=5.10.6.Final,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.ws.cdi.interfaces;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0
+

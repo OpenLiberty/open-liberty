@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureBecomesDone;
 import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureDoesNotComplete;
 import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureGetsCancelled;
 import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts.assertFutureHasResult;
@@ -37,6 +38,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncCallableBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncClassBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncConfigBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncThreadContextTestBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FutureAsserts;
@@ -58,6 +60,9 @@ public class AsyncServlet extends FATServlet {
 
     @Inject
     AsyncBean2 bean2;
+
+    @Inject
+    AsyncClassBean classBean;
 
     @Inject
     AsyncCallableBean callableBean;
@@ -96,6 +101,71 @@ public class AsyncServlet extends FATServlet {
             assertFutureHasResult(result, "OK");
             assertTrue(result.isDone());
             assertFalse(result.isCancelled());
+        });
+    }
+
+    @Test
+    public void testAsyncClass() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+
+            // Call the method
+            Future<String> result = classBean.runTask(task);
+            task.assertStarts();
+
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the result is returned and the future is done
+            task.complete();
+            assertFutureHasResult(result, "OK");
+            assertTrue(result.isDone());
+            assertFalse(result.isCancelled());
+        });
+    }
+
+    @Test
+    public void testAsyncDone() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+
+            // Call the method
+            Future<String> result = bean.runTask(task);
+            task.assertStarts();
+
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the future becomes done (without calling future.get)
+            task.complete();
+            assertFutureBecomesDone(result);
+        });
+    }
+
+    @Test
+    public void testAsyncClassDone() throws Exception {
+        syntheticTaskManager.runTest(() -> {
+            SyntheticTask<String> task = syntheticTaskManager.newTask();
+            task.withResult("OK");
+
+            // Call the method
+            Future<String> result = classBean.runTask(task);
+            task.assertStarts();
+
+            // Check that while it's running, the result does not complete and the future is not done
+            assertFutureDoesNotComplete(result);
+            assertFalse(result.isDone());
+            assertFalse(result.isCancelled());
+
+            // Check that after it's complete, the future becomes done (without calling future.get)
+            task.complete();
+            assertFutureBecomesDone(result);
         });
     }
 

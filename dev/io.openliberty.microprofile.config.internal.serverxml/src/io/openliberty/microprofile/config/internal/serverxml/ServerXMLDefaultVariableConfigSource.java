@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.serverxml;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
+import com.ibm.ws.config.xml.LibertyVariable;
 
 /**
  * A ConfigSource which returns default values from variable elements in the server.xml file e.g.
@@ -31,8 +33,7 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
     /** {@inheritDoc} */
     @Override
     @Trivial
-    public int getOrdinal() {
-        // Don't respect the config_ordinal parameter for serverXML _default_ variables
+    protected int getDefaultOrdinal() {
         return ServerXMLConstants.SERVER_XML_DEFAULT_VARIABLE_ORDINAL;
     }
 
@@ -45,12 +46,20 @@ public class ServerXMLDefaultVariableConfigSource extends ServerXMLVariableConfi
 
     @Override
     protected Map<String, String> getServerXMLVariables() {
-        Map<String, String> props = new HashMap<>();
         ConfigVariables configVariables = getConfigVariables();
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
-            props = OSGiConfigUtils.getDefaultVariablesFromServerXML(configVariables);
+            // We must request all Liberty variables, rather than all user defined defaults,
+            // since we want to know the default values of any variables which have been overwritten.
+            HashMap<String, String> result = new HashMap<>();
+            for (LibertyVariable var : configVariables.getAllLibertyVariables()) {
+                if (var.getDefaultValue() != null) {
+                    result.put(var.getName(), var.getDefaultValue());
+                }
+            }
+            return result;
+        } else {
+            return Collections.emptyMap();
         }
-        return props;
     }
 
 }

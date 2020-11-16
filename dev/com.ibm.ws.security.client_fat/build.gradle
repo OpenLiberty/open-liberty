@@ -821,8 +821,8 @@ assemble.dependsOn ProgrammaticLoginWithoutCallbackHandler_EAR
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.fat.common:testmarker'
-autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:basicauth'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 autoFVT.doLast {
 
 

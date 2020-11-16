@@ -1076,7 +1076,7 @@ public class H2StreamProcessor {
 
         if (direction == Constants.Direction.READ_IN) {
             if (frameType == FrameTypes.DATA) {
-                if (!h2HttpInboundLinkWrap.getIsGrpc()) {
+                if (!h2HttpInboundLinkWrap.setAndGetIsGrpc()) {
                     getBodyFromFrame();
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;

@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.BeanManagerInjectionServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InjectMultiLocalEJBServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InterceptorIntegrationServlet;
+import com.ibm.ws.ejbcontainer.cdi.jcdi.web.ResourceServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -40,11 +41,12 @@ public class EJBxCDITest extends FATServletClient {
     @Server("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")
     @TestServlets({ @TestServlet(servlet = BeanManagerInjectionServlet.class, contextRoot = "EJB31JCDIWeb"),
                     @TestServlet(servlet = InjectMultiLocalEJBServlet.class, contextRoot = "EJB31JCDIWeb"),
-                    @TestServlet(servlet = InterceptorIntegrationServlet.class, contextRoot = "EJB31JCDIWeb") })
+                    @TestServlet(servlet = InterceptorIntegrationServlet.class, contextRoot = "EJB31JCDIWeb"),
+                    @TestServlet(servlet = ResourceServlet.class, contextRoot = "EJB31JCDIWeb") })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")).andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server"));
 
     @BeforeClass
     public static void setUp() throws Exception {

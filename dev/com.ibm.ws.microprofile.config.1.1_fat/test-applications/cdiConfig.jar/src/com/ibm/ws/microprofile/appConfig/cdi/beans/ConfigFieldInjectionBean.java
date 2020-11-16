@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,11 @@ import javax.inject.Provider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import com.ibm.ws.microprofile.appConfig.cdi.test.Animal;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Dog;
 import com.ibm.ws.microprofile.appConfig.cdi.test.MyObject;
-import com.ibm.ws.microprofile.appConfig.cdi.test.Parent;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Pizza;
 
-public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
+public class ConfigFieldInjectionBean {
 
     @Inject
     Config config;
@@ -51,10 +49,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     String key3;
 
     @Inject
-    @ConfigProperty(name = "PARENT_KEY")
-    Parent PARENT_KEY;
-
-    @Inject
     @ConfigProperty(name = "DISCOVERED_KEY", defaultValue = "NULL")
     String DISCOVERED_KEY;
 
@@ -65,10 +59,6 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     @Inject
     @ConfigProperty(name = "DOG_KEY")
     Dog DOG_KEY;
-
-    @Inject
-    @ConfigProperty(name = "DOG_KEY")
-    Animal ANIMAL_KEY;
 
     @Inject
     @ConfigProperty(name = "URL_KEY")
@@ -87,18 +77,11 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     String SYS_PROP;
 
     /**
-     * This PIZZA_NEW_KEY does not exist in the configure sources. The default value "" will be null, which will result to a null.
+     * The MISSING_KEY does not exist in the configure sources. The default value "DEFAULT_VALUE" will be used for MISSING_KEY_WITH_DEFAULT_VALUE.
      */
     @Inject
-    @ConfigProperty(name = "PIZZA_NEW_KEY", defaultValue = "")
-    Pizza PIZZA_MISSING_PROP;
-
-    /**
-     * The PIZZA_KEY does exist in the config source but it will result to null value on purpose. Even though the default value is good but it will not be used.
-     */
-    @Inject
-    @ConfigProperty(name = "PIZZA_KEY", defaultValue = "chicken;12")
-    Pizza PIZZA_EXISTING_PROP;
+    @ConfigProperty(name = "MISSING_KEY", defaultValue = "DEFAULT_VALUE")
+    String MISSING_KEY_WITH_DEFAULT_VALUE;
 
     /**
      * This is the sanity test to check PIZZA_GOOD_KEY will be resolved to a good Pizza. The default value is not used.
@@ -107,121 +90,64 @@ public class ConfigFieldInjectionBean implements ConfigFieldInjectionInterface {
     @ConfigProperty(name = "PIZZA_GOOD_KEY", defaultValue = "")
     Pizza PIZZA_GOOD_PROP;
 
-//    @Inject
-//    @ConfigProperty(name = "BLUE_CAR_KEY")
-//    Car<Blue> BLUE_CAR_PROP;
-//
-//    @Inject
-//    @ConfigProperty(name = "RED_CAR_KEY")
-//    Car<Red> RED_CAR_PROP;
-
     public ConfigFieldInjectionBean() {
         System.out.println("xtor: ConfigFieldInjectionBean()");
     }
 
-    @Override
     public String getSIMPLE_KEY1() {
         return config.getValue("SIMPLE_KEY1", String.class);
     }
 
-    /**
-     * @return the gENERIC_OBJECT_KEY
-     */
-    @Override
     public MyObject getGENERIC_INSTANCE_KEY() {
         return GENERIC_INSTANCE_KEY.get();
     }
 
-    @Override
     public MyObject getGENERIC_PROVIDER_KEY() {
         return GENERIC_PROVIDER_KEY.get();
     }
 
-    /**
-     * @return the sIMPLE_KEY2
-     */
-    @Override
     public String getSIMPLE_KEY2() {
         return SIMPLE_KEY2;
     }
 
-    /**
-     * @return the key3
-     */
-    @Override
     public String getSIMPLE_KEY3() {
         return key3;
     }
 
-    /**
-     * @return the uRL_KEY
-     */
-    @Override
-    public Parent getPARENT_KEY() {
-        return PARENT_KEY;
-    }
-
-    @Override
     public String getDISCOVERED_KEY() {
         return DISCOVERED_KEY;
     }
 
-    @Override
     public String getNULL_WITH_DEFAULT_KEY() {
         return NULL_WITH_DEFAULT_KEY;
     }
 
-    @Override
     public Dog getDOG_KEY() {
         return DOG_KEY;
     }
 
-    @Override
-    public Animal getANIMAL_KEY() {
-        return ANIMAL_KEY;
-    }
-
-    @Override
     public String getSYS_PROP() {
         System.out.println("SYS_PROP=" + SYS_PROP);
         return SYS_PROP;
     }
 
-    @Override
     public URL getOPTIONAL_KEY() {
         return OPTIONAL_KEY.orElse(null);
     }
 
-    @Override
     public URL getOPTIONAL_NULL_KEY() {
         return OPTIONAL_NULL_KEY.orElse(null);
     }
 
-    @Override
     public URL getOPTIONAL_MISSING_KEY() {
         return OPTIONAL_MISSING_KEY.orElse(null);
     }
 
-    @Override
-    public Pizza getPIZZA_KEY() {
-        return PIZZA_EXISTING_PROP;
+    public String getMISSING_KEY() {
+        return MISSING_KEY_WITH_DEFAULT_VALUE;
     }
 
-    @Override
-    public Pizza getPIZZA_MISSING_KEY() {
-        return PIZZA_MISSING_PROP;
-    }
-
-    @Override
     public Pizza getPIZZA_GOOD_KEY() {
         return PIZZA_GOOD_PROP;
     }
-
-//    public Car<Red> getRED_CAR_KEY() {
-//        return RED_CAR_PROP;
-//    }
-//
-//    public Car<Blue> getBLUE_CAR_KEY() {
-//        return BLUE_CAR_PROP;
-//    }
 }

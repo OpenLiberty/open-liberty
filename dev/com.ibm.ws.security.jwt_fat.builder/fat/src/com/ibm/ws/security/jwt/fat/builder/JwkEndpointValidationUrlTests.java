@@ -45,9 +45,11 @@ import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 import com.ibm.ws.security.jwt.fat.builder.validation.BuilderTestValidationUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
@@ -59,14 +61,14 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO openidConnectClient-1.0 has not been transformed.
 public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
+
     @Server("com.ibm.ws.security.jwt_fat.builder.rs")
     public static LibertyServer rsServer;
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
@@ -80,6 +82,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
+    	FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
         skipRestoreServerTracker.addServer(builderServer);

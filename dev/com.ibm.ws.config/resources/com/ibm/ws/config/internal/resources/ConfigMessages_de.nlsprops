@@ -473,5 +473,10 @@ error.root.must.be.server=CWWKG0105E: Das {0}-Konfigurationsdokument muss mit de
 error.root.must.be.server.explanation=Die Konfiguration muss entweder in einem Server- oder in einem Clientelement enthalten sein. 
 error.root.must.be.server.useraction=F\u00fcgen Sie ein Server- oder ein Clientelement als Stammelement der Konfigurationsdatei hinzu. 
 
+error.bad.variable.file=CWWKG0106E: Die {0}-Datei kann nicht gelesen werden. 
+error.bad.variable.file.explanation=Die Datei kann nicht als Variable geladen werden, weil sie nicht gelesen werden kann. 
+error.bad.variable.file.useraction=Vergewissern Sie sich, dass die Datei Textinhalte enth\u00e4lt und \u00fcberpr\u00fcfen Sie die Betriebssystemberechtigungen f\u00fcr die Datei.
+
+
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

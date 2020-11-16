@@ -32,8 +32,8 @@
 	<ldapRegistry id="TDS_LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.4.name}" port="${ldap.server.4.port}" ignoreCase="true"
 		baseDN="o=ibm,c=us"
 		ldapType="IBM Tivoli Directory Server"
-		searchTimeout="8m"
-		loginProperty="cn" >
+		searchTimeout="8m">
+		<loginProperty name = "cn"/>
 		<ldapEntityType name="PersonAccount">
 			<objectClass>inetOrgPerson</objectClass>
 			<rdnProperty name="cn" objectClass="inetOrgPerson"/>

@@ -22,7 +22,7 @@ Export-Package: \
    jakarta.json.bind.spi;version="2.0"
 
 Include-Resource: \
-  @${repo; jakarta.json.bind:jakarta.json.bind-api;2.0.0.RC2;EXACT}!/META-INF/NOTICE
+  @${repo; jakarta.json.bind:jakarta.json.bind-api;2.0.0;EXACT}!/META-INF/NOTICE
 
 instrument.disabled: true
 

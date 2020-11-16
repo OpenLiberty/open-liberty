@@ -77,3 +77,6 @@ repo.mavenRepoTasks.path: ${path;\
     ${repo;org.apache.aries:org.apache.aries.util;1.1.3},\
     ${workspace}/cnf/mavenlibs/plexus-utils-3.0.24.jar}
 #    ${repo;org.codehaus.plexus:plexus-utils;3.0.24}}
+
+repo.junitReportTask.path: ${path;\
+    ${repo;org.apache.ant:ant-junit;1.9.6}}

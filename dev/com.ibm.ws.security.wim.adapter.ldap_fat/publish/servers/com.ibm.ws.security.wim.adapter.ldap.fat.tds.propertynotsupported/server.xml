@@ -21,8 +21,7 @@
 	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
 		baseDN="o=ibm,c=us"
 		ldapType="IBM Tivoli Directory Server"
-		searchTimeout="8m"
-		loginProperty="uid">
+		searchTimeout="8m">
       <attributeConfiguration>
         <propertiesNotSupported name="cn"/>
       </attributeConfiguration>

@@ -57,6 +57,7 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
 
         // set signatureAlgorithm attribute in server.xml
         ServerInstanceUtils.setOneVar(resourceServer, "sigAlg", requestedSigAlg);
+        skipRestoreServerTracker.addServer(resourceServer);
     }
 
     /**
@@ -70,7 +71,7 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
     public void genericGoodTest() throws Exception {
 
         standard11TestFlow(sigAlg, resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                         MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
+                           MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
 

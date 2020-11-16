@@ -187,10 +187,10 @@ public class JSF22ClientWindowTests {
 
             // fill out fields
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("John", false, false, false);
+            input.type("John");
 
             HtmlTextInput input2 = (HtmlTextInput) page.getElementById("testForm:lastName");
-            input2.type("Doe", false, false, false);
+            input2.type("Doe");
 
             // Click link to execute the methods and update the page
             HtmlElement button = (HtmlElement) page.getElementById("testForm:buttonAjax1");
@@ -233,9 +233,9 @@ public class JSF22ClientWindowTests {
 
             // fill out fields
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("Bill", false, false, false);
+            input.type("Bill");
             HtmlTextInput input2 = (HtmlTextInput) page.getElementById("testForm:lastName");
-            input2.type("Smith", false, false, false);
+            input2.type("Smith");
 
             // Click link to execute the methods and update the page
             HtmlElement button = (HtmlElement) page.getElementById("testForm:submitCommandButton1");
@@ -278,9 +278,9 @@ public class JSF22ClientWindowTests {
 
             // fill out fields
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:firstName");
-            input.type("Jane", false, false, false);
+            input.type("Jane");
             HtmlTextInput input2 = (HtmlTextInput) page.getElementById("testForm:lastName");
-            input2.type("Jones", false, false, false);
+            input2.type("Jones");
 
             // Click link to execute the methods and update the page
             HtmlElement button = (HtmlElement) page.getElementById("testForm:commandLink1");

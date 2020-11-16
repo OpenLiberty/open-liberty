@@ -15,14 +15,77 @@
  */
 subprojects {
   apply plugin: 'java'
+  
+  task publishJunitReport() {
+    ext {
+      outputFilesDir = rootProject.file(rootProject.ext.get('published.outputs.files'))
+      outputEventsDir = rootProject.file(rootProject.ext.get('published.outputs.events')+"/rawJUnitResults")
+      reportDir = project.file("${project.buildDir}/libs/merged-test-reports/test/")
+    }
+    doLast {
+      if(new File(reportDir,"TESTS-TestSuites.xml").exists()){
+        mkdir outputFilesDir
+        mkdir outputEventsDir;
 
-  test {
+        ant.checksum(file: new File(reportDir,"TESTS-TestSuites.xml"), algorithm: "SHA-256", property: "junitSHA256")
+        copy {
+          from reportDir
+          include "TESTS-TestSuites.xml"
+          into new File(outputFilesDir,"junits/unit_"+project.name+"/"+ant.junitSHA256+"/")
+        }
+
+        def prop = new Properties()
+        def propFile = File.createTempFile("unit_"+project.name,".properties",outputEventsDir) 
+        prop.put("event","rawJUnitResult")
+        prop.put("bucketName","unit_"+project.name)
+        prop.put("bucketType","Unit")
+        prop.put("bucketRunMode","n/a")
+        prop.put("resultType","normal")
+        prop.put("junit","junits/unit_"+project.name+"/"+ant.junitSHA256+"/TESTS-TestSuites.xml")
+        def propWriter = new FileWriter(propFile)
+        try {
+          prop.store(propWriter, null)
+        } finally {
+          propWriter.close()
+        }
+      }
+    }
+    
+  }
+
+  task junitReport() {
+    finalizedBy publishJunitReport
+    ext {
+        resultsDir = file("$project.buildDir/libs/test-reports/test/")
+        targetDir = file("$project.buildDir/libs/merged-test-reports/test/")
+    }
+    doLast {
+        if(resultsDir.exists()){
+          mkdir targetDir
+          ant.taskdef(name: 'junitreport', 
+                      classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator', 
+                      classpath: bnd('repo.junitReportTask.path'))
+
+          ant.junitreport(todir: targetDir) {
+              fileset(dir: resultsDir, includes: 'TEST-*.xml')
+              report(todir: targetDir, format: 'frames')
+          }
+        }
+    }
+  }
+
+  test { 
+    // Once testing is complete copy 
+    finalizedBy junitReport
+  
     ignoreFailures = true
+	
     //  A number of tests make heavy use of java.util.Random, which can drain the entropy pool of /dev/random on Linux when
     // running on OpenJDK-based distributions. This results in large delays as tests wait for the entropy pool to be repopulated.
     // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
     jvmArgs '-Djava.security.egd=file:///dev/urandom'
   }
+
   
   tasks.withType(JavaCompile) {
     doFirst {
@@ -55,7 +118,7 @@ subprojects {
       }
     }
   }
-
+  
 }
 
 /**
@@ -84,3 +147,5 @@ task testResults {
   dependsOn subprojects.test
   dependsOn testReport
 }
+
+

@@ -781,6 +781,10 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         // Try to use the token again - this time, in a different conversation
         genericConfigTest(builtToken, expectations);
 
+        // On fast machines - tests that follow create an identical token and it's basically marked logged
+        // out before it's created.  Sleep so the next test gets a unique token
+        Thread.sleep(1000);
+
     }
 
     /******************************** userNameAttribute ***************************************/

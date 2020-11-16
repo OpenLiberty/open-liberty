@@ -59,29 +59,31 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
                                                  "txtest-2.0",
+                                                 "appAuthentication-2.0",
+                                                 "appAuthorization-2.0",
                                                  "appSecurity-4.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
                                                  "connectorsInboundSecurity-2.0",
-                                                 "el-4.0",
+                                                 "expressionLanguage-4.0",
                                                  "enterpriseBeans-4.0",
                                                  "enterpriseBeansHome-4.0",
                                                  "enterpriseBeansLite-4.0",
                                                  "enterpriseBeansPersistentTimer-4.0",
                                                  "enterpriseBeansRemote-4.0",
                                                  "enterpriseBeansTest-2.0",
-                                                 "jacc-2.0",
-                                                 "jaspic-2.0",
                                                  "mail-2.0",
                                                  "jaxb-3.0",
-                                                 "jpa-3.0",
+                                                 "persistence-3.0",
+                                                 "persistenceContainer-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
                                                  "jsonpContainer-2.0",
                                                  "jsonbContainer-2.0",
                                                  "faces-3.0",
+                                                 "facesContainer-3.0",
                                                  "pages-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",
@@ -182,7 +184,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     public static boolean isActive() {
-        return ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
     /**

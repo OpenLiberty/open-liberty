@@ -14,6 +14,7 @@ import org.jose4j.jws.AlgorithmIdentifiers;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.ServerFileUtils;
@@ -54,7 +55,9 @@ public class JwtTokenBuilderUtils {
         builder.setTokenType("Bearer");
         builder = builder.setAlorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
         builder = builder.setHSAKey("mySharedKeyNowHasToBeLongerStrongerAndMoreSecure");
-
+        //  setup for encryption - tests can override the following values
+        builder = builder.setKeyManagementKeyAlg(JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        builder = builder.setContentEncryptionAlg(JwtConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
         return builder;
     }
 
@@ -89,5 +92,13 @@ public class JwtTokenBuilderUtils {
         Log.info(thisClass, "updateBuilderWithRSASettings", "alg: " + alg + " keyFile: " + keyFile);
         builder.setAlorithmHeaderValue(alg);
         builder.setRSAKey(keyFile);
+    }
+
+    public String buildSimpleJWEToken(JWTTokenBuilder builder, String testName) throws Exception {
+
+        String jwtToken = builder.buildAlternateJWE();
+        Log.info(thisClass, "buildSimpleJWEToken", jwtToken);
+        return jwtToken;
+
     }
 }
