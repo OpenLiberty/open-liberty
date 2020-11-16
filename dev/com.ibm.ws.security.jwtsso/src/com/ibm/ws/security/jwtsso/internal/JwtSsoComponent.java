@@ -71,6 +71,8 @@ public class JwtSsoComponent implements JwtSsoConfig {
     private String mpjwtConsumerRef;
     private String cookieName;
     private boolean disableJwtCookie;
+    private String authFilterRef;
+
 
     protected static final String KEY_UNIQUE_ID = "id";
     protected String uniqueId = null;
@@ -241,6 +243,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
         fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT);
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
         disableJwtCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_DISABLE_JWT_COOKIE);
+        authFilterRef = (String) props.get(JwtSsoConstants.CFG_KEY_AUTH_FILTER_REF);
         // jwtBuilderRef = JwtUtils.trimIt((String)
         // props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
         mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF)); // hmm,
@@ -436,8 +439,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
     @Override
     public String getAuthFilterRef() {
-        // TODO Auto-generated method stub
-        return null;
+        return authFilterRef;
     }
 
     @Override
@@ -447,7 +449,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
     @Override
     public String getAuthorizationHeaderScheme() {
-        // TODO Auto-generated method stub
+        // TODO Auto- method stub
         return "Bearer ";
     }
 

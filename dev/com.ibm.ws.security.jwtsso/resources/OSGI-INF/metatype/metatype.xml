@@ -59,6 +59,11 @@
          <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
              
+         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
+             ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+         <AD id="authenticationFilter.target" name="internal" description="internal use only"
+             required="false" type="String"  default="(service.pid=${authFilterRef})" />      
+             
           <!--  future encryption attributes go here someday  -->
          
     </OCD>
