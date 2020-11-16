@@ -69,8 +69,7 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {
-    }
+    public static void setupClass() throws Exception {}
 
     @AfterClass
     public static void tearDownClass() throws Exception {
@@ -297,7 +296,31 @@ public class PackageRunnableTest {
             } else {
                 Log.info(c, "executeTheJar", "No messages.log - " + messagesLog.getAbsolutePath());
             }
+
+            // log the contents of the runnable jar's manifest.mf
+            JarFile jarFile = new JarFile(runnableJar.getAbsolutePath());
+            boolean manifestFound = false;
+
+            for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+                JarEntry je = e.nextElement();
+                if (je.getName().equals("META-INF/MANIFEST.MF")) {
+                    Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
+                    Log.info(c, "executeTheJar", "=== Start dumping contents of manifest file ===");
+                    readJarEntryContent(jarFile, je);
+                    manifestFound = true;
+                    Log.info(c, "executeTheJar", "=== End dumping contents of manifest file ===");
+                } else {
+                    Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
+                }
+            }
+
+            if (jarFile != null) {
+                jarFile.close();
+            }
+
+            assertTrue("Runnable jar did not contain a META-INF/MANIFEST.MF file", manifestFound);
         }
+
         assertTrue("Server did not start successfully in time.", found);
 
         outputReader.setIs(null);
@@ -486,5 +509,22 @@ public class PackageRunnableTest {
         }
 
         Runtime.getRuntime().exec(cmd); // stop server
+    }
+
+    /**
+     * Reads the contents line by line of the JarEntry from the JarFile
+     *
+     * @param jf
+     * @param je
+     */
+    private void readJarEntryContent(JarFile jf, JarEntry je) throws IOException {
+        InputStream is = jf.getInputStream(je);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader r = new BufferedReader(isr);
+        String line;
+        while ((line = r.readLine()) != null) {
+            Log.info(c, "readJarEntryContent", line);
+        }
+        r.close();
     }
 }
