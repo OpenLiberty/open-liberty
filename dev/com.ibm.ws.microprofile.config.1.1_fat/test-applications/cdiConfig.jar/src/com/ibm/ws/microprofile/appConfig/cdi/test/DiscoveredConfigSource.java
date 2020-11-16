@@ -29,6 +29,9 @@ public class DiscoveredConfigSource extends HashMap<String, String> implements C
         put("NULL_KEY", null);
         put("PIZZA_KEY", "cheese"); //this resolve resolves to a null value as the size portion is missing
         put("PIZZA_GOOD_KEY", "ham;9"); //this is the right pizza key
+        put("DUPLICATE_CONVERTERS_KEY_1", "input");
+        put("DUPLICATE_CONVERTERS_KEY_2", "input");
+        put("DUPLICATE_CONVERTERS_KEY_3", "input");
     }
 
     /** {@inheritDoc} */

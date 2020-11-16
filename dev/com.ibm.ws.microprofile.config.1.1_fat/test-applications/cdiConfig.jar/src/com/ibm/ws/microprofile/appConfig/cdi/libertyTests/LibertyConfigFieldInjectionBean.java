@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.ibm.ws.microprofile.appConfig.cdi.test.Animal;
+import com.ibm.ws.microprofile.appConfig.cdi.test.MyTypeWithMultipleConverters;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Parent;
 import com.ibm.ws.microprofile.appConfig.cdi.test.Pizza;
 
@@ -50,6 +51,18 @@ public class LibertyConfigFieldInjectionBean {
     @ConfigProperty(name = "PIZZA_NEW_KEY", defaultValue = "")
     Pizza PIZZA_MISSING_PROP;
 
+    @Inject
+    @ConfigProperty(name = "DUPLICATE_CONVERTERS_KEY_1")
+    MyTypeWithMultipleConverters DUPLICATE_CONVERTERS_KEY_1;
+
+    @Inject
+    @ConfigProperty(name = "DUPLICATE_CONVERTERS_KEY_2")
+    MyTypeWithMultipleConverters DUPLICATE_CONVERTERS_KEY_2;
+
+    @Inject
+    @ConfigProperty(name = "DUPLICATE_CONVERTERS_KEY_3")
+    MyTypeWithMultipleConverters DUPLICATE_CONVERTERS_KEY_3;
+
     public LibertyConfigFieldInjectionBean() {
         System.out.println("xtor: ConfigFieldInjectionBean()");
     }
@@ -68,6 +81,18 @@ public class LibertyConfigFieldInjectionBean {
 
     public Pizza getPIZZA_MISSING_KEY() {
         return PIZZA_MISSING_PROP;
+    }
+
+    public MyTypeWithMultipleConverters getDUPLICATE_CONVERTERS_KEY_1() {
+        return DUPLICATE_CONVERTERS_KEY_1;
+    }
+
+    public MyTypeWithMultipleConverters getDUPLICATE_CONVERTERS_KEY_2() {
+        return DUPLICATE_CONVERTERS_KEY_2;
+    }
+
+    public MyTypeWithMultipleConverters getDUPLICATE_CONVERTERS_KEY_3() {
+        return DUPLICATE_CONVERTERS_KEY_3;
     }
 
 }
