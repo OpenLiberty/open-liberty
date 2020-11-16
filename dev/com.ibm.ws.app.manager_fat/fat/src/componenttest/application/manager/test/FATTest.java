@@ -421,6 +421,7 @@ public class FATTest extends AbstractAppManagerTest {
 
     @Test
     @Mode(TestMode.FULL)
+    @FFDCIgnore(value = { java.util.zip.ZipException.class })
     public void testConfigureInvalidApplication() throws Exception {
         final String method = testName.getMethodName();
 
