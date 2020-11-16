@@ -274,11 +274,11 @@ public class DelayFullTest {
     // <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register"/>
     //
     // See DelayClient_MDB.xml
+    //
+    // This will be resolved in a subsequent issue/pull-request.
 
     @Test
     public void testPersistentMessageStoreTopic_B() throws Exception {
-        // dz restartServers(DEFAULT_CLIENT);
-
         runInServlet("testPersistentMessageTopic");
 
         restartServers();
@@ -289,8 +289,6 @@ public class DelayFullTest {
 
     @Test
     public void testPersistentMessageStoreTopic_Tcp() throws Exception {
-        // dz restartServers(DEFAULT_CLIENT);
-
         runInServlet("testPersistentMessageTopic_Tcp");
 
         restartServers();
@@ -415,7 +413,6 @@ public class DelayFullTest {
     public void testCreateSharedDurable_B_SecOff() throws Exception {
         boolean testResult = true;
 
-        // TODO: ???
         if ( !runInServlet("testCreateSharedDurableConsumer_create_B_SecOff") ) {
             testResult = false;
         }
@@ -468,7 +465,7 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage_TCP failed", testResult2);
     }
 
-    // TODO: Discuss before delivery.
+    //
 
     private List<String> getClientFeatures() {
         List<String> features = new ArrayList<String>();
@@ -559,7 +556,8 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage failed", testResult2);
     }
 
-    // @Test TODO Disabled in commercial liberty
+    // @Test TODO Already disabled.
+    //       Should be fixed or removed in a subsequent issue or pull-request.
     public void testDDRemoveAddServerFeature_TCP() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage_TCP");
         assertTrue("testSendMessage_TCP failed", testResult1);
