@@ -26,8 +26,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.ClassloaderElement;
-import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.entitylocking.tests.web.EntityLocking20WebTestServlet;
 
@@ -47,6 +45,8 @@ import componenttest.topology.utils.PrivHelper;
 @Mode(TestMode.FULL)
 @SkipForRepeat("JPA20_FEATURES")
 public class TestEntityLocking_Web extends JPAFATServletClient {
+
+    private final static String CONTEXT_ROOT = "EntityLockingWeb";
     private final static String RESOURCE_ROOT = "test-applications/EntityLocking/";
     private final static String appFolder = "web";
     private final static String appName = "EntityLockingWeb";
@@ -54,7 +54,6 @@ public class TestEntityLocking_Web extends JPAFATServletClient {
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
@@ -65,7 +64,7 @@ public class TestEntityLocking_Web extends JPAFATServletClient {
 
     @Server("EntityLocking")
     @TestServlets({
-                    @TestServlet(servlet = EntityLocking20WebTestServlet.class, path = "EntityLockingWeb" + "/" + "EntityLocking20WebTestServlet"),
+                    @TestServlet(servlet = EntityLocking20WebTestServlet.class, path = CONTEXT_ROOT + "/" + "EntityLocking20WebTestServlet"),
     })
     public static LibertyServer server;
 
@@ -146,10 +145,10 @@ public class TestEntityLocking_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-        ClassloaderElement loader = new ClassloaderElement();
-        loader.setApiTypeVisibility("+third-party");
-        cel.add(loader);
+//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+//        ClassloaderElement loader = new ClassloaderElement();
+//        loader.setApiTypeVisibility("+third-party");
+//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
