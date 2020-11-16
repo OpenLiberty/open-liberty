@@ -54,6 +54,8 @@ public class FVTConnection implements Connection {
 
     @Override
     public Session createSession(boolean transacted, int acknowledgeMode) throws JMSException {
+        if (mc == null)
+            throw new javax.jms.IllegalStateException("JMS connection is closed.");
         return new FVTSession(this);
     }
 
@@ -84,6 +86,8 @@ public class FVTConnection implements Connection {
 
     @Override
     public void start() throws JMSException {
+        if (mc == null)
+            throw new javax.jms.IllegalStateException("JMS connection is closed.");
     }
 
     @Override
