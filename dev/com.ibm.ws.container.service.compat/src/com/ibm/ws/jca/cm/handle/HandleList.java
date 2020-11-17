@@ -18,13 +18,13 @@ import java.util.ArrayList;
  * was a quick way of mocking up, in an oversimplified way for experimentation
  * purposes, what the real handle list does.
  */
-public class HandleList extends ArrayList<HandleListInterface.Handle> implements HandleListInterface {
+public class HandleList extends ArrayList<HandleListInterface.HandleDetails> implements HandleListInterface {
     private static final long serialVersionUID = -4425328702653290017L;
 
     private boolean destroyed;
 
     @Override
-    public synchronized HandleList addHandle(HandleListInterface.Handle a) {
+    public synchronized HandleList addHandle(HandleListInterface.HandleDetails a) {
         super.add(a);
         return this;
     }
@@ -43,9 +43,12 @@ public class HandleList extends ArrayList<HandleListInterface.Handle> implements
     }
 
     @Override
-    public synchronized void removeHandle(Object r) {
+    public synchronized HandleDetails removeHandle(Object h) {
         if (!destroyed)
-            super.remove(r);
+            for (int i = super.size(); i > 0;)
+                if (get(--i).forHandle(h))
+                    return super.remove(i);
+        return null;
     }
 
     @Override
