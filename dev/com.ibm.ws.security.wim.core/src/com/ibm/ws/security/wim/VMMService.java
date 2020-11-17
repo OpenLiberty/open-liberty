@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,8 +42,7 @@ import com.ibm.wsspi.security.wim.model.Root;
 @ObjectClassDefinition(factoryPid = "com.ibm.wsspi.security.wim.CustomRepository", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @Ext.Alias("customRepository")
 @Ext.ObjectClassClass(CustomRepository.class)
-@interface CustomRepositoryMarker {
-}
+@interface CustomRepositoryMarker {}
 
 @ObjectClassDefinition(pid = "com.ibm.ws.security.wim.VMMService", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @interface VMMServiceConfig {
@@ -165,8 +164,6 @@ public class VMMService implements Service, RealmConfigChangeListener {
         if (tc.isInfoEnabled())
             Tr.info(tc, "FEDERATED_MANAGER_SERVICE_STOPPED");
         notifyListeners();
-
-        getConfigManager().deregisterRealmConfigChangeListener(this);
     }
 
     /**
@@ -289,12 +286,8 @@ public class VMMService implements Service, RealmConfigChangeListener {
 
                 if (participatingEntries != null) {
                     for (String baseEntry : participatingEntries) {
-                        if (!baseEntries.contains(baseEntry)) {
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Did not find participating " + baseEntry + " in list of existing repos " + baseEntries);
-                            }
+                        if (!baseEntries.contains(baseEntry))
                             Tr.error(tc, WIMMessageKey.INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION, baseEntry);
-                        }
                     }
                 }
             }
