@@ -11,20 +11,10 @@
 package io.openliberty.restfulWS30.fat.validator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.constraints.NotNull;
-
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -61,27 +51,5 @@ public class ValidatorTestServlet extends FATServlet {
             i = is.read(b);
         }
         return sb.toString().trim();
-    }
-
-    public static class MyBean {
-
-        @NotNull
-        public String notNull = "";
-
-    }
-
-    private void assertViolations(Set<ConstraintViolation<MyBean>> violations, Class<?>... constraintTypes) {
-        assertEquals(constraintTypes.length, violations.size());
-
-        Set<String> foundConstraints = new HashSet<>();
-        for (ConstraintViolation<MyBean> v : violations) {
-            String constraintAnno = v.getConstraintDescriptor().getAnnotation().toString();
-            System.out.println("Found constraint violation '" + v.getMessage() + "' from annotation " + constraintAnno);
-            foundConstraints.add(constraintAnno);
-        }
-
-        for (Class<?> expectedConstraint : constraintTypes)
-            assertTrue("Did not find expected constraint " + expectedConstraint.getCanonicalName() + " in " + foundConstraints,
-                       foundConstraints.stream().anyMatch(s -> s.contains(expectedConstraint.getCanonicalName())));
     }
 }
