@@ -87,6 +87,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -160,6 +161,8 @@ public class PluginGenerator {
 
     private static final boolean CHANGE_TRANSFORMER;
     
+    private static Long defaultPersistTimeoutReduction = Long.valueOf(2);
+
     static {
         if (!JavaInfo.vendor().equals(Vendor.IBM)) {
             CHANGE_TRANSFORMER = false;
@@ -525,6 +528,32 @@ public class PluginGenerator {
                     sgElem.appendChild(serverElem);
 
                     if (sd.transports != null) {
+                        // first link to httpOption to get persistTimeout
+                        ServiceReference<?> serviceRef = null;
+                        Long persistTimeout = Long.valueOf(30);
+                        Object pid = httpEndpointInfo.getProperty("httpOptionsRef");  
+                        if (pid != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "httpOptions (service.pid=" + pid + ")");
+                            }
+                            try {
+                                serviceRef = httpEndpointInfo.getService(context, "(service.pid=" + pid + ")");
+                            } catch (IllegalStateException e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "httpOptions IllegalStateException in getService, default persistTimeout used");
+                                }
+                            }
+                        }
+                        if (serviceRef != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "httpOptions (serviceRef=" + serviceRef + ")");
+                            }
+                            persistTimeout = (Long)serviceRef.getProperty(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT);
+                        }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "httpOptions persistTimeout = " + persistTimeout);
+                        }                       
+
                         // define its transports
                         for (TransportData currentTransport : sd.transports) {
                             Element tElem = output.createElement("Transport");
@@ -538,6 +567,10 @@ public class PluginGenerator {
                             tElem.setAttribute("Hostname", hostname);
                             String transportPort = Integer.toString(currentTransport.port);
                             tElem.setAttribute("Port", transportPort);
+                            Long connectionTtl = (persistTimeout - pcd.persistTimeoutReduction > 0)?
+                                                  persistTimeout - pcd.persistTimeoutReduction :
+                                                  persistTimeout - defaultPersistTimeoutReduction; 
+                            tElem.setAttribute("ConnectionTTL", connectionTtl.toString());
                             if (currentTransport.isSslEnabled) {
                                 tElem.setAttribute("Protocol", "https");
 
@@ -1819,6 +1852,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Hashtable<String, String> extraConfigProperties = new Hashtable<String, String>();
         protected Integer loadBalanceWeight = null;
         protected Role roleKind = null;
+        protected Long persistTimeoutReduction = defaultPersistTimeoutReduction;
 
         protected PluginConfigData() {
             // nothing
@@ -1841,6 +1875,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             IPv6Preferred = (Boolean) config.get("ipv6Preferred");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
+            persistTimeoutReduction = (Long)config.get("persistTimeoutReduction");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
             wsServerIdleTimeout = (Long) config.get("wsServerIdleTimeout");
             connectTimeout = (Long) config.get("connectTimeout");
@@ -1952,6 +1987,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 Tr.debug(trace, "   StashfileLocation       : " + StashfileLocation);
                 Tr.debug(trace, "   TrustedProxyEnable      : " + TrustedProxyEnable);
                 Tr.debug(trace, "   TrustedProxyGroup       : " + traceList(TrustedProxyGroup));
+                Tr.debug(trace, "   persistTimeoutReduction : " + persistTimeoutReduction);
                 if (!extraConfigProperties.isEmpty())
                     Tr.debug(trace, "   AdditionalConfigProps   : " + extraConfigProperties.toString());
             }
