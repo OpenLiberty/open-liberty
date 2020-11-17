@@ -24,6 +24,7 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +54,7 @@ import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;
 import batch.fat.util.BatchFatUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -111,6 +113,11 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     public static void beforeClass() throws Exception {
 
         HttpUtils.trustAllCertificates();
+        
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
 
         server.startServer();
 
