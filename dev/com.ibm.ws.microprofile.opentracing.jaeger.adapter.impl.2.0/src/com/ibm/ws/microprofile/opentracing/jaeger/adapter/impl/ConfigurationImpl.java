@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
+import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerTracer.Builder;
 
 import io.opentracing.Tracer;
 
@@ -81,5 +82,10 @@ public class ConfigurationImpl extends AbstractJaegerAdapter<io.jaegertracing.Co
             throw new JaegerAdapterException("CodecConfiguration is not an instance of CodecConfigurationImpl");
         }
         return this;
+    }
+
+    @Override
+    public Builder getTracerBuilder() {
+        return new JaegerTracerBuilderImpl(getDelegate().getTracerBuilder());
     }
 }

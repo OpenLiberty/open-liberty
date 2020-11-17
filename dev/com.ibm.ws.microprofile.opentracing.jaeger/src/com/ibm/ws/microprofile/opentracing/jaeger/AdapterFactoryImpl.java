@@ -22,7 +22,6 @@ import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapter;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterFactory;
-import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerTracer;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl.AbstractJaegerAdapter;
 
 public class AdapterFactoryImpl extends JaegerAdapterFactory {
@@ -41,9 +40,7 @@ public class AdapterFactoryImpl extends JaegerAdapterFactory {
                     Configuration.ReporterConfiguration.class,
                     Configuration.SamplerConfiguration.class,
                     Configuration.Propagation.class,
-                    Configuration.CodecConfiguration.class,
-                    JaegerTracer.class,
-                    JaegerTracer.Builder.class
+                    Configuration.CodecConfiguration.class
             );
             URL[] urls = new URL[] { AbstractJaegerAdapter.class.getProtectionDomain().getCodeSource().getLocation() };// URL for the adapter impl bundle
 

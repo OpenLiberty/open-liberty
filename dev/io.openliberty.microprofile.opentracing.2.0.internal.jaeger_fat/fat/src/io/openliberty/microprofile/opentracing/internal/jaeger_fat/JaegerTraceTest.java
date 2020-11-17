@@ -106,6 +106,9 @@ public class JaegerTraceTest {
     }
 
     /**
+     * Test LRCScopeManager as the scope manager.
+     * LRCScopeManager adds the traceId and spanId to LogRecordContext.
+     * All log events should have ext_traceId and ext_spanId.
      * 
      * @throws Exception
      */

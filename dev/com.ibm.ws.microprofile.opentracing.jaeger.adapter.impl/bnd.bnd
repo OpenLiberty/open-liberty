@@ -45,4 +45,4 @@ src: src
   com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
   io.jaegertracing:jaeger-core;version=0.34.0
-
+  

@@ -103,13 +103,13 @@ io.grpc:grpc-protobuf-lite:1.31.1
 io.grpc:grpc-protobuf:1.31.1
 io.grpc:grpc-stub:1.31.1
 io.jaegertracing:jaeger-client:0.34.0
-io.jaegertracing:jaeger-client:1.2.0
+io.jaegertracing:jaeger-client:1.3.0
 io.jaegertracing:jaeger-core:0.34.0
-io.jaegertracing:jaeger-core:1.2.0
+io.jaegertracing:jaeger-core:1.3.0
 io.jaegertracing:jaeger-thrift:0.34.0
-io.jaegertracing:jaeger-thrift:1.2.0
+io.jaegertracing:jaeger-thrift:1.3.0
 io.jaegertracing:jaeger-tracerresolver:0.34.0
-io.jaegertracing:jaeger-tracerresolver:1.2.0
+io.jaegertracing:jaeger-tracerresolver:1.3.0
 io.netty:netty-buffer:4.1.51.Final
 io.netty:netty-codec-http2:4.1.51.Final
 io.netty:netty-codec-http:4.1.51.Final

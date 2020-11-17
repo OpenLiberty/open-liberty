@@ -180,13 +180,22 @@ public class JaegerTracerFactory {
 //            tracer = configuration.getTracer();
 
             tracer = (Tracer) factory.newConfiguration(appName)
-                            .withReporter(reporterConfiguration)
-                            .withSampler(samplerConfiguration)
-                            .withTracerTags(tracerTagsFromEnv())
-                            .withCodec(codecConfiguration)
-                            .getTracerBuilder()
-                            .withScopeManager(new LRCScopeManager())
-                            .build();
+                    .withReporter(reporterConfiguration)
+                    .withSampler(samplerConfiguration)
+                    .withTracerTags(tracerTagsFromEnv())
+                    .withCodec(codecConfiguration)
+                    .getTracerBuilder()
+                    .withScopeManager(new LRCScopeManager())
+                    .build();
+
+//            tracer = (Tracer) factory.newConfiguration(appName)
+//                            .withReporter(reporterConfiguration)
+//                            .withSampler(samplerConfiguration)
+//                            .withTracerTags(tracerTagsFromEnv())
+//                            .withCodec(codecConfiguration)
+//                            .getTracerBuilder()
+//                            .withScopeManager(new MDCScopeManagerImpl.Builder().build())
+//                            .build();
 
                     
             
