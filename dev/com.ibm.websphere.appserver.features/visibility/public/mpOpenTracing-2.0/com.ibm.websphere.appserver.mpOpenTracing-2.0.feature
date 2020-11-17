@@ -11,7 +11,8 @@ IBM-API-Package: \
 -features=\
     com.ibm.websphere.appserver.opentracing-2.0, \
     io.openliberty.org.eclipse.microprofile.opentracing-2.0, \
-    com.ibm.websphere.appserver.mpConfig-2.0
+    com.ibm.websphere.appserver.mpConfig-2.0, \
+    io.openliberty.mpCompatible-4.0
 -bundles=\
     io.openliberty.microprofile.opentracing.2.0.internal
 kind=beta
