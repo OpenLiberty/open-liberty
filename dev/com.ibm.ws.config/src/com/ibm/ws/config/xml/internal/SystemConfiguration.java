@@ -32,6 +32,7 @@ import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
@@ -65,13 +66,7 @@ class SystemConfiguration {
 
     SystemConfiguration(BundleContext bc,
                         SystemConfigSupport caSupport,
-                        ConfigurationAdmin configAdmin,
-                        OnError onError) {
-
-        if (onError != OnError.WARN) {
-            // If the value of onError is the default (WARN) instantiate lazily
-            ErrorHandler.INSTANCE.setOnError(onError);
-        }
+                        ConfigurationAdmin configAdmin) {
 
         locationTracker = new ServiceTracker<WsLocationAdmin, WsLocationAdmin>(bc, WsLocationAdmin.class.getName(), null);
         locationTracker.open();
@@ -84,6 +79,12 @@ class SystemConfiguration {
 
         WsLocationAdmin locationService = locationTracker.getService();
         VariableRegistry variableRegistryService = variableRegistryTracker.getService();
+
+        OnError onError = getOnError();
+        if (onError != OnError.WARN) {
+            // If the value of onError is the default (WARN) instantiate lazily
+            ErrorHandler.INSTANCE.setOnError(onError);
+        }
 
         ServiceReference<LibertyProcess> procRef = bc.getServiceReference(LibertyProcess.class);
         LibertyProcess libertyProcess = bc.getService(procRef);
@@ -120,6 +121,38 @@ class SystemConfiguration {
         WSConfigurationHelper wsConfigHelper = new WSConfigurationHelperImpl(metatypeRegistry, ce, bundleProcessor);
         registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
 
+    }
+
+    private OnError getOnError() {
+
+        VariableRegistry variableRegistry = variableRegistryTracker.getService();
+
+        if (variableRegistry == null) {
+            // Should never happen
+            return OnError.WARN;
+        }
+        OnError onError;
+        String onErrorVar = "${" + OnErrorUtil.CFG_KEY_ON_ERROR + "}";
+        String onErrorVal = variableRegistry.resolveString(onErrorVar);
+
+        if ((onErrorVal.equals(onErrorVar))) {
+            onError = OnErrorUtil.OnError.WARN; // Default value if not set
+        } else {
+            String onErrorFormatted = onErrorVal.trim().toUpperCase();
+            try {
+                onError = Enum.valueOf(OnErrorUtil.OnError.class, onErrorFormatted);
+                // Correct the variable registry with a validated entry if needed
+                if (!onErrorVal.equals(onErrorFormatted))
+                    variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, onErrorFormatted);
+            } catch (IllegalArgumentException err) {
+                if (tc.isWarningEnabled()) {
+                    Tr.warning(tc, "warn.config.invalid.value", OnErrorUtil.CFG_KEY_ON_ERROR, onErrorVal, OnErrorUtil.CFG_VALID_OPTIONS);
+                }
+                onError = OnErrorUtil.OnError.WARN; // Default value if error
+                variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, OnErrorUtil.OnError.WARN.toString());
+            }
+        }
+        return onError;
     }
 
     // Register a service with default properties
