@@ -551,6 +551,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTwoWayStreaming(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testTwoWayStreaming";
@@ -591,6 +592,7 @@ public class ProducerEndpointFATServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTwoWayStreamingAsyncThread(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String m = "testTwoWayStreamingAsyncThread";
