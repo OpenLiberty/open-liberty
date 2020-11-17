@@ -131,6 +131,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieInMPConfig_UnderWebInf_test() throws Exception {
 
@@ -206,6 +207,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_HeaderIsCookieWithOtherCookieNameInMPConfig_InMetaInf_PassCookieWithNameBearer_test() throws Exception {
 
@@ -375,6 +377,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAudiencesInMPConfig_InMetaInf_test() throws Exception {
 
@@ -496,6 +499,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_GoodAlgorithmInMPConfig_UnderWebInf_test() throws Exception {
 
@@ -736,6 +740,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptKeyLocFileForRS512InMPConfig_InMetaInf_test() throws Exception {
 
@@ -858,6 +863,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_encrypt_mpJwtRS256_token_RSA_OAEP_256_RS256_publicKey_A256GCM() throws Exception {
 
@@ -967,7 +973,8 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_simpleJsonPayload_test() throws Exception {
 
         String jwtToken = builderHelpers
-                        .buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
+                        .buildAlternatePayloadJWEToken(JwtKeyTools
+                                        .getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
 
         useToken(jwtToken,
                  buildAppUrl(resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
@@ -987,12 +994,14 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_JweTypeNotJose_test() throws Exception {
 
-        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        // build a jwe token that has "typ" set to "notJOSE" instead of "JOSE".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
                         .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
                                                     "notJOSE", "jwt");
 
-        // The test code generates a token that uses HS256 - if we get far enough to fail on that, we haven't failed checking the JWE Type :)
+        // The test code generates a token that is encrypted with RS256, but signed using HS256
+        // the code that checks the JWE type runs before the signature is checked, so if we get far enough to fail on
+        // on the signature, we haven't failed checking the JWE Type :)
         useToken(jwtToken,
                  buildAppUrl(resourceServer, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                              MpJwt12FatConstants.MP_CONFIG_IN_META_INF_TREE_APP),
@@ -1011,7 +1020,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     @Test
     public void MPJwt12MPConfigInApp_NoMPJwt12ConfigInServerXml_DecryptRS256InMPConfig_InMetaInf_JweContentTypeNotJwt_test() throws Exception {
 
-        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        // build a jwe token that has "cty" set to "not_jwt" instead of "jwt".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
                         .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
                                                     "JOSE", "not_jwt");
@@ -1073,7 +1082,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     public void MPJwt12MPConfigInApp_MPJwt12ConfigInServerXmlOverrides_BadDecryptInMPConfig_InMetaInf_test() throws Exception {
 
         // config server to use a configuration that has valid decrypt info
-        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_altConfiginApp_Good_Decrypt.xml");
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfiginApp_Good_Decrypt.xml");
 
         // use an app that has an invalid decrypt location
         standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,

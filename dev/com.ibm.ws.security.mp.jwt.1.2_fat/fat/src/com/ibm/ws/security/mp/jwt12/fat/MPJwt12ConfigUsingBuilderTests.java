@@ -144,6 +144,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12ConfigUsingBuilderTests_Header_Authorization_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization.xml");
@@ -174,6 +175,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12ConfigUsingBuilderTests_Header_Cookie_doNotSetCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie.xml");
@@ -311,6 +313,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS256_tokenRS256() throws Exception {
 
@@ -388,6 +391,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS256_tokenNotEncrypted() throws Exception {
 
@@ -402,6 +406,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtNoEncryption_tokenEncrypted() throws Exception {
 
@@ -527,7 +532,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
         String jwtToken = builderHelpers
-                        .buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
+                        .buildAlternatePayloadJWEToken(JwtKeyTools
+                                        .getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
         Log.info(thisClass, _testName, "Funky token: " + jwtToken);
         for (TestApps app : setTestAppArray(resourceServer)) {
             WebClient webClient = actions.createWebClient();
@@ -549,7 +555,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_RS256.xml");
 
-        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        // build a jwe token that has "typ" set to "notJOSE" instead of "JOSE".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
                         .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
                                                     "notJOSE", "jwt");
@@ -560,7 +566,9 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), jwtToken);
 
-            // The test code generates a token that uses HS256 - if we get far enough to fail on that, we haven't failed checking the JWE Type :)
+            // The test code generates a token that is encrypted with RS256, but signed using HS256
+            // the code that checks the JWE type runs before the signature is checked, so if we get far enough to fail on
+            // on the signature, we haven't failed checking the JWE Type :)
             validationUtils.validateResult(response, setBadCertExpectations(resourceServer, KeyMismatch));
 
         }
@@ -576,7 +584,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_RS256.xml");
 
-        // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
+        // build a jwe token that has "cty" set to "not_jwt" instead of "jwt".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
                         .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
                                                     "JOSE", "not_jwt");
