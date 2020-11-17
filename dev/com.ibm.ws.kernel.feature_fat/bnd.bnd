@@ -24,7 +24,9 @@ src: \
 	test-bundles/test.service.provider/src, \
 	test-bundles/test.activation.type/src, \
 	test-bundles/test.origin.bundle/src, \
-	test-bundles/test.compatibility/src
+	test-bundles/test.compatibility/src, \
+	test-bundles/test.override.provides.javax.swing.plaf/src, \
+	test-bundles/test.override.requires.javax.swing.plaf/src
 
 fat.project: true
 
