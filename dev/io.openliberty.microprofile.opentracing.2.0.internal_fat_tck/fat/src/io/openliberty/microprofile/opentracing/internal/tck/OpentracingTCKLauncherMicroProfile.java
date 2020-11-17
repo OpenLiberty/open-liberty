@@ -47,7 +47,7 @@ public class OpentracingTCKLauncherMicroProfile {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpentracingTck() throws Exception {
+    public void launchOpentracingTckMP() throws Exception {
         // Use default tck-suite.xml
         
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.opentracing.2.0.internal_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
