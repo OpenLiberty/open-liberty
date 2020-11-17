@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,7 +145,8 @@ public class EJBRemoteRuntimeImpl implements EJBRemoteRuntime, RemoteObjectRepla
         @Override
         public String toString() {
             return super.toString() + '[' + beanMetaData.j2eeName +
-                   ", contexts=" + Arrays.asList(contextNames) +
+                   ", contextNames=" + Arrays.asList(contextNames) +
+                   ", context= " + Arrays.asList(contexts) +
                    ']';
         }
     }
@@ -249,17 +250,30 @@ public class EJBRemoteRuntimeImpl implements EJBRemoteRuntime, RemoteObjectRepla
             }
         }
 
-        for (int i = bindingData.contextNames.length - 1; i >= 0 && !hasBindings(bindingData.contexts[i]); i--) {
+        // For contextNames, if completely empty of bindings, unbind the naming context from its parent context.
+        for (int i = bindingData.contextNames.length - 1; i >= 0; i--) {
+            Boolean contextEmpty = isBindingContextEmpty(bindingData.contexts[i]);
+            if (contextEmpty == null) {
+                continue;
+            }
+            if (contextEmpty == false) {
+                break;
+            }
             NamingContext parentContext = i == 0 ? rootNamingContext : bindingData.contexts[i - 1];
             unbind(parentContext, bindingData.contextNames[i]);
         }
     }
 
-    private boolean hasBindings(NamingContext context) {
+    private Boolean isBindingContextEmpty(NamingContext context) {
+        // If the namingContext is null it possibly didn't come up.
+        // Either way we don't need to unbind it from it's parent context (we will get NPE) so just return false
+        if (context == null) {
+            return null;
+        }
         BindingListHolder blh = new BindingListHolder();
         BindingIteratorHolder bih = new BindingIteratorHolder();
         context.list(1, blh, bih);
-        return blh.value.length != 0;
+        return new Boolean(blh.value.length == 0);
     }
 
     private void unbind(NamingContext context, String name) {
