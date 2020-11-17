@@ -437,6 +437,8 @@ public class FATTest extends AbstractAppManagerTest {
             // Because the required location attribute is missing, config will issue an error
             assertNotNull("Invalid archive message not found", server.waitForStringInLog("CWWKM0101E.*"));
             assertNotNull("Invalid resource message not found", server.waitForStringInLog("CWWKZ0021E.*"));
+        } catch (java.util.zip.ZipException ze) {
+            // ignore.   This is expected since the WAR is invalid.
         } finally {
             pathsToCleanup.add(server.getServerRoot() + "/apps");
             server.stopServer("CWWKZ0021E", "CWWKM0101E");
