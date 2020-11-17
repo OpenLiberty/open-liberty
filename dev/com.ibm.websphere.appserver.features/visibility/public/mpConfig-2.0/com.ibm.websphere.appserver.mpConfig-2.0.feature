@@ -16,7 +16,8 @@ Subsystem-Name: MicroProfile Config 2.0
  com.ibm.websphere.appserver.javax.annotation-1.3, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
- com.ibm.websphere.appserver.internal.slf4j-1.7.7
+ com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+ io.openliberty.mpCompatible-4.0
 -bundles=io.openliberty.io.smallrye.config, \
  io.openliberty.io.smallrye.common, \
  io.openliberty.microprofile.config.internal.common, \

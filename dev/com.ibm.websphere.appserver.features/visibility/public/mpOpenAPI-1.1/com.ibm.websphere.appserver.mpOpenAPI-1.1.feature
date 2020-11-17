@@ -40,7 +40,8 @@ IBM-SPI-Package: \
  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3, 1.4", \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
  com.ibm.wsspi.appserver.webBundle-1.0,\
- com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1
+ com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1, \
+ io.openliberty.mpCompatible-0.0
 -bundles=\
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\

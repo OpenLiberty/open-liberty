@@ -16,7 +16,8 @@ Subsystem-Name: MicroProfile Health 2.2
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:=3.1, \
- com.ibm.wsspi.appserver.webBundle-1.0 
+ com.ibm.wsspi.appserver.webBundle-1.0, \
+ io.openliberty.mpCompatible-0.0
 -bundles=\
  com.ibm.websphere.org.eclipse.microprofile.health.2.2; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:2.2", \
  com.ibm.websphere.jsonsupport, \
