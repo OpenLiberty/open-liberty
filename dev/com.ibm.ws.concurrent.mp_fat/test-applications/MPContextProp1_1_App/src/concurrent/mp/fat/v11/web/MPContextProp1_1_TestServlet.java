@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -41,24 +40,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
+import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
-
-import componenttest.annotation.AllowedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MPContextProp1_1_TestServlet")
@@ -388,7 +384,7 @@ public class MPContextProp1_1_TestServlet extends HttpServlet {
         assertNotNull("Neither stage was rejected, despite queue capacity configured to 1: " + dependentStage1 + ", " + dependentStage2, abortedTaskException);
 
         blocker.countDown();
- 
+
         if (dependentStage1.isCompletedExceptionally())
             assertEquals("Location is Iowa", dependentStage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
