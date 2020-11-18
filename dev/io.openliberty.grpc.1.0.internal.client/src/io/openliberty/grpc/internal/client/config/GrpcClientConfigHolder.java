@@ -41,9 +41,6 @@ public class GrpcClientConfigHolder {
 	private static volatile Map<String, Map<String, String>> resolvedConfigInfoCacheByHost = new HashMap<>();
 	private static volatile Map<String, Map<String, String>> resolvedConfigInfoCacheByPath = new HashMap<>();
 
-
-	private static boolean wildcardsPresentInConfigInfo = false;
-
 	/**
 	 * add a configuration for a hostname. We'd like a set of hashmaps keyed by host,
 	 * however when osgi calls deactivate, we have no arguments, so we have to
@@ -59,9 +56,6 @@ public class GrpcClientConfigHolder {
 		configInfo.put(host, params);
 		resolvedConfigInfoCacheByHost.clear();
 		resolvedConfigInfoCacheByPath.clear();
-		if (host.startsWith("*") || host.endsWith("$")) {
-			wildcardsPresentInConfigInfo = true;
-		}
 	}
 
 	/**
@@ -228,30 +222,6 @@ public class GrpcClientConfigHolder {
 		// at this point we might have to merge something, set up a new hashmap to hold
 		// the results
 		HashMap<String, String> mergedProps = new HashMap<>();
-		synchronized (GrpcClientConfigHolder.class) {
-			// try for exact match
-			Map<String, String> props = configInfo.get(fullPath);
-			if (props != null) {
-				if (debug) {
-					Tr.debug(tc, "getHostProps exact match: " + host + " path " + path);
-				}
-				mergedProps.putAll(props);
-			}
-		}
-
-		if (!wildcardsPresentInConfigInfo) {
-			if (debug) {
-				Tr.debug(tc, "getHostProps no wildcards, cache and return what we've got: " + mergedProps);
-			}
-			synchronized (GrpcClientConfigHolder.class) {
-				if (path == null) {
-					resolvedConfigInfoCacheByHost.put(host, mergedProps);
-				} else {
-					resolvedConfigInfoCacheByPath.put(fullPath, mergedProps);
-				}
-			}
-			return (mergedProps.isEmpty() ? null : mergedProps);
-		}
 
 		// if a wildcard match exists, merge it to what we have already.
 		if (debug) {
@@ -327,6 +297,10 @@ public class GrpcClientConfigHolder {
 	}
 
 	protected static String getPathID(String host, String path) {
-		return host + "$" + path;
+		if (path == null) {
+			return host + "$";
+		} else {
+			return host + "$" + path;
+		}
 	}
 }
