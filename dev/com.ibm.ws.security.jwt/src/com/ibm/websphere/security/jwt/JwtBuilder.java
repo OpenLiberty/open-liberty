@@ -547,11 +547,12 @@ public class JwtBuilder {
     // fetch claim from json or jwt. The jwt can be base 64 encoded or
     // decoded.
     /**
-     * Retrieves the specified claim from the given json or jwt string.
+     * Retrieves the specified claim from the given json or jwt string. JWT strings in JSON Web Encryption (JWE) format are not
+     * supported.
      *
      * @param jsonOrJwt
-     *            This is a String and represents either base 64 encoded or decoded JWT payload in the json format or base 64
-     *            encoded JWT
+     *            This is a string that represents either a JWT payload in JSON format or a JWT in JWS format. The string may or
+     *            may not be base64 encoded. Strings that are in JWE format are not supported.
      *
      * @return {@code JwtBuilder} object
      * @throws InvalidClaimException
@@ -606,11 +607,12 @@ public class JwtBuilder {
     // fetch all claim from json or jwt. The jwt can be base 64 encoded or
     // decoded
     /**
-     * Retrieves all the claims from the given json or jwt string.
+     * Retrieves all the claims from the given json or jwt string. JWT strings in JSON Web Encryption (JWE) format are not
+     * supported.
      *
      * @param jsonOrJwt
-     *            This is a String and represents either base 64 encoded or decoded JWT payload in the json format or base 64
-     *            encoded JWT
+     *            This is a string that represents either a JWT payload in JSON format or a JWT in JWS format. The string may or
+     *            may not be base64 encoded. Strings that are in JWE format are not supported.
      *
      * @return {@code JwtBuilder} object
      *
