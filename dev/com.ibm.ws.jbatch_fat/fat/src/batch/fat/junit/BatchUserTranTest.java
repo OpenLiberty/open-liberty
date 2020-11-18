@@ -3,6 +3,7 @@ package batch.fat.junit;
 import static org.junit.Assert.assertEquals;
 
 import java.net.HttpURLConnection;
+import java.nio.file.Paths;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -19,6 +20,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -39,6 +41,11 @@ public class BatchUserTranTest {
     public static void setup() throws Exception {
 
         FatUtils.checkJava7();
+        
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
 
         // Start server 
         server.startServer("BatchUserTranTest.log");

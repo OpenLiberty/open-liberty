@@ -13,6 +13,8 @@ package batch.fat.junit;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Paths;
+
 import javax.json.JsonObject;
 
 import org.junit.AfterClass;
@@ -24,6 +26,7 @@ import com.ibm.ws.jbatch.test.BatchRestUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -41,6 +44,12 @@ public class InMemoryPersistenceTest {
         HttpUtils.trustAllCertificates();
 
         FatUtils.checkJava7();
+        
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
 
         server.startServer();
 

@@ -22,8 +22,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @DiscriminatorValue("T") // The base level is (P)artition, and (T)op-level extends this
 
 // Is it possible to use TYPE(s) below to match just the partition types, given that the both partition and top-level types will be (instanceof) the base type?
+@NamedQueries({ 
 	@NamedQuery(name=TopLevelStepInstanceEntity.GET_RELATED_PARTITION_LEVEL_STEP_THREAD_INSTANCES,
-     query="SELECT s FROM StepThreadInstanceEntity s WHERE s.jobInstance.instanceId = :instanceId AND s.stepName = :stepName AND TYPE(s) <> TopLevelStepInstanceEntity ORDER BY s.partitionNumber ASC")
+     query="SELECT s FROM StepThreadInstanceEntity s WHERE s.jobInstance.instanceId = :instanceId AND s.stepName = :stepName AND TYPE(s) <> TopLevelStepInstanceEntity ORDER BY s.partitionNumber ASC"),
+	@NamedQuery(name=TopLevelStepInstanceEntity.GET_RELATED_PARTITION_LEVEL_COMPLETED_PARTITION_NUMBERS,
+    query="SELECT s.partitionNumber FROM StepThreadInstanceEntity s WHERE s.jobInstance.instanceId = :instanceId AND s.stepName = :stepName AND TYPE(s) <> TopLevelStepInstanceEntity" + 
+	" AND s.latestStepThreadExecution.batchStatus = javax.batch.runtime.BatchStatus.COMPLETED ORDER BY s.partitionNumber ASC")
+
+})
 public class TopLevelStepInstanceEntity extends StepThreadInstanceEntity {
 
 	public static final String GET_RELATED_PARTITION_LEVEL_STEP_THREAD_INSTANCES = "TopLevelStepInstanceEntity.getRelatedPartitionLevelStepThreadInstancesQuery";

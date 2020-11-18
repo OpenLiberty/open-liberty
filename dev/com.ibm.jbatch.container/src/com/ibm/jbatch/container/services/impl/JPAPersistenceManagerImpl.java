@@ -359,20 +359,6 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             retMe.close();
             retMe = createPsu(instanceVersion, executionVersion, partitionVersion);
         }
-        
-        // Register named queries. We do these at runtime to allow javax -> jakarta conversion for EE9.
-        EntityManager em = retMe.createEntityManager();
-        Query q = em.createQuery("SELECT s.partitionNumber FROM StepThreadInstanceEntity s "
-                        + "WHERE s.jobInstance.instanceId = :instanceId AND s.stepName = :stepName AND TYPE(s) <> TopLevelStepInstanceEntity" + 
-                        " AND s.latestStepThreadExecution.batchStatus = javax.batch.runtime.BatchStatus.COMPLETED "
-                        + "ORDER BY s.partitionNumber ASC");
-        em.getEntityManagerFactory().addNamedQuery(TopLevelStepInstanceEntity.GET_RELATED_PARTITION_LEVEL_COMPLETED_PARTITION_NUMBERS, q);
-        
-        q = em.createQuery("UPDATE JobExecutionEntity x SET x.serverId = :serverId, x.restUrl = :restUrl "
-                        + "WHERE x.jobExecId = :jobExecId AND x.batchStatus = javax.batch.runtime.BatchStatus.STARTING");
-        em.getEntityManagerFactory().addNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB, q);
-        
-        em.close();
 
         // Perform recovery immediately, before returning from this method, so that
         // other callers won't be able to access the PSU (via getPsu()) until recovery is complete.

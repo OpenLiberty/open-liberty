@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.junit.AfterClass;
@@ -35,6 +36,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -56,6 +58,12 @@ public class BonusPayoutViaJBatchUtilityTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "BonusPayout.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "BonusPayoutEAR.ear"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
 
         setConfig("BonusPayoutViaJBatchUtility/server.xml", testClass);
         BatchFATHelper.startServer(server, testClass);
