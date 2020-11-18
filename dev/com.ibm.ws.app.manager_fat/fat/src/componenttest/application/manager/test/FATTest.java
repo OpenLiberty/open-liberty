@@ -39,6 +39,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -421,6 +422,7 @@ public class FATTest extends AbstractAppManagerTest {
 
     @Test
     @Mode(TestMode.FULL)
+    @AllowedFFDC("java.util.zip.ZipException") //  Expected since the WAR is invalid.
     public void testConfigureInvalidApplication() throws Exception {
         final String method = testName.getMethodName();
 
