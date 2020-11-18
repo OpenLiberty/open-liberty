@@ -1082,7 +1082,7 @@ public class MPJwt12MPConfigInApp_Tests extends MPJwt12MPConfigTests {
     public void MPJwt12MPConfigInApp_MPJwt12ConfigInServerXmlOverrides_BadDecryptInMPConfig_InMetaInf_test() throws Exception {
 
         // config server to use a configuration that has valid decrypt info
-        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfiginApp_Good_Decrypt.xml");
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigInApp_Good_Decrypt.xml");
 
         // use an app that has an invalid decrypt location
         standard12TestFlow("sign_RS256_enc_RS256", resourceServer, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
