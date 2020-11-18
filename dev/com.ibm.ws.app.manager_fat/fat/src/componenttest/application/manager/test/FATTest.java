@@ -39,6 +39,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -421,7 +422,7 @@ public class FATTest extends AbstractAppManagerTest {
 
     @Test
     @Mode(TestMode.FULL)
-    @FFDCIgnore(value = { java.util.zip.ZipException.class })
+    @AllowedFFDC("java.util.zip.ZipException") //  Expected since the WAR is invalid.
     public void testConfigureInvalidApplication() throws Exception {
         final String method = testName.getMethodName();
 
@@ -437,8 +438,6 @@ public class FATTest extends AbstractAppManagerTest {
             // Because the required location attribute is missing, config will issue an error
             assertNotNull("Invalid archive message not found", server.waitForStringInLog("CWWKM0101E.*"));
             assertNotNull("Invalid resource message not found", server.waitForStringInLog("CWWKZ0021E.*"));
-        } catch (java.util.zip.ZipException ze) {
-            // ignore.   This is expected since the WAR is invalid.
         } finally {
             pathsToCleanup.add(server.getServerRoot() + "/apps");
             server.stopServer("CWWKZ0021E", "CWWKM0101E");
