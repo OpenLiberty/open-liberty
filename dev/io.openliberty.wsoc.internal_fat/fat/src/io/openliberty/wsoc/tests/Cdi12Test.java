@@ -124,6 +124,8 @@ public class Cdi12Test extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // Reset Variables for tests
+        CdiTest.resetTests();
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer(null);
         }
