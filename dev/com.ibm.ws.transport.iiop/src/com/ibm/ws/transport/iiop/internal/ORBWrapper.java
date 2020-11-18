@@ -51,7 +51,11 @@ public class ORBWrapper extends ReadyListenerImpl {
 
     @Activate
     protected void activate(Map<String, Object> properties, ComponentContext cc) throws Exception {
-        super.activate(properties, cc.getBundleContext());
+        try {
+            super.activate(properties, cc.getBundleContext());
+        } catch (Exception e) { // should auto-ffdc
+            throw e;
+        }
     }
 
     /** {@inheritDoc} */
