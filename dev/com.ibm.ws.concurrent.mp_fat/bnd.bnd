@@ -24,7 +24,7 @@ src: \
 
 fat.project: true
 
-tested.features:cdi-3.0
+tested.features: mpConfig-2.0
 
 -buildpath: \
 	com.ibm.tx.core;version=latest,\
@@ -41,7 +41,4 @@ tested.features:cdi-3.0
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.concurrent;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.concurrency.2.0;version=latest,\
-	io.openliberty.jakarta.servlet.5.0;version=latest,\
-	io.openliberty.jakarta.transaction.2.0;version=latest
+

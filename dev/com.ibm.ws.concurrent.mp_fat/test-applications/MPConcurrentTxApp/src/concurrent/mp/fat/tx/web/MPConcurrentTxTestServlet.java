@@ -36,29 +36,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Status;
-import jakarta.transaction.SystemException;
-import jakarta.transaction.TransactionManager;
-import jakarta.transaction.UserTransaction;
-
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.naming.InitialContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 
-import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 
 import componenttest.annotation.AllowedFFDC;
@@ -245,7 +244,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
         // scenario with successful commit
         tx.begin();
         try {
-            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
+            Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -253,7 +252,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
+                    Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
@@ -289,7 +288,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
         // scenario with rollback
         tx.begin();
         try {
-            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
+            Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -297,7 +296,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
+                    Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");

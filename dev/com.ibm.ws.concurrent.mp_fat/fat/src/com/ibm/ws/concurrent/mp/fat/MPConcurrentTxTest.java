@@ -12,21 +12,30 @@ package com.ibm.ws.concurrent.mp.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import concurrent.mp.fat.tx.web.MPConcurrentTxTestServlet;
 
 @RunWith(FATRunner.class)
 public class MPConcurrentTxTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
+                    .andWith(new MPContextProp11RepeatAction("MPConcurrentTxTestServer"));
 
     private static final String APP_NAME = "MPConcurrentTxApp";
 
@@ -36,7 +45,7 @@ public class MPConcurrentTxTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.tx.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "concurrent.mp.fat.tx.web");
         server.startServer();
     }
 
@@ -53,7 +62,9 @@ public class MPConcurrentTxTest extends FATServletClient {
                    "java.lang.IllegalStateException", // attempt to use same transaction on 2 threads at once
                    "javax.transaction.xa.XAException" // transaction marked rollback-only due to intentionally caused error
     })
+
     @Test
+    @SkipForRepeat(MPContextProp11RepeatAction.ID)
     public void testTransactionTimesOutAndReleasesLocks() throws Exception {
         server.setMarkToEndOfLog();
 

@@ -19,8 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 MPConcurrentTest.class,
                 MPConcurrentConfigTest.class,
                 MPConcurrentJAXRSTest.class,
-                //MPConcurrentTxTest.class, //Relies on Jakarta EE 9 but MicroProfile does not yet support EE9
-                //MPContextProp1_1_Test.class, //Relies on Jakarta EE 9 but MicroProfile does not yet support EE9
+                MPConcurrentTxTest.class,
+                MPContextProp1_1_Test.class,
                 MPConcurrentCDITest.class // moved last because @RepeatTests, when added to this class, interferes with test classes that run after it // TODO
 })
 public class FATSuite {
