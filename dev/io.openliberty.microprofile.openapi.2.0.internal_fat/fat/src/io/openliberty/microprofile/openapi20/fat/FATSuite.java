@@ -15,11 +15,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     ApplicationProcessorTest.class,
-    CacheTest.class
+    CacheTest.class,
+    DeploymentTest.class
 })
 public class FATSuite {
 }
