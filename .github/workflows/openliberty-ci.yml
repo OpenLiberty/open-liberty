@@ -81,16 +81,10 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
-        echo "Building Liberty.  This will take approx. 30 minutes"
-        mkdir gradle && touch build.gradle.log
-        ./gradlew cnf:initialize assemble > gradle/build.gradle.log
+        echo "::group::Building Liberty.  This will take approx. 30 minutes"
+        ./gradlew cnf:initialize assemble
+        echo "::endgroup::"
         cd .. && zip -rq openliberty-image.zip dev/build.image/wlp/
-    - name: Upload build failure
-      if: failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: Build failure
-        path: dev/gradle/build.gradle.log
     - name: Upload liberty image
       uses: actions/upload-artifact@v2
       with:
@@ -130,33 +124,21 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Run unit tests # This script will NOT fail if test(s) fail
+    - name: Run unit tests
       id: run-unit-tests
       run: .github/workflow-scripts/run-unit-tests.sh
-    # If script failures, or gradle failure on last step is hard to debug, consider enabling this step:
-    # - name: Upload run failure 
-    #   if: failure()
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: Unit gradle failure
-    #     path: dev/gradle/unit.gradle.log
-    - name: Upload test report # If there was a test failure, archive test report
-      if: success() && steps.run-unit-tests.outputs.status == 'failure'
+    - name: Upload unit test artifact
+      if: steps.run-unit-tests.outputs.status == 'failure'
       uses: actions/upload-artifact@v2
       with:
-        name: Unit test logs
+        name: Unit Test Logs
         path: dev/cnf/generated/testReports/allUnitTests
-    - name: Collect unit test results # Regardless of test status, collect test results [total, success, failure]
-      if: success()
-      shell: bash
-      run: .github/workflow-scripts/collect-unit-tests.sh
-    - name: Publish unit test report # Publish those results
-      if: success()
-      uses: mikepenz/action-junit-report@v1
+    - name: Analyze junit output
+      if: steps.run-unit-tests.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.5
       with:
-        report_paths: './unit-results/TEST-*.xml'
-        check_name: Unit Test Report
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        name: Junit report
+        path: "dev/unit-results/TEST-*.xml"
   fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
     needs: [setup, build]
@@ -201,38 +183,30 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: openliberty-image
-    - name: Run FAT buckets #This script will NOT fail if test(s) fail.
+    - name: Run FAT buckets
       timeout-minutes: 150
       shell: bash
       env:
         CATEGORY: ${{matrix.category}}
         GH_EVENT_NAME: ${{github.event_name}}
       run: .github/workflow-scripts/run-fat-build.sh
-    # If script failures, or gradle failure on last step is hard to debug, consider enabling this step:
-    # - name: Upload run failure 
-    #   if: failure()
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: FAT gradle failure
-    #     path: gradle/fats/*.gradle.log
-    - name: Check for FAT failures #Determine if there were test failures
+    - name: Check for FAT failures
       id: check-fat-failure
       shell: bash
       env:
         CATEGORY: ${{matrix.category}}
       run: .github/workflow-scripts/check-fat-failures.sh
-    - name: Upload failing FAT artifacts #If test(s) failed upload the results/output directories
+    - name: Upload failing FAT artifacts
       if: steps.check-fat-failure.outputs.status == 'failure'
       uses: aguibert/upload-artifact@v1.0
       with:
         name: ${{matrix.category}}
         path: dev/failing_buckets/*.zip
         single-archive: "false"
-    - name: Publish FAT report #If test(s) failed publish failures for quick dev access
-      uses: mikepenz/action-junit-report@v1
+    - name: Analyze junit output
       if: steps.check-fat-failure.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.5
       with:
-        report_paths: './fat-results/TEST-*.xml'
-        check_name: ${{matrix.category}} FAT Report
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        name: Junit report
+        path: "dev/fat-results/TEST-*.xml"
       

@@ -6,9 +6,6 @@
 
 set +e
 
-FAT_RESULTS=$PWD/fat-results
-mkdir $FAT_RESULTS
-
 # Override default LITE mode per-bucket timeout to 45m
 FAT_ARGS="-Dfattest.timeout=2700000"
 
@@ -37,47 +34,58 @@ else
   FAT_BUCKETS=$(cat .github/test-categories/$CATEGORY)
 fi
 
-echo -e "\n### Will be running buckets: \n$FAT_BUCKETS"
+# Ensure all buckets we plan to run exist
+echo "::group:: Will be running buckets"
 for FAT_BUCKET in $FAT_BUCKETS
 do
+  echo "$FAT_BUCKET"
   if [[ ! -d "dev/$FAT_BUCKET" ]]; then
     echo "::error::FAT bucket [$FAT_BUCKET] does not exist.";
     exit 1;
   fi
 done
+echo "::endgroup::"
 
 # For PR type events, set the git_diff for the change detector tool so unreleated FATs do not run
 if [[ $GH_EVENT_NAME == 'pull_request' && ! $CATEGORY =~ MODIFIED_.*_MODE ]]; then
   FAT_ARGS="$FAT_ARGS -Dgit_diff=HEAD^...HEAD^2"
-  echo -e "\n### This event is a pull request. Will run FATs with: $FAT_ARGS"
+  echo "This event is a pull request. Will run FATs with: $FAT_ARGS"
 fi
 
-echo -e "\n## Environment dump:"
+# Log environment
+echo "::group::Environment Dump"
 env
-echo -e "\n## Ant version:"
-ant -version
-echo -e "\n## Java version:"
+echo "::endgroup::"
+echo "::group::Java version"
 java -version
+echo "::endgroup::"
+echo -e "::group::Ant version"
+ant -version
+echo "::endgroup::"
 
+#Unzip and setup openliberty image
 unzip -q openliberty-image.zip
 cd dev
 chmod +x gradlew
 chmod 777 build.image/wlp/bin/*
 echo "org.gradle.daemon=false" >> gradle.properties
 
-echo -e "\n### Build com.ibm.ws.componenttest and fattest.simplicity"
+#Build test infrastructure
+echo "::group::Build com.ibm.ws.componenttest and fattest.simplicity"
 mkdir -p gradle/fats/ && touch setup.gradle.log
-./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build > gradle/fats/setup.gradle.log
+./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
+echo "::endgroup::"
 
+#Run fat buckets
 for FAT_BUCKET in $FAT_BUCKETS
 do
-  echo -e "\n### BEGIN running FAT bucket $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
+  echo "::group:: Run $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
-  mkdir -p gradle/fats/ && touch $FAT_BUCKET.gradle.log
-  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS > gradle/fats/$FAT_BUCKET.gradle.log || BUCKET_PASSED=false
+  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS || BUCKET_PASSED=false
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
   RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
   mkdir -p $OUTPUT_DIR
+  # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then
     echo "The bucket $FAT_BUCKET passed.";
     touch "$OUTPUT_DIR/passed.log";
@@ -85,19 +93,14 @@ do
     echo "::error::The bucket $FAT_BUCKET failed.";
     touch "$OUTPUT_DIR/fail.log";
   fi
-  echo -e "\n### Collecing fat results in $FAT_RESULTS"
-  for f in $RESULTS_DIR/junit/TEST-*.xml
-  do 
-      if cp $f $FAT_RESULTS &> /dev/null
-      then 
-          : #If copy successful do nothing
-      else 
-          # Otherwise, unit test task may have run, but no results were producted
-          echo "No fat results for $FAT_BUCKET"
-      fi
+  # Collect all junit files in a central location
+  FAT_RESULTS=$PWD/fat-results
+  mkdir $FAT_RESULTS
+  echo "Collecing fat results in $FAT_RESULTS"
+  for f in $RESULTS_DIR/junit/TEST-com.*.xml $RESULTS_DIR/junit/TEST-io.*.xml; do 
+      cp $f $FAT_RESULTS
   done
-  echo -e "\n### END running FAT bucket $FAT_BUCKET";
+  echo "::endgroup::"
 done
 
 echo "Done running all FAT buckets."
-

@@ -1,12 +1,15 @@
 #!/bin/bash
+# This script runs all unit tests and outputs final values [total / successes / failed / skipped]
+
 cd dev
 chmod +x gradlew
 
 echo "Running gradle test and testReport tasks.  This will take approx. 30 minutes."
 
-# Redirect stdout to log file that will get archived if any tests fail
-mkdir gradle && touch unit.gradle.log
-./gradlew --continue cnf:initialize testResults > gradle/unit.gradle.log
+# Redirect stdout to log file that will get archived if build fails
+echo "::group::Gradle Output"
+./gradlew --continue cnf:initialize testResults
+echo "::endgroup::"
 
 # Gradle testResults task will save off results in generated.properties ensure that file exists otherwise fail
 if [[ ! -f "generated.properties" ]]; then
@@ -17,15 +20,42 @@ else
         echo "Test results not generated gradle build likely failed"
         exit 1
     fi
-fi 
+fi
 
+# Copy off test results to be archived
 total=$(grep tests.total.all generated.properties | sed 's/[^0-9]*//g')
 successful=$(grep tests.total.successful generated.properties | sed 's/[^0-9]*//g')
 failed=$(grep tests.total.failed generated.properties | sed 's/[^0-9]*//g')
 skipped=$(grep tests.total.skipped generated.properties | sed 's/[^0-9]*//g')
 
-echo -e "\n[Final Test Results] \n total:$total successful:$successful failed:$failed skipped:$skipped"
+#Setup output directory 
+UNIT_DIR=$PWD/unit-results
+mkdir $UNIT_DIR
 
+#Collect test results in central location
+#Check each project
+for project in */ ; do
+    # If unit test folder exists
+    if [[ -d "$project/build/libs/test-reports/test" ]]; then
+        pushd $project/build/libs/test-reports/test &> /dev/null
+        # Then copy unit test file(s) to central location
+        for f in TEST-com.*.xml TEST-io.*.xml ; do 
+            cp $f $UNIT_DIR
+        done
+        popd &> /dev/null
+    fi
+done
+echo "Unit Test results in $UNIT_DIR"
+
+#Output total test results
+echo "::group::Final Test Results"
+echo "Total: $total"
+echo "Successful: $successful"
+echo "Failed: $failed"
+echo "Skipped: $skipped"
+echo "::endgroup::"
+
+#Report failure
 if [ $failed -gt 0 ]; then
     echo "::set-output name=status::failure"
 else
