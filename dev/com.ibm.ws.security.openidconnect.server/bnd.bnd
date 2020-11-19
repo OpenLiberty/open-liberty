@@ -184,8 +184,6 @@ Include-Resource: \
 	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
 	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.security.jwt;version=latest, \
-	com.ibm.ws.runtime.update;version=latest, \
-	com.ibm.ws.threading;verison=latest
+	com.ibm.ws.security.jwt;version=latest
 
 
