@@ -365,4 +365,242 @@
 		</application-bnd>
 	</application>		
 <!-- End Algorithm -->
+
+<!-- Start Encryption -->
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileGoodRelativeDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileGoodFileDecryptKeyRS256InMP-ConfigUnderWEB-INF"
+		name="microProfileGoodFileDecryptKeyRS256InMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileDecryptKeyRS256InMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileGoodUrlDecryptKeyRS384InMP-ConfigInMETA-INF"
+		name="microProfileGoodUrlDecryptKeyRS384InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlDecryptKeyRS384InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeDecryptKeyRS384InMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRelativeDecryptKeyRS384InMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeDecryptKeyRS384InMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileGoodFileDecryptKeyRS512InMP-ConfigInMETA-INF"
+		name="microProfileGoodFileDecryptKeyRS512InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileDecryptKeyRS512InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileGoodUrlDecryptKeyRS512InMP-ConfigUnderWEB-INF"
+		name="microProfileGoodUrlDecryptKeyRS512InMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlDecryptKeyRS512InMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileBadDecryptKeyES256InMP-ConfigInMETA-INF"
+		name="microProfileBadDecryptKeyES256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadDecryptKeyES256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+
+	<application
+		type="war"
+		id="microProfileBadDecryptKeyES256InMP-ConfigUnderWEB-INF"
+		name="microProfileBadDecryptKeyES256InMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadDecryptKeyES256InMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+ 
+ 	<application
+		type="war"
+		id="microProfileBadPlaintextDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileBadPlaintextDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadPlaintextDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+    
+   	<application
+		type="war"
+		id="microProfileBadJwksUriDecryptKeyRS256InMP-ConfigUnderWEB-INF"
+		name="microProfileBadJwksUriDecryptKeyRS256InMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileBadJwksUriDecryptKeyRS256InMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>		
+	
+ 	<application
+		type="war"
+		id="microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadStringDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+ 	<application
+		type="war"
+		id="microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileBadPublicKeyDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+	
+ 	<application
+		type="war"
+		id="microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		name="microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileShortRS256KeyDecryptKeyRS256InMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>				
+<!-- End Encryption -->
+    
 </server>    

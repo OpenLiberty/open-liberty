@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
 import com.ibm.ws.security.mp.jwt12.fat.sharedTests.GenericEnvVarsAndSystemPropertiesTests;
 import com.ibm.ws.security.mp.jwt12.fat.utils.MP12ConfigSettings;
@@ -26,18 +27,18 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is the test class that will verify that we get the correct behavior when we
- * have mp-config defined as environment variables
+ * have mp-config defined as system properties
  * We'll test with a server.xml that will NOT have a mpJwt config, the app will NOT have mp-config specified
  * Therefore, we'll be able to show that the config is coming from the system properties
- * We also test with a conflicting config in server.xml - we'll show that this value overrides the environment variables
+ * We also test with a conflicting config in server.xml - we'll show that this value overrides the system properties
  *
  **/
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName extends GenericEnvVarsAndSystemPropertiesTests {
+public class MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings extends GenericEnvVarsAndSystemPropertiesTests {
 
-    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName.class;
+    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings.class;
 
     @Server("com.ibm.ws.security.mp.jwt.1.2.fat")
     public static LibertyServer envVarsResourceServer;
@@ -45,18 +46,20 @@ public class MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName extends Ge
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.COOKIE, "testCookie",
-                           MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet, MPConfigLocation.ENV_VAR);
+        commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MpJwt12FatConstants.SIGALG_RS256,
+                           JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256),
+                           MPConfigLocation.ENV_VAR);
 
     }
 
     @Test
-    public void MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName_test() throws Exception {
-        genericGoodTest();
+    public void MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings_keyMgmtKeyAlg256() throws Exception {
+        genericDecryptOtherKeyMgmtAlgOrOtherContentEncryptAlg(MpJwt12FatConstants.KEY_MGMT_KEY_ALG_256, MpJwt12FatConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
     }
 
     @Test
-    public void MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName_overriddenByServerXml_test() throws Exception {
-        genericBadTest("rs_server_AltConfigNotInApp_Header_Authorization.xml", setMissingTokenExpectations(resourceServer));
+    public void MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings_contentEncryptAlg192() throws Exception {
+        genericDecryptOtherKeyMgmtAlgOrOtherContentEncryptAlg(MpJwt12FatConstants.DEFAULT_KEY_MGMT_KEY_ALG, MpJwt12FatConstants.CONTENT_ENCRYPT_ALG_192);
     }
 }

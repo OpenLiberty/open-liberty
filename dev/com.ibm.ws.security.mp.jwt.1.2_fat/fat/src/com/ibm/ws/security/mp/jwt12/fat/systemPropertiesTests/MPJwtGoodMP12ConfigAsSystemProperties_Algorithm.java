@@ -46,7 +46,8 @@ public class MPJwtGoodMP12ConfigAsSystemProperties_Algorithm extends GenericEnvV
     public static void setUp() throws Exception {
 
         commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithOtherAlg.xml", MpJwt12FatConstants.COOKIE,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MpJwt12FatConstants.SIGALG_ES256, MPConfigLocation.SYSTEM_PROP);
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MpJwt12FatConstants.SIGALG_ES256, MP12ConfigSettings.DecryptKeyLocNotSet,
+                           MPConfigLocation.SYSTEM_PROP);
 
     }
 

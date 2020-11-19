@@ -162,71 +162,45 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
      */
     /********************************* End publickey.algorithm ****************************************/
 
-    /******************************** Start xxx (Encrypted token) ***************************************/
+    /******************************** Start Encrypt tests ***************************************/
 
-    // encrypt the token, omit key from config
-    // don't encrypt the token, but do include a key in the config
-    // encrypt with each supported and use both matching and non-matching keys (may only use rs256)
-    // have tests that use both the sslRef in the mpJwt config and the server wide config
-    // sign with one - encrypt with another
-    /******************************** End xxx (Encrypted token) ***************************************/
     /**
-     * Code to loop through encryption keys of all types and
-     * validate behavior (success if they match, failure if they do not)
+     * Test passes in a JWE token and server only has mpJwt-1.1 enabled. We should fail to handle the JWE and issue a
+     * message indicating that mpJwt-1.2 is required...
+     * We should not fail because we don't have a key to decrypt
      *
-     * @param privateKey - the private key that'll match the config
      * @throws Exception
      */
-//    public void genericEncryption(String privateKeyAlg) throws Exception {
-//
-//        // TODO
-//        // may need unique expectations for conflicts between types vs conflicts between "size"
-//        // ie HS256 and RS256 vs RS256 and RS512
-//        Expectations badExpectations = setBadEncryptExpectations(resourceServer);
-//
-//        for (String encKeyAlg : rsAlgList) { // RS256, RS384, RS512
-//            // note the build name must match the name in the list
-//            // thought about creating the tokens once, but:
-//            // 1) that makes it harder to reference
-//            // 2) this puts more stress on our builder...
-//            Log.info(thisClass, "genericEncryption", "********************************************");
-//            Log.info(thisClass, "genericEncryption", "* Config: " + privateKeyAlg + "      Token: " + encKeyAlg + "          *");
-//            Log.info(thisClass, "genericEncryption", "********************************************");
-//
-////            String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "enc_" + encKeyAlg);
-//
-//            if (encKeyAlg.equals(privateKeyAlg)) {
-//                genericConfigTest();
-//            } else {
-//                genericConfigTest(badExpectations);
-//            }
-//        }
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJWTusingRS256() throws Exception {
-//
-//        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_encrypt_RS256.xml");
-//        genericEncryption(MpJwt12FatConstants.ENCRYPT_RS256);
-//
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJWTusingRS384_tokenRS384() throws Exception {
-//
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJWTusingRS512_tokenRS512() throws Exception {
-//
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_keyRS256_signUsingRS384() throws Exception {
-//
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_keyNotEncrypted_signUsingRS256() throws Exception {
-//
-//    }
-//
-//    public void MPJwt12ConfigUsingBuilderTests_encrypt_keyRS256_mpJWTMissingKey() throws Exception {
-//
-//    }
+    @Test
+    public void Feature11Enabled_ConfigInServerXmlTests_NoKeyManagementKeyAliasKey_JWEToken_test() throws Exception {
+
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+                          setNoEncryptNotJWSTokenExpectations(resourceServer, true));
+
+    }
+
+    /**
+     * Test passes in a JWE token and server has mpJwt-1.1 enabled and specifies a valid keyManagmeentKeyAlais. We should fail to handle the JWE and issue a message indicating that
+     * mpJwt-1.2 is required...
+     * We should not fail because we don't have a key to decrypt
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Feature11Enabled_ConfigInServerXmlTests_KeyManagementKeyAliasKeyRS256_JWEToken_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_KeyManagementKeyAlias.xml");
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+                          setNoEncryptNotJWSTokenExpectations(resourceServer, true));
+
+    }
+
+    @Test
+    public void Feature11Enabled_ConfigInServerXmlTests_KeyManagementKeyAliasKeyRS256_JWSToken_test() throws Exception {
+
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_KeyManagementKeyAlias.xml");
+        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+
+    }
+
 }

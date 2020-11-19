@@ -35,9 +35,9 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtGoodMP12ConfigAsSystemProperties_Audiences extends GenericEnvVarsAndSystemPropertiesTests {
+public class MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk extends GenericEnvVarsAndSystemPropertiesTests {
 
-    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsSystemProperties_Audiences.class;
+    public static Class<?> thisClass = MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk.class;
 
     @Server("com.ibm.ws.security.mp.jwt.1.2.fat.jvmOptions")
     public static LibertyServer sysPropResourceServer;
@@ -45,19 +45,31 @@ public class MPJwtGoodMP12ConfigAsSystemProperties_Audiences extends GenericEnvV
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.COOKIE,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, "client01, client02", MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
+        commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.AUTHORIZATION,
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MpJwt12FatConstants.SIGALG_RS256,
+                           "builderId:sign_RS256_enc_RS256",
                            MPConfigLocation.SYSTEM_PROP);
 
     }
 
+    /**
+     * The mp config contains an invalid decrypt key, so we expect a failure - we don't reconfig because we want to test with the config coming from the mp config props
+     *
+     * @throws Exception
+     */
     @Test
-    public void MPJwtGoodMP12ConfigAsSystemProperties_Audiences_test() throws Exception {
-        genericGoodTest();
+    public void MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk_test() throws Exception {
+        genericBadTest("sign_RS256_enc_RS256", "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", setEncryptMissingKeyExpectations(resourceServer, false));
     }
 
+    /**
+     * This test expect good results - we're going to override the bad value in the mp config props with a good value in the config (just using the "bad" generic test as it does a
+     * reconfig)
+     *
+     * @throws Exception
+     */
     @Test
-    public void MPJwtGoodMP12ConfigAsSystemProperties_Audiences_overriddenByServerXml_test() throws Exception {
-        genericBadTest("rs_server_AltConfigNotInApp_Bad_Audiences.xml", setBadAudiencesExpectations(resourceServer));
+    public void MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk_overriddenByServerXml_test() throws Exception {
+        genericBadTest("sign_RS256_enc_RS256", "rs_server_AltConfigNotInApp_good12ServerXmlConfigWitheRS256Decrypt.xml", null);
     }
 }

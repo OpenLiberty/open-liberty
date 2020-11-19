@@ -46,7 +46,8 @@ public class MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie extends GenericE
     public static void setUp() throws Exception {
 
         commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.COOKIE,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.AlgorithmNotSet, MPConfigLocation.SYSTEM_PROP);
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
+                           MPConfigLocation.SYSTEM_PROP);
 
     }
 

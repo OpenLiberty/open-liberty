@@ -56,6 +56,10 @@ import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVar
 import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderAuthorization;
 import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie;
 import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256File;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText;
+import com.ibm.ws.security.mp.jwt12.fat.envVarsTests.MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS512Url;
 import com.ibm.ws.security.mp.jwt12.fat.featureSupportTests.feature1_1.Feature11Enabled_ConfigInAppTests;
 import com.ibm.ws.security.mp.jwt12.fat.featureSupportTests.feature1_1.Feature11Enabled_ConfigInServerXmlTests;
 import com.ibm.ws.security.mp.jwt12.fat.featureSupportTests.feature1_1.Feature11Enabled_MpConfigAsEnvVars;
@@ -65,6 +69,9 @@ import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12Confi
 import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderAuthorization;
 import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie;
 import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_withCookieName;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_AlternateDecryptSettings;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk;
+import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS384RelativeFile;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -83,7 +90,6 @@ import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12Confi
                 MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
                 MPJwtNoMpJwtConfig.class,
                 // propagation tests
-                //TODO - broken with 1.2 at the moment...
                 MPJwtPropagationTests_usingWebTarget.class,
                 MPJwtPropagationTests_notUsingWebTarget.class,
                 // mp-config specified in the applications
@@ -126,12 +132,19 @@ import com.ibm.ws.security.mp.jwt12.fat.systemPropertiesTests.MPJwtGoodMP12Confi
                 MPJwtGoodMP12ConfigAsSystemProperties_HeaderCookie_withCookieName.class,
                 MPJwtGoodMP12ConfigAsSystemProperties_Audiences.class,
                 MPJwtGoodMP12ConfigAsSystemProperties_Algorithm.class,
+                MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS384RelativeFile.class,
+                MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_RS256Jwk.class,
+                MPJwtGoodMP12ConfigAsSystemProperties_decryptKeyLoc_AlternateDecryptSettings.class,
                 // mp-config specified as env vars
                 MPJwtGoodMP12ConfigAsEnvVars_HeaderAuthorization.class,
                 MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie.class,
                 MPJwtGoodMP12ConfigAsEnvVars_HeaderCookie_withCookieName.class,
                 MPJwtGoodMP12ConfigAsEnvVars_Audiences.class,
                 MPJwtGoodMP12ConfigAsEnvVars_Algorithm.class,
+                MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256File.class,
+                MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS512Url.class,
+                MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText.class,
+                MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_AlternateDecryptSettings.class,
 
                 // Ensure 1.2 function not available with only 1.1 Feature enabled
                 Feature11Enabled_ConfigInAppTests.class,

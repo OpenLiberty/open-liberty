@@ -46,7 +46,8 @@ public class MPJwtGoodMP12ConfigAsEnvVars_HeaderAuthorization extends GenericEnv
     public static void setUp() throws Exception {
 
         commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigWithAudiences.xml", MpJwt12FatConstants.AUTHORIZATION,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.AlgorithmNotSet, MPConfigLocation.ENV_VAR);
+                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
+                           MPConfigLocation.ENV_VAR);
 
     }
 

@@ -50,7 +50,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
@@ -188,6 +187,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         optionMap.put("xxx_cookie_xxx", mpConfigSettings.getCookie());
         optionMap.put("xxx_audience_xxx", mpConfigSettings.getAudience());
         optionMap.put("xxx_algorithm_xxx", mpConfigSettings.getAlgorithm());
+        optionMap.put("xxx_decryptKeyLoc_xxx", mpConfigSettings.getDecryptKeyLoc());
         Log.info(thisClass, "updateJvmOptionsFiles", "ALG: " + mpConfigSettings.getAlgorithm());
 
         CommonIOUtils cioTools = new CommonIOUtils();
@@ -215,6 +215,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         String CookieName = "mp_jwt_token_cookie";
         String AudienceName = "mp_jwt_verify_audiences";
         String AlgorithmName = "mp_jwt_verify_publickey_algorithm";
+        String DecryptKeyName = "mp_jwt_decrypt_key_location";
 
         HashMap<String, String> envVars = new HashMap<String, String>();
         Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", HeaderName + "=" + mpConfigSettings.getHeader());
@@ -225,7 +226,8 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         envVars.put(AudienceName, mpConfigSettings.getAudience());
         Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", AlgorithmName + "=" + mpConfigSettings.getAlgorithm());
         envVars.put(AlgorithmName, mpConfigSettings.getAlgorithm());
-
+        Log.info(thisClass, "setAlternateMP_ConfigProperties_envVars", DecryptKeyName + "=" + mpConfigSettings.getDecryptKeyLoc());
+        envVars.put(DecryptKeyName, mpConfigSettings.getDecryptKeyLoc());
         MPJwt11MPConfigTests.setAlternateMP_ConfigProperties_envVars(envVars, server, mpConfigSettings);
     }
 
@@ -240,13 +242,14 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      *            - issuer value to add to the properties file
      * @return - return the microprofile-config.properties file content
      */
-    public static String buildMPConfigFileContent(MP12ConfigSettings mpConfigSettings, String header, String cookie, String audience, String algorithm) {
+    public static String buildMPConfigFileContent(MP12ConfigSettings mpConfigSettings, String header, String cookie, String audience, String algorithm, String decryptKeyLoc) {
         Log.info(thisClass, "",
-                 "mp.jwt.token.header=" + header + " mp.jwt.token.cookie=" + cookie + " mp.jwt.verify.audiences=" + audience + " mp.jwt.verify.publickey.algorithm=" + algorithm);
+                 "mp.jwt.token.header=" + header + " mp.jwt.token.cookie=" + cookie + " mp.jwt.verify.audiences=" + audience + " mp.jwt.verify.publickey.algorithm=" + algorithm
+                                + " mp.jwt.decrypt.key.location=" + decryptKeyLoc);
         return MPJwt11MPConfigTests.buildMPConfigFileContent(mpConfigSettings.getPublicKey(), mpConfigSettings.getPublicKeyLocation(), mpConfigSettings.getIssuer())
                + System.lineSeparator() + "mp.jwt.token.header=" + header + System.lineSeparator()
                + "mp.jwt.token.cookie=" + cookie + System.lineSeparator() + "mp.jwt.verify.audiences=" + audience + System.lineSeparator() + "mp.jwt.verify.publickey.algorithm="
-               + algorithm;
+               + algorithm + System.lineSeparator() + "mp.jwt.decrypt.key.location=" + decryptKeyLoc;
 
     }
 
@@ -273,10 +276,12 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
             // values that need to be replaced
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, mpConfigSettings.getHeader(), mpConfigSettings.getCookie(),
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
@@ -288,86 +293,205 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
     public static void deployRSServerMPConfigInAppHeaderApps(LibertyServer server, MP12ConfigSettings mpConfigSettings) throws Exception {
 
         Log.info(thisClass, "1.2 deployRSServerMPConfigInAppHeaderApps", "1.2");
+        String fileLoc = JwtKeyTools.getDefaultKeyFileLoc(server);
 
         try {
             // Header and cookie test setup
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_AUTHORIZATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.DefaultCookieName,
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, MP12ConfigSettings.DefaultCookieName,
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, "OtherCookieName",
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_HEADER_COOKIE_IN_CONFIG_WITH_OTHER_COOKIENAME_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.COOKIE, "OtherCookieName",
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, "badHeader", MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_HEADER_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, "badHeader", mpConfigSettings.getCookie(),
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
 
             // audiences test setup
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_AUDIENCES_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                        mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_AUDIENCES_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm()));
+                                                                                          mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(),
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_AUDIENCES_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                        "BadAudience", mpConfigSettings.getAlgorithm()));
+                                                                                        "BadAudience", mpConfigSettings.getAlgorithm(), mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_AUDIENCES_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                          "BadAudience", mpConfigSettings.getAlgorithm()));
+                                                                                          "BadAudience", mpConfigSettings.getAlgorithm(), mpConfigSettings.getDecryptKeyLoc()));
 
             // algorithm test setup
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256));
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256));
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256));
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256,
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION, MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256));
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256,
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
             // let's create an app with mp config properties that over ride the 1.1 and 1.2 alg settings
             MP12ConfigSettings overrideMpConfigSettings = new MP12ConfigSettings(mpConfigSettings.getPublicKeyLocation(), JwtKeyTools
-                            .getComplexPublicKeyForSigAlg(server, MpJwtFatConstants.SIGALG_ES256), mpConfigSettings
-                                            .getIssuer(), MpJwt12FatConstants.X509_CERT, mpConfigSettings
-                                                            .getHeader(), mpConfigSettings.getCookie(), mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm());
+                            .getComplexPublicKeyForSigAlg(server, MpJwtFatConstants.SIGALG_ES256), mpConfigSettings.getIssuer(), MpJwt12FatConstants.X509_CERT, mpConfigSettings
+                                            .getHeader(), mpConfigSettings
+                                                            .getCookie(), mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(), mpConfigSettings.getDecryptKeyLoc());
             setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_KEY_AND_ALGORITHM_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
                                                                buildMPConfigFileContent(overrideMpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
                                                                                         MP12ConfigSettings.CookieNotSet,
-                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256));
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256,
+                                                                                        mpConfigSettings.getDecryptKeyLoc()));
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_KEY_AND_ALGORITHM_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(overrideMpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
                                                                                           MP12ConfigSettings.CookieNotSet,
-                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256));
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_ES256,
+                                                                                          mpConfigSettings.getDecryptKeyLoc()));
 
+            // encrypt apps
+            // the mp.jwt.decrypt.key.location can be set in the mp config props in meta-inf or under web-inf and we'll test each of those
+            // the format of the location can be the relative file location, fully qualified file location as well as the url formatted file location
+            // we'll test these different forms, but cover that over the different algs and locations
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_FILE_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                          MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_URL_DECRYPT_KEY_RS384_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(overrideSignerInMP12ConfigSettings(mpConfigSettings, server,
+                                                                                                                           MpJwt12FatConstants.SIGALG_RS384),
+                                                                                        MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS384,
+                                                                                        "file:///" + fileLoc + JwtKeyTools
+                                                                                                        .getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS384)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_RELATIVE_DECRYPT_KEY_RS384_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(overrideSignerInMP12ConfigSettings(mpConfigSettings, server,
+                                                                                                                             MpJwt12FatConstants.SIGALG_RS384),
+                                                                                          MpJwt12FatConstants.AUTHORIZATION,
+                                                                                          MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS384,
+                                                                                          JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS384)));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.GOOD_FILE_DECRYPT_KEY_RS512_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(overrideSignerInMP12ConfigSettings(mpConfigSettings, server,
+                                                                                                                           MpJwt12FatConstants.SIGALG_RS512),
+                                                                                        MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS512,
+                                                                                        fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS512)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.GOOD_URL_DECRYPT_KEY_RS512_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(overrideSignerInMP12ConfigSettings(mpConfigSettings, server,
+                                                                                                                             MpJwt12FatConstants.SIGALG_RS512),
+                                                                                          MpJwt12FatConstants.AUTHORIZATION,
+                                                                                          MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS512,
+                                                                                          "file:///" + fileLoc + JwtKeyTools
+                                                                                                          .getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS512)));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(overrideMpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_ES256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_DECRYPT_KEY_ES256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(overrideMpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                          MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_ES256)));
+
+            // plain text private key
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_PLAINTEXT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getKeyFromFile(server, JwtKeyTools
+                                                                                                        .getPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256))));
+
+            // jwks uri
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MpJwt12FatConstants.BAD_JWKSURI_DECRYPT_KEY_RS256_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                          MP12ConfigSettings.CookieNotSet,
+                                                                                          mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                          resolvedJwksUri(jwtBuilderServer, MP12ConfigSettings.jwksUri)));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_STRING_DECRYPT_KEY_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        "SomeString"));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_DECRYPT_PUBLIC_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getPublicKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
+
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MpJwt12FatConstants.BAD_SHORT_DECRYPT_KEY_RS256_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MpJwt12FatConstants.AUTHORIZATION,
+                                                                                        MP12ConfigSettings.CookieNotSet,
+                                                                                        mpConfigSettings.getAudience(), MpJwt12FatConstants.SIGALG_RS256,
+                                                                                        JwtKeyTools.getShortPrivateKeyFileNameForAlg(MpJwt12FatConstants.SIGALG_RS256)));
+
+//            fileLoc + MP11ConfigSettings.PemFile
+            // combinations of file, rel file, url - randonly choose these with meta-inf/web-inf
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
             throw e;
         }
 
+    }
+
+    public static MP12ConfigSettings overrideSignerInMP12ConfigSettings(MP12ConfigSettings mpConfigSettings, LibertyServer server, String sigAlg) throws Exception {
+
+        Log.info(thisClass, "overrideSignerInMP12ConfigSettings", "sigAlg: " + sigAlg);
+        return new MP12ConfigSettings(mpConfigSettings.getPublicKeyLocation(), JwtKeyTools
+                        .getComplexPublicKeyForSigAlg(server, sigAlg), mpConfigSettings.getIssuer(), MpJwt12FatConstants.X509_CERT, mpConfigSettings
+                                        .getHeader(), mpConfigSettings
+                                                        .getCookie(), mpConfigSettings.getAudience(), mpConfigSettings.getAlgorithm(), mpConfigSettings.getDecryptKeyLoc());
     }
 
     public Map<String, String> addToMap(Map<String, String> currentMap, String name, String value) throws Exception {
@@ -441,11 +565,11 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     public void standard12TestFlow(String builder, String testUrl, String className, String location, String name, Expectations expectations) throws Exception {
 
-        if (builder == null || builder.equals("")) {
-            builder = MpJwt12FatConstants.SIGALG_RS256;
-        }
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, builder);
+        String builtToken = getToken(builder);
+        useToken(builtToken, testUrl, className, location, name, expectations);
+    }
 
+    public void useToken(String builtToken, String testUrl, String className, String location, String name, Expectations expectations) throws Exception {
         WebClient webClient = actions.createWebClient();
 
         if (expectations == null) { // implies expecting a good result
@@ -483,6 +607,13 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
         }
 
         validationUtils.validateResult(response, expectations);
+    }
+
+    public String getToken(String builder) throws Exception {
+        if (builder == null || builder.equals("")) {
+            builder = MpJwt12FatConstants.SIGALG_RS256;
+        }
+        return actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, builder);
 
     }
 
@@ -519,58 +650,191 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
 
     }
 
-//    /**
-//     * Set expectations for tests that have bad Audiences values
-//     *
-//     * @return Expectations
-//     * @throws Exception
-//     */
-//    public Expectations setBadAlgorithmExpectations(LibertyServer server) throws Exception {
-//
-//        Expectations expectations = new Expectations();
-//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-//
-////        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-////        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6023E_AUDIENCE_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the audience is NOT valid."));
-//
-//        return expectations;
-//
-//    }
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not set
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptMissingKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, "The key must not be null", "Messagelog did not contain an exception indicating that the keyManagementKeyAlias was missing."));
+        return expectations;
 
-//
-//    /**
-//     * Set expectations for tests that have bad Decryption key location values
-//     *
-//     * @return Expectations
-//     * @throws Exception
-//     */
-//    public Expectations setBadDecryptionKeyLocationExpectations(LibertyServer server) throws Exception {
-//
-//        Expectations expectations = new Expectations();
-//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-//
-//        // TODO - fix when we have the correct messages
-//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-//        //expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, "Messagelog did not contain an exception indicating that the issuer is NOT valid."));
-//
-//        return expectations;
-//
-//    }
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not set
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptPlainTextKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6062E_PLAINTEXT_KEY, "Messagelog did not contain an exception indicating that the mp.jwt.decrypt.key.location contained a plaintext key."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not set
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptMismatchExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, "javax.crypto.AEADBadTagException", "Messagelog did not contain an exception indicating a tag mismatch."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not set
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptMismatchKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, "java.lang.ClassCastException", "Messagelog did not contain an exception indicating a classcast exception due to the key type."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptInvalidKeyTypeExpectations(LibertyServer server, String keyName, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, "alias.*" + keyName
+                                                                         + ".*is not present", "Messagelog did not contain an exception indicating that the key could not be found."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptShortKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, "InvalidKeyException.*bits or larger MUST be used with the all JOSE RSA algorithms", "Messagelog did not contain an exception indicating that the key could not be found."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setNoEncryptNotJWSTokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS, "Messagelog did not contain an exception indicating that the token is NOT in JWS format."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptNotJWETokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6064E_JWE_REQUIRED_BUT_TOKEN_NOT_JWE, "Messagelog did not contain an exception indicating that the token is NOT in JWE format."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptInvalidPayloadExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6065E_JWE_DOES_NOT_CONTAIN_JWS, "Messagelog did not contain an exception indicating that the payload of the JWE was NOT a JWS."));
+        return expectations;
+
+    }
+
+    /**
+     * Sets expectations to check when the keyManagementKeyAlias is not valid
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setEncryptBadCtyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6057E_BAD_CTY_VALUE, "Messagelog did not contain an exception indicating that the cty was not set to [jwt]."));
+        return expectations;
+
+    }
 
     /**
      * Set expectations for tests that have bad Signature Algorithms
      *
      * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
      * @return Expectations - built expectations
      * @throws Exception
      */
-    public Expectations setBadEncryptExpectations(LibertyServer server) throws Exception {
+    public Expectations setAllBadEncryptExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+
+        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS, "Messagelog did not contain an exception indicating a problem extracting the JWS from the JWE."));
+
+        return expectations;
+
+    }
+
+    /**
+     * Set expectations for tests that have bad Signature Algorithms
+     *
+     * @param server - server whose logs will be searched
+     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
+     * @return Expectations - built expectations
+     * @throws Exception
+     */
+    public Expectations setBadEncryptExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
 
         Expectations expectations = badAppExpectations(MpJwt12FatConstants.UNAUTHORIZED_MESSAGE);
 
-        //TODO - correct failure msgs....
-//        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-//        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
+        if (extraMsgs) {
+            expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating a problem creating a JWT with the config and token provided."));
+            expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an exception indicating a problem processing the token string."));
+        }
 
         return expectations;
 

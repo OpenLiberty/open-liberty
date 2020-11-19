@@ -1076,7 +1076,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a signature algorithm of HS256 - this test ensures that
      * after building a jwt using the HS256 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -1096,7 +1095,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a signature algorithm of HS384 - this test ensures that
      * after building a jwt using the HS384 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -1116,7 +1114,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a signature algorithm of HS512 - this test ensures that
      * after building a jwt using the HS512 private key, we can use the consumer with the matching algorithm
      * and trust alias (for the public key) to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -1877,7 +1874,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     /**
      * server.xml has a config that does not specify a keyManagementKeyAlias - this test ensures that we do not accept encrypted
      * tokens when there is no keyManagementKeyAlias.
-     * 
+     *
      * See
      * https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens
      */
@@ -1897,7 +1894,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     /**
      * server.xml has a config that specifies a key management key alias - this test ensures that we do not accept unencrypted
      * tokens when keyManagementKeyAlias is configured.
-     * 
+     *
      * See
      * https://github.com/eclipse/microprofile-jwt-auth/blob/master/spec/src/main/asciidoc/configuration.asciidoc#requirements-for-accepting-signed-and-encrypted-tokens
      */
@@ -1973,7 +1970,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a key management key alias using an RS384 Cert - this test ensures that
      * after building a jwt that is encrypted with the matching public key, we can use the consumer with the matching
      * private key to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -2029,7 +2025,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a key management key alias using an RS512 Cert - this test ensures that
      * after building a jwt that is encrypted with the matching public key, we can use the consumer with the matching
      * private key to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -2085,7 +2080,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
      * after building a jwt that is encrypted with the matching public key, but using "RSA-OAEP-256" as the KeyManagementKeyAlg,
      * we can use the consumer with the matching private key to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -2109,7 +2103,6 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
      * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
      * after building a jwt that is encrypted with the matching public key, but using "A192GCM" as the contentEncryptionAlg,
      * we can use the consumer with the matching private key to "consume" it.
-     * the token)
      *
      * @throws Exception
      */
@@ -2129,39 +2122,66 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     }
 
-    //    // sample test to build encrypted only payload
-    //    @Test
-    //    public void JwtConsumerApiConfigTests_saveForLater() throws Exception {
-    //
-    //        builder.setKeyManagementKey(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
-    //
-    //        // simple string content
-    //        //        builder.setPayload("Some String");
-    //
-    //        // Json Content
-    //        JSONObject payload = new JSONObject();
-    //        payload.put(PayloadConstants.ISSUER, "client01");
-    //        NumericDate now = NumericDate.now();
-    //        payload.put(PayloadConstants.ISSUED_AT, now.getValue());
-    //        payload.put(PayloadConstants.EXPIRATION_TIME, now.getValue() + (2 * 60 * 60));
-    //        payload.put(PayloadConstants.SCOPE, "openid profile");
-    //        payload.put(PayloadConstants.SUBJECT, "testuser");
-    //        payload.put(PayloadConstants.REALM_NAME, "BasicRealm");
-    //        payload.put(PayloadConstants.TOKEN_TYPE, "Bearer");
-    //        payload.put("key1", "ugh.ibm.com");
-    //        payload.put("key2", "my.dog.has.fleas");
-    //        payload.put("key3", "testing.to.bump.up.part.count");
-    //        payload.put("key4", "hereWe.goAgain");
-    //
-    //        String payloadString = payload.toString();
-    //        builder.setPayload(payloadString);
-    //
-    //        String jwtToken = consumerHelpers.buildSimpleJWEToken(builder, _testName);
-    //
-    //        Expectations expectations = consumerHelpers.addGoodConsumerAlgExpectations(currentAction, consumerServer, JwtConsumerConstants.SIGALG_RS256);
-    //
-    //        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
-    //        validationUtils.validateResult(response, currentAction, expectations);
-    //
-    //    }
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, but setting a "typ" other than JOSE in the JWE header,
+     * we can use the consumer with the matching private key to "consume" it.
+     * We will in the end fail processing the JWS payload as the "test" builder sets a different issuer
+     * This test shows that we don't check the 'typ' in the JWE header
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptOtherJWEHeader_typ() throws Exception {
+
+        String jwtToken = consumerHelpers.buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)),
+                "notJOSE", "jwt");
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6022E_ISSUER_NOT_TRUSTED, currentAction, consumerServer, "good_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, but setting a "cty" other than jwt in the JWE header,
+     * we can NOT use the consumer with the matching private key to "consume" it.
+     * This test shows that we don't allow any value other than 'jwt' in the 'cty' in the JWE header
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptOtherJWEHeader_cty() throws Exception {
+
+        String jwtToken = consumerHelpers.buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)),
+                "JOSE", "not_jwt");
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6057E_BAD_CTY_VALUE, currentAction, consumerServer, "good_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+    }
+
+    /**
+     * server.xml has a config that specifies a key management key alias using an RS256 Cert - this test ensures that
+     * after building a jwt that is encrypted with the matching public key, but containing a simple Json payload,
+     * we can NOT use the consumer with the matching private key to "consume" it.
+     * This test shows that we won't allow a non-JWS payload
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwtConsumerApiConfigTests_encryptSimpleJsonPayload() throws Exception {
+
+        String jwtToken = consumerHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
+
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6065E_JWE_DOES_NOT_CONTAIN_JWS, currentAction, consumerServer, "good_decrypt_RS256");
+
+        Page response = actions.invokeJwtConsumer(_testName, consumerServer, "good_decrypt_RS256", jwtToken);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
 }

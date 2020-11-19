@@ -45,9 +45,14 @@ public class JwtKeyTools extends KeyTools {
         return getComplexKey(server, getPublicKeyFileNameForAlg(sigAlg));
     }
 
+    public static String getShortPublicKeyFileNameForAlg(String sigAlg) throws Exception {
+
+        return "short_" + getPublicKeyFileNameForAlg(sigAlg);
+    }
+
     public static String getShortComplexPublicKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
 
-        return getComplexKey(server, "short_" + getPublicKeyFileNameForAlg(sigAlg));
+        return getComplexKey(server, getShortPublicKeyFileNameForAlg(sigAlg));
     }
 
 //    public static Key getPublicKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
@@ -60,9 +65,14 @@ public class JwtKeyTools extends KeyTools {
         return getComplexKey(server, getPrivateKeyFileNameForAlg(sigAlg));
     }
 
+    public static String getShortPrivateKeyFileNameForAlg(String sigAlg) throws Exception {
+
+        return "short_" + getPrivateKeyFileNameForAlg(sigAlg);
+    }
+
     public static String getShortComplexPrivateKeyForSigAlg(LibertyServer server, String sigAlg) throws Exception {
 
-        return getComplexKey(server, "short_" + getPrivateKeyFileNameForAlg(sigAlg));
+        return getComplexKey(server, getShortPrivateKeyFileNameForAlg(sigAlg));
     }
 
     public static String getPublicKeyFileNameForAlg(String sigAlg) throws Exception {
