@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,7 @@ public class UserClaimsRetrieverTest {
         setExpecationsForCachedSubjectPath(user1Realm, user1, "group1", "group2");
         UserClaimsRetriever userClaimsRetriever = new UserClaimsRetriever(authCache, userRegistry);
 
-        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier);
+        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier, null);
 
         assertUser1Claims(userClaims);
         assertUserClaimsInMap(userClaims.asMap(), user1Realm, user1, expectedGroupsForUser1);
@@ -97,7 +97,7 @@ public class UserClaimsRetrieverTest {
         setExpecationsForCachedSubjectPath(user2Realm, user2, "group3");
         UserClaimsRetriever userClaimsRetriever = new UserClaimsRetriever(authCache, userRegistry);
 
-        UserClaims userClaims = userClaimsRetriever.getUserClaims(user2, groupIdentifier);
+        UserClaims userClaims = userClaimsRetriever.getUserClaims(user2, groupIdentifier, null);
 
         assertUserClaims(userClaims, user2Realm, user2, expectedGroupsForUser2);
     }
@@ -107,7 +107,7 @@ public class UserClaimsRetrieverTest {
         setExpecationsForCachedSubjectPath(user1Realm, user1);
         UserClaimsRetriever userClaimsRetriever = new UserClaimsRetriever(authCache, userRegistry);
 
-        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier);
+        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier, null);
 
         assertNull("There must not be groups for the user.", userClaims.getGroups());
     }
@@ -119,7 +119,7 @@ public class UserClaimsRetrieverTest {
         noAuthCacheSubjectExpected();
         UserClaimsRetriever userClaimsRetriever = new UserClaimsRetriever(authCache, userRegistry);
 
-        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier);
+        UserClaims userClaims = userClaimsRetriever.getUserClaims(user1, groupIdentifier, null);
 
         assertUser1Claims(userClaims);
     }
