@@ -171,6 +171,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "applicationMonitor")
     private ApplicationMonitorElement applicationMonitor;
 
+    @XmlElement(name = "applicationManager")
+    private ApplicationManagerElement applicationManager;
+
     @XmlElement(name = "executor")
     private ExecutorElement executor;
 
@@ -714,6 +717,16 @@ public class ServerConfiguration implements Cloneable {
             this.classLoading = new ClassloadingElement();
 
         return this.classLoading;
+    }
+
+    /**
+     * @return the applicationManager
+     */
+    public ApplicationManagerElement getApplicationManager() {
+        if (this.applicationManager == null)
+            this.applicationManager = new ApplicationManagerElement();
+
+        return this.applicationManager;
     }
 
     /**
