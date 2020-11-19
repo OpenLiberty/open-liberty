@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="com/ibm/ws/transaction/test/FATSuite.java" kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/newEJBTx1/src"/>
 	<classpathentry kind="src" path="test-applications/newEJBTx2/src"/>
 	<classpathentry kind="src" path="test-applications/newEJBTx3/src"/>
