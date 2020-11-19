@@ -108,10 +108,15 @@ public class ConfigManager implements RuntimeUpdateListener {
 
     private RepositoryManager repositoryManager = null;
 
+    /**
+     * Marking whether we were modified (versus only init) allows us to maintain our previous behavior on when
+     * notifyRealmConfigChange is called (which calls VMMService.verifyParticipatingBaseEntries()).
+     */
     private volatile boolean modified = false;
 
     // futureMonitor is needed to track the outcome of the configFuture
     private volatile FutureMonitor _futureMonitor;
+    private volatile RuntimeUpdateManager _runtimeUpdateManager;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
@@ -532,10 +537,32 @@ public class ConfigManager implements RuntimeUpdateListener {
     }
 
     /**
+     * Set service to capture runtime updates like Feature updates
+     *
+     * @param runtimeUpdateManager
+     */
+    @Reference(service = RuntimeUpdateManager.class)
+    protected void setRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+        _runtimeUpdateManager = runtimeUpdateManager;
+    }
+
+    /**
+     * Unset service to capture runtime updates like Featuer updates
+     *
+     * @param runtimeUpdateManager
+     */
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+        _runtimeUpdateManager = null;
+    }
+
+    /**
      * After a configuration modification, run a RealConfigChange check which will verify the participatingBaseEntries.
      *
      * We used to do this directly from the modify command, but timing change during startup/modify and we would process the check
      * before the user registries activated, leading to misleading error messages being printed.
+     *
+     * We also need to check whether a feature update is complete, as custom user registries and repositories are processed in
+     * as features. ConfigRefresher will complete the CONFIG_UPDATES_DELIVERED before FEATURE_UPDATES_COMPLETED is completed.
      */
     @Trivial
     @Override
@@ -545,6 +572,14 @@ public class ConfigManager implements RuntimeUpdateListener {
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (modified) {
+                        RuntimeUpdateNotification featureUpdatesCompleted = _runtimeUpdateManager.getNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
+                        if (featureUpdatesCompleted != null) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Waiting on any feature updates to process potentional Custom Users Registries or Repositories");
+                            }
+                            featureUpdatesCompleted.waitForCompletion();
+                        }
+
                         if (tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "RuntimeUpdate completed on config update, calling notifyRealmConfigChange. " + notification.getName());
                         }

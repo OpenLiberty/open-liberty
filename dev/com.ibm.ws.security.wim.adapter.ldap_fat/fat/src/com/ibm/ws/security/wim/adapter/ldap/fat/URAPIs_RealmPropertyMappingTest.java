@@ -127,8 +127,7 @@ public class URAPIs_RealmPropertyMappingTest {
          */
         try {
             if (libertyServer != null) {
-                Log.info(c, "teardown", "Temporarily ignore CWIMK0004E");
-                libertyServer.stopServer("CWIMK0004E");
+                libertyServer.stopServer();
             }
         } finally {
             try {
@@ -350,7 +349,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add userSecurityNameMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output user security name mapping properties.
+     * @param mapping An array of size 2 that contains the input and output user security name mapping properties.
      */
     private void addUserSecurityNameMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
@@ -363,7 +362,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add userDisplayNameMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output user display name mapping properties.
+     * @param mapping An array of size 2 that contains the input and output user display name mapping properties.
      */
     private void addUserDisplayNameMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
@@ -376,7 +375,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add uniqueUserIdMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output unique user ID mapping properties.
+     * @param mapping An array of size 2 that contains the input and output unique user ID mapping properties.
      */
     private void addUniqueUserIdMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
@@ -389,7 +388,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add groupSecurityNameMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output group security name mapping properties.
+     * @param mapping An array of size 2 that contains the input and output group security name mapping properties.
      */
     private void addGroupSecurityNameMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
@@ -402,7 +401,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add groupDisplayNameMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output group display name mapping properties.
+     * @param mapping An array of size 2 that contains the input and output group display name mapping properties.
      */
     private void addGroupDisplayNameMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
@@ -415,7 +414,7 @@ public class URAPIs_RealmPropertyMappingTest {
      * Add uniqueGroupIdMapping configuration.
      *
      * @param serverConfig The {@link ServerConfiguration} instance to update.
-     * @param mapping      An array of size 2 that contains the input and output unique group ID mapping properties.
+     * @param mapping An array of size 2 that contains the input and output unique group ID mapping properties.
      */
     private void addUniqueGroupIdMapping(ServerConfiguration serverConfig, String[] mapping) {
         FederatedRepository federatedRepository = serverConfig.getFederatedRepository();
