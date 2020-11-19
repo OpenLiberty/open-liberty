@@ -21,7 +21,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -64,11 +63,10 @@ public class MPConcurrentTxTest extends FATServletClient {
     })
 
     @Test
-    @SkipForRepeat(MPContextProp11RepeatAction.ID)
     public void testTransactionTimesOutAndReleasesLocks() throws Exception {
         server.setMarkToEndOfLog();
 
-        runTest(server, APP_NAME + "/MPConcurrentTestServlet", testName.getMethodName());
+        runTest(server, APP_NAME + "/MPConcurrentTestServlet", "testTransactionTimesOutAndReleasesLocks");
 
         // This test involves an asynchronous transaction timeout, which can continue logging FFDC and error messages on another
         // thread after the test's servlet method completes. Wait for the FFDC and error messages to appear in the logs
