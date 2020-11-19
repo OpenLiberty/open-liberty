@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.cxf.cxf.core.3.2/generated/com.ibm.ws.org.apache.cxf.cxf.core.3.2.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.org.apache.cxf.cxf.core.3.2.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.ws.org.apache.cxf.cxf.core.3.2"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/apache/cxf/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/annotations/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/attachment/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/blueprint/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/extension/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/managers/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/osgi/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/resource/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/bus/spring/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/buslifecycle/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/catalog/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/annotation/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/classloader/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/i18n/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/injection/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/jaxb/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/logging/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/security/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/util/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/common/xmlschema/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/configuration/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/configuration/blueprint/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/configuration/jsse/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/configuration/security/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/configuration/spring/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/continuations/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/databinding/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/databinding/source/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/databinding/source/mime/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/databinding/stax/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/endpoint/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/extension/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/feature/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/feature/transform/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/feature/validation/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/headers/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/helpers/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/interceptor/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/interceptor/security/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/interceptor/security/callback/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/interceptor/transform/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/io/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/logging/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/management/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/management/annotation/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/message/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/phase/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/policy/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/resource/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/security/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/security/claims/authorization/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/security/transport/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/service/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/service/factory/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/service/invoker/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/service/invoker/spring/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/service/model/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/staxutils/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/staxutils/transform/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/staxutils/validation/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/transport/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/transport/common/gzip/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/validation/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/version/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/workqueue/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/ws/addressing/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/ws/addressing/v200403/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/ws/addressing/v200408/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/ws/addressing/wsdl/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/wsdl/http/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2/generated/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/blueprint/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/interceptor/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/jms/interceptor/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/model/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/saaj/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/spring/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/wsdl/extensions/*"/>
+			<accessrule kind="accessible" pattern="org/apache/cxf/binding/soap/wsdl11/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.cxf-rt-security.3.3/build/libs/com.ibm.ws.org.apache.cxf-rt-security.3.3.6.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.wss4j-ws-security-common.2.3.0/build/libs/com.ibm.ws.org.apache.wss4j-ws-security-common.2.3.0.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.wss4j-ws-security-dom.2.3.0/build/libs/com.ibm.ws.org.apache.wss4j-ws-security-dom.2.3.0.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.wss4j-ws-security-stax.2.3.0/build/libs/com.ibm.ws.org.apache.wss4j-ws-security-stax.2.3.0.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.santuario.xmlsec.2.2.0/build/libs/com.ibm.ws.org.apache.santuario.xmlsec.2.2.0.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2/build/libs/com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.neethi.3.1.1/build/libs/com.ibm.ws.org.apache.neethi.3.1.1.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.apache.wss4j-policy.2.3.0/build/libs/com.ibm.ws.org.apache.wss4j-policy.2.3.0.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.opensaml.opensaml-core.3.4.5/build/libs/com.ibm.ws.org.opensaml.opensaml-core.3.4.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
