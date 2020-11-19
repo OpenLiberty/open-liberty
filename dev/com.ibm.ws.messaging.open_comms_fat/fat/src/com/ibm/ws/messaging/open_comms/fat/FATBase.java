@@ -95,6 +95,11 @@ public class FATBase extends FATServletClient {
 
   protected static void cleanup() throws Exception {
     Util.TRACE_ENTRY("server_="+server_+",client_="+client_);
+
+    // be a good citizen and clean-up our global change
+    client_.deleteFileFromLibertyInstallRoot("lib/features/testjmsinternals-1.0.mf");
+
+    
     Exception e = null;
     try {
       client_.stopServer();
@@ -115,8 +120,6 @@ public class FATBase extends FATServletClient {
     }
 
     Util.CODEPATH();
-    // be a good citizen and clean-up our global change
-    client_.deleteFileFromLibertyInstallRoot("lib/features/testjmsinternals-1.0.mf");
 
     Util.TRACE_EXIT();
   }
