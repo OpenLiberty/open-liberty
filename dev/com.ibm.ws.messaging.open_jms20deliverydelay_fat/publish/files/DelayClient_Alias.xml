@@ -1,0 +1,168 @@
+<server>
+  <include location="../fatTestPorts.xml"/>
+  
+  <variable name="onError" value="FAIL"/>
+  
+  <!-- -->
+  
+  <featureManager>
+    <feature>osgiconsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>jndi-1.0</feature>
+
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+  
+  <!-- -->
+  
+  <messagingEngine id="defaultME">
+    <queue id="QUEUE1" 
+	   targetDestination= "alias2Q1"
+	   forceReliability="ReliablePersistent"		
+	   exceptionDestination="_SYSTEM.Exception.Destination"
+	   blockedRetryTimeout="-1"
+	   maxFailedDeliveries="23345"
+	   sendAllowed="true"
+	   receiveAllowed="true"
+	   receiveExclusive="true"
+	   maintainStrictOrder="true"
+	   replyDestination="reply"
+	   maxMessageDepth="1111"/>
+    
+    <alias id="alias2Q1"
+	   targetDestination= "QUEUE1"
+	   forceReliability="ReliablePersistent"		
+	   exceptionDestination="_SYSTEM.Exception.Destination"
+	   blockedRetryTimeout="-1"
+	   maxFailedDeliveries="23345"
+	   sendAllowed="true"
+	   receiveAllowed="true"
+	   receiveExclusive="true"
+	   maintainStrictOrder="true"
+	   replyDestination="reply"
+	   maxMessageDepth="1111"/>
+    
+    <alias id="ALIAS2" targetDestination= "Default.Topic.Space"/>
+    
+    <topicSpace id="ALIAS2:DEFAULT"/>
+    <topicSpace id="topic://DEFAULT?topicSpace=ALIAS2"/>
+    <topicSpace id="Default.Topic.Space:DEFAULT"/>
+    <topicSpace id="topic://DEFAULT?topicSpace=Default.Topic.Space"/>
+  </messagingEngine>
+  
+  <!-- -->
+  
+  <jmsConnectionFactory id="cf1" jndiName="eis/cf1">
+    <properties.wasJms userName="CF1USER" 
+		       busName="samplebus"  
+		       clientID="clientId"  
+		       nonPersistentMapping="BestEffortNonPersistent"  
+		       password="junkpassword"  
+		       persistentMapping="AssuredPersistent"  
+		       readAhead="Default" 
+		       target="target"      
+		       targetType="targetType" 
+		       targetSignificance="targetSignificance"  
+		       targetTransportChain="targetTransportChain"   
+		       connectionProximity="connectionProximity" 
+		       temporaryQueueNamePrefix="tempora"  
+		       producerDoesNotModifyPayloadAfterSet="produce"/>
+  </jmsConnectionFactory>
+  
+  <jmsConnectionFactory jndiName="eis/cf2" connectionManagerRef="ConMgr2">
+    <properties.wasJms userName="CF1USER" 
+		       busName="samplebus"  
+		       clientID="clientId"  
+		       nonPersistentMapping="ExpressNonPersistent"  
+		       password="junkpassword"  
+		       persistentMapping="AssuredPersistent"  
+		       readAhead="AlwaysOn" 
+		       target="target"      
+		       targetType="targetType" 
+		       targetSignificance="targetSignificance"  
+		       targetTransportChain="targetTransportChain"   
+		       connectionProximity="connectionProximity" 
+		       temporaryQueueNamePrefix="tempora"  
+		       producerDoesNotModifyPayloadAfterSet="produce"/>
+  </jmsConnectionFactory>
+  <connectionManager id="ConMgr2" maxPoolSize="2"/>
+  
+  <!-- -->
+  
+  <jmsQueueConnectionFactory jndiName="eis/qcf" connectionManagerRef="ConMgr4">
+    <properties.wasJms userName="CF1USER" 
+		       busName="samplebus"  
+		       clientID="clientId"  
+		       nonPersistentMapping="ExpressNonPersistent"  
+		       password="junkpassword"  
+		       persistentMapping="ReliablePersistent"  
+		       readAhead="Default" 
+		       target=""      
+		       targetType="BusMember" 
+		       targetSignificance="Preferred"  
+		       targetTransportChain=""   
+		       connectionProximity="Bus" 
+		       temporaryQueueNamePrefix="tempor"  
+		       producerDoesNotModifyPayloadAfterSet="false"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr4" maxPoolSize="2"/>
+  
+  
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms userName="CF1USER" 
+		       busName="samplebus"  
+		       clientID="clientId"  
+		       nonPersistentMapping="ExpressNonPersistent"  
+		       password="junkpassword"  
+		       persistentMapping="ReliablePersistent"  
+		       readAhead="Default" 
+		       target=""      
+		       targetType="BusMember" 
+		       targetSignificance="Preferred"  
+		       targetTransportChain=""   
+		       connectionProximity="Bus" 
+		       temporaryQueueNamePrefix="tempor"  
+		       producerDoesNotModifyPayloadAfterSet="false"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="2"/>
+  
+  
+  
+  <jmsQueue jndiName="eis/queue1">
+    <properties.wasJms queueName="value1"/>
+  </jmsQueue>
+  
+  <jmsQueue jndiName="jndi_INPUT_Q">
+    <properties.wasJms 	queueName="QUEUE1" 
+			timeToLive="500000"  
+			busName="defaultBus"/>
+  </jmsQueue>
+  
+  <!-- -->
+  
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr3">
+    <properties.wasJms userName="CF1USER" 
+		       busName="defaultBus"  
+		       clientID="clientId"  
+		       nonPersistentMapping="ExpressNonPersistent"  
+		       password="junkpassword"  
+		       persistentMapping="ReliablePersistent"  
+		       readAhead="Default" 
+		       target=""      
+		       targetType="BusMember" 
+		       targetSignificance="Preferred"  
+		       targetTransportChain=""   
+		       connectionProximity="Bus" 
+		       temporaryQueueNamePrefix="tempor"  
+		       producerDoesNotModifyPayloadAfterSet="false" 
+		       durableSubscriptionHome="defaultME"/> 
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr3" maxPoolSize="2"/>
+  
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicName="DEFAULT?topicSpace=ALIAS2"/>
+  </jmsTopic>
+  
+</server>
