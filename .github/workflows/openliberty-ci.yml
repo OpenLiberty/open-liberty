@@ -22,7 +22,7 @@ env:
 jobs:
   build:
     name: Build Open Liberty
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     outputs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
@@ -51,7 +51,7 @@ jobs:
         echo "Modified files in this PR are:"
         cat .github/modified_files.diff
 
-        echo "::set-output name=test-os::ubuntu-latest"
+        echo "::set-output name=test-os::ubuntu-18.04"
         echo "::set-output name=test-java::11"
 
         MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
@@ -92,7 +92,7 @@ jobs:
         path: openliberty-image.zip
   unit_tests:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v2
