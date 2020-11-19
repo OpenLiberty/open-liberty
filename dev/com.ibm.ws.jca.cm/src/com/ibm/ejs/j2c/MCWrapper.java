@@ -2109,7 +2109,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             }
             Tr.error(tc, "FAILED_CONNECTION_J2CA0021", new Object[] { e, cfName });
             ResourceException re = new ResourceException("associateConnection: Failed to associate connection. Exception caught.");
-            re.initCause(re);
+            re.initCause(e);
             throw re;
 
         }

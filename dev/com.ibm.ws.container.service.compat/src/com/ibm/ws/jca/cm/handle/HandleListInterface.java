@@ -16,8 +16,11 @@ package com.ibm.ws.jca.cm.handle;
  * connection management bundle, which isn't always available.
  */
 public interface HandleListInterface {
-    interface Handle {
+    interface HandleDetails {
         void close();
+
+        // used by removeHandle to determine if this handle details instance pertains to the specified handle
+        boolean forHandle(Object h);
 
         void park();
 
@@ -29,12 +32,15 @@ public interface HandleListInterface {
      * HandleList or the underlying HandleList if this interface is implemented
      * as a proxy.
      */
-    HandleList addHandle(Handle a);
+    HandleList addHandle(HandleDetails a);
 
     /**
      * Remove the specified handle from the list.
+     *
+     * @param h connection handle that might be found in the handle list.
+     * @return handle details instance that was removed from this list. Otherwise null.
      */
-    void removeHandle(Object r);
+    HandleDetails removeHandle(Object h);
 
     /**
      * Reassociate the managed connection for all handles in the list.

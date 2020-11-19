@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.cm.handle.HandleListInterface;
 
-public class HCMDetails implements HandleListInterface.Handle {
+public class HCMDetails implements HandleListInterface.HandleDetails {
     private static final TraceComponent tc = Tr.register(HCMDetails.class, J2CConstants.traceSpec, J2CConstants.NLS_FILE);
 
     public final ConnectionManager _cm;
@@ -69,6 +69,14 @@ public class HCMDetails implements HandleListInterface.Handle {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(this, tc, "close", e);
         }
+    }
+
+    @Override
+    public boolean forHandle(Object h) {
+        boolean isMyHandle = _handle.equals(h);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "forHandle " + h + "? " + isMyHandle);
+        return isMyHandle;
     }
 
     @Override
