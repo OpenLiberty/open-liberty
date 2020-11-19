@@ -11,8 +11,8 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: org.apache.cxf.wss4j.ws.security.policy.stax
-Bundle-Description: org.apache.cxf.wss4jws.security.policy.stax; version=2.3.0
+Bundle-Name: org.apache.wss4j.wss4j.ws.security.policy.stax
+Bundle-Description: org.apache.wss4j.wss4jws.security.policy.stax; version=2.3.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j-ws-security-policy-stax.2.3.0
 Bundle-ActivationPolicy: lazy
 
@@ -28,7 +28,7 @@ Import-Package: \
  !org.bouncycastle.asn1.*, \
  * 
 Include-Resource: \
- @${repo;org.apache.cxf:wss4j-ws-security-policy-stax;2.3.0}!/!META-INF/**
+ @${repo;org.apache.wss4j:wss4j-ws-security-policy-stax;2.3.0}!/!META-INF/**
 
 
 Build-Jdk:

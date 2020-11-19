@@ -252,11 +252,6 @@ org.apache.cxf:cxf-rt-wsdl:3.3.3
 org.apache.cxf:cxf-tools-common:3.1.18
 org.apache.cxf:cxf-tools-validator:3.3.0
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.18
-org.apache.cxf:wss4j-policy:2.3.0
-org.apache.cxf:wss4j-ws-security-common:2.3.0
-org.apache.cxf:wss4j-ws-security-dom:2.3.0
-org.apache.cxf:wss4j-ws-security-policy-stax:2.3.0
-org.apache.cxf:wss4j-ws-security-stax:2.3.0
 org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0
 org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0
 org.apache.deltaspike.core:deltaspike-core-api:1.5.0
@@ -321,7 +316,11 @@ org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
 org.apache.ws.xmlschema:xmlschema-core:2.0.3
 org.apache.wss4j:wss4j-bindings:2.3.0
-org.apache.wss4j:wss4j-integration:2.3.0
+org.apache.wss4j:wss4j-policy:2.3.0
+org.apache.wss4j:wss4j-ws-security-common:2.3.0
+org.apache.wss4j:wss4j-ws-security-dom:2.3.0
+org.apache.wss4j:wss4j-ws-security-policy-stax:2.3.0
+org.apache.wss4j:wss4j-ws-security-stax:2.3.0
 org.apache.wss4j:wss4j-ws-security-web:2.3.0
 org.bouncycastle:bcprov-jdk15on:1.61
 org.brotli:dec:0.1.2

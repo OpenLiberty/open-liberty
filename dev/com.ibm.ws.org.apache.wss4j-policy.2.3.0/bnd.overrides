@@ -11,8 +11,8 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: org.apache.cxf.wss4j.policy
-Bundle-Description: org.apache.cxf.wss4j.policy; version=2.3.0
+Bundle-Name: org.apache.wss4j.wss4j.policy
+Bundle-Description: org.apache.wss4j.wss4j.policy; version=2.3.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j-policy.2.3.0
 Bundle-ActivationPolicy: lazy
 
@@ -23,10 +23,10 @@ Export-Package: \
  
  
 Include-Resource: \
- @${repo;org.apache.cxf:wss4j-policy;2.3.0}!/!META-INF/MANIFEST.MF,\
- @${repo;org.apache.cxf:wss4j-policy;2.3.0}!/templates/**,\
- @${repo;org.apache.cxf:wss4j-policy;2.3.0}!/schemas/**,\
- @${repo;org.apache.cxf:wss4j-policy;2.3.0}!/*xml,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/*xml,\
 
 Build-Jdk:
 Built-By:
