@@ -37,6 +37,7 @@ import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
+import org.jboss.resteasy.util.Encode;
 
 @Trivial
 @HandlesTypes({Application.class, Path.class, Provider.class})
@@ -134,7 +135,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             return;
         }
         ServletRegistration.Dynamic reg;
-        String mapping = path.value();
+        String mapping = Encode.decode(path.value());
         String prefix;
 
         if (!mapping.startsWith("/")) mapping = "/" + mapping;
