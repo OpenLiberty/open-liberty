@@ -28,7 +28,6 @@ import com.ibm.ws.security.audit.fat.common.tooling.AuditCommonTest;
 import com.ibm.ws.security.audit.fat.common.tooling.RecentAuditFileStream;
 
 import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -47,7 +46,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO audit-1.0 has not been transformed for EE9
 public class EJBJarX03JACCAuditTest extends EJBAnnTestBase {
 
     protected static Class<?> logClass = EJBJarX03JACCAuditTest.class;

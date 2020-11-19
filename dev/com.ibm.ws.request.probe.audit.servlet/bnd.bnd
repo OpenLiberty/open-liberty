@@ -28,6 +28,8 @@ Import-Package: \
 
 instrument.disabled: true
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
