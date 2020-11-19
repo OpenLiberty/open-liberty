@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -45,6 +46,13 @@ public class DeploymentTest {
 
     @Server("OpenAPITestServer")
     public static LibertyServer server;
+    
+    /**
+     * Add configuration to only scan the test resource class
+     * <p>
+     * If file paths are not handled correctly, this will cause the test resource class not to be scanned and fail the test.
+     */
+    private final static PropertiesAsset SCAN_CONFIG = new PropertiesAsset().addProperty("mp.openapi.scan.classes", DeploymentTestResource.class.getName());
 
     private ServerConfiguration initialConfig;
 
@@ -85,7 +93,8 @@ public class DeploymentTest {
     @Test
     public void testEar() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
-                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                   .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
                                           .addAsModule(war);
 
@@ -101,7 +110,8 @@ public class DeploymentTest {
     @Test
     public void testExpandedEar() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
-                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                   .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testEar.ear")
                                           .addAsModule(war);
 
@@ -115,7 +125,8 @@ public class DeploymentTest {
     @Test
     public void testWar() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
-                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                   .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
 
         deployApp(war);
 
@@ -127,7 +138,8 @@ public class DeploymentTest {
     @Test
     public void testExpandedWar() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
-                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                   .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                   .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
 
         deployApp(war, c -> c.getApplicationManager().setAutoExpand(true));
 
@@ -139,7 +151,8 @@ public class DeploymentTest {
     @Test
     public void testWarLib() throws Exception {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "testJar.jar")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
                                    .addAsLibrary(jar);
 
@@ -153,7 +166,8 @@ public class DeploymentTest {
     @Test
     public void testExpandedWarLib() throws Exception {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "testJar.jar")
-                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsResource(SCAN_CONFIG, "META-INF/microprofile-config.properties");
         WebArchive war = ShrinkWrap.create(WebArchive.class, "testWar.war")
                                    .addAsLibrary(jar);
 
