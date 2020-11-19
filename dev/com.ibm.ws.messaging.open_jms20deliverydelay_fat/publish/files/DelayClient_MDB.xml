@@ -46,10 +46,6 @@
     <fileStore id="com.ibm.ws.sib.fileStore" logFileSize="10"/>
   </messagingEngine>
 
-  <!-- THIS LOOKS LIKE A BUG -->
-  <!-- See DelayFullTest.testPersistentMessageStoreTopic_B -->
-  <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register"/>
-
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
     <properties.wasJms userName="CF1USER" password="junkpassword"/> 
   </jmsQueueConnectionFactory>
