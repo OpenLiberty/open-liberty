@@ -18,10 +18,10 @@ Bundle-SymbolicName: com.ibm.ws.org.ehcache.ehcache-107.3.8.1
 WS-TraceGroup: WSS4J
 
 Export-Package: \
-  org.ehcache, \
-  org.ehcache.config, \
-  org.ehcache.config.*, \
-  org.ehcache.expiry
+  org.ehcache;version=3.8.1, \
+  org.ehcache.config;version=3.8.1, \
+  org.ehcache.config.*;version=3.8.1, \
+  org.ehcache.expiry;version=3.8.1
 
 Private-Package: \
  org.ehcache.*

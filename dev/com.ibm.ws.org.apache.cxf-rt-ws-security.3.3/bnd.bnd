@@ -40,6 +40,7 @@ instrument.classesIncludes: \
         com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest, \
         com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
         com.ibm.ws.org.apache.cxf-rt-security.3.3.6;version=latest, \
+        com.ibm.ws.org.apache.cxf-rt-security-saml.3.3.6;version=latest, \
         com.ibm.ws.org.apache.neethi.3.1.1;version=latest, \
         com.ibm.ws.org.apache.wss4j-policy.2.3.0;version=latest, \
         com.ibm.ws.org.apache.wss4j-ws-security-common.2.3.0;version=latest, \
