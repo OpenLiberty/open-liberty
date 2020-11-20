@@ -75,6 +75,11 @@ public class DerbyRAAnnoServlet extends FATServlet {
     DataSource loginModuleCF;
 
     /**
+     * Number of milliseconds been polling for changes to occur.
+     */
+    private static final long POLL_INTERVAL_MS = 200;
+
+    /**
      * Maximum number of nanoseconds a test should wait for something to happen
      */
     private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(20);
@@ -179,6 +184,45 @@ public class DerbyRAAnnoServlet extends FATServlet {
         try {
             String user = con.getMetaData().getUserName();
             assertEquals("Incorrect user for loginModuleCF", "loginModuleUser", user);
+        } finally {
+            con.close();
+        }
+    }
+
+    public void testHandleListClosesConnectionLeakedFromMDB() throws Exception {
+        Connection con = ds1.getConnection();
+        try {
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            // The mock resource adapter triggers a message driven bean when the 'put' method replaces a value
+            assertNull(map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "InitialValue"));
+            assertEquals("InitialValue", map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "LeakConnection"));
+
+            // Wait for message driven bean to write something to the database
+            ResultSet result;
+            long start = System.nanoTime();
+            do {
+                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesConnectionLeakedFromMDB'");
+            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
+            assertTrue(result.first()); // MDB wrote the expected entry
+            assertEquals("InitialValue", result.getString(1));
+
+            // Determine if leaked connection was closed
+            map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "ExpectConnectionClosed");
+
+            // Wait for message driven bean to write the result to the database
+            start = System.nanoTime();
+            do {
+                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesConnectionLeakedFromMDB' AND oldValue<>'LeakConnection'");
+            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
+            assertTrue(result.first()); // MDB updated the expected entry
+            String closed = result.getString(1);
+            // If this fails with a value of "InitialValue", it means that the leaked connection was not closed by HandleList and
+            // therefore the MDB was unable to obtain a connection in order to write the new value that we are looking for.
+            assertEquals("true", closed);
+
+            stmt.close();
         } finally {
             con.close();
         }

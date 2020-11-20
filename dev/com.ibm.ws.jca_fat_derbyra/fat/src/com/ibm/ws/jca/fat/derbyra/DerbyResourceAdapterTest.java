@@ -132,6 +132,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
         runTest(DerbyRAServlet);
     }
 
+    //@Test TODO enable once HandleList is working for message driven beans
+    public void testHandleListClosesConnectionLeakedFromMDB() throws Exception {
+        runTest(DerbyRAAnnoServlet);
+    }
+
     @Test
     public void testJCADataSourceDirectLookup() throws Exception {
         runTest(DerbyRAServlet);
