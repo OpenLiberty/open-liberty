@@ -17,15 +17,14 @@ import java.util.logging.Logger;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
-import io.openliberty.wsoc.util.wsoc.TestWsocContainer;
-import io.openliberty.wsoc.util.wsoc.WsocTest;
 import io.openliberty.wsoc.common.Constants;
 import io.openliberty.wsoc.common.Utils;
 import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 import io.openliberty.wsoc.endpoints.client.basic.IdleTimeoutTCKClientEP;
 import io.openliberty.wsoc.endpoints.client.basic.ProgrammaticClientEP;
 import io.openliberty.wsoc.endpoints.client.basic.ProgrammaticMaxMessageSizeClientEP;
-
+import io.openliberty.wsoc.util.wsoc.TestWsocContainer;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
 import junit.framework.Assert;
 
 /**
@@ -612,7 +611,8 @@ public class AnnotatedTest {
 
         // wait up to 30 seconds for a result
         int i = 0;
-        while ((connectToClassResult == null) && (i < 15)) {
+        java.lang.Thread.sleep(2000);
+        while ((connectToClassResult == null) && (i < 14)) {
             i++;
             java.lang.Thread.sleep(2000);
         }
@@ -627,6 +627,8 @@ public class AnnotatedTest {
             || (connectToClassResult.indexOf(Constants.FAILED) != -1)) {
             Assert.fail("testConnectToClass failed with following output: " + connectToClassResult);
         }
+
+        LOG.info("testConnectToClass closing websocket session");
 
         sess.close();
 
