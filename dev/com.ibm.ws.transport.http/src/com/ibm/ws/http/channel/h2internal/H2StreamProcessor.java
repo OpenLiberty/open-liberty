@@ -690,6 +690,7 @@ public class H2StreamProcessor {
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
+            this.firstReadLatch.countDown();
             setCloseTime(System.currentTimeMillis());
             muxLink.closeStream(this);
         }
@@ -1145,7 +1146,7 @@ public class H2StreamProcessor {
                         }
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "processOpen: calling setReadyForRead() getEndStream returns: " + this.getEndStream());
+                            Tr.debug(tc, "new buffer saved and app complete() invoked; getEndStream returns: " + this.getEndStream());
                         }
                     }
                 }
@@ -1401,14 +1402,14 @@ public class H2StreamProcessor {
                 // As an HTTP/2 server, and not a client, this code should not receive a PUSH_PROMISE frame
                 throw new ProtocolException("PUSH_PROMISE Frame Received on server side");
 
-                //case PING:   PING frame is not stream based.
-                //      break;
+            //case PING:   PING frame is not stream based.
+            //      break;
 
-                //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
-                //      break;
+            //case GOAWAY:   GOAWAY is not stream based, but does have some stream awareness, see spec.
+            //      break;
 
-                // case SETTINGS:  Setting is not stream based.
-                //      break;
+            // case SETTINGS:  Setting is not stream based.
+            //      break;
 
             case WINDOW_UPDATE:
                 if (state == StreamState.IDLE && myID != 0) {
@@ -1820,14 +1821,15 @@ public class H2StreamProcessor {
     /**
      * Read the HTTP header and data bytes for this stream
      *
-     * @param numBytes the number of bytes to read
+     * @param numBytes       the number of bytes to read
      * @param requestBuffers an array of buffers to copy the read data into
      * @return this stream's VirtualConnection or null if too many bytes were requested
      */
     @SuppressWarnings("unchecked")
     public VirtualConnection read(long numBytes, WsByteBuffer[] requestBuffers) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "read entry: stream " + myID + " request: " + requestBuffers + " num bytes requested: " + numBytes);
+            Tr.debug(tc, "read entry: stream " + myID + " request: " + requestBuffers + " num bytes requested: " + numBytes
+                         + " num bytes available: " + this.streamReadSize);
         }
 
         long streamByteCount = streamReadSize; // number of bytes available on this stream
@@ -1870,25 +1872,33 @@ public class H2StreamProcessor {
         streamReadSize -= actualReadCount;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "read exit: " + streamId());
+            Tr.debug(tc, "read exit: " + streamId() + " num bytes remaining to be read: " + this.streamReadSize);
         }
+
         // return the vc since this was a successful read
         return h2HttpInboundLinkWrap.getVirtualConnection();
     }
 
     public void countDownFirstReadLatch() {
-        if (firstReadLatch != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "counting down firstReadLatch: " + firstReadLatch.hashCode());
+        if (firstReadLatch != null && firstReadLatch.getCount() > 0) {
+            if (this.streamReadSize == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "counting down firstReadLatch: " + firstReadLatch.hashCode() + " on stream " + myID);
+                }
+                firstReadLatch.countDown();
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "not counting down firstReadLatch: " + firstReadLatch.hashCode() + " becuase "
+                                 + this.streamReadSize + " bytes remain on stream " + myID);
+                }
             }
-            firstReadLatch.countDown();
         }
     }
 
     /**
      * Read the http header and data bytes for this stream
      *
-     * @param numBytes the number of bytes requested
+     * @param numBytes       the number of bytes requested
      * @param requestBuffers an array of buffers to copy the read data into
      * @return the number of bytes that were actually copied into requestBuffers
      */
@@ -1911,7 +1921,7 @@ public class H2StreamProcessor {
             count += bufs[i].remaining();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "bytesRemaining: stream " + myID + " has " + count + " bytes remaining");
+            Tr.debug(tc, "bytesRemaining: the array passed into stream " + myID + " has " + count + " bytes remaining");
         }
 
         return count;

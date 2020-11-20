@@ -1525,8 +1525,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return buffer;
     }
 
-    ReentrantLock gateKeeper = new ReentrantLock();
-
     /**
      * This gets the next body buffer asynchronously. If the body is encoded
      * or compressed, then the encoding is removed and the "next" buffer
