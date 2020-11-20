@@ -690,7 +690,6 @@ public class H2StreamProcessor {
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
-            this.firstReadLatch.countDown();
             setCloseTime(System.currentTimeMillis());
             muxLink.closeStream(this);
         }
@@ -1879,11 +1878,11 @@ public class H2StreamProcessor {
         return h2HttpInboundLinkWrap.getVirtualConnection();
     }
 
-    public void countDownFirstReadLatch() {
+    public void countDownFirstReadLatch(boolean force) {
         if (firstReadLatch != null && firstReadLatch.getCount() > 0) {
-            if (this.streamReadSize == 0) {
+            if (force || this.streamReadSize == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "counting down firstReadLatch: " + firstReadLatch.hashCode() + " on stream " + myID);
+                    Tr.debug(tc, "counting down firstReadLatch: " + firstReadLatch.hashCode() + " on stream " + myID + " force: " + force);
                 }
                 firstReadLatch.countDown();
             } else {
