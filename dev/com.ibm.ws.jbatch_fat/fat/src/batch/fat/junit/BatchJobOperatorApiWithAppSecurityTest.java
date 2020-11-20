@@ -134,7 +134,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     @AfterClass
     public static void afterClass() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W", "SRVE0777E");
+            server.stopServer("CWWKY0011W", "SRVE0777E", "CWWKY0041W");
         }
     }
 

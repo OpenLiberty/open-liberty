@@ -63,7 +63,7 @@ public class BatchEveryoneSecurityTest {
     public static void tearDown() throws Exception {
         log("tearDown", "stopping server");
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKY0041W");
         }
     }
 

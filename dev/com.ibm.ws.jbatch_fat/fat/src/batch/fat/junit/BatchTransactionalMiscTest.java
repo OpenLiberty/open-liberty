@@ -11,6 +11,8 @@
  */
 package batch.fat.junit;
 
+import java.nio.file.Paths;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  * As bugs are raised via RI, which itself doesn't handle transactions in SE, let's
@@ -40,6 +43,10 @@ public class BatchTransactionalMiscTest extends BatchFATHelper {
     @BeforeClass
     public static void setup() throws Exception {
 
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
         BatchFATHelper.setConfig("BatchTransactionalMiscTests/server.xml", testClass);
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);

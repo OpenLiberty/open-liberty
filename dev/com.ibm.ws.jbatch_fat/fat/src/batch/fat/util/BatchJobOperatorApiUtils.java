@@ -73,7 +73,7 @@ public class BatchJobOperatorApiUtils {
         try {
             br = HttpUtils.getConnectionStream(con);
         } catch (IOException io) {
-            assertTrue(1 <= server.findStringsInLogsAndTraceUsingMark("javax.servlet.ServletException: javax.batch.operations.NoSuchJobException").size());
+            assertTrue(1 <= server.findStringsInLogsAndTraceUsingMark("(javax|jakarta).servlet.ServletException: (javax|jakarta).batch.operations.NoSuchJobException").size());
             verfiyNoServletNPEs();
 
             return jsonArray;
@@ -82,7 +82,7 @@ public class BatchJobOperatorApiUtils {
         jsonArray = Json.createReader(br).readArray();
         br.close();
 
-        assertEquals(0, server.findStringsInLogsAndTraceUsingMark("javax.servlet.ServletException: java.lang.NullPointerException").size());
+        assertEquals(0, server.findStringsInLogsAndTraceUsingMark("(javax|jakarta).servlet.ServletException: java.lang.NullPointerException").size());
 
         return jsonArray;
     }
@@ -189,7 +189,7 @@ public class BatchJobOperatorApiUtils {
             br = HttpUtils.getConnectionStream(con);
         } catch (IOException io) {
 
-            assertTrue(1 <= server.findStringsInLogsAndTraceUsingMark("javax.servlet.ServletException: javax.batch.operations.NoSuchJobException").size());
+            assertTrue(1 <= server.findStringsInLogsAndTraceUsingMark("(javax|jakarta).servlet.ServletException: (javax|jakarta).batch.operations.NoSuchJobException").size());
             verfiyNoServletNPEs();
 
             return jsonObject;
@@ -206,7 +206,7 @@ public class BatchJobOperatorApiUtils {
     }
 
     protected void verfiyNoServletNPEs() throws Exception {
-        assertEquals(0, server.findStringsInLogsAndTraceUsingMark("javax.servlet.ServletException: java.lang.NullPointerException").size());
+        assertEquals(0, server.findStringsInLogsAndTraceUsingMark("(javax|jakarta).servlet.ServletException: java.lang.NullPointerException").size());
     }
 
     /**

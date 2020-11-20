@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.net.HttpURLConnection;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -34,6 +35,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
@@ -59,6 +61,12 @@ public class InMemoryPersistenceBatchJobOperatorApiTest extends BatchJobOperator
         HttpUtils.trustAllCertificates();
 
         FatUtils.checkJava7();
+        
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        }
 
         server.startServer();
 

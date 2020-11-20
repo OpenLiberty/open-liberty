@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.FatUtils;
 
+import batch.fat.util.BatchFATHelper;
 import batch.fat.util.BatchFatUtils;
 import batch.fat.util.JobServletClient;
 import componenttest.annotation.ExpectedFFDC;
@@ -33,6 +34,8 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
  */
 @RunWith(FATRunner.class)
 public class BatchSecurityTest {
+    
+    private static final Class testClass = BatchSecurityTest.class;
 
     protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
 
@@ -47,9 +50,10 @@ public class BatchSecurityTest {
         FatUtils.checkJava7();
 
         // Start server
+        BatchFATHelper.setConfig("BatchSecurity/server.xml", testClass);
         server.startServer("BatchSecurityTest.log");
         FatUtils.waitForSmarterPlanet(server);
-        FatUtils.waitForSSLKeyAndLTPAKey(server);
+        //FatUtils.waitForSSLKeyAndLTPAKey(server);
     }
 
     /**
@@ -59,7 +63,7 @@ public class BatchSecurityTest {
     public static void tearDown() throws Exception {
         log("tearDown", "stopping server");
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKY0041W");
         }
     }
 
