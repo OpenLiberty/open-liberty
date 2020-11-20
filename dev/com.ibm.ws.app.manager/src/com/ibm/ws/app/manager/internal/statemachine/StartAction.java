@@ -119,7 +119,7 @@ class StartAction implements Action {
     public void execute(ExecutorService executor) {
         _startTime.set(System.currentTimeMillis());
         @SuppressWarnings({ "rawtypes" })
-        ApplicationHandler handler = _aii.getHandler();
+        final ApplicationHandler handler = _aii.getHandler();
         if (handler == null) {
             _listener.failedCompletion(null, new IllegalArgumentException("The application handler is not available"));
             return;
