@@ -118,8 +118,14 @@ class StartAction implements Action {
     @Override
     public void execute(ExecutorService executor) {
         _startTime.set(System.currentTimeMillis());
+        @SuppressWarnings({ "rawtypes" })
+        ApplicationHandler handler = _aii.getHandler();
+        if (handler == null) {
+            _listener.failedCompletion(null, new IllegalArgumentException("The application handler is not available"));
+        }
+
         if (_tc.isInfoEnabled()) {
-            AppMessageHelper.get(_aii.getHandler()).info("STARTING_APPLICATION", _config.getName());
+            AppMessageHelper.get(handler).info("STARTING_APPLICATION", _config.getName());
         }
         long maxWait = ApplicationStateCoordinator.getApplicationStartTimeout();
 
@@ -128,13 +134,11 @@ class StartAction implements Action {
             @SuppressWarnings("deprecation")
             @Override
             public void run() {
-                AppMessageHelper.get(_aii.getHandler()).audit("APPLICATION_SLOW_STARTUP", _config.getName(), TimestampUtils.getElapsedTime(_startTime.get()));
+                AppMessageHelper.get(handler).audit("APPLICATION_SLOW_STARTUP", _config.getName(), TimestampUtils.getElapsedTime(_startTime.get()));
             }
         }, maxWait, TimeUnit.SECONDS));
 
         try {
-            @SuppressWarnings("rawtypes")
-            ApplicationHandler handler = _aii.getHandler();
             @SuppressWarnings("unchecked")
             ApplicationMonitoringInformation ami = handler.setUpApplicationMonitoring(_aii);
             _aii.setApplicationMonitoringInformation(ami);
