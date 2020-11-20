@@ -122,6 +122,7 @@ class StartAction implements Action {
         ApplicationHandler handler = _aii.getHandler();
         if (handler == null) {
             _listener.failedCompletion(null, new IllegalArgumentException("The application handler is not available"));
+            return;
         }
 
         if (_tc.isInfoEnabled()) {
