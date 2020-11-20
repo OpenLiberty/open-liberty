@@ -45,15 +45,17 @@
         </dependencies>
     </dependencyManagement> 
     
+    <!-- Whilst using an artifact that is in Maven (microprofile-config-tck:2.0-RC15) we shouldn't need this.
 	<repositories>
-		<!-- This TCK is currently using a custom built artifact- microprofile-config-tck:2.0-ibm20201020.
-		If Artifactory is unavailable, the following DHE repository will be searched for the artifact -->
+		<! If the TCK is using a custom built artifact, e.g.- microprofile-config-tck:2.0-ibm20201020.
+		And Artifactory is unavailable, the following DHE repository should be searched for the artifact >
 		<repository>
 			<name>IBM DHE Maven repository</name>
 			<id>DHE</id>
 			<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
 		</repository>
 	</repositories>
+	-->
 
     <dependencies>
 
@@ -68,7 +70,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>2.0-ibm20201020</version> 
+            <version>2.0-RC15</version> 
         </dependency>
 
         <dependency>
