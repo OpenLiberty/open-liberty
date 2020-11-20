@@ -11,6 +11,8 @@
 
 package com.ibm.ws.sib.admin.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -349,7 +351,8 @@ public final class MessagingMBeanFactoryImpl implements ControllableRegistration
             properties.put("service.vendor", "IBM");
             String cName = c.getName();
             properties.put("jmx.objectname", "WebSphere:feature=wasJmsServer,type=Subscriber,name=" + cName);
-            ServiceRegistration<SubscriberMBean> subscriberMbean = (ServiceRegistration<SubscriberMBean>) bcontext.registerService(SubscriberMBean.class.getName(), sp, properties);
+            ServiceRegistration<SubscriberMBean> subscriberMbean = AccessController.doPrivileged((
+                    PrivilegedAction<ServiceRegistration<SubscriberMBean>>) () -> (ServiceRegistration<SubscriberMBean>)bcontext.registerService(SubscriberMBean.class.getName(), sp, properties));
             serviceObjects.put(cName, subscriberMbean);
         } catch (Exception e) {
             SibTr.exception(tc, e);

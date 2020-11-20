@@ -246,8 +246,6 @@ public class DelayFullTest {
 
     @Test
     public void testPersistentMessageStore_B() throws Exception {
-        // dz restartServers(DEFAULT_CLIENT);
-
         runInServlet("testPersistentMessage");
 
         restartServers();
@@ -258,8 +256,6 @@ public class DelayFullTest {
 
     @Test
     public void testPersistentMessageStore_Tcp() throws Exception {
-        // dz restartServers(DEFAULT_CLIENT);
-
         runInServlet("testPersistentMessage_Tcp");
 
         restartServers();
@@ -267,15 +263,6 @@ public class DelayFullTest {
         boolean testResult = runInServlet("testPersistentMessageReceive_Tcp");
         assertTrue("testPersistentMessageStore_Tcp failed", testResult);
     }
-
-    // TODO: SIB runtime is missing a doPriv.  Test fails without this permission 
-    // in the client xml:
-    //
-    // <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register"/>
-    //
-    // See DelayClient_MDB.xml
-    //
-    // This will be resolved in a subsequent issue/pull-request.
 
     @Test
     public void testPersistentMessageStoreTopic_B() throws Exception {
