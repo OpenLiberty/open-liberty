@@ -21,6 +21,9 @@ jar {
 }
 
 task globalize {
+  // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
+  def quotationExcludes = bnd('globalize.quotation.excludes')
+
   ext.destinationDir = new File(buildDir, "src/${name}/java")
   if (parseBoolean(bnd('globalize', 'true'))) {
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
@@ -44,6 +47,8 @@ task globalize {
             keyfilter {
                 exclude(name: "*.explanation")
                 exclude(name: "*.useraction")
+                if(quotationExcludes != null)
+                    quotationExcludes.split(',').each{ exclude(name: it.trim()) }
             }
         }
         contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
