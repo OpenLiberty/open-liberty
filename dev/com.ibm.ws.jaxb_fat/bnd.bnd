@@ -24,8 +24,8 @@ tested.features: \
   jpa-2.1,\
   ldapregistry-3.0,\
   jaxb-2.3, \
-  jaxb-3.0, \
-  servlet-5.0
+  servlet-5.0, \
+  xmlBinding-3.0
 
 -buildpath: \
 	javax.activation:activation;version=1.1,\
