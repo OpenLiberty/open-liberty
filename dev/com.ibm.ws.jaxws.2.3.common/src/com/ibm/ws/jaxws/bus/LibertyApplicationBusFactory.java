@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -131,6 +133,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
+
+            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
+            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
+            in.setPrettyLogging(true);
+            bus.getInInterceptors().add(in);
+
+            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
+            out.setPrettyLogging(true);
+            bus.getOutInterceptors().add(out);
+
             return bus;
 
         } finally {

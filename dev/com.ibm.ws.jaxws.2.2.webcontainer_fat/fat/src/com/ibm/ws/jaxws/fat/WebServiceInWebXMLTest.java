@@ -28,11 +28,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-
 
 public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
     private final Class<?> c = WebServiceInWebXMLTest.class;

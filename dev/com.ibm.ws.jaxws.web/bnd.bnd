@@ -16,6 +16,8 @@ Bundle-Name: JAX-WS Web
 Bundle-SymbolicName: com.ibm.ws.jaxws.web
 Bundle-Description: IBM JAX-WS Web support; version=${bVersion}
 
+exportVer=2.2
+
 -dsannotations: com.ibm.ws.jaxws.web.WebXMLEndpointInfoConfigurator
 
 Service-Component: \
@@ -41,7 +43,7 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-    com.ibm.ws.jaxws.web
+    com.ibm.ws.jaxws.web;version=${exportVer}
 
 Import-Package: \
    !com.ibm.ws.jaxws.web, \
@@ -50,10 +52,12 @@ Import-Package: \
    com.ibm.ws.container.service.metadata, \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.web.*
+   com.ibm.ws.jaxws.web.*;version=${exportVer}
 
 instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 

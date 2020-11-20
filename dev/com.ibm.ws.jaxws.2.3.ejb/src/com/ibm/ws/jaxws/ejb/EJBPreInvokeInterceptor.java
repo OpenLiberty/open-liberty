@@ -77,7 +77,6 @@ public class EJBPreInvokeInterceptor extends AbstractPhaseInterceptor<SoapMessag
         this.j2EEName = j2EEName;
         this.ejbContainer = ejbContainer;
         this.methods = methods == null ? null : methods.toArray(new Method[0]);
-
     }
 
     @Override
@@ -91,8 +90,10 @@ public class EJBPreInvokeInterceptor extends AbstractPhaseInterceptor<SoapMessag
                 endpointManager = ejbContainer.createWebServiceEndpointManager(j2EEName, Provider.class);
                 targetMethod = getProviderMethod(implClass);
             } else {
-                endpointManager = ejbContainer.createWebServiceEndpointManager(j2EEName, methods);
-                targetMethod = getTargetMethod(implClass, message);
+                if (ejbContainer != null) {
+                    endpointManager = ejbContainer.createWebServiceEndpointManager(j2EEName, methods);
+                    targetMethod = getTargetMethod(implClass, message);
+                }
             }
 
             if (targetMethod == null) {

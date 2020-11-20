@@ -16,7 +16,7 @@ Bundle-Name: JAX-WS EJB
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.ejb
 Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
 
-
+exportVer=2.3
 
 Service-Component: \
   com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
@@ -52,16 +52,18 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-   com.ibm.ws.jaxws.ejb;version="2.3"
+   com.ibm.ws.jaxws.ejb;version=${exportVer}
 
 Import-Package: \
   !com.ibm.ws.jaxws.ejb, \
   javax.xml.ws.*;version="[2.3,3)", \
   org.apache.cxf.*;version="[3.2,4.0)", \
+  com.ibm.ws.jaxws;version="[2.3,3.0)", \
+  com.ibm.ws.jaxws.*;version="[2.3,3.0)", \
   *
 
 Private-Package:\
-  com.ibm.ws.jaxws.ejb.*
+  com.ibm.ws.jaxws.ejb.*;version=${exportVer}
 
 instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 
@@ -96,4 +98,3 @@ instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
   com.ibm.websphere.javaee.jaxb.2.3;version=latest;boot=true,\
   com.ibm.websphere.javaee.jaxws.2.3;version=latest;boot=true,\
   ${javac.bootclasspath.${javac.source}}
-

@@ -1,0 +1,205 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS Common Code
+#RANGE 0000 - 0099
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Deployment Descriptor validation messages ------------------------
+
+warn.service.ref.dd.service.interface.not.set=CWWKW0000W: Il descrittore di distribuzione definisce l''elemento service-ref {0}, che non contiene l''elemento service-interface. Di conseguenza, il riferimento del servizio viene ignorato.
+warn.service.ref.dd.service.interface.not.set.explanation=L'elemento service-ref deve contenere un elemento service-interface.
+warn.service.ref.dd.service.interface.not.set.useraction=Aggiungere un elemento service-interface e distribuire nuovamente l'applicazione.
+
+warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: Il descrittore di distribuzione definisce l''elemento service-ref {0} ma non riesce a trovare la classe {1} specificata nell''elemento service-interface. Di conseguenza, il riferimento del servizio viene ignorato.
+warn.service.ref.dd.service.interface.class.not.found.explanation=L'elemento service-interface specifica una classe che non \u00e8 stata trovata o che non \u00e8 stata caricata.
+warn.service.ref.dd.service.interface.class.not.found.useraction=Accertarsi che la classe si trovi nel percorso di classe dell'applicazione.
+
+warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: Il descrittore di distribuzione definisce l''elemento service-ref {0} ma la classe {1} specificata nell''elemento service-interface non \u00e8 una sottoclasse della classe javax.xml.ws.Service. Di conseguenza, il riferimento del servizio viene ignorato.
+warn.service.ref.dd.service.interface.wrong.value.explanation=L'elemento service-interface deve specificare una sottoclasse della classe javax.xml.ws.Service.
+warn.service.ref.dd.service.interface.wrong.value.useraction=Specificare una sottoclasse della classe javax.xml.ws.Service nell'elemento service-interface.
+
+# Merge mismatch check messages ------------------------------------
+
+error.service.interface.mismatch.for.member=CWWKW0003E: Il riferimento del servizio {0} nel membro {1} nella classe {2} specifica la classe service-interface {3}. Tuttavia, esistono ulteriori metadati per questo riferimento del servizio che specificano la classe service-interface {4}.
+error.service.interface.mismatch.for.member.explanation=La classe service-interface dichiarata in pi\u00f9 posizioni per lo stesso riferimento di servizio deve essere la stessa. 
+error.service.interface.mismatch.for.member.useraction=Correggere il riferimento del servizio per identificare la stessa classe service-interface.
+
+error.service.interface.mismatch.for.class=CWWKW0004E: Un riferimento del servizio a livello di classe {0} specifica la classe service-interface {1}. Tuttavia, esistono ulteriori metadati per questo riferimento del servizio che specificano la classe service-interface {2}.
+error.service.interface.mismatch.for.class.explanation=La classe service-interface dichiarata in pi\u00f9 posizioni per lo stesso riferimento di servizio deve essere la stessa. 
+error.service.interface.mismatch.for.class.useraction=Correggere il riferimento del servizio per identificare la stessa classe service-interface.
+
+error.service.ref.type.mismatch.for.member=CWWKW0005E: Il riferimento del servizio {0} nel membro {1} nella classe {2} specifica la classe service-ref-type {3}. Tuttavia, esistono ulteriori metadati per questo riferimento del servizio che specificano la classe service-ref-type {4}.
+error.service.ref.type.mismatch.for.member.explanation=La classe service-ref-type dichiarata in pi\u00f9 posizioni per lo stesso riferimento di servizio deve essere la stessa. 
+error.service.ref.type.mismatch.for.member.useraction=Correggere il riferimento del servizio per identificare la stessa classe service-ref-type.
+
+error.service.ref.type.mismatch.for.class=CWWKW0006E: Un riferimento del servizio a livello di classe {0} specifica la classe service-ref-type{1}. Tuttavia, esistono ulteriori metadati per questo riferimento del servizio che specificano la classe service-ref-type {2}.
+error.service.ref.type.mismatch.for.class.explanation=La classe service-ref-type dichiarata in pi\u00f9 posizioni per lo stesso riferimento di servizio deve essere la stessa. 
+error.service.ref.type.mismatch.for.class.useraction=Correggere il riferimento del servizio per identificare la stessa classe service-ref-type.
+
+# Merge validation messages ------------------------------------------
+
+error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: L''annotazione @WebServiceRef o @Resource si trova nella classe {0} ma l''attributo type non pu\u00f2 essere identificato. 
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=Se l'annotazione @WebServiceRef o @Resource viene trovata a livello di classe, l'attributo type deve essere identificato. Pu\u00f2 essere specificato all'interno dell'annotazione @WebServiceRef o dall'elemento service-ref-type nel descrittore di distribuzione.
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=Specificare l'attributo type mancante.
+
+error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: L''annotazione @WebServiceRef o @Resource si trova nella classe {0} ma l''attributo value identificato \u00e8 la classe {1}, che non \u00e8 una sottoclasse di javax.xml.ws.Service. 
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=L'attributo value deve essere una sottoclasse della classe javax.xml.ws.Service, a meno che l'attributo type identificato non indichi una injection SEI (Service Endpoint Interface). \u00c8 possibile specificare l'attributo value all'interno dell'annotazione o mediante l'elemento service-interface nel descrittore di distribuzione.
+error.service.ref.class.level.merge.service.interface.wrong.value.useraction=Specificare una sottoclasse della classe javax.xml.ws.Service.
+
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: L''annotazione @WebServiceRef o @Resource \u00e8 stata trovata nella classe {0} ma gli attributi type e value identificati non appartengono alla stessa classe. 
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Se l'annotazione indica una injection del tipo di servizio e l'attributo value non specifica la classe javax.xml.ws.Service, gli attributi type e value devono appartenere alla stessa classe. \u00c8 possibile specificare l'attributo value all'interno dell'annotazione o dall'elemento service-interface nel descrittore di distribuzione e specificare l'attributo type all'interno dell'annotazione @WebServiceRef o mediante l'elemento service-ref-type nel descrittore di distribuzione.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specificare la stessa classe per gli attributi value e type.
+
+error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: L''annotazione @WebServiceRef o @Resource si trova nel membro {0} nella classe {1} ma il tipo di injection non pu\u00f2 essere dedotto dal tipo di membro della classe o dall''attributo type. 
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Se il tipo di membro della classe \u00e8 Object, l'attributo type deve essere specificato e non pu\u00f2 essere Object. \u00c8 possibile specificare il tipo di membro della classe all'interno dell'annotazione @WebServiceRef o mediante l'elemento service-ref-type nel descrittore di distribuzione.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Specificare un attributo type diverso da Object.
+
+error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: L''annotazione @WebServiceRef o @Resource si trova nel membro {0} nella classe {1} ma l''attributo type identificato \u00e8 la classe {2} che non \u00e8 compatibile con la classe {3} del membro annotato. 
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=L'attributo type deve essere compatibile con il tipo di membro della classe. \u00c8 possibile specificare l'attributo type all'interno dell'annotazione @WebServiceRef o mediante l'elemento service-ref-type nel descrittore di distribuzione.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Specificare l'attributo type appropriato che sia compatibile con il tipo di membro della classe.
+
+error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: L''annotazione @WebServiceRef o @Resource si trova nel membro {0} nella classe {1} ma l''attributo value identificato \u00e8 la classe {2}, che non \u00e8 una sottoclasse di javax.xml.ws.Service.
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=L'attributo value deve essere una sottoclasse della classe javax.xml.ws.Service, a meno che l'attributo type identificato non indichi una injection SEI (Service Endpoint Interface). \u00c8 possibile specificare l'attributo value all'interno dell'annotazione o mediante l'elemento service-interface nel descrittore di distribuzione.
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=Specificare una sottoclasse di javax.xml.ws.Service.
+
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: L''annotazione @WebServiceRef o @Resource si trova nel membro {0} nella classe {1} ma gli attributi type e value non appartengono alla stessa classe. 
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Se l'annotazione indica una injection del tipo di servizio e l'attributo value non specifica la classe javax.xml.ws.Service, gli attributi type e value devono appartenere alla stessa classe. \u00c8 possibile specificare l'attributo value all'interno dell'annotazione o dall'elemento service-interface nel descrittore di distribuzione e specificare l'attributo type all'interno dell'annotazione @WebServiceRef o mediante l'elemento service-ref-type nel descrittore di distribuzione.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Specificare la stessa classe per gli attributi value e type.
+
+# Annotation validation messages ----------------------------------------
+
+error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: Nell'annotazione @WebServiceRef \u00e8 stato specificato erroneamente l'attributo lookup in aggiunta agli altri attributi.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Se viene specificato l'attributo lookup dell'annotazione @WebServiceRef, gli altri attributi non sono consentiti.
+error.service.ref.annotation.lookup.redundant.attributes.useraction=Rimuovere l'attributo lookup o gli altri attributi.
+
+error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: L''annotazione @WebServiceRef nella classe {0} non specifica un valore per l''attributo name o type. 
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=Se un'annotazione @WebServiceRef si trova al livello della classe, \u00e8 necessario specificare gli attributi name e type.
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=Specificare l'attributo name o type mancante.
+
+error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: L''annotazione @WebServiceRef si trova nella classe {0}. Tuttavia, l''attributo value non \u00e8 specificato nella classe {1} che non \u00e8 una sottoclasse di javax.xml.ws.Service. 
+error.service.ref.class.level.annotation.wrong.value.explanation=L'attributo value dell'annotazione @WebServiceRef deve specificare una sottoclasse della classe javax.xml.ws.Service, a meno che l'attributo type non indichi una injection SEI (Service Endpoint Interface).
+error.service.ref.class.level.annotation.wrong.value.useraction=Specificare una sottoclasse della classe javax.xml.ws.Service per l'attributo value.
+
+error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: L''annotazione @WebServiceRef si trova nella classe {0} ma gli attributi type e value non specificano la stessa classe.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Se l'annotazione @WebServiceRef indica un'injection del tipo di servizio e l'attributo value non specifica la classe javax.xml.ws.Service, la classe specificata dagli attributi type e value deve essere la stessa.
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Specificare la stessa classe per gli attributi value e type.
+
+error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: L''annotazione @WebServiceRef si trova nel metodo {0} nella classe {1} ma il nome metodo non \u00e8 conforme alla convenzione JavaBeans standard.
+error.service.ref.member.level.annotation.wrong.method.name.explanation=Per i riferimenti del servizio JAX-WS, se l'annotazione @WebServiceRef viene specificata su un metodo, il nome metodo deve osservare la convenzione JavaBeans standard, ad esempio setHelloWorld o getHelloWorld.
+error.service.ref.member.level.annotation.wrong.method.name.useraction=Accertarsi che il nome metodo sia conforme alle convenzioni JavaBean standard.
+
+error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: L''annotazione @WebServiceRef si trova nel membro{0} nella classe {1} ma il tipo di injection non pu\u00f2 essere dedotto dall''attributo type o dal tipo di membro della classe.
+error.service.ref.member.level.annotation.type.not.inferred.explanation=Se il tipo di membro della classe \u00e8 Object, l'attributo type dell'annotazione @WebServiceRef deve essere specificato e deve essere diverso da Object.
+error.service.ref.member.level.annotation.type.not.inferred.useraction=Specificare un attributo type diverso da Object.
+
+error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: L''annotazione @WebServiceRef si trova nel membro{0} nella classe {1} ma la classe {2} specificata nell''attributo type non \u00e8 compatibile con la classe {3} del membro annotato.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=L'attributo type deve essere compatibile con il tipo di membro della classe.
+error.service.ref.member.level.annotation.type.not.compatible.useraction=Accertarsi che l'attributo type sia compatibile con il tipo di membro della classe.
+
+error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: L''annotazione @WebServiceRef si trova nel membro {0} nella classe {1}. Tuttavia, l''attributo value non \u00e8 specificato o \u00e8 specificato nella classe {2}, che non \u00e8 una sottoclasse della classe javax.xml.ws.Service. 
+error.service.ref.member.level.annotation.wrong.value.explanation=L'attributo value dell'annotazione @WebServiceRef deve specificare una sottoclasse della classe javax.xml.ws.Service, a meno che l'attributo type non indichi una injection SEI (Service Endpoint Interface).
+error.service.ref.member.level.annotation.wrong.value.useraction=Specificare una sottoclasse della classe javax.xml.ws.Service per l'attributo value.
+
+error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: L''annotazione @WebServiceRef si trova nel membro {0} nella classe {1} ma gli attributi type e value non specificano la stessa classe.
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Se l'annotazione @WebServiceRef indica un'injection del tipo di servizio e l'attributo value non specifica la classe javax.xml.ws.Service, la classe specificata dagli attributi type e value deve essere la stessa.
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Specificare la stessa classe per gli attributi value e type.
+
+
+#{0}=handlerChain file name
+error.no.handlerChainFile.found=CWWKW0030E: Impossibile trovare il file di definizione della catena del gestore {0}.
+error.no.handlerChainFile.found.explanation=Impossibile trovare il file di definizione della catena del gestore dall'attributo file dell'annotazione.
+error.no.handlerChainFile.found.useraction=Specificare il percorso di un file di definizione della catena del gestore esistente. Il percorso pu\u00f2 essere un percorso file assoluto o relativo per la classe annotata con l'annotazione handlerChain.
+
+#{0}=handlerChain file content
+error.invalid.handlerChainFile.content=CWWKW0031E: L''elemento root del file handlerChain non \u00e8 valido: {0}.
+error.invalid.handlerChainFile.content.explanation=Lo spazio dei nomi dell'elemento root non \u00e8 uguale a "http://java.sun.com/xml/ns/javaee" o il nome locale dell'elemento root non \u00e8 uguale a "handler-chain".
+error.invalid.handlerChainFile.content.useraction=Modificare lo spazio dei nomi dell'elemento root in "http://java.sun.com/xml/ns/javaee" o il nome locale dell'elemento root in "handler-chain", quindi riprovare.
+
+#{0}=the unknown exception
+error.unknown.exception=CWWKW0032E: Impossibile analizzare il file della catena del gestore a causa di un''eccezione {0}.
+error.unknown.exception.explanation=\u00c8 stata rilevata un'eccezione non prevista durante l'analisi del file della catena del gestore.
+error.unknown.exception.useraction=Verificare che il formato del file gestore sia corretto e cercare ulteriori dettagli nel log ffdc della directory logs/ffdc appropriata del server.
+
+#{0}=the qualified name of the class which the handlerChain annotation is on.
+error.handlerChain.annotation.without.file=CWWKW0033E: L''annotazione handlerChain nella classe {0} non contiene una propriet\u00e0 file.
+error.handlerChain.annotation.without.file.explanation=Una propriet\u00e0 file \u00e8 obbligatoria nell'annotazione handlerChain.
+error.handlerChain.annotation.without.file.useraction=Specificare il nome file appropriato nell'annotazione handlerChain.
+
+#{0}=the IOException exception
+warn.catalog.load.exception=CWWKW0034E: Impossibile caricare il file di catalogo JAX-WS a causa dell''eccezione {0}.
+warn.catalog.load.exception.explanation=Si \u00e8 verificata una IOException durante il caricamento del file di catalogo.
+warn.catalog.load.exception.useraction=Assicurarsi che il file di catalogo JAX-WS esista e che la sintassi sia conforme alla specifica del catalogo XML.
+
+#{0}=service impl class
+warn.no.wsdl.generate=CWWKW0035E: La classe di implementazione {0} non contiene un''annotazione wsdlLocation o SOAP/1.1. Pertanto, non pu\u00f2 essere creata una definizione WSDL.
+warn.no.wsdl.generate.explanation=Il servizio Web non contiene un'annotazione wsdlLocation o SOAP/1.1.
+warn.no.wsdl.generate.useraction=Specificare un'annotazione wsdlLocation o SOAP/1.1 per il servizio Web.
+
+#{0}=IOException_message
+error.write.wsdl.stream=CWWKW0036E: Impossibile scrivere la definizione WSDL completa nel flusso a causa di {0}.
+error.write.wsdl.stream.explanation=Si \u00e8 verificata una IOException durante la scrittura della definizione WSDL completa nel flusso.
+error.write.wsdl.stream.useraction=Specificare un'annotazione wsdlLocation o SOAP/1.1 per il servizio Web. 
+
+error.no.wsdl.per.specification=CWWKW0037E: Impossibile creare il file WSDL conforme alla specifica JAX-WS 2.2.
+error.no.wsdl.per.specification.explanation=Il servizio Web non contiene un'annotazione wsdlLocation o SOAP/1.1.
+error.no.wsdl.per.specification.useraction=Specificare un'annotazione wsdlLocation o SOAP/1.1 per il servizio Web.
+
+#reuse CWWKW0038~50!
+
+#{0}=the exception message
+warn.could.not.create.handler=CWWKW0051W: Impossibile creare il gestore a causa di {0}.
+warn.could.not.create.handler.explanation=Impossibile creare o inizializzare il gestore.
+warn.could.not.create.handler.useraction=Accertarsi che la classe gestore sia inclusa nel percorso di classe dell'applicazione o che la classe gestore fornisca un costruttore vuoto.
+
+#{0}=the handler class name
+#{1}=the exception message
+warn.invoke.handler.predestory=CWWKW0052W: Impossibile richiamare il metodo preDestory del gestore {0} a causa di {1}.
+warn.invoke.handler.predestory.explanation=Il tipo di ritorno del metodo preDestory deve essere vuoto e le risorse che vengono utilizzate dal gestore devono essere state rilasciate.
+warn.invoke.handler.predestory.useraction=Assicurarsi che il tipo di ritorno del metodo preDestory sia vuoto e che tutte le risorse che vengono utilizzate dalla classe gestore vengano rilasciate. Controllare il file di log nella directory server_name/logs/ffdc per ulteriori dettagli.
+
+#{0}=service class name
+err.unable.set.serviceclass=CWWKW0053E: La classe di servizio {0} non \u00e8 stata impostata correttamente.
+err.unable.set.serviceclass.explanation=La classe di servizio non \u00e8 stata trovata nel percorso di classe dell'applicazione.
+err.unable.set.serviceclass.useraction=Accertarsi che la classe di servizio sia inclusa nel percorso di classe dell'applicazione.
+
+#reuse CWWKW0054~55!
+
+#{0}=the Web service implement class name
+#{1}=the WSDL location
+warn.endpoint.absolute.wsdllocation=CWWKW0056W: La classe di implementazione del servizio Web {0} fa riferimento all''ubicazione WSDL assoluta {1} mediante le annotazioni o i piani di distribuzione. I riferimenti assoluti WSDL non sono consentiti nelle annotazioni @WebService o @WebServiceProvider secondo la specifica JAX-WS.
+warn.endpoint.absolute.wsdllocation.explanation=\u00c8 necessario utilizzare l'URL relativo per l'ubicazione WSDL, che non forza l'implementazione JAX-WS per richiamare le ubicazioni remote. 
+warn.endpoint.absolute.wsdllocation.useraction=Aggiornare l'ubicazione WSDL con l'URL relativo mediante annotazioni o piani di distribuzione. 
+
+#{0}=the value of wsdlLocation 
+#{1}=the implementation class
+error.no.wsdl.find=CWWKW0057E: Impossibile trovare il file WSDL {0} specificato per la classe di implementazione {1}.
+error.no.wsdl.find.explanation=Non \u00e8 possibile trovare il file WSDL specificato per la classe di implementazione.
+error.no.wsdl.find.useraction=Specificare un file WSDL esistente per il servizio Web.
+
+#{0}=the specified binding type
+#{1}=the port component name
+#{2}=the WSDL document
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Il tipo di bind specificato {0} non corrisponde a quello nel documento WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Il tipo di bind viene specificato utilizzando l'annotazione BindingType o dal descrittore di distribuzione e il suo valore deve corrispondere a quello indicato nel documento WSDL.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Aggiornare il valore del tipo di bind in modo che corrisponda a quello indicato nel documento WSDL.
+
+#{0}=name of JMX operation
+err.unsupported.jmx.operation=CWWKW0059E: L''operazione {0} non \u00e8 supportata.
+err.unsupported.jmx.operation.explanation=Non \u00e8 consentito eseguire l'operazione richiesta.
+err.unsupported.jmx.operation.useraction=Non eseguire operazioni non supportate.

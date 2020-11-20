@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,9 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
 
+/**
+ *
+ */
 public class LibertyJaxWsServlet extends HttpServlet {
 
     private static final long serialVersionUID = -6835560282014155024L;
@@ -60,7 +63,8 @@ public class LibertyJaxWsServlet extends HttpServlet {
      * will be routed to handleRequest method.
      */
     @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    public void service(ServletRequest req, ServletResponse res)
+                    throws ServletException, IOException {
 
         HttpServletRequest request;
         HttpServletResponse response;
@@ -100,7 +104,7 @@ public class LibertyJaxWsServlet extends HttpServlet {
 
     /**
      * Prints a welcome message for the endpoint
-     *
+     * 
      * @param resquest
      * @param response
      */

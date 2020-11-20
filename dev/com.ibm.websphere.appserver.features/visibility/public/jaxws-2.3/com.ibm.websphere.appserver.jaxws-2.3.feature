@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: jaxws-2.3
+IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-API-Package: \
  javax.jws.soap; type="spec"; require-java:="9", \
  javax.wsdl; type="spec", \

@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-wsdl;3.3.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-
+instrument.classesIncludes: org/cxf/apache/**/*.class
 cxfVersion=3.3.3
 
 -includeresource: \
@@ -22,5 +22,4 @@ cxfVersion=3.3.3
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
 
-  
 jakartaeeMe: true

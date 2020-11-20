@@ -1,0 +1,205 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.common/resources/com/ibm/ws/jaxws/internal/resources/JaxWsCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS Common Code
+#RANGE 0000 - 0099
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Deployment Descriptor validation messages ------------------------
+
+warn.service.ref.dd.service.interface.not.set=CWWKW0000W: Deskriptor implementace definuje prvek service-ref {0}, kter\u00fd neobsahuje prvek service-interface. Odkaz na slu\u017ebu se proto ignoruje.
+warn.service.ref.dd.service.interface.not.set.explanation=Prvek service-ref mus\u00ed obsahovat prvek service-interface.
+warn.service.ref.dd.service.interface.not.set.useraction=P\u0159idejte prvek service-interface a zopakujte implementaci aplikace.
+
+warn.service.ref.dd.service.interface.class.not.found=CWWKW0001W: Deskriptor implementace definuje prvek service-ref {0}, ale nem\u016f\u017ee naj\u00edt t\u0159\u00eddu {1} uvedenou v prvku service-interface. Odkaz na slu\u017ebu se proto ignoruje.
+warn.service.ref.dd.service.interface.class.not.found.explanation=Prvek service-interface ur\u010duje t\u0159\u00eddu, kterou nelze naj\u00edt nebo na\u010d\u00edst.
+warn.service.ref.dd.service.interface.class.not.found.useraction=Zkontrolujte, zda se t\u0159\u00edda nach\u00e1z\u00ed v cest\u011b ke t\u0159\u00edd\u00e1m aplikace.
+
+warn.service.ref.dd.service.interface.wrong.value=CWWKW0002W: Deskriptor implementace definuje prvek service-ref {0}, ale t\u0159\u00edda {1} uveden\u00e1 v prvku service-interface nen\u00ed podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service. Odkaz na slu\u017ebu se proto ignoruje.
+warn.service.ref.dd.service.interface.wrong.value.explanation=Prvek service-interface mus\u00ed ur\u010dovat podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+warn.service.ref.dd.service.interface.wrong.value.useraction=Zadejte v prvku service-interface podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+
+# Merge mismatch check messages ------------------------------------
+
+error.service.interface.mismatch.for.member=CWWKW0003E: Odkaz na slu\u017ebu {0} na \u010dlenu {1} ve t\u0159\u00edd\u011b {2} ur\u010duje t\u0159\u00eddu service-interface {3}. Pro tento odkaz slu\u017eby v\u0161ak existuj\u00ed dal\u0161\u00ed metadata, kter\u00e1 ur\u010duj\u00ed t\u0159\u00eddu service-interface {4}.
+error.service.interface.mismatch.for.member.explanation=T\u0159\u00edda service-interface deklarovan\u00e1 na v\u00edce m\u00edstech pro stejn\u00fd odkaz na slu\u017ebu mus\u00ed b\u00fdt stejn\u00e1. 
+error.service.interface.mismatch.for.member.useraction=Opravte odkaz na slu\u017ebu tak, aby identifikoval tut\u00e9\u017e t\u0159\u00eddu service-interface.
+
+error.service.interface.mismatch.for.class=CWWKW0004E: Odkaz na slu\u017ebu na \u00farovni t\u0159\u00eddy {0} ur\u010duje t\u0159\u00eddu service-interface {1}. Pro tento odkaz slu\u017eby v\u0161ak existuj\u00ed dal\u0161\u00ed metadata, kter\u00e1 ur\u010duj\u00ed t\u0159\u00eddu service-interface {2}.
+error.service.interface.mismatch.for.class.explanation=T\u0159\u00edda service-interface deklarovan\u00e1 na v\u00edce m\u00edstech pro stejn\u00fd odkaz na slu\u017ebu mus\u00ed b\u00fdt stejn\u00e1. 
+error.service.interface.mismatch.for.class.useraction=Opravte odkaz na slu\u017ebu tak, aby identifikoval tut\u00e9\u017e t\u0159\u00eddu service-interface.
+
+error.service.ref.type.mismatch.for.member=CWWKW0005E: Odkaz na slu\u017ebu {0} na \u010dlenu {1} ve t\u0159\u00edd\u011b {2} ur\u010duje t\u0159\u00eddu service-ref-type {3}. Pro tento odkaz slu\u017eby v\u0161ak existuj\u00ed dal\u0161\u00ed metadata, kter\u00e1 ur\u010duj\u00ed t\u0159\u00eddu service-ref-type {4}.
+error.service.ref.type.mismatch.for.member.explanation=T\u0159\u00edda service-ref-type deklarovan\u00e1 na v\u00edce m\u00edstech pro stejn\u00fd odkaz na slu\u017ebu mus\u00ed b\u00fdt stejn\u00e1. 
+error.service.ref.type.mismatch.for.member.useraction=Opravte odkaz na slu\u017ebu tak, aby identifikoval tut\u00e9\u017e t\u0159\u00eddu service-ref-type.
+
+error.service.ref.type.mismatch.for.class=CWWKW0006E: Odkaz na slu\u017ebu na \u00farovni t\u0159\u00eddy {0} ur\u010duje t\u0159\u00eddu service-ref-type {1}. Pro tento odkaz slu\u017eby v\u0161ak existuj\u00ed dal\u0161\u00ed metadata, kter\u00e1 ur\u010duj\u00ed t\u0159\u00eddu service-ref-type {2}.
+error.service.ref.type.mismatch.for.class.explanation=T\u0159\u00edda service-ref-type deklarovan\u00e1 na v\u00edce m\u00edstech pro stejn\u00fd odkaz na slu\u017ebu mus\u00ed b\u00fdt stejn\u00e1. 
+error.service.ref.type.mismatch.for.class.useraction=Opravte odkaz na slu\u017ebu tak, aby identifikoval tut\u00e9\u017e t\u0159\u00eddu service-ref-type.
+
+# Merge validation messages ------------------------------------------
+
+error.service.ref.class.level.merge.service.ref.type.absent=CWWKW0007E: Na t\u0159\u00edd\u011b {0} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, nelze v\u0161ak identifikovat atribut typu. 
+error.service.ref.class.level.merge.service.ref.type.absent.explanation=Pokud se nach\u00e1z\u00ed na \u00farovni t\u0159\u00edd anotace @WebServiceRef nebo @Resource, mus\u00ed b\u00fdt identifikov\u00e1n atribut typu. M\u016f\u017ee b\u00fdt zad\u00e1n v r\u00e1mci anotace @WebServiceRef nebo pomoc\u00ed prvku service-ref-type v deskriptoru implementace.
+error.service.ref.class.level.merge.service.ref.type.absent.useraction=Zadejte chyb\u011bj\u00edc\u00ed atribut typu.
+
+error.service.ref.class.level.merge.service.interface.wrong.value=CWWKW0008E: Na t\u0159\u00edd\u011b {0} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, av\u0161ak identifikovan\u00fd atribut hodnoty je t\u0159\u00edda {1}, kter\u00e1 nen\u00ed podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service. 
+error.service.ref.class.level.merge.service.interface.wrong.value.explanation=Atribut hodnoty mus\u00ed b\u00fdt podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service, pokud identifikovan\u00fd atribut typu neozna\u010duje vlo\u017een\u00ed rozhran\u00ed SEI. Atribut hodnoty m\u016f\u017eete zadat v r\u00e1mci anotace nebo pomoc\u00ed prvku service-interface v deskriptoru implementace.
+error.service.ref.class.level.merge.service.interface.wrong.value.useraction=Zadejte podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0009E: Na t\u0159\u00edd\u011b {0} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, identifikovan\u00e9 atributy typu a hodnoty v\u0161ak nemaj\u00ed stejnou t\u0159\u00eddu. 
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.explanation=Pokud anotace ozna\u010duje vlo\u017een\u00ed typu slu\u017eby a atribut hodnoty neur\u010duje t\u0159\u00eddu javax.xml.ws.Service, mus\u00ed m\u00edt atributy typu a hodnoty stejnou t\u0159\u00eddu. Atribut hodnoty m\u016f\u017eete zadat v r\u00e1mci anotace nebo pomoc\u00ed prvku service-interface v deskriptoru implementace a atribut typu v r\u00e1mci anotace @WebServiceRef nebo pomoc\u00ed prvku service-ref-type v deskriptoru implementace.
+error.service.ref.class.level.merge.service.interface.and.service.ref.type.not.same.useraction=Zadejte stejnou t\u0159\u00eddu pro atributy hodnoty a typu.
+
+error.service.ref.member.level.merge.service.ref.type.not.inferred=CWWKW0010E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, z typu \u010dlenu t\u0159\u00eddy nebo atributu typu v\u0161ak nelze odvodit typ vlo\u017een\u00ed. 
+error.service.ref.member.level.merge.service.ref.type.not.inferred.explanation=Pokud je typ \u010dlenu t\u0159\u00eddy Object, mus\u00ed b\u00fdt zad\u00e1n atribut typu a nem\u016f\u017ee se jednat o Object. Typ \u010dlenu t\u0159\u00eddy m\u016f\u017eete zadat v r\u00e1mci anotace @WebServiceRef nebo pomoc\u00ed prvku service-ref-type v deskriptoru implementace.
+error.service.ref.member.level.merge.service.ref.type.not.inferred.useraction=Zadejte atribut typu jin\u00fd ne\u017e Object.
+
+error.service.ref.member.level.merge.service.ref.type.not.compatible=CWWKW0011E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, av\u0161ak identifikovan\u00fd atribut typu je t\u0159\u00edda {2}, kter\u00e1 nen\u00ed kompatibiln\u00ed s t\u0159\u00eddou {3} anotovan\u00e9ho \u010dlenu. 
+error.service.ref.member.level.merge.service.ref.type.not.compatible.explanation=Atribut typu mus\u00ed b\u00fdt kompatibiln\u00ed s typem \u010dlenu t\u0159\u00eddy. Atribut typu m\u016f\u017eete zadat v r\u00e1mci anotace @WebServiceRef nebo pomoc\u00ed prvku service-ref-type v deskriptoru implementace.
+error.service.ref.member.level.merge.service.ref.type.not.compatible.useraction=Zadejte p\u0159\u00edslu\u0161n\u00fd atribut typu kompatibiln\u00ed s typem \u010dlenu t\u0159\u00eddy.
+
+error.service.ref.member.level.merge.service.interface.wrong.value=CWWKW0012E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, av\u0161ak identifikovan\u00fd atribut hodnoty je t\u0159\u00edda {2}, kter\u00e1 nen\u00ed podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service.
+error.service.ref.member.level.merge.service.interface.wrong.value.explanation=Atribut hodnoty mus\u00ed b\u00fdt podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service, pokud identifikovan\u00fd atribut typu neozna\u010duje vlo\u017een\u00ed rozhran\u00ed SEI. Atribut hodnoty m\u016f\u017eete zadat v r\u00e1mci anotace nebo pomoc\u00ed prvku service-interface v deskriptoru implementace.
+error.service.ref.member.level.merge.service.interface.wrong.value.useraction=Zadejte podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same=CWWKW0013E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef nebo @Resource, identifikovan\u00e9 atributy typu a hodnoty v\u0161ak nemaj\u00ed stejnou t\u0159\u00eddu. 
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.explanation=Pokud anotace ozna\u010duje vlo\u017een\u00ed typu slu\u017eby a atribut hodnoty neur\u010duje t\u0159\u00eddu javax.xml.ws.Service, mus\u00ed m\u00edt atributy typu a hodnoty stejnou t\u0159\u00eddu. Atribut hodnoty m\u016f\u017eete zadat v r\u00e1mci anotace nebo pomoc\u00ed prvku service-interface v deskriptoru implementace a atribut typu v r\u00e1mci anotace @WebServiceRef nebo pomoc\u00ed prvku service-ref-type v deskriptoru implementace.
+error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.same.useraction=Zadejte stejnou t\u0159\u00eddu pro atributy hodnoty a typu.
+
+# Annotation validation messages ----------------------------------------
+
+error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: Krom\u011b jin\u00fdch atribut\u016f ur\u010dila anotace @WebServiceRef nespr\u00e1vn\u011b i atribut vyhled\u00e1n\u00ed.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Pokud je zad\u00e1n atribut vyhled\u00e1n\u00ed anotace @WebServiceRef, nejsou povoleny \u017e\u00e1dn\u00e9 dal\u0161\u00ed atributy.
+error.service.ref.annotation.lookup.redundant.attributes.useraction=Odeberte atribut vyhled\u00e1n\u00ed nebo ostatn\u00ed atributy.
+
+error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: Anotace @WebServiceRef na t\u0159\u00edd\u011b {0} neur\u010duje hodnotu pro atribut n\u00e1zvu nebo typu. 
+error.service.ref.class.level.annotation.name.or.type.absent.explanation=Pokud se anotace @WebServiceRef nach\u00e1z\u00ed na \u00farovni t\u0159\u00edd, mus\u00ed b\u00fdt zad\u00e1n atribut n\u00e1zvu a typu.
+error.service.ref.class.level.annotation.name.or.type.absent.useraction=Zadejte chyb\u011bj\u00edc\u00ed atribut n\u00e1zvu nebo typu.
+
+error.service.ref.class.level.annotation.wrong.value=CWWKW0016E: Na t\u0159\u00edd\u011b {0} se nach\u00e1z\u00ed anotace @WebServiceRef. Nen\u00ed v\u0161ak zad\u00e1n atribut hodnoty nebo je zad\u00e1n na t\u0159\u00edd\u011b {1}, kter\u00e1 nen\u00ed podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service. 
+error.service.ref.class.level.annotation.wrong.value.explanation=Atribut hodnoty anotace @WebServiceRef mus\u00ed ur\u010dovat podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service, pokud atribut typu neozna\u010duje vlo\u017een\u00ed rozhran\u00ed SEI.
+error.service.ref.class.level.annotation.wrong.value.useraction=Zadejte pro atribut hodnoty podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+
+error.service.ref.class.level.annotation.value.and.type.not.same=CWWKW0017E: Na t\u0159\u00edd\u011b {0} se nach\u00e1z\u00ed anotace @WebServiceRef, atributy hodnoty a typu v\u0161ak neur\u010duj\u00ed tut\u00e9\u017e t\u0159\u00eddu.
+error.service.ref.class.level.annotation.value.and.type.not.same.explanation=Pokud anotace @WebServiceRef ur\u010duje vlo\u017een\u00ed typu slu\u017eby a atribut hodnoty neur\u010duje t\u0159\u00eddu javax.xml.ws.Service, mus\u00ed atributy typu a hodnoty ur\u010dovat stejnou t\u0159\u00eddu.
+error.service.ref.class.level.annotation.value.and.type.not.same.useraction=Zadejte stejnou t\u0159\u00eddu pro atributy hodnoty a typu.
+
+error.service.ref.member.level.annotation.wrong.method.name=CWWKW0018E: Na metod\u011b {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef, n\u00e1zev metody v\u0161ak neodpov\u00edd\u00e1 standardn\u00ed konvenci pro objekty JavaBean.
+error.service.ref.member.level.annotation.wrong.method.name.explanation=Pokud je u odkaz\u016f na slu\u017ebu JAX-WS na metod\u011b zad\u00e1na anotace @WebServiceRef, mus\u00ed n\u00e1zev metody odpov\u00eddat standardn\u00ed konvenci pro objekty JavaBean, jako nap\u0159. setHelloWorld nebo getHelloWorld.
+error.service.ref.member.level.annotation.wrong.method.name.useraction=Ov\u011b\u0159te, \u017ee n\u00e1zev metody odpov\u00edd\u00e1 standardn\u00edm konvenc\u00edm pro objekty JavaBean.
+
+error.service.ref.member.level.annotation.type.not.inferred=CWWKW0019E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef, z atributu typu ani typu \u010dlenu t\u0159\u00eddy v\u0161ak nelze odvodit typ vlo\u017een\u00ed.
+error.service.ref.member.level.annotation.type.not.inferred.explanation=Pokud je typ \u010dlenu t\u0159\u00eddy Object, mus\u00ed b\u00fdt zad\u00e1n atribut typu anotace @WebServiceRef a nem\u016f\u017ee se jednat o Object.
+error.service.ref.member.level.annotation.type.not.inferred.useraction=Zadejte atribut typu jin\u00fd ne\u017e Object.
+
+error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef, t\u0159\u00edda {2} ur\u010den\u00e1 v atributu typu v\u0161ak nen\u00ed kompatibiln\u00ed s t\u0159\u00eddou {3} anotovan\u00e9ho \u010dlenu.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=Atribut typu mus\u00ed b\u00fdt kompatibiln\u00ed s typem \u010dlenu t\u0159\u00eddy.
+error.service.ref.member.level.annotation.type.not.compatible.useraction=Zkontrolujte, zda je atribut typu kompatibiln\u00ed s typem \u010dlenu t\u0159\u00eddy.
+
+error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef. Nen\u00ed v\u0161ak zad\u00e1n atribut hodnoty nebo je zad\u00e1n na t\u0159\u00edd\u011b {2}, kter\u00e1 nen\u00ed podt\u0159\u00eddou t\u0159\u00eddy javax.xml.ws.Service. 
+error.service.ref.member.level.annotation.wrong.value.explanation=Atribut hodnoty anotace @WebServiceRef mus\u00ed ur\u010dovat podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service, pokud atribut typu neozna\u010duje vlo\u017een\u00ed rozhran\u00ed SEI.
+error.service.ref.member.level.annotation.wrong.value.useraction=Zadejte pro atribut hodnoty podt\u0159\u00eddu t\u0159\u00eddy javax.xml.ws.Service.
+
+error.service.ref.member.level.annotation.value.and.type.not.same=CWWKW0022E: Na \u010dlenu {0} ve t\u0159\u00edd\u011b {1} se nach\u00e1z\u00ed anotace @WebServiceRef, atributy hodnoty a typu v\u0161ak neur\u010duj\u00ed tut\u00e9\u017e t\u0159\u00eddu.
+error.service.ref.member.level.annotation.value.and.type.not.same.explanation=Pokud anotace @WebServiceRef ur\u010duje vlo\u017een\u00ed typu slu\u017eby a atribut hodnoty neur\u010duje t\u0159\u00eddu javax.xml.ws.Service, mus\u00ed atributy typu a hodnoty ur\u010dovat stejnou t\u0159\u00eddu.
+error.service.ref.member.level.annotation.value.and.type.not.same.useraction=Zadejte stejnou t\u0159\u00eddu pro atributy hodnoty a typu.
+
+
+#{0}=handlerChain file name
+error.no.handlerChainFile.found=CWWKW0030E: Nelze naj\u00edt soubor definice \u0159et\u011bzu obslu\u017en\u00fdch rutin {0}.
+error.no.handlerChainFile.found.explanation=Nelze naj\u00edt soubor definice \u0159et\u011bzu obslu\u017en\u00fdch rutin z atributu souboru anotace handlerChain.
+error.no.handlerChainFile.found.useraction=Zadejte cestu k existuj\u00edc\u00edmu souboru definice \u0159et\u011bzu obslu\u017en\u00fdch rutin. Tato cesta m\u016f\u017ee b\u00fdt absolutn\u00ed cesta k souboru nebo relativn\u00ed cesta v\u016f\u010di t\u0159\u00edd\u011b anotovan\u00e9 anotac\u00ed handlerChain.
+
+#{0}=handlerChain file content
+error.invalid.handlerChainFile.content=CWWKW0031E: Ko\u0159enov\u00fd prvek souboru handlerChain je neplatn\u00fd: {0}.
+error.invalid.handlerChainFile.content.explanation=Obor n\u00e1zv\u016f ko\u0159enov\u00e9ho prvku se nerovn\u00e1 "http://java.sun.com/xml/ns/javaee", nebo se lok\u00e1ln\u00ed n\u00e1zev ko\u0159enov\u00e9ho prvku nerovn\u00e1 "handler-chain".
+error.invalid.handlerChainFile.content.useraction=Zm\u011b\u0148te obor n\u00e1zv\u016f ko\u0159enov\u00e9ho prvku na "http://java.sun.com/xml/ns/javaee" nebo lok\u00e1ln\u00ed n\u00e1zev ko\u0159enov\u00e9ho prvku na "handler-chain" a pot\u00e9 operaci opakujte.
+
+#{0}=the unknown exception
+error.unknown.exception=CWWKW0032E: Soubor \u0159et\u011bzu obslu\u017en\u00fdch rutin nelze analyzovat z d\u016fvodu v\u00fdjimky {0}.
+error.unknown.exception.explanation=B\u011bhem anal\u00fdzy souboru \u0159et\u011bzu obslu\u017en\u00fdch rutin byla rozpozn\u00e1na neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+error.unknown.exception.useraction=Ov\u011b\u0159te, \u017ee form\u00e1t souboru obslu\u017en\u00fdch rutin je spr\u00e1vn\u00fd a vyhledejte dal\u0161\u00ed podrobnosti v protokolu ffdc v p\u0159\u00edslu\u0161n\u00e9m adres\u00e1\u0159i logs/ffdc serveru.
+
+#{0}=the qualified name of the class which the handlerChain annotation is on.
+error.handlerChain.annotation.without.file=CWWKW0033E: Anotace handlerChain na t\u0159\u00edd\u011b {0} neobsahuje vlastnost souboru.
+error.handlerChain.annotation.without.file.explanation=Vlastnost souboru je v anotaci handlerChain povinn\u00e1.
+error.handlerChain.annotation.without.file.useraction=Zadejte p\u0159\u00edslu\u0161n\u00fd n\u00e1zev souboru v anotaci handlerChain.
+
+#{0}=the IOException exception
+warn.catalog.load.exception=CWWKW0034E: Nelze na\u010d\u00edst katalogov\u00fd soubor JAX-WS z d\u016fvodu v\u00fdjimky {0}.
+warn.catalog.load.exception.explanation=B\u011bhem na\u010d\u00edt\u00e1n\u00ed katalogov\u00e9ho souboru do\u0161lo k v\u00fdjimce IOException.
+warn.catalog.load.exception.useraction=Zkontrolujte, zda existuje katalogov\u00fd soubor JAX-WS a jeho syntaxe odpov\u00edd\u00e1 specifikaci katalogu XML.
+
+#{0}=service impl class
+warn.no.wsdl.generate=CWWKW0035E: Implementa\u010dn\u00ed t\u0159\u00edda {0} neobsahuje hodnotu wsdlLocation nebo anotaci SOAP/1.1. Nelze proto vygenerovat definici WSDL.
+warn.no.wsdl.generate.explanation=Webov\u00e1 slu\u017eba neobsahuje hodnotu wsdlLocation ani anotaci SOAP/1.1.
+warn.no.wsdl.generate.useraction=Zadejte do webov\u00e9 slu\u017eby hodnotu wsdlLocation nebo anotaci SOAP/1.1.
+
+#{0}=IOException_message
+error.write.wsdl.stream=CWWKW0036E: \u00daplnou definici WSDL nelze zapsat do proudu kv\u016fli v\u00fdjimce {0}.
+error.write.wsdl.stream.explanation=P\u0159i z\u00e1pisu \u00fapln\u00e9 definice WSDL do proudu do\u0161lo k v\u00fdjimce IOException.
+error.write.wsdl.stream.useraction=Zadejte do webov\u00e9 slu\u017eby hodnotu wsdlLocation nebo anotaci SOAP/1.1. 
+
+error.no.wsdl.per.specification=CWWKW0037E: Nelze vygenerovat k\u00f3d WSDL kompatibiln\u00ed se specifikac\u00ed JAX-WS 2.2.
+error.no.wsdl.per.specification.explanation=Webov\u00e1 slu\u017eba neobsahuje hodnotu wsdlLocation ani anotaci SOAP/1.1.
+error.no.wsdl.per.specification.useraction=Zadejte do webov\u00e9 slu\u017eby hodnotu wsdlLocation nebo anotaci SOAP/1.1.
+
+#reuse CWWKW0038~50!
+
+#{0}=the exception message
+warn.could.not.create.handler=CWWKW0051W: Nelze vytvo\u0159it obslu\u017enou rutinu kv\u016fli v\u00fdjimce {0}.
+warn.could.not.create.handler.explanation=Nelze vytvo\u0159it nebo inicializovat obslu\u017enou rutinu.
+warn.could.not.create.handler.useraction=P\u0159esv\u011bd\u010dte se, \u017ee t\u0159\u00edda obslu\u017en\u00e9 rutiny je v cest\u011b t\u0159\u00eddy aplikace, nebo t\u0159\u00edda obslu\u017en\u00e9 rutiny poskytuje pr\u00e1zdn\u00fd konstruktor.
+
+#{0}=the handler class name
+#{1}=the exception message
+warn.invoke.handler.predestory=CWWKW0052W: Nezda\u0159ilo se vol\u00e1n\u00ed metody preDestory obslu\u017en\u00e9 rutiny {0} kv\u016fli v\u00fdjimce {1}.
+warn.invoke.handler.predestory.explanation=N\u00e1vratov\u00fdm typem metody preDestory mus\u00ed b\u00fdt pr\u00e1zdn\u00e1 hodnota a prost\u0159edky pou\u017e\u00edvan\u00e9 obslu\u017enou rutinou mus\u00ed b\u00fdt uvoln\u011bny.
+warn.invoke.handler.predestory.useraction=P\u0159esv\u011bd\u010dte se, \u017ee n\u00e1vratov\u00fdm typem metody preDestory je pr\u00e1zdn\u00e1 hodnota a v\u0161echny prost\u0159edky pou\u017e\u00edvan\u00e9 obslu\u017enou rutinou jsou uvoln\u011bny. Dal\u0161\u00ed podrobnosti naleznete v souboru protokolu v adres\u00e1\u0159i n\u00e1zev_serveru/logs/ffdc.
+
+#{0}=service class name
+err.unable.set.serviceclass=CWWKW0053E: T\u0159\u00edda slu\u017eby {0} nebyla nastavena spr\u00e1vn\u011b.
+err.unable.set.serviceclass.explanation=T\u0159\u00edda slu\u017eby nebyla nalezena v cest\u011b ke t\u0159\u00edd\u011b aplikace.
+err.unable.set.serviceclass.useraction=Zajist\u011bte, aby t\u0159\u00edda slu\u017eby byla v cest\u011b ke t\u0159\u00edd\u011b aplikace.
+
+#reuse CWWKW0054~55!
+
+#{0}=the Web service implement class name
+#{1}=the WSDL location
+warn.endpoint.absolute.wsdllocation=CWWKW0056W: Implementa\u010dn\u00ed t\u0159\u00edda webov\u00e9 slu\u017eby {0} odkazuje na absolutn\u00ed um\u00edst\u011bn\u00ed WSDL {1} prost\u0159ednictv\u00ed anotac\u00ed nebo pl\u00e1n\u016f implementace. Podle specifikace JAX-WS nejsou absolutn\u00ed odkazy na WSDL povoleny v anotac\u00edch @WebService ani @WebServiceProvider.
+warn.endpoint.absolute.wsdllocation.explanation=Pro um\u00edst\u011bn\u00ed WSDL mus\u00ed b\u00fdt pou\u017eita relativn\u00ed adresa URL, kter\u00e1 nebude implementaci JAX-WS nutit k na\u010d\u00edt\u00e1n\u00ed vzd\u00e1len\u00fdch um\u00edst\u011bn\u00ed. 
+warn.endpoint.absolute.wsdllocation.useraction=Aktualizujte um\u00edst\u011bn\u00ed WSDL pou\u017eit\u00edm relativn\u00ed adresy URL prost\u0159ednictv\u00edm anotac\u00ed nebo pl\u00e1n\u016f implementace. 
+
+#{0}=the value of wsdlLocation 
+#{1}=the implementation class
+error.no.wsdl.find=CWWKW0057E: Soubor WSDL {0} zadan\u00fd pro t\u0159\u00eddu implementace {1} nelze naj\u00edt.
+error.no.wsdl.find.explanation=Soubor WSDL zadan\u00fd pro t\u0159\u00eddu implementace nelze naj\u00edt.
+error.no.wsdl.find.useraction=Zadejte do webov\u00e9 slu\u017eby existuj\u00edc\u00ed soubor WSDL.
+
+#{0}=the specified binding type
+#{1}=the port component name
+#{2}=the WSDL document
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Zadan\u00fd typ vazby {0} neodpov\u00edd\u00e1 tomu ur\u010den\u00e9mu v dokumentu WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Je-li typ vazby zadan\u00fd pomoc\u00ed anotace BindingType nebo pomoc\u00ed deskriptoru implementace, mus\u00ed jeho hodnota odpov\u00eddat hodnot\u011b v dokumentu WSDL.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Aktualizujte hodnotu typu vazby, aby odpov\u00eddala hodnot\u011b v dokumentu WSDL.
+
+#{0}=name of JMX operation
+err.unsupported.jmx.operation=CWWKW0059E: Operace {0} nen\u00ed podporov\u00e1na.
+err.unsupported.jmx.operation.explanation=Po\u017eadov\u00e1na operace nem\u00e1 povolen\u00ed k proveden\u00ed.
+err.unsupported.jmx.operation.useraction=Nespou\u0161t\u011bjte nepodporovanou operaci.

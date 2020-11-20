@@ -37,6 +37,14 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
+/*
+ * This test is responsible for testing whether or not HTTPConduit configuration set in the ibm-ws-bnd.xml file
+ * is picked up and applied to CXF via our integration layer. The test application requires access to CXF internals
+ * so a jaxwsTest-2.3 feature is added to the Liberty image in order to expose those APIs.
+ *
+ * TODO:
+ * Refactor the jaxws-2.3 and jaxws-2.2 tests back into a single Test Class, or with a common abstract class
+ */
 @RunWith(FATRunner.class)
 @SkipForRepeat("jaxws-2.3")
 public class HttpConduitPropertiesTest {
@@ -99,6 +107,8 @@ public class HttpConduitPropertiesTest {
         }
 
         if (server.isStarted()) {
+            // Since the individual tests are starting the server due to the config change
+            // You must remove the false boolean in order to get logs for debuging failures
             server.stopServer(false);
         }
 

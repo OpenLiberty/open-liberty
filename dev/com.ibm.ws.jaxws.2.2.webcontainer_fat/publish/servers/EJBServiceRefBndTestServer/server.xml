@@ -6,9 +6,7 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
-    <logging traceSpecification="org.apache.cxf.*=all:com.ibm.ws.jaxws23.*=all:com.ibm.ws.jaxws.*=all"/>
-    
+
     <!-- TESTING THE UPLOAD! -->
   	<javaPermission className="java.security.AllPermission"/>
 

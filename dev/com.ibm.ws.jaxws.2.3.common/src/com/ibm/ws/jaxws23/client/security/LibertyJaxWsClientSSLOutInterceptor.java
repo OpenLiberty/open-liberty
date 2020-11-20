@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,8 @@ import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 
 /**
- *
+ * Used to set the SSL config on the Client side conduit. This removes the need to modify the
+ * HttpConduit directly through an extended LibertyHttpConduit 
  */
 public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseInterceptor<Message> {
 

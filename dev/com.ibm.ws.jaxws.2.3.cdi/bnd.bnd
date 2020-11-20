@@ -15,17 +15,19 @@ Bundle-Name: JAX-WS CDI
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.cdi
 Bundle-Description: IBM JAX-WS CDI support; version=${bVersion}
 
-
+exportVer=2.3
 
 Import-Package: \
-  javax.enterprise.inject.spi; version="[2.0,3)",\
-   *
+  javax.enterprise.inject.spi;version="[2.0,3)",\
+  com.ibm.ws.jaxws.*;version="[2.3,3)", \
+  com.ibm.ws.jaxws23.*;version="[2.3,3)", \
+  *
 
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-   com.ibm.ws.jaxws.cdi.*
+   com.ibm.ws.jaxws.cdi.*;version=${exportVer}
 
--dsannotations: com.ibm.ws.jaxws.cdi.component.*    
+-dsannotations: com.ibm.ws.jaxws.cdi.component.*
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

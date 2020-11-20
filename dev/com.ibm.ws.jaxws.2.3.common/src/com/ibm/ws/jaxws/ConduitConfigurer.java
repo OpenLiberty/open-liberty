@@ -1,13 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ibm.ws.jaxws;
 
 import java.util.Dictionary;
@@ -23,15 +31,22 @@ import org.apache.cxf.transport.http.HTTPConduitConfigurer;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 
-import com.ibm.ws.jaxws.client.JaxwsHttpConduitConfigApplier;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
- *
+ *  Allows us to Apply our HTTPConduit configuration on a HTTPConduit via a ManagedService added to the Bus
+ *  Mostly borrowed from
+ *  org.apache.cxf.transport.http.asyncclient.Activator
+ *  org.apache.cxf.transport.http.osgi.HttpConduitConfigApplier
  */
 public class ConduitConfigurer extends ConduitConfigurerService  implements HTTPConduitConfigurer {
-
+    
+    //  Liberty Code change
+    private static final TraceComponent tc = Tr.register(ConduitConfigurer.class);
     public static final String FACTORY_PID = "org.apache.cxf.http.conduits";
     public ConduitConfigurer(BundleContext context) {
+        
         super(context);
         Bus[] buses = (Bus[])getServices();
         if (buses == null) {
@@ -40,13 +55,17 @@ public class ConduitConfigurer extends ConduitConfigurerService  implements HTTP
         for (Bus bus : buses) {
             bus.setExtension(this, HTTPConduitConfigurer.class );
         }
+
     }
+    
+    //Liberty Code Change
     public ConduitConfigurer() {
-        super(JaxwsBundleActivator.context);
+        super(JaxwsConduitConfigActivator.context);
     }
 
-    @Override
+
     public void configure(String name, String address, HTTPConduit c) {
+
         PidInfo byName = null;
         PidInfo byAddress = null;
         if (name != null) {
@@ -59,6 +78,7 @@ public class ConduitConfigurer extends ConduitConfigurerService  implements HTTP
             }
         }
 
+        // Liberty Code Change
         JaxwsHttpConduitConfigApplier applier = new JaxwsHttpConduitConfigApplier();
         for (PidInfo info : sorted) {
             if (info.getMatcher() != null
@@ -76,6 +96,7 @@ public class ConduitConfigurer extends ConduitConfigurerService  implements HTTP
 
         if (byAddress != null) {
             applier.apply(byAddress.getProps(), c, address);
+            
         }
         if (byName != null) {
             applier.apply(byName.getProps(), c, address);
@@ -129,8 +150,7 @@ public class ConduitConfigurer extends ConduitConfigurerService  implements HTTP
     }
 
     @SuppressWarnings("unchecked")
-    public void updated(String pid, @SuppressWarnings("rawtypes") Dictionary properties)
-    throws ConfigurationException {
+    public void updated(String pid, @SuppressWarnings("rawtypes") Dictionary properties) throws ConfigurationException {
     if (pid == null) {
         return;
     }

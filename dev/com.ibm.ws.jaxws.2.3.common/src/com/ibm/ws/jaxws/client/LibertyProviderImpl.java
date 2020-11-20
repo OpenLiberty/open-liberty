@@ -22,12 +22,11 @@ import javax.xml.ws.spi.ServiceDelegate;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
-import org.apache.cxf.jaxws22.spi.ProviderImpl;
+import org.apache.cxf.jaxws.spi.ProviderImpl;
 import org.apache.cxf.staxutils.StaxUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 import com.ibm.ws.jaxws.metadata.JaxWsClientMetaData;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
@@ -55,7 +54,8 @@ public class LibertyProviderImpl extends ProviderImpl {
     @Override
     public ServiceDelegate createServiceDelegate(URL url, QName qname,
                                                  @SuppressWarnings("rawtypes") Class cls) {
-        
+        // TODO: 
+        // WOODSTOX
         //Eager initialize the StaxUtils
         try {
             if(System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER) == null) {
@@ -79,7 +79,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             bus = clientMetaData.getClientBus();
         }
         if (bus == null) {
-            bus = LibertyApplicationBusFactory.getThreadDefaultBus();
+            bus = BusFactory.getThreadDefaultBus();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client  bus is found, the thread context default bus " + bus.getId() + " is used");
             }
@@ -91,7 +91,7 @@ public class LibertyProviderImpl extends ProviderImpl {
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
         JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
-        // @TJJ create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
+        // Create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
         final JaxWsSecurityConfigurationService scs = securityConfigService;
         final WebServiceRefInfo wi = wsrInfo;
         final Bus b = bus;

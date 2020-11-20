@@ -16,6 +16,8 @@ Bundle-Name: JAX-WS EJB
 Bundle-SymbolicName: com.ibm.ws.jaxws.ejb
 Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
 
+exportVer=2.2
+
 Service-Component: \
   com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
      implementation:=com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
@@ -50,7 +52,7 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-    com.ibm.ws.jaxws.ejb
+    com.ibm.ws.jaxws.ejb;version=${exportVer}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
@@ -60,10 +62,12 @@ Import-Package: \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
    javax.xml.soap;version=!,\
+   com.ibm.ws.jaxws;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.ejb.*
+   com.ibm.ws.jaxws.ejb.*;version=${exportVer}
 
 instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 

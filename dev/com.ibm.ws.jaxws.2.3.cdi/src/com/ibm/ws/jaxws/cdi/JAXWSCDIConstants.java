@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrws.cdi;
+package com.ibm.ws.jaxws.cdi;
 
 /**
  *

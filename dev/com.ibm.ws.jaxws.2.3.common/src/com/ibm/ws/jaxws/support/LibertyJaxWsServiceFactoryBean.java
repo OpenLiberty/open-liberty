@@ -410,7 +410,7 @@ public class LibertyJaxWsServiceFactoryBean extends JaxWsServiceFactoryBean {
             if (endpoint.getFeatures() == null || endpoint.getFeatures().isEmpty()) {
                 endpoint.getFeatures().add(feature);
             } else {
-                // @TJJ changed AbstractFeature to Feature as CXF 3.3 Endpoint.getFeatures() returns
+                // Changed AbstractFeature to Feature as CXF 3.3 Endpoint.getFeatures() returns
                 // List<Features>
                 for (Feature f : endpoint.getFeatures()) {
                     if (f instanceof WSAddressingFeature) {

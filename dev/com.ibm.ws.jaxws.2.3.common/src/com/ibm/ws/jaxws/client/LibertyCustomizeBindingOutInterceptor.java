@@ -19,15 +19,11 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.http.HTTPConduitConfigurer;
 import org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduit;
-import org.apache.cxf.transport.http.asyncclient.AsyncHttpTransportFactory;
 import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
 
-import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -44,7 +40,6 @@ import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final TraceComponent tc = Tr.register(LibertyCustomizeBindingOutInterceptor.class);
 
-    private static final String HTTPS_SCHEMA = "https";
     private final Set<ConfigProperties> configPropertiesSet;
 
     protected final WebServiceRefInfo wsrInfo;
@@ -136,6 +131,7 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
      * @param message
      */
     protected void customizeClientProperties(Message message) {
+        
         if (null == configPropertiesSet) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "There are no client properties.");
@@ -170,6 +166,7 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
 
         if (null != wsrInfo) {
             QName portQName = getPortQName(message);
+
             if (null != portQName) {
                 portInfo = wsrInfo.getPortComponentRefInfo(portQName);
                 address = (null != portInfo && null != portInfo.getAddress()) ? portInfo.getAddress() : wsrInfo.getDefaultPortAddress();
@@ -186,23 +183,22 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
     }
 
     private void customizeHttpConduitProperties(Message message, Bus bus, ConfigProperties configProps) {
-        Tr.info(tc, "@TJJ inside customizeHttpConduitProperties()");
-        Conduit conduit = message.getExchange().getConduit(message);
+        HTTPConduit conduit = (HTTPConduit) message.getExchange().getConduit(message);
+
         ConduitConfigurer conduitConfigurer = (ConduitConfigurer) bus.getExtension(HTTPConduitConfigurer.class);
 
      
         if (conduitConfigurer != null && conduit instanceof AsyncHTTPConduit) {
-            Tr.info(tc, "@TJJ httpConduit is instance of " + conduit.getClass().getSimpleName() + " conduitConfiguer is :" + conduitConfigurer);
+
             HTTPConduit httpConduit = (HTTPConduit) conduit;
             String address = (String) message.get(Message.ENDPOINT_ADDRESS);
             if (conduitConfigurer instanceof ConduitConfigurer) {
 
-                Tr.info(tc, "@TJJ conduitConfigurer is instance of " +  conduitConfigurer);
+
                 String portQNameStr = getPortQName(message).toString();
                 try {
                    conduitConfigurer.updated(portQNameStr, configProps.getProperties());
                     conduitConfigurer.configure(portQNameStr, address, httpConduit);
-                    Tr.info(tc, "@TJJ httpConduit has been configured with configProps " + httpConduit.getConduitName() + " conduit Instance: " + httpConduit + " configProps " + configProps.getProperties());
                 } catch (ConfigurationException e) {
                     throw new Fault(e);
                 }
@@ -212,6 +208,7 @@ public class LibertyCustomizeBindingOutInterceptor extends AbstractPhaseIntercep
 
     private QName getPortQName(Message message) {
         Object wsdlPort = message.getExchange().get(Message.WSDL_PORT);
+
         String namespace = "";
         String localName = "";
         if (null != wsdlPort && wsdlPort instanceof QName) {

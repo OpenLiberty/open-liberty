@@ -21,7 +21,6 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -29,7 +28,6 @@ import componenttest.topology.impl.LibertyServer;
  * This Test is to verify the functionality of the <port-component-ref> is working.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
 public class PortComponentRefTest {
 
     @Server("PortComponentRefTestServer")

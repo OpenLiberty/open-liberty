@@ -24,7 +24,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 

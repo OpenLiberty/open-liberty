@@ -16,12 +16,14 @@ Bundle-Name:JAXWS Atomic Transaction Extension
 Bundle-Description: JAXWS Extension for WSAT, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.jaxws.wsat
 
+exportVer=2.2
+
 Private-Package: \
-  com.ibm.ws.wsat.policy
+  com.ibm.ws.wsat.policy;version=${exportVer}
 
 Export-Package: \
- com.ibm.ws.jaxws.wsat, \
- com.ibm.ws.jaxws.wsat.components
+ com.ibm.ws.jaxws.wsat;version=${exportVer},\
+ com.ibm.ws.jaxws.wsat.components;version=${exportVer}
 
 Import-Package: \
    javax.jws,\
@@ -33,6 +35,8 @@ Import-Package: \
    com.ibm.websphere.ras, \
    com.ibm.websphere.ras.annotation, \
    com.ibm.ws.ffdc, \
+   com.ibm.ws.jaxws;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
    *
 
 Service-Component: \

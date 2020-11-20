@@ -27,7 +27,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -82,7 +81,6 @@ public class WsBndEndpointOverrideTest_Lite {
      * - response contains the port welcome message "Hello! This is a CXF Web Service!"
      */
     @Test
-    @SkipForRepeat("jaxws-2.3")
     public void testEJBinWarEndpointAddressOverride() throws Exception {
         String testFilesDir = testFilesRootDir + "/testEJBinWarEndpointAddressOverride";
 

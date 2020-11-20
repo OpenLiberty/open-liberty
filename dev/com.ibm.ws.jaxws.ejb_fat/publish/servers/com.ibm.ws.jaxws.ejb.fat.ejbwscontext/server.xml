@@ -27,6 +27,8 @@
     			</security-role>    				
     		</application-bnd>
     </application>
+    
+    <javaPermission className="java.security.AllPermission"/>
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

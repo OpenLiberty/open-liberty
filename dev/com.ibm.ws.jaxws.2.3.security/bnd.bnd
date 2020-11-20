@@ -15,6 +15,8 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.security
 Bundle-Name: JAX-WS Security
 Bundle-Description: JAX-WS Transport Level and Endpoints Security
 
+exportVer=2.3
+
 Import-Package: \
    com.ibm.ws.jaxws.metadata;version="[2.3,3)", \
    com.ibm.ws.jaxws.metadata.builder;version="[2.3,3)", \
@@ -38,8 +40,8 @@ Service-Component: \
      provide:='com.ibm.ws.jaxws23.webcontainer.JaxWsWebAppConfigurator'; \
      properties:="service.vendor=IBM"
 
-Private-Package: com.ibm.ws.jaxws.security.internal, \
- com.ibm.ws.jaxws.security.internal.resources
+Private-Package: com.ibm.ws.jaxws.security.internal;version=${exportVer},\
+ com.ibm.ws.jaxws.security.internal.resources;version=${exportVer}
 
 instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 

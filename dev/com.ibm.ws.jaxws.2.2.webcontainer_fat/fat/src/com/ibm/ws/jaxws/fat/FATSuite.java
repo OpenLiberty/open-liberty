@@ -18,6 +18,9 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
+/*
+ * TODO: Lite Mode
+ */
 @RunWith(Suite.class)
 @SuiteClasses({
                 WebServiceInWebXMLTest.class,
@@ -33,9 +36,9 @@ import componenttest.rules.repeater.RepeatTests;
                 CXFJMXSupportTest.class,
                 WebServiceMonitorTest.class,
                 HttpConduitPropertiesTest.class,
-                //HttpConduitPropertiesTest23.class,
+                HttpConduitPropertiesTest23.class,
                 EJBServiceRefBndTest.class,
-                //EJBServiceRefBndTest23.class,
+                EJBServiceRefBndTest23.class,
                 PortComponentRefTest.class,
                 EndpointPropertiesTest.class,
                 BindingTypeWsdlMismatchTest.class,

@@ -20,14 +20,12 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Test the binding type is align with the wsdl file if specified.
  */
 @RunWith(FATRunner.class)
-
 public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lite {
 
     /**

@@ -1,14 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package com.ibm.ws.jaxws.client;
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package com.ibm.ws.jaxws;
 
 
 import java.util.Dictionary;
@@ -35,13 +43,21 @@ import org.apache.cxf.transports.http.configuration.ConnectionType;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Applies configuration properties to a HTTPConduit
+ * Lifted from org.apache.cxf.transport.http.osgi.HttpConduitConfigApplier
  */
 public class JaxwsHttpConduitConfigApplier {
+    
+ // Liberty Code Change
+    private static final TraceComponent tc = Tr.register(JaxwsHttpConduitConfigApplier.class);
     private static final String SECURE_HTTP_PREFIX = "https";
 
     public JaxwsHttpConduitConfigApplier() {
+        
     }
 
     public void apply(Dictionary<String, String> d, HTTPConduit c, String address) {
@@ -55,6 +71,7 @@ public class JaxwsHttpConduitConfigApplier {
     }
 
     private void applyTlsClientParameters(Dictionary<String, String> d, HTTPConduit c) {
+
         Enumeration<String> keys = d.keys();
         TLSClientParameters p = c.getTlsClientParameters();
         SecureRandomParameters srp = null;
@@ -144,6 +161,7 @@ public class JaxwsHttpConduitConfigApplier {
     }
 
     private void parseCertConstaints(TLSClientParameters p, String k, String v) {
+
         k = k.substring("certConstraints.".length());
         CertificateConstraintsType cct = p.getCertConstraints();
         if (cct == null) {
@@ -176,6 +194,7 @@ public class JaxwsHttpConduitConfigApplier {
     }
 
     private KeyManagersType getKeyManagers(KeyManagersType keyManagers, String k, String v) {
+ 
         if (keyManagers == null) {
             keyManagers = new KeyManagersType();
         }

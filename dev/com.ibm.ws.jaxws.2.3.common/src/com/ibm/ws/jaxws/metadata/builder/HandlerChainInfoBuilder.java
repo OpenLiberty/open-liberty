@@ -180,13 +180,13 @@ public class HandlerChainInfoBuilder {
                 throw new WebServiceException(Tr.formatMessage(tc, "error.no.handlerChainFile.found", fileName));
             }
 
-            // @TJJ Change from XMLUtil.parse to StaxUtils.read
+            // Change from XMLUtil.parse to StaxUtils.read
             Document doc = StaxUtils.read(handlerFileURL.openStream());
             Element el = doc.getDocumentElement();
             if (!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI())
                 || !"handler-chains".equals(el.getLocalName())) {
 
-                // @TJJ Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
                 String xml = StaxUtils.toString(el);
                 throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
             }
@@ -198,7 +198,7 @@ public class HandlerChainInfoBuilder {
                     if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")
                         || !el.getLocalName().equals("handler-chain")) {
 
-                        // @TJJ Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                        // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
                         String xml = StaxUtils.toString(el);
                         throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                     }
@@ -224,7 +224,7 @@ public class HandlerChainInfoBuilder {
             if (cur instanceof Element) {
                 el = (Element) cur;
                 if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
-                    // @TJJ Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
+                    // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
                     String xml = StaxUtils.toString(el);
                     throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
                 }

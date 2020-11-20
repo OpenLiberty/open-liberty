@@ -16,7 +16,6 @@ import javax.xml.ws.Binding;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
-import org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean;
 import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
@@ -86,7 +85,7 @@ public class POJOJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
 
         Invoker jaxWsMethodInvoker = new POJOJAXWSMethodInvoker(implementor);
 
-        JaxWsServiceFactoryBean serviceFactory = new LibertyJaxWsServiceFactoryBean(implInfo, publisherContext);
+        LibertyJaxWsServiceFactoryBean serviceFactory = new LibertyJaxWsServiceFactoryBean(implInfo, publisherContext);
 
         LibertyJaxWsServerFactoryBean jaxWsServerFactory = new LibertyJaxWsServerFactoryBean(serviceFactory);
 

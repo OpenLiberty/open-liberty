@@ -29,6 +29,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
@@ -41,7 +42,7 @@ import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
  * as in EJB based Web Services, the EJB invocation context is built very earlier in one intercepter, which may cause issue for those methods requiring
  * Web Component Context MetaData
  */
-public class JaxWsHttpServletRequestAdapter implements HttpServletRequest {
+public class JaxWsHttpServletRequestAdapter extends HttpServletRequestWrapper implements HttpServletRequest {
 
     private final IWebAppNameSpaceCollaborator collaborator;
 
@@ -53,6 +54,7 @@ public class JaxWsHttpServletRequestAdapter implements HttpServletRequest {
      * @param request
      */
     public JaxWsHttpServletRequestAdapter(HttpServletRequest request, IWebAppNameSpaceCollaborator collaborator, ComponentMetaData componentMetaData) {
+        super(request);
         this.collaborator = collaborator;
         this.componentMetaData = componentMetaData;
         this.request = request;
