@@ -23,7 +23,6 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,6 +32,8 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -41,6 +42,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
@@ -53,11 +55,11 @@ import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;
 import batch.fat.util.BatchFatUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
+
 
 @RunWith(FATRunner.class)
 public class BatchJobOperatorApiWithAppSecurityTest {
@@ -112,11 +114,17 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     public static void beforeClass() throws Exception {
 
         HttpUtils.trustAllCertificates();
-        
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        }
+
+        BatchFatUtils.addDropinsBonusPayoutEar(server);
+
+        //BatchFatUtils.addDropinsWebApp(server, "batchSecurity.war", "batch.fat.artifacts", "batch.security");
+        //BatchFatUtils.addDropinsWebApp(server, "DbServletApp.war", "batch.fat.web", "batch.fat.common.util");
+        BatchFatUtils.addDropinsBatchSecurityWar(server);
+        BatchFatUtils.addDropinsDbServletAppWar(server);
+
+        // TODO: Remove. Following line is obviated by addDropinsWebApp()
+        //JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+        //JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
 
         server.startServer();
 
@@ -129,6 +137,7 @@ public class BatchJobOperatorApiWithAppSecurityTest {
         JsonObject jobExec = waitForFirstJobExecution(jobinstance1);
         jobexecution1 = jobExec.getJsonNumber("executionId").longValue();
     }
+
 
     @AfterClass
     public static void afterClass() throws Exception {

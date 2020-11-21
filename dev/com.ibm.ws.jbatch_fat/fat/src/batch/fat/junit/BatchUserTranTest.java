@@ -3,7 +3,6 @@ package batch.fat.junit;
 import static org.junit.Assert.assertEquals;
 
 import java.net.HttpURLConnection;
-import java.nio.file.Paths;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -13,21 +12,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import batch.fat.util.BatchFatUtils;
-import batch.fat.util.JobServletClient;
-
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.FatUtils;
 
+import batch.fat.util.BatchFatUtils;
+import batch.fat.util.JobServletClient;
+import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * 
+ *
  * Test JobOperator API under existing UserTransaction.
- * 
+ *
  */
 @RunWith(FATRunner.class)
 public class BatchUserTranTest {
@@ -41,13 +38,26 @@ public class BatchUserTranTest {
     public static void setup() throws Exception {
 
         FatUtils.checkJava7();
-        
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        }
 
-        // Start server 
+        BatchFatUtils.addDropinsBatchFatWar(server);
+        BatchFatUtils.addDropinsBatchSecurityWar(server);
+        BatchFatUtils.addDropinsDbServletAppWar(server);
+
+//        BatchFatUtils.addDropinsWebApp(server, "batchFAT.war",
+//                                       "batch.fat.util",
+//                                       "batch.fat.artifacts", "batch.fat.cdi", "batch.fat.common", "batch.fat.web", "batch.fat.web.customlogic",
+//                                       "chunktests.artifacts",
+//                                       "processitem.artifacts");
+//        BatchFatUtils.addDropinsWebApp(server, "batchSecurity.war", "batch.fat.artifacts", "batch.security", "batch.fat.util");
+//        BatchFatUtils.addDropinsWebApp(server, "DbServletApp.war", "batch.fat.web", "batch.fat.common.util");
+
+        // TODO: Remove.  Obviated by addDropingsWebApp
+        //if (JakartaEE9Action.isActive()) {
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        //}
+
+        // Start server
         server.startServer("BatchUserTranTest.log");
         FatUtils.waitForSmarterPlanet(server);
     }
@@ -63,7 +73,7 @@ public class BatchUserTranTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testJobOperatorApiUnderUserTran() throws Exception {
@@ -86,7 +96,7 @@ public class BatchUserTranTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testStartUnderUserTran() throws Exception {

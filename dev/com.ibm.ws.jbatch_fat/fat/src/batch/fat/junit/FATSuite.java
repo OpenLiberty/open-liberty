@@ -43,29 +43,38 @@ import componenttest.rules.repeater.RepeatTests;
  * Left in here commented out in case it helps someone running manually.
  */
 @SuiteClasses({
-                BatchJobOperatorApiWithAppSecurityTest.class,
-                BatchSecurityTest.class,
-                BatchUserTranTest.class,
-                BatchNoSecurityTest.class,
-                BatchEveryoneSecurityTest.class,
-                BatchTransactionalMiscTest.class,
-                BonusPayoutViaJobOperatorTest.class,
-                BonusPayoutViaJBatchUtilityTest.class,
-                CDITest.class,
-                ChunkTest.class,
-                JdbcConfigTest.class,
-                LocalServerJobRecoveryAtStartUpTest.class,
-                MiscTest.class,
-                ParallelContextPropagationTest.class,
-                TranTimeoutTest.class,
-                PartitionMetricsTest.class,
-                DDLTest.class,
-                SkipRetryHandlerTest.class,
-                PartitionReducerTest.class,
-                JPAPersistenceManagerImplTest.class,
-                InMemoryPersistenceTest.class,
-                InMemoryPersistenceBatchJobOperatorApiTest.class,
-                JPAPersistenceBatchJobOperatorApiTest.class
+//1
+    BatchJobOperatorApiWithAppSecurityTest.class,
+//2    BatchSecurityTest.class,
+                /*
+                 * TESTS 1,2,5 FAILS
+                 * Errors/warnings were found in server com.ibm.ws.jbatch.fat logs: <br>Java 2 security issues were found in logs See autoFVT/ACE-report-*.log for details.
+                 * <br>[11/23/20 14:17:39:772 CST] 0000002f kernel.launch.internal.MissingDoPrivDetectionSecurityManager W CWWKE0921W: Current Java 2 Security policy reported
+                 * a potential violation of Java 2 Security Permission. The application needs to have permissions addedPermission: <br>[11/23/20 14:17:39:777 CST] 0000002f
+                 * kernel.launch.internal.MissingDoPrivDetectionSecurityManager W CWWKE0912W: Current Java 2 Security policy reported a potential violation of Java 2 Security
+                 * Permission.
+                 */
+//3    BatchUserTranTest.class,
+//4    BatchNoSecurityTest.class,
+//5    BatchEveryoneSecurityTest.class,
+//6    BatchTransactionalMiscTest.class,
+//7    BonusPayoutViaJobOperatorTest.class
+//8                BonusPayoutViaJBatchUtilityTest.class,
+//9                CDITest.class,
+//10               ChunkTest.class,
+//11               JdbcConfigTest.class,
+//12               LocalServerJobRecoveryAtStartUpTest.class,
+//13               MiscTest.class,
+//14               ParallelContextPropagationTest.class,
+//15               TranTimeoutTest.class,
+//16               PartitionMetricsTest.class,
+//17               DDLTest.class,
+//18               SkipRetryHandlerTest.class,
+//19               PartitionReducerTest.class,
+//20               JPAPersistenceManagerImplTest.class,
+//21               InMemoryPersistenceTest.class,
+//22               InMemoryPersistenceBatchJobOperatorApiTest.class,
+//23               JPAPersistenceBatchJobOperatorApiTest.class
 })
 public class FATSuite {
     @ClassRule

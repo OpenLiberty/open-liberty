@@ -27,6 +27,7 @@ import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.common.util.RepeatTestRule;
 import batch.fat.util.BatchFATHelper;
+import batch.fat.util.BatchFatUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -118,12 +119,25 @@ public class BonusPayoutViaJobOperatorTest extends BatchFATHelper {
     public static void setup() throws Exception {
 
         BatchFATHelper.setConfig("BonusPayoutViaJobOperator/server.xml", testClass);
-        
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "BonusPayout.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        }
+
+        BatchFatUtils.addDropinsWebApp(server, "batchFAT.war",
+                                       "batch.fat.util",
+                                       "batch.fat.artifacts", "batch.fat.cdi", "batch.fat.common", "batch.fat.web", "batch.fat.web.customlogic",
+                                       "chunktests.artifacts",
+                                       "processitem.artifacts");
+        BatchFatUtils.addDropinsWebApp(server, "BonusPayout.war", 
+                                       "com.ibm.websphere.samples.batch.artifacts",
+                                       "com.ibm.websphere.samples.batch.beans",
+                                       "com.ibm.websphere.samples.batch.fat",
+                                       "com.ibm.websphere.samples.batch.util",
+                                       "batch.fat.common.util");
+        BatchFatUtils.addDropinsWebApp(server, "DbServletApp.war", "batch.fat.web", "batch.fat.common.util");
+        // TODO: Remove.  Obviated by addDropinsWebApp above
+        //if (JakartaEE9Action.isActive()) {
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "BonusPayout.war"));
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        //}
 
         BatchFATHelper.startServer(server, testClass);
 

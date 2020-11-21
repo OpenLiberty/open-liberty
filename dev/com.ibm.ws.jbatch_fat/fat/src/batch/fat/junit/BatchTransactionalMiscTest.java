@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
+import batch.fat.util.BatchFatUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,10 +43,17 @@ public class BatchTransactionalMiscTest extends BatchFATHelper {
     @BeforeClass
     public static void setup() throws Exception {
 
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        }
+        BatchFatUtils.addDropinsWebApp(server, "batchFAT.war",
+                                       "batch.fat.util",
+                                       "batch.fat.artifacts", "batch.fat.cdi", "batch.fat.common", "batch.fat.web", "batch.fat.web.customlogic",
+                                       "chunktests.artifacts",
+                                       "processitem.artifacts");
+        BatchFatUtils.addDropinsWebApp(server, "DbServletApp.war", "batch.fat.web", "batch.fat.common.util");
+        // TODO: Remove.  Obviated by addDropinsWebApp above
+        //if (JakartaEE9Action.isActive()) {
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchFAT.war"));
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        //}
         BatchFATHelper.setConfig("BatchTransactionalMiscTests/server.xml", testClass);
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);

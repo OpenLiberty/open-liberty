@@ -16,11 +16,15 @@ src: \
 	test-applications/batchFAT.war/src,\
 	test-applications/batchFAT.war/resources,\
 	test-applications/batchSecurity.war/src,\
-	test-applications/batchSecurity.war/resources
+	test-applications/batchSecurity.war/resources,\
+	test-applications/dbServletApp.war,\
+	test-applications/dbServletApp.war/resources,\
+	test-applications/BonusPayout.war,\
+	test-applications/BonusPayout.war/resources,\
+	test-applications/src
 
 fat.project: true
 
-# Not 100% sure what this means, just put it in to have the test pass.
 tested.features: \
     batch-2.0,\
     batchmanagement-2.0,\
@@ -34,7 +38,7 @@ tested.features: \
     jsonp-2.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
 	com.ibm.websphere.javaee.batch.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
@@ -48,7 +52,7 @@ tested.features: \
 	com.ibm.ws.jbatch.test.dbservlet;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	org.osgi.annotation.versioning;version=latest
-	
+
 -testpath: \
 	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.jbatch.test.dbservlet;version=latest	

@@ -45,11 +45,15 @@ public class BatchEveryoneSecurityTest {
 
         FatUtils.checkJava7();
 
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
-            JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        }
-        
+        BatchFatUtils.addDropinsWebApp(server, "batchSecurity.war", "batch.fat.artifacts", "batch.security", "batch.fat.util");
+        BatchFatUtils.addDropinsWebApp(server, "DbServletApp.war", "batch.fat.web", "batch.fat.common.util");
+
+        // TODO: Remove.  Obviated by addDropinsWebApp above
+        //if (JakartaEE9Action.isActive()) {
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
+        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
+        //}
+
         // Start server 
         server.startServer("BatchSecurityTest.log");
         FatUtils.waitForSmarterPlanet(server);

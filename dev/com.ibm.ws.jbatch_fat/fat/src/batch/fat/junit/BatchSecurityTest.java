@@ -14,12 +14,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
 import batch.fat.util.BatchFatUtils;
 import batch.fat.util.JobServletClient;
+import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -34,7 +34,7 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
  */
 @RunWith(FATRunner.class)
 public class BatchSecurityTest {
-    
+
     private static final Class testClass = BatchSecurityTest.class;
 
     protected static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.fat");
@@ -48,6 +48,8 @@ public class BatchSecurityTest {
         log("setup", "start server and execute DDLs");
 
         FatUtils.checkJava7();
+
+        BatchFatUtils.addDropinsBatchSecurityWar(server);
 
         // Start server
         BatchFATHelper.setConfig("BatchSecurity/server.xml", testClass);
