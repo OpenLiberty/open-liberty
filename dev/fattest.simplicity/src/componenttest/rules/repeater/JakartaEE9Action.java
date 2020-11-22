@@ -75,7 +75,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "enterpriseBeansRemote-4.0",
                                                  "enterpriseBeansTest-2.0",
                                                  "mail-2.0",
-                                                 "jaxb-3.0",
                                                  "persistence-3.0",
                                                  "persistenceContainer-3.0",
                                                  "jsonp-2.0",
@@ -94,7 +93,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "restfulWS-3.0",
                                                  "restfulWSClient-3.0",
                                                  "servlet-5.0",
-                                                 "websocket-2.0"
+                                                 "websocket-2.0",
+                                                 "xmlBinding-3.0",
+                                                 "xmlWS-3.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));

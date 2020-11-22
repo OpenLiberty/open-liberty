@@ -144,7 +144,7 @@ jakarta.interceptor:jakarta.interceptor-api:2.0.0-RC2
 jakarta.jms:jakarta.jms-api:3.0.0
 jakarta.json.bind:jakarta.json.bind-api:2.0.0
 jakarta.json:jakarta.json-api:2.0.0
-jakarta.jws:jakarta.jws-api:3.0.0-RC2
+jakarta.jws:jakarta.jws-api:3.0.0
 jakarta.mail:jakarta.mail-api:2.0.0-RC6
 jakarta.persistence:jakarta.persistence-api:3.0.0
 jakarta.resource:jakarta.resource-api:2.0.0-RC2
@@ -157,9 +157,9 @@ jakarta.transaction:jakarta.transaction-api:2.0.0
 jakarta.validation:jakarta.validation-api:3.0.0
 jakarta.websocket:jakarta.websocket-api:2.0.0-RC1
 jakarta.ws.rs:jakarta.ws.rs-api:3.0.0
-jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3
-jakarta.xml.soap:jakarta.xml.soap-api:2.0.0-RC3
-jakarta.xml.ws:jakarta.xml.ws-api:3.0.0-RC3
+jakarta.xml.bind:jakarta.xml.bind-api:3.0.0
+jakarta.xml.soap:jakarta.xml.soap-api:2.0.0
+jakarta.xml.ws:jakarta.xml.ws-api:3.0.0
 javax.cache:cache-api:1.1.0
 javax.ejb:javax.ejb-api:3.2
 javax.faces:javax.faces-api:2.3

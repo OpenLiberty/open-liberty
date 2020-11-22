@@ -64,7 +64,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
         featureNameMapping.put("javaMail", "mail");
         featureNameMapping.put("jaxrs", "restfulWS");
+        featureNameMapping.put("jaxb", "xmlBinding");
         featureNameMapping.put("jaxrsClient", "restfulWSClient");
+        featureNameMapping.put("jaxws", "xmlWS");
         featureNameMapping.put("jca", "connectors");
         featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
         featureNameMapping.put("jpa", "persistence");

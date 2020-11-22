@@ -19,7 +19,7 @@ tested.features: \
  faces-3.0, \
  pages-3.0,\
  beanvalidation-3.0,\
- jaxb-3.0,\
+ xmlBinding-3.0,\
  jpacontainer-3.0,\
  persistence-3.0
 

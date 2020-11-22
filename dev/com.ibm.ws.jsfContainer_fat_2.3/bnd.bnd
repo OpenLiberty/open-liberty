@@ -17,7 +17,7 @@ tested.features: \
   enterprisebeanslite-4.0, \
   facesContainer-3.0, \
   cdi-3.0, \
-  jaxb-3.0, \
+  xmlBinding-3.0, \
   concurrent-2.0, \
   persistenceContainer-3.0, \
   beanvalidation-3.0, \
