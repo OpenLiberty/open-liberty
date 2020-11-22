@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.grpc.1.0.internal.client.security
 kind=ga
-edition=full
+edition=core
 WLP-Activation-Type: parallel
