@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Fixes are only applied to the forwards development branch and therefore available in a future version of Open Liberty.
+Fixes are only applied to the forward development branch (`master`) and therefore only available in a future version of Open Liberty.
 
 ## Reporting a Vulnerability
 
