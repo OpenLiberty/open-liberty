@@ -64,4 +64,7 @@ OPENAPI_APPLICATION_PROCESSED.useraction=No action is required.
 OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: An error occured when processing application {0} and an OpenAPI document was not produced.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A runtime error occured when processing the application.
 OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Gather logs and contact IBM service.
-  
+
+OPENAPI_CACHE_WRITE_ERROR=CWWKO1662W: An unexpected error occurred while writing the OpenAPI cache for application {0}. The error is {1}
+OPENAPI_CACHE_WRITE_ERROR.explanation=A runtime error occurred while caching the OpenAPI model for the application.
+OPENAPI_CACHE_WRITE_ERROR.useraction=Review the FFDC logs and exception text to identify the problem.

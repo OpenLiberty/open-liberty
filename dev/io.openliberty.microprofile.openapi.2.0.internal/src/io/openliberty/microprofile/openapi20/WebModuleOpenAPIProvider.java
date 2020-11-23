@@ -3,17 +3,26 @@ package io.openliberty.microprofile.openapi20;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Paths;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 
+import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIUtils;
 import io.smallrye.openapi.runtime.io.Format;
 
 public class WebModuleOpenAPIProvider implements OpenAPIProvider {
+    
+    private static final TraceComponent tc = Tr.register(WebModuleOpenAPIProvider.class);
 
     // The WebModuleInfo for the application/module that the OpenAPI model was generated from
     private final WebModuleInfo webModuleInfo;
@@ -26,6 +35,9 @@ public class WebModuleOpenAPIProvider implements OpenAPIProvider {
     
     // Cache of OpenAPI documents to return when server injection is not required
     private Map<Format, String> openAPIDocuments = new HashMap<>();
+    
+    // Future which indicates when any async processing of the model has been completed
+    private Future<Void> asyncProcessingFuture;
 
     /**
      * Constructor
@@ -36,11 +48,14 @@ public class WebModuleOpenAPIProvider implements OpenAPIProvider {
      *          The OpenAPI model itself
      * @param serversDefined
      *          Flag that indicates whether the model defined any servers at the point it was generated
+     * @param asyncProcessingFuture
+     *          Future which indicates when any async processing of the model has been completed
      */
-    public WebModuleOpenAPIProvider(final WebModuleInfo webModuleInfo, final OpenAPI openAPIModel, final boolean serversDefined) {
+    public WebModuleOpenAPIProvider(final WebModuleInfo webModuleInfo, final OpenAPI openAPIModel, final boolean serversDefined, final Future<Void> asyncProcessingFuture) {
         this.webModuleInfo = webModuleInfo;
         this.openAPIModel = openAPIModel;
         this.serversDefined = serversDefined;
+        this.asyncProcessingFuture = asyncProcessingFuture;
 
         /*
          * If the model that has been generated already contains server definitions, we will trust that the user knows
@@ -143,5 +158,15 @@ public class WebModuleOpenAPIProvider implements OpenAPIProvider {
     @Override
     public boolean getServersDefined() {
         return serversDefined;
+    }
+
+    @Override
+    public void waitForBackgroundTasks() {
+        try {
+            // Note: this will be called before app shutdown so we don't want to wait too long
+            asyncProcessingFuture.get(10, TimeUnit.SECONDS);
+        } catch (TimeoutException | ExecutionException | InterruptedException e) {
+            Tr.warning(tc, MessageConstants.OPENAPI_CACHE_WRITE_ERROR, webModuleInfo.getApplicationInfo().getDeploymentName(), e.toString());
+        }
     }
 }

@@ -14,6 +14,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -31,14 +37,30 @@ import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
  *       deployed that contains multiple web modules, an OpenAPI document will only be generated for the first Web
  *       Module that generates an OpenAPI document.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationRegistry.class)
 public class ApplicationRegistry {
 
     private static final TraceComponent tc = Tr.register(ApplicationRegistry.class);
     
-    private static final ApplicationRegistry INSTANCE = new ApplicationRegistry();
+    private static ApplicationRegistry INSTANCE;
     private Map<String, ApplicationInfo> applications = Collections.synchronizedMap(new HashMap<>());
     private ApplicationInfo currentApp = null;
     private OpenAPIProvider currentProvider = null;
+    
+    @Reference
+    protected ApplicationProcessor applicationProcessor;
+    
+    @Activate
+    protected void activate() {
+        INSTANCE = this;
+    }
+    
+    @Deactivate
+    protected void deactivate() {
+        if (INSTANCE == this) {
+            INSTANCE = null;
+        }
+    }
 
     /**
      * The getInstance method returns the singleton instance of the ApplicationRegistry
@@ -93,6 +115,9 @@ public class ApplicationRegistry {
         // Check to see if the application being remove is the currentApp
         if (currentApp != null && currentApp.getName().equals(removedAppInfo.getName())) {
             
+            // Current app is being removed, ensure it has finished writing its cache entry
+            currentProvider.waitForBackgroundTasks();
+            
             // The currentApp is being removed... see if any of the other applications implement a JAX-RS REST API
             currentApp = null;
             currentProvider = null;
@@ -132,14 +157,11 @@ public class ApplicationRegistry {
     private void processApplication(ApplicationInfo appInfo) {
         // Only scan the application if we do not have a current application
         if (currentApp == null) {
-            currentProvider = ApplicationProcessor.processApplication(appInfo);
+            currentProvider = applicationProcessor.processApplication(appInfo);
             if (currentProvider != null) {
                 currentApp = appInfo;
             }
         }
     }
 
-    private ApplicationRegistry() {
-        // This class is not meant to be instantiated.
-    }
 }

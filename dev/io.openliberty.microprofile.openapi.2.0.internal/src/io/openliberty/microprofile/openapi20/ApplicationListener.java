@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi20;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -29,6 +30,9 @@ import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
 public class ApplicationListener implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(ApplicationListener.class);
+    
+    @Reference
+    private ApplicationRegistry applicationRegistry;
 
     /** {@inheritDoc} */
     @Override
@@ -38,7 +42,7 @@ public class ApplicationListener implements ApplicationStateListener {
                 Tr.event(tc, "Application starting process started: " + appInfo);
             }
             
-            ApplicationRegistry.getInstance().addApplication(appInfo);
+            applicationRegistry.addApplication(appInfo);
             
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application starting process ended: " + appInfo);
@@ -58,7 +62,7 @@ public class ApplicationListener implements ApplicationStateListener {
     @Override
     public void applicationStopping(ApplicationInfo appInfo) {
         try {
-            ApplicationRegistry.getInstance().removeApplication(appInfo);
+            applicationRegistry.removeApplication(appInfo);
         } catch (Throwable e) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to remove application: " + e.getMessage());
