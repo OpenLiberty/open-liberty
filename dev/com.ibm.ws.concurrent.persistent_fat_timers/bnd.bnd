@@ -35,7 +35,7 @@ fat.test.databases: true
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	org.slf4j:slf4j-api;version=1.7.7,\
-	org.testcontainers:database-commons;version=1.14.0,\
-	org.testcontainers:jdbc;version=1.14.0,\
-	org.testcontainers:testcontainers;version=1.14.0
+	org.testcontainers:database-commons;version=1.15.0,\
+	org.testcontainers:jdbc;version=1.15.0,\
+	org.testcontainers:testcontainers;version=1.15.0
 	
