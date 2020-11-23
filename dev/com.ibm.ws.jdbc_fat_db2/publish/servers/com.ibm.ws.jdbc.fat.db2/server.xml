@@ -3,6 +3,7 @@
     <feature>componenttest-1.0</feature>
     <feature>jdbc-4.2</feature>
     <feature>servlet-3.1</feature>
+    <feature>ssl-1.0</feature>
   </featureManager>
     
   <include location="../fatTestPorts.xml"/>
@@ -14,6 +15,8 @@
   <library id="DB2Lib">
     <fileset dir="${shared.resource.dir}/db2"/>
   </library>
+  
+  <keyStore id="defaultKeyStore" location="security/db2-keystore.p12" password="db2test" />
     
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DB2Lib"/>
@@ -31,6 +34,14 @@
       user="${DB2_USER}" password="${DB2_PASS}"
       affinityFailbackInterval="1h20m30s" allowNullResultSetForExecuteQuery="1"
       commandTimeout="2m30s" connectionTimeout="90s" memberConnectTimeout="100000ms"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/db2-secure">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc
+      databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT_SECURE}"
+      user="${DB2_USER}" password="${DB2_PASS}"
+      sslConnection="true"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-using-driver">
