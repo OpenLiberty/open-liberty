@@ -22,8 +22,9 @@ import javax.net.SocketFactory;
 
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
 import org.testcontainers.dockerclient.InvalidConfigurationException;
+import org.testcontainers.dockerclient.TransportConfig;
+import org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig;
 
-import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -51,6 +52,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private static final String USE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
     private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker") || USE_DOCKER_HOST != null;
 
+    private DefaultDockerClientConfig config;
+    private TransportConfig transportConfig;
+
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      * It is not necessary to call this method whenever Testcontainers is used, but if you want to be able to
@@ -75,19 +79,27 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     }
 
     @Override
-    public void test() throws InvalidConfigurationException {
+    public TransportConfig getTransportConfig() throws InvalidConfigurationException {
+        if (transportConfig != null)
+            return transportConfig;
+
+        ExternalTestService svc = null;
         try {
-            ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
+            svc = ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
         } catch (Exception e) {
             Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
+        return transportConfig = TransportConfig.builder()
+                        .dockerHost(config.getDockerHost())
+                        .sslConfig(config.getSSLConfig())
+                        .build();
     }
 
     private class AvailableDockerHostFilter implements ExternalTestServiceFilter {
         @Override
         public boolean isMatched(ExternalTestService dockerService) {
-            String m = "tryDockerHost";
+            String m = "isMatched";
             String dockerHostURL = "tcp://" + dockerService.getAddress() + ":" + dockerService.getPort();
             Log.info(c, m, "Checking if Docker host " + dockerHostURL + " is available and healthy...");
 
@@ -132,8 +144,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         public void test() throws InvalidConfigurationException {
             final String m = "test";
             final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
-            config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
-            client = getClientForConfig(config);
+
+            config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                            .withRegistryUsername(null)
+                            .withDockerHost(System.getProperty("DOCKER_HOST"))
+                            .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY"))
+                            .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH"))
+                            .build();
+
             Throwable firstIssue = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
@@ -144,11 +162,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     String resp = new HttpsRequest(dockerHost + "/_ping")
                                     .sslSocketFactory(sslSf)
                                     .run(String.class);
-                    // Using the Testcontainers API directly causes intermittent failures with ping
-                    // Instead of using their mechanism, attempt to use a manually constructed ping
-                    // try (PingCmd ping = client.pingCmd()) {
-                    //     ping.exec();
-                    // }
                     Log.info(c, m, "  Ping successful. Response: " + resp);
                     return;
                 } catch (Throwable t) {
