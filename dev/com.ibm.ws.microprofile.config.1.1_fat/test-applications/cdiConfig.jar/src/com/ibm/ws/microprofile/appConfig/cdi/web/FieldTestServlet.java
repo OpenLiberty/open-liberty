@@ -16,9 +16,9 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.cdi.beans.RequestScopedConfigFieldInjectionBean;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig20EE8;
 
 import componenttest.annotation.SkipForRepeat;
+import componenttest.rules.repeater.MicroProfileActions;
 
 @SuppressWarnings("serial")
 @WebServlet("/field")
@@ -79,7 +79,7 @@ public class FieldTestServlet extends AbstractBeanServlet {
     }
 
     @Test
-    @SkipForRepeat(RepeatConfig20EE8.ID) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
+    @SkipForRepeat(MicroProfileActions.MP40_ID) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
     public void testNullWithDefault() throws Exception {
         test("NULL_WITH_DEFAULT_KEY", "null");
     }

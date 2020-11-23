@@ -55,6 +55,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -88,7 +89,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(RepeatFaultTolerance.MP40_FEATURES_ID)
+                    .forAllRepeatsExcept(MicroProfileActions.MP40_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -180,7 +181,7 @@ public class FaultToleranceMainTest extends FATServletClient {
         assertThat("Number of successes", successes, hasSize(2));
         assertThat("Number of failures", failures, hasSize(1));
 
-        if (RepeatTestFilter.isRepeatActionActive(RepeatFaultTolerance.MP20_FEATURES_ID)) {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP20_ID)) {
             // Check for the correct message for FT 1.x
             assertThat("Failure message should have correct code", failures.get(0).value, containsString("CWMFT0001E"));
             // Ensure that the message substitution has happened
@@ -203,7 +204,7 @@ public class FaultToleranceMainTest extends FATServletClient {
         }
     }
 
-    @SkipForRepeat(RepeatFaultTolerance.MP40_FEATURES_ID) // FT 3.0 does not close executors until the application shuts down
+    @SkipForRepeat(MicroProfileActions.MP40_ID) // FT 3.0 does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 

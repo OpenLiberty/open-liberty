@@ -26,8 +26,6 @@ import com.ibm.ws.microprofile.appConfig.cdi.libertyTests.LibertyFieldTestServle
 import com.ibm.ws.microprofile.appConfig.classLoaders.test.libertyTests.LibertyClassLoadersTestServlet;
 import com.ibm.ws.microprofile.appConfig.converters.test.libertyTests.LibertyConvertersTestServlet;
 import com.ibm.ws.microprofile.appConfig.defaultSources.tests.libertyTests.LibertyDefaultSourcesTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -36,6 +34,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -59,7 +58,7 @@ public class LibertySpecificConfigTests extends FATServletClient {
     public static final String DEFAULT_SOURCES_APP_NAME = "defaultSources";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("CDILibertyConfigServer", Version.CONFIG11_EE7, Version.CONFIG14_EE8); // Don't repeat for mpConfig > 1.4
+    public static RepeatTests r = MicroProfileActions.repeat("CDILibertyConfigServer", MicroProfileActions.MP12, MicroProfileActions.MP33); // Don't repeat for mpConfig > 1.4
 
     @Server(SERVER_NAME)
     @TestServlets({

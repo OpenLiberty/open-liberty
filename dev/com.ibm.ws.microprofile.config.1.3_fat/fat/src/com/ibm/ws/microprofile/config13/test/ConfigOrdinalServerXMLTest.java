@@ -16,13 +16,12 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config13.configOrdinalServerXMLWebApp.web.ConfigOrdinalServerXMLServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -73,7 +72,7 @@ public class ConfigOrdinalServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat(SERVER, Version.LATEST, Version.CONFIG13_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER, MicroProfileActions.LATEST, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {

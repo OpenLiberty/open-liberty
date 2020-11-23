@@ -24,8 +24,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config14.test.apps.badobserver.BadObserverServlet;
 
 import componenttest.annotation.Server;
@@ -34,6 +32,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,7 +50,7 @@ public class LibertySpecificConfigTests extends FATServletClient {
      * Test covered in io.openliberty.microprofile.config.2.0.internal_fat.
      */
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat(SERVER_NAME, Version.CONFIG14_EE7, Version.CONFIG14_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP33);
 
     @Server(SERVER_NAME)
     @TestServlets({
