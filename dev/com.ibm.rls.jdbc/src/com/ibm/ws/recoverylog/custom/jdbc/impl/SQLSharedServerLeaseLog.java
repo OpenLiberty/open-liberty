@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
+import com.ibm.tx.util.Utils;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
@@ -195,7 +196,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 
                     if (tc.isEventEnabled()) {
                         Tr.event(tc, "Lease Table: read recoveryId: " + recoveryId);
-                        Tr.event(tc, "Lease Table: read leaseTime: " + leaseTime);
+                        Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
                     }
 
                     PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
@@ -325,7 +326,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     long storedLease = lockingRS.getLong(1);
                     String storedLeaseOwner = lockingRS.getString(2);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Acquired lock row, stored lease value is: " + storedLease + ", stored owner is: " + storedLeaseOwner);
+                        Tr.debug(tc, "Acquired lock row, stored lease value is: " + Utils.traceTime(storedLease) + ", stored owner is: " + storedLeaseOwner);
 
                     // If this is startup, check whether lease has expired
                     if (isServerStartup) {
@@ -341,8 +342,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                             if (!storedLeaseOwner.equals(recoveryIdentity)) {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "A peer is recovering, we will fail our recovery and exit");
-                                Object[] errorObject = new Object[] { recoveryIdentity };
-                                RecoveryFailedException rex = new RecoveryFailedException();
+                                RecoveryFailedException rex = new RecoveryFailedException(recoveryIdentity);
                                 throw rex;
                             }
                         }
@@ -363,7 +363,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     updateStmt.setString(2, recoveryGroup);
                     updateStmt.setString(3, recoveryIdentity);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
                     Tr.audit(tc, "WTRN0108I: Update Lease for server with recovery identity " + recoveryIdentity);
 
                     int ret = updateStmt.executeUpdate();
@@ -432,7 +432,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         Tr.audit(tc, "WTRN0108I: Insert New Lease for server with recovery identity " + recoveryIdentity);
         try {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + fir1);
+                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
             specStatement = conn.prepareStatement(insertString);
             specStatement.setString(1, recoveryIdentity);
             specStatement.setString(2, recoveryGroup);
@@ -619,9 +619,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             Tr.entry(tc, "deleteServerLease", new java.lang.Object[] { recoveryIdentity, this });
 
         Connection conn = null;
-        boolean sqlSuccess = false;
-        SQLException currentSqlEx = null;
-
         Statement deleteStmt = null;
 
         try {
@@ -749,7 +746,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 // We found the server row
                 long storedLease = lockingRS.getLong(1);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Acquired server row, stored lease value is: " + storedLease);
+                    Tr.debug(tc, "Acquired server row, stored lease value is: " + Utils.traceTime(storedLease));
 
                 // Has the lease expired?
                 PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, storedLease, _leaseTimeout);
@@ -773,7 +770,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     updateStmt.setLong(1, fir1);
                     updateStmt.setString(2, myRecoveryIdentity);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
                     int ret = updateStmt.executeUpdate();
 
@@ -863,15 +860,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     @Override
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setPeerRecoveryLeaseTimeout", leaseTimeout);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setPeerRecoveryLeaseTimeout", leaseTimeout);
 
         // Store the Lease Timeout
         _leaseTimeout = leaseTimeout;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
-
     }
 
 }

@@ -10,19 +10,12 @@
  *******************************************************************************/
 package com.ibm.tx.util;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
 import javax.transaction.NotSupportedException;
 
 public interface TMService {
     public enum TMStates {
         INACTIVE, RECOVERING, ACTIVE, STOPPING, STOPPED
     };
-
-    public Object runAsSystem(PrivilegedExceptionAction a) throws PrivilegedActionException;
-
-    public Object runAsSystemOrSpecified(PrivilegedExceptionAction a) throws PrivilegedActionException;
 
     public boolean isProviderInstalled(String providerId);
 

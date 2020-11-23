@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.tx.util;
 
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import javax.transaction.NotSupportedException;
@@ -23,14 +21,6 @@ public class TMHelper {
 
     public static void setTMService(TMService tms) {
         s = tms; // check s not null before/after?
-    }
-
-    public static Object runAsSystem(PrivilegedExceptionAction a) throws PrivilegedActionException {
-        return s.runAsSystem(a);
-    }
-
-    public static Object runAsSystemOrSpecified(PrivilegedExceptionAction a) throws PrivilegedActionException {
-        return s.runAsSystemOrSpecified(a);
     }
 
     public static boolean isProviderInstalled(String providerId) {
