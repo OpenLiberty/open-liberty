@@ -100,7 +100,7 @@ org.apache.cxf:cxf-rt-transports-http:3.4.1-20201002
 org.apache.cxf:cxf-rt-ws-mex:2.6.2-ibm-s20180529-1900
 org.apache.cxf:cxf-rt-ws-security:2.6.2-ibm-s20180529-1900
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0
-org.apache.santuario:xmlsec:1.5.2
+org.apache.santuario:xmlsec:1.5.2-ibm
 org.apache.ws.security:wss4j:1.6.7-ibm-s20130913-2015
 org.eclipse.microprofile.config:microprofile-config-api:2.0-ibm20201020
 org.eclipse.microprofile.config:microprofile-config-tck:2.0-ibm20201020

@@ -29,12 +29,6 @@ Import-Package: \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
  *
- 
-Include-Resource: \
- @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/META-INF/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/templates/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/schemas/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/*xml
 
 DynamicImport-Package:
 
