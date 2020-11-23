@@ -73,9 +73,6 @@ dependencies {
        'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
 
   testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
-       "org.testcontainers:database-commons:${testcontainersVersion}", // TODO dont' always depend on JDBC
-       "org.testcontainers:jdbc:${testcontainersVersion}",
-       "org.testcontainers:postgresql:${testcontainersVersion}",
        'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
        'com.github.docker-java:docker-java-api:3.2.5',
        'com.github.docker-java:docker-java-transport:3.2.5',

@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
@@ -31,7 +32,10 @@ import componenttest.topology.utils.SimpleLogConsumer;
 })
 public class FATSuite {
 
-    public static Db2Container db2 = new Db2Container("aguibert/db2-ssl:1.0")
+    static final DockerImageName db2Image = DockerImageName.parse("aguibert/db2-ssl:1.0")
+                    .asCompatibleSubstituteFor("ibmcom/db2");
+
+    public static Db2Container db2 = new Db2Container(db2Image)
                     .acceptLicense()
                     .withUsername("db2inst1") // set in Dockerfile
                     .withPassword("password") // set in Dockerfile

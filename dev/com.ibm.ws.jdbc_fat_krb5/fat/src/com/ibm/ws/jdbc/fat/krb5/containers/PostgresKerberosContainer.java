@@ -27,6 +27,7 @@ import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
@@ -37,6 +38,8 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private static final Path reuseCache = Paths.get("..", "..", "cache", "postgres.properties");
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE = "aguibert/krb5-postgresql:1.0";
+    private static final DockerImageName postgresImage = DockerImageName.parse(IMAGE)
+                    .asCompatibleSubstituteFor("postgres");
 
     public static final int PG_PORT = 5432;
 
@@ -46,7 +49,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
     private final Map<String, String> options = new HashMap<>();
 
     public PostgresKerberosContainer(Network network) {
-        super(IMAGE);
+        super(postgresImage);
         withNetwork(network);
 
         withNetworkAliases("postgresql");
