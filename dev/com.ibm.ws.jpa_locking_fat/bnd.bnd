@@ -18,13 +18,11 @@ src: \
 
 fat.project: true
 fat.test.databases: true
+tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeanslite-4.0, persistence-3.0
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer
-fat.bucket.db.type: Derby
-
-
-tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeanslite-4.0, persistence-3.0
+#fat.bucket.db.type: Derby
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
@@ -35,16 +33,16 @@ tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeansl
     com.ibm.ws.jpa_testframework;version=latest,\
     fattest.databases;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-	com.ibm.websphere.javaee.jms.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest,\
-	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
-	org.testcontainers:database-commons;version=1.14.0,\
-	org.testcontainers:jdbc;version=1.14.0,\
-	org.testcontainers:testcontainers;version=1.14.0,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-	org.slf4j:slf4j-api;version=1.7.7
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.jms.2.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.websphere.javaee.validation.2.0;version=latest,\
+    com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
+    org.testcontainers:database-commons;version=1.14.0,\
+    org.testcontainers:jdbc;version=1.14.0,\
+    org.testcontainers:testcontainers;version=1.14.0,\
+    org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+    org.slf4j:slf4j-api;version=1.7.7
