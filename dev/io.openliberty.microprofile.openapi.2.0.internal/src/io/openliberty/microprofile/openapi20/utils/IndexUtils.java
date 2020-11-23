@@ -74,7 +74,7 @@ public class IndexUtils {
 
                 for (Path file : files) {
                     try {
-                        processFile(file.getFileName().toString(), Files.newInputStream(file), indexer, filter, config);
+                        processFile(containerPath.relativize(file).toString(), Files.newInputStream(file), indexer, filter, config);
                     } catch (IOException e) {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, String.format("Error occurred when processing file %s: %s", file.getFileName().toString(), e.getMessage()));
