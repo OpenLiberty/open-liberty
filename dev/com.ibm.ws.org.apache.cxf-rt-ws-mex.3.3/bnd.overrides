@@ -16,8 +16,9 @@ Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 3.3.7
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-ws-mex.3.3.7
 Bundle-ActivationPolicy: lazy
 
+cxfVersion=3.3.6
 Export-Package: \
- org.apache.cxf.*;
+ org.apache.cxf.*;version=${cxfVersion}
 
 Import-Package: \
  javax.xml.bind.*, \
@@ -25,18 +26,17 @@ Import-Package: \
  !org.springframework.*;resolution:=optional, \
  !org.apache.aries.*, \
  !org.osgi.service.blueprint.*, \
- org.apache.cxf.*, \
+ org.apache.cxf.*;version="[3.3.6,3.3.7)", \
  *
 
 DynamicImport-Package: org.apache.cxf.bus, \
  org.apache.cxf.*
 
 Include-Resource:\
- @build/tmp/lib/cxf-rt-ws-mex-3.3.7.jar!/META-INF/cxf/**, \
- @build/tmp/lib/cxf-rt-ws-mex-3.3.7.jar!/META-INF/DEPENDENCIES, \
- @build/tmp/lib/cxf-rt-ws-mex-3.3.7.jar!/META-INF/LICENSE, \
- @build/tmp/lib/cxf-rt-ws-mex-3.3.7.jar!/META-INF/NOTICE, \
- build/tmp/bnd/cxf-rt-ws-mex-3.3.7
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/cxf/*
 
 
 Archiver-Version:

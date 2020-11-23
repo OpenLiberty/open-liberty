@@ -19,7 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-security.3.3.6
 Bundle-ActivationPolicy: lazy
 
 Export-Package: \
-  org.apache.cxf.rt.security.*
+  org.apache.cxf.rt.security.*;version="3.3.6"
 
 Import-Package:  \
   org.apache.cxf.*; version="[3.2.4,4.0.0)", \

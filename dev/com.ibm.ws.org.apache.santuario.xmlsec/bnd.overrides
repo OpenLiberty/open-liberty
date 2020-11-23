@@ -19,8 +19,8 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: XMLSEC
 
 Export-Package: \
- org.apache.xml.security.*;version=1.5.2,\
- org.apache.jcp.xml.dsig.internal.*;version=1.5.2
+ org.apache.xml.security.*;version="1.5.2",\
+ org.apache.jcp.xml.dsig.internal.*;version="1.5.2"
 
 Import-Package: \
  !sun.security.ec, \
@@ -31,10 +31,10 @@ Import-Package: \
  *
  
 Include-Resource: \
- @${repo;org.apache.santuario:xmlsec;1.5.2}!/META-INF/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2}!/templates/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2}!/schemas/**, \
- @${repo;org.apache.santuario:xmlsec;1.5.2}!/*xml
+ @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/META-INF/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/templates/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/schemas/**, \
+ @${repo;org.apache.santuario:xmlsec;1.5.2;EXACT}!/*xml
 
 DynamicImport-Package:
 

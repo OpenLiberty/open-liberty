@@ -19,7 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-security-saml.3.3.6
 Bundle-ActivationPolicy: lazy
 
 Export-Package: \
-  org.apache.cxf.rt.security.saml.*
+  org.apache.cxf.rt.security.saml.*;version="3.3.6"
 
 Import-Package:  \
   com.ibm.websphere.ras, \
