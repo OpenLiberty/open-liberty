@@ -27,7 +27,7 @@
     <resourceAdapter location="${server.config.dir}/connectors/DerbyRA.rar" contextServiceRef="DefaultContextService"/>
 
     <connectionFactory jndiName="eis/ds1">
-      <connectionManager maxPoolSize="2" connectionTimeout="0" enableHandleList="true"/> <!-- rely on default behavior or use correct config property once added -->
+      <connectionManager maxPoolSize="2" connectionTimeout="0"/>
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA/>
     </connectionFactory>
@@ -49,7 +49,7 @@
     </connectionFactory>
 
     <connectionFactory jndiName="eis/ds5">
-      <connectionManager maxPoolSize="1" connectionTimeout="0"/>
+      <connectionManager maxPoolSize="1" connectionTimeout="0" enableHandleList="true"/> <!-- TODO rely on default behavior or use correct config property once added -->
       <properties.DerbyRA dissociatable="false" lazyEnlistable="true" userName="DS1USER" password="{xor}GwxuDwgb"/>
     </connectionFactory>
 

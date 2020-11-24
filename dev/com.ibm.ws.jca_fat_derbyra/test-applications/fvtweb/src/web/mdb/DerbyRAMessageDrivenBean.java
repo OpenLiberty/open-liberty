@@ -14,8 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.ejb.MessageDriven;
@@ -27,11 +26,11 @@ import javax.sql.DataSource;
 
 @MessageDriven
 public class DerbyRAMessageDrivenBean implements MessageListener {
-    @Resource(lookup = "eis/ds1", shareable = false)
-    private DataSource ds1;
+    @Resource(lookup = "eis/ds5", shareable = true)
+    private DataSource ds5;
 
     // Map of test case name to a connection that it intentionally left open
-    private static final Map<String, Connection> leakedConnections = new TreeMap<String, Connection>();
+    private static final AtomicReference<Connection> cachedConnectionRef = new AtomicReference<>();
 
     @Override
     public Record onMessage(Record record) throws ResourceException {
@@ -42,26 +41,13 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
         Object newValue = m.get("newValue");
         Object oldValue = m.get("previousValue");
 
-        String testNameForConnectionLeak = null;
-        // look for special instructions from individual tests
-        if ("mdbtestHandleListClosesConnectionLeakedFromMDB".equals(key)) {
-            if ("LeakConnection".equals(newValue))
-                testNameForConnectionLeak = (String) key;
-            else if ("ExpectConnectionClosed".equals(newValue)) {
-                Connection leakedCon = leakedConnections.get(key);
-                try {
-                    oldValue = leakedCon.isClosed();
-                    System.out.println("Expecting connection to be closed by the HandleList. Did we find it closed? " + oldValue);
-                } catch (SQLException x) {
-                    throw new ResourceException(x);
-                }
-            } else
-                System.out.println("Setting new value to " + newValue);
-        }
-
         // Write the previous value to a database table
         try {
-            Connection con = ds1.getConnection();
+            Connection con;
+            if ("UseCachedConnection".equals(newValue) || "UseCachedConnectionAndClose".equals(newValue))
+                con = cachedConnectionRef.get();
+            else
+                con = ds5.getConnection();
             try {
                 Statement stmt = con.createStatement();
                 try {
@@ -71,11 +57,15 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
                 }
                 stmt.close();
             } finally {
-                if (testNameForConnectionLeak == null)
+                if ("CacheConnection".equals(newValue)) {
+                    System.out.println("MDB intentionally caches connection " + con);
+                    cachedConnectionRef.set(con);
+                } else if ("UseCachedConnection".equals(newValue)) {
+                    // Connection is already cached. Don't close it.
+                } else {
+                    if ("UseCachedConnectionAndClose".equals(newValue))
+                        cachedConnectionRef.set(null);
                     con.close();
-                else {
-                    System.out.println("MDB intentionally avoids closing connection " + con);
-                    leakedConnections.put(testNameForConnectionLeak, con);
                 }
             }
         } catch (SQLException x) {

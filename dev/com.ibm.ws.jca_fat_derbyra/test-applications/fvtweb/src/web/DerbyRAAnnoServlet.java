@@ -189,38 +189,44 @@ public class DerbyRAAnnoServlet extends FATServlet {
         }
     }
 
-    public void testHandleListClosesConnectionLeakedFromMDB() throws Exception {
+    public void testHandleListParksCachedConnectionFromMDB() throws Exception {
         Connection con = ds1.getConnection();
         try {
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             // The mock resource adapter triggers a message driven bean when the 'put' method replaces a value
-            assertNull(map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "InitialValue"));
-            assertEquals("InitialValue", map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "LeakConnection"));
+            assertNull(map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "InitialValue"));
+            assertEquals("InitialValue", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "CacheConnection"));
 
             // Wait for message driven bean to write something to the database
             ResultSet result;
             long start = System.nanoTime();
             do {
                 TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
-                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesConnectionLeakedFromMDB'");
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB'");
             } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
             assertTrue(result.first()); // MDB wrote the expected entry
-            assertEquals("InitialValue", result.getString(1));
 
-            // Determine if leaked connection was closed
-            map1.put("mdbtestHandleListClosesConnectionLeakedFromMDB", "ExpectConnectionClosed");
+            // Invoke the MDB to use the cached connection and leave it cached
+            assertEquals("CacheConnection", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "UseCachedConnection"));
 
             // Wait for message driven bean to write the result to the database
             start = System.nanoTime();
             do {
                 TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
-                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesConnectionLeakedFromMDB' AND oldValue<>'LeakConnection'");
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB' AND oldValue='CacheConnection'");
             } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
             assertTrue(result.first()); // MDB updated the expected entry
-            String closed = result.getString(1);
-            // If this fails with a value of "InitialValue", it means that the leaked connection was not closed by HandleList and
-            // therefore the MDB was unable to obtain a connection in order to write the new value that we are looking for.
-            assertEquals("true", closed);
+
+            // Invoke the MDB again to use the cached connection, but this time close it instead of caching it
+            assertEquals("UseCachedConnection", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "UseCachedConnectionAndClose"));
+
+            // Wait for message driven bean to write the result to the database
+            start = System.nanoTime();
+            do {
+                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB' AND oldValue='UseCachedConnection'");
+            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
+            assertTrue(result.first()); // MDB updated the expected entry
 
             stmt.close();
         } finally {
