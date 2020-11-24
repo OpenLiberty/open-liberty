@@ -7,11 +7,11 @@
     <include location="../fatTestPorts.xml"/>
     
     <!-- TESTING THE UPLOAD! -->
+    <javaPermission className="java.security.AllPermission"/>
   	<javaPermission className="java.lang.RuntimePermission" name="*"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
     <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
-    <javaPermission className="java.security.AllPermission"/>
 </server>

@@ -8,6 +8,7 @@
     <include location="../fatTestPorts.xml"/>
  
     <!-- TESTING THE UPLOAD! -->
+    
   	<javaPermission className="java.security.AllPermission"/>
 
 </server>

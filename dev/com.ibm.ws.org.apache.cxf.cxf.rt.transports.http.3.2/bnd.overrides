@@ -1,4 +1,5 @@
 -include= ~../cnf/resources/bnd/rejar.props
+
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2

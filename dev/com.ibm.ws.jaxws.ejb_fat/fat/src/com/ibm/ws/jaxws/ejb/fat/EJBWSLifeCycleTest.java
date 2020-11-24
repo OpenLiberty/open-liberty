@@ -33,7 +33,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -92,11 +91,9 @@ public class EJBWSLifeCycleTest {
         }
     }
 
-    
     /*
      * TODO: Fix Java 2 Security exception
      */
-    @SkipForRepeat("jaxws-2.3")
     @Mode(TestMode.FULL)
     @Test
     public void testLifeCycle() throws Exception {

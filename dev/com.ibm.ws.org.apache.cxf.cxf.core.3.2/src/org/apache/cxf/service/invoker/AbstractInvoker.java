@@ -19,6 +19,7 @@
 
 package org.apache.cxf.service.invoker;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -51,7 +52,8 @@ public abstract class AbstractInvoker implements Invoker {
         try {
 
             BindingOperationInfo bop = exchange.getBindingOperationInfo();
-            // Liberty Change
+            // Liberty Change: exchange.getService() causes an NPE since it returns null when an EJB service is being invoked. 
+            // Changed to exchange.get(Service.class)
             MethodDispatcher md = (MethodDispatcher) exchange.get(Service.class).get(MethodDispatcher.class.getName());
             // End Liberty Change
             Method m = bop == null ? null : md.getMethod(bop);
@@ -67,8 +69,8 @@ public abstract class AbstractInvoker implements Invoker {
                 params = new MessageContentsList(o);
             }
             
-            // Liberty Change
-            m = adjustMethodAndParams(m, exchange, params);
+            // Liberty Change: since serviceObject.getClass() throws a NPE changed to get class from the exchange instead
+            m = adjustMethodAndParams(m, exchange, params, exchange.get(Service.class).getClass());
             // End Liberty Change
 
             //Method m = (Method)bop.getOperationInfo().getProperty(Method.class.getName());
@@ -81,14 +83,13 @@ public abstract class AbstractInvoker implements Invoker {
         }
     }
 
-    // Liberty Change
     protected Method adjustMethodAndParams(Method m,
                                            Exchange ex,
-                                           List<Object> params) {
+                                           List<Object> params, Class<?> serviceObjectClass) {
         //nothing to do
         return m;
     }
-
+    
     protected Object invoke(Exchange exchange, final Object serviceObject, Method m, List<Object> params) {
         Object res;
         try {

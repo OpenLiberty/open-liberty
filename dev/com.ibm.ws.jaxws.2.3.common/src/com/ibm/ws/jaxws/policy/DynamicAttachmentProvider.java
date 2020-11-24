@@ -109,7 +109,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    // @TJJ removed overridde annotation
+
     @Override
     public Policy getEffectivePolicy(BindingOperationInfo boi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

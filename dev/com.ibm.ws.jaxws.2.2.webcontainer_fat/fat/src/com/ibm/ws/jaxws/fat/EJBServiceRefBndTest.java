@@ -39,8 +39,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /*
- * This test is responsible for testing whether or not HTTPConduit configuration set in the ibm-ws-bnd.xml file
- * is picked up and applied to CXF via our integration layer. The test application requires access to CXF internals
+ * This test is responsible for testing whether or not and EJB endpoint will have it's HTTPConduit configuration applied to the client as set in the
+ * ibm-ws-bnd.xml file. The test application requires access to CXF internals
  * so a jaxwsTest-2.3 feature is added to the Liberty image in order to expose those APIs.
  *
  * TODO:
