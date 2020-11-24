@@ -3,7 +3,7 @@ name: Open Liberty BETA blog post
 about: Information to be included in the Open Liberty BETA blog post.
 title: BETA BLOG - title_of_your_update
 labels: ''
-assignees: lauracowen, jakub-pomykala
+assignees: austin0, jakub-pomykala
 
 ---
 
@@ -11,11 +11,11 @@ The information you provide here will be included in the Open Liberty beta blog 
 
 Please provide the following information the week before the GA/beta date (to allow for review and publishing):
 
-1. Which Liberty feature does your update relate to?
+1. Which Liberty feature(s) does your update relate to?
     
    Human-readable name (eg WebSockets feature):
    
-   Feature name (eg websockets-1.0): 
+   Feature config name (eg websockets-1.0): 
 
 2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
 
