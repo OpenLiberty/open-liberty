@@ -111,25 +111,47 @@ public class JwKRetrieverTest extends CommonTestClass {
     }
 
     @Test
-    public void testGetPublicKeyFromJwk_relativeLocationPEM() throws Exception {
+    public void testGetPublicKeyFromJwk_relativeLocationPEM_kidSpecified() throws Exception {
         keyLocation = RELATIVE_PEM_LOCATION;
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
                 jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
 
-        assertNotNull("There must a public key.", publicKey);
+        assertNotNull("Should have found a key when a relative location to a single, valid PEM key and a kid is specified.", publicKey);
     }
 
     @Test
-    public void testGetPublicKeyFromJwk_publicKeyTextPEM() throws Exception {
+    public void testGetPublicKeyFromJwk_relativeLocationPEM_noKidSpecified() throws Exception {
+        keyLocation = RELATIVE_PEM_LOCATION;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, null, false);
+
+        assertNotNull("Should have found a key when a relative location to a single, valid PEM key and no kid is specified.", publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyTextPEM_kidSpecified() throws Exception {
         publickey = PemKeyUtilTest.PEM_KEY_TEXT;
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
                 jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, true);
 
-        assertNotNull("There must a public key.", publicKey);
+        assertNotNull("Should have found a key when text for a single, valid PEM key and a kid is specified.", publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyTextPEM_noKidSpecified() throws Exception {
+        publickey = PemKeyUtilTest.PEM_KEY_TEXT;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, null, true);
+
+        assertNotNull("Should have found a key when text for a single, valid PEM key and no kid is specified.", publicKey);
     }
 
     @Test
