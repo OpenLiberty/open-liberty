@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class HttpServletResponseInjectionProxy extends HttpServletResponseWrappe
                                                                    if (tc.isEntryEnabled()) {
                                                                        Tr.entry(tc, "invoke");
                                                                    }
-                                                                   Object result;
+                                                                   Object result = null;
                                                                    if ("toString".equals(method.getName()) && (method.getParameterTypes().length == 0)) {
                                                                        result = "Injection Proxy for " + contextClass.getName();
                                                                        if (tc.isEntryEnabled()) {
@@ -55,7 +55,10 @@ public class HttpServletResponseInjectionProxy extends HttpServletResponseWrappe
                                                                        }
                                                                        return result;
                                                                    }
-                                                                   result = method.invoke(getHttpServletResponse(), args);
+                                                                   Object context = getHttpServletResponse();
+                                                                   if (context != null) {
+                                                                       result = method.invoke(context, args);                                                                      
+                                                                   }
                                                                    if (tc.isEntryEnabled()) {
                                                                        Tr.exit(tc, "invoke", result);
                                                                    }
@@ -73,6 +76,9 @@ public class HttpServletResponseInjectionProxy extends HttpServletResponseWrappe
         InjectionRuntimeContext runtimeContext = InjectionRuntimeContextHelper.getRuntimeContext();
         // get the real context from the RuntimeContext
         Object context = runtimeContext.getRuntimeCtxObject(contextClass.getName());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, context);
+        }
         return (HttpServletResponse) context;
     }
 
@@ -110,16 +116,17 @@ public class HttpServletResponseInjectionProxy extends HttpServletResponseWrappe
         }
 
         final ServletResponse response = getHttpServletResponse();
-        @SuppressWarnings("unchecked")
-        final Class<? extends ServletResponse> wrappedServletType = wrappedType;
+        if (response != null) {
+            @SuppressWarnings("unchecked")
+            final Class<? extends ServletResponse> wrappedServletType = wrappedType;
 
-        if (wrappedServletType.isAssignableFrom(response.getClass())) {
-            return true;
-        } else if (response instanceof ServletResponseWrapper) {
-            return ((ServletResponseWrapper) response).isWrapperFor(wrappedType);
-        } else {
-            return false;
+            if (wrappedServletType.isAssignableFrom(response.getClass())) {
+                return true;
+            } else if (response instanceof ServletResponseWrapper) {
+                return ((ServletResponseWrapper) response).isWrapperFor(wrappedType);
+            }
         }
+        return false;
     }
 
     /*
@@ -131,13 +138,14 @@ public class HttpServletResponseInjectionProxy extends HttpServletResponseWrappe
     public boolean isWrapperFor(ServletResponse wrapped) {
         final ServletResponse response = getHttpServletResponse();
 
-        if (response == wrapped) {
-            return true;
-        } else if (response instanceof ServletResponseWrapper) {
-            return ((ServletResponseWrapper) response).isWrapperFor(wrapped);
-        } else {
-            return false;
+        if (response != null) {
+            if (response == wrapped) {
+                return true;
+            } else if (response instanceof ServletResponseWrapper) {
+                return ((ServletResponseWrapper) response).isWrapperFor(wrapped);
+            } 
         }
+        return false;
     }
 
     /*
