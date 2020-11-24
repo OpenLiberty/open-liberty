@@ -203,6 +203,8 @@ public class DerbyConnection implements Connection {
 
     @Override
     public boolean isClosed() throws SQLException {
+        if (isClosed)
+            return true;
         lazyInit();
         return mc == null || mc.con.isClosed();
     }

@@ -44,10 +44,17 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
         // Write the previous value to a database table
         try {
             Connection con;
-            if ("UseCachedConnection".equals(newValue) || "UseCachedConnectionAndClose".equals(newValue))
+            if ("UseCachedConnection".equals(newValue)) {
                 con = cachedConnectionRef.get();
-            else
+                if (con.isClosed()) {
+                    oldValue = "CachedConnectionIsClosed";
+                    con = ds5.getConnection();
+                } else {
+                    oldValue = "CachedConnectionIsNotClosed";
+                }
+            } else {
                 con = ds5.getConnection();
+            }
             try {
                 Statement stmt = con.createStatement();
                 try {
@@ -60,11 +67,8 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
                 if ("CacheConnection".equals(newValue)) {
                     System.out.println("MDB intentionally caches connection " + con);
                     cachedConnectionRef.set(con);
-                } else if ("UseCachedConnection".equals(newValue)) {
-                    // Connection is already cached. Don't close it.
                 } else {
-                    if ("UseCachedConnectionAndClose".equals(newValue))
-                        cachedConnectionRef.set(null);
+                    cachedConnectionRef.set(null);
                     con.close();
                 }
             }

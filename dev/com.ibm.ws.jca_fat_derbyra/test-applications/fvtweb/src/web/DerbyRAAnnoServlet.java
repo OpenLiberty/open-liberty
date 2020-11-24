@@ -189,44 +189,38 @@ public class DerbyRAAnnoServlet extends FATServlet {
         }
     }
 
-    public void testHandleListParksCachedConnectionFromMDB() throws Exception {
+    /**
+     * Tests that handles cannot be parked across separate global transactions.
+     * When the MDB's global transaction ends, a parked handle is automatically closed by the server.
+     */
+    public void testHandleListClosesParkedHandleWhenMDBTransactionEnds() throws Exception {
         Connection con = ds1.getConnection();
         try {
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             // The mock resource adapter triggers a message driven bean when the 'put' method replaces a value
-            assertNull(map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "InitialValue"));
-            assertEquals("InitialValue", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "CacheConnection"));
+            assertNull(map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "InitialValue"));
+            assertEquals("InitialValue", map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "CacheConnection"));
 
             // Wait for message driven bean to write something to the database
             ResultSet result;
             long start = System.nanoTime();
             do {
                 TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
-                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB'");
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesParkedHandleWhenTranEnds'");
             } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
             assertTrue(result.first()); // MDB wrote the expected entry
 
             // Invoke the MDB to use the cached connection and leave it cached
-            assertEquals("CacheConnection", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "UseCachedConnection"));
+            assertEquals("CacheConnection", map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "UseCachedConnection"));
 
             // Wait for message driven bean to write the result to the database
             start = System.nanoTime();
             do {
                 TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
-                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB' AND oldValue='CacheConnection'");
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesParkedHandleWhenTranEnds' AND oldValue LIKE 'CachedConnectionIs%'");
             } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
             assertTrue(result.first()); // MDB updated the expected entry
-
-            // Invoke the MDB again to use the cached connection, but this time close it instead of caching it
-            assertEquals("UseCachedConnection", map1.put("mdbtestHandleListParksCachedConnectionFromMDB", "UseCachedConnectionAndClose"));
-
-            // Wait for message driven bean to write the result to the database
-            start = System.nanoTime();
-            do {
-                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
-                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListParksCachedConnectionFromMDB' AND oldValue='UseCachedConnection'");
-            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
-            assertTrue(result.first()); // MDB updated the expected entry
+            assertEquals("CachedConnectionIsClosed", result.getString(1));
 
             stmt.close();
         } finally {

@@ -16,9 +16,11 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,6 +50,7 @@ import com.ibm.ws.jca.adapter.WSManagedConnection;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.handle.HandleList;
 import com.ibm.ws.jca.cm.handle.HandleListInterface;
+import com.ibm.ws.jca.cm.handle.HandleListInterface.HandleDetails;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 
 /**
@@ -2415,8 +2418,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         if (timeDifference >= timeoutValue) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "MCWrapper id " + mcWrapperObject_hexString + " hasAgedTimedOut is true");
-                Tr.debug(this, tc, "For MCWrapper id " + mcWrapperObject_hexString + " the created time was " + new Date(createdTimeStamp) + " and the current time is " + new Date(currentTime));
-                Tr.debug(this, tc, "For MCWrapper id " + mcWrapperObject_hexString + " the time difference " + timeDifference + " is greater than or equal to the aged timeout " + timeoutValue);
+                Tr.debug(this, tc, "For MCWrapper id " + mcWrapperObject_hexString + " the created time was " + new Date(createdTimeStamp)
+                                   + " and the current time is " + new Date(currentTime));
+                Tr.debug(this, tc, "For MCWrapper id " + mcWrapperObject_hexString + " the time difference " + timeDifference
+                                   + " is greater than or equal to the aged timeout " + timeoutValue);
             }
             return true;
         } else {
@@ -3190,29 +3195,24 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             Tr.debug(this, tc, "Clear the McWrapper handlelist for  the following MCWrapper: " + this);
         }
 
-        Object key = null;
-        HandleListInterface HL = null;
+        HandleListInterface HL;
+        ArrayList<HandleDetails> handlesToClose = new ArrayList<HandleDetails>(mcwHandleList.size());
 
-        Iterator<?> itr = mcwHandleList.keySet().iterator();
-
-        while (itr.hasNext()) {
-
-            key = itr.next();
-
-            if (key != null) {
-                HL = mcwHandleList.get(key);
-                if (HL != null) {
-                    HL.removeHandle(key);
-                }
+        for (Iterator<Entry<Object, HandleList>> itr = mcwHandleList.entrySet().iterator(); itr.hasNext();) {
+            Entry<Object, HandleList> entry = itr.next();
+            itr.remove();
+            if ((HL = entry.getValue()) != null) {
+                HandleDetails h = HL.removeHandle(entry.getKey());
+                if (h != null)
+                    handlesToClose.add(h);
             }
-
-            key = null;
-            HL = null;
-
         }
 
-        mcwHandleList.clear();
-
+        // Handles are closed outside of the iterator just in case a resource adapter's implementation
+        // of close sends another connectionClosed event, the inline processing of which would otherwise
+        // interfere with the iterator.
+        for (HandleDetails h : handlesToClose)
+            h.close();
     }
 
     /**
