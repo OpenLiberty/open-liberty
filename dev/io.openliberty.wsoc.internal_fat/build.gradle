@@ -39,6 +39,16 @@ addRequiredLibraries {
       from configurations.junit
       into "${buildDir}/autoFVT/test-applications/basic.war/resources/WEB-INF/lib"
     }
+    copy {
+      // Copy junit jars into a specific folder so they can be referenced
+      from configurations.junit
+      into "${buildDir}/autoFVT/test-applications/trace.war/resources/WEB-INF/lib"
+    }
+    copy {
+      // Copy junit jars into a specific folder so they can be referenced
+      from configurations.junit
+      into "${buildDir}/autoFVT/test-applications/secure.war/resources/WEB-INF/lib"
+    }
   }
 }
 

@@ -90,7 +90,8 @@ public class Cdi20Test extends LoggingTest {
                                                                          "io.openliberty.wsoc.util.wsoc",
                                                                          "io.openliberty.wsoc.tests.all",
                                                                          "io.openliberty.wsoc.endpoints.client.basic",
-                                                                         "io.openliberty.wsoc.endpoints.client.context");
+                                                                         "io.openliberty.wsoc.endpoints.client.context",
+                                                                         "io.openliberty.wsoc.endpoints.client.trace");
         CdiApp = (WebArchive) ShrinkHelper.addDirectory(CdiApp, "test-applications/"+CDI_WAR_NAME+".war/resources");
         WebArchive ContextApp = ShrinkHelper.buildDefaultApp(CONTEXT_WAR_NAME + ".war",
                                                                          "context.war",
