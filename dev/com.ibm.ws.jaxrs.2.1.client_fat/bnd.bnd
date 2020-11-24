@@ -30,7 +30,8 @@ tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
   mpReactiveStreams-1.0,\
-  appsecurity-3.0
+  appsecurity-3.0,\
+  restfulWS-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2,\
