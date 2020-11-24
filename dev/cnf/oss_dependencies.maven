@@ -147,7 +147,7 @@ jakarta.json:jakarta.json-api:2.0.0
 jakarta.jws:jakarta.jws-api:3.0.0
 jakarta.mail:jakarta.mail-api:2.0.0-RC6
 jakarta.persistence:jakarta.persistence-api:3.0.0
-jakarta.resource:jakarta.resource-api:2.0.0-RC2
+jakarta.resource:jakarta.resource-api:2.0.0
 jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1
 jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0-RC1
