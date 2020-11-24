@@ -11,22 +11,24 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: joda-time.joda-time
-Bundle-Description: joda-time joda-time; version=2.9.9
-Bundle-SymbolicName: com.ibm.ws.org.joda.time.2.9.9
+Bundle-Name: org.opensaml.storage
+Bundle-Description: org.opensaml opensaml storage api; version=3.4.5
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5
 
-WS-TraceGroup: WSS4J
+WS-TraceGroup: SAML20
 
 Export-Package: \
- org.joda.time, \
- org.joda.time.chrono, \
- org.joda.time.format
-
+  org.opensaml.storage;version="3.4.5", \
+  org.opensaml.storage.*;version="3.4.5"
+  
 Import-Package: \
- !org.joda.convert
+ com.google.common.base; version="[27.0.0,28.0.0)", \
+ *
  
-Private-Package: org.joda.time.*
-
 Include-Resource: \
- @${repo;joda-time:joda-time;2.9.9}!/org/joda/time/**/*xml,\
- @${repo;joda-time:joda-time;2.9.9}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)
+ @${repo;org.opensaml:opensaml-storage-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+ 
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:

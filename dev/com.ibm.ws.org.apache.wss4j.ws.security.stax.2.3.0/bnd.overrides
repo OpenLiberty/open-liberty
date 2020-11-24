@@ -8,9 +8,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.cryptacular:cryptacular;1.2.4;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
 
--buildpath: \
- org.cryptacular:cryptacular;version=1.2.4, \
- com.ibm.ws.org.apache.cxf.rt.security.saml.3.3.6;version=latest, \
- org.bouncycastle:bcprov-jdk15on;version=latest
+Bundle-Name: org.apache.wss4j.wss4j.ws.secuity.stax
+Bundle-Description: org.apache.wss4j.wss4j.ws.security.stax; version=2.3.0
+Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.wss4j.*           
+ 
+Include-Resource: \
+ @${repo;org.apache.wss4j:wss4j-ws-security-stax;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+

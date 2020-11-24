@@ -11,22 +11,20 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: joda-time.joda-time
-Bundle-Description: joda-time joda-time; version=2.9.9
-Bundle-SymbolicName: com.ibm.ws.org.joda.time.2.9.9
+Bundle-Name: org.apache.wss4j.wss4j.policy
+Bundle-Description: org.apache.wss4j.wss4j.policy; version=2.3.0
+Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.policy.2.3.0
+Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.joda.time, \
- org.joda.time.chrono, \
- org.joda.time.format
-
-Import-Package: \
- !org.joda.convert
+ org.apache.wss4j.*           
  
-Private-Package: org.joda.time.*
-
+ 
 Include-Resource: \
- @${repo;joda-time:joda-time;2.9.9}!/org/joda/time/**/*xml,\
- @${repo;joda-time:joda-time;2.9.9}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/*xml
+

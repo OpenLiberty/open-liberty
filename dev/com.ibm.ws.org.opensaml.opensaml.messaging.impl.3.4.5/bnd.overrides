@@ -11,22 +11,24 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-Bundle-Name: joda-time.joda-time
-Bundle-Description: joda-time joda-time; version=2.9.9
-Bundle-SymbolicName: com.ibm.ws.org.joda.time.2.9.9
+Bundle-Name: org.opensaml.messaging.impl
+Bundle-Description: org.opensaml opensaml messaging implementations; version=3.4.5
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5
 
-WS-TraceGroup: WSS4J
+WS-TraceGroup: SAML20
+
+
+Import-Package:  !com.google.common.math, \
+ *
 
 Export-Package: \
- org.joda.time, \
- org.joda.time.chrono, \
- org.joda.time.format
+  org.opensaml.messaging.handler.impl;version="3.4.5"
 
-Import-Package: \
- !org.joda.convert
- 
-Private-Package: org.joda.time.*
-
+  
 Include-Resource: \
- @${repo;joda-time:joda-time;2.9.9}!/org/joda/time/**/*xml,\
- @${repo;joda-time:joda-time;2.9.9}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)
+ @${repo;org.opensaml:opensaml-messaging-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:

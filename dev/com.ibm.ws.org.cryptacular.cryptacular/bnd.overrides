@@ -22,15 +22,3 @@ Import-Package: \
  !org.bouncycastle.asn1.x500,\
  !org.bouncycastle.asn1.x509
 
-Archiver-Version:
-Build-Jdk:
-Built-By:
-Bundle-DocURL:
-Bundle-License:
-Implementation-Title:
-Implementation-Vendor:
-Implementation-Vendor-Id:
-Implementation-Version:
-Specification-Title:
-Specification-Vendor:
-Specification-Version:

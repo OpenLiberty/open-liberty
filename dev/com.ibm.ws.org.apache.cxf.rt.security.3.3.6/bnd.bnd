@@ -8,9 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.cryptacular:cryptacular;1.2.4;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+-includeresource: \
+    @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF
+
+globalize: false
+instrument.ffdc: true
 
 -buildpath: \
- org.cryptacular:cryptacular;version=1.2.4, \
- com.ibm.ws.org.apache.cxf.rt.security.saml.3.3.6;version=latest, \
- org.bouncycastle:bcprov-jdk15on;version=latest
+	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.3.6
