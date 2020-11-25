@@ -133,6 +133,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     @Test
+    public void testHandleListClosesParkedHandleWhenMDBTransactionEnds() throws Exception {
+        runTest(DerbyRAAnnoServlet);
+    }
+
+    @Test
     public void testJCADataSourceDirectLookup() throws Exception {
         runTest(DerbyRAServlet);
     }

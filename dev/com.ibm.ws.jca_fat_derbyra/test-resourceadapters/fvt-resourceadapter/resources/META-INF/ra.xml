@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2017,2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6" metadata-complete="true">
   <description>This is the ra.xml for DerbyRA</description> 
   <display-name>Derby Resource Adapter</display-name> 
@@ -102,7 +112,7 @@
         <description>Data Type of Key</description>
         <config-property-name>keyType</config-property-name> 
         <config-property-type>java.lang.String</config-property-type>
-        <config-property-value>varchar(20)</config-property-value> 
+        <config-property-value>varchar(60)</config-property-value>
       </config-property>
       <config-property>
         <description>Table Name</description>

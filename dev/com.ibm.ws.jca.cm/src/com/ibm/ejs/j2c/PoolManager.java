@@ -55,6 +55,7 @@ import com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException;
 import com.ibm.websphere.jca.pmi.JCAPMIHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.j2c.MCWrapper;
 import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
@@ -131,7 +132,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     protected long waitersEndedTime;
 
     protected MCWrapper parkedMCWrapper = null;
-    protected boolean createParkedConnection = false;
+    protected boolean createParkedConnection;
     protected final Integer parkedConnectionLockObject = new Integer(0);
     protected int totalPoolConnectionRequests = 0;
     protected ScheduledFuture<?> am = null;
@@ -192,6 +193,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         logSerialReuseMessage = true;
 
         this.connectionTimeout = gConfigProps.getConnectionTimeout();
+        this.createParkedConnection = gConfigProps.getEnableHandleList() && !gConfigProps.isSmartHandleSupport();
         this.maxConnections = gConfigProps.getMaxConnections();
         this.minConnections = gConfigProps.getMinConnections();
         this.purgePolicy = gConfigProps.getPurgePolicy();
@@ -1647,7 +1649,21 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         sharedPool[sharedbucket].setSharedConnection(affinity, mcWrapper);
                         mcWrapper.setInSharedPool(true);
                     }
-                    // Not creating the parked connection ConnectionManager.parkHandle is not used.
+                    /*
+                     * We only want to create the parked connection if a shared
+                     * connection is created. Once created, the parked connection will not
+                     * be destroyed except in a few exception cases. If it is destroyed, a
+                     * new shared connection request is required for it to be re-created.
+                     */
+                    // code from which this is ported has a comment stating that
+                    // Double-checked locking works for 32-bit primitive values.
+                    if (createParkedConnection) {
+                        synchronized (parkedConnectionLockObject) {
+                            if (createParkedConnection) {
+                                createParkedConnection(managedConnectionFactory, subject, requestInfo);
+                            }
+                        }
+                    }
                 }
             } else { // add it to the used pool.
                 if (isThreadLocalConnectionEnabled && localConnection_ != null) {
@@ -4006,6 +4022,40 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.exit(this, tc, "quiesceIfPossible");
         }
 
+    }
+
+    /**
+     * Creates a connection to use for parked handles.
+     * It is the responsibility of the caller to synchronize invocation of this method.
+     */
+    private void createParkedConnection(ManagedConnectionFactory managedConnectionFactory, Subject subject, ConnectionRequestInfo cri) throws ResourceAllocationException { // F47061-58143
+        try {
+            ManagedConnection parkedConnection = null;
+            parkedConnection = managedConnectionFactory.createManagedConnection(subject, cri);
+            parkedMCWrapper = new com.ibm.ejs.j2c.MCWrapper(this, gConfigProps);
+            if (parkedConnection != null)
+                parkedMCWrapper.setManagedConnection(parkedConnection);
+            parkedMCWrapper.setParkedWrapper(true);
+            parkedMCWrapper.setPoolState(9);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "The parked connection is " + parkedConnection);
+            }
+            createParkedConnection = false;
+        } catch (Exception e) {
+            FFDCFilter.processException(e, getClass().getName(), "4044", this);
+            // call exceptionList method to print stack traces of current and linked exceptions
+            Object[] parms = new Object[] { "createParkedConnection", CommonFunction.exceptionList(e), "ResourceAllocationException", gConfigProps.cfName };
+            Tr.error(tc, "POOL_MANAGER_EXCP_CCF2_0002_J2CA0046", parms);
+            ResourceAllocationException throwMe = e instanceof ResourceException //
+                            ? new ResourceAllocationException(e.getMessage(), ((ResourceException) e).getErrorCode()) //
+                            : new ResourceAllocationException(e.getMessage());
+            throwMe.initCause(e.getCause());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(this, tc, "createParkedConnection", e);
+            }
+            activeRequest.decrementAndGet();
+            throw (throwMe);
+        }
     }
 
     static class Equals implements PrivilegedAction<Boolean> {
