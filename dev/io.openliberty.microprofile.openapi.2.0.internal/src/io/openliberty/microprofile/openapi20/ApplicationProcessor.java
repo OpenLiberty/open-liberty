@@ -23,11 +23,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
+import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
@@ -83,61 +84,27 @@ public class ApplicationProcessor {
                     NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
                     ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
                     if (applicationClassesContainerInfo != null) {
-
-                        // Check to see if the deployed application is an EAR/EBA
-                        if (appInfo instanceof EARApplicationInfo) {
-                            /*
-                             * Iterate over the entries in the application. An Enterprise Application can contain
-                             * various types of module, including Web modules. We need to attempt to retrieve the
-                             * WebModuleInfo for each entry and, if there is WebModuleInfo, process it. If this
-                             * results in an OpenAPI document being generated, we do not process any more entries
-                             * because we only generate a single OpenAPI document... even if the application
-                             * contains multiple web modules.
-                             */
-                            for (Entry entry : appContainer) {
-                                try {
-                                    // Attempt to adapt the entry to a container
-                                    Container container = entry.adapt(Container.class);
-                                    if (container != null) {
-
-                                        // Attempt to retrieve WebModuleInfo for the container
-                                        WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(container);
-                                        if (webModuleInfo != null) {
-
-                                            // Process the web module
-                                            openAPIProvider = processWebModule(container, webModuleInfo);
-                                            if (openAPIProvider != null) {
-                                                Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
-                                                break;
-                                            }
-                                        }
-                                    }
-                                } catch (UnableToAdaptException e) {
-                                    // Unable to adapt... log it and move on
-                                    if (LoggingUtils.isEventEnabled(tc)) {
-                                        Tr.event(tc, "Failed to adapt entry: entry=" + entry + " : \n" + e.getMessage());
-                                    }
-                                }
-                            } // FOR
-                        } else {
-                            // Not an Enterprise Application... attempt to get the WebModuleInfo
-                            WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(appContainer);
-
-                            // Make sure that we have a valid web module.  If we do, process it.
-                            if (webModuleInfo != null) {
-                                openAPIProvider = processWebModule(appContainer, webModuleInfo);
-                                if (openAPIProvider != null) {
-                                    Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
-                                }
-
-                                if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo);
-                                }
-                            } else {
-                                if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(tc, "Application Processor: Processing application ended: moduleInfo=null : appInfo=" + appInfo);
-                                }
+                        
+                        for (ModuleClassesContainerInfo moduleClassesContainerInfo : applicationClassesContainerInfo.getModuleClassesContainerInfo()) {
+                            ContainerInfo containerInfo = (ContainerInfo) moduleClassesContainerInfo;
+                            if (containerInfo.getType() != Type.WEB_MODULE) {
+                                continue;
                             }
+                            
+                            WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(containerInfo.getContainer());
+                            if (webModuleInfo == null) {
+                                continue;
+                            }
+                            
+                            // Process the web module
+                            openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
+                            if (openAPIProvider != null) {
+                                Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
+                                break;
+                            }
+                        }
+                        if (LoggingUtils.isEventEnabled(tc)) {
+                            Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo);
                         }
                     } else {
                         // No application classes... the app manager is not in control of this ap
@@ -175,7 +142,7 @@ public class ApplicationProcessor {
      * @return OpenAPIProvider
      *         The OpenAPIProvider for the web module, or null if the web module is not an OAS applciation.
      */
-    private static OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo) {
+    private static OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo, final ModuleClassesContainerInfo moduleClassesContainerInfo) {
 
         // Create the variable to return
         OpenAPIProvider openAPIProvider = null;
@@ -218,7 +185,7 @@ public class ApplicationProcessor {
                     Tr.debug(tc, "Generating OpenAPI model");
                 }
 
-                openAPIModel = generateModel(config, appContainer, moduleInfo, appClassloader);
+                openAPIModel = generateModel(config, appContainer, moduleInfo, moduleClassesContainerInfo, appClassloader);
                 if (openAPIModel != null && newCacheEntry != null) {
                     newCacheEntry.setModel(openAPIModel);
                     newCacheEntry.write();
@@ -271,13 +238,13 @@ public class ApplicationProcessor {
         return openAPIProvider;
     }
 
-    private static OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ClassLoader appClassloader) {
+    private static OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, ClassLoader appClassloader) {
         OpenAPI openAPIModel;
         OpenApiDocument.INSTANCE.reset();
         OpenApiDocument.INSTANCE.config(config);
         OpenApiStaticFile staticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
         OpenApiDocument.INSTANCE.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(staticFile));
-        OpenApiDocument.INSTANCE.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, config)));
+        OpenApiDocument.INSTANCE.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
         OpenApiDocument.INSTANCE.modelFromReader(OpenApiProcessor.modelFromReader(config, appClassloader));
         OpenApiDocument.INSTANCE.filter(OpenApiProcessor.getFilter(config, appClassloader));
         OpenApiDocument.INSTANCE.initialize();
