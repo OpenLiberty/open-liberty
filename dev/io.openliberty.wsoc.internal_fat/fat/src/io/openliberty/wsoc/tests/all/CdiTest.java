@@ -44,6 +44,12 @@ public class CdiTest {
         this.wsocTest = test;
     }
 
+    public static void resetTests() {
+        sequenceCounter = 0;
+        sequenceCounter12 = 0;
+        sequenceCounter20 = 0;
+    }
+
     /*
      * ServerEndpoint - @see AnnotatedEndpointCDI1
      */
@@ -172,11 +178,6 @@ public class CdiTest {
      */
     public void testCdiProgrammaticEndpointCDI12() throws Exception {
 
-        // Reset counter to 0 for the second FAT run since a new application is deployed
-        if (sequenceCounter12 == 2) {
-            sequenceCounter12 = 0;
-        }
-
         String s1 = "Message1FromClient";
         String e1 = "Dependent Scoped Counter: 2 ApplicationScopedCounter: 3";
 
@@ -198,11 +199,6 @@ public class CdiTest {
      * ServerEndpoint - @see ProgrammaticExtendEndpointCDI12
      */
     public void testCdiProgrammaticEndpointMultipleOnMessageCDI12() throws Exception {
-
-        // Reset counter to 0 for the second FAT run since a new application is deployed
-        if (sequenceCounter12 == 2) {
-            sequenceCounter12 = 0;
-        }
 
         String s1 = "Message1FromClient";
         String s2 = "Message2FromClient";
@@ -249,11 +245,6 @@ public class CdiTest {
      */
     public void testCdiProgrammaticEndpointCDI20() throws Exception {
 
-        // Reset counter to 0 for the second FAT run since a new application is deployed
-        if (sequenceCounter20 == 2) {
-            sequenceCounter20 = 0;
-        }
-
         String s1 = "Message1FromClient";
         String e1 = "Dependent Scoped Counter: 2 ApplicationScopedCounter: 3";
 
@@ -275,11 +266,6 @@ public class CdiTest {
      * ServerEndpoint - @see ProgrammaticExtendEndpointCDI20
      */
     public void testCdiProgrammaticEndpointMultipleOnMessageCDI20() throws Exception {
-
-        // Reset counter to 0 for the second FAT run since a new application is deployed
-        if (sequenceCounter20 == 2) {
-            sequenceCounter20 = 0;
-        }
 
         String s1 = "Message1FromClient";
         String s2 = "Message2FromClient";
