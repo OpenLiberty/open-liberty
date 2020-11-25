@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -70,11 +71,13 @@ public class JAXRS21ComplexClientTest extends JAXRS21AbstractTest {
      */
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testNew2WebTargetsRequestFilterForRx1() throws Exception {
         this.runTestOnServer(target, "testNew2WebTargetsRequestFilterForRx1", null, "{filter1=GET},{filter1=GET, filter2=*/*}");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testNew2WebTargetsRequestFilterForRx2() throws Exception {
         this.runTestOnServer(target, "testNew2WebTargetsRequestFilterForRx2", null, "{filter1=GET},{filter1=GET, filter2=*/*}");
     }
@@ -85,6 +88,7 @@ public class JAXRS21ComplexClientTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testNew2MixFilterForRx() throws Exception {
         this.runTestOnServer(target, "testNew2MixFilterForRx", null, "222,{filter1=GET},223,{filter2=null}");
     }

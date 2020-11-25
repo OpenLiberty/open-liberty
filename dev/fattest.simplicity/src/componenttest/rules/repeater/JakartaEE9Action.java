@@ -10,7 +10,9 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -218,11 +220,16 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
-        // Capture stdout/stderr streams
-        final PrintStream originalOut = System.out;
-        final PrintStream originalErr = System.err;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
+        // Setup FileOutputStream and never use.  JakartaTransformer defaults cause OOM
+        FileOutputStream fos = null;
+        File throwAwayFile = new File("transformer_output.log");
+        try {
+            fos = new FileOutputStream(throwAwayFile);
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        PrintStream ps = new PrintStream(fos);
         System.setOut(ps);
         System.setErr(ps);
 
@@ -314,13 +321,14 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             Log.error(c, m, e);
             throw new RuntimeException(e);
         } finally {
-            System.setOut(originalOut);
-            System.setErr(originalErr);
-            Log.info(c, m, baos.toString());
             try {
-                baos.close();
-            } catch (IOException ignore) {
+                fos.close();
+            } catch (IOException e) {
             }
+            if (throwAwayFile.exists()) {
+                throwAwayFile.delete();
+            }
+            Log.info(c, m, "Transforming complete app: " + outputPath);
         }
     }
 }
