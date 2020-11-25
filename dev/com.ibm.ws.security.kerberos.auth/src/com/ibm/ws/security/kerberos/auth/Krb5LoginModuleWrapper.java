@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +45,8 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     }
 
     // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
-    private static final boolean isIBMJdk8 = (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable())
-                                             && JavaInfo.majorVersion() <= 8;
+    private static final boolean isIBMJdk8 = JavaInfo.majorVersion() <= 8 &&
+                                             (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable());
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -103,14 +105,22 @@ public class Krb5LoginModuleWrapper implements LoginModule {
             options.remove(OPENJDK_USE_KEYTAB);
             if (options.containsKey("keyTab")) {
                 String keytab = (String) options.remove("keyTab");
-                options.put(IBM_JDK_USE_KEYTAB, keytab);
+                // IBM JDK requires they keytab option to be a valid URL
+                String keytabURL = coerceToURL(keytab);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Coerced keytab path from " + keytab + " to " + keytabURL);
+                options.put(IBM_JDK_USE_KEYTAB, keytabURL);
             }
             options.remove("clearPass");
             boolean useTicketCache = Boolean.valueOf((String) options.remove("useTicketCache"));
             String ticketCache = (String) options.remove("ticketCache");
             if (useTicketCache) {
                 if (ticketCache != null) {
-                    options.put("useCcache", ticketCache);
+                    // IBM JDK requires they ticketCache option to be a valid URL
+                    String ticketCacheURL = coerceToURL(ticketCache);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Coerced ticketCache path from " + ticketCache + " to " + ticketCacheURL);
+                    options.put("useCcache", ticketCacheURL);
                 } else {
                     options.put("useDefaultCcache", "true");
                 }
@@ -168,6 +178,20 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         });
 
         return value;
+    }
+
+    private static String coerceToURL(String path) {
+        URI uri = URI.create(path);
+        if (!uri.isAbsolute()) {
+            uri = URI.create("file:/").resolve(uri);
+        }
+        try {
+            return uri.toURL().toString();
+        } catch (MalformedURLException e) {
+            // if we cannot return the path as a URL, return the original path
+            // to let IBM JDK handle the error messaging
+            return path;
+        }
     }
 
     @SuppressWarnings("unchecked")
