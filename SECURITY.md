@@ -6,8 +6,6 @@
 | ---------- | ------------------ |
 | 20.x.x.x   | :white_check_mark: |
 
-Only the most recent version is supported.
-
 ## Reporting a Vulnerability
 
 We use Hackerone to manage vulnerability disclosure. To disclose a vulnerability in Open Liberty please use https://hackerone.com/ibm to enter the details. It will be routed to the Open Liberty project so a fix can be provided prior to public disclosure.
