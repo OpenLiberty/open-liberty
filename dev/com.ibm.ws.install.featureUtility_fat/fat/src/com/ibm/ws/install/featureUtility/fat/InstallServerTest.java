@@ -70,7 +70,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         copyFileToMinifiedRoot("usr/servers/serverY", "../../publish/tmp/noFeaturesServerXml/server.xml");
-        String[] param2s = { "installServerFeatures", "serverY"};
+        String[] param2s = { "installServerFeatures", "serverY", "--verbose"};
 
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
@@ -145,7 +145,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallAutoFeatureServerXml";
         Log.entering(c, METHOD_NAME);
 
-        String [] param1s = {"installFeature", "jsf-2.2"};
+        String [] param1s = {"installFeature", "jsf-2.2", "--verbose"};
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
