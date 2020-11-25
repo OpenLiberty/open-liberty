@@ -2,7 +2,11 @@
 
 ## Supported Versions
 
-Fixes are only applied to the forward development branch (`master`) and therefore only available in a future version of Open Liberty.
+| Version    | Supported          |
+| ---------- | ------------------ |
+| 20.x.x.x   | :white_check_mark: |
+
+Only the most recent version is supported.
 
 ## Reporting a Vulnerability
 
