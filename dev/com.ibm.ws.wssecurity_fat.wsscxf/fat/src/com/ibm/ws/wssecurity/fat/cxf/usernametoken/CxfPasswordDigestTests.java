@@ -15,11 +15,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+//Added 11/2020
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
@@ -83,6 +86,12 @@ public class CxfPasswordDigestTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //Added 11/2020
+        WebArchive pwdigestclient_war = ShrinkHelper.buildDefaultApp("pwdigestclient", "com.ibm.ws.wssecurity.fat.pwdigestclient", "fats.cxf.pwdigest.wssec",
+                                                                     "fats.cxf.pwdigest.wssec.types");
+        WebArchive pwdigest_war = ShrinkHelper.buildDefaultApp("pwdigest", "com.ibm.ws.wssecurity.fat.pwdigest");
+        ShrinkHelper.exportDropinAppToServer(server, pwdigestclient_war);
+        ShrinkHelper.exportDropinAppToServer(server, pwdigest_war);
         //Added 10/2020
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");

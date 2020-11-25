@@ -81,7 +81,7 @@ public class CxfSymSampleTests {
         //SharedTools.installCallbackHandler(server);
 
         //Added 11/2020
-        //apps/webcontent and apps/WSSampleSeiClient are handled through publish/server folder
+        //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");

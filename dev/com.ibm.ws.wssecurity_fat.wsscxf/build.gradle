@@ -46,8 +46,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "key.jks", "sslServerTrust.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -88,12 +87,13 @@ autoFVT.doLast {
   ]
 
   servers.each { server ->
+  /*
     copy { 
       from project.file('publish/servers/' + server + '/')
       include "pwdigest.war", "pwdigestclient.war"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-
+  */
     copy { 
       from project.file('lib')
       include "jsse.jar"
@@ -120,8 +120,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "x509*.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }   
@@ -135,8 +134,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "dsig-receiver*.ks", "dsig-sender*.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -157,8 +155,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "x509Client*.properties"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -172,8 +169,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "*Default.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -187,24 +183,23 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "x509ClientDefault*.properties"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
 
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "x509*Default*.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-
+    /*
     copy { 
       from project.file('publish/servers/' + server + '/')
       include "x509client.war"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
+    */
   }
 
 /* Copy securitykeys/enc-sender.jceks, and enc-receiver.jceks to these servers */
@@ -221,8 +216,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "enc-sender.jceks", "enc-receiver.jceks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -243,8 +237,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "x509ServerDefault.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -262,8 +255,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "dsig-receiver.ks", "dsig-sender.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -278,8 +270,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "intca2.cer"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -294,8 +285,7 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "wssecfvt2-rsa.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
@@ -310,17 +300,17 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      /*from project.file('securityKeys')*/
-      from new File(projectDir, 'securityKeys')
+      from project.file('securitykeys')
       include "myx509p.cer", "myx509n.cer", "myx509crl.crl", "myx509.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-
+    /*
     copy { 
       from project.file('publish/servers/' + server + '/testApps/')
       include "x509crl.war", "x509crlclient.war", "util.jar"
       into new File(autoFvtDir, 'publish/servers/' + server + '/testApps/')
     }
+    */
   }
 
 }

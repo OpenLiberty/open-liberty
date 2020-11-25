@@ -13,11 +13,14 @@ package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
 import java.io.File;
 
+//Added 11/2020
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 //Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
@@ -52,8 +55,12 @@ public class CxfX509CrlTests extends CommonTests {
         //            "/x509crlclient/CxfX509CrlSvcClient");
 
         //Added 11/2020
-        //using build.gradle instead ShrinkHelper.defaultDropinApp(server, "x509crlclient", "com.ibm.ws.wssecurity.fat.x509crlclient", "test.wssecfvt.x509crl", "test.wssecfvt.x509crl.types");
-        //using build.gradle instead ShrinkHelper.defaultDropinApp(server, "x509crl", "com.ibm.ws.wssecurity.fat.x509crl");
+        WebArchive x509crlclient_war = ShrinkHelper.buildDefaultApp("x509crlclient", "com.ibm.ws.wssecurity.fat.x509crlclient", "test.wssecfvt.x509crl",
+                                                                    "test.wssecfvt.x509crl.types");
+        WebArchive x509crl_war = ShrinkHelper.buildDefaultApp("x509crl", "com.ibm.ws.wssecurity.fat.x509crl");
+        ShrinkHelper.exportToServer(server, "testApps", x509crlclient_war);
+        ShrinkHelper.exportToServer(server, "testApps", x509crl_war);
+
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         PrepCommonSetup serverObject = new PrepCommonSetup();
