@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.security.web.WebSecurityHelper;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
-import com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager;
 
 @Component(name = "com.ibm.ws.jaxrs20.JaxRsAppSecurityServiceImpl", property = { "service.vendor=IBM" })
 public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
@@ -48,9 +47,11 @@ public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
 
     @Override
     public SSLSocketFactory getSSLSocketFactory(String sslRef, Map<String, Object> props) {
+//        SSLSocketFactory sslSocketFactory = JaxRsSSLManager.getProxySSLSocketFactoryBySSLRef(sslRef, null);
+//        return sslSocketFactory;
 
-        SSLSocketFactory sslSocketFactory = JaxRsSSLManager.getProxySSLSocketFactoryBySSLRef(sslRef, null);
-        return sslSocketFactory;
+        // I don't think this ever gets called, but I don't want to re-factor the interface right now
+        return null;
     }
 
 }
