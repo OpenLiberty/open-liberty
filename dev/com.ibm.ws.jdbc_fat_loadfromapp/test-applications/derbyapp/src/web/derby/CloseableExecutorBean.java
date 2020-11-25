@@ -10,26 +10,8 @@
  *******************************************************************************/
 package web.derby;
 
+import java.io.Closeable;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Resource;
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.sql.DataSource;
-
-@Stateful
-public class BeanInWebApp implements CloseableExecutorBean, Executor {
-    @Resource(name = "java:comp/env/jdbc/dsref", lookup = "jdbc/sharedLibDataSource")
-    DataSource ds;
-
-    @Override
-    @Remove
-    public void close() {
-        System.out.println("EJB remove method (close) invoked");
-    }
-
-    @Override
-    public void execute(Runnable runnable) {
-        runnable.run();
-    }
+public interface CloseableExecutorBean extends Closeable, Executor {
 }

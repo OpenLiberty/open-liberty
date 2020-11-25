@@ -15,14 +15,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Closeable;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -30,6 +34,8 @@ import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
@@ -42,7 +48,7 @@ import componenttest.app.FATDatabaseServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DerbyLoadFromAppServlet")
 public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
-    @Resource
+    @Resource(shareable = false)
     private DataSource defaultDataSource;
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromOtherApp", lookup = "jdbc/sharedLibDataSource")
@@ -51,8 +57,17 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromEnterpriseAppNotFoundInWebApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromOtherAppNotFound;
 
-    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource", shareable = false)
     private DataSource sldsLoginModuleFromWebApp;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        try (Connection con = defaultDataSource.getConnection()) {
+            con.createStatement().execute("CREATE TABLE TESTTBL(NAME VARCHAR(20) NOT NULL PRIMARY KEY, VAL INT NOT NULL)");
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
 
     // Use a data source with generic properties element where the dataSource's jdbcDriver
     // specifies a data source class name, but is configured without any library,
@@ -80,6 +95,92 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * testHandleListClosesLeakedConnectionWhenEJBRemoveIsInvoked - verifies that when the HandleList is enabled,
+     * it permits EJBs to cache connections across method invocations, but closes the connection if it is leaked
+     * across EJB remove.
+     */
+    @Test
+    public void testHandleListClosesLeakedConnectionWhenEJBRemoveIsInvoked() throws Exception {
+        AtomicReference<Connection> conRef = new AtomicReference<Connection>();
+        AtomicReference<Statement> stmtRef = new AtomicReference<Statement>();
+
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/BeanInWebApp!web.derby.CloseableExecutorBean");
+        bean.execute(() -> {
+            try {
+                Connection con = defaultDataSource.getConnection();
+                conRef.set(con);
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        bean.execute(() -> {
+            try {
+                Statement stmt = conRef.get().createStatement();
+                stmtRef.set(stmt);
+                stmt.executeUpdate("INSERT INTO TESTTBL VALUES('NW Rochester', 55901)");
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        bean.execute(() -> {
+            try {
+                stmtRef.get().executeUpdate("INSERT INTO TESTTBL VALUES('SW Rochester', 55902)");
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        // Cached handle remains open across EJB method invocations
+        assertFalse(conRef.get().isClosed());
+        assertFalse(stmtRef.get().isClosed());
+
+        // EJB remove
+        ((Closeable) bean).close();
+
+        // Handle is closed by HandleList upon EJB remove
+        assertTrue(conRef.get().isClosed());
+        assertTrue(stmtRef.get().isClosed());
+
+        // Verify the data that was written by the EJB methods
+        try (Connection con = defaultDataSource.getConnection()) {
+            assertEquals(2, con.createStatement().executeUpdate("DELETE FROM TESTTBL WHERE NAME LIKE '%W Rochester'"));
+        }
+    }
+
+    /**
+     * testHandleListDoesNotCloseLeakedConnectionOnEJBRemoveWhenHandleListDisabled - verifies that when the
+     * HandleList is disabled, it does not close a connection that is leaked across EJB remove.
+     */
+    @Test
+    public void testHandleListDoesNotCloseLeakedConnectionOnEJBRemoveWhenHandleListDisabled() throws Exception {
+        AtomicReference<Connection> conRef = new AtomicReference<Connection>();
+
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/BeanInWebApp!web.derby.CloseableExecutorBean");
+        bean.execute(() -> {
+            try {
+                Connection con = sldsLoginModuleFromWebApp.getConnection();
+                con.createStatement();
+                conRef.set(con);
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        // Cached handle remains open across EJB method invocations
+        assertFalse(conRef.get().isClosed());
+
+        // EJB remove should not impact the connection handle when HandleList is disabled
+        ((Closeable) bean).close();
+
+        // Cached handle remains open
+        assertFalse(conRef.get().isClosed());
+
+        conRef.get().close();
     }
 
     // This basic test verifies that the application can at least load classes from the Derby library that it includes

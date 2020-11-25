@@ -27,6 +27,7 @@
     <application id="otherApp" location="otherApp.ear"/>
 
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
+      <connectionManager enableHandleList="true"/> <!-- TODO remove once this becomes default behavior -->
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
       <properties databaseName="memory:ds1"/>
     </dataSource>
@@ -37,6 +38,7 @@
     </dataSource>
 
     <dataSource id="sharedLibDataSource" jndiName="jdbc/sharedLibDataSource">
+      <connectionManager enableHandleList="false"/> <!-- TODO use correct property name, once added -->
       <!-- loads its JDBC driver from a shared library, NOT from the app like the other data sources in this server -->
       <jdbcDriver>
         <library>
