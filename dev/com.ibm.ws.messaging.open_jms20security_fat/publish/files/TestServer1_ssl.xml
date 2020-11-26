@@ -8,7 +8,7 @@
   </featureManager>
 
   <include location="../fatTestCommon.xml"/>
-  
+
   <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
@@ -19,9 +19,10 @@
     </iiopEndpoint>
 
   <logging
-    traceSpecification="*=info::SIBCommunications=all:SIB*=all:ChannelFramework=all"
-    maxFileSize="200"
+    traceSpecification="*=info:logservice=all:SIBMessageTrace=all:com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain=all:com.ibm.ws.messaging.security.RuntimeSecurityServiceImpl=all:com.ibm.ws.app.manager.internal.lifecycle.*=all"
+ maxFileSize="200"
   />
+
 
   <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
   <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}" />

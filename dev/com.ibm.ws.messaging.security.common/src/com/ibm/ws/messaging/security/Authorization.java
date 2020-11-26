@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,18 +39,22 @@ public class Authorization {
     // Absolute class name along with the package used for tracing
     private static final String CLASS_NAME = "com.ibm.ws.messaging.security.Authorization.";
 
-    /*
-     * Authorization Service for Messaging, it will exists when messaging
-     * security is enabled
-     */
+    /* Authorization Service for Messaging, it will exists only if messaging security is enabled. */
     private MessagingAuthorizationService messagingAuthorizationService = null;
 
-    /*
-     * RuntimeSecurityService is a singleton instance and used to query if
-     * Messaging Security is enabled or not
-     */
-    private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
+    private final RuntimeSecurityService runtimeSecurityService;
 
+    Authorization(RuntimeSecurityService runtimeSecurityService) {
+        final String methodName = "Authentication";   
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Object[] { this, runtimeSecurityService });
+        
+        this.runtimeSecurityService = runtimeSecurityService;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
+    }
+    
     /**
      * Checks if the User passed has access to the queue to perform an action
      * <ul>

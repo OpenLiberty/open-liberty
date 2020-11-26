@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -163,8 +163,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
     private Map _connectionProperties = null;
 
     // Security Changes for Liberty Messaging: Sharath Start
-    private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
-    private final Authentication _authentication;
+    private final RuntimeSecurityService runtimeSecurityService;
     private final Authorization _authorization;
     private boolean _isBusSecure = false;
     // Security changes for Liberty Messaging: Sharath End
@@ -196,7 +195,7 @@ public final class ConnectionImpl implements MPCoreConnection, TransactionCallba
         _connectionProperties = connectionProperties;
 
         // Security Changes for Liberty Messaging: Sharath Start
-        _authentication = messageProcessor.getAuthentication();
+        runtimeSecurityService = messageProcessor.getRuntimeSecurityService();
         _authorization = messageProcessor.getAuthorization();
         // Security Changes for Liberty Messaging: Sharath End
 
