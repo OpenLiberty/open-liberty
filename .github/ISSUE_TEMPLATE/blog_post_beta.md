@@ -15,7 +15,7 @@ Please provide the following information the week before the GA/beta date (to al
     
    Human-readable name (eg WebSockets feature):
    
-   Feature config name (eg websockets-1.0): 
+   Short feature name (eg websockets-1.0): 
 
 2. Who is the target persona? Who do you expect to use the update? eg application developer, operations.
 
