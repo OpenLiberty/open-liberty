@@ -33,15 +33,11 @@ import com.meterware.httpunit.WebResponse;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-//Added 11/2020
-//collides with 'Service.Mode
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
-//since the collided factor is removed with the commented out test testCxfClientNoWsse(), open up @Mode
-@Mode(TestMode.FULL)
+//Note the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
+//12/2020 Setting this test class for LITE bucket
+//@Mode(TestMode.FULL)
 //Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
@@ -111,47 +107,47 @@ public class CxfNoWssecTests {
     //@Test
     /*
      * public void testCxfClientNoWssec() throws Exception {
-     * 
+     *
      * String thisMethod = "testCxfClientNoWssec";
      * String expectedResponse = "This is WSSECFVT CXF Web Service.";
-     * 
+     *
      * URL wsdlURL = new URL(wsdlLocation);
      * Log.info(thisClass, thisMethod, "wsdlURL is: " + wsdlURL);
-     * 
+     *
      * QName serviceName1 = new QName(SERVICE_NS, "SOAPService1");
      * QName portName1 = new QName(SERVICE_NS, "SoapPort1");
-     * 
+     *
      * SOAPService1 service1 = new SOAPService1(wsdlURL, serviceName1);
      * Log.info(thisClass, thisMethod, "service1 is: " + service1);
-     * 
+     *
      * Source src = new StreamSource(reqMsg);
      * Log.info(thisClass, thisMethod, "stream source src with reqmsg is: " + src);
-     * 
+     *
      * MessageFactory factory = MessageFactory.newInstance();
      * SOAPMessage soapReq1 = factory.createMessage();
      * soapReq1.getSOAPPart().setContent(src);
      * soapReq1.saveChanges();
      * Log.info(thisClass, thisMethod, "after soapReq1 lines");
-     * 
+     *
      * Dispatch<SOAPMessage> dispSOAPMsg = service1.createDispatch(portName1,
      * SOAPMessage.class, Mode.MESSAGE);
      * Log.info(thisClass, thisMethod, "after dispSOAPMsg service1.createDispatch ");
-     * 
+     *
      * Log.info(thisClass, thisMethod, "Invoking server through Dispatch interface using SOAPMessage");
-     * 
+     *
      * Log.info(thisClass, thisMethod, "before dispSOAPMsg.invoke soapReq1");
      * SOAPMessage soapResp = dispSOAPMsg.invoke(soapReq1);
      * Log.info(thisClass, thisMethod, "after dispSOAPMsg.invoke soapReq1");
-     * 
+     *
      * Log.info(thisClass, thisMethod, "CXF Client Response SOAP Body contents: " + soapResp.getSOAPBody().getTextContent());
-     * 
+     *
      * String respText = soapResp.getSOAPBody().getTextContent();
-     * 
+     *
      * assertTrue("The testCxfClientToCxfWebSvc test failed",
      * respText.contains(expectedResponse));
-     * 
+     *
      * return;
-     * 
+     *
      * }
      */
     /**

@@ -81,10 +81,9 @@ public class CxfX509ObjectTests {
 
         //Added 11/2020
         //x509client.war needs to be placed at server root
-        //ShrinkHelper.defaultDropinApp(server, "x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
         //Added 11/2020
         WebArchive x509client_war = ShrinkHelper.buildDefaultApp("x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
-        ShrinkHelper.exportDropinAppToServer(server, x509client_war);
+        ShrinkHelper.exportToServer(server, "", x509client_war);
         //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "x509token", "basicplcy.wssecfvt.test");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");

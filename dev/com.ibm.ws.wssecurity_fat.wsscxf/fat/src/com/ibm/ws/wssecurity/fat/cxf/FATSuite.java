@@ -26,7 +26,6 @@ import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSymSampleTests;
 import com.ibm.ws.wssecurity.fat.cxf.sha2sig.CxfSha2SigTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfDeriveKeyTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfPasswordDigestTests;
-import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTBasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTimeOutTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfUNTBasicTests;
@@ -53,10 +52,19 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                CxfSSLUNTBasicTests.class,
+                //In OL, FATSuiteLite.java is no longer used;
+                //instead, using full mode annotation to signal for FULL bucket and LITE without the annotation in the test class file
+                //These 7 tests are run as LITE FAT bucket, where no full mode annotation @Mode(TestMode.FULL) is specified in the java file
+                CxfUNTBasicTests.class,
                 CxfSSLUNTNonceTests.class,
-                CxfSSLUNTNonceTimeOutTests.class,
                 CxfNoWssecTests.class,
+                CxfX509MigTests.class,
+                CxfCallerUNTTests.class,
+                CxfSampleTests.class,
+                CxfSymSampleTests.class,
+
+                //The following are run as FULL FAT bucket, where full mode annotation @Mode(TestMode.FULL) is specified in the java file
+                CxfSSLUNTNonceTimeOutTests.class,
                 CxfPasswordDigestTests.class,
                 CxfUNTBasicTests.class,
                 CxfUNTNonceTests.class,
@@ -67,7 +75,6 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
                 CxfWss11EncTests.class,
                 CxfX509MigSymSha2NegativeTests.class,
                 CxfX509MigSymTests.class,
-                CxfX509MigTests.class,
                 CxfX509BasicTests.class,
                 CxfX509EncTests.class,
                 CxfX509ObjectTests.class,
@@ -85,14 +92,12 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
                 //orig from CL as commented out, but not sure why test class name is used here although CL has CxfX509MustUnderstandTests.java
                 //CxfMustUnderstandTests.class,
                 //CxfX509MustUnderstandTests.class,
-                CxfCallerUNTTests.class,
                 CxfCallerX509AsymTests.class,
                 CxfCallerX509SymTests.class,
-                CxfSampleTests.class,
-                CxfSymSampleTests.class,
                 CxfSha2SigTests.class,
                 CxfBspTests.class,
                 CxfInteropX509Tests.class
+
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

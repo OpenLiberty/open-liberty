@@ -87,13 +87,6 @@ autoFVT.doLast {
   ]
 
   servers.each { server ->
-  /*
-    copy { 
-      from project.file('publish/servers/' + server + '/')
-      include "pwdigest.war", "pwdigestclient.war"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  */
     copy { 
       from project.file('lib')
       include "jsse.jar"
@@ -193,13 +186,7 @@ autoFVT.doLast {
       include "x509*Default*.jks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-    /*
-    copy { 
-      from project.file('publish/servers/' + server + '/')
-      include "x509client.war"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-    */
+    
   }
 
 /* Copy securitykeys/enc-sender.jceks, and enc-receiver.jceks to these servers */
@@ -292,7 +279,7 @@ autoFVT.doLast {
   }
 
 /* Copy securitykeys/myx509p.cer, myx509n.cer, myx509crl.crl, and myx509.ks  to this server */
-/* Copy publish/servers/../testApps/*.war , *.jar  */
+/* Copy autoFVT/lib *.jar  */
 
   servers = [
     'com.ibm.ws.wssecurity_fat.x509crl'
@@ -304,13 +291,12 @@ autoFVT.doLast {
       include "myx509p.cer", "myx509n.cer", "myx509crl.crl", "myx509.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-    /*
-    copy { 
-      from project.file('publish/servers/' + server + '/testApps/')
-      include "x509crl.war", "x509crlclient.war", "util.jar"
+    copy {
+      from new File(autoFvtDir, 'lib')
+      include "com.ibm.ws.wssecurity.fat.utils.common.jar"
       into new File(autoFvtDir, 'publish/servers/' + server + '/testApps/')
     }
-    */
+   
   }
 
 }

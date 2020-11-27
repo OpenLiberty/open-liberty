@@ -35,12 +35,10 @@ import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
-@Mode(TestMode.FULL)
+//12/2020 Setting this test class for LITE bucket
+//@Mode(TestMode.FULL)
 //Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509MigTests {

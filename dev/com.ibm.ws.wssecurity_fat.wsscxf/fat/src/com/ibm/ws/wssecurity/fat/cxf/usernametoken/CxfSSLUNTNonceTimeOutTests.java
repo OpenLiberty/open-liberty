@@ -26,12 +26,13 @@ import componenttest.annotation.AllowedFFDC;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+//Added 11/2020
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
+//Added 11/2020, this test used to be run as LITE in CL, but takes more than 3 min to run, which is set to run with Full mode now
 @Mode(TestMode.FULL)
 //Added 10/2020
 @RunWith(FATRunner.class)

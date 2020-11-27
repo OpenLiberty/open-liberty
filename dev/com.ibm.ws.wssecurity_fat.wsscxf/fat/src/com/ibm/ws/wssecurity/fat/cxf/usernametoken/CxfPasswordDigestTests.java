@@ -90,8 +90,8 @@ public class CxfPasswordDigestTests extends CommonTests {
         WebArchive pwdigestclient_war = ShrinkHelper.buildDefaultApp("pwdigestclient", "com.ibm.ws.wssecurity.fat.pwdigestclient", "fats.cxf.pwdigest.wssec",
                                                                      "fats.cxf.pwdigest.wssec.types");
         WebArchive pwdigest_war = ShrinkHelper.buildDefaultApp("pwdigest", "com.ibm.ws.wssecurity.fat.pwdigest");
-        ShrinkHelper.exportDropinAppToServer(server, pwdigestclient_war);
-        ShrinkHelper.exportDropinAppToServer(server, pwdigest_war);
+        ShrinkHelper.exportToServer(server, "", pwdigestclient_war);
+        ShrinkHelper.exportToServer(server, "", pwdigest_war);
         //Added 10/2020
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");

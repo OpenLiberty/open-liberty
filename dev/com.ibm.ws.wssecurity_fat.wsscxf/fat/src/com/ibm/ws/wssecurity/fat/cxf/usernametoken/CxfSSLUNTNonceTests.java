@@ -17,11 +17,9 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
-//Added 11/2020
-@Mode(TestMode.FULL)
+//12/2020 Setting this test class for LITE bucket
+//@Mode(TestMode.FULL)
 //Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTests extends SSLTestCommon {
