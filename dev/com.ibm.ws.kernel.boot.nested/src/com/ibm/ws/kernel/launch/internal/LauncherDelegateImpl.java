@@ -190,7 +190,7 @@ public class LauncherDelegateImpl implements LauncherDelegate {
         try {
             Class<?> providerClass = loader.loadClass(providerClassName);
             if (providerClass != null) {
-                p = (LogProvider) providerClass.newInstance();
+                p = (LogProvider) providerClass.getConstructor().newInstance();
 
                 p.configure(new ReadOnlyFrameworkProperties(config),
                             config.getLogDirectory(),

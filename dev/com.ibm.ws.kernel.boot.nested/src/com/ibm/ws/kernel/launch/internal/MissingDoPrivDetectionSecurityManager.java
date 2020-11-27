@@ -149,13 +149,10 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
 
                     ClassLoader cl = clazz.getClassLoader();
 
-                    boolean jvmClassLoader = isJvmClassLoader(cl);
                     boolean rtClassLoader = isRuntimeClassLoader(clazz, cl);
                     boolean appClassLoader = isAppClassLoader(cl);
 
-                    String loader = null;
                     if (cl != null) {
-                        loader = cl.getClass().getName();
                     }
 
                     if (clazz.getName().startsWith("com.ibm._jsp.")) {
@@ -215,10 +212,6 @@ public class MissingDoPrivDetectionSecurityManager extends SecurityManager {
             return false;
 
         return (cl.getClass().getName().equals(this.getClass().getClassLoader().getClass().getName()));
-    }
-
-    private boolean isJvmClassLoader(ClassLoader cl) {
-        return cl == null || cl == ClassLoader.getSystemClassLoader();
     }
 
     /**

@@ -14,6 +14,8 @@ package com.ibm.ws.kernel.launch.service;
  * Exception representing no pauseable components during a pause or resume request
  */
 public class PauseableComponentControllerRequestFailedException extends Exception {
+    /** Generated to match previous revision of this class */
+    private static final long serialVersionUID = -8865249745913114708L;
 
     /**
      * Constructs a new instance with null as its detail message and cause.
