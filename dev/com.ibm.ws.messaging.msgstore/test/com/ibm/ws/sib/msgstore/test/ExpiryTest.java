@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,6 +39,7 @@ import test.common.SharedOutputManager;
 
 import com.ibm.ws.sib.msgstore.AbstractItem;
 import com.ibm.ws.sib.msgstore.CacheStatistics;
+import com.ibm.ws.sib.msgstore.Configuration;
 import com.ibm.ws.sib.msgstore.Filter;
 import com.ibm.ws.sib.msgstore.Item;
 import com.ibm.ws.sib.msgstore.ItemStream;
@@ -47,6 +49,7 @@ import com.ibm.ws.sib.msgstore.MessageStoreException;
 import com.ibm.ws.sib.msgstore.ReferenceStream;
 import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
 import com.ibm.ws.sib.msgstore.Statistics;
+import com.ibm.ws.sib.msgstore.impl.MessageStoreImpl;
 import com.ibm.ws.sib.msgstore.transactions.ExternalLocalTransaction;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 import com.ibm.ws.sib.transactions.LocalTransaction;
@@ -75,7 +78,7 @@ public class ExpiryTest extends MessageStoreTestCase {
     AtomicLong itemsRemoved = new AtomicLong();
     final Lock expiryStartedLock = new ReentrantLock();
     boolean expiryStarted = false;
-    final Condition expiryStartedCondition  = expiryStartedLock.newCondition();
+    final Condition expiryStartedCondition = expiryStartedLock.newCondition();
 
     public ExpiryTest(String name) {
         super(name);
@@ -92,6 +95,14 @@ public class ExpiryTest extends MessageStoreTestCase {
         test.setPersistence(persistence);
         suite.addTest(test);
 
+        test = new ExpiryTest("testLockedItemExpiry");
+        test.setPersistence(persistence);
+        suite.addTest(test);
+        
+        test = new ExpiryTest("testExpirerStartup");
+        test.setPersistence(persistence);
+        suite.addTest(test);
+        
         return suite;
     }
 
@@ -124,11 +135,11 @@ public class ExpiryTest extends MessageStoreTestCase {
 
     @Test
     public void testLockedItemExpiry() {
-        SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+        //SharedOutputManager outputMgr = SharedOutputManager.getInstance();
         //outputMgr.trace("com.ibm.ws.sib.*=all:com.ibm.ejs.util.am.*=all");
-        outputMgr.trace("com.ibm.ws.sib.msgstore.expiry.*=all:com.ibm.ejs.util.am.*=all");
-        outputMgr.captureStreams();
-        print("Tracing to: .../com.ibm.ws.messaging.msgstore/build/libs/trace-logs/");
+        //outputMgr.trace("com.ibm.ws.sib.msgstore.expiry.*=all:com.ibm.ejs.util.am.*=all");
+        //outputMgr.captureStreams();
+        //print("Tracing to: .../com.ibm.ws.messaging.msgstore/build/libs/trace-logs/");
         
         storageStrategy = AbstractItem.STORE_NEVER;
         
@@ -176,6 +187,10 @@ public class ExpiryTest extends MessageStoreTestCase {
             exception.printStackTrace();
             fail(exception.toString());
         } finally {
+            // outputMgr.dumpStreams();
+            // Make stdout and stderr "normal"
+            // outputMgr.restoreStreams();
+                           
             try {
                 stopMessageStore(messageStore);
             } catch (Exception e) {
@@ -183,13 +198,78 @@ public class ExpiryTest extends MessageStoreTestCase {
                 fail(e.toString());
             }
         }  
-
-        outputMgr.dumpStreams();
-        // Make stdout and stderr "normal"
-        outputMgr.restoreStreams();
-            
+        
         // We should see only the first item has expired, the second one was removed before it expired.
         assertTrue("Incorrect items expired, itemsExpired="+itemsExpired , itemsExpired.get() ==1);     
+    }
+    
+    @Test
+    public void testExpirerStartup() {
+        //SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+        //outputMgr.trace("com.ibm.ws.sib.msgstore.expiry.*=all");
+        //outputMgr.trace("com.ibm.ws.sib.msgstore.*=all");
+        //outputMgr.captureStreams();
+        //print("Tracing to: .../com.ibm.ws.messaging.msgstore/build/libs/trace-logs/");
+        
+        // Provide an executor for theExpirers alarmManager to use, note that the Alarm Manager only uses one thread.
+        AlarmManager alarmManager = new TestAlarmManager(Executors.newScheduledThreadPool(10));
+        
+        MessageStore messageStore = null;
+        try {
+            long expiryMilliseconds = 1000;
+            CountDownLatch expiryFinished = new CountDownLatch(2);
+            class StartupTestItem extends Item {
+                @Override
+                public long getMaximumTimeInStore() {return expiryMilliseconds;}
+                @Override
+                public int getStorageStrategy() {return AbstractItem.STORE_ALWAYS;}
+                @Override
+                public boolean canExpireSilently() {return false;}
+                @Override
+                public void eventExpiryNotification(Transaction transaction) throws SevereMessageStoreException {                    
+                    expiryFinished.countDown();
+                }
+            };
+            
+            // Make the Expirer run almost continuously, an expiry interval < 1 means stop the expirer.
+            System.setProperty(MessageStoreConstants.STANDARD_PROPERTY_PREFIX + MessageStoreConstants.PROP_EXPIRY_INTERVAL, Integer.toString(1));
+            messageStore = createAndStartMessageStore(true, PERSISTENCE);
+             
+            ItemStream rootItemStream = createPersistentRootItemStream(messageStore);
+            
+            // Put an item on the ItemStream then stop the message store until after it has expired.            
+            Transaction tran = messageStore.getTransactionFactory().createAutoCommitTransaction();
+            rootItemStream.addItem(new StartupTestItem(), tran);            
+           
+            messageStore.expirerStop();
+            Thread.sleep(expiryMilliseconds);
+            
+            messageStore.expirerStart();
+            // Put another item on the stream. 
+            rootItemStream.addItem(new StartupTestItem(), tran);
+            
+            // Wait for both items to expire.
+            print(new Date()+" Waiting for two items to expire, itemsExpired="+itemsExpired);
+            expiryFinished.await(expiryMilliseconds+10, TimeUnit.MILLISECONDS); 
+            long itemsRemaining = expiryFinished.getCount();
+            assertTrue("ItemsNotExpired != 0 itemsRemaining=" + itemsRemaining, itemsRemaining == 0);      
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            fail(exception.toString());
+        
+        } finally {
+            //outputMgr.dumpStreams();
+            // Make stdout and stderr "normal"
+            //outputMgr.restoreStreams();
+            try {
+                stopMessageStore(messageStore);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.toString());
+            }           
+        }  
+       
     }
     
     private void itemExpiry() {

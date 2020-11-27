@@ -57,8 +57,10 @@ public class Expirer implements AlarmListener,  XmlConstants
 
     // The alarm which will perform the next ExpiryIndex scan and its read write lock.
     private Alarm expiryAlarm = null;
-    // Only allow the alarms to be added and scheduled once the Expirer has been started.
+    // Only allow the alarms to be scheduled and Expirables expired, after the Expirer has been started.
     private final AtomicBoolean started = new AtomicBoolean(false);
+    // Allow Expirables to be added before the Expirer has been started and until it is stopped.
+    private final AtomicBoolean addEnabled = new AtomicBoolean(true);
     // Lock to protect writing the expiryAlarm and the started state.
     private final ReentrantReadWriteLock expiryAlarmLock = new ReentrantReadWriteLock();
 
@@ -117,9 +119,9 @@ public class Expirer implements AlarmListener,  XmlConstants
                        + " started="+started);
         }
 
-        // Ignore this entry if the expirer has ended or the given entry is null
+        // Ignore this entry if the Expirer has ended or the given entry is null
         // or the referenced item has already gone from the message store.
-        if (expirable != null && started.get() && expirable.expirableIsInStore()){
+        if (expirable != null && addEnabled.get() && expirable.expirableIsInStore()){
             ExpirableReference expirableRef = new ExpirableReference(expirable);
 
             if (expiryIndex.put(expirableRef)) {
@@ -148,7 +150,7 @@ public class Expirer implements AlarmListener,  XmlConstants
 
     /**
      * Used by the cache to determine whether the expirer has been started.
-     * @return true if the expirer has been started but not yet stopped.
+     * @return true if the Expirer has been started but not yet stopped.
      */
     public final boolean isRunning() {
         return started.get();
@@ -252,6 +254,7 @@ public class Expirer implements AlarmListener,  XmlConstants
 
                     } else {
                         started.set(true);
+                        addEnabled.set(true);
                         expirerStartTime = System.currentTimeMillis();
                         // Process any pending Expirables.
                         if (!expiryIndex.isEmpty())
@@ -274,8 +277,9 @@ public class Expirer implements AlarmListener,  XmlConstants
      */
     public final void stop()
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop", "started="+started+" expiryAlarm="+expiryAlarm);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop", "started="+started+" addEnabled="+addEnabled+" expiryAlarm="+expiryAlarm);
 
+        addEnabled.set(false);
         expiryAlarmLock.writeLock().lock();
         try {
             started.set(false);
