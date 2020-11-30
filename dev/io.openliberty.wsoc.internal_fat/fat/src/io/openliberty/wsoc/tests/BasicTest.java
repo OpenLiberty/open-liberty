@@ -157,7 +157,7 @@ public class BasicTest extends LoggingTest {
         }
 
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E");
+            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E", "SRVE8115W", "SRVE0190E");
         }
         bwst.tearDown();
     }
