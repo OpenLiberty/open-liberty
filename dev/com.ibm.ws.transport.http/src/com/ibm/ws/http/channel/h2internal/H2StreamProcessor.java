@@ -1143,6 +1143,10 @@ public class H2StreamProcessor {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "did not call setNewBodyBuffer. buf was null");
                             }
+                            if (currentFrame.flagEndStreamSet()) {
+                                endStream = true;
+                                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                            }
                         }
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
