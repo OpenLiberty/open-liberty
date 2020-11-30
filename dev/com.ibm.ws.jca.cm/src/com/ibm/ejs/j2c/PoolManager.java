@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2419,23 +2419,38 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 }
             }
         }
-        MCWrapper[] mcwl = getUnSharedPoolConnections();
-        int mcwlLength = mcwl.length;
-        for (int j = 0; j < mcwlLength; ++j) {
-            if (!mcwl[j].isDestroyState()) {
-                mcwl[j].setDestroyState();
 
-                if (purgeWithAbort && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
-                    && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
-                    // The MCW aborted the connection sucessfully
-                } else {
-                    if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
-                        ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
-                    }
-                    this.totalConnectionCount.decrementAndGet();
-                }
-            }
-        } // end for loop
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Clearing unshared pool connections");
+        }
+
+        mcToMCWMapWrite.lock();
+        try {
+            // Expensive operation, but equivalent to doing getUnSharedPoolConnections but safer as we keep the lock.
+            int mcToMCWSize = mcToMCWMap.size();
+            Object[] tempObject = mcToMCWMap.values().toArray();
+            for (int ti = 0; ti < mcToMCWSize; ++ti) {
+                MCWrapper mcw = (MCWrapper) tempObject[ti];
+                if (mcw.getPoolState() == 3) { // unshared pool
+                    mcw.setDestroyState(); // for all connection factories and datasources
+                    if (purgeWithAbort
+                        && mcw instanceof com.ibm.ejs.j2c.MCWrapper
+                        && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
+                        // The MCW aborted the connection successfully
+                    } else {
+                        ManagedConnection mc = mcw.getManagedConnection();
+                        if (mc instanceof WSManagedConnection) {
+                            //Safe state operation since we have a write lock
+                            //This is for relational resource adapter to help with removing connections in use.
+                            ((WSManagedConnection) mc).markStale();
+                        }
+                        this.totalConnectionCount.decrementAndGet();
+                    } // end abort or mark stale
+                } // end check if unshared
+            } // end for loop
+        } finally {
+            mcToMCWMapWrite.unlock();
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "purgePoolContents");
