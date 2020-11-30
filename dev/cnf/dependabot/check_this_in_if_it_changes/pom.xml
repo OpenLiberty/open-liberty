@@ -1929,12 +1929,12 @@
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
       <artifactId>org.eclipse.transformer.cli</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
       <artifactId>org.eclipse.transformer</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
