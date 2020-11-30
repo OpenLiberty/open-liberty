@@ -68,6 +68,8 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
         server.addInstalledAppForValidation(derbyRAAppName);
         server.startServer();
+
+        FATServletClient.runTest(server, DerbyRAServlet, "initDatabaseTables");
     }
 
     @AfterClass
@@ -159,6 +161,16 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     @Test
     public void testJCADataSourceResourceRef() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testNonDissociatableHandlesCannotBeParkedAcrossTransactionScopes() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testNonDissociatableHandlesParkedAcrossEJBMethods() throws Exception {
         runTest(DerbyRAServlet);
     }
 
