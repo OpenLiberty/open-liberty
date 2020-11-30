@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.microProfile-4.0
+symbolicName=com.ibm.websphere.appserver.microProfile-4.0
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
