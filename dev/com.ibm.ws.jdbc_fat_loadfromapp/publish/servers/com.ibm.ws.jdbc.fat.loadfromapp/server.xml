@@ -98,6 +98,7 @@
     <!-- permissions for Derby in the app -->
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="createClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
