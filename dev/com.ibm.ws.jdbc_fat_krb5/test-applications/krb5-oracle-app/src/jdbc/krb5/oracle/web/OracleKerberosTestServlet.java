@@ -52,23 +52,51 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/DataSource")
     DataSource krb5RegularDs;
 
+    /**
+     * Getting a connection too soon after the initial ticket is obtained can cause intermittent
+     * issues where we getConnection() fails with: Oracle Error ORA-12631
+     * These timing issues can be reproduced in a standalone JDBC program, which indicates that
+     * we aren't doing anything wrong in the Liberty code, and instead this is due a Oracle driver
+     * or DB issue which would require an Oracle support contract to investigate further
+     */
+    private static Connection getConnectionWithRetry(DataSource ds) throws SQLException {
+        SQLException firstEx = null;
+        for (int attempt = 0; attempt < 5; attempt++) {
+            try {
+                return ds.getConnection();
+            } catch (SQLException e) {
+                if (firstEx == null)
+                    firstEx = e;
+                if (e.getMessage() != null && e.getMessage().contains("ORA-12631")) {
+                    System.out.println("getConnection attempt " + attempt + " failed with ORA-12631");
+                    waitFor(3_000);
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+        }
+        throw firstEx;
+    }
+
+    private static void waitFor(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            // Getting a connection too soon after the initial ticket is obtained can cause intermittent
-            // issues where we getConnection() fails with: Oracle Error ORA-12631
-            // These timing issues can be reproduced in a standalone JDBC program, which indicates that
-            // we aren't doing anything wrong in the Liberty code, and instead this is due a Oracle driver
-            // or DB issue which would require an Oracle support contract to investigate further
-            Thread.sleep(750);
-        } catch (InterruptedException e) {
-        }
+        // see getConnectionWithRetry for reasoning behind wait
+        waitFor(750);
         super.doGet(request, response);
     }
 
     @Test
     public void testNonKerberosConnection() throws Exception {
-        try (Connection con = noKrb5.getConnection()) {
+        try (Connection con = getConnectionWithRetry(noKrb5)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -78,7 +106,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      */
     @Test
     public void testKerberosBasicConnection() throws Exception {
-        try (Connection con = krb5DataSource.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5DataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -88,7 +116,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      */
     @Test
     public void testKerberosXAConnection() throws Exception {
-        try (Connection con = krb5XADataSource.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5XADataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -98,7 +126,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      */
     @Test
     public void testKerberosRegularConnection() throws Exception {
-        try (Connection con = krb5RegularDs.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5RegularDs)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -131,12 +159,12 @@ public class OracleKerberosTestServlet extends FATServlet {
         String managedConn1 = null;
         String managedConn2 = null;
 
-        try (Connection conn = krb5DataSource.getConnection()) {
+        try (Connection conn = getConnectionWithRetry(krb5DataSource)) {
             managedConn1 = getManagedConnectionID(conn);
             System.out.println("Managed connection 1 is: " + managedConn1);
         }
 
-        try (Connection conn = krb5DataSource.getConnection()) {
+        try (Connection conn = getConnectionWithRetry(krb5DataSource)) {
             managedConn2 = getManagedConnectionID(conn);
             System.out.println("Managed connection 2 is: " + managedConn2);
         }
