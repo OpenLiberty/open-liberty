@@ -17,6 +17,8 @@ Bundle-Description: WebSphere Job Logger for Java Batch (jbatch) ; version=${bVe
 
 WS-TraceGroup: wsbatch
 
+jakartaeeMe: true
+
 Export-Package:\
  com.ibm.ws.jbatch.joblog;provide=true,\
  com.ibm.ws.jbatch.joblog.services;provide=true

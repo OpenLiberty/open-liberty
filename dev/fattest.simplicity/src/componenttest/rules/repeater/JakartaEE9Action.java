@@ -64,6 +64,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "appAuthentication-2.0",
                                                  "appAuthorization-2.0",
                                                  "appSecurity-4.0",
+                                                 "batch-2.0",
+                                                 "batchManagement-2.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
@@ -280,8 +282,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
 
-            args[2] = "-q"; // quiet output
-
+            //args[2] = "-q"; // quiet output
+            args[2] = "-v";
             // override jakarta default properties, which are
             // packaged in the transformer jar
             args[3] = "-tr"; // package-renames

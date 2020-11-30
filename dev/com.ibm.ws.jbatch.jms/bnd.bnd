@@ -8,6 +8,8 @@ Bundle-Description: WebSphere Job JMS Dispatcher, JMS Executor and Job Event Pub
 Import-Package: *
 
 WS-TraceGroup: wsbatch
+
+jakartaeeMe: true
  
 Import-Package: \
   com.ibm.ws.kernel.boot.security;resolution:=optional, \

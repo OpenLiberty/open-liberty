@@ -17,6 +17,8 @@ Bundle-Description: Batch Role Based Security Support; version=${bVersion}
 
 WS-TraceGroup: wsbatch
 
+jakartaeeMe: true
+
 Private-Package:\
   com.ibm.ws.jbatch.security.*
 
