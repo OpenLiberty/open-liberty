@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.neethi:neethi;3.0.2}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.neethi:neethi;3.0.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.neethi:neethi;3.0.2}!/!META-INF/maven/*
+   @${repo;org.apache.neethi:neethi;3.0.2;EXACT}!/!META-INF/maven/*
 
--buildpath: org.apache.neethi:neethi;version=3.0.2
+-buildpath: org.apache.neethi:neethi;strategy=exact;version=3.0.2

@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.opensaml.messaging.api
+Bundle-Description: org.opensaml opensaml messaging api; version=3.4.5
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5
+
+WS-TraceGroup: SAML20
+
+
+
+Import-Package:  !com.google.errorprone.annotations, \
+ *
+ 
+Export-Package: \
+  org.opensaml.messaging;version="3.4.5", \
+  org.opensaml.messaging.context.*;version="3.4.5", \
+  org.opensaml.messaging.decoder.*;version="3.4.5", \
+  org.opensaml.messaging.encoder.*;version="3.4.5", \
+  org.opensaml.messaging.error.*;version="3.4.5", \
+  org.opensaml.messaging.handler.*;version="3.4.5", \
+  org.opensaml.messaging.logic.*;version="3.4.5", \
+  org.opensaml.messaging.pipeline.*;version="3.4.5"
+  
+Include-Resource: \
+ @${repo;org.opensaml:opensaml-messaging-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:
