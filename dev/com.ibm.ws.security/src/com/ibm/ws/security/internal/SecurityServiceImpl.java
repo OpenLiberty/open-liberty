@@ -10,23 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.internal;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
@@ -36,6 +19,21 @@ import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
+
 
 /**
  * White-board model. The services are stored based on id, or in the
@@ -401,8 +399,12 @@ public class SecurityServiceImpl implements SecurityService, ServicePropertySupp
     private <V> V autoDetectService(String serviceName, ConcurrentServiceReferenceMap<String, V> map) {
         Iterator<V> services = map.getServices();
         if (services.hasNext() == false) {
+            if (serviceName == "UserRegistry")
+            Tr.warning(tc,"SECURITY_SERVICE_NO_SERVICE_AVAILABLE", serviceName);
+            else{
             Tr.error(tc, "SECURITY_SERVICE_NO_SERVICE_AVAILABLE", serviceName);
             throw new IllegalStateException(Tr.formatMessage(tc, "SECURITY_SERVICE_NO_SERVICE_AVAILABLE", serviceName));
+            }
         }
         V service = services.next();
         if (services.hasNext()) {
