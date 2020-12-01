@@ -28,3 +28,5 @@ cxfVersion=3.3.3
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
   javax.activation:activation;version=1.1,\
   com.ibm.ws.logging.core
+
+jakartaeeMe: true

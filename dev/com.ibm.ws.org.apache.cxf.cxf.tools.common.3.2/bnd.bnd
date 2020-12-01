@@ -14,3 +14,6 @@
    @${repo;org.apache.cxf:cxf-tools-common;3.3.0}!/!META-INF/*
 
 -buildpath: org.apache.cxf:cxf-tools-common;version=3.3.0
+
+
+jakartaeeMe: true

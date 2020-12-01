@@ -24,3 +24,5 @@ cxfVersion=3.3.3
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
   
+jakartaeeMe: true
+  
