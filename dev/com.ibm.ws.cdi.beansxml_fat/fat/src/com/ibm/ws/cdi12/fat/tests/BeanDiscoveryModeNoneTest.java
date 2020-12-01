@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import java.net.MalformedURLException;
 import java.io.File;
 
 import org.junit.AfterClass;
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -26,49 +28,49 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.fat.util.browser.WebBrowserException;
+import com.ibm.ws.fat.util.browser.WebBrowserFactory;
+import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.HttpRequest;
 
-public class BeanDiscoveryModeNoneTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class BeanDiscoveryModeNoneTest {
 
-    @ClassRule
-    // Create the server.
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12BeanDiscoveryModeNoneServer");
+    @Server("cdi12BeanDiscoveryModeNoneServer")
+    public static LibertyServer server;
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
-         
-         return ShrinkWrap.create(WebArchive.class, "beanDiscoveryModeNone.war")
+    @BeforeClass
+    public static void setUp() throws Exception {
+         WebArchive beanDiscoveryModeNone = ShrinkWrap.create(WebArchive.class, "beanDiscoveryModeNone.war")
                         .addClass("com.ibm.ws.cdi12.test.beanDiscoveryModeNone.TestServlet")
                         .addClass("com.ibm.ws.cdi12.test.beanDiscoveryModeNone.TestBean1")
                         .add(new FileAsset(new File("test-applications/beanDiscoveryModeNone.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/beanDiscoveryModeNone.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        return SHARED_SERVER;
+         ShrinkHelper.exportDropinAppToServer(server, beanDiscoveryModeNone, DeployOptions.SERVER_ONLY);
+         server.startServer();
     }
 
     @Test
     @ExpectedFFDC({ "javax.servlet.UnavailableException", "com.ibm.wsspi.injectionengine.InjectionException" })
     public void testcorrectExceptionThrown() throws Exception {
-        this.verifyStatusCode("/beanDiscoveryModeNone/TestServlet", 404);
+        new HttpRequest(server, "/beanDiscoveryModeNone/TestServlet").expectCode(404).run(String.class);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+        if (server != null && server.isStarted()) {
             /*
              * Ignore following exception as those are expected:
              * Error 404: javax.servlet.UnavailableException: SRVE0319E: For the
@@ -79,8 +81,7 @@ public class BeanDiscoveryModeNoneTest extends LoggingTest {
              * for the null component in the beanDiscoveryModeNone.war module of the
              * beanDiscoveryModeNone application cannot be resolved.
              */
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE0319E", "CWNEN0035E", "CWOWB1008E");
+            server.stopServer("SRVE0319E", "CWNEN0035E", "CWOWB1008E");
         }
     }
-
 }
