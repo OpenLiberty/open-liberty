@@ -124,7 +124,7 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
         }
 
         T instance = null;
-        CDI<Object> cdi = CDI.current();
+        CDI<Object> cdi = CDI.current(); //No check for IllegalStateException as throwing it is correct if we cannot create a bean.
         BeanManager beanManager = cdi.getBeanManager();
 
         if (beanType instanceof ParameterizedType) {
@@ -203,13 +203,17 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
             @Override
             public U getValue() {
-                U value = null;
-                Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                try {
+                    U value = null;
+                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                    value = (U) Optional.ofNullable(getPlainValue(wrappedClass, jsonWebTokenInstance.get()));
+                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                        value = (U) Optional.ofNullable(getPlainValue(wrappedClass, jsonWebTokenInstance.get()));
+                    }
+                    return value;
+                } catch (IllegalStateException e) {
+                    return null;
                 }
-                return value;
             }
         };
 
@@ -241,13 +245,17 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
             @Override
             public U getValue() {
-                U value = null;
-                Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                try {
+                    U value = null;
+                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                    value = getPlainValue(returnClass, jsonWebTokenInstance.get());
+                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                        value = getPlainValue(returnClass, jsonWebTokenInstance.get());
+                    }
+                    return value;
+                } catch (IllegalStateException e) {
+                    return null;
                 }
-                return value;
             }
         };
 
@@ -296,14 +304,18 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
                 @Override
                 public Object getValue() {
-                    Object value = null;
-                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                    try {
+                        Object value = null;
+                        Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                        value = jsonWebTokenInstance.get().getClaim(claimName);
+                        if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                            value = jsonWebTokenInstance.get().getClaim(claimName);
+                        }
+
+                        return value;
+                    } catch (IllegalStateException e) {
+                       return null;
                     }
-
-                    return value;
                 }
             };
         } else {

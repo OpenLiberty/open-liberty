@@ -188,11 +188,6 @@ public class ModulePropertiesUtils {
         return elExpression;
     }
 
-    @SuppressWarnings("rawtypes")
-    protected CDI getCDI() {
-        return CDI.current();
-    }
-
     protected WebModuleMetaData getWebModuleMetaData() {
         return WebConfigUtils.getWebModuleMetaData();
     }
@@ -223,6 +218,11 @@ public class ModulePropertiesUtils {
             }
         }
         return isCacheable;
+    }
+
+    //This is here so it can be overriden by a unit test.
+    protected CDI getCDI() {
+        return CDIHelper.getCDI();
     }
 
     /**

@@ -61,6 +61,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.util.ThreadContextAccessor;
@@ -415,8 +416,13 @@ public class ValidationExtension extends ValidationExtensionService implements E
         return null;
     }
 
+    @FFDCIgnore(IllegalArgumentException.class)
     public static BeanManager getBeanManager() {
-        return CDI.current().getBeanManager();
+        try {
+            return CDI.current().getBeanManager();
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     /**

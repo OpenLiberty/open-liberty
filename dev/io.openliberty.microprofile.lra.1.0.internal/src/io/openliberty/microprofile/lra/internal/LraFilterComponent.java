@@ -102,7 +102,7 @@ public class LraFilterComponent implements JaxRsProviderRegister {
                 Tr.event(tc, "Registering serverside side filters");
             }
             try {
-                // The get() may throw a RuntimeException.
+                // The get() and select() may throw a RuntimeException.
                 // Re-throwing should prevent the servlet being initialized, which is probably better than swallowing
                 // the exception
                 ServerLRAFilter beanInstance = CDI.current().select(ServerLRAFilter.class).get();
