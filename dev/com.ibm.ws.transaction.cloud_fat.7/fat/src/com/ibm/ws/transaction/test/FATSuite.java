@@ -19,11 +19,9 @@ import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
-
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.topology.database.container.PostgreSQLContainer;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
-import componenttest.topology.utils.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -44,7 +42,7 @@ public class FATSuite {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         postgre.start();
     }
 

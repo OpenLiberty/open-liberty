@@ -60,9 +60,9 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Test the {@link AcmeCaRestHandler} REST endpoint.
@@ -107,7 +107,7 @@ public class AcmeCaRestHandlerTest {
 	public TestName testName = new TestName();
 
 	static {
-		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+		ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 	}
 
 	@BeforeClass

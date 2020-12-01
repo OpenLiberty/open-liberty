@@ -25,11 +25,11 @@ import com.ibm.ws.transaction.web.SSLRecoveryServlet;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.SimpleLogConsumer;
 
 @RunWith(FATRunner.class)
 public class SSLRecoveryTest extends FATServletClient {

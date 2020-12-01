@@ -21,9 +21,9 @@ import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
-import componenttest.topology.utils.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -51,7 +51,7 @@ public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         // Filter out any external docker servers in the 'libhpike' cluster
         ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
