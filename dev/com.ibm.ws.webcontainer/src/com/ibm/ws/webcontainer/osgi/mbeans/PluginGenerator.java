@@ -483,6 +483,11 @@ public class PluginGenerator {
                 bServersElem = output.createElement("BackupServers");
             }
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             if (!httpEndpointInfo.isValid()) {
                 // We couldn't find a matching endpoint -- there will be bits missing from
                 // the generated plugin config as a result
@@ -751,6 +756,11 @@ public class PluginGenerator {
             // The <RequestMetrics> and the sub elements <filters> are not processed yet
             // bunch of PMI stuff?
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             // create the plugin config output file
             // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
 
@@ -846,7 +856,13 @@ public class PluginGenerator {
             }
         } finally {
             try {
-
+                // check to see if the server is shutting down; if it is, bail out
+                if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
+                    }
+                    return;
+                }
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
