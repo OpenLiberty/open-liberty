@@ -14,7 +14,8 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.jakarta.jws.3.0; singleton:=true
 
 Export-Package: \
-	jakarta.xml.soap; version="3.0.0"
+	jakarta.jws; version="3.0.0", \
+	jakarta.jws.soap; version="3.0.0"
 
 Import-Package: *
 
