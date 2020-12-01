@@ -32,6 +32,8 @@ Private-Package: \
 
 WS-TraceGroup: wsbatch
 
+jakartaeeMe: true
+
 # TODO: eventually move BatchJmsDispatcher to jbatch.jms bundle
 -dsannotations: \
   com.ibm.ws.jbatch.rest.bridge.AppModuleContextService, \
