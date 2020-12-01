@@ -19,7 +19,8 @@ Subsystem-Name: Batch Management 2.0
   com.ibm.websphere.appserver.restHandler-1.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3, 4.1", \
   io.openliberty.jsonp-2.0, \
-  com.ibm.websphere.appserver.transaction-2.0
+  com.ibm.websphere.appserver.transaction-2.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.jbatch.joblog.jakarta, \
   com.ibm.ws.jbatch.rest.jakarta
 -jars=com.ibm.ws.jbatch.utility

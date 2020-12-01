@@ -17,7 +17,7 @@ IBM-API-Package: \
 IBM-ShortName: batch-2.0
 Subsystem-Name: Jakarta Batch API 2.0
 -features=\
-  io.openliberty.jaxb-3.0, \
+  io.openliberty.jakarta.jaxb-3.0, \
   io.openliberty.jakarta.cdi-3.0,\
   com.ibm.websphere.appserver.jndi-1.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
