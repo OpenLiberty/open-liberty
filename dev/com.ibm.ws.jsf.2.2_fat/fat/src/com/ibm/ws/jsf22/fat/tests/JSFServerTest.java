@@ -33,6 +33,8 @@ import com.ibm.ws.jsf22.fat.JSFUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -209,6 +211,9 @@ public class JSFServerTest {
      * Test to ensure that when the jsf-2.2 is enabled, beanValidation-1.1 is disabled
      * We do this by looking for a message in the logs
      *
+     * The Message that is output by MyFaces was changed in https://issues.apache.org/jira/browse/MYFACES-4334
+     * for MyFaces 2.3.7 and newer versions.
+     *
      * @throws Exception
      */
     @Test
@@ -216,7 +221,7 @@ public class JSFServerTest {
         String msgToSearchFor = "MyFaces Bean Validation support disabled";
         String msgToSearchForMyFaces30 = "MyFaces Core Bean Validation support disabled";
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
             Log.info(c, name.getMethodName(), "Looking for : " + msgToSearchForMyFaces30);
             // Check the trace.log to see if the LibertyWebConfigProviderFactory has any entry trace.
             String isBeanValidationDisabled = jsfTestServer1.waitForStringInLog(msgToSearchForMyFaces30);
