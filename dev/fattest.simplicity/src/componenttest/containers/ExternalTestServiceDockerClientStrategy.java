@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils;
+package componenttest.containers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +28,9 @@ import org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientC
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.utils.ExternalTestService;
+import componenttest.topology.utils.ExternalTestServiceFilter;
+import componenttest.topology.utils.HttpsRequest;
 
 /**
  * This class is discovered by Testcontainers via META-INF/services/org.testcontainers.dockerclient.DockerClientProviderStrategy
@@ -61,7 +64,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * automatically switch between using your local Docker install, or a remote Docker host, call this method
      * in FATSuite beforeClass setup.
      */
-    public static void clearTestcontainersConfig() {
+    public static void setupTestcontainers() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
         if (!testcontainersConfigFile.exists())
             return;
@@ -71,6 +74,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             Properties tcProps = new Properties();
             tcProps.load(new FileInputStream(testcontainersConfigFile));
             tcProps.remove("docker.client.strategy");
+            tcProps.setProperty("image.substitutor", ArtifactoryImageNameSubstitutor.class.getCanonicalName().toString());
             Files.deleteIfExists(testcontainersConfigFile.toPath());
             tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {

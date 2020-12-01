@@ -385,7 +385,7 @@
 		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
 
 		<mkdir dir="${build.tmp.dir}" />
-
+		
 		<!-- Note that users can override framework.maxheap from personal build -->
 		<property name="framework.maxheap" value="-Xmx1024m" />
 		<echo>framework.maxheap=${framework.maxheap}</echo>

@@ -30,13 +30,13 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
@@ -61,7 +61,7 @@ public class FATSuite {
 
     // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
     static {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
     @BeforeClass

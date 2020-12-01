@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils;
+package componenttest.containers;
 
 import java.util.Objects;
 import java.util.function.Consumer;

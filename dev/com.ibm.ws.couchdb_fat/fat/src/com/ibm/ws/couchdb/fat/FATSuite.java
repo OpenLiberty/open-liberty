@@ -23,14 +23,14 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.couchdb.fat.tests.CouchDBContainer;
 import com.ibm.ws.couchdb.fat.tests.TestCouchDbWar;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestCouchDbWar.class })
 public class FATSuite {
 
     static {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
     @ClassRule
