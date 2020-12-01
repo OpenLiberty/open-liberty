@@ -39,3 +39,5 @@ instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resour
 	com.ibm.ws.javaee.ddmodel.ws;version=latest,\
 	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true
