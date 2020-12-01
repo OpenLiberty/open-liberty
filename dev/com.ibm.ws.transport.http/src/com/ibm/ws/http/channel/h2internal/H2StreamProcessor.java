@@ -1124,10 +1124,6 @@ public class H2StreamProcessor {
                         }
 
                         getBodyFromFrame();
-                        if (currentFrame.flagEndStreamSet()) {
-                            endStream = true;
-                            updateStreamState(StreamState.HALF_CLOSED_REMOTE);
-                        }
 
                         WsByteBuffer buf = processCompleteData(false);
 
@@ -1135,12 +1131,21 @@ public class H2StreamProcessor {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "calling setNewBodyBuffer with: " + buf);
                             }
-                            // store the buffer and call async complete()
+                            // store the buffer, set the end of stream if necessary, and call async complete().
+                            // setting the end of steam flag earlier can result in a race condition.
                             h2HttpInboundLinkWrap.setAndStoreNewBodyBuffer(buf);
+                            if (currentFrame.flagEndStreamSet()) {
+                                endStream = true;
+                                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                            }
                             h2HttpInboundLinkWrap.invokeAppComplete();
                         } else {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "did not call setNewBodyBuffer. buf was null");
+                            }
+                            if (currentFrame.flagEndStreamSet()) {
+                                endStream = true;
+                                updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                             }
                         }
 
