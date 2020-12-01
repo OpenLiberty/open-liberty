@@ -50,9 +50,12 @@ public class FaultToleranceTck20Launcher {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeat = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP32, RepeatFaultTolerance.MP21_METRICS20,
+    public static RepeatTests repeat = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
+                                                                   MicroProfileActions.MP32,
+                                                                   MicroProfileActions.MP22,
                                                                    MicroProfileActions.MP13,
-                                                                   MicroProfileActions.MP20, MicroProfileActions.MP30);
+                                                                   MicroProfileActions.MP20,
+                                                                   MicroProfileActions.MP30);
 
     @BeforeClass
     public static void setUp() throws Exception {

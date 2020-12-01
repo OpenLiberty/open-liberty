@@ -46,8 +46,8 @@ import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
                 // Core functionality
                 FaultToleranceMainTest.class,
                 CDICompletionStageTest.class,
-
-                // FULL mode tests
+//
+//                // FULL mode tests
                 CDIAnnotationsDisabledTest.class,
                 FallbackMethodTest.class,
                 ValidationTest.class,
