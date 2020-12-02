@@ -59,6 +59,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private TransportConfig transportConfig;
 
     /**
+     * @deprecated Use {@link #setupTestcontainers()} instead
+     */
+    @Deprecated
+    public static void clearTestcontainersConfig() {
+        setupTestcontainers();
+    }
+
+    /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      * It is not necessary to call this method whenever Testcontainers is used, but if you want to be able to
      * automatically switch between using your local Docker install, or a remote Docker host, call this method
@@ -87,9 +95,8 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         if (transportConfig != null)
             return transportConfig;
 
-        ExternalTestService svc = null;
         try {
-            svc = ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
+            ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
         } catch (Exception e) {
             Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
@@ -222,8 +229,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     }
 
     public static boolean useRemoteDocker() {
-        return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
-               USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
+        if (USE_REMOTE_DOCKER) {
+            return true; // remote docker explicitly requested
+        }
+        if (Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"))) {
+            return false; // always use local docker for GH Actions
+        }
+        // Otherwise, use local docker for local runs, and remote docker for remote (RTC) runs
+        return !FATRunner.FAT_TEST_LOCALRUN;
     }
 
 }
