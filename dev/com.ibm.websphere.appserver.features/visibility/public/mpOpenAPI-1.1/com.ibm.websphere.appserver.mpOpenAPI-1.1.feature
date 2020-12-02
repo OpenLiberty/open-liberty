@@ -46,6 +46,7 @@ IBM-SPI-Package: \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.1.1.model,\
+ io.openliberty.microprofile.openapi.internal.common,\
  io.openliberty.com.fasterxml.jackson
 kind=ga
 edition=core

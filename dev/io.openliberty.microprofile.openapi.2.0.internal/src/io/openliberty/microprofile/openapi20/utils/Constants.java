@@ -22,8 +22,8 @@ public class Constants {
     
     // Trace Constants
     public static final String TRACE_GROUP                  = "MPOPENAPI";
-    public static final String TRACE_OPENAPI                = "io.openliberty.microprofile.openapi20.resources.OpenAPI";
-    public static final String TRACE_VALIDATION             = "io.openliberty.microprofile.openapi20.validation.resources.ValidationMessages";
+    public static final String TRACE_OPENAPI                = "io.openliberty.microprofile.openapi.internal.resources.OpenAPI";
+    public static final String TRACE_VALIDATION             = "io.openliberty.microprofile.openapi.internal.resources.validation.ValidationMessages";
 
     // OpenAPI Document Default Constants
     public static final String DEFAULT_OPENAPI_DOC_TITLE    = "Generated API";
