@@ -33,17 +33,4 @@ repositories {
       }
     }
   }
-  
-  // Always include sonatype snapshot repo for ONLY the transformer snapshot dependency
-  maven {
-    url ("https://oss.sonatype.org/content/repositories/snapshots/")
-    metadataSources {
-      mavenPom()
-      artifact()
-    }
-    content {
-      includeGroup "org.eclipse.transformer"
-      includeGroup "org.eclipse.transformer.cli"
-    }
-  }
 }
