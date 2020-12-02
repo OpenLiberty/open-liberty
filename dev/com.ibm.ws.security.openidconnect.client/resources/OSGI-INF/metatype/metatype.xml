@@ -139,6 +139,7 @@
          <AD id="forwardLoginParameter" name="%forwardLoginParameter" description="%forwardLoginParameter.desc" required="false" type="String" cardinality="2147483647" />
          <AD id="requireExpClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
          <AD id="requireIatClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+         <AD id="accessTokenValidationResponseCacheTime" name="internal" description="internal use only" required="false" type="String" default="600s" ibm:type="duration" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -53,6 +54,8 @@ public class OidcClientUtil {
     private static final TraceComponent tc = Tr.register(OidcClientUtil.class);
     private final List<NameValuePair> commonHeaders = new ArrayList<NameValuePair>();
     OidcClientHttpUtil oidcHttpUtil = null;
+
+    public static SingleTableCache tokenValidationResultCache = null;
 
     public OidcClientUtil() {
         commonHeaders.add(new BasicNameValuePair("Accept", "application/json"));
@@ -70,6 +73,26 @@ public class OidcClientUtil {
      */
     final List<NameValuePair> getCommonHeaders() {
         return commonHeaders;
+    }
+
+    public JSONObject getTokenValidationResponseFromCache(OidcClientConfig config, @Sensitive String accessToken) {
+        initializeCache(config);
+        return (JSONObject) tokenValidationResultCache.get(accessToken + config.getId());
+    }
+
+    public synchronized void initializeCache(OidcClientConfig config) {
+        long cacheTime = config.getAccessTokenValidationResponseCacheTime();
+        if (tokenValidationResultCache == null) {
+            tokenValidationResultCache = new SingleTableCache(cacheTime);
+        } else {
+            if (cacheTime != tokenValidationResultCache.getTimeoutInMilliseconds()) {
+                tokenValidationResultCache.rescheduleCleanup(cacheTime);
+            }
+        }
+    }
+
+    public void cacheTokenValidationResponse(OidcClientConfig config, @Sensitive String accessToken, JSONObject tokenValidationResponse) {
+        tokenValidationResultCache.put(accessToken + config.getId(), tokenValidationResponse);
     }
 
     public HashMap<String, String> getTokensFromAuthzCode(String tokenEnpoint,

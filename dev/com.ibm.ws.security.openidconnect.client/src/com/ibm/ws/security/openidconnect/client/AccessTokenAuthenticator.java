@@ -95,13 +95,7 @@ public class AccessTokenAuthenticator {
             OidcClientRequest oidcClientRequest) {
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_ACCESS_TOKEN);
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-        String accessToken = null;
-        if (clientConfig.getAccessTokenInLtpaCookie()) {
-            accessToken = getAccessTokenFromReqAsAttribute(req);
-        }
-        if (accessToken == null) {
-            accessToken = getBearerAccessTokenToken(req, clientConfig);
-        }
+        String accessToken = getAccessToken(req, clientConfig);
 
         if (accessToken == null) {
 
@@ -167,6 +161,17 @@ public class AccessTokenAuthenticator {
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
         }
         return oidcResult;
+    }
+
+    String getAccessToken(HttpServletRequest req, OidcClientConfig clientConfig) {
+        String accessToken = null;
+        if (clientConfig.getAccessTokenInLtpaCookie()) {
+            accessToken = getAccessTokenFromReqAsAttribute(req);
+        }
+        if (accessToken == null) {
+            accessToken = getBearerAccessTokenToken(req, clientConfig);
+        }
+        return accessToken;
     }
 
     @FFDCIgnore({ Exception.class })
@@ -405,22 +410,24 @@ public class AccessTokenAuthenticator {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
         try {
 
-            Map<String, Object> responseMap = oidcClientUtil.checkToken(clientConfig.getValidationEndpointUrl(),
-                    clientConfig.getClientId(), clientConfig.getClientSecret(),
-                    accessToken, clientConfig.isHostNameVerificationEnabled(), clientConfig.getTokenEndpointAuthMethod(), sslSocketFactory, clientConfig.getUseSystemPropertiesForHttpClientConnections());
+            JSONObject tokenValidationResponse = oidcClientUtil.getTokenValidationResponseFromCache(clientConfig, accessToken);
+            if (tokenValidationResponse == null) {
+                Map<String, Object> responseMap = oidcClientUtil.checkToken(clientConfig.getValidationEndpointUrl(),
+                        clientConfig.getClientId(), clientConfig.getClientSecret(),
+                        accessToken, clientConfig.isHostNameVerificationEnabled(), clientConfig.getTokenEndpointAuthMethod(), sslSocketFactory, clientConfig.getUseSystemPropertiesForHttpClientConnections());
+                tokenValidationResponse = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
+                oidcClientUtil.cacheTokenValidationResponse(clientConfig, accessToken, tokenValidationResponse);
+            }
 
-            JSONObject jobj = null;
-            jobj = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
-
-            if (jobj != null) {
+            if (tokenValidationResponse != null) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "introspectToken=", jobj.serialize());
+                    Tr.debug(tc, "introspectToken=", tokenValidationResponse.serialize());
                     // Tr.debug(tc, "debugging:" + OidcUtil.dumpStackTrace(new
                     // Exception(), -1));
                 }
 
-                if (!validateJsonResponse(jobj, clientConfig, oidcClientRequest)) {
-                    logErrorMessage(jobj, clientConfig, oidcClientRequest);
+                if (!validateJsonResponse(tokenValidationResponse, clientConfig, oidcClientRequest)) {
+                    logErrorMessage(tokenValidationResponse, clientConfig, oidcClientRequest);
                     // Add error message here
                     // logError(clientConfig, "OIDC_PROPAGATION_FAIL",
                     // new Object[]{
@@ -429,7 +436,7 @@ public class AccessTokenAuthenticator {
                     // clientConfig.getValidationEndpointUrl(),});
                     return oidcResult;
                 }
-                oidcResult = createProviderAuthenticationResult(jobj, clientConfig, accessToken);
+                oidcResult = createProviderAuthenticationResult(tokenValidationResponse, clientConfig, accessToken);
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
@@ -521,20 +528,23 @@ public class AccessTokenAuthenticator {
 
     protected ProviderAuthenticationResult getUserInfoFromToken(OidcClientConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, OidcClientRequest oidcClientRequest) {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
-        Map<String, Object> responseMap = null;
-        JSONObject jobj = null;
+        JSONObject tokenValidationResponse = null;
         try {
-            responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
+            tokenValidationResponse = oidcClientUtil.getTokenValidationResponseFromCache(clientConfig, accessToken);
+            if (tokenValidationResponse == null) {
+                Map<String, Object> responseMap = oidcClientUtil.getUserinfo(clientConfig.getValidationEndpointUrl(), accessToken, sslSocketFactory, clientConfig.isHostNameVerificationEnabled(), clientConfig.getUseSystemPropertiesForHttpClientConnections());
+                tokenValidationResponse = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
+                oidcClientUtil.cacheTokenValidationResponse(clientConfig, accessToken, tokenValidationResponse);
+            }
 
-            jobj = handleResponseMap(responseMap, clientConfig, oidcClientRequest);
-            if (jobj != null) {
+            if (tokenValidationResponse != null) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "userinfo=", jobj.serialize());
+                    Tr.debug(tc, "userinfo=", tokenValidationResponse.serialize());
                 }
-                if (!validateUserinfoJsonResponse(jobj, clientConfig, oidcClientRequest)) {
+                if (!validateUserinfoJsonResponse(tokenValidationResponse, clientConfig, oidcClientRequest)) {
                     return oidcResult;
                 }
-                oidcResult = createProviderAuthenticationResult(jobj, clientConfig, accessToken);
+                oidcResult = createProviderAuthenticationResult(tokenValidationResponse, clientConfig, accessToken);
             }
         } catch (IllegalArgumentException e) {
             // There was likely a problem with the validationEndpointUrl syntax
@@ -553,7 +563,7 @@ public class AccessTokenAuthenticator {
 
         // if result was good, put userinfo string on the subject as well.
         try {
-            String userInfoStr = jobj == null ? null : jobj.serialize();
+            String userInfoStr = tokenValidationResponse == null ? null : tokenValidationResponse.serialize();
             if (oidcResult != null && oidcResult.getUserName() != null && userInfoStr != null) {
                 oidcResult.getCustomProperties().put(Constants.USERINFO_STR, userInfoStr);
             }
