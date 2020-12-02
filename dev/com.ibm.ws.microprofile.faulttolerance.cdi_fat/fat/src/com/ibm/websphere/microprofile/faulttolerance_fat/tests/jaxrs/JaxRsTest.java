@@ -38,7 +38,7 @@ import componenttest.topology.utils.HttpUtils;
 public class JaxRsTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat("JaxRsFaultTolerance", TestMode.LITE, MicroProfileActions.MP22);
+    public static RepeatTests r = RepeatFaultTolerance.repeat("JaxRsFaultTolerance", TestMode.FULL, MicroProfileActions.LATEST, MicroProfileActions.MP22);
 
     private static final String APP_NAME = "ftJaxRs";
 

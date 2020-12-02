@@ -48,7 +48,8 @@ public class TestMultiModuleClassLoading extends FATServletClient {
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.MP13, RepeatFaultTolerance.MP21_METRICS20);
+    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.LATEST, MicroProfileActions.MP13,
+                                                              RepeatFaultTolerance.MP21_METRICS20);
 
     @BeforeClass
     public static void setupApp() throws Exception {

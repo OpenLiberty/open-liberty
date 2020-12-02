@@ -28,7 +28,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -43,7 +42,7 @@ import componenttest.topology.utils.FATServletClient;
 public class FallbackMethodTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.LITE, MicroProfileActions.MP22);
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault("FaultToleranceMultiModule");
 
     @Server(value = "FaultToleranceMultiModule")
     @TestServlet(servlet = FallbackMethodServlet.class, contextRoot = "ftFallbackMethod")
