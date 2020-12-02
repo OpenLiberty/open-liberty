@@ -18,15 +18,19 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -35,6 +39,9 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 public class AsyncShutdownTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.LITE, MicroProfileActions.MP22);
 
     private static final String SERVER_NAME = "FaultToleranceMultiModule";
     private static final String APP_NAME = "ftAsyncShutdown";

@@ -73,7 +73,7 @@ import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
 
-import com.ibm.ws.concurrent.mp.fat.MPContextProp11RepeatAction;
+import com.ibm.ws.concurrent.mp.fat.MPContextPropActions;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -5314,7 +5314,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextProp11RepeatAction.ID)
+    @SkipForRepeat(MPContextPropActions.CTX11_ID)
     public void testWithContextCapture_CompletableFuture_builder() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5395,7 +5395,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextProp11RepeatAction.ID)
+    @SkipForRepeat(MPContextPropActions.CTX11_ID)
     public void testWithContextCapture_CompletableFuture_serverConfig() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5469,7 +5469,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextProp11RepeatAction.ID)
+    @SkipForRepeat(MPContextPropActions.CTX11_ID)
     public void testWithContextCapture_CompletionStage_builder() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5573,7 +5573,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextProp11RepeatAction.ID)
+    @SkipForRepeat(MPContextPropActions.CTX11_ID)
     public void testWithContextCapture_CompletionStage_serverConfig() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 

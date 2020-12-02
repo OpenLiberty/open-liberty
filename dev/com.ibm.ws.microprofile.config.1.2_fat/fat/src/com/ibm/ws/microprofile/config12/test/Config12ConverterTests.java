@@ -16,8 +16,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverterServlet;
 import com.ibm.ws.microprofile.config12.converter.priority.web.ConverterPriorityServlet;
 import com.ibm.ws.microprofile.config12.converter.type.web.TypeConverterServlet;
@@ -26,6 +24,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -49,7 +48,7 @@ public class Config12ConverterTests extends FATServletClient {
     public static final String APP_NAME = "converterApp";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ConverterServer", Version.LATEST, Version.CONFIG12_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat("ConverterServer", MicroProfileActions.LATEST, MicroProfileActions.MP13);
 
     @Server("ConverterServer")
     @TestServlets({

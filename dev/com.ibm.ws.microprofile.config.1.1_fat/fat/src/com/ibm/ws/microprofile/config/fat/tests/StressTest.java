@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.stress.test.StressTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -30,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,7 +47,7 @@ public class StressTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("StressServer", Version.CONFIG13_EE7, Version.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat("StressServer", MicroProfileActions.MP14, MicroProfileActions.LATEST);
 
     @BeforeClass
     public static void setUp() throws Exception {

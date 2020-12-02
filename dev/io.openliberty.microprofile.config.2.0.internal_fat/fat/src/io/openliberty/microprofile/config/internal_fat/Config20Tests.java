@@ -28,13 +28,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -58,7 +57,7 @@ public class Config20Tests extends FATServletClient {
     public static final String SERVER_NAME = "Config20Server";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat(SERVER_NAME, Version.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.LATEST);
 
     @Server(SERVER_NAME)
     @TestServlets({

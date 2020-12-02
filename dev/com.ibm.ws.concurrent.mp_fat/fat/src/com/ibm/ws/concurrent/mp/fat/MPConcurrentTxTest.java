@@ -32,9 +32,7 @@ import concurrent.mp.fat.tx.web.MPConcurrentTxTestServlet;
 public class MPConcurrentTxTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .withoutModification()
-                    .andWith(new MPContextProp11RepeatAction("MPConcurrentTxTestServer"));
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTxTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
 
     private static final String APP_NAME = "MPConcurrentTxApp";
 

@@ -28,14 +28,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaderCache.test.ClassLoaderCacheTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -66,7 +65,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
 
     // Don't repeat against mpConfig > 1.4 since SmallRye Config implementation doesn't have methods for accessing cache for ConfigProviderResolver. e.g. getConfigCacheSize()
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ClassLoaderCacheServer", Version.CONFIG12_EE7, Version.CONFIG14_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat("ClassLoaderCacheServer", MicroProfileActions.MP13, MicroProfileActions.MP33);
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;

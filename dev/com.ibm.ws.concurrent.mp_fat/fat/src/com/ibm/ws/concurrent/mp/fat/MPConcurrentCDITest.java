@@ -37,9 +37,7 @@ public class MPConcurrentCDITest extends FATServletClient {
     private static final String CDI_APP = "MPConcurrentCDIApp";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .withoutModification()
-                    .andWith(new MPContextProp11RepeatAction("MPConcurrentCDITestServer"));
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentCDITestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
 
     @Server("MPConcurrentCDITestServer")
     @TestServlet(servlet = MPConcurrentCDITestServlet.class, contextRoot = CDI_APP)

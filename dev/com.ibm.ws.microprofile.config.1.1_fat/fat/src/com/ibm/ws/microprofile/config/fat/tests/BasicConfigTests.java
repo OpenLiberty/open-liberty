@@ -28,7 +28,6 @@ import com.ibm.ws.microprofile.appConfig.cdi.web.XtorTestServletNamed;
 import com.ibm.ws.microprofile.appConfig.converters.test.ConvertersTestServlet;
 import com.ibm.ws.microprofile.appConfig.customSources.test.CustomSourcesTestServlet;
 import com.ibm.ws.microprofile.appConfig.types.test.TypesTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 import com.ibm.ws.microprofile.config11.converter.priority.web.ConverterPriorityServlet;
 
@@ -36,6 +35,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -55,7 +55,8 @@ public class BasicConfigTests extends FATServletClient {
     public static final String TYPES_APP_NAME = "types";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatAllConfigVersionsEE8(SERVER_NAME);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP12, MicroProfileActions.MP13, MicroProfileActions.MP14, MicroProfileActions.MP33,
+                                                             MicroProfileActions.MP40);
 
     @Server(SERVER_NAME)
     @TestServlets({
