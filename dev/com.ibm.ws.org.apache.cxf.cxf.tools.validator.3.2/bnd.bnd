@@ -18,3 +18,6 @@ cxfVersion=3.3.3
 
 -buildpath: org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2
+
+  
+jakartaeeMe: true
