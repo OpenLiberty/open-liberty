@@ -292,6 +292,12 @@
 
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
+		
+        <condition property="fat.test.artifactory.download.server"
+                   value="${artifactory.download.server}"
+                   else="${env.artifactory.download.server}">
+          <isset property="artifactory.download.server" />
+        </condition>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
@@ -371,7 +377,7 @@
 			</else>
 		</iff>
 		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
-
+		
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
 		<property name="jacocoant.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoant.jar" />
