@@ -53,7 +53,11 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "ManyXMany10Ejb";
     private final static String RESOURCE_ROOT = "test-applications/jpa10/relationships/manyXmany/";
+    private final static String appFolder = "ejb";
+    private final static String appName = "manyXmanyEjb";
+    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -67,40 +71,43 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
 
     @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SL_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyUnidirectional_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SF_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyUnidirectional_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SFEX_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyUnidirectional_EJB_SFEX_Servlet"),
-                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SL_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyBidirectional_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SF_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyBidirectional_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SFEX_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyBidirectional_EJB_SFEX_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SL_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCollectionType_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SF_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCollectionType_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SFEX_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCollectionType_EJB_SFEX_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SL_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCompoundPK_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SF_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCompoundPK_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SFEX_Servlet.class, path = "ManyXMany10EJB" + "/" + "TestManyXManyCompoundPK_EJB_SFEX_Servlet"),
+                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyUnidirectional_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyUnidirectional_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestManyXManyUnidirectional_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyUnidirectional_EJB_SFEX_Servlet"),
+
+                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyBidirectional_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyBidirectional_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestManyXManyBidirectional_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyBidirectional_EJB_SFEX_Servlet"),
+
+                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCollectionType_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCollectionType_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestManyXManyCollectionType_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCollectionType_EJB_SFEX_Servlet"),
+
+                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCompoundPK_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCompoundPK_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestManyXManyCompoundPK_EJB_SFEX_Servlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCompoundPK_EJB_SFEX_Servlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(Relationships_ManyXMany_EJB.class);
         timestart = System.currentTimeMillis();
 
-        int appStartTimeout = server1.getAppStartTimeout();
+        int appStartTimeout = server.getAppStartTimeout();
         if (appStartTimeout < (120 * 1000)) {
-            server1.setAppStartTimeout(120 * 1000);
+            server.setAppStartTimeout(120 * 1000);
         }
 
-        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
         if (configUpdateTimeout < (120 * 1000)) {
-            server1.setConfigUpdateTimeout(120 * 1000);
+            server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -108,23 +115,23 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, "manyXmanyejb.war");
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.ejb");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "ejb/manyXmanyejb.war");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "manyXmany.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation");
@@ -137,15 +144,15 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.annotation");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/manyXmany.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, "ManyXMany_EJB.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "ejb", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -157,40 +164,53 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation("ManyXMany_EJB.ear");
-        appRecord.setName("ManyXMany_EJB");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add("ManyXMany_EJB");
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        appNamesSet.add(appName);
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("relationships_manyXmany_ejb");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(Relationships_ManyXMany_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/ManyXMany_EJB.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }

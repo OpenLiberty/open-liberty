@@ -1,4 +1,4 @@
-DELETE FROM ${schemaname}.EmbIDManyXManyEntA;        
+DELETE FROM ${schemaname}.EmbIDManyXManyEntA;
 DELETE FROM ${schemaname}.EmbIDManyXManyEntB;
 DELETE FROM ${schemaname}.EmbManyXManyJoinTable;
 DELETE FROM ${schemaname}.IDClassMMEntA_IDClassMMEntB;
@@ -24,7 +24,6 @@ DELETE FROM ${schemaname}.MMCTEA_GCT;
 DELETE FROM ${schemaname}.MMCTEA_GLT;
 DELETE FROM ${schemaname}.MMCTEA_GMKT;
 DELETE FROM ${schemaname}.MMCTEA_GMT;
-
 DELETE FROM ${schemaname}.MMCTEA_GST;
 DELETE FROM ${schemaname}.MMCTEA_OLT;
 DELETE FROM ${schemaname}.MMCTEA_UGCT;

@@ -1,4 +1,4 @@
-DROP TABLE ${schemaname}.EmbIDManyXManyEntA;        
+DROP TABLE ${schemaname}.EmbIDManyXManyEntA;
 DROP TABLE ${schemaname}.EmbIDManyXManyEntB;
 DROP TABLE ${schemaname}.EmbManyXManyJoinTable;
 DROP TABLE ${schemaname}.IDClassMMEntA_IDClassMMEntB;
@@ -24,7 +24,6 @@ DROP TABLE ${schemaname}.MMCTEA_GCT;
 DROP TABLE ${schemaname}.MMCTEA_GLT;
 DROP TABLE ${schemaname}.MMCTEA_GMKT;
 DROP TABLE ${schemaname}.MMCTEA_GMT;
-
 DROP TABLE ${schemaname}.MMCTEA_GST;
 DROP TABLE ${schemaname}.MMCTEA_OLT;
 DROP TABLE ${schemaname}.MMCTEA_UGCT;

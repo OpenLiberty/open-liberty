@@ -1,4 +1,4 @@
-DROP TABLE ${schemaname}.EmbIDManyXManyEntA;        
+DROP TABLE ${schemaname}.EmbIDManyXManyEntA;
 DROP TABLE ${schemaname}.EmbIDManyXManyEntB;
 DROP TABLE ${schemaname}.EmbManyXManyJoinTable;
 DROP TABLE ${schemaname}.IDClassMMEntA_IDClassMMEntB;

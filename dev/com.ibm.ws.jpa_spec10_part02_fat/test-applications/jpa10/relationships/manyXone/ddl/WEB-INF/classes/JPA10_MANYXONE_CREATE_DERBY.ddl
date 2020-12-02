@@ -37,4 +37,3 @@ CREATE TABLE ${schemaname}.XMLMONoOptEntityA (id INTEGER NOT NULL, name VARCHAR(
 CREATE TABLE ${schemaname}.XMLMONoOptEntityB (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.XMLMOUniEntityA (id INTEGER NOT NULL, name VARCHAR(255), cascadeAll_id INTEGER, cascadeMerge_id INTEGER, cascadePersist_id INTEGER, cascadeRefresh_id INTEGER, cascadeRemove_id INTEGER, defaultRelationship_id INTEGER, lazy_id INTEGER, MANYTOONE_ENTB INTEGER, PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.XMLMOUniEntityB (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
- 

@@ -12,17 +12,14 @@
  *******************************************************************************/
 -->
 <application xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-	id="Application_ID">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
 
-	<display-name>ManyXMany_Web</display-name>
-	<!-- <module id="EjbModule_1"> 
-		<ejb>JPACallbackEJB.jar</ejb>
-	</module>  -->
-	<module id="WebModule_1">
+    <display-name>ManyXMany_WEB</display-name>
+    <module id="WebModule_1">
         <web>
-            <web-uri>manyXmany.war</web-uri>
+            <web-uri>manyXmanyWeb.war</web-uri>
             <context-root>ManyXMany10Web</context-root>
         </web>
     </module>

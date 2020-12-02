@@ -1,4 +1,4 @@
-DELETE FROM ${schemaname}.EmbIDManyXManyEntA;        
+DELETE FROM ${schemaname}.EmbIDManyXManyEntA;
 DELETE FROM ${schemaname}.EmbIDManyXManyEntB;
 DELETE FROM ${schemaname}.EmbManyXManyJoinTable;
 DELETE FROM ${schemaname}.IDClassMMEntA_IDClassMMEntB;
