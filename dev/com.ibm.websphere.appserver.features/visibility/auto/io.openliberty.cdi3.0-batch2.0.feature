@@ -8,4 +8,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 -bundles=com.ibm.ws.jbatch.cdi.jakarta
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=base
+edition=full
+WLP-Activation-Type: parallel

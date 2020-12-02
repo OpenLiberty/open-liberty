@@ -5,9 +5,9 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.appSecurity-4.0))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.batch-2.0))"
--features=com.ibm.websphere.appserver.servlet-5.0, \
- com.ibm.wsspi.appserver.webBundleSecurity-1.0
+-features=com.ibm.wsspi.appserver.webBundleSecurity-1.0
 -bundles=com.ibm.ws.jbatch.security.jakarta
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=base
+edition=full
+WLP-Activation-Type: parallel

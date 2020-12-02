@@ -99,7 +99,7 @@ public class BatchRuntime {
      */
     private static String getFormattedMessage(String msgKey, Object[] fillIns, String defaultMsg) {
 
-    	ResourceBundle resourceBundle = ResourceBundle.getBundle("com.ibm.jbatch.jakarta.batch.runtime.internal.resources.BatchMessages");
+    	ResourceBundle resourceBundle = ResourceBundle.getBundle("io.openliberty.jbatch.jakarta.batch.runtime.internal.resources.BatchMessages");
         
         if (resourceBundle == null) {
             return defaultMsg;
