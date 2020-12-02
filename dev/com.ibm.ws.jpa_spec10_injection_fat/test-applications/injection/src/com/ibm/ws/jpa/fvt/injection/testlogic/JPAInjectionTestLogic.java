@@ -31,11 +31,6 @@ public class JPAInjectionTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -71,7 +66,6 @@ public class JPAInjectionTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("JPAInjectionTestLogic.testInjectionTarget(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Clear persistence context
             System.out.println("Clearing persistence context...");

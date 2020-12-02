@@ -50,7 +50,7 @@ public class JPAFATServletClient extends FATServletClient {
 
     private static DatabaseVendor dbVendor = null;
 
-    protected static void bannerStart(Class testClass) {
+    protected static void bannerStart(Class<?> testClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("**********************************************************************\n");
         sb.append("Executing Test Bucket: ").append(testClass.getName()).append("\n");
@@ -58,7 +58,7 @@ public class JPAFATServletClient extends FATServletClient {
         System.out.println(sb);
     }
 
-    protected static void bannerEnd(Class testClass, long timestart) {
+    protected static void bannerEnd(Class<?> testClass, long timestart) {
         long timestop = System.currentTimeMillis();
 
         StringBuilder sb = new StringBuilder();

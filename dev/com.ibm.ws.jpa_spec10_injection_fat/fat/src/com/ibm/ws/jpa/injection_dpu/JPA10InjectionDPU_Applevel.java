@@ -72,32 +72,31 @@ public class JPA10InjectionDPU_Applevel extends JPAFATServletClient {
                     @TestServlet(servlet = AppLevelRLDPUFieldInjectionServlet.class, path = "injectiondpu_apprl" + "/" + "AppLevelRLDPUFieldInjectionServlet"),
                     @TestServlet(servlet = AppLevelRLDPUMethodInjectionServlet.class, path = "injectiondpu_apprl" + "/" + "AppLevelRLDPUMethodInjectionServlet"),
 
-                    @TestServlet(servlet = InjectionDPUEJBAppLevelTestServlet.class, path = "applvlejbexecutor" + "/" + "InjectionDPUEJBAppLevelTestServlet"),
-
+                    @TestServlet(servlet = InjectionDPUEJBAppLevelTestServlet.class, path = "applvlejbexecutor" + "/" + "InjectionDPUEJBAppLevelTestServlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        int appStartTimeout = server1.getAppStartTimeout();
+        int appStartTimeout = server.getAppStartTimeout();
         if (appStartTimeout < (120 * 1000)) {
-            server1.setAppStartTimeout(120 * 1000);
+            server.setAppStartTimeout(120 * 1000);
         }
 
-        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
         if (configUpdateTimeout < (120 * 1000)) {
-            server1.setConfigUpdateTimeout(120 * 1000);
+            server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(JPA10InjectionDPU_Applevel.class);
         timestart = System.currentTimeMillis();
 
-        server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
+        server.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
-        server1.startServer();
+        server.startServer();
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -105,13 +104,13 @@ public class JPA10InjectionDPU_Applevel extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
@@ -173,7 +172,7 @@ public class JPA10InjectionDPU_Applevel extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
@@ -186,32 +185,43 @@ public class JPA10InjectionDPU_Applevel extends JPAFATServletClient {
             cel.add(loader);
         }
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
         appNamesSet.add(applicationName);
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
             try {
-                ServerConfiguration sc = server1.getServerConfiguration();
+                ServerConfiguration sc = server.getServerConfiguration();
                 sc.getApplications().clear();
-                server1.updateServerConfiguration(sc);
-                server1.saveServerConfiguration();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
 
-                server1.deleteFileFromLibertyServerRoot("apps/" + applicationName + ".ear");
-                server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+                server.deleteFileFromLibertyServerRoot("apps/" + applicationName + ".ear");
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
             } catch (Throwable t) {
                 t.printStackTrace();
             }

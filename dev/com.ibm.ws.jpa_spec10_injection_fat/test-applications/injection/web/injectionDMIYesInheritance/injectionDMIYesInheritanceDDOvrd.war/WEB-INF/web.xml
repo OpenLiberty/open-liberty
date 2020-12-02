@@ -17,7 +17,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     version="2.5">
 
-    <!-- Servlet Definitions -->    
+    <!-- Servlet Definitions -->
     <servlet>
         <servlet-name>DMIPubYesInhDDOvrdTestServlet</servlet-name>
         <servlet-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPubYesInhDDOvrdTestServlet</servlet-class>
@@ -34,8 +34,8 @@
         <servlet-name>DMIProYesInhDDOvrdTestServlet</servlet-name>
         <servlet-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIProYesInhDDOvrdTestServlet</servlet-class>
     </servlet>
-    
-    <!-- Servlet Mappings -->   
+
+    <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>DMIPubYesInhDDOvrdTestServlet</servlet-name>
         <url-pattern>/DMIPubYesInhDDOvrdTestServlet</url-pattern>
@@ -52,12 +52,9 @@
         <servlet-name>DMIProYesInhDDOvrdTestServlet</servlet-name>
         <url-pattern>/DMIProYesInhDDOvrdTestServlet</url-pattern>
     </servlet-mapping>
-     
+
     <!-- JPA Resource Definitions -->
-    
-    <!-- CM TS -->
-                                                                                                               
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPubYesInhDDOvrdTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -94,7 +91,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPkgYesInhDDOvrdTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -131,7 +128,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIProYesInhDDOvrdTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -168,7 +165,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPriYesInhDDOvrdTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -205,14 +202,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-        
-    <persistence-context-ref>
-        <persistence-context-ref-name>jpa/web/jndi/ano/cleanup_cmts</persistence-context-ref-name>
-        <persistence-unit-name>CLEANUP</persistence-unit-name>
-        <persistence-context-type>Transaction</persistence-context-type>
-    </persistence-context-ref>
-    
-    
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPubYesInhDDOvrdTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -220,7 +210,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPubYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amjta_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPubYesInhDDOvrdTestServlet/ovdemf_amjta_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_JTA</persistence-unit-name>
@@ -245,7 +235,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-        
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriYesInhDDOvrdTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -253,7 +243,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPriYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amjta_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriYesInhDDOvrdTestServlet/ovdemf_amjta_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_JTA</persistence-unit-name>
@@ -277,7 +267,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPriYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
-    </persistence-unit-ref>    
+    </persistence-unit-ref>
 
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgYesInhDDOvrdTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -286,7 +276,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amjta_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgYesInhDDOvrdTestServlet/ovdemf_amjta_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_JTA</persistence-unit-name>
@@ -319,7 +309,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIProYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amjta_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIProYesInhDDOvrdTestServlet/ovdemf_amjta_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_JTA</persistence-unit-name>
@@ -344,7 +334,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPubYesInhDDOvrdTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -352,7 +342,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPubYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPubYesInhDDOvrdTestServlet/ovdemf_amrl_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_RL</persistence-unit-name>
@@ -376,8 +366,8 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPubYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
-    </persistence-unit-ref>    
-    
+    </persistence-unit-ref>
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIProYesInhDDOvrdTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -385,7 +375,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIProYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIProYesInhDDOvrdTestServlet/ovdemf_amrl_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_RL</persistence-unit-name>
@@ -409,8 +399,8 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIProYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
-    </persistence-unit-ref>    
-    
+    </persistence-unit-ref>
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgYesInhDDOvrdTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -418,7 +408,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgYesInhDDOvrdTestServlet/ovdemf_amrl_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_RL</persistence-unit-name>
@@ -443,7 +433,7 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriYesInhDDOvrdTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -451,7 +441,7 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh.ddovrd.DMIPriYesInhDDOvrdTestSuperclass</injection-target-class>
             <injection-target-name>ovdemf_amrl_common_webapp</injection-target-name>
         </injection-target>
-    </persistence-unit-ref> 
+    </persistence-unit-ref>
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriYesInhDDOvrdTestServlet/ovdemf_amrl_webapp_webapp</persistence-unit-ref-name>
         <persistence-unit-name>OVRD_WEBAPP_RL</persistence-unit-name>
@@ -476,12 +466,4 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-        
-        
-    <persistence-unit-ref>
-        <description>Cleanup Persistence Context</description>
-        <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-        <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-    </persistence-unit-ref>
-    
 </web-app>

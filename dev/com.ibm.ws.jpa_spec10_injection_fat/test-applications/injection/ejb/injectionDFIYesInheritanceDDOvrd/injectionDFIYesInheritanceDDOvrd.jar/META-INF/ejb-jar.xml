@@ -16,466 +16,14 @@
         xmlns="http://java.sun.com/xml/ns/javaee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
-        metadata-complete="false" version="3.0">   
+        metadata-complete="false" version="3.0">  
 
     <enterprise-beans>
-        
+
         <!--  Field Injection, Annotation Injection into SuperClass EJBs with DD Override -->
         <session>
             <ejb-name>DFIPkgYesInhDDOvrdTestSLEJB</ejb-name>
-            
-            <persistence-context-ref>
-		        <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
-		        <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-		        <persistence-context-type>Transaction</persistence-context-type>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
-		        </injection-target>
-		    </persistence-context-ref>
-		    <persistence-context-ref>
-		        <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
-		        <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-		        <persistence-context-type>Transaction</persistence-context-type>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
-		        </injection-target>
-		    </persistence-context-ref>
-		    <persistence-context-ref>
-		        <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
-		        <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-		        <persistence-context-type>Transaction</persistence-context-type>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
-		        </injection-target>
-		    </persistence-context-ref>
-		    <persistence-context-ref>
-		        <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
-		        <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-		        <persistence-context-type>Transaction</persistence-context-type>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
-		        </injection-target>
-		    </persistence-context-ref>
-            
-            <persistence-unit-ref>
-		        <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
-		        <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
-		        </injection-target>
-		    </persistence-unit-ref> 
-		    <persistence-unit-ref>
-		        <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
-		        <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
-		        </injection-target>
-		    </persistence-unit-ref>
-		    <persistence-unit-ref>
-		        <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
-		        <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
-		        </injection-target>
-		    </persistence-unit-ref>
-		    <persistence-unit-ref>
-		        <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
-		        <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-		        <injection-target>
-		            <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-		            <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
-		        </injection-target>
-		    </persistence-unit-ref>
-		    
-		    <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-		    
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
-        </session>
-        
-        <session>
-            <ejb-name>DFIPriYesInhDDOvrdTestSLEJB</ejb-name>
-            
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
-        </session>
 
-        <session>
-            <ejb-name>DFIProYesInhDDOvrdTestSLEJB</ejb-name>
-            
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
-        </session>
-
-        <session>
-            <ejb-name>DFIPubYesInhDDOvrdTestSLEJB</ejb-name>
-            
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <persistence-context-type>Transaction</persistence-context-type>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref> 
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            <persistence-unit-ref>
-                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
-                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
-                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
-                </injection-target>
-            </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
-        </session>
-        
-        <session>
-            <ejb-name>DFIPkgYesInhDDOvrdTestSFEJB</ejb-name>
-            
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -512,7 +60,7 @@
                     <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -520,7 +68,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
@@ -545,7 +93,7 @@
                     <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -553,7 +101,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
@@ -578,17 +126,11 @@
                     <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
-        
+
         <session>
-            <ejb-name>DFIPriYesInhDDOvrdTestSFEJB</ejb-name>
-            
+            <ejb-name>DFIPriYesInhDDOvrdTestSLEJB</ejb-name>
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -625,7 +167,7 @@
                     <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -633,7 +175,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
@@ -658,7 +200,7 @@
                     <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -666,7 +208,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
@@ -691,17 +233,11 @@
                     <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <session>
-            <ejb-name>DFIProYesInhDDOvrdTestSFEJB</ejb-name>
-            
+            <ejb-name>DFIProYesInhDDOvrdTestSLEJB</ejb-name>
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -738,7 +274,7 @@
                     <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -746,7 +282,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
@@ -771,7 +307,7 @@
                     <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -779,7 +315,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
@@ -804,17 +340,11 @@
                     <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <session>
-            <ejb-name>DFIPubYesInhDDOvrdTestSFEJB</ejb-name>
-            
+            <ejb-name>DFIPubYesInhDDOvrdTestSLEJB</ejb-name>
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -851,7 +381,7 @@
                     <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -859,7 +389,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
@@ -884,7 +414,7 @@
                     <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
+
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
@@ -892,7 +422,7 @@
                     <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
                     <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
                 </injection-target>
-            </persistence-unit-ref> 
+            </persistence-unit-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
                 <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
@@ -917,17 +447,439 @@
                     <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-unit-ref>
-            
+        </session>
+
+        <session>
+            <ejb-name>DFIPkgYesInhDDOvrdTestSFEJB</ejb-name>
+
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+
             <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
+                </injection-target>
             </persistence-unit-ref>
         </session>
-        
+
+        <session>
+            <ejb-name>DFIPriYesInhDDOvrdTestSFEJB</ejb-name>
+
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+        </session>
+
+        <session>
+            <ejb-name>DFIProYesInhDDOvrdTestSFEJB</ejb-name>
+
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+        </session>
+
+        <session>
+            <ejb-name>DFIPubYesInhDDOvrdTestSFEJB</ejb-name>
+
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_ejb_ejb</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_earlib</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib</persistence-context-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amjta_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_JTA</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_common_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_ejb_ejb</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_EJB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_ejb_ejb</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#OVRD_COMMON_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_common_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib</persistence-unit-ref-name>
+                <persistence-unit-name>OVRD_JPALIB_RL</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>com.ibm.ws.jpa.fvt.injection.ejb.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestSuperclass</injection-target-class>
+                    <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
+                </injection-target>
+            </persistence-unit-ref>
+        </session>
+
         <session>
             <ejb-name>DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-name>
-            
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -964,17 +916,11 @@
                     <injection-target-name>ovdem_cmex_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
-        
+
         <session>
             <ejb-name>DFIPriYesInhDDOvrdTestSFEXEJB</ejb-name>
-            
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -1011,17 +957,11 @@
                     <injection-target-name>ovdem_cmex_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <session>
             <ejb-name>DFIProYesInhDDOvrdTestSFEXEJB</ejb-name>
-            
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -1058,17 +998,11 @@
                     <injection-target-name>ovdem_cmex_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <session>
             <ejb-name>DFIPubYesInhDDOvrdTestSFEXEJB</ejb-name>
-            
+
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
                 <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -1105,13 +1039,6 @@
                     <injection-target-name>ovdem_cmex_jpalib_earlib</injection-target-name>
                 </injection-target>
             </persistence-context-ref>
-            
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
-        
     </enterprise-beans>
 </ejb-jar>

@@ -16,7 +16,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     version="2.5">
-    
+
     <!-- Servlet Definitions -->
     <servlet>
         <servlet-name>DMIPubNoInhTestServlet</servlet-name>
@@ -34,7 +34,7 @@
         <servlet-name>DMIProNoInhTestServlet</servlet-name>
         <servlet-class>com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIProNoInhTestServlet</servlet-class>
     </servlet>
-    
+
     <!-- Servlet Mappings -->
     <servlet-mapping>
         <servlet-name>DMIPubNoInhTestServlet</servlet-name>
@@ -52,20 +52,13 @@
         <servlet-name>DMIProNoInhTestServlet</servlet-name>
         <url-pattern>/DMIProNoInhTestServlet</url-pattern>
     </servlet-mapping>
-    
+
     <!-- JPA Resource Definitions -->
-    
+
     <!-- CM TS -->
-    
-    <!-- Cleanup Persistence Context -->
-    <persistence-context-ref>
-        <persistence-context-ref-name>jpa/web/jndi/ano/cleanup_cmts</persistence-context-ref-name>
-        <persistence-unit-name>CLEANUP</persistence-unit-name>
-        <persistence-context-type>Transaction</persistence-context-type>
-    </persistence-context-ref>
 
     <!-- Injection Overrides -->
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPubNoInhTestServlet -->
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPubNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
@@ -103,7 +96,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPriNoInhTestServlet -->
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPriNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
@@ -141,7 +134,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPkgNoInhTestServlet -->
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIPkgNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
@@ -179,7 +172,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIProNoInhTestServlet -->
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DMIProNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
@@ -217,9 +210,9 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- AM JTA Injection Overrides -->
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPubNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPubNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -253,7 +246,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPriNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -287,7 +280,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPkgNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -321,7 +314,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIProNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIProNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -355,8 +348,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
-    
+
     <!-- AM RL Injection Overrides -->
 
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPubNoInhTestServlet -->
@@ -393,7 +385,6 @@
         </injection-target>
     </persistence-unit-ref>
 
-    
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPriNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPriNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -428,7 +419,6 @@
         </injection-target>
     </persistence-unit-ref>
 
-    
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIPkgNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIPkgNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -463,7 +453,6 @@
         </injection-target>
     </persistence-unit-ref>
 
-
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.web.dmi.noinh.DMIProNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DMIProNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -497,13 +486,4 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-
-    
-    <persistence-unit-ref>
-        <description>Cleanup Persistence Context</description>
-        <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-        <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-    </persistence-unit-ref>
-    
-
 </web-app>

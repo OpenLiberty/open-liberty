@@ -36,7 +36,7 @@ import com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle;
                     @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/ejb/jndi/ano/earlib/common_jta"),
                     @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/ejb/jndi/ano/earlib/common_rl"),
                     @PersistenceUnit(unitName = "JPALIB_JTA", name = "jpa/ejb/jndi/ano/earlib/jpalib_jta"),
-                    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/ejb/jndi/ano/earlib/jpalib_rl"),
+                    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/ejb/jndi/ano/earlib/jpalib_rl")
 })
 @PersistenceContexts({
                        // Persistence Units defined in the ejb
@@ -45,10 +45,7 @@ import com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle;
 
                        // Persistence Units defined in the application's library jar
                        @PersistenceContext(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/ejb/jndi/ano/earlib/common_cmts"),
-                       @PersistenceContext(unitName = "JPALIB_JTA", name = "jpa/ejb/jndi/ano/earlib/jpalib_cmts"),
-
-                       // Cleanup Persistence Context
-                       @PersistenceContext(unitName = "CLEANUP", name = "jpa/ejb/jndi/ano/cleanup_cmts")
+                       @PersistenceContext(unitName = "JPALIB_JTA", name = "jpa/ejb/jndi/ano/earlib/jpalib_cmts")
 })
 public class AnnotatedJNDISFEJB extends BMTEJBTestVehicle {
     @Override

@@ -39,10 +39,7 @@ import com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle;
                                            name = "jpa/ejb/jndi/ano/earlib/common_cmex"),
                        @PersistenceContext(unitName = "JPALIB_JTA",
                                            type = PersistenceContextType.EXTENDED,
-                                           name = "jpa/ejb/jndi/ano/earlib/jpalib_cmex"),
-
-                       // Cleanup Persistence Context
-                       @PersistenceContext(unitName = "CLEANUP", name = "jpa/ejb/jndi/ano/cleanup_cmts")
+                                           name = "jpa/ejb/jndi/ano/earlib/jpalib_cmex")
 })
 public class AnnotatedJNDISFEXEJB extends BMTEJBTestVehicle {
     @Override
