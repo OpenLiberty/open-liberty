@@ -35,7 +35,7 @@ import componenttest.topology.utils.FATServletClient;
 public class CDICompletionStageTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.LITE, MicroProfileActions.MP22);
+    public static RepeatTests r = RepeatFaultTolerance.repeat("FaultToleranceMultiModule", TestMode.FULL, MicroProfileActions.LATEST, MicroProfileActions.MP22);
 
     private static final String SERVER_NAME = "FaultToleranceMultiModule";
     private static final String APP_NAME = "ftCompletionStage";
