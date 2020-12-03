@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +36,8 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -42,13 +45,13 @@ import componenttest.topology.utils.HttpUtils;
  * This test is responsible for testing whether or not and EJB endpoint will have it's HTTPConduit configuration applied to the client as set in the
  * ibm-ws-bnd.xml file. The test application requires access to CXF internals
  * so a jaxwsTest-2.3 feature is added to the Liberty image in order to expose those APIs.
- *
- * TODO:
- * Refactor the jaxws-2.3 and jaxws-2.2 tests back into a single Test Class, or with a common abstract class
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat("jaxws-2.3")
 public class EJBServiceRefBndTest {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("EJBServiceRefBndTestServer").removeFeature("jaxwsTest-2.2").addFeature("timedexit-1.0").addFeature("jaxwsTest-2.3").withID("jaxwsTest-2.3"));
+
     private static final int CONN_TIMEOUT = 5;
 
     @Server("EJBServiceRefBndTestServer")
@@ -73,11 +76,15 @@ public class EJBServiceRefBndTest {
         ExplodedShrinkHelper.explodedArchiveToDestination(server, ear, "dropins");
 
         server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.2.mf");
+
+        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.3.mf");
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
         server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.2.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.3.mf");
     }
 
     @Before
@@ -94,10 +101,7 @@ public class EJBServiceRefBndTest {
         }
 
         if (server.isStarted()) {
-
-            // Since the individual tests are starting the server due to the config change
-            // You must remove the false boolean in order to get logs for debuging failures
-            server.stopServer(false);
+            server.stopServer();
         }
     }
 

@@ -87,7 +87,8 @@ Import-Package: \
   org.apache.mina.filter.codec;resolution:=optional, \
   org.apache.mina.filter.logging;resolution:=optional, \
   org.apache.mina.transport.socket.nio;resolution:=optional, \
-  org.xml.sax
+  org.xml.sax, \
+  *
 
 Export-Package: \
-  org.apache.cxf.binding.soap.*;version=${cxfVersion}
+  org.apache.cxf.binding.soap.*;version=3.4.1;-split-package:=merge-last

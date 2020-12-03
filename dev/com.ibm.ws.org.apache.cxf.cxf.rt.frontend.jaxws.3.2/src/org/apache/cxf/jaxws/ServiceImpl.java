@@ -433,7 +433,7 @@ public class ServiceImpl extends ServiceDelegate {
         LOG.log(Level.FINE, "endpoint reference:", epr);
         LOG.log(Level.FINE, "endpoint interface:", serviceEndpointInterface);
 
-        JaxWsProxyFactoryBean proxyFac = new JaxWsProxyFactoryBean();
+        final JaxWsProxyFactoryBean proxyFac = new JaxWsProxyFactoryBean();
         JaxWsClientFactoryBean clientFac = (JaxWsClientFactoryBean) proxyFac.getClientFactoryBean();
         JaxWsServiceFactoryBean serviceFactory = (JaxWsServiceFactoryBean) proxyFac.getServiceFactory();
         List<WebServiceFeature> f = getAllFeatures(features);
@@ -492,16 +492,15 @@ public class ServiceImpl extends ServiceDelegate {
             // handlerchain should be on the generated Service object
             proxyFac.setLoadHandlers(false);
         }
-        
-        final JaxWsProxyFactoryBean pf = proxyFac;
-        
+              
         Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() { 
             @Override
             public Object run() {
-                        return pf.create();
+                        return proxyFac.create();
   
             }
         });
+     // Liberty Change End
          proxyFac.create();
 
         // Configure the Service

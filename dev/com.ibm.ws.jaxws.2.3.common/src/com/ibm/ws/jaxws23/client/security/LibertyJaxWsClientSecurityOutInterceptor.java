@@ -67,9 +67,9 @@ import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
  * Used to set the SSL config on the Client side conduit. This removes the need to modify the
  * HttpConduit directly through an extended LibertyHttpConduit 
  */
-public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseInterceptor<Message> {
+public class LibertyJaxWsClientSecurityOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    private static final TraceComponent tc = Tr.register(LibertyJaxWsClientSSLOutInterceptor.class);
+    private static final TraceComponent tc = Tr.register(LibertyJaxWsClientSecurityOutInterceptor.class);
 
     private static final QName CXF_TRANSPORT_URI_RESOLVER_QNAME = new QName("http://cxf.apache.org", "TransportURIResolver");
     private static final AtomicReference<AtomicServiceReference<JaxWsSecurityConfigurationService>> securityConfigSR = new AtomicReference<AtomicServiceReference<JaxWsSecurityConfigurationService>>();
@@ -91,7 +91,7 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
      * @param endpointInfo 
      * @param phase
      */
-    public LibertyJaxWsClientSSLOutInterceptor(WebServiceRefInfo wsrInfo, JaxWsSecurityConfigurationService securityConfigService,
+    public LibertyJaxWsClientSecurityOutInterceptor(WebServiceRefInfo wsrInfo, JaxWsSecurityConfigurationService securityConfigService,
                                                Set<ConfigProperties> configPropertiesSet, EndpointInfo endpointInfo) {
         super(Phase.PREPARE_SEND);
         this.wsrInfo = wsrInfo;

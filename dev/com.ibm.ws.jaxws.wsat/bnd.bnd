@@ -19,8 +19,8 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.wsat
 exportVer=2.2
 
 Private-Package: \
-  com.ibm.ws.wsat.policy;version=${exportVer}
-
+  com.ibm.ws.wsat.policy
+  
 Export-Package: \
  com.ibm.ws.jaxws.wsat;version=${exportVer},\
  com.ibm.ws.jaxws.wsat.components;version=${exportVer}
@@ -30,13 +30,13 @@ Import-Package: \
    javax.xml,\
    javax.xml.namespace,\
    org.osgi.framework;version="1.5.0",\
-   javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   javax.xml.ws.*;version="[2.3,3)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
    com.ibm.websphere.ras, \
    com.ibm.websphere.ras.annotation, \
    com.ibm.ws.ffdc, \
-   com.ibm.ws.jaxws;version="[2.0,2.3)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Service-Component: \

@@ -31,9 +31,7 @@ public class FATSuite {
                                     .addFeature("cdi-2.0")
                                     .removeFeature("cdi-1.2")
                                     .removeFeature("jaxws-2.2")
-                                    .removeFeature("jsp-2.2")
                                     .removeFeature("servlet-3.1")
-                                    .removeFeature("jaxwstest-2.2")
                                     .withID("jaxws-2.3"));
 
 }

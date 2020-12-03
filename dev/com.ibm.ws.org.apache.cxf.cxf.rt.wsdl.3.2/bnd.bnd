@@ -17,9 +17,14 @@ cxfVersion=3.4.1
    @${repo;org.apache.cxf:cxf-rt-wsdl;${cxfVersion};EXACT}!/!*-INF/*, \
     META-INF/cxf=resources/META-INF/cxf
 
--buildpath: org.apache.cxf:cxf-rt-wsdl;strategy=exact;version=${cxfVersion},\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.logging.core
-
 jakartaeeMe: true
+
+-buildpath: \
+	org.apache.cxf:cxf-rt-wsdl;strategy=exact;version=${cxfVersion},\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3,\
+	com.ibm.websphere.javaee.wsdl4j.1.2
+

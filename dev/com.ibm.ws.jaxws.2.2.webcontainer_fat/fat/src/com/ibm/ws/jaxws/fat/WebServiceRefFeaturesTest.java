@@ -33,6 +33,9 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class WebServiceRefFeaturesTest {
 
+    // TODO: Clean tests servlets so that it doesn't generate this warning
+    //private final static String ignoreErrorOrWarningMsg = ".SRVE0274W.";
+
     @Server("WebServiceRefFeaturesTestServer")
     public static LibertyServer server;
 

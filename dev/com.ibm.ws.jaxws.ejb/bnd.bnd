@@ -52,7 +52,7 @@ Service-Component: \
      properties:="service.vendor=IBM"
 
 Export-Package: \
-    com.ibm.ws.jaxws.ejb;version=${exportVer}
+    com.ibm.ws.jaxws.ejb
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
@@ -60,14 +60,14 @@ Export-Package: \
 Import-Package: \
    !com.ibm.ws.jaxws.ejb, \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
    javax.xml.soap;version=!,\
-   com.ibm.ws.jaxws;version="[2.0,2.3)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.ejb.*;version=${exportVer}
+   com.ibm.ws.jaxws.ejb.*
 
 instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 

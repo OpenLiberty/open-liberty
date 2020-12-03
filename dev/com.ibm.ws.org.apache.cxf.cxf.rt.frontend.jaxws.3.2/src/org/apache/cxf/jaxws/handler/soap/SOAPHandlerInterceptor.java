@@ -67,6 +67,7 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.transport.MessageObserver;
 import org.apache.cxf.ws.addressing.Names;
 
+//No Liberty Change: jaxws-2.3 requires recompiling this class
 public class SOAPHandlerInterceptor extends
         AbstractProtocolHandlerInterceptor<SoapMessage> implements
         SoapInterceptor {

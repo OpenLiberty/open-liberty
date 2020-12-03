@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.fat;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 
 /*
  * TODO: Lite Mode
@@ -36,9 +32,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CXFJMXSupportTest.class,
                 WebServiceMonitorTest.class,
                 HttpConduitPropertiesTest.class,
-                HttpConduitPropertiesTest23.class,
                 EJBServiceRefBndTest.class,
-                EJBServiceRefBndTest23.class,
                 PortComponentRefTest.class,
                 EndpointPropertiesTest.class,
                 BindingTypeWsdlMismatchTest.class,
@@ -47,7 +41,4 @@ import componenttest.rules.repeater.RepeatTests;
                 VirtualHostTest.class
 })
 public class FATSuite {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").removeFeature("jaxwstest-2.2").withID("jaxws-2.3"));
-
 }

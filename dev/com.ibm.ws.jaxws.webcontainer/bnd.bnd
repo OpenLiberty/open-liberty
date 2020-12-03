@@ -50,13 +50,12 @@ Export-Package: \
 
 Import-Package: \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
-   com.ibm.ws.jaxws;version="[2.0,2.3)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.webcontainer.*;version=${exportVer}
+   com.ibm.ws.jaxws.webcontainer.*
    
 Include-Resource: OSGI-INF=resources/OSGI-INF
     

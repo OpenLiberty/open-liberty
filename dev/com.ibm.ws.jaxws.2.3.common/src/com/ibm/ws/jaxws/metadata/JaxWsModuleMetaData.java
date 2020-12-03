@@ -19,7 +19,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;

@@ -21,6 +21,7 @@ import java.net.URL;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -29,10 +30,16 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+
     private final Class<?> c = WebServiceInWebXMLTest.class;
 
     @Server("WebServiceInWebXMLTestServerWithSharedLib")

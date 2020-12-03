@@ -14,7 +14,7 @@
 cxfVersion=3.4.1
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion}}!/!META-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!META-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf,\
    META-INF=resources/META-INF
 
@@ -23,6 +23,5 @@ cxfVersion=3.4.1
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core
-  
+
 jakartaeeMe: true
-  

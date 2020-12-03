@@ -42,12 +42,17 @@ public class LibertyJaxWsAutomaticWorkQueueImpl implements AutomaticWorkQueue {
 
         @Override
         public void run() {
+
             //switch thread context classloader of async thread to application context classloader
             ClassLoader oClsLoader = THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
-            THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), appContextClassLoader);
-            work.run();
-            //after callback done, switch back the original classloader
-            THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), oClsLoader);
+            
+            try {
+                THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), appContextClassLoader);
+                work.run();
+            } finally {
+                //after callback done, switch back the original classloader
+                THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), oClsLoader);
+            }
         }
     }
     

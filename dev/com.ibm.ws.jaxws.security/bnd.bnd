@@ -18,9 +18,9 @@ Bundle-Description: JAX-WS Transport Level and Endpoints Security
 exportVer=2.2
 
 Import-Package: \
-   com.ibm.ws.jaxws;version="[2.0,2.3)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
    com.ibm.ws.webcontainer.security.metadata, \
    com.ibm.wsspi.webcontainer.metadata, \
    com.ibm.wsspi.webcontainer.webapp, \
@@ -39,8 +39,8 @@ Service-Component: \
      provide:='com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator'; \
      properties:="service.vendor=IBM"
 
-Private-Package: com.ibm.ws.jaxws.security.internal;version=${exportVer}, \
- com.ibm.ws.jaxws.security.internal.resources;version=${exportVer}
+Private-Package: com.ibm.ws.jaxws.security.internal, \
+ com.ibm.ws.jaxws.security.internal.resources
 
 instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 

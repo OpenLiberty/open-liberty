@@ -51,13 +51,13 @@ Import-Package: \
    com.ibm.wsspi.webcontainer.collaborator, \
    com.ibm.ws.container.service.metadata, \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
-   com.ibm.ws.jaxws;version="[2.0,2.3)", \
-   com.ibm.ws.jaxws.*;version="[2.0,2.3)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.web.*;version=${exportVer}
+   com.ibm.ws.jaxws.web.*
 
 instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 

@@ -24,7 +24,7 @@ Private-Package: \
 
 Import-Package: \
  javax.xml.ws.*;version="[2.2,3)", \
- com.ibm.ws.jaxws.* ;version="[1.0.0,3)", \
+ com.ibm.ws.jaxws.* ;version="[2.0,3)", \
  *
 
 instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resources/*.class

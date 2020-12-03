@@ -101,7 +101,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         }
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy,final Method method, Object[] args) throws Throwable {
         if (client == null) {
             throw new IllegalStateException("The client has been closed.");
         }
@@ -111,10 +111,13 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         MethodDispatcher dispatcher = (MethodDispatcher)endpoint.getService().get(
                                                                                   MethodDispatcher.class
                                                                                       .getName());
-        Object[] params = args;
-        if (null == params) {
+        // Liberty Change
+        final Object[] params;
+        if (args == null) {
             params = new Object[0];
-        }
+        } else
+            params = args;
+        // Liberty Change End
 
 
         try {
@@ -130,7 +133,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
             throw e.getCause();
         }
 
-        BindingOperationInfo oi = dispatcher.getBindingOperation(method, endpoint);
+        final BindingOperationInfo oi = dispatcher.getBindingOperation(method, endpoint);
         if (oi == null) {
             Message msg = new Message("NO_BINDING_OPERATION_INFO", LOG, method.getName());
             throw new WebServiceException(msg.toString());
@@ -143,14 +146,11 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         try {
             if (isAsync) {
                 //Liberty change
-                final Method mthd = method;
-                final Object[] prms = params;
-                final BindingOperationInfo boi = oi;
                 try { 
                     result = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() { 
                         @Override
                         public Object run() throws Exception {
-                                    return invokeAsync(mthd, boi, prms);
+                                    return invokeAsync( method, oi, params);
               
                         }
                     });
@@ -160,15 +160,11 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                 
             } else {
                 //Liberty change
-                final Method mthd = method;
-                final Object[] prms = params;
-                final BindingOperationInfo boi = oi;
-                
                 try { 
                     result = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() { 
                         @Override
                         public Object run() throws Exception {
-                                    return invokeSync(mthd, boi, prms);
+                                    return invokeSync( method, oi, params);
               
                         }
                     });
