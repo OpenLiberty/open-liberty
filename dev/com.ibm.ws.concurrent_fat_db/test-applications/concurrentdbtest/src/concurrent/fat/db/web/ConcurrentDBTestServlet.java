@@ -10,6 +10,10 @@
  *******************************************************************************/
 package concurrent.fat.db.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -115,6 +119,55 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
             ResultSet result = stmt.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY = 'testGlobalTranSuspendAndResume'");
             if (result.next())
                 throw new Exception("Should have been rolled back. Instead: " + result.getInt(1));
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Obtain connections within a contextual task and leave them open.
+     * When HandleList is enabled, the connection handle is automatically closed.
+     * When HandleList is disabled, the connection handle is left open and remains usable.
+     */
+    @Test
+    public void testHandleListClosesConnectionLeakedFromInlineTask() throws Exception {
+        Connection[] con = (Connection[]) contextService.createContextualProxy(() -> {
+            Connection[] c = new Connection[] {
+                                                unsharedXADataSource.getConnection(), // handle list enabled
+                                                unshared1PCDataSource.getConnection() // handle list disabled
+            };
+            return c;
+        }, Callable.class).call();
+
+        try {
+            assertTrue(con[0].isClosed());
+            assertFalse(con[1].isClosed());
+
+            con[1].createStatement().executeUpdate("INSERT INTO MYTABLE VALUES ('testHandleListClosesConnectionLeakedFromInlineTask', 29)");
+        } finally {
+            con[0].close();
+            con[1].close();
+        }
+    }
+
+    /**
+     * Obtains a connection prior to a contextual task, uses the connection within the contextual task,
+     * and leaves the connection open. It must remain usable afterward, because the connection handle
+     * belongs to the servlet's HandleList, not the contextual tasks.
+     */
+    @Test
+    public void testHandleListDoesNotClosePreexistingConnectionAfterInlineTask() throws Exception {
+        final Connection con = unsharedXADataSource.getConnection(); // handle list enabled
+        try {
+            Statement stmt = (Statement) contextService.createContextualProxy(() -> {
+                Statement s = con.createStatement();
+                s.execute("INSERT INTO MYTABLE VALUES ('testHandleListDoesNotClosePreexistingConnectionAfterInlineTask', 30)");
+                return s;
+            }, Callable.class).call();
+
+            assertFalse(stmt.isClosed());
+
+            assertEquals(1, stmt.executeUpdate("DELETE FROM MYTABLE WHERE MYKEY='testHandleListDoesNotClosePreexistingConnectionAfterInlineTask'"));
         } finally {
             con.close();
         }
