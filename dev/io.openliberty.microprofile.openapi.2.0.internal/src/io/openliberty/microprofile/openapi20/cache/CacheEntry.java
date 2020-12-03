@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 
@@ -35,6 +38,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
+import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
 import io.smallrye.openapi.runtime.OpenApiStaticFile;
@@ -227,7 +231,16 @@ public class CacheEntry {
         }
     }
 
-    public void write() throws IOException {
+    /**
+     * Writes the cache entry to disk asynchronously
+     * <p>
+     * Does nothing if the cache entry is not complete.
+     * <p>
+     * The caller must ensure that the model doesn't change before the cache is written. This class will synchronize on the model before serializing it.
+     * 
+     * @return a Future to indicate when the writing is complete
+     */
+    public Future<Void> writeAsync(ExecutorService executor) {
         // check that everything required for a cache entry has been provided
         if (appName == null || model == null || (configProperties == null && config == null) || fileEntries.isEmpty()) {
             if (LoggingUtils.isDebugEnabled(tc)) {
@@ -240,42 +253,49 @@ public class CacheEntry {
                 if (fileEntries.isEmpty())
                     Tr.debug(this, tc, "Not writing cache entry, fileEntries is empty");
             }
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         if (LoggingUtils.isDebugEnabled(tc)) {
-            Tr.debug(this, tc, "Writing cache entry");
+            Tr.debug(this, tc, "Requesting async write of cache entry");
         }
 
-        try {
-            // delete cache directory if present
-            if (Files.exists(cacheDir)) {
-                if (Files.isDirectory(cacheDir)) {
-                    Files.walkFileTree(cacheDir, RECURSIVE_DELETER);
-                } else {
-                    throw new IOException("Non-directory found in cache location: " + cacheDir.toAbsolutePath());
+        return executor.submit(() -> {
+            try {
+                if (LoggingUtils.isDebugEnabled(tc)) {
+                    Tr.debug(this, tc, "Beginning cache entry write");
                 }
+
+                // delete cache directory if present
+                if (Files.exists(cacheDir)) {
+                    if (Files.isDirectory(cacheDir)) {
+                        Files.walkFileTree(cacheDir, RECURSIVE_DELETER);
+                    } else {
+                        throw new IOException("Non-directory found in cache location: " + cacheDir.toAbsolutePath());
+                    }
+                }
+
+                // create cache directory
+                Files.createDirectories(cacheDir);
+
+                // write list of dependent file data
+                writeFileList(cacheDir.resolve(FILES_LIST_FILE));
+
+                // serialize config
+                writeConfig(cacheDir.resolve(CONFIG_FILE));
+
+                // serialize model
+                writeModel(cacheDir.resolve(MODEL_FILE));
+
+                if (LoggingUtils.isDebugEnabled(tc)) {
+                    Tr.debug(this, tc, "Cache entry written");
+                }
+            } catch (Exception e) {
+                // warn upon unexpected failure
+                Tr.warning(tc, MessageConstants.OPENAPI_CACHE_WRITE_ERROR, appName, e.toString());
             }
-
-            // create cache directory
-            Files.createDirectories(cacheDir);
-
-            // write list of dependent file data
-            writeFileList(cacheDir.resolve(FILES_LIST_FILE));
-
-            // serialize config
-            writeConfig(cacheDir.resolve(CONFIG_FILE));
-
-            // serialize model
-            writeModel(cacheDir.resolve(MODEL_FILE));
-
-            if (LoggingUtils.isDebugEnabled(tc)) {
-                Tr.debug(this, tc, "Cache entry written");
-            }
-        } catch (Exception e) {
-            // warn upon unexpected failure
-            Tr.warning(tc, "An unexpected error occurred while writing the cache for application {0}. The error is {1}", appName, e.toString());
-        }
+            return null;
+        });
     }
 
     private boolean read() throws IOException {
@@ -302,7 +322,11 @@ public class CacheEntry {
     }
 
     private void writeModel(Path output) throws IOException {
-        String jsonModel = OpenApiSerializer.serialize(model, Format.JSON);
+        String jsonModel;
+        // This method runs asynchronously, so synchronize to ensure we don't use the model at the same time as WebModuleOpenAPIProvider
+        synchronized (model) {
+            jsonModel = OpenApiSerializer.serialize(model, Format.JSON);
+        }
         Files.write(output, jsonModel.getBytes(StandardCharsets.UTF_8));
     }
 

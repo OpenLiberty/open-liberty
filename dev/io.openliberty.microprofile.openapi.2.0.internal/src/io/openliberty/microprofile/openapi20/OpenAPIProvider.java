@@ -69,4 +69,11 @@ public interface OpenAPIProvider {
      *          The true iff the OpenAPI model contains server definitions.
      */
     public boolean getServersDefined();
+    
+    /**
+     * Wait for any background tasks to complete (e.g. writing the cached model)
+     * <p>
+     * This method will block until any outstanding background tasks for this model are complete.
+     */
+    public void waitForBackgroundTasks();
 }

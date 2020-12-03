@@ -14,10 +14,16 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -49,9 +55,13 @@ import io.smallrye.openapi.runtime.io.Format;
  * The ApplicationProcessor class processes an application that has been deployed to the OpenLiberty instance in order
  * to generate an OpenAPI model.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationProcessor.class)
 public class ApplicationProcessor {
 
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
+
+    @Reference
+    private ExecutorService executor;
 
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
@@ -62,7 +72,7 @@ public class ApplicationProcessor {
      *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    public static OpenAPIProvider processApplication(final ApplicationInfo appInfo) {
+    public OpenAPIProvider processApplication(final ApplicationInfo appInfo) {
 
         // Create the variable to return
         OpenAPIProvider openAPIProvider = null;
@@ -175,7 +185,7 @@ public class ApplicationProcessor {
      * @return OpenAPIProvider
      *         The OpenAPIProvider for the web module, or null if the web module is not an OAS applciation.
      */
-    private static OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo) {
+    private OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo) {
 
         // Create the variable to return
         OpenAPIProvider openAPIProvider = null;
@@ -185,6 +195,7 @@ public class ApplicationProcessor {
         }
         ClassLoader appClassloader = moduleInfo.getClassLoader();
         OpenAPI openAPIModel = null;
+        Future<Void> modelAsyncProcessingFuture = null;
 
         // Read and process the MicroProfile config. Try with resources will close the ConfigProcessor when done.
         try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader)) {
@@ -210,6 +221,7 @@ public class ApplicationProcessor {
                     }
 
                     openAPIModel = loadedCacheEntry.getModel();
+                    modelAsyncProcessingFuture = CompletableFuture.completedFuture(null); // No async work to do
                 }
             }
 
@@ -221,22 +233,19 @@ public class ApplicationProcessor {
                 openAPIModel = generateModel(config, appContainer, moduleInfo, appClassloader);
                 if (openAPIModel != null && newCacheEntry != null) {
                     newCacheEntry.setModel(openAPIModel);
-                    newCacheEntry.write();
+                    modelAsyncProcessingFuture = newCacheEntry.writeAsync(executor);
+                } else {
+                    modelAsyncProcessingFuture = CompletableFuture.completedFuture(null); // No async work to do
                 }
             }
 
             if (openAPIModel != null) {
-                // Add default info to the doc if none is present
-                if (openAPIModel.getInfo() == null) {
-                    openAPIModel.setInfo(new InfoImpl().title(Constants.DEFAULT_OPENAPI_DOC_TITLE).version(Constants.DEFAULT_OPENAPI_DOC_VERSION));
-                }
-
                 if (LoggingUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Generated document: " + OpenAPIUtils.getOpenAPIDocument(openAPIModel, Format.JSON));
                 }
 
                 // Create the OpenAPIProvider to return
-                openAPIProvider = new WebModuleOpenAPIProvider(moduleInfo, openAPIModel, OpenAPIUtils.containsServersDefinition(openAPIModel));
+                openAPIProvider = new WebModuleOpenAPIProvider(moduleInfo, openAPIModel, OpenAPIUtils.containsServersDefinition(openAPIModel), modelAsyncProcessingFuture);
 
                 // Validate the document if the validation property has been enabled.
                 if (configProcessor.isValidating()) {
@@ -283,6 +292,11 @@ public class ApplicationProcessor {
         OpenApiDocument.INSTANCE.initialize();
 
         openAPIModel = OpenApiDocument.INSTANCE.get();
+
+        // Add default info to the doc if none is present
+        if (openAPIModel.getInfo() == null) {
+            openAPIModel.setInfo(new InfoImpl().title(Constants.DEFAULT_OPENAPI_DOC_TITLE).version(Constants.DEFAULT_OPENAPI_DOC_VERSION));
+        }
 
         /*
          * We need to determine whether the scanned application is an OAS application at all. In order to do
