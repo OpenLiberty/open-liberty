@@ -14,7 +14,8 @@ IBM-API-Package: jakarta.batch.api; type="spec", \
  jakarta.batch.runtime.context; type="spec"
 IBM-ShortName: batchManagement-2.0
 Subsystem-Name: Batch Management 2.0
--features=io.openliberty.batch-2.0, \
+-features=com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.batch-2.0, \
   com.ibm.websphere.appserver.restHandler-1.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.jsonp-2.0, \
