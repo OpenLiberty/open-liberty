@@ -562,8 +562,10 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 //		}
 
             response.resetBuffer();
-
-            location = convertRelativeURIToURL(location);
+            
+            if (!WCCustomProperties.REDIRECT_TO_RELATIVE_URL) {
+                location = convertRelativeURIToURL(location);
+            }
 
             // 115010 - begin - make header name begin with upper case
             response.setHeader("Location", location);

@@ -316,6 +316,9 @@ public class WCCustomProperties {
     //20.0.0.8
     public static boolean DECODE_URL_PLUS_SIGN;
 
+    //21.0.0.1
+    public static boolean REDIRECT_TO_RELATIVE_URL;
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -407,7 +410,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletpathfordefaultmapping", "com.ibm.ws.webcontainer.servletpathfordefaultmapping");     //4666
         WCCustomProperties.FullyQualifiedPropertiesMap.put("getrealpathreturnsqualifiedPath", "com.ibm.ws.webcontainer.getrealpathreturnsqualifiedPath");
-
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -792,6 +795,9 @@ public class WCCustomProperties {
         // 19.0.0.8
         GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
         
+        //21.0.0.1
+        REDIRECT_TO_RELATIVE_URL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.redirecttorelativeurl", "false")).booleanValue();
+
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
