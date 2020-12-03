@@ -21,6 +21,8 @@ Web-ContextPath: /openapi
 
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
+    io.openliberty.microprofile.openapi.internal.resources,\
+    io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
     *
 
@@ -32,9 +34,7 @@ Export-Package: \
     io.openliberty.microprofile.openapi20.validation
 
 Private-Package: \
-    io.openliberty.microprofile.openapi20.cache,\
-    io.openliberty.microprofile.openapi20.resources,\
-    io.openliberty.microprofile.openapi20.validation.resources
+    io.openliberty.microprofile.openapi20.cache
 
 Include-Resource: \
     META-INF/services=resources/META-INF/services,\
@@ -73,7 +73,8 @@ WS-TraceGroup: MPOPENAPI
     com.fasterxml.jackson.core.jackson-core;version=2.11.2,\
     com.fasterxml.jackson.core.jackson-annotations;version=2.11.2,\
     com.fasterxml.jackson.core:jackson-databind;version=2.11.2,\
-    com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.11.2
+    com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.11.2,\
+    io.openliberty.microprofile.openapi.internal.common;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
