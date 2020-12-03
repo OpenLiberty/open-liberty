@@ -23,6 +23,7 @@ Subsystem-Name: MicroProfile 3.3
   com.ibm.websphere.appserver.mpMetrics-2.3, \
   com.ibm.websphere.appserver.mpOpenAPI-1.1, \
   com.ibm.websphere.appserver.mpOpenTracing-1.3, \
-  com.ibm.websphere.appserver.mpRestClient-1.4
+  com.ibm.websphere.appserver.mpRestClient-1.4, \
+  io.openliberty.mpCompatible-0.0
 kind=ga
 edition=core
