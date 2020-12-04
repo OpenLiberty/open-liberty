@@ -30,6 +30,8 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jcaInboundSecurity-1.0",
                                                  "jpa-2.1",
                                                  "jpaContainer-2.1",
+                                                 "batch-1.0",
+                                                 "batchManagement-1.0",
                                                  "beanValidation-1.1",
                                                  "jaxrs-2.0",
                                                  "jaxrsClient-2.0",
