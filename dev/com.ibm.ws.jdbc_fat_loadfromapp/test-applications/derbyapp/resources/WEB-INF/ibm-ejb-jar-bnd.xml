@@ -15,7 +15,7 @@
         xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd"
         version="1.1">
 
-  <session name="BeanInWebApp">
+  <session name="StatefulBeanInWebApp">
     <resource-ref name="jdbc/dsref">
       <custom-login-configuration name="webapplogin">
         <property name="shape" value="heptagon"/>

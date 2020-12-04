@@ -18,7 +18,7 @@ import javax.ejb.Stateful;
 import javax.sql.DataSource;
 
 @Stateful
-public class BeanInWebApp implements CloseableExecutorBean, Executor {
+public class StatefulBeanInWebApp implements CloseableExecutorBean, Executor {
     @Resource(name = "java:comp/env/jdbc/dsref", lookup = "jdbc/sharedLibDataSource")
     DataSource ds;
 
