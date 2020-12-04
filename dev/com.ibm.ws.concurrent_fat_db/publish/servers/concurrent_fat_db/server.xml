@@ -21,13 +21,13 @@
     <include location="../fatTestPorts.xml"/>
 
     <dataSource id="CPDataSource" jndiName="jdbc/CPDataSource" type="javax.sql.ConnectionPoolDataSource">
-        <connectionManager enableHandleList="false"/> <!-- TODO replace with real property name, once added -->
+        <connectionManager autoCloseConnections="false"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
     </dataSource>
 
     <dataSource id="DefaultDataSource"> <!-- an XADataSource -->
-        <connectionManager enableHandleList="true"/> <!-- TODO replace with real property name, once added, or remove if made the default -->
+        <connectionManager autoCloseConnections="true"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
     </dataSource>
