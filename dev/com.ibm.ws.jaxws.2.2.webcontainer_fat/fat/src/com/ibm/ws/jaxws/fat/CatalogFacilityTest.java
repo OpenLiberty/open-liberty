@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -33,11 +34,11 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-
+@SkipForRepeat("jaxwsTest-2.3")
 public class CatalogFacilityTest {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("CatalogFacilityTestServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     @Server("CatalogFacilityTestServer")
     public static LibertyServer server;

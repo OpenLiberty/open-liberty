@@ -42,7 +42,8 @@ import componenttest.topology.utils.HttpUtils;
 public class HandlerChainTest {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").forServers("XmlOverrideHandlerChainTestServer",
+                                                                                                                                              "AnnotatedHandlerChainTestServer").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     private static final String CLIENT_APP_LOCATION_DROPINS = "dropins/testHandlerClient.war";
     private static final String CLIENT_APP_WITHOUTXML_LOCATION_DROPINS = "dropins/testHandlerClientWithoutXML.war";

@@ -41,7 +41,8 @@ import componenttest.topology.utils.HttpUtils;
 
 public class WsBndEndpointOverrideTest_Lite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("EJBinWarEndpointAddressOverrideServer",
+                                                                                                                      "EJBinWarOverrideServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     private static final int CONN_TIMEOUT = 5;
 

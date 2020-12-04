@@ -60,7 +60,7 @@ import componenttest.topology.utils.HttpUtils;
 public class WebServiceMonitorTest {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").forServers("WebServiceMonitorTestServer").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     private static final String REQUEST_STR = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:jax=\"http://monitor.jaxws.ws.ibm.com/\">" +
                                               "<soapenv:Header/>" +

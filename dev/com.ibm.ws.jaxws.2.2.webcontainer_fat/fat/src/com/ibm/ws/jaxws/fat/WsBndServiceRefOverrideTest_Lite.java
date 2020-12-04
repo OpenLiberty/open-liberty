@@ -38,7 +38,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class WsBndServiceRefOverrideTest_Lite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("WsBndServiceRefOverrideTestServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     public static final int CONN_TIMEOUT = 5;
 
