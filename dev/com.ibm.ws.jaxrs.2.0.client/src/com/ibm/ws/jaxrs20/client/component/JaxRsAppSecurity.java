@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.component;
 
-import java.util.Map;
-
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 
 import org.osgi.service.component.annotations.Component;
@@ -25,9 +22,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
 
-/**
- * 
- */
 @Component(name = "com.ibm.ws.jaxrs20.client.component.JaxRsAppSecurity", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsAppSecurity {
     private static final TraceComponent tc = Tr.register(JaxRsAppSecurity.class);
@@ -57,15 +51,6 @@ public class JaxRsAppSecurity {
         if (appSecurityService != null) {
             return appSecurityService.getSSOCookieFromSSOToken();
         }
-        return null;
-    }
-
-    public static SSLSocketFactory getSSLSocketFactory(String sslRef, Map<String, Object> props) {
-
-        if (appSecurityService != null) {
-            return appSecurityService.getSSLSocketFactory(sslRef, props);
-        }
-
         return null;
     }
 }

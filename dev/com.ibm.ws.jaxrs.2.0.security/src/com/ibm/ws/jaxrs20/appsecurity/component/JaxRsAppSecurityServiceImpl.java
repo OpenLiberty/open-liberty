@@ -12,9 +12,7 @@ package com.ibm.ws.jaxrs20.appsecurity.component;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Map;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 import javax.ws.rs.ProcessingException;
 
@@ -44,14 +42,4 @@ public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
 
         return ssoCookie;
     }
-
-    @Override
-    public SSLSocketFactory getSSLSocketFactory(String sslRef, Map<String, Object> props) {
-//        SSLSocketFactory sslSocketFactory = JaxRsSSLManager.getProxySSLSocketFactoryBySSLRef(sslRef, null);
-//        return sslSocketFactory;
-
-        // I don't think this ever gets called, but I don't want to re-factor the interface right now
-        return null;
-    }
-
 }
