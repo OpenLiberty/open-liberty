@@ -10,11 +10,24 @@
  -->
 <server description="Server for testing WebSockets with trace enabled">
 
-    <include location="../fatTestPorts.xml"/>
+    <!-- include location="../fatTestPorts.xml"/ -->
+        <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+                  <httpOptions persistTimeout="5"/>
+        </httpEndpoint>          
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 
     <featureManager>
         <feature>websocket-1.0</feature>
 		<feature>localConnector-1.0</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
    
     
