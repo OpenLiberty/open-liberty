@@ -43,7 +43,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .withoutModification()
-                    ;//.andWith(new JakartaEE9Action()); TODO uncomment once JCA (and possibly other) features are ready for Jakarta
+                    .andWith(new JakartaEE9Action());
 
     @Server("com.ibm.ws.jdbc.fat.loadfromapp")
     @TestServlets(value = {

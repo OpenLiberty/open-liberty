@@ -137,10 +137,12 @@
     <!-- permissions for login modules -->
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='jakarta.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='jakarta.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <variable name="onError" value="FAIL"/>
