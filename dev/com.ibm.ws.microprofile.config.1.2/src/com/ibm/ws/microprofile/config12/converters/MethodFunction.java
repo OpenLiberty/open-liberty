@@ -29,6 +29,7 @@ public class MethodFunction<X> implements Function<String, X> {
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
+    @FFDCIgnore(InvocationTargetException.class)
     public X apply(String value) {
         X converted = null;
         if (value != null) { //if the value is null then we always return null

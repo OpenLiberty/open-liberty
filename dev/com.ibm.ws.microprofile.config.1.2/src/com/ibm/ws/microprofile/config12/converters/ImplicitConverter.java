@@ -35,33 +35,45 @@ public class ImplicitConverter extends BuiltInConverter {
         this.implicitFunction = getImplicitFunction(converterType);
     }
 
+    /**
+     * <p>If no explicit Converter and no built-in Converter could be found for a certain type,
+     * the {@code Config} provides an <em>Implicit Converter</em>, if</p>
+     * <ul>
+     * <li>The target type {@code T} has a public Constructor with a String parameter, or</li>
+     * <li>the target type {@code T} has a {@code public static T valueOf(String)} method, or</li>
+     * <li>the target type {@code T} has a {@code public static T parse(CharSequence)} method</li>
+     * </ul>
+     *
+     * @param converterType The class to convert using
+     */
     @Trivial
     protected <X> Function<String, X> getImplicitFunction(Class<X> converterType) {
         Function<String, X> implicitFunction = ConstructorFunction.getConstructorFunction(converterType);
 
+        if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Automatic converter for " + converterType + " using \"constructor\"");
+        }
+
         if (implicitFunction == null) {
             implicitFunction = MethodFunction.getValueOfFunction(converterType);
 
-            if (implicitFunction == null) {
-                implicitFunction = MethodFunction.getParseFunction(converterType);
-
-                if (implicitFunction == null) {
-                    throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Automatic converter for " + converterType + " using \"parse\"");
-                    }
-                }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Automatic converter for " + converterType + " using \"valueOf\"");
-                }
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Automatic converter for " + converterType + " using \"constructor\"");
+            if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Automatic converter for " + converterType + " using \"valueOf\"");
             }
         }
+
+        if (implicitFunction == null) {
+            implicitFunction = MethodFunction.getParseFunction(converterType);
+
+            if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Automatic converter for " + converterType + " using \"parse\"");
+            }
+        }
+
+        if (implicitFunction == null) {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
+        }
+
         return implicitFunction;
     }
 
