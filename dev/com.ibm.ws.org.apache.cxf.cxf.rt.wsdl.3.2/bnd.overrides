@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.3.3
+cxfVersion=3.4.1
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2
 
@@ -35,5 +35,9 @@ javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
-  org.apache.cxf.wsdl.*;version=${cxfVersion},\
+  org.apache.cxf.wsdl;version=${cxfVersion},\
+  org.apache.cxf.wsdl.binding;version=${cxfVersion},\
+  org.apache.cxf.wsdl.interceptors;version=${cxfVersion},\
+  org.apache.cxf.wsdl.service;version=${cxfVersion},\
+  org.apache.cxf.wsdl.service.factory;version=${cxfVersion},\
   org.apache.cxf.wsdl11.*;version=${cxfVersion}

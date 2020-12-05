@@ -79,6 +79,9 @@ public class EJBWSInterceptorTest {
         }
     }
 
+    /*
+     * TODO: Fix Java 2 Security exception
+     */
     @Mode(TestMode.FULL)
     @Test
     public void testInterceptor() throws Exception {

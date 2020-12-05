@@ -22,12 +22,10 @@ package org.apache.cxf.bus.osgi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.cxf.bus.blueprint.BlueprintNameSpaceHandlerFactory;
-import org.apache.cxf.bus.blueprint.NamespaceHandlerRegisterer;
+
 import org.apache.cxf.bus.extension.Extension;
 import org.apache.cxf.bus.extension.ExtensionRegistry;
 import org.apache.cxf.common.util.CollectionUtils;
-import org.apache.cxf.internal.CXFAPINamespaceHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -75,6 +73,7 @@ public class CXFActivator implements BundleActivator {
         ExtensionRegistry.addExtensions(extensions);
         
 
+        // Liberty Code Change
         // Prevent the CXFActivator from loading Blueprint
 //        BlueprintNameSpaceHandlerFactory factory = new BlueprintNameSpaceHandlerFactory() {
 //

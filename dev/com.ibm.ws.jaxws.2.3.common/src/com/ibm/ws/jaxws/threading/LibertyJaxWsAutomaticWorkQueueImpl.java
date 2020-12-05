@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,52 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.threading;
 
+import java.security.AccessController;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.cxf.workqueue.AutomaticWorkQueue;
 
+import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.threading.WSExecutorService;
 
 public class LibertyJaxWsAutomaticWorkQueueImpl implements AutomaticWorkQueue {
 
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR =
+                    AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+
+    /**
+     * Borrowed from jaxrs-2.x to udpate our LibertyThreadPoolAdapter to match changes need for CXF Updates
+     * LibertyJaxWsWorker helps to switch the Thread Context Classloader of InvocationCallback & CompletionCallback to application context classloader which can access the jaxws-2.3
+     * spec API such as Client API
+     */
+    public class LibertyJaxWsWorker implements Runnable {
+
+        private final Runnable work;
+        private final ClassLoader appContextClassLoader;
+
+        public LibertyJaxWsWorker(Runnable work) {
+            this.work = work;
+            //get the application context classloader from main thread
+            this.appContextClassLoader = THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
+        }
+
+        @Override
+        public void run() {
+
+            //switch thread context classloader of async thread to application context classloader
+            ClassLoader oClsLoader = THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread());
+            
+            try {
+                THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), appContextClassLoader);
+                work.run();
+            } finally {
+                //after callback done, switch back the original classloader
+                THREAD_CONTEXT_ACCESSOR.setContextClassLoader(Thread.currentThread(), oClsLoader);
+            }
+        }
+    }
+    
     private final ScheduledExecutorService scheduleExecutor;
 
     private final WSExecutorService wsExecutorService;

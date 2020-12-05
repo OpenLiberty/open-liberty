@@ -42,6 +42,7 @@ import javax.net.ssl.X509TrustManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,11 +51,16 @@ import com.ibm.ws.jaxws.jmx.test.fat.util.ClientConnector;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class WebServiceMonitorTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").forServers("WebServiceMonitorTestServer").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     private static final String REQUEST_STR = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:jax=\"http://monitor.jaxws.ws.ibm.com/\">" +
                                               "<soapenv:Header/>" +
@@ -86,10 +92,12 @@ public class WebServiceMonitorTest {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         } };
 
         SSLContext sc = SSLContext.getInstance("SSL");

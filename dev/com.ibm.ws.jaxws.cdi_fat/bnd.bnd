@@ -17,6 +17,11 @@ src: \
 
 fat.project: true
 
+tested.features: jaxws-2.3, \
+  jaxb-2.3, \
+  servlet-4.0, \
+  cdi-2.0
+
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,16 +22,19 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * This Test is to verify the functionality of the <port-component-ref> is working.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
 public class PortComponentRefTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("PortComponentRefTestServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     @Server("PortComponentRefTestServer")
     public static LibertyServer server;

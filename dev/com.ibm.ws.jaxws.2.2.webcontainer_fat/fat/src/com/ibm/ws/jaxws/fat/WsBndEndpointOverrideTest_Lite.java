@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,8 +28,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -36,8 +38,12 @@ import componenttest.topology.utils.HttpUtils;
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
+
 public class WsBndEndpointOverrideTest_Lite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("EJBinWarEndpointAddressOverrideServer",
+                                                                                                                      "EJBinWarOverrideServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
+
     private static final int CONN_TIMEOUT = 5;
 
     @Server("EJBinWarEndpointAddressOverrideServer")

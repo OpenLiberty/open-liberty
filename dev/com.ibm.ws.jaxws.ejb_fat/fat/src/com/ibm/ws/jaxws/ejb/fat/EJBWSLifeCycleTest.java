@@ -91,6 +91,9 @@ public class EJBWSLifeCycleTest {
         }
     }
 
+    /*
+     * TODO: Fix Java 2 Security exception
+     */
     @Mode(TestMode.FULL)
     @Test
     public void testLifeCycle() throws Exception {

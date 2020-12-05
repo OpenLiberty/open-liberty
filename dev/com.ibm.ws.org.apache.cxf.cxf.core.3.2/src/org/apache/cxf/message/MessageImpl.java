@@ -279,7 +279,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     public void resetContextCache() {
     }
 
-    void setContextualProperty(String key, Object v) {
+    public void setContextualProperty(String key, Object v) {
         if (!containsKey(key)) {
             put(key, v);
         }

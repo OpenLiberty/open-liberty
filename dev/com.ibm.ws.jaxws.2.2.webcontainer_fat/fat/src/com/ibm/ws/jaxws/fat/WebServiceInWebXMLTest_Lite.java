@@ -35,7 +35,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
 public class WebServiceInWebXMLTest_Lite {
 
     public static final int CONN_TIMEOUT = 5;
@@ -160,6 +159,10 @@ public class WebServiceInWebXMLTest_Lite {
                    line.contains("xml version="));
     }
 
+    /*
+     * TODO: Fix jaxws-2.3 no longer printing message CWWKW0037E when WSDL is not generated (correct behavior no longer prints error).
+     */
+    @SkipForRepeat("jaxws-2.3")
     @Test
     public void testSameWebServiceDiffBindingType_WSDL() throws Exception {
         String method = "testSameWebServiceDiffBindingType_WSDL";
