@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-exportVer=2.2
+exportVer=2.3
 
 Bundle-Name:JAXWS Atomic Transaction Extension
 Bundle-Description: JAXWS Extension for WSAT, version ${bVersion}

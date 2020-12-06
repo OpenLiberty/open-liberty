@@ -64,3 +64,5 @@ Private-Package:\
 -buildpath: \
   com.ibm.ws.jaxws.ejb;version=latest, \
   com.ibm.ws.jaxws.2.3.common;version=latest
+
+jakartaeeMe: true

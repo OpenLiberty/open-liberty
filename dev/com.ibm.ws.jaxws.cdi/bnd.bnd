@@ -40,3 +40,5 @@ Private-Package:\
 	com.ibm.ws.jaxws.clientcontainer;version=latest,\
 	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.managedobject;version=latest
+
+jakartaeeMe: true
