@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: O WS-Security n\u00e3o pode ser aplicado a qualquer servi\u00e7o da web. Ocorreu um erro ao tentar registrar o carregador de pol\u00edtica WS-Security com a estrutura CXF: [{0}]
+error.policy.notloaded.explanation=O carregador de pol\u00edtica WS-Security n\u00e3o p\u00f4de ser registrado com a estrutura CXF durante a inicializa\u00e7\u00e3o do servidor. Devido ao erro, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o ser\u00e1 chamado para qualquer mensagem SOAP e as restri\u00e7\u00f5es WS-Security n\u00e3o ser\u00e3o inclu\u00eddas.
+error.policy.notloaded.useraction=Enderece o erro descrito na mensagem.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security n\u00e3o pode ser aplicado a qualquer aplicativo cliente de servi\u00e7o da web. O elemento de configura\u00e7\u00e3o do cliente WS-Security, wsSecurityClient, n\u00e3o existe em server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=O recurso wsSecurity-1.1 est\u00e1 ativado, mas o componente WS-Security n\u00e3o pode localizar o elemento wsSecurityClient em server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Se as restri\u00e7\u00f5es WS-Security s\u00e3o necess\u00e1rias para um aplicativo de servi\u00e7o da web do cliente, inclua o elemento de configura\u00e7\u00e3o wsSecurityClient necess\u00e1rio em server.xml.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: WS-Security n\u00e3o pode ser aplicado a qualquer aplicativo do provedor de servi\u00e7o da web. O elemento de configura\u00e7\u00e3o do provedor WS-Security, wsSecurityProvider, n\u00e3o existe em server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=O recurso wsSecurity-1.1 est\u00e1 ativado, mas o componente WS-Security n\u00e3o pode localizar o elemento wsSecurityProvider em server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Se as restri\u00e7\u00f5es WS-Security forem necess\u00e1rias para um aplicativo de servi\u00e7o da web do provedor, inclua o elemento de configura\u00e7\u00e3o wsSecurityProvider necess\u00e1rio em server.xml.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Uma configura\u00e7\u00e3o do token do respons\u00e1vel pela chamada n\u00e3o pode ser aplicada aos aplicativos do provedor de servi\u00e7o da web.  O nome, [{0}], especificado para o elemento callerToken na configura\u00e7\u00e3o do wsSecurityProvider no server.xml n\u00e3o \u00e9 v\u00e1lido. Os valores v\u00e1lidos s\u00e3o: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=O nome especificado para o elemento callerToken na configura\u00e7\u00e3o do wsSecurityProvider no server.xml n\u00e3o \u00e9 v\u00e1lido.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Verifique o arquivo server.xml para assegurar que um valor suportado esteja especificado para o elemento callerToken. Os valores v\u00e1lidos s\u00e3o exibidos na mensagem de erro.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web. O callerToken n\u00e3o pode ser identificado na mensagem de entrada porque existe mais de um UsernameToken no cabe\u00e7alho de Seguran\u00e7a SOAP.
+multiple_unt_exist_err.explanation=O callerToken em security.xml \u00e9 configurado para UsernameToken e o cabe\u00e7alho de Seguran\u00e7a na mensagem SOAP de entrada cont\u00e9m mais de um UsernameToken. Por isso, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o pode determinar qual UsernameToken usar para o token do respons\u00e1vel pela chamada.
+multiple_unt_exist_err.useraction=Execute um dos seguintes: 1) Altere a configura\u00e7\u00e3o do cliente para enviar apenas um UsernameToken 2) Remova a configura\u00e7\u00e3o callerToken em server.xml
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web. Um {0} callerToken est\u00e1 configurado, mas n\u00e3o existe nenhum token {0} no cabe\u00e7alho de Seguran\u00e7a SOAP de entrada. Um token do respons\u00e1vel pela chamada n\u00e3o p\u00f4de ser selecionado.
+no_caller_exist_err.explanation=O callerToken configurado no server.xml n\u00e3o est\u00e1 presente no cabe\u00e7alho do SOAP Security. 
+no_caller_exist_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Altere a configura\u00e7\u00e3o do cliente para enviar o token do respons\u00e1vel pela chamada correto 2) Remova a configura\u00e7\u00e3o do callerToken no server.xml
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web devido a [{0}].
+error_authenticate.explanation=Um assunto de seguran\u00e7a para o token do respons\u00e1vel pela chamada recuperado do cabe\u00e7alho de Seguran\u00e7a SOAP n\u00e3o p\u00f4de ser criado. A raz\u00e3o para o erro \u00e9 descrita na mensagem.
+error_authenticate.useraction=Enderece o erro descrito na mensagem.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web.  O token do respons\u00e1vel pela chamada n\u00e3o pode ser identificado na mensagem de entrada.  O callerToken no server.xml \u00e9 configurado como X509Token, endorsingSupportingToken \u00e9 configurado como true (o padr\u00e3o) e h\u00e1 mais de um EndorsingSupportingTokens no cabe\u00e7alho do SOAP Security de entrada.
+multiple_endorsing_token_err.explanation=O callerToken no server.xml \u00e9 configurado como X509Token, endorsingSupportingToken \u00e9 configurado como true (o padr\u00e3o) e h\u00e1 mais de um EndorsingSupportingTokens no cabe\u00e7alho do SOAP Security de entrada.  Como o token do respons\u00e1vel pela chamada \u00fanico deve existir na mensagem para que um token do respons\u00e1vel pela chamada seja selecionado com \u00eaxito, ter m\u00faltiplos EndorsingSupportingTokens n\u00e3o \u00e9 permitido.                                   
+multiple_endorsing_token_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Altere a pol\u00edtica para que somente um endorsingSupportingToken seja inclu\u00eddo na mensagem, 2) Remova a configura\u00e7\u00e3o callerToken no server.xml, 3) Configure endorsingSupportingToken como false na configura\u00e7\u00e3o do callerToken no server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web.  O token do respons\u00e1vel pela chamada n\u00e3o pode ser identificado na mensagem de entrada.  O callerToken no server.xml \u00e9 configurado como X509Token, endorsingSupportingToken \u00e9 configurado como false e h\u00e1 mais de um token de Assinatura assim\u00e9trica no cabe\u00e7alho do SOAP Security de entrada.
+multiple_asymmetric_token_err.explanation=O callerToken no server.xml \u00e9 configurado como X509Token, endorsingSupportingToken \u00e9 configurado como false e h\u00e1 mais de um token de Assinatura assim\u00e9trica no cabe\u00e7alho do SOAP Security de entrada.  Como o token do respons\u00e1vel pela chamada \u00fanica deve existir na mensagem para que um token do respons\u00e1vel pela chamada seja selecionado com \u00eaxito, ter diversos tokens de assinatura Assim\u00e9trica n\u00e3o \u00e9 permitido.                                   
+multiple_asymmetric_token_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Altere a pol\u00edtica para que somente um token de Assinatura assim\u00e9trica seja inclu\u00eddo na mensagem, 2) Remova a configura\u00e7\u00e3o callerToken no server.xml
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: A asser\u00e7\u00e3o NotBefore [{0}] no token SAML est\u00e1 fora do intervalo. O hor\u00e1rio atual \u00e9 [{1}]. A configura\u00e7\u00e3o atual do clock skew \u00e9 [{2}] segundos.
+saml_token_not_yet_valid.explanation=A asser\u00e7\u00e3o NotBefore no token SAML especifica o hor\u00e1rio em que o token se torna v\u00e1lido; o token n\u00e3o pode ser usado antes desse hor\u00e1rio. Para usar esse token SAML, o valor da asser\u00e7\u00e3o NotBefore deve ser um instante no passado. Um poss\u00edvel motivo para o erro \u00e9 que o clock do receptor est\u00e1 fora de sincroniza\u00e7\u00e3o com o clock do criador da asser\u00e7\u00e3o.
+saml_token_not_yet_valid.useraction=Certifique-se de a data e hora no IdP estarem sincronizadas com o provedor de servi\u00e7os de Conex\u00e3o \u00danica (SSO) da Web do SAML ou aumente o clock skew.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: A asser\u00e7\u00e3o NotOnOrAfter [{0}] no token SAML est\u00e1 fora do intervalo. O hor\u00e1rio atual \u00e9 [{1}]. A configura\u00e7\u00e3o atual do clock skew \u00e9 [{2}] segundos.
+saml_token_expired.explanation=A asser\u00e7\u00e3o NotOnOrAfter no token SAML especifica o hor\u00e1rio no qual o token expira. O token deve ser usado antes desse hor\u00e1rio. Um poss\u00edvel motivo para o erro \u00e9 que o clock do receptor est\u00e1 fora de sincroniza\u00e7\u00e3o com o clock do criador da asser\u00e7\u00e3o.
+saml_token_expired.useraction=Certifique-se de a data e hora no IdP estarem sincronizadas com o provedor de servi\u00e7os de Conex\u00e3o \u00danica (SSO) da Web do SAML ou aumente o clock skew.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: O IssueInstant [{0}] no token SAML est\u00e1 fora do intervalo. O hor\u00e1rio atual \u00e9 [{1}]. A configura\u00e7\u00e3o atual do clock skew \u00e9 [{2}] segundos.
+saml_token_issued_too_long_ago.explanation=A asser\u00e7\u00e3o IssueInstant no token SAML estava muito longe no passado para esse token ser usado. Um token SAML deve ser usado no hor\u00e1rio configurado depois de ser emitido. Um poss\u00edvel motivo para o erro \u00e9 que o clock do receptor est\u00e1 fora de sincroniza\u00e7\u00e3o com o clock do criador da asser\u00e7\u00e3o.
+saml_token_issued_too_long_ago.useraction=Certifique-se de a data e hora no IdP estarem sincronizadas com o provedor de servi\u00e7os de Conex\u00e3o \u00danica (SSO) da Web do SAML ou aumente o clock skew.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: O IssueInstant [{0}] no token SAML est\u00e1 no futuro e, portanto, fora do intervalo. O hor\u00e1rio atual \u00e9 [{1}]. A configura\u00e7\u00e3o atual do clock skew \u00e9 [{2}] segundos.
+saml_token_issue_instant_in_future.explanation=A asser\u00e7\u00e3o IssueInstant no token SAML foi configurada para um hor\u00e1rio no futuro e, portanto, ainda n\u00e3o \u00e9 considerada v\u00e1lida. O valor IssueInstant deve estar no passado para que o token SAML seja v\u00e1lido. Um poss\u00edvel motivo para o erro \u00e9 que o clock do receptor est\u00e1 fora de sincroniza\u00e7\u00e3o com o clock do criador da asser\u00e7\u00e3o.
+saml_token_issue_instant_in_future.useraction=Certifique-se de a data e hora no IdP estarem sincronizadas com o provedor de servi\u00e7os de Conex\u00e3o \u00danica (SSO) da Web do SAML ou aumente o clock skew.
+
+failed_to_extract_saml_element=CWWKW0218W: Ocorreu uma exce\u00e7\u00e3o ao tentar extrair o elemento SAML do token SAML fornecido. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_extract_saml_element.explanation=Ocorreu uma exce\u00e7\u00e3o ao analisar o token SAML. O token pode ter sido malformado ou ocorreu um erro interno ao tentar analisar a sequ\u00eancia do token.
+failed_to_extract_saml_element.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre o erro.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: Ocorreu uma exce\u00e7\u00e3o ao tentar extrair o token SAML do assunto. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao extrair o token SAML do assunto.
+failed_to_extract_saml_token_from_subject.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre o erro.
+
+failed_to_obtain_subject_info=CWWKW0220E: A autentica\u00e7\u00e3o falhou devido a uma exce\u00e7\u00e3o ao obter informa\u00e7\u00f5es do assunto da asser\u00e7\u00e3o SAML. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_obtain_subject_info.explanation=Ocorreu uma exce\u00e7\u00e3o ao tentar obter informa\u00e7\u00f5es sobre o assunto do token SAML fornecido.
+failed_to_obtain_subject_info.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre o erro.
+
+failed_to_authenticate=CWWKW0221E: A autentica\u00e7\u00e3o falhou devido a uma exce\u00e7\u00e3o inesperada. A exce\u00e7\u00e3o era: [{0}].
+failed_to_authenticate.explanation=Provavelmente ocorreu um problema ao obter informa\u00e7\u00f5es do assunto ou da identidade ao interagir com o registro do usu\u00e1rio.
+failed_to_authenticate.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre o erro. Certifique-se de que as informa\u00e7\u00f5es do assunto no token SAML sejam mapeadas para os valores esperados no registro do usu\u00e1rio configurado.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: A valida\u00e7\u00e3o do token falhou, pois a tipo de senha UsernameToken [{0}] n\u00e3o corresponde ao tipo de senha [{0}] necess\u00e1rio.
+password_type_mismatch.explanation=O tipo de senha no UsernameToken n\u00e3o correspondeu ao tipo de senha necess\u00e1rio, conforme definido na pol\u00edtica WS-Security. Esses tipos precisam ser id\u00eanticos; o cliente do servi\u00e7o da web deve declarar o mesmo tipo de senha definido na pol\u00edtica WS-Security, para que a valida\u00e7\u00e3o seja bem-sucedida.
+password_type_mismatch.useraction=Certifique-se de o cliente de servi\u00e7o da web declarar o mesmo tipo de senha definido na pol\u00edtica WS-Security.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: A valida\u00e7\u00e3o do token falhou, pois um tipo de senha customizada foi detectado, mas os dados de configura\u00e7\u00e3o fornecidos na solicita\u00e7\u00e3o especificam que os tipos de senha customizada n\u00e3o s\u00e3o suportados.
+cannot_handle_custom_password_types.explanation=A senha no UsernameToken n\u00e3o continha hash nem estava em texto simples e foi, portanto, considerada um tipo de senha customizado. A configura\u00e7\u00e3o nos dados da solicita\u00e7\u00e3o especifica que os tipos de senha customizados n\u00e3o s\u00e3o suportados.
+cannot_handle_custom_password_types.useraction=Certifique-se de que o cliente de servi\u00e7o da web use um tipo de senha como definido no perfil UsernameToken ou configure o provedor de servi\u00e7os da web para aceitar os tipos de senha customizados.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: O nome do usu\u00e1rio ou a senha especificada no UsernameToken estava vazio. Verifique o UsernameToken para garantir que um nome de usu\u00e1rio e uma senha n\u00e3o vazio seja fornecido no token.
+empty_user_or_password.explanation=As entradas de nome de usu\u00e1rio ou senha no UsernameToken estavam ausentes ou vazias.
+empty_user_or_password.useraction=Verifique se um nome de usu\u00e1rio e uma senha est\u00e3o fornecidos no token. Se um nome de usu\u00e1rio e uma senha n\u00e3o forem fornecidos, obtenha um novo UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: Ocorreu uma exce\u00e7\u00e3o ao acessar o registro do usu\u00e1rio ou ao verificar a senha para o usu\u00e1rio [{0}]. A exce\u00e7\u00e3o foi: [{1}]
+registry_exception_checking_password.explanation=Ocorreu um erro ao obter uma refer\u00eancia para o registro do usu\u00e1rio a partir do servi\u00e7o de registro ou ocorreu uma exce\u00e7\u00e3o ao verificar a senha para o usu\u00e1rio determinado.
+registry_exception_checking_password.useraction=Verifique os logs do servidor para obter mais informa\u00e7\u00f5es sobre a exce\u00e7\u00e3o. Certifique-se de que o nome de usu\u00e1rio e a senha estejam corretos e que correspondam a uma entrada no registro do usu\u00e1rio configurado.
+
+check_password_failed=CWWKW0226E: N\u00e3o foi poss\u00edvel validar o usu\u00e1rio [{0}]. Verifique se as credenciais de nome de usu\u00e1rio e de senha fornecidas est\u00e3o corretas.
+check_password_failed.explanation=N\u00e3o foi poss\u00edvel validar o usu\u00e1rio especificado com rela\u00e7\u00e3o ao registro de usu\u00e1rio configurado. Isso ocorre provavelmente devido a uma incompatibilidade de nome de usu\u00e1rio ou de senha.
+check_password_failed.useraction=Verifique as credenciais fornecidas para garantir que o nome de usu\u00e1rio e a senha correspondam a uma entrada no registro de usu\u00e1rio configurado.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: Uma senha nula foi retornada do manipulador de retorno de chamada da senha.
+no_password_returned_by_callback.explanation=O manipulador de retorno de chamada da senha deve retornar uma senha n\u00e3o nula para as senhas de tipo PasswordDigest em um UsernameToken.
+no_password_returned_by_callback.useraction=Certifique-se de que o manipulador de retorno de chamada da senha retorne uma senha n\u00e3o nula e n\u00e3o vazia para um usu\u00e1rio v\u00e1lido.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: A asser\u00e7\u00e3o SAML n\u00e3o cont\u00e9m um atributo [{0}].  Um atributo [{0}] \u00e9 necess\u00e1rio, pois a configura\u00e7\u00e3o do respons\u00e1vel pela chamada especificou isso como um identificador [{1}]. 
+SAML20_ATTRIBUTE_ERR.explanation=A asser\u00e7\u00e3o SAML tem um atributo ausente ou a configura\u00e7\u00e3o do respons\u00e1vel pela chamada especificou um valor incorreto para o identificador mencionado.
+SAML20_ATTRIBUTE_ERR.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Certifique-se de o atributo existir na asser\u00e7\u00e3o SAML. 2) Configure o callerToken para especificar um atributo diferente como o identificador.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: A asser\u00e7\u00e3o SAML n\u00e3o cont\u00e9m um elemento [{0}].  Um elemento [{0}] \u00e9 necess\u00e1rio.  
+SAML20_ELEMENT_ERR.explanation=Na asser\u00e7\u00e3o SAML est\u00e1 faltando um elemento requerido pelo tempo de execu\u00e7\u00e3o do WS-Security para concluir o processamento do token do respons\u00e1vel pela chamada.
+SAML20_ELEMENT_ERR.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Certifique-se de o elemento requerido existir na asser\u00e7\u00e3o SAML. 2) Configure o callerToken para definir um valor para o elemento.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: O UserCredentialResolver falha ao resolver a asser\u00e7\u00e3o SAML e emite um UserIdentityException com a mensagem [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=O servi\u00e7o UserCredentialResolver fornecido pelo recurso do usu\u00e1rio n\u00e3o pode mapear a asser\u00e7\u00e3o SAML corretamente e emite uma UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Certifique-se de que o servi\u00e7o UserCredentialResolver est\u00e1 configurado corretamente se o UserIdentityException n\u00e3o for esperado.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web.  O callerToken n\u00e3o pode ser identificado na mensagem de entrada, pois mais de uma asser\u00e7\u00e3o Saml existe no cabe\u00e7alho de Seguran\u00e7a SOAP.
+multiple_saml_exist_err.explanation=O callerToken no server.xml est\u00e1 configurado como SamlToken e o cabe\u00e7alho de Seguran\u00e7a na mensagem SOAP de entrada cont\u00e9m mais de uma Asser\u00e7\u00e3o Saml.  Por isso, o tempo de execu\u00e7\u00e3o do WS-Security n\u00e3o pode determinar qual Asser\u00e7\u00e3o Saml usar para o token do respons\u00e1vel pela chamada.
+multiple_saml_exist_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Altere a configura\u00e7\u00e3o do cliente para enviar somente uma Asser\u00e7\u00e3o Saml 2) Remova a configura\u00e7\u00e3o do callerToken no server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web usando o ID do usu\u00e1rio [{0}].
+error_authenticate_maptouser.explanation=Um assunto de seguran\u00e7a para o token do respons\u00e1vel pela chamada recuperado do cabe\u00e7alho de Seguran\u00e7a SOAP n\u00e3o p\u00f4de ser criado. Assegure-se de que o usu\u00e1rio especificado na mensagem exista no registro do usu\u00e1rio.
+error_authenticate_maptouser.useraction=Fa\u00e7a um dos seguintes: 1) Assegure-se de que o usu\u00e1rio exista no registro do usu\u00e1rio no server.xml. 2) N\u00e3o configure o atributo mapToUserRegistry na configura\u00e7\u00e3o callerToken.
+
+no_callbacks_provided=CWWKW0233E: Nenhum retorno de chamada foi fornecido para manipular a solicita\u00e7\u00e3o.
+no_callbacks_provided.explanation=Ao menos um retorno de chamada deve ser passado para o manipulador de retorno de chamada, para poder processar e retornar um token SAML.
+no_callbacks_provided.useraction=N\u00e3o h\u00e1 uma a\u00e7\u00e3o do usu\u00e1rio dispon\u00edvel para este caso.
+
+no_saml_found_in_subject=CWWKW0234E: O token SAML requerido est\u00e1 ausente do assunto.
+no_saml_found_in_subject.explanation=Ocorreu um erro ao extrair o token SAML do assunto ou um elemento SAML n\u00e3o foi localizado no assunto atual.
+no_saml_found_in_subject.useraction=Se voc\u00ea criar um assunto executado como, assegure-se de que o token SAML esteja inclu\u00eddo no assunto. Caso contr\u00e1rio, assegure-se de que a sua configura\u00e7\u00e3o do servidor suporte a inclus\u00e3o do token SAML no assunto ao verificar o atributo includeTokenInSubject em sua configura\u00e7\u00e3o SAML.
