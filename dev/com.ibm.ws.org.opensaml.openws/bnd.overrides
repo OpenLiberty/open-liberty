@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,16 @@ bVersion=1.0
 Bundle-Name: org.opensaml.openws
 Bundle-Description: org.opensaml openws; version=1.5.6
 Bundle-SymbolicName: com.ibm.ws.org.opensaml.openws.1.5.6
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.org.opensaml.openws.1.5.6.jar
+#JakartaEE-Bundle-Name: org.opensaml.openws
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.org.opensaml.openws.1.5.6
+#JakartaEE-Bundle-Description: org.opensaml.openws; Jakarta Enabled
+#JakartaEE-Bundle-Version: 
 
 WS-TraceGroup: SAML20
 

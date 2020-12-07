@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common.expectations;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.Constants.CheckType;
+import com.ibm.ws.security.fat.common.TestServer;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 public abstract class Expectation {
@@ -20,6 +21,7 @@ public abstract class Expectation {
     private static Class<?> thisClass = Expectation.class;
 
     protected String testAction;
+    protected TestServer serverRef;
     protected String searchLocation;
     protected String checkType;
     protected CheckType expCheckType = null;
@@ -47,11 +49,27 @@ public abstract class Expectation {
         this.isExpectationHandled = false;
         this.failureMsgAlreadyUpdated = false;
     }
+    
+    public Expectation(String testAction, TestServer server, String searchLocation, String checkType, String searchKey, String searchFor, String failureMsg) {
+        this.testAction = testAction;
+        this.serverRef = server;
+        this.searchLocation = searchLocation;
+        this.checkType = checkType;
+        this.validationKey = searchKey;
+        this.validationValue = searchFor;
+        this.failureMsg = failureMsg;
+        this.isExpectationHandled = false;
+        this.failureMsgAlreadyUpdated = false;
+    }
 
     public String getAction() {
         return testAction;
     };
 
+    public TestServer getServerRef() {
+        return serverRef;
+    }
+    
     public String getSearchLocation() {
         return searchLocation;
     };

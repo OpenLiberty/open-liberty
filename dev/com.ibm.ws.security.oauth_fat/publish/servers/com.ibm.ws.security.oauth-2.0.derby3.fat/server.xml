@@ -1,0 +1,108 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<feature>oauth-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>ssl-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+	</basicRegistry>
+
+	<include location="../fatTestPorts.xml" />
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+
+	<!-- **************************************************************************** -->
+	<!-- Database definitions. -->
+	<!-- **************************************************************************** -->
+	<jdbcDriver id="DerbyEmbedded">
+		<library>
+			<fileset
+				dir="${server.config.dir}/derby"
+				includes="derby.jar" />
+		</library>
+	</jdbcDriver>
+
+	<dataSource
+		id="OAuthFvtDataSource"
+		jndiName="jdbc/OAuth2DB"
+		jdbcDriverRef="DerbyEmbedded"
+	>
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+		<properties.derby.embedded
+			databaseName="memory:oAuthDB"
+			createDatabase="create" />
+	</dataSource>
+
+	<oauthProvider
+		id="OAuthConfigDerby"
+		filter="request-url%=ssodemo"
+		oauthOnly="false"
+	>
+		<databaseStore
+			dataSourceRef="OAuthFvtDataSource"
+			user="bob"
+			password="bob"
+			schema="bob" />
+		<autoAuthorizeClient>dclient01</autoAuthorizeClient>
+		<autoAuthorizeClient>dclient02</autoAuthorizeClient>
+	</oauthProvider>
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true" />
+
+	<httpSession cookieHttpOnly="false" />
+
+	<javaPermission
+		className="java.net.SocketPermission"
+		name="*"
+		actions="connect,resolve" />
+	<javaPermission
+		codebase="${server.config.dir}/derby/derby.jar"
+		className="java.security.AllPermission"
+		name="*"
+		actions="*" />
+
+</server>

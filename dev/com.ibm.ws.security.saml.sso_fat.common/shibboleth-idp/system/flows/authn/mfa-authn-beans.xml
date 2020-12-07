@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+
+    default-init-method="initialize" default-destroy-method="destroy">
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" p:placeholderPrefix="%{"
+        p:placeholderSuffix="}" />
+
+    <bean class="net.shibboleth.ext.spring.config.IdentifiableBeanPostProcessor" />
+    <bean class="net.shibboleth.idp.profile.impl.ProfileActionBeanPostProcessor" />
+
+    <!-- Parent bean for transition rules. -->
+    <bean id="shibboleth.authn.MFA.Transition"
+        class="net.shibboleth.idp.authn.MultiFactorAuthenticationTransition" abstract="true" />
+
+    <!-- Default empty map. -->
+    <util:map id="shibboleth.authn.MFA.TransitionMap" />
+
+    <bean id="shibboleth.authn.MFA.TransitionMapStrategy" class="com.google.common.base.Functions"
+        factory-method="constant" c:_0-ref="shibboleth.authn.MFA.TransitionMap" />
+
+    <import resource="../../../conf/authn/mfa-authn-config.xml" />
+
+    <bean id="PopulateMultiFactorAuthenticationContext" scope="prototype"
+        class="net.shibboleth.idp.authn.impl.PopulateMultiFactorAuthenticationContext"
+        p:transitionMapLookupStrategy-ref="shibboleth.authn.MFA.TransitionMapStrategy" />
+        
+    <bean id="TransitionMultiFactorAuthentication" scope="prototype"
+        class="net.shibboleth.idp.authn.impl.TransitionMultiFactorAuthentication"
+        p:validateLoginTransitions="#{getObject('shibboleth.authn.MFA.validateLoginTransitions') ?: true}" />
+
+    <bean id="FinalizeMultiFactorAuthentication" scope="prototype"
+        class="net.shibboleth.idp.authn.impl.FinalizeMultiFactorAuthentication"
+        p:resultMergingStrategy="#{getObject('shibboleth.authn.MFA.resultMergingStrategy')}"
+        p:resultCachingPredicate="#{getObject('shibboleth.authn.MFA.resultCachingPredicate')}" />
+
+    <bean id="PopulateSubjectCanonicalizationContext"
+        class="net.shibboleth.idp.authn.impl.PopulateSubjectCanonicalizationContext" scope="prototype"
+        p:availableFlows-ref="shibboleth.PostLoginSubjectCanonicalizationFlows" />
+</beans>

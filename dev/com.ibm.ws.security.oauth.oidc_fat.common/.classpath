@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="bin_test" path="test"/>
+	<classpathentry kind="src" path="test-applications/formlogin/src"/>
+	<classpathentry kind="src" path="test-applications/helloworld.war/src"/>
+	<classpathentry kind="src" path="test-applications/oauthtaidemo/src"/>
+	<classpathentry kind="src" path="test-applications/testMediator/src"/>
+	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.jwt.mediator/src"/>
+	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.token.mapping/src"/>
+	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.tokenintrospectprovider/src"/>
+	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oidc.idtoken.mediator/src"/>
+	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.openidconnect.userinfoprovider.sample/src"/>
+	<classpathentry kind="src" path="test-applications/manual_complexclient/src"/>
+	<classpathentry kind="src" path="test-applications/oauthclientcert/src"/>
+	<classpathentry kind="src" path="common-classes/src"/>
+	<classpathentry kind="src" path="test-applications/formlogine2e2/src"/>
+	<classpathentry kind="src" path="test-applications/authzParameter/src"/>
+	<classpathentry kind="src" path="test-applications/formlogine2e/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
