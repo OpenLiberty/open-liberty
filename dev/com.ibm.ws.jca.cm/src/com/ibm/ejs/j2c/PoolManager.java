@@ -193,7 +193,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         logSerialReuseMessage = true;
 
         this.connectionTimeout = gConfigProps.getConnectionTimeout();
-        this.createParkedConnection = gConfigProps.getEnableHandleList() && !gConfigProps.isSmartHandleSupport();
+        this.createParkedConnection = gConfigProps.getAutoCloseConnections() && !gConfigProps.isSmartHandleSupport();
         this.maxConnections = gConfigProps.getMaxConnections();
         this.minConnections = gConfigProps.getMinConnections();
         this.purgePolicy = gConfigProps.getPurgePolicy();

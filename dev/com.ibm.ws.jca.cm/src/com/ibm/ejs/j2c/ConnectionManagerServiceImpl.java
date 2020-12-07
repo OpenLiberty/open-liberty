@@ -457,7 +457,6 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = properties == null ? Collections.EMPTY_MAP : new HashMap<String, Object>(properties);
         int agedTimeout, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize, numConnectionsPerThreadLocal, reapTime;
-        boolean enableHandleList;
         PurgePolicy purgePolicy;
 
         if (svc != null) {
@@ -467,12 +466,14 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                 Tr.debug(this, tc, "Setting disableLibertyConnectionManager to " + disableLibertyConnectionPool);
         }
 
+        Object value = map.remove("autoCloseConnections");
+        boolean autoCloseConnections = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
+
         if (disableLibertyConnectionPool) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Overriding config with values for a disabled connection pool.");
             agedTimeout = 0; //0 discards every connection disabling Liberty connection pooling
             connectionTimeout = -1;
-            enableHandleList = Boolean.parseBoolean((String) map.remove("enableHandleList")); // TODO put into metatype and use boolean instead of string
             maxIdleTime = -1;
             maxPoolSize = 0;
             minPoolSize = 0;
@@ -483,7 +484,6 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         } else {
             agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
             connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
-            enableHandleList = Boolean.parseBoolean((String) map.remove("enableHandleList")); // TODO put into metatype and use boolean instead of string
             maxIdleTime = validateProperty(map, MAX_IDLE_TIME, ConnectionPoolProperties.DEFAULT_UNUSED_TIMEOUT, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false, connectorSvc);
             maxNumberOfMCsAllowableInThread = validateProperty(map, MAX_CONNECTIONS_PER_THREAD, 0, null, 0, Integer.MAX_VALUE, true, connectorSvc);
             maxPoolSize = validateProperty(map, MAX_POOL_SIZE, 50, null, 0, Integer.MAX_VALUE, true, connectorSvc);
@@ -525,11 +525,11 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (pm.gConfigProps.getAgedTimeout() != agedTimeout)
                 pm.gConfigProps.setAgedTimeout(agedTimeout);
 
+            if (pm.gConfigProps.getAutoCloseConnections() != autoCloseConnections)
+                pm.gConfigProps.setAutoCloseConnections(autoCloseConnections);
+
             if (pm.gConfigProps.getConnctionWaitTime() != connectionTimeout)
                 pm.gConfigProps.setConnectionTimeout(connectionTimeout);
-
-            if (pm.gConfigProps.getEnableHandleList() != enableHandleList)
-                pm.gConfigProps.setEnableHandleList(enableHandleList);
 
             if (pm.gConfigProps.getUnusedTimeout() != maxIdleTime)
                 pm.gConfigProps.setUnusedTimeout(maxIdleTime);
@@ -560,7 +560,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                             100, // maxFreePoolHashSize,
                             false, // diagnoseConnectionUsage,
                             connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
-                            enableHandleList, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, throwExceptionOnMCThreadCheck);
+                            autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, throwExceptionOnMCThreadCheck);
 
         }
     }

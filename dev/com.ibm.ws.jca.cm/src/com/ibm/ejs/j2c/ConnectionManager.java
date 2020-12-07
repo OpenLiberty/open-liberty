@@ -58,7 +58,6 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.handle.HandleList;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
@@ -100,38 +99,24 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
     private static final AtomicLong numberOfCMinstancesEverCreated = new AtomicLong(0);
 
-    private String cfDetailsKey = "NameNotSet";
-    protected CMConfigData cmConfig = null;
+    private final String cfDetailsKey;
+    protected final CMConfigData cmConfig;
     protected HashMap<String, Integer> qmidcmConfigMap = null;
 
-    private boolean shareable = false;
+    private final boolean shareable;
 
     private int recoveryToken;
 
     private final transient SecurityHelper securityHelper;
     private final boolean isJDBC;
-    private transient int commitPriority = 0;
+    private final transient int commitPriority;
     private boolean localTranSupportSet = false;
     private boolean issuedSpnegoRecoveryWarning = false;
 
-    /**
-     * The following is a variable which will tell us whether or not
-     * the RelationalResourceAdapter we are working with (if we are)
-     * is configured to run OnePhase commit even though the RRA's RAR
-     * file always indicates twoPhase support.
-     *
-     * <br><br> A value of "0" indicates not initialized.
-     * <br><br> A value of "1" indicates it supports 1PC.
-     * <br><br> A value of "2" indicates it supports 2PC.
-     */
+    protected final boolean containerManagedAuth;
 
-    protected transient PrivilegedExceptionAction<Boolean> _getADP = null;
-    protected boolean containerManagedAuth = false;
-    protected HashMap<Object, String> handleToThreadMap = null;
-    protected HashMap<Object, ComponentMetaData> handleToCMDMap = null;
-
-    protected transient PoolManager _pm = null;
-    protected J2CGlobalConfigProperties gConfigProps = null;
+    protected final transient PoolManager _pm;
+    protected final J2CGlobalConfigProperties gConfigProps;
 
     /*
      * Indicates if the configured MCF is RRSTransactional. If so,
@@ -477,7 +462,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
-            if (_pm != null && _pm.gConfigProps.getEnableHandleList() && (!(_pm.gConfigProps.isSmartHandleSupport() && shareable))) {
+            // Add to the HandleList if enabled per configuration and the handle is unsharable or doesn't support DissociatableManagedConnection
+            if (_pm != null && _pm.gConfigProps.getAutoCloseConnections() && (!shareable || !_pm.gConfigProps.isSmartHandleSupport())) {
                 HandleList hl = ConnectionHandleManager.addHandle(new HCMDetails(this, rVal, mcWrapper, subj, requestInfo));
 
                 //  store the handle list in the MCWrapper
@@ -1106,7 +1092,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * current UOW (for Local and XA capable resource adapters).
      *
      * If the RA supports smart handles (smartHandlesSupport == true), then
-     * we should not do any re-associating of the connection handles to MCs.  This
+     * we should not do any re-associating of the connection handles to MCs. This
      * will be taken care of by the Handle via the CM.associateConnection() method
      * invocation when they need to shift from the "inactive" state to an "active"
      * state.
@@ -1204,15 +1190,17 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     return;
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc,"A nested transaction was started but this application still has a reference to an open connection that in enlisted in the parent transaction which is currently suspended.");
-                        Tr.debug(tc,"This is not an error but this connection handle should not be used until the application ends the nested transaction and returns control to the partent transaction.");
-                        Tr.debug(tc,"Open connection information is: ", hcmDetails._mcWrapper);
+                        Tr.debug(tc,
+                                 "A nested transaction was started but this application still has a reference to an open connection that in enlisted in the parent transaction which is currently suspended.");
+                        Tr.debug(tc,
+                                 "This is not an error but this connection handle should not be used until the application ends the nested transaction and returns control to the partent transaction.");
+                        Tr.debug(tc, "Open connection information is: ", hcmDetails._mcWrapper);
                     }
                 }
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "reAssociate");
     }
 
@@ -1220,49 +1208,43 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method will "Park" a handle. Parking is only done for Sharable connections.
      * Parking consisting of getting a connection to park against from the pool,
      * we plan on using one connection per pool, and associating the handle with that
-     * connection.  The idea is that the parked connection will never be used, rather,
+     * connection. The idea is that the parked connection will never be used, rather,
      * a later call to reAssociate will reassign the handle to an appropriate, usable,
      * connection.
      *
      * If the RA supports smart handles (smartHandlesSupport == true), then we should
-     * not be doing any parking of the connection handles.  We will leave the handles
+     * not be doing any parking of the connection handles. We will leave the handles
      * associated with the MC and let the cleanup() processing put them into an
-     * "inactive" state.  The Handle will then call back via the CM.associateConnection()
+     * "inactive" state. The Handle will then call back via the CM.associateConnection()
      * method to re-activate the Handle.
      *
-     * @param hcmdetails  Passed in because it contains the handle which we need to park.
+     * @param hcmdetails Passed in because it contains the handle which we need to park.
      */
     public void parkHandle(HCMDetails hcmDetails) throws ResourceException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "parkHandle", hcmDetails._handle);
 
-        if (handleToThreadMap != null) {
-            handleToThreadMap.clear();
-            handleToCMDMap.clear();
-        }
-
         if (!shareable) {
-            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle: non-sharable connection. Nothing to do.");
             return;
         }
         if (hcmDetails._mcWrapper.gConfigProps.isSmartHandleSupport()) {
-            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle: RA supports smart handles. Nothing to do.");
             return;
-        }
-        else {
-            if (TraceComponent.isAnyTracingEnabled()  && tc.isDebugEnabled())
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "parkHandle: RA doesn't support smart handles. Proceed with parkHandle");
         }
 
         MCWrapper parkingMCWrapper = null;
         MCWrapper fromMCWrapper = hcmDetails._mcWrapper;
         try {
-            parkingMCWrapper = (MCWrapper)(fromMCWrapper.pm.getParkedConnection());
+            parkingMCWrapper = (MCWrapper) (fromMCWrapper.pm.getParkedConnection());
 
             if (parkingMCWrapper == null) {
-                Tr.error(tc,"NULL_MANAGED_CONNECTION_J2CA0015", fromMCWrapper.gConfigProps.cfName);
+                Tr.error(tc, "NULL_MANAGED_CONNECTION_J2CA0015", fromMCWrapper.gConfigProps.cfName);
                 throw new ResourceException("PoolManager returned null Parked ManagedConnection");
             }
 
@@ -1270,14 +1252,14 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             parkingMCWrapper.associateConnection(hcmDetails._handle, fromMCWrapper);
         } catch (ResourceException e) {
             FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "966", this);
-            Tr.error(tc,"FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName});
-            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle", e);
             throw e;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "973", this);
-            Tr.error(tc,"FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName});
-            if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+            Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle", e);
             ResourceException re = new ResourceException("parkHandle: Caught an Exception from mc.associateConnection().");
             re.initCause(e);
@@ -1296,7 +1278,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         // new managed connection.
         hcmDetails._mcWrapper = parkingMCWrapper;
 
-        if (TraceComponent.isAnyTracingEnabled()  && tc.isEntryEnabled())
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "parkHandle");
     }
 
