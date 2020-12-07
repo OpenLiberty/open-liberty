@@ -29,7 +29,7 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 /**
  * This class will contain static methods that are used by various
  * classes in the integration layer's resource injection plugin code.
- *
+ * 
  */
 public class InjectionHelper {
 

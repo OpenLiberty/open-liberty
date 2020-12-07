@@ -23,6 +23,7 @@ import javax.xml.ws.spi.ServiceDelegate;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.jaxws.spi.ProviderImpl;
+import org.apache.cxf.staxutils.StaxUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -53,6 +54,25 @@ public class LibertyProviderImpl extends ProviderImpl {
     @Override
     public ServiceDelegate createServiceDelegate(URL url, QName qname,
                                                  @SuppressWarnings("rawtypes") Class cls) {
+        // TODO: 
+        // WOODSTOX
+        //Eager initialize the StaxUtils
+        try {
+            if(System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER) == null) {
+                System.setProperty(StaxUtils.ALLOW_INSECURE_PARSER, "true");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Insecure Stax property was null setting it to true on the Client.");
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Client-Side Insecure Stax property is set to: " + System.getProperty(StaxUtils.ALLOW_INSECURE_PARSER));
+            }
+            
+            Class.forName("org.apache.cxf.staxutils.StaxUtils");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        
         Bus bus = null;
         JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData();
         if (clientMetaData != null) {
@@ -66,14 +86,13 @@ public class LibertyProviderImpl extends ProviderImpl {
         }
 
         WebServiceRefInfo wsrInfo = wsRefInfo.get();
-
         List<WebServiceFeature> serviceFeatures = wsFeatures.get();
         final List<WebServiceFeature> fServiceFeatures = serviceFeatures;
 
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
         JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
-        // @TJJ create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
+        // Create final vars in order to call a doPriv when creating the LibertyServiceImpl as required by java 2 security
         final JaxWsSecurityConfigurationService scs = securityConfigService;
         final WebServiceRefInfo wi = wsrInfo;
         final Bus b = bus;
@@ -86,6 +105,7 @@ public class LibertyProviderImpl extends ProviderImpl {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Thread context features are configured with " + serviceFeatures);
             }
+
             LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
                 @Override
                 public LibertyServiceImpl run() {
@@ -106,7 +126,6 @@ public class LibertyProviderImpl extends ProviderImpl {
                 }
             });
             return lsl;
-
         }
     }
 

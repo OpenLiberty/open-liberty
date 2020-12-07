@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.bus;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -66,9 +69,13 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(JaxWsModuleMetaData.class, moduleMetaData);
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.SERVER);
 
-        LibertyApplicationBus bus = createBus(extensions, properties, moduleInfo.getClassLoader());
-
-        return bus;
+        final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
+        Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+        try {
+            return createBus(extensions, properties, moduleClassLoader);
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
+        }
     }
 
     public LibertyApplicationBus createClientScopedBus(JaxWsModuleMetaData moduleMetaData) {
@@ -81,9 +88,13 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(JaxWsModuleMetaData.class, moduleMetaData);
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.CLIENT);
 
-        LibertyApplicationBus bus = createBus(extensions, properties, moduleInfo.getClassLoader());
-
-        return bus;
+        final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
+        Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+        try {
+            return createBus(extensions, properties, moduleClassLoader);
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
+        }
     }
 
     @Override
@@ -95,9 +106,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
         Bus originalBus = getThreadDefaultBus(false);
 
+        final Map<Class<?>, Object> e1 = e;
+        final Map<String, Object> properties1 = properties;
+        final ClassLoader classLoader1 = classLoader;
         try {
-            LibertyApplicationBus bus = new LibertyApplicationBus(e, properties, classLoader);
-
+            LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
+                @Override
+                public LibertyApplicationBus run() {
+                    return new LibertyApplicationBus(e1, properties1, classLoader1);
+                }
+            });
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
             //Also, it avoids polluting the thread bus.
             //possiblySetDefaultBus(bus);
@@ -115,6 +133,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
+
+            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
+            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
+            in.setPrettyLogging(true);
+            bus.getInInterceptors().add(in);
+
+            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
+            out.setPrettyLogging(true);
+            bus.getOutInterceptors().add(out);
+
             return bus;
 
         } finally {
@@ -242,7 +270,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         @Override
         public void preShutdown() {
             for (LibertyApplicationBusListener listener : listeners) {
-                listener.postShutdown(bus);
+                listener.preShutdown(bus);
             }
         }
     }

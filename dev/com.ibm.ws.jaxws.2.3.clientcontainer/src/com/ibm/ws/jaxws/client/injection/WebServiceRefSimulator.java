@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import javax.xml.ws.WebServiceRef;
  * This class will implement the @WebServiceRef interace, and it
  * will be used to store metadata for a JAX-WS service-ref that
  * was found in a client deployment descriptor.
- *
+ * 
  */
 public class WebServiceRefSimulator implements javax.xml.ws.WebServiceRef {
 

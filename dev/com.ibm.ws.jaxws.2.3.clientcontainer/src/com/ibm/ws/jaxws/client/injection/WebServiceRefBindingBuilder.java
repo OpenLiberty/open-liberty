@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 /**
  * This class will be responsible for building InjectionBinding objects for web service references that were found in
  * XML. It will build objects for JAX-WS service references.
- *
+ * 
  */
 public class WebServiceRefBindingBuilder {
 
@@ -49,8 +49,7 @@ public class WebServiceRefBindingBuilder {
     /**
      * This class will build a list of InjectionBinding objects based on JAX-WS service-ref elements that were found in a client deployment descriptor.
      */
-    static List<InjectionBinding<WebServiceRef>> buildJaxWsWebServiceRefBindings(List<ServiceRef> jaxwsServiceRefs,
-                                                                                 ComponentNameSpaceConfiguration cnsConfig) throws InjectionException {
+    static List<InjectionBinding<WebServiceRef>> buildJaxWsWebServiceRefBindings(List<ServiceRef> jaxwsServiceRefs, ComponentNameSpaceConfiguration cnsConfig) throws InjectionException {
 
         if (jaxwsServiceRefs.size() == 0) {
             return Collections.emptyList();
@@ -93,7 +92,7 @@ public class WebServiceRefBindingBuilder {
                         break;
                     }
 
-                    // if we found a non-null port-component-link value, we need to look for the wsdl location
+                    // if we found a non-null port-component-link value, we need to look for the wsdl location 
                     // from the port component of the same module
                     if (pcLinkValue != null) {
                         // the service metadata has processed before the client metadata processing
