@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.eeCompatible-9.0))"
 -features=\
   io.openliberty.appSecurity-4.0
-kind=noship
-edition=full
+kind=beta
+edition=core

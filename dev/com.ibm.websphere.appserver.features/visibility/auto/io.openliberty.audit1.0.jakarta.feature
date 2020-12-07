@@ -15,5 +15,5 @@ IBM-Install-Policy: when-satisfied
   com.ibm.ws.security.audit.file.jakarta,\
   com.ibm.ws.request.probe.audit.servlet.jakarta
 
-kind=noship
-edition=full
+kind=beta
+edition=core
