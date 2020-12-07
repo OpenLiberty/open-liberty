@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Review the server.xml file and correct th
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: More than one OpenID Connect client authentication filter matches a request to [{0}] URL. The matching filters were [{1}]. This can cause indeterminate behavior.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=More than one authentication filter matches an inbound request. Any client that uses one of these filters could process the request, leading to indeterminate behavior.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Review the server.xml file and correct the configuration.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: A request to [{0}] is not valid. A required cookie with a name that begins with WASReqURLOidc has an incorrect value. The host name [{1}] that is used in the cookie does not match the name that is registered at the provider. A response code of 500 is returned.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A request was received that includes a malformed cookie.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The malformed cookie can be caused by cookie modification at the user agent with a host name that differs from the host name of the redirect that is registered with the provider. If the host name is expected, then add it to the wasReqURLRedirectDomainNames attribute of the webAppSecurity element in server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

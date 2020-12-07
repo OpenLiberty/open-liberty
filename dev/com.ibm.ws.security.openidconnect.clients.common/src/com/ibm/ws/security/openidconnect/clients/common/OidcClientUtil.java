@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -370,6 +372,18 @@ public class OidcClientUtil {
             }
             webAppSecurityConfigRef.set(WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig());
             referrerURLCookieHandlerRef.set(referrerURLCookieHandler);
+        }
+    }
+
+    @FFDCIgnore(Exception.class)
+    public static boolean isReferrerHostValid(HttpServletRequest req, @Sensitive String requestUrl) {
+        try {
+            // Get the redirection domain names from the global security configuration, <webAppSecurity wasReqURLRedirectDomainNames="mydomain"/>
+            ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(requestUrl),
+                    getWebAppSecurityConfig().getWASReqURLRedirectDomainNames());
+            return true;
+        } catch (Exception re) {
+            return false;
         }
     }
 
