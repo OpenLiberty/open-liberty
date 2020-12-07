@@ -33,7 +33,7 @@ Subsystem-Name: Jakarta Batch API 2.0
   com.ibm.ws.security.credentials, \
   com.ibm.websphere.security, \
   com.ibm.jbatch.container.jakarta, \
-  io.openliberty.jakarta.batch-2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.batch:jakarta.batch-api:2.0.0"
+  io.openliberty.jakarta.batch.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.batch:jakarta.batch-api:2.0.0"
   
 kind=noship
 edition=full

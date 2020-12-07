@@ -156,7 +156,7 @@ public class SplitControllerImpl implements IExecutionElementController {
     // about reobtaining.
     private void buildSubJobBatchWorkUnits() {
 
-        List<Flow> flows = this.split.getFlows();
+        List<Flow> flows = (List<Flow>) this.split.getFlows();
 
         splitFlowWorkUnits = new ArrayList<BatchSplitFlowWorkUnit>();
 

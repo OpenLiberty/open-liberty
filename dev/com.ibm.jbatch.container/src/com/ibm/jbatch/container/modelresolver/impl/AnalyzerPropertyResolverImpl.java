@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.Analyzer;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class AnalyzerPropertyResolverImpl extends AbstractPropertyResolver<Analyzer> {
@@ -46,7 +48,7 @@ public class AnalyzerPropertyResolverImpl extends AbstractPropertyResolver<Analy
 
         // Resolve all the properties defined for this artifact
         if (analyzer.getProperties() != null) {
-            this.resolveElementProperties(analyzer.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) analyzer.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return analyzer;

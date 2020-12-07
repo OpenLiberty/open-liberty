@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.ItemReader;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class ItemReaderPropertyResolverImpl extends AbstractPropertyResolver<ItemReader> {
@@ -38,7 +40,7 @@ public class ItemReaderPropertyResolverImpl extends AbstractPropertyResolver<Ite
 
         // Resolve all the properties defined for this artifact
         if (reader.getProperties() != null) {
-            this.resolveElementProperties(reader.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) reader.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return reader;

@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: Java Batch 2.0 API
-Bundle-SymbolicName: io.openliberty.jakarta.batch-2.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.jakarta.batch.2.0; singleton:=true
 Bundle-Description: jakarta.batch 2.0 API (Reference Implementation)
 
 WS-TraceGroup: wsbatch
@@ -32,6 +32,8 @@ Export-Package:\
  
 Import-Package: org.osgi.util.tracker,\
 	org.osgi.framework
+
+-includeresource: @${repo;jakarta.batch:jakarta.batch-api;2.0.0;EXACT}!/xsd/*.xsd
 
 instrument.disabled: true
 

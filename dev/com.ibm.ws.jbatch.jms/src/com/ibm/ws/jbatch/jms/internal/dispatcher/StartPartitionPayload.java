@@ -38,12 +38,15 @@ public class StartPartitionPayload implements Serializable {
     
     private byte[] securityContext;
 
+    private String jaxbContextPath = null;
+
     /**
      * CTOR.
      */
     public StartPartitionPayload(PartitionPlanConfig partitionPlanConfig, Step step, byte[] securityContext) {
         this.partitionPlanConfig = partitionPlanConfig;
-        this.stepXml = marshalStep( step );
+        this.jaxbContextPath = step.getClass().getPackage().getName();
+        this.stepXml = marshalStep( step, jaxbContextPath );
         this.securityContext = securityContext;
     }
     
@@ -62,9 +65,9 @@ public class StartPartitionPayload implements Serializable {
     /**
      * @return The given Step in stringified XML
      */
-    private String marshalStep( Step step ) {
+    private String marshalStep( Step step, String contextPath ) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance( Step.class.getPackage().getName(), Step.class.getClassLoader() );
+            JAXBContext jaxbContext = JAXBContext.newInstance( contextPath, Step.class.getClassLoader() );
             Marshaller marshaller = jaxbContext.createMarshaller();
             StringWriter sw = new StringWriter();
             marshaller.marshal( step, sw );
@@ -78,8 +81,11 @@ public class StartPartitionPayload implements Serializable {
      * @return the given stepXml as a Step object
      */
     private Step unmarshalStep(String stepXml) {
+        // When deserializing from previous level of code where jaxbContextPath field did not exist,
+        // the value will be null.  In that case it would have been serialized in the v1 context.
+        String contextPath = jaxbContextPath == null ? "com.ibm.jbatch.jsl.model.v1" : jaxbContextPath;
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance( Step.class.getPackage().getName(), Step.class.getClassLoader() );
+            JAXBContext jaxbContext = JAXBContext.newInstance( contextPath, Step.class.getClassLoader() );
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return (Step) unmarshaller.unmarshal( new StringReader(stepXml) );
         } catch (JAXBException je) {

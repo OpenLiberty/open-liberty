@@ -42,6 +42,7 @@ public class JSEBatchArtifactFactoryImpl implements IBatchArtifactFactory, XMLSt
 	// TODO - surface constants
 	private final static String BATCH_XML = "META-INF/batch.xml";
 	private final static QName BATCH_ROOT_ELEM = new QName("http://xmlns.jcp.org/xml/ns/javaee", "batch-artifacts");
+        private final static QName BATCH_ROOT_ELEM_2 = new QName("https://jakarta.ee/xml/ns/jakartaee", "batch-artifacts");
 
 	// TODO - synchronize appropriately once we learn more about usage
 	private boolean loaded = false;
@@ -152,9 +153,9 @@ public class JSEBatchArtifactFactoryImpl implements IBatchArtifactFactory, XMLSt
 				if (event == START_ELEMENT) {
 					if (!processedRoot) {
 						QName rootQName = xmlStreamReader.getName();
-						if (!rootQName.equals(BATCH_ROOT_ELEM)) {
-							throw new IllegalStateException("Expecting document with root element QName: " + BATCH_ROOT_ELEM
-									+ ", but found root element with QName: " + rootQName);
+			                        if (!rootQName.equals(BATCH_ROOT_ELEM) && !rootQName.equals(BATCH_ROOT_ELEM_2)) {
+			                            throw new IllegalStateException("Expecting document with root element QName: " + BATCH_ROOT_ELEM
+			                                                            + " or " + BATCH_ROOT_ELEM_2 + ", but found root element with QName: " + rootQName);
 						} else {
 							processedRoot = true;
 						}

@@ -101,7 +101,7 @@ public abstract class RuntimeWorkUnitExecution implements WorkUnitDescriptor {
         // Should this be in the spec (that Properties is never null)?  Or is it already?
         Properties jobProperties = new Properties();
 
-        JSLProperties jslProperties = new JSLProperties();
+        JSLProperties jslProperties = null;
 
         if (jobNavigator.getRootModelElement() != null) {
             jslProperties = jobNavigator.getRootModelElement().getProperties();
