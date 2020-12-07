@@ -30,7 +30,13 @@ Export-Package: \
   com.ibm.websphere.ejbcontainer.test.tools; version="1.0", \
   com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0", \
   com.ibm.websphere.ejbcontainer.test.mdb; version="1.0", \
-  com.ibm.websphere.ejbcontainer.test.mdb.interceptors; version="1.0"
+  com.ibm.websphere.ejbcontainer.test.mdb.interceptors; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.activationSpec; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.core; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.jdbc; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.message; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.spi; version="1.0", \
+  com.ibm.websphere.ejbcontianer.test.rar.work; version="1.0"
 
 Private-Package: \
   com.ibm.websphere.ejbcontainer.test.*
@@ -52,6 +58,7 @@ generate.replacement: true
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.ws.ejbcontainer.core; version=latest, \
+	com.ibm.ws.ejbcontainer.remote.portable.core; version=latest, \
 	com.ibm.ws.logging; version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations; version=latest, \
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
@@ -61,5 +68,7 @@ generate.replacement: true
 	com.ibm.websphere.javaee.connector.1.7; version=latest, \
 	com.ibm.ws.tx.embeddable; version=latest, \
 	com.ibm.ws.container.service; version=latest, \
-	com.ibm.ws.security.jaas.common; version=latest
+	com.ibm.ws.security.jaas.common; version=latest, \
+	com.ibm.ws.jdbc; version=latest, \
+	com.ibm.ws.jca.cm; version=latest
 

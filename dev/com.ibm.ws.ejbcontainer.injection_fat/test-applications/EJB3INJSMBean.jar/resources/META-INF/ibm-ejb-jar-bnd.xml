@@ -1,0 +1,78 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+  <session name="BasicSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSLEnvInjectObjFld"/>
+
+  <session name="BasicSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSLEnvInjectPrimFld"/>
+
+  <session name="BasicSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSLEnvInjectObjMthd"/>
+
+  <session name="BasicSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSLEnvInjectPrimMthd"/>
+
+  <session name="CompSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSLEnvInjectObjFld"/>
+
+  <session name="CompSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSLEnvInjectPrimFld"/>
+
+  <session name="CompSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSLEnvInjectObjMthd"/>
+
+  <session name="CompSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSLEnvInjectPrimMthd"/>
+
+  <session name="BasicSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSFEnvInjectObjFld"/>
+
+  <session name="BasicSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSFEnvInjectPrimFld"/>
+
+  <session name="BasicSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSFEnvInjectObjMthd"/>
+
+  <session name="BasicSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/BasicSFEnvInjectPrimMthd"/>
+
+  <session name="CompSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSFEnvInjectObjFld"/>
+
+  <session name="CompSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSFEnvInjectPrimFld"/>
+
+  <session name="CompSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSFEnvInjectObjMthd"/>
+
+  <session name="CompSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/CompSFEnvInjectPrimMthd"/>
+
+  <session name="AdvSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSLEnvInjectObjFld"/>
+
+  <session name="AdvSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSLEnvInjectPrimFld"/>
+
+  <session name="AdvSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSLEnvInjectObjMthd"/>
+
+  <session name="AdvSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSLEnvInjectPrimMthd"/>
+
+  <session name="AdvCompSLEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSLEnvInjectObjFld"/>
+
+  <session name="AdvCompSLEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSLEnvInjectPrimFld"/>
+
+  <session name="AdvCompSLEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSLEnvInjectObjMthd"/>
+
+  <session name="AdvCompSLEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSLEnvInjectPrimMthd"/>
+
+  <session name="AdvSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSFEnvInjectObjFld"/>
+
+  <session name="AdvSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSFEnvInjectPrimFld"/>
+
+  <session name="AdvSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSFEnvInjectObjMthd"/>
+
+  <session name="AdvSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvSFEnvInjectPrimMthd"/>
+
+  <session name="AdvCompSFEnvInjectObjFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSFEnvInjectObjFld"/>
+
+  <session name="AdvCompSFEnvInjectPrimFld" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSFEnvInjectPrimFld"/>
+
+  <session name="AdvCompSFEnvInjectObjMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSFEnvInjectObjMthd"/>
+
+  <session name="AdvCompSFEnvInjectPrimMthd" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/AdvCompSFEnvInjectPrimMthd"/>
+
+  <session name="SuperCompSLEnvInject" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/SuperCompSLEnvInjectHome"/>
+
+  <session name="SuperCompSFEnvInject" simple-binding-name="com/ibm/ws/ejbcontainer/injection/mix/ejb/SuperCompSFEnvInjectHome"/>
+
+  <session name="BasicSLEnvInjectFldWithMthd">
+    <interface class="com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionLocal" binding-name="ejblocal:BasicSLEnvInjectFldWithMthd"/>
+  </session>
+</ejb-jar-bnd>
