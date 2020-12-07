@@ -80,7 +80,16 @@
 	>
 	</wsSecurityClient>
 
-
-
-
+    <!-- added 12/2020  -->
+        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA5Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA7Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA4Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBA6Service" actions="POST:AcceptSOAPActionUser-Agent"/>           
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+       
 </server>

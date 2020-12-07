@@ -60,5 +60,21 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />
 
 	</wsSecurityClient>
-
+	
+	<!-- added 12/2020 -->
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService3" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService5" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService7" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService8" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+	
 </server>

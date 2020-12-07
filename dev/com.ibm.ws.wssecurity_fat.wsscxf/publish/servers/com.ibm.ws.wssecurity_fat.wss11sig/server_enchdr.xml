@@ -70,4 +70,21 @@
 
 	</wsSecurityClient>
 
+    <!-- added 12/2020 -->
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService5" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService6" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService6a" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService7" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService7a" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/wss11sig/WSS11SigService8" actions="POST:AcceptSOAPActionUser-Agent"/>
+    
 </server>

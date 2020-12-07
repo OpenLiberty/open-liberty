@@ -58,5 +58,21 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />
 
 	</wsSecurityClient>
+	
+	<!-- added 12/2020 -->
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509sig/X509XmlSigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509sig/X509XmlStrService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509sig/X509XmlSigService3" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/xmlsig/X509XmlSigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509sig/X509XmlStrService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
+    
+   
 </server>
 

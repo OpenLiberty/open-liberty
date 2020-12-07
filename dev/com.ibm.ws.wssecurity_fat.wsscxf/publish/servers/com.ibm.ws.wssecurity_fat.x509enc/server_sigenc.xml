@@ -70,4 +70,21 @@
 
 	</wsSecurityClient>
 
+    <!-- added 12/2020 -->
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService3" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService5" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService7" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService8" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService9" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509enc/X509XmlEncService10" actions="POST:AcceptSOAPActionUser-Agent"/>
+    
+     
 </server>

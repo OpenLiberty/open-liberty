@@ -1,8 +1,0 @@
-/dropins/
-.server_enchdr.xml.swp
-dsig-receiver.ks
-dsig-sender.ks
-intca2.cer
-x509ClientDefault.jks
-x509ServerDefault.jks
-/*.jceks

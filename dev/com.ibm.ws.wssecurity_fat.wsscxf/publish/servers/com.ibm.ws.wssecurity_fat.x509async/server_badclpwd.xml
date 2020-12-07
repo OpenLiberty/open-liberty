@@ -58,5 +58,14 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-sender.ks" />
 
 	</wsSecurityClient>
+	
+	 <!-- added 12/2020 -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509aSync/X509AsyncService" actions="POST:AcceptSOAPActionUser-Agent"/>
+    
 </server>
 
