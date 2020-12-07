@@ -16,6 +16,7 @@
         <feature>jdbc-4.2</feature>
         <feature>jndi-1.0</feature>
         <feature>mpContextPropagation-1.0</feature>
+        <feature>noShip-1.0</feature>
         <feature>servlet-4.0</feature>
     </featureManager>
     
@@ -24,11 +25,13 @@
     <application location="MPConcurrentTxApp.war"/>
 
     <dataSource id="DefaultDataSource">
+        <connectionManager enableHandleList="true" autoCloseConnections="true"/> <!-- TODO remove enableHandleList once 15181 is merged -->
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>
 
     <dataSource id="OnePhaseDataSource" jndiName="jdbc/ds1phase" type="javax.sql.ConnectionPoolDataSource">
+        <connectionManager enableHandleList="false" autoCloseConnections="false"/> <!-- TODO remove enableHandleList once 15181 is merged -->
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
 import com.ibm.ws.microprofile.context.ThreadIdentityContextProvider;
 import com.ibm.ws.microprofile.context.WLMContextProvider;
 
@@ -38,10 +39,15 @@ public class MicroProfileClearedContextSnapshot implements com.ibm.wsspi.threadc
 
     private static final TraceComponent tc = Tr.register(MicroProfileClearedContextSnapshot.class);
 
+    /**
+     * Most of these are skipped because Liberty already provides most these (they inherit from
+     * ContainerContextProvider). CDI is also skipped for compatibility purposes.
+     */
     private static final HashSet<String> DO_NOT_CLEAR = new HashSet<String>(Arrays.asList //
     (
      ThreadContext.APPLICATION,
      ThreadContext.CDI,
+     EmptyHandleListContextProvider.EMPTY_HANDLE_LIST,
      ThreadContext.SECURITY,
      ThreadIdentityContextProvider.SYNC_TO_OS_THREAD,
      ThreadContext.TRANSACTION,
