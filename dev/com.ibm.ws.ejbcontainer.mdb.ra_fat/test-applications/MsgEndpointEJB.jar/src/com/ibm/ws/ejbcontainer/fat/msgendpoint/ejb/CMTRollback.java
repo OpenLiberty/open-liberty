@@ -50,8 +50,7 @@ public class CMTRollback implements MessageListener {
      *
      * @exception javax.ejb.EJBException
      */
-    public void ejbRemove() {
-    }
+    public void ejbRemove() {}
 
     /**
      * <p>Passes a message to the listener.
@@ -142,8 +141,7 @@ public class CMTRollback implements MessageListener {
      * @param message a String message
      */
     @Override
-    public void onCreateDBEntryNikki(String message) {
-    }
+    public void onCreateDBEntryNikki(String message) {}
 
     /**
      * <p>onCreateDBEntryZiyad from tra.MessageListner interface
@@ -153,8 +151,7 @@ public class CMTRollback implements MessageListener {
      * @param message a String message
      */
     @Override
-    public void onCreateDBEntryZiyad(String message) {
-    }
+    public void onCreateDBEntryZiyad(String message) {}
 
     /**
      * <p>onWait from tra.MessageListner interface
@@ -165,8 +162,7 @@ public class CMTRollback implements MessageListener {
      * @param msg a String message, represents the wait time in seconds.
      */
     @Override
-    public void onWait(String msg) {
-    }
+    public void onWait(String msg) {}
 
     /**
      * <p>onGetTimestamp from tra.MessageListner interface
@@ -180,8 +176,7 @@ public class CMTRollback implements MessageListener {
      * @param msg a String message
      */
     @Override
-    public void onGetTimestamp(String msg) {
-    }
+    public void onGetTimestamp(String msg) {}
 
     // d174256
     /**
@@ -190,6 +185,5 @@ public class CMTRollback implements MessageListener {
      * any problem in stopping the server after MDB throws this exception.
      */
     @Override
-    public void onThrowEJBException(String msg) {
-    }
+    public void onThrowEJBException(String msg) {}
 }

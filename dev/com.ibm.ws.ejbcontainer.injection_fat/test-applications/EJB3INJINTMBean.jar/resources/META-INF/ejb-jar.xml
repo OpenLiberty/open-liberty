@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="ejb-jar_ID" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <display-name>EJB3INJINTM</display-name>
+      <enterprise-beans>
+         <session id="StatefulInterceptorInjectionBean">
+          <ejb-name>StatefulInterceptorInjectionBean</ejb-name>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor2/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor2!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor3/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor3!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor4/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor4!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <env-entry-name>AnnotationInjectionInterceptor2/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello AnnotationInjectionInterceptor2!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor2/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor3/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor4/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>AnnotationInjectionInterceptor2/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor2/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor3/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor4/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+             <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>AnnotationInjectionInterceptor2/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor2/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor3/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+             <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor4/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>AnnotationInjectionInterceptor2/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor2/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor3/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor4/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>AnnotationInjectionInterceptor2/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor2/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor3/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor4/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref >
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>AnnotationInjectionInterceptor2/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+         </session>
+
+         <message-driven id="MessageDrivenInjectionBean">
+          <ejb-name>MessageDrivenInjectionBean</ejb-name>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor2/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor2!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor3/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor3!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor4/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor4!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+           <env-entry>
+            <env-entry-name>AnnotationInjectionInterceptor2/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello AnnotationInjectionInterceptor2!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor2/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor3/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor4/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>AnnotationInjectionInterceptor2/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor2/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor3/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor4/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+             <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>AnnotationInjectionInterceptor2/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor2/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor3/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+             <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor4/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>AnnotationInjectionInterceptor2/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor2/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor3/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor4/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>AnnotationInjectionInterceptor2/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor2/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor3/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor4/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+           </message-destination-ref>
+           <message-destination-ref >
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>AnnotationInjectionInterceptor2/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+         </message-driven>
+      </enterprise-beans>
+
+      <interceptors>
+
+          <interceptor>
+            <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor</interceptor-class>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>AnnotationInjectionInterceptor/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello AnnotationInjectionInterceptor!</env-entry-value>
+           </env-entry>
+        </interceptor>
+
+          <interceptor>
+            <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</interceptor-class>
+           <around-invoke>
+              <method-name>aroundInvoke</method-name>
+           </around-invoke>
+           <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>XMLInjectionInterceptor/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello XMLInjectionInterceptor!</env-entry-value>
+            <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                  <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+           </env-entry>
+            <ejb-ref>
+               <description>EJB Reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor/ejbRemoteRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <remote>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFRemote</remote>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                  <injection-target-name>ejbRemoteRef</injection-target-name>
+               </injection-target>
+            </ejb-ref>
+            <ejb-local-ref>
+               <description>EJB local reference</description>
+               <ejb-ref-name>XMLInjectionInterceptor/ejbLocalRef</ejb-ref-name>
+               <ejb-ref-type>Session</ejb-ref-type>
+               <local>com.ibm.ws.ejbcontainer.injection.mix.ejbint.MixedSFLocal</local>
+               <ejb-link>MixedSFInterceptorBean</ejb-link>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                  <injection-target-name>ejbLocalRef</injection-target-name>
+               </injection-target>
+            </ejb-local-ref>
+            <resource-ref>
+               <description>A queue connection factory</description>
+               <res-ref-name>XMLInjectionInterceptor/jms/WSTestQCF</res-ref-name>
+               <res-type>javax.jms.QueueConnectionFactory</res-type>
+               <res-auth>Application</res-auth>
+               <res-sharing-scope>Shareable</res-sharing-scope>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                  <injection-target-name>qcf</injection-target-name>
+               </injection-target>
+            </resource-ref>
+            <resource-env-ref>
+              <description>Response queue</description>
+              <resource-env-ref-name>XMLInjectionInterceptor/jms/ResponseQueue</resource-env-ref-name>
+              <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+              <injection-target>
+                <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                <injection-target-name>resQueue</injection-target-name>
+              </injection-target>
+           </resource-env-ref>
+           <message-destination-ref>
+         <description>Ref to a queue</description>
+               <message-destination-ref-name>XMLInjectionInterceptor/jms/RequestQueue</message-destination-ref-name>
+               <message-destination-type>
+                  javax.jms.Queue
+               </message-destination-type>
+               <message-destination-usage>
+                  Produces
+               </message-destination-usage>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor</injection-target-class>
+                  <injection-target-name>reqQueue</injection-target-name>
+               </injection-target>
+            </message-destination-ref>
+            <pre-destroy>
+                 <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+            </pre-destroy>
+        </interceptor>
+
+        <interceptor>
+            <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor2</interceptor-class>
+           <around-invoke>
+              <method-name>aroundInvoke</method-name>
+           </around-invoke>
+            <pre-destroy>
+                 <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+             </pre-destroy>
+        </interceptor>
+
+          <interceptor>
+            <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor3</interceptor-class>
+           <around-invoke>
+              <method-name>aroundInvoke</method-name>
+           </around-invoke>
+            <pre-destroy>
+                 <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+            </pre-destroy>
+        </interceptor>
+
+        <interceptor>
+            <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLInjectionInterceptor4</interceptor-class>
+           <around-invoke>
+              <method-name>aroundInvoke</method-name>
+           </around-invoke>
+            <pre-destroy>
+                 <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+            </pre-destroy>
+        </interceptor>
+        <interceptor>
+          <interceptor-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLDSInjectionInterceptor</interceptor-class>
+          <resource-ref>
+            <res-ref-name>XMLDS/jdbc/dsAuthAlias</res-ref-name>
+            <res-type>javax.sql.DataSource</res-type>
+            <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            <injection-target>
+              <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLDSInjectionInterceptor</injection-target-class>
+              <injection-target-name>dsAuthAlias</injection-target-name>
+            </injection-target>
+          </resource-ref>
+          <resource-ref>
+            <res-ref-name>XMLDS/jdbc/dsCustomLogin</res-ref-name>
+            <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+                <res-sharing-scope>Shareable</res-sharing-scope>
+            <injection-target>
+              <injection-target-class>com.ibm.ws.ejbcontainer.injection.mix.ejbint.XMLDSInjectionInterceptor</injection-target-class>
+              <injection-target-name>dsCustomLogin</injection-target-name>
+            </injection-target>
+          </resource-ref>
+        </interceptor>
+      </interceptors>
+
+      <assembly-descriptor>
+      </assembly-descriptor>
+   </ejb-jar>
