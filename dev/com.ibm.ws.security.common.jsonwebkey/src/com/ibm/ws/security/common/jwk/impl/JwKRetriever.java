@@ -222,10 +222,10 @@ public class JwKRetriever {
             return key;
         }
         if (keyText != null) {
-            return jwkSet.getKeyBySetIdAndKeyText(setId, keyText, keyType);
+            key = jwkSet.getKeyBySetIdAndKeyText(setId, keyText, keyType);
         }
-        if (kid == null) {
-            return jwkSet.getKeyBySetId(setId, keyType);
+        if (key == null) {
+            key = jwkSet.getKeyBySetId(setId, keyType);
         }
         return key;
     }
@@ -505,7 +505,8 @@ public class JwKRetriever {
             }
             if (location != null) {
                 jwkSet.add(location, aJwk);
-            } else {
+            }
+            if (keyText != null) {
                 jwkSet.add(keyText, aJwk);
             }
         }
