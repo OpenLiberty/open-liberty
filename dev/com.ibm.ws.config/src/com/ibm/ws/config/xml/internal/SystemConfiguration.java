@@ -78,7 +78,13 @@ class SystemConfiguration {
         metatypeRegistryTracker.open();
 
         WsLocationAdmin locationService = locationTracker.getService();
-        VariableRegistry variableRegistryService = variableRegistryTracker.getService();
+        VariableRegistry variableRegistryService = null;
+        try {
+            // Wait indefinitely for the variable registry service to be available
+            variableRegistryService = variableRegistryTracker.waitForService(0);
+        } catch (InterruptedException e) {
+            // Auto FFDC
+        }
 
         OnError onError = getOnError();
         if (onError != OnError.WARN) {
