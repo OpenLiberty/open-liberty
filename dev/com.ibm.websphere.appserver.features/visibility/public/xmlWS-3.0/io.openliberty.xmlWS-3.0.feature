@@ -5,19 +5,17 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: xmlWS-3.0
-IBM-API-Package: \
- jakarta.xml.ws,\
- jakarta.xml.ws.handler,\
- jakarta.xml.ws.handler.soap,\
- jakarta.xml.ws.http,\
- jakarta.xml.ws.soap,\
- jakarta.xml.ws.spi,\
- jakarta.xml.ws.spi.http,\
- jakarta.xml.ws.wsaddressing
 Subsystem-Name: Jakarta XML Web Services 3.0
+IBM-API-Package: 
+ org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
+ org.apache.cxf.databinding;type="internal"
 -features=\
- io.openliberty.jakarta.xmlWS-3.0,\
- com.ibm.websphere.appserver.eeCompatible-9.0
+ com.ibm.websphere.appserver.eeCompatible-9.0, \
+ com.ibm.websphere.appserver.servlet-5.0, \
+ io.openliberty.xmlws.common-3.0
+-bundles=\
+ com.ibm.ws.jaxws.2.3.common.jakarta, \
+ com.ibm.ws.jaxws.2.3.wsat.jakarta
 -files=\
  bin/xmlBinding/xjc.bat, \
  bin/xmlBinding/tools/ws-schemagen.jar, \
