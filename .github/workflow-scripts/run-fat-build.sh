@@ -90,7 +90,7 @@ do
     echo "The bucket $FAT_BUCKET passed.";
     touch "$OUTPUT_DIR/passed.log";
   else
-    echo "::error::The bucket $FAT_BUCKET failed.";
+    echo "$FAT_BUCKET failed."
     touch "$OUTPUT_DIR/fail.log";
   fi
   # Collect all junit files in a central location

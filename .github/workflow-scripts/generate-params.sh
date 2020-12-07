@@ -14,6 +14,6 @@ MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pu
 echo "MATRIX_RESULT is $MATRIX_RESULT"
 
 # Output results
-echo "::set-output name=test-os::ubuntu-latest"
+echo "::set-output name=test-os::ubuntu-18.04"
 echo "::set-output name=test-java::11"
 echo "::set-output name=test-matrix::$MATRIX_RESULT"

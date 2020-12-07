@@ -78,10 +78,8 @@ subprojects {
     // Once testing is complete copy 
     finalizedBy junitReport
     
-    //Ensure that overall build does not file if tests fail.  
-    //Otherwise, testReport will never be generated
-    //Instead rely on unit test results to determine if there was a failure
-    userProps.setProperty("gradle.test.ignoreFailures", "true")
+    // This is unnecessary as finalizedBy will run regardless of subproject failure
+	//ignoreFailures = true
 	
     //  A number of tests make heavy use of java.util.Random, which can drain the entropy pool of /dev/random on Linux when
     // running on OpenJDK-based distributions. This results in large delays as tests wait for the entropy pool to be repopulated.

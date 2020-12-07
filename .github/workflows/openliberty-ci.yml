@@ -22,7 +22,7 @@ env:
 jobs:
   setup: #Validates copyright headers, selects test-os, selects java version, and sets up test categories. 
     name: Setup 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     outputs: 
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
@@ -46,7 +46,7 @@ jobs:
       run: .github/workflow-scripts/generate-params.sh
   build: #Main build always done on linix run in parallel to setup and unit-test
     name: Build Open Liberty
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -94,7 +94,7 @@ jobs:
   unit_tests: #Unit tests always run linux, but could depends on setup to determine jdk
     name: Unit Tests
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v2 
@@ -135,10 +135,12 @@ jobs:
         path: dev/cnf/generated/testReports/allUnitTests
     - name: Analyze junit output
       if: steps.run-unit-tests.outputs.status == 'failure'
-      uses: KyleAure/junit-report-annotations-action@1.5
+      uses: KyleAure/junit-report-annotations-action@1.6
       with:
-        name: Junit report
+        name: Unit test report
         path: "dev/unit-results/TEST-*.xml"
+        includeSummary: true
+        numFailures: 10 # Truncate number of failures so we don't run out of annoations.
   fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
     needs: [setup, build]
@@ -205,8 +207,9 @@ jobs:
         single-archive: "false"
     - name: Analyze junit output
       if: steps.check-fat-failure.outputs.status == 'failure'
-      uses: KyleAure/junit-report-annotations-action@1.5
+      uses: KyleAure/junit-report-annotations-action@1.6
       with:
-        name: Junit report
-        path: "dev/fat-results/TEST-*.xml"
-      
+        name: ${{matrix.category}} report
+        path: "dev/fat-results/TEST-*.xml"        
+        includeSummary: false
+        numFailures: 5 # Truncate number of failures so we don't run out of annoations.

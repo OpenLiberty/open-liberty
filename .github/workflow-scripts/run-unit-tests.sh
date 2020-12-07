@@ -8,7 +8,7 @@ echo "Running gradle test and testReport tasks.  This will take approx. 30 minut
 
 # Redirect stdout to log file that will get archived if build fails
 echo "::group::Gradle Output"
-./gradlew --continue cnf:initialize testResults
+./gradlew --continue cnf:initialize testResults -Dgradle.test.ignoreFailures=true
 echo "::endgroup::"
 
 # Gradle testResults task will save off results in generated.properties ensure that file exists otherwise fail
