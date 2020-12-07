@@ -29,4 +29,4 @@ publish.wlp.jar.suffix: dev/api/spec
     io.openliberty.jakarta.authentication.2.0;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     io.openliberty.jakarta.servlet.5.0;version=latest, \
-    jakarta.security.enterprise:jakarta.security.enterprise-api;version=2.0.0.RC2
+    jakarta.security.enterprise:jakarta.security.enterprise-api;version=2.0.0
