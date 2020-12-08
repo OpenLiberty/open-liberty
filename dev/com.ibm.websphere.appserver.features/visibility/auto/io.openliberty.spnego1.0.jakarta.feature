@@ -9,5 +9,5 @@ IBM-Provision-Capability: \
   io.openliberty.appSecurity-4.0
 -bundles=\
   io.openliberty.security.spnego.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
