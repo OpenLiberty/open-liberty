@@ -330,7 +330,7 @@
         <AD id="addStrictTransportSecurityHeader"
             name="%addStrictTransportSecurityHeader.name"
             description="%addStrictTransportSecurityHeader.desc"
-            required="false" type="String" default="false" />
+            required="false" type="String" default="" />
 
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
