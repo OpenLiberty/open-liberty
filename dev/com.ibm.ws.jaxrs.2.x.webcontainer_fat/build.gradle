@@ -33,18 +33,18 @@ configurations.jersey {
 }
 
 dependencies {
-  jackson2x 'com.fasterxml.jackson.core:jackson-annotations:2.4.1',
-    'com.fasterxml.jackson.core:jackson-core:2.4.1',
-    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
-    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1',
-    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1',
-    'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1'
+  jackson2x 'com.fasterxml.jackson.core:jackson-annotations:2.11.2',
+    'com.fasterxml.jackson.core:jackson-core:2.11.2',
+    'com.fasterxml.jackson.core:jackson-databind:2.11.2',
+    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.11.2',
+    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.11.2',
+    'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.11.2'
   requiredLibs 'commons-httpclient:commons-httpclient:3.1',
     'commons-logging:commons-logging:1.2',
     project(':com.ibm.ws.org.apache.httpcomponents'),
     'org.apache.httpcomponents:httpmime:4.3.1',
-    'com.fasterxml.jackson.core:jackson-core:2.4.1',
-    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
+    'com.fasterxml.jackson.core:jackson-core:2.11.2',
+    'com.fasterxml.jackson.core:jackson-databind:2.11.2',
     'org.apache.wink:wink-client:1.4',
     'org.apache.wink:wink-common:1.4',
     'org.apache.wink:wink-client-apache-httpclient:1.4',

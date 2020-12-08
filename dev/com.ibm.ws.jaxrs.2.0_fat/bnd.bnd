@@ -88,9 +88,6 @@ tested.features: \
   org.apache.wink:wink-client;version=1.4,\
   org.apache.wink:wink-common;version=1.4,\
   org.json:json;version=20080701,\
-  com.fasterxml.jackson.core:jackson-annotations;version=2.4.1,\
-  com.fasterxml.jackson.core:jackson-core;version=2.4.1,\
-  com.fasterxml.jackson.core:jackson-databind;version=2.4.1,\
-  com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;version=2.4.1,\
-  com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;version=2.4.1
+  io.openliberty.com.fasterxml.jackson,\
+  io.openliberty.com.fasterxml.jackson.jaxrs
 	
