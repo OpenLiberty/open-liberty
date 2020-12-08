@@ -31,6 +31,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ejb.EJBContext;
 import javax.management.MBeanServer;
@@ -55,6 +56,7 @@ public class DerbyRAServlet extends FATServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    private static final AtomicReference<Connection> nonDissociatableSharableHandleRef = new AtomicReference<Connection>();
 
     /**
      * Maximum number of milliseconds a test should wait for something to happen
@@ -422,6 +424,29 @@ public class DerbyRAServlet extends FATServlet {
         } finally {
             tx.commit();
         }
+    }
+
+    /**
+     * Verifies that a non-dissociatable sharable connection handle that was left open by another servlet request
+     * is closed now.
+     *
+     * Prerequisite - must run testNonDissociatableSharableHandleLeftOpenAfterServletMethod prior to this test
+     */
+    public void testNonDissociatableSharableHandleIsClosed() throws Exception {
+        Connection con = nonDissociatableSharableHandleRef.getAndSet(null);
+        assertTrue(con.isClosed());
+    }
+
+    /**
+     * Intentionally leave a non-dissociatable, sharable handle open across the end of a servlet method.
+     * The invoker must run testNonDissociatableSharableHandleIsClosed after this to complete the test.
+     */
+    public void testNonDissociatableSharableHandleLeftOpenAfterServletMethod() throws Exception {
+        DataSource ds = (DataSource) InitialContext.doLookup("eis/ds5");
+        Connection con = ds.getConnection();
+        assertFalse(con.isClosed());
+        assertTrue(nonDissociatableSharableHandleRef.compareAndSet(null, con));
+        // intentionally leave the connection open across the end of the servlet request
     }
 
     /**

@@ -175,6 +175,12 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     @Test
+    public void testNonDissociatableSharableHandleIsClosedAcrossServletMethods() throws Exception {
+        runTest(server, DerbyRAServlet, "testNonDissociatableSharableHandleLeftOpenAfterServletMethod");
+        runTest(server, DerbyRAServlet, "testNonDissociatableSharableHandleIsClosed");
+    }
+
+    @Test
     public void testRecursiveTimer() throws Exception {
         runTest(DerbyRAAnnoServlet);
     }
