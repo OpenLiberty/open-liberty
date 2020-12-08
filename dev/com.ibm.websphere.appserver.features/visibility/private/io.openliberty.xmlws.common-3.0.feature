@@ -26,7 +26,7 @@ IBM-API-Package:\
  com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
  io.openliberty.jakarta.xmlWS-3.0,\
- io.openliberty.mail-2.0, \
+ io.openliberty.jakarta.mail-2.0, \
  io.openliberty.xmlBinding-3.0
 -bundles=\
  com.ibm.websphere.org.osgi.service.http.jakarta; location:="dev/api/spec/,lib/", \
@@ -51,11 +51,8 @@ IBM-API-Package:\
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cxf.client, \
- com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
- com.ibm.ws.org.jvnet.mimepull, \
- com.ibm.ws.webservices.javaee.common.jakarta, \
+ com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
  com.ibm.ws.webservices.handler.jakarta
 -jars=com.ibm.websphere.appserver.spi.globalhandler.jakarta; location:=dev/spi/ibm/
 kind=noship
