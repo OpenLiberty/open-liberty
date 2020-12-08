@@ -11,13 +11,22 @@
 
 package com.ibm.ws.ejbcontainer.timer.auto.fat.tests;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneRules;
+import java.util.logging.Logger;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,6 +45,9 @@ import componenttest.topology.utils.FATServletClient;
 public class AutoCreatedNPTimerTest extends FATServletClient {
     public static final String AUTO_WAR_NAME = "AutoNPTimersWeb";
     private static final String SERVLET = "AutoNPTimersWeb/AutoCreatedNPTimerServlet";
+    private static final Logger logger = Logger.getLogger(AutoCreatedNPTimerTest.class.getCanonicalName());
+
+    private static boolean skipTest = false;
 
     @Server("AutoNPTimerServer")
     @TestServlet(servlet = AutoCreatedNPTimerServlet.class, contextRoot = AUTO_WAR_NAME)
@@ -46,6 +58,15 @@ public class AutoCreatedNPTimerTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        // Custom FATRunner doesn't support skipping tests like this in @BeforeClass; deferred to @Before
+        // Assume.assumeTrue(!leavingDaylightSavings());
+        if (leavingDaylightSavings()) {
+            // Log message and avoid starting server and waiting 5 minutes in setup for timers to run
+            logger.info("Leaving Daylight Savings; all tests will be skipped");
+            skipTest = true;
+            return;
+        }
+
         // cleanup from prior repeat actions
         server.deleteAllDropinApplications();
         server.removeAllInstalledAppsForValidation();
@@ -68,11 +89,46 @@ public class AutoCreatedNPTimerTest extends FATServletClient {
         FATServletClient.runTest(server, SERVLET, "setup");
     }
 
+    @Before
+    public void beforeMethod() throws Exception {
+        Assume.assumeTrue(!skipTest);
+        // Verify this mechanism to skip tests continues to work
+        Assume.assumeTrue(!testName.getMethodName().startsWith("testSkipTestWithAssumeInBefore"));
+    }
+
     @AfterClass
     public static void cleanUp() throws Exception {
-        FATServletClient.runTest(server, SERVLET, "cleanup");
-        if (server != null && server.isStarted()) {
-            server.stopServer();
+        if (!skipTest) {
+            FATServletClient.runTest(server, SERVLET, "cleanup");
+            if (server != null && server.isStarted()) {
+                server.stopServer();
+            }
         }
+    }
+
+    public static boolean leavingDaylightSavings() {
+        // Check if leaving daylight savings using local timezone
+        ZonedDateTime now = ZonedDateTime.now();
+        ZoneRules zoneRules = now.getZone().getRules();
+        boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+        ZonedDateTime end = now.plus(1, ChronoUnit.HOURS).plus(30, ChronoUnit.MINUTES);
+        boolean endDst = zoneRules.isDaylightSavings(end.toInstant());
+
+        // Also check against eastern timezone since test also uses that
+        ZonedDateTime eastern_now = ZonedDateTime.now(ZoneId.of("America/New_York"));
+        ZoneRules eastern_zoneRules = eastern_now.getZone().getRules();
+        boolean eastern_nowDst = eastern_zoneRules.isDaylightSavings(eastern_now.toInstant());
+        ZonedDateTime eastern_end = eastern_now.plus(1, ChronoUnit.HOURS).plus(30, ChronoUnit.MINUTES);
+        boolean eastern_endDst = eastern_zoneRules.isDaylightSavings(eastern_end.toInstant());
+
+        return (nowDst && !endDst) || (eastern_nowDst && !eastern_endDst);
+    }
+
+    /**
+     * Verifies that AssumptionViolatedException from @Before will skip this test.
+     */
+    @Test
+    public void testSkipTestWithAssumeInBefore() throws Exception {
+        throw new IllegalStateException("This method should always be skipped");
     }
 }

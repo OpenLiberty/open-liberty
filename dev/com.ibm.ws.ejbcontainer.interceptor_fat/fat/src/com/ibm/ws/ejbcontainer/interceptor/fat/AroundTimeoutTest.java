@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.interceptor.fat;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneRules;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -44,6 +55,19 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class AroundTimeoutTest extends FATServletClient {
+    private static final Logger logger = Logger.getLogger(AroundTimeoutTest.class.getCanonicalName());
+    private static final Set<String> skipWhenLeavingDaylightSavings = new HashSet<String>( //
+                    Arrays.asList("testAdvancedAroundTimeoutInterceptorScheduleAnn", //
+                                  "testAdvancedAroundTimeoutInterceptorScheduleMix", //
+                                  "testAdvancedAroundTimeoutInterceptorScheduleXml", //
+                                  "testAroundTimeoutScheduleAppEx", //
+                                  "testAroundTimeoutScheduleNoEx", //
+                                  "testInheritedAroundTimeoutAnn", //
+                                  "testInheritedTimeoutCallbackAnn", //
+                                  "testMDBNonPersistentAutomaticTimerInterceptorsAnn", //
+                                  "testMDBPersistentAutomaticTimerInterceptorsAnn"));
+    private static boolean leavingDaylightSavings = false;
+
     @Server("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")
     @TestServlets({ @TestServlet(servlet = AdvancedAroundTimeoutAnnServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = AdvancedAroundTimeoutMixServlet.class, contextRoot = "AroundTimeoutWeb"),
@@ -69,6 +93,8 @@ public class AroundTimeoutTest extends FATServletClient {
             server.copyFileToLibertyServerRoot("jvm.options");
         }
 
+        leavingDaylightSavings = leavingDaylightSavings();
+
         // Use ShrinkHelper to build the ears
         JavaArchive AroundTimeoutAnnEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutAnnEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ann.ejb.");
         JavaArchive AroundTimeoutExcEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutExcEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.");
@@ -83,10 +109,41 @@ public class AroundTimeoutTest extends FATServletClient {
         server.startServer();
     }
 
+    @Before
+    public void beforeMethod() throws Exception {
+        boolean skipThisMethod = leavingDaylightSavings && skipWhenLeavingDaylightSavings.contains(getTestMethodSimpleName());
+        if (skipThisMethod) {
+            logger.info("Leaving Daylight Savings; skipping test method " + testName.getMethodName());
+            Assume.assumeTrue(!skipThisMethod);
+        }
+        // Verify this mechanism to skip tests continues to work
+        Assume.assumeTrue(!testName.getMethodName().startsWith("testSkipTestWithAssumeInBefore"));
+    }
+
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
     }
+
+    private static boolean leavingDaylightSavings() {
+        // Check if leaving daylight savings using local timezone
+        ZonedDateTime now = ZonedDateTime.now();
+        ZoneRules zoneRules = now.getZone().getRules();
+        boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+        ZonedDateTime end = now.plus(1, ChronoUnit.HOURS).plus(30, ChronoUnit.MINUTES);
+        boolean endDst = zoneRules.isDaylightSavings(end.toInstant());
+
+        return (nowDst && !endDst);
+    }
+
+    /**
+     * Verifies that AssumptionViolatedException from @Before will skip this test.
+     */
+    @Test
+    public void testSkipTestWithAssumeInBefore() throws Exception {
+        throw new IllegalStateException("This method should always be skipped");
+    }
+
 }
