@@ -48,7 +48,7 @@ import componenttest.app.FATServlet;
 public abstract class JPATestServlet extends FATServlet {
     private static final long serialVersionUID = -4038309130483462162L;
 
-    private static int portNumber = 0;
+    protected static int portNumber = 0;
 
     public final static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
     public final static ObjectName fatServerInfoMBeanObjectName;

@@ -13,8 +13,6 @@ package com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
-
 import org.junit.Test;
 
 import com.ibm.ws.jpa.fvt.injection.testlogic.JPAInjectionTestLogic;
@@ -35,15 +33,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
     private static final long serialVersionUID = 639893867490398083L;
 
     private final String testLogicClassName = JPAInjectionTestLogic.class.getName();
-
-    private final HashMap<String, com.ibm.ws.testtooling.testinfo.JPAPersistenceContext> jpaPctxMap = new HashMap<String, com.ibm.ws.testtooling.testinfo.JPAPersistenceContext>();
-
-    @PostConstruct
-    private void initFAT() {
-        jpaPctxMap.put("cleanup",
-                       new com.ibm.ws.testtooling.testinfo.JPAPersistenceContext("cleanup", com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-
-    }
 
     /*
      * Verify that proper scoping behavior is being employed by the application server. Given 2 persistence units
@@ -66,7 +55,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -89,7 +77,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -112,7 +99,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -143,7 +129,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -166,7 +151,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -189,7 +173,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -216,7 +199,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -239,7 +221,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -262,7 +243,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -289,7 +269,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -312,7 +291,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -335,7 +313,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -369,7 +346,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -392,7 +368,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -415,7 +390,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -446,7 +420,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");
@@ -469,7 +442,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");
@@ -492,7 +464,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");
@@ -519,7 +490,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -542,7 +512,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -565,7 +534,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_YESOVERRIDE");
@@ -592,7 +560,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");
@@ -615,7 +582,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");
@@ -638,7 +604,6 @@ public class DFIProYesInhDDOvrdTestServlet extends DFIProYesInhDDOvrdTestSupercl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_YESOVERRIDE");

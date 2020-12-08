@@ -12,18 +12,18 @@
  *******************************************************************************/
 -->
 <application xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-	id="Application_ID">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
 
-	<display-name>OneXOne_EJB</display-name>
-	<module id="EjbModule_1"> 
-		<ejb>oneXone.jar</ejb>
-	</module>
-	<module id="WebModule_1">
+    <display-name>OneXOne_EJB</display-name>
+    <module id="EjbModule_1"> 
+        <ejb>oneXoneEjb.jar</ejb>
+    </module>
+    <module id="WebModule_1">
         <web>
-            <web-uri>oneXoneejb.war</web-uri>
-            <context-root>OneXOne10EJB</context-root>
+            <web-uri>oneXoneEjb.war</web-uri>
+            <context-root>OneXOne10Ejb</context-root>
         </web>
     </module>
 </application>

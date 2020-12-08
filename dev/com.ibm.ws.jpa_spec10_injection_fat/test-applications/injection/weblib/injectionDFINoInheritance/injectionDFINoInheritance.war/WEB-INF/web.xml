@@ -51,20 +51,13 @@
         <servlet-name>DFIProNoInhTestServlet</servlet-name>
         <url-pattern>/DFIProNoInhTestServlet</url-pattern>
     </servlet-mapping>
-    
+
     <!-- JPA Resource Definitions -->
-    
-    <!-- Cleanup Persistence Context -->
-    <persistence-context-ref>
-        <persistence-context-ref-name>jpa/web/jndi/ano/cleanup_cmts</persistence-context-ref-name>
-        <persistence-unit-name>CLEANUP</persistence-unit-name>
-        <persistence-context-type>Transaction</persistence-context-type>
-    </persistence-context-ref>
 
     <!-- Injection Overrides -->
-    
+
     <!-- CM TS -->
-        
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPubNoInhTestServlet -->
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DFIPubNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
@@ -102,7 +95,7 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPriNoInhTestServlet -->
 
     <persistence-context-ref>
@@ -141,9 +134,9 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPkgNoInhTestServlet -->
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DFIPkgNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -180,9 +173,9 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIProNoInhTestServlet -->
-    
+
     <persistence-context-ref>
         <persistence-context-ref-name>jpa/DFIProNoInhTestServlet/ovdem_cmts_common_webapp</persistence-context-ref-name>
         <persistence-unit-name>OVRD_COMMON_JTA</persistence-unit-name>
@@ -219,9 +212,9 @@
             <injection-target-name>ovdem_cmts_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-context-ref>
-    
+
     <!-- AM JTA Injection Overrides -->
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPubNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIPubNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -255,7 +248,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPriNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIPriNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -289,7 +282,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPkgNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIPkgNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -323,7 +316,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIProNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIProNoInhTestServlet/ovdemf_amjta_common_webapp</persistence-unit-ref-name>
@@ -357,7 +350,7 @@
             <injection-target-name>ovdemf_amjta_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- AM RL Injection Overrides -->
 
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPubNoInhTestServlet -->
@@ -393,7 +386,7 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPriNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIPriNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -427,7 +420,7 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIPkgNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIPkgNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -461,7 +454,7 @@
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
     </persistence-unit-ref>
-    
+
     <!-- Servlet com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIProNoInhTestServlet -->
     <persistence-unit-ref>
         <persistence-unit-ref-name>jpa/DFIProNoInhTestServlet/ovdemf_amrl_common_webapp</persistence-unit-ref-name>
@@ -494,11 +487,5 @@
             <injection-target-class>com.ibm.ws.jpa.fvt.injection.tests.weblib.dfi.noinh.DFIProNoInhTestServlet</injection-target-class>
             <injection-target-name>ovdemf_amrl_jpalib_earlib</injection-target-name>
         </injection-target>
-    </persistence-unit-ref>
-    
-    <persistence-unit-ref>
-        <description>Cleanup Persistence Context</description>
-        <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-        <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
     </persistence-unit-ref>
 </web-app>

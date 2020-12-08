@@ -13,7 +13,6 @@ package com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -47,79 +46,58 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
     // Container Managed Persistence Context
 
     // This EntityManager should refer to the COMMON_JTA in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceContext(unitName = "COMMON_JTA", type = PersistenceContextType.TRANSACTION)
     private EntityManager em_cmts_common_webapp;
 
     // This EntityManager should refer to the WEBAPP_JTA in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceContext(unitName = "WEBAPP_JTA", type = PersistenceContextType.TRANSACTION)
     private EntityManager em_cmts_webapp_webapp;
 
     // This EntityManager should refer to the COMMON_JTA in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceContext(unitName = "../lib/jpapulib.jar#COMMON_JTA", type = PersistenceContextType.TRANSACTION)
     private EntityManager em_cmts_common_earlib;
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.TRANSACTION)
     private EntityManager em_cmts_jpalib_earlib;
 
     // Application Managed Persistence Unit, JTA-Transaction
 
     // This EntityManager should refer to the COMMON_JTA in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "COMMON_JTA")
     private EntityManagerFactory emf_amjta_common_webapp;
 
     // This EntityManager should refer to the WEBAPP_JTA in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "WEBAPP_JTA")
     private EntityManagerFactory emf_amjta_webapp_webapp;
 
     // This EntityManager should refer to the COMMON_JTA in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA")
     private EntityManagerFactory emf_amjta_common_earlib;
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "JPALIB_JTA")
     private EntityManagerFactory emf_amjta_jpalib_earlib;
 
     // Application Managed Persistence Unit, RL-Transaction
 
     // This EntityManager should refer to the COMMON_RL in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "COMMON_RL")
     private EntityManagerFactory emf_amrl_common_webapp;
 
     // This EntityManager should refer to the WEBAPP_RL in the Web App module
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "WEBAPP_RL")
     private EntityManagerFactory emf_amrl_webapp_webapp;
 
     // This EntityManager should refer to the COMMON_RL in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL")
     private EntityManagerFactory emf_amrl_common_earlib;
 
     // This EntityManager should refer to the JPALIB_RL in the jar in the Application's Library directory
-    @SuppressWarnings("unused")
     @PersistenceUnit(unitName = "JPALIB_RL")
     private EntityManagerFactory emf_amrl_jpalib_earlib;
 
     private final String testLogicClassName = JPAInjectionTestLogic.class.getName();
-
-    private final HashMap<String, com.ibm.ws.testtooling.testinfo.JPAPersistenceContext> jpaPctxMap = new HashMap<String, com.ibm.ws.testtooling.testinfo.JPAPersistenceContext>();
-
-    @PostConstruct
-    private void initFAT() {
-        jpaPctxMap.put("cleanup",
-                       new com.ibm.ws.testtooling.testinfo.JPAPersistenceContext("cleanup", com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-
-    }
 
     /*
      * Verify that proper scoping behavior is being employed by the application server. Given 2 persistence units
@@ -141,7 +119,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -164,7 +141,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -187,7 +163,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -218,7 +193,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -241,7 +215,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -264,7 +237,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -291,7 +263,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -314,7 +285,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -337,7 +307,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "WEB_NOOVERRIDE");
@@ -364,7 +333,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -387,7 +355,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -410,7 +377,6 @@ public abstract class DFIPriYesInhAnoOvrdTestSuperclass extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");

@@ -44,10 +44,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "OneXMany_Uni_RL")
     private EntityManagerFactory oxmUniEmfRL;
 
-    // Cleanup
-    @PersistenceUnit(unitName = "Cleanup")
-    private EntityManagerFactory cleanupEmf;
-
     private final String testLogicClassName = OneXManyUnidirectionalTestLogic.class.getName();
 
     private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
@@ -60,9 +56,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "oxmUniEmfRL"));
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.FIELD, "oxmUniEm"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "cleanupEmf"));
-
     }
 
     /*
@@ -96,7 +89,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -115,7 +107,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -134,7 +125,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -153,7 +143,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -172,7 +161,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -191,7 +179,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -295,7 +282,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -314,7 +300,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -333,7 +318,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -352,7 +336,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -371,7 +354,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -390,7 +372,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -473,7 +454,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -492,7 +472,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -511,7 +490,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -530,7 +508,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -549,7 +526,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -568,7 +544,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -611,7 +586,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -630,7 +604,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -649,7 +622,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -668,7 +640,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -687,7 +658,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -706,7 +676,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -744,7 +713,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -763,7 +731,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -782,7 +749,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -801,7 +767,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -820,7 +785,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -839,7 +803,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -878,7 +841,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -897,7 +859,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -916,7 +877,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -935,7 +895,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -954,7 +913,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -973,7 +931,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1013,7 +970,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1032,7 +988,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1051,7 +1006,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1070,7 +1024,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1089,7 +1042,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1108,7 +1060,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1120,14 +1071,14 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
     /*
      * Cardinality Test: Verify that multiple entities can be stored in the relational collection.
-     * 
+     *
      * 1) Create UniEntityB(id=1), save to database.
      * 2) Create UniEntityB(id=2), save to database.
      * 3) Create new UniEntityA(id=1), add UniEntityB(id=1) and UniEntityB(id=2) to defaultRelationship, and save to database.
      * 4) Create new UniEntityA(id=2), add UniEntityB(id=1) and UniEntityB(id=2) to defaultRelationship, and save to database.
      * 5) Clear the persistence context, and verify EntityA's database state. Test passes if EntityA's
      * defaultRelationship collections have references to both UniEntityB.
-     * 
+     *
      */
 
     @Test
@@ -1139,7 +1090,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1158,7 +1108,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1177,7 +1126,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1196,7 +1144,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");
@@ -1215,7 +1162,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "OMEntA");
@@ -1234,7 +1180,6 @@ public class TestOneXManyUnidirectionalServlet extends JPATestServlet {
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLOMEntA");

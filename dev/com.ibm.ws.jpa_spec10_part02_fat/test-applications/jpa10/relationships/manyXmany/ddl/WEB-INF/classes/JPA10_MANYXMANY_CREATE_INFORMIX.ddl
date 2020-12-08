@@ -91,6 +91,8 @@ CREATE TABLE ${schemaname}.XMLMMUniEntB_CRM (id INTEGER NOT NULL, name VARCHAR(2
 CREATE TABLE ${schemaname}.XMLMMUniEntB_DR (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id)) LOCK MODE ROW;
 CREATE INDEX ${schemaname}.I_MBMNTBL_ELEMENT ON ${schemaname}.EmbManyXManyJoinTable (IDENTITY_COUNTRY, IDENTITY_ID);
 CREATE INDEX ${schemaname}.I_MBMNTBL_EMBEDIDMMENTITYA_ID ON ${schemaname}.EmbManyXManyJoinTable (EMBEDIDMMENTITYA_ID);
+CREATE INDEX ${schemaname}.I_DCLSNTB_ELEMENT ON ${schemaname}.IDClassMMEntA_IDClassMMEntB (identity_country, identity_id);
+CREATE INDEX ${schemaname}.I_DCLSNTB_IDCLASSM ON ${schemaname}.IDClassMMEntA_IDClassMMEntB (IDClassMMEntityA_id);
 CREATE INDEX ${schemaname}.I_MNYXTBL_ELEMENT ON ${schemaname}.ManyXManyDRBiJoinTable (ENT_B);
 CREATE INDEX ${schemaname}.I_MNYXTBL_ENT_A ON ${schemaname}.ManyXManyDRBiJoinTable (ENT_A);
 CREATE INDEX ${schemaname}.I_MNYXTBL_ELEMENT1 ON ${schemaname}.ManyXManyDRUniJoinTable (ENT_B);
@@ -185,4 +187,3 @@ CREATE INDEX ${schemaname}.I_XMLMCRF_ELEMENT1 ON ${schemaname}.XMLMMUniEntA_XMLM
 CREATE INDEX ${schemaname}.I_XMLMCRF_XMLMMUNIENTA_ID ON ${schemaname}.XMLMMUniEntA_XMLMMUniEntB_CRF (XMLMMUNIENTA_ID);
 CREATE INDEX ${schemaname}.I_XMLMCRM_ELEMENT1 ON ${schemaname}.XMLMMUniEntA_XMLMMUniEntB_CRM (CASCADEREMOVE_ID);
 CREATE INDEX ${schemaname}.I_XMLMCRM_XMLMMUNIENTA_ID ON ${schemaname}.XMLMMUniEntA_XMLMMUniEntB_CRM (XMLMMUNIENTA_ID);
-     

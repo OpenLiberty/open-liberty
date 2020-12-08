@@ -30,7 +30,7 @@
             </persistence-context-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/InjectionDPU_AMJTA</persistence-unit-ref-name>
-            </persistence-unit-ref>    
+            </persistence-unit-ref>
         </session>
         <session>
             <ejb-name>AppLevelJTADPUJNDIInjectionSFEJB</ejb-name>
@@ -49,7 +49,7 @@
             </persistence-context-ref>
             <persistence-unit-ref>
                 <persistence-unit-ref-name>jpa/InjectionDPU_AMJTA</persistence-unit-ref-name>
-            </persistence-unit-ref>    
+            </persistence-unit-ref>
         </session>
         <session>
             <ejb-name>AppLevelJTADPUJNDIInjectionSFEXEJB</ejb-name>
@@ -66,21 +66,8 @@
                 <persistence-context-ref-name>jpa/InjectionDPU_CMEX</persistence-context-ref-name>
                 <persistence-context-type>Extended</persistence-context-type>
             </persistence-context-ref> 
-        </session>               
-        
-        <session>
-            <ejb-name>AppLevelJTADPUFieldInjectionSLEJB</ejb-name>
-            <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUFieldInjectionSLEJBLocal</business-local>
-            <ejb-class>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUFieldInjectionSLEJB</ejb-class>
-            <session-type>Stateless</session-type>
-            <transaction-type>Bean</transaction-type>
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
-        
+
         <session>
             <ejb-name>AppLevelJTADPUMethodInjectionSLEJB</ejb-name>
             <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUMethodInjectionSLEJBLocal</business-local>
@@ -88,8 +75,7 @@
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
         </session>
-        
-        
+
         <session>
             <ejb-name>AppLevelJTADPUFieldInjectionSFEJB</ejb-name>
             <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUFieldInjectionSFEJBLocal</business-local>
@@ -97,7 +83,7 @@
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
         </session>
-        
+
          <session>
             <ejb-name>AppLevelJTADPUMethodInjectionSFEJB</ejb-name>
             <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUMethodInjectionSFEJBLocal</business-local>
@@ -105,8 +91,7 @@
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
         </session>
-        
-        
+
         <session>
             <ejb-name>AppLevelJTADPUFieldInjectionSFEXEJB</ejb-name>
             <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUFieldInjectionSFEXEJBLocal</business-local>
@@ -114,7 +99,7 @@
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
         </session>
-        
+
          <session>
             <ejb-name>AppLevelJTADPUMethodInjectionSFEXEJB</ejb-name>
             <business-local>com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.jta.AppLevelJTADPUMethodInjectionSFEXEJBLocal</business-local>

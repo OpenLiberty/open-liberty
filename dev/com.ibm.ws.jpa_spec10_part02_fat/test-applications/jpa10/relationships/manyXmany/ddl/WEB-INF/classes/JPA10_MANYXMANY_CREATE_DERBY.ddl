@@ -6,7 +6,7 @@ CREATE TABLE ${schemaname}.IDClassMMEntityA (id INTEGER NOT NULL, password VARCH
 CREATE TABLE ${schemaname}.IDClassMMEntityB (country VARCHAR(255) NOT NULL, id INTEGER NOT NULL, name VARCHAR(255), salary INTEGER, PRIMARY KEY (country, id));
 CREATE TABLE ${schemaname}.ManyXManyDRBiJoinTable (ENT_A INTEGER, ENT_B INTEGER);
 CREATE TABLE ${schemaname}.ManyXManyDRUniJoinTable (ENT_A INTEGER, ENT_B INTEGER);
-CREATE TABLE ${schemaname}.MMBiEntA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id)); 
+CREATE TABLE ${schemaname}.MMBiEntA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.MMBiEntA_MMBiEntB_CA (entityA_id INTEGER, cascadeAll_id INTEGER);
 CREATE TABLE ${schemaname}.MMBiEntA_MMBiEntB_CM (entityA_id INTEGER, cascadeMerge_id INTEGER);
 CREATE TABLE ${schemaname}.MMBiEntA_MMBiEntB_CP (entityA_id INTEGER, cascadePersist_id INTEGER);
@@ -17,18 +17,18 @@ CREATE TABLE ${schemaname}.MMBiEntB_CM (id INTEGER NOT NULL, name VARCHAR(255), 
 CREATE TABLE ${schemaname}.MMBiEntB_CP (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.MMBiEntB_CRF (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.MMBiEntB_CRM (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
-CREATE TABLE ${schemaname}.MMBiEntB_DR (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));            
-CREATE TABLE ${schemaname}.MMContainerTypeEntityA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));            
+CREATE TABLE ${schemaname}.MMBiEntB_DR (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.MMContainerTypeEntityA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.MMContainerTypeEntityB (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.MMCTEA_GCT (MMContainerTypeEntityA_id INTEGER, genericizedCollectionType_id INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_GLT (MMContainerTypeEntityA_id INTEGER, genericizedListType_id INTEGER);
-CREATE TABLE ${schemaname}.MMCTEA_GMKT (MMContainerTypeEntityA_id INTEGER, genericizedMapWithKeyType_ID INTEGER, element_id INTEGER);            
+CREATE TABLE ${schemaname}.MMCTEA_GMKT (MMContainerTypeEntityA_id INTEGER, genericizedMapWithKeyType_ID INTEGER, element_id INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_GMT (MMContainerTypeEntityA_ID INTEGER, genericizedMapType_ID INTEGER, GENERICIZEDMAPTYPE_KEY INTEGER, KEY0 INTEGER, VALUE_ID INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_GST (MMContainerTypeEntityA_id INTEGER, genericizedSetType_id INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_OLT (MMContainerTypeEntityA_id INTEGER, orderedListType_id INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_UGCT (MMContainerTypeEntityA_id INTEGER, ungenericizedCollectionType_id INTEGER);
-CREATE TABLE ${schemaname}.MMCTEA_UGLT (MMContainerTypeEntityA_id INTEGER, ungenericizedListType_id INTEGER);            
-CREATE TABLE ${schemaname}.MMCTEA_UGMKT (MMContainerTypeEntityA_id INTEGER, ungenericizedMapWithKeyType_ID INTEGER, element_id INTEGER);            
+CREATE TABLE ${schemaname}.MMCTEA_UGLT (MMContainerTypeEntityA_id INTEGER, ungenericizedListType_id INTEGER);
+CREATE TABLE ${schemaname}.MMCTEA_UGMKT (MMContainerTypeEntityA_id INTEGER, ungenericizedMapWithKeyType_ID INTEGER, element_id INTEGER);
 CREATE TABLE ${schemaname}.MMCTEA_UGMT (MMContainerTypeEntityA_id INTEGER, ungenericizedMapType BLOB);
 CREATE TABLE ${schemaname}.MMCTEA_UGST (MMContainerTypeEntityA_id INTEGER, ungenericizedSetType_id INTEGER);
 CREATE TABLE ${schemaname}.MMUniEntA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
@@ -68,13 +68,13 @@ CREATE TABLE ${schemaname}.XMLMMContainerTypeEntityA (id INTEGER NOT NULL, name 
 CREATE TABLE ${schemaname}.XMLMMContainerTypeEntityB (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.XMLMMCTEA_GCT (XMLMMContainerTypeEntityA_id INTEGER, genericizedCollectionType_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMCTEA_GLT (XMLMMContainerTypeEntityA_id INTEGER, genericizedListType_id INTEGER);
-CREATE TABLE ${schemaname}.XMLMMCTEA_GMKT (XMLMMContainerTypeEntityA_id INTEGER, genericizedMapWithKeyType_ID INTEGER, element_id INTEGER);            
+CREATE TABLE ${schemaname}.XMLMMCTEA_GMKT (XMLMMContainerTypeEntityA_id INTEGER, genericizedMapWithKeyType_ID INTEGER, element_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMCTEA_GMT (XMLMMCONTAINERTYPEENTITYA_ID INTEGER, GENERICIZEDMAPTYPE_ID INTEGER, GENERICIZEDMAPTYPE_KEY INTEGER, KEY0 INTEGER, VALUE_ID INTEGER); 
 CREATE TABLE ${schemaname}.XMLMMCTEA_GST (XMLMMContainerTypeEntityA_id INTEGER, genericizedSetType_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMCTEA_OLT (XMLMMContainerTypeEntityA_id INTEGER, orderedListType_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMCTEA_UGCT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedCollectionType_id INTEGER);
-CREATE TABLE ${schemaname}.XMLMMCTEA_UGLT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedListType_id INTEGER);            
-CREATE TABLE ${schemaname}.XMLMMCTEA_UGMKT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedMapWithKeyType_ID INTEGER, element_id INTEGER);            
+CREATE TABLE ${schemaname}.XMLMMCTEA_UGLT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedListType_id INTEGER);
+CREATE TABLE ${schemaname}.XMLMMCTEA_UGMKT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedMapWithKeyType_ID INTEGER, element_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMCTEA_UGMT (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedMapType BLOB);
 CREATE TABLE ${schemaname}.XMLMMCTEA_UGST (XMLMMContainerTypeEntityA_id INTEGER, ungenericizedSetType_id INTEGER);
 CREATE TABLE ${schemaname}.XMLMMUniEntA (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
@@ -89,7 +89,6 @@ CREATE TABLE ${schemaname}.XMLMMUniEntB_CP (id INTEGER NOT NULL, name VARCHAR(25
 CREATE TABLE ${schemaname}.XMLMMUniEntB_CRF (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.XMLMMUniEntB_CRM (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
 CREATE TABLE ${schemaname}.XMLMMUniEntB_DR (id INTEGER NOT NULL, name VARCHAR(255), PRIMARY KEY (id));
-
 CREATE INDEX ${schemaname}.I_MBMNTBL_ELEMENT ON ${schemaname}.EmbManyXManyJoinTable (identity_country, identity_id);
 CREATE INDEX ${schemaname}.I_MBMNTBL_EMBEDIDM ON ${schemaname}.EmbManyXManyJoinTable (EmbedIDMMEntityA_id);
 CREATE INDEX ${schemaname}.I_DCLSNTB_ELEMENT ON ${schemaname}.IDClassMMEntA_IDClassMMEntB (identity_country, identity_id);
@@ -114,6 +113,8 @@ CREATE INDEX ${schemaname}.I_MMCTGLT_ELEMENT ON ${schemaname}.MMCTEA_GLT (generi
 CREATE INDEX ${schemaname}.I_MMCTGLT_MMCONTAI ON ${schemaname}.MMCTEA_GLT (MMContainerTypeEntityA_id);
 CREATE INDEX ${schemaname}.I_MMCTMKT_ELEMENT ON ${schemaname}.MMCTEA_GMKT (element_id);
 CREATE INDEX ${schemaname}.I_MMCTMKT_MMCONTAI ON ${schemaname}.MMCTEA_GMKT (MMContainerTypeEntityA_id);
+CREATE INDEX ${schemaname}.I_MMCTGMT_MMCONTA1 ON ${schemaname}.MMCTEA_GMT (MMCONTAINERTYPEENTITYA_ID);
+CREATE INDEX ${schemaname}.I_MMCTGMT_MMCONTA2 ON ${schemaname}.MMCTEA_GMT (VALUE_ID);
 CREATE INDEX ${schemaname}.I_MMCTGST_ELEMENT ON ${schemaname}.MMCTEA_GST (genericizedSetType_id);
 CREATE INDEX ${schemaname}.I_MMCTGST_MMCONTAI ON ${schemaname}.MMCTEA_GST (MMContainerTypeEntityA_id);
 CREATE INDEX ${schemaname}.I_MMCT_LT_ELEMENT ON ${schemaname}.MMCTEA_OLT (orderedListType_id);
@@ -161,8 +162,8 @@ CREATE INDEX ${schemaname}.I_XMLMGLT_ELEMENT ON ${schemaname}.XMLMMCTEA_GLT (gen
 CREATE INDEX ${schemaname}.I_XMLMGLT_XMLMMCON ON ${schemaname}.XMLMMCTEA_GLT (XMLMMContainerTypeEntityA_id);
 CREATE INDEX ${schemaname}.I_XMLMMKT_ELEMENT ON ${schemaname}.XMLMMCTEA_GMKT (element_id);
 CREATE INDEX ${schemaname}.I_XMLMMKT_XMLMMCON ON ${schemaname}.XMLMMCTEA_GMKT (XMLMMContainerTypeEntityA_id);
-CREATE INDEX I_XMLMGMT_XMLM1 ON ${schemaname}.XMLMMCTEA_GMT (XMLMMCONTAINERTYPEENTITYA_ID);
-CREATE INDEX I_XMLMGMT_VALUE ON ${schemaname}.XMLMMCTEA_GMT (VALUE_ID);
+CREATE INDEX ${schemaname}.I_XMLMGMT_XMLM1 ON ${schemaname}.XMLMMCTEA_GMT (XMLMMCONTAINERTYPEENTITYA_ID);
+CREATE INDEX ${schemaname}.I_XMLMGMT_VALUE ON ${schemaname}.XMLMMCTEA_GMT (VALUE_ID);
 CREATE INDEX ${schemaname}.I_XMLMGST_ELEMENT ON ${schemaname}.XMLMMCTEA_GST (genericizedSetType_id);
 CREATE INDEX ${schemaname}.I_XMLMGST_XMLMMCON ON ${schemaname}.XMLMMCTEA_GST (XMLMMContainerTypeEntityA_id);
 CREATE INDEX ${schemaname}.I_XMLM_LT_ELEMENT ON ${schemaname}.XMLMMCTEA_OLT (orderedListType_id);

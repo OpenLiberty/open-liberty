@@ -55,11 +55,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -86,7 +81,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -141,11 +135,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
-            if (find_entityA == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -294,11 +283,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -325,7 +309,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni002(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Default Default Persist Cascade Behavior (1 POINT)
@@ -969,11 +952,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1000,7 +978,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni003(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: ALL Persist Behavior (8 POINTS)
@@ -1531,11 +1508,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1562,7 +1534,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni004(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: ALL Persist Behavior (8 POINTS)
@@ -2187,11 +2158,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2218,7 +2184,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni005(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify CASCADE:REMOVE Persist Cascade Behavior (1 POINT)
@@ -2717,11 +2682,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2748,7 +2708,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni006(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify CASCADE:MERGE Persist Cascade Behavior (1 POINT)
@@ -3350,11 +3309,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -3381,7 +3335,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testOneXManyUni007(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify CASCADE:REFRESH Persist Cascade Behavior (1 POINT)
@@ -3965,7 +3918,7 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
      * defaultRelationship collections have references to both UniEntityB.
      *
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public void testCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
@@ -3975,11 +3928,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -4006,7 +3954,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXManyUnidirectionalTestLogic.testCardinality001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -4074,11 +4021,6 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA1);
-            if (find_entityA1 == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -4133,60 +4075,5 @@ public class OneXManyUnidirectionalTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("OneXManyUnidirectionalTestLogic.testCardinality001(): End");
         }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("OneXManyUnidirectionalTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        OneXManyUnidirectionalEntityEnum targetEntityAType = OneXManyUnidirectionalEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
-            return;
-        }
-
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        OneXManyUnidirectionalEntityEnum targetEntityBType = OneXManyUnidirectionalEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("OneXManyUnidirectionalTestLogic.testTemplate(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println("OneXManyUnidirectionalTestLogic.testTemplate(): End");
-        }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), OneXManyUnidirectionalEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

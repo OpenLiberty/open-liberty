@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -39,39 +40,57 @@ public class OMContainerTypeEntityA implements IContainerTypeEntityA {
 
     // Collection Type
     @OneToMany
-    @JoinTable(name = "OMCTEA_GCT")
+    @JoinTable(name = "OMCTEA_GCT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private Collection<OMContainerTypeEntityB> genericizedCollectionType;
 
     @OneToMany(targetEntity = OMContainerTypeEntityB.class)
-    @JoinTable(name = "OMCTEA_UGCT")
+    @JoinTable(name = "OMCTEA_UGCT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private Collection ungenericizedCollectionType;
 
     // Set Type
     @OneToMany
-    @JoinTable(name = "OMCTEA_GST")
+    @JoinTable(name = "OMCTEA_GST",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private Set<OMContainerTypeEntityB> genericizedSetType;
 
     @OneToMany(targetEntity = OMContainerTypeEntityB.class)
-    @JoinTable(name = "OMCTEA_UGST")
+    @JoinTable(name = "OMCTEA_UGST",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private Set ungenericizedSetType;
 
     // List Type
     @OneToMany
-    @JoinTable(name = "OMCTEA_GLT")
+    @JoinTable(name = "OMCTEA_GLT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private List<OMContainerTypeEntityB> genericizedListType;
 
     @OneToMany(targetEntity = OMContainerTypeEntityB.class)
-    @JoinTable(name = "OMCTEA_UGLT")
+    @JoinTable(name = "OMCTEA_UGLT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private List ungenericizedListType;
 
     @OneToMany
-    @JoinTable(name = "OMCTEA_OLT")
+    @JoinTable(name = "OMCTEA_OLT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     @OrderBy("name ASC")
     private List<OMContainerTypeEntityB> orderedListType;
 
     // Map Type
+
+    // TODO: The generated column name for the Map Key is provider dependent. This cannot be configured until JPA 2.0 (@MapKeyColumn)
     @OneToMany
-    @JoinTable(name = "OMCTEA_GMT")
+    @JoinTable(name = "OMCTEA_GMT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     private Map<Integer, OMContainerTypeEntityB> genericizedMapType;
 
 //    @OneToMany(targetEntity = OMContainerTypeEntityB.class)
@@ -79,12 +98,16 @@ public class OMContainerTypeEntityA implements IContainerTypeEntityA {
 //    private Map ungenericizedMapType;
 
     @OneToMany
-    @JoinTable(name = "OMCTEA_GMKT")
+    @JoinTable(name = "OMCTEA_GMKT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     @MapKey(name = "name")
     private Map<String, OMContainerTypeEntityB> genericizedMapWithKeyType;
 
     @OneToMany(targetEntity = OMContainerTypeEntityB.class)
-    @JoinTable(name = "OMCTEA_UGMKT")
+    @JoinTable(name = "OMCTEA_UGMKT",
+               joinColumns = @JoinColumn(name = "OMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "OMContainerTypeEntityB_ID"))
     @MapKey(name = "name")
     private Map ungenericizedMapWithKeyType;
 

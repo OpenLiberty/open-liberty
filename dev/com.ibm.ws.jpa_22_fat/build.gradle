@@ -10,11 +10,21 @@
  *******************************************************************************/
 
 configurations {
+  jpaFatTools
   ecl27
 }
 
 dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
   ecl27 project(':com.ibm.websphere.appserver.thirdparty.eclipselink.2.7')
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')      
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
 }
 
 task copyECL27(type: Copy) {
@@ -27,5 +37,6 @@ task copyECL27(type: Copy) {
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
   dependsOn copyECL27
 }

@@ -13,10 +13,9 @@ package com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
-
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.injection.testlogic.JPAInjectionTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -26,17 +25,9 @@ import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet {
     private static final long serialVersionUID = -7642267902342523971L;
 
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.injection.testlogic.JPAInjectionTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
+    private final String testLogicClassName = JPAInjectionTestLogic.class.getName();
 
     private final static String ejbJNDIName = "ejb/jndi/DDJNDISFEJB";
-
-    @PostConstruct
-    private void initFAT() {
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-    }
 
     /*
      * JNDI Injection via Deployment Descriptor
@@ -62,7 +53,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -85,7 +75,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -108,7 +97,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -139,7 +127,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -162,7 +149,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -185,7 +171,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -211,7 +196,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -234,7 +218,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -257,7 +240,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -283,7 +265,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -306,7 +287,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -329,7 +309,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EARLIB_NOOVERRIDE");
@@ -355,7 +334,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -378,7 +356,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");
@@ -401,7 +378,6 @@ public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet 
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPCtx);
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("expected.injection.pattern", "EJB_NOOVERRIDE");

@@ -27,9 +27,9 @@ task addJPAFATTools (type: Copy) {
 }
 
 addRequiredLibraries {
-    dependsOn copyJdbcDrivers
-    dependsOn copyDatabaseRotationDrivers
-    dependsOn copyFattestDatabases
-    dependsOn addJakartaTransformer
-    dependsOn addJPAFATTools
+  dependsOn copyJdbcDrivers
+  dependsOn copyDatabaseRotationDrivers
+  dependsOn copyFattestDatabases
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
 }
