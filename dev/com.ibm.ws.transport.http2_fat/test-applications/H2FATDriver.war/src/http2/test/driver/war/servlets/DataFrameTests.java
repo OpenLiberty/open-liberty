@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
-import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
@@ -54,7 +53,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         String dataString = "invalid data frame";
         FrameData data = new FrameData(3, dataString.getBytes(), 0, false, false, false);
@@ -87,7 +86,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
 
         // Initialize connection after adding expected frames
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -127,9 +126,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -142,7 +139,6 @@ public class DataFrameTests extends H2FATDriverServlet {
 
         byte[] dataBytes = hexStringToByteArray("0000050009000000050654657374");
 
-        h2Client.waitFor(headers);
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendBytes(dataBytes);
 
@@ -165,8 +161,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, ERROR_CODE, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -183,7 +178,6 @@ public class DataFrameTests extends H2FATDriverServlet {
         }
         FrameData dataFrame = new FrameData(5, data, 255, true, true, false);
 
-        h2Client.waitFor(headers);
         h2Client.sendFrame(frameHeadersToSend);
 
         // delay to try to make sure all activity is done before sending the frame, so we can see
@@ -215,8 +209,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(streamUpdateFrame);
         h2Client.addExpectedFrame(connectionUpdateFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -234,7 +227,6 @@ public class DataFrameTests extends H2FATDriverServlet {
         }
         FrameData dataFrame = new FrameData(3, data, 0, false, true, false);
 
-        h2Client.waitFor(headers);
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(dataFrame);
 
@@ -267,8 +259,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(connectionUpdateFrame);
         h2Client.addExpectedFrame(connectionUpdateFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -294,8 +285,6 @@ public class DataFrameTests extends H2FATDriverServlet {
         // EOS set, so we do NOT expect a window update response
         FrameData dataFrame5 = new FrameData(5, data, 0, true, true, false);
         FrameData dataFrame7 = new FrameData(7, data, 0, false, true, false);
-
-        h2Client.waitFor(headers);
 
         // send over all the headers and data
         h2Client.sendFrame(frameHeadersToSend3);

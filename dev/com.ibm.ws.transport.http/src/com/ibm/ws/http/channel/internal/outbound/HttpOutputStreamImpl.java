@@ -234,8 +234,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
             }
 
-            // Return to clean up the rest of the request/response
-            return;
+            throw new IOException("H2 Response already destroyed on error condition");
 
         }
 
