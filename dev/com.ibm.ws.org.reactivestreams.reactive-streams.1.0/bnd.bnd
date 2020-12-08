@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.org.reactivestreams.reactive-streams.1.0
 Bundle-Description: Provides Reactive Streams as a bundle
 
 -includeresource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2}
+  @${repo;org.reactivestreams:reactive-streams;1.0.3}
   
 Export-Package: \
-  org.reactivestreams.*;version=1.0.2
+  org.reactivestreams.*;version=1.0.3

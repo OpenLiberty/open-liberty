@@ -23,7 +23,7 @@ Export-Package: \
   org.reactivestreams; version=1.0.3
 
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}
+  @${repo;org.reactivestreams:reactive-streams;1.0.3;EXACT}
 
 WS-TraceGroup: REACTIVESTREAMS
 
