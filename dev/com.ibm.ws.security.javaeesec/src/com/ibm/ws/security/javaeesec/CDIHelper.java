@@ -67,14 +67,14 @@ public class CDIHelper {
     }
 
     @SuppressWarnings("rawtypes")
-    @FFDCIgnore(IllegalArgumentException.class)
+    @FFDCIgnore(IllegalStateException.class)
     public static CDI getCDI() {
         if (! cdiService.isCurrentModuleCDIEnabled()) {
             return null;
         }
         try {
             return CDI.current();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return null;
         }
     }

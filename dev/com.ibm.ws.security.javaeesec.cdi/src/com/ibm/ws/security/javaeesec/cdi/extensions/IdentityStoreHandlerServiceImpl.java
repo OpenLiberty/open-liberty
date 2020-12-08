@@ -112,11 +112,11 @@ public class IdentityStoreHandlerServiceImpl implements IdentityStoreHandlerServ
     }
 
     @SuppressWarnings("rawtypes")
-    @FFDCIgnore(IllegalArgumentException.class)
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
         try {
             return CDI.current();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return null;
         }
     }

@@ -155,11 +155,11 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         return status;
     }
 
-    @FFDCIgnore(IllegalArgumentException.class)
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
         try {
             return CDI.current();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return null;
         }
     }
