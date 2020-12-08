@@ -1,0 +1,34 @@
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+allow.bundle-version.override=true
+
+Bundle-Name: owasp.esapi
+Bundle-Description: owasp.esapi
+Bundle-SymbolicName: com.ibm.ws.org.owasp.esapi.2.1.0
+
+WS-TraceGroup: UI
+
+Export-Package: \
+  org.owasp.esapi;version="1.0"
+
+Private-Package: \
+  org.owasp.esapi.*, \
+  org.apache.commons.fileupload.*
+
+Import-Package: com.ibm.websphere.ras.*, \
+  com.ibm.ws.ffdc.*, \
+  javax.servlet.*, \
+  javax.annotation; resolution:=optional, \
+  javax.inject; resolution:=optional, \
+  sun.misc; resolution:=optional
+
+Include-Resource: \
+  resources=resources
+
+instrument.disabled: true
+
+-buildpath: \
+	commons-fileupload:commons-fileupload;version=1.3.3,\
+	org.owasp.esapi:esapi;version=2.1.0,\
+	com.ibm.websphere.appserver.spi.logging

@@ -1,0 +1,26 @@
+<div id="${id}" class="graphTimeSelectorHide">
+  <div class="graphTimeSelectorMinimisedView graphTimeSelectorView graphTimeSelectorHide" id="${idMinimisedView}" data-dojo-attach-point="minimizedViewPanel">
+    <input type="text" class="graphTimeSelectorCollapsedTextBox graphTimeSelectorCollapsedSmallTextBox" data-dojo-attach-point="summaryDisplayNode" data-dojo-type="js/widgets/TextBox" />
+  </div>
+  <div class="graphTimeSelectorExpandedView graphTimeSelectorView" id="${idExpandedView}" data-dojo-attach-point="expandedViewPanel">
+    <div class="graphTimeSelectorMinimiseIcon">
+        <div data-dojo-attach-point="minimiseButtonNode" data-dojo-type="dijit/form/Button" class="graphTimeSelectorMinimiseButton"></div>
+    </div>
+    <div class="graphTimeSelectorButtonPanel" data-dojo-attach-point="preSelectableTimeRangeView">
+    </div>
+    <div class="graphTimeSelectorSliderPanel"  id="${idTimeSliderView}">
+        <div class="graphTimeSelectorSlider graphTimeSelectorLeftSlider">
+            <input type="text" class="graphTimeSelectorTextBox graphTimeSelectorSliderEnabled" data-dojo-attach-point="startTimeDisplayNode" data-dojo-type="js/widgets/TextBox"/>
+            <div data-dojo-attach-point="startTimeSliderNode" data-dojo-type="jsExplore/widgets/graphs/TimeSlider"></div>
+        </div>
+        <div class="graphTimeSelectorSliderDivider"></div>
+        <div class="graphTimeSelectorSlider graphTimeSelectorRightSlider">
+            <input type="text" class="graphTimeSelectorTextBox graphTimeSelectorSliderDisabled" data-dojo-attach-point="endTimeDisplayNode" data-dojo-type="js/widgets/TextBox"/>
+            <div data-dojo-attach-point="endTimeSliderNode" data-dojo-type="jsExplore/widgets/graphs/TimeSlider"></div>
+            <div class="graphTimeSelectorLiveUpdatingPanel" id="${idLiveUpdatingView}">
+                <div class="graphTimeLiveUpdatingButtonLabel">${liveUpdatingLabel}</div>
+                <div data-dojo-attach-point="liveUpdatingButton" data-dojo-type="dijit/form/ToggleButton" class="graphTimeLiveUpdatingButton"></div>
+            </div>
+        </div>
+    </div>
+</div>

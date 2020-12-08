@@ -1,0 +1,15 @@
+#!/bin/sh
+basedir=`dirname "$0"`
+
+case `uname` in
+    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
+esac
+
+if [ -x "$basedir/node" ]; then
+  "$basedir/node"  "$basedir/../intern-2.2.2/bin/intern-runner.js" "$@"
+  ret=$?
+else 
+  node  "$basedir/../intern-2.2.2/bin/intern-runner.js" "$@"
+  ret=$?
+fi
+exit $ret

@@ -1,0 +1,28 @@
+<div class="statusGraph" id="${id}">
+  <div class="statusGraphInfo displayGraph statusGraphNarrow">
+    <div data-dojo-attach-point="actionButtonNode" data-dojo-type="dijit/layout/ContentPane" class="statusGraphActionButtonNode"></div>
+    <div class="statusGraphTitle">
+      <span style="font-size: ${titleFontSize};">${title}</span>
+      <select id="${idConfigListSelect}" data-dojo-attach-point="configList" data-dojo-id="${idConfigList}" multiple="true" name="${id}configList" data-dojo-type="dojox/form/CheckedMultiSelect" dropDown="true" style="display:none;">
+      </select>
+    </div>
+    <div class="statusGraphSummary">
+        <div style='display: inline-block;padding-right:10px;' data-dojo-attach-point="liveCountNode"></div>
+        <div style='display: inline-block;padding-right:10px;' data-dojo-attach-point="createCountNode"></div>
+        <div style='display: inline-block;padding-right:10px;' data-dojo-attach-point="invalidatedCountNode"></div>
+        <div style='display: inline;' data-dojo-attach-point="invalidatedByTimeoutCountNode"></div>
+    </div>
+    <div class="overlayMessage">
+        <div class="overlayMessageText liveMessage liveMessageTextInfoIcon" role="button" onClick="document.getElementById('${idLiveMsgDetailNode}').style.display='block';this.style.display='none';">${initLiveMsgText}</div>
+        <div id="${idLiveMsgDetailNode}" class="overlayMessageText liveMessageDetail liveMessageDetailInfoIcon"><div aria-label="${closeLabel}" class='liveMessageTextCloseIcon' role="button" onClick="document.getElementById('${idLiveMsgDetailNode}').style.display='none'"></div><div>${liveMsgText}</div></div>
+    </div>
+    <div class="statusGraphGraph">
+      <div id='${chartNodeId}' data-dojo-attach-point="laChartNode">
+      </div>
+    </div>
+    <div data-dojo-attach-point="singleLegendNode" class="statusGraphSingleLegend">
+    </div>
+  </div>
+  <div data-dojo-attach-point="legendNode" style="display:none;" id="${legendNodeId}" class="statusGraphLegend">
+  </div>
+</div>

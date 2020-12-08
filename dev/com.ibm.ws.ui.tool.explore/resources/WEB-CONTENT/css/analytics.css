@@ -1,0 +1,172 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/* Log Analytics CSS stylings */
+.messagesGraph {
+    overflow: hidden;
+}
+
+.messagesSevError, .messagesSevWarning, .messagesSevInfo, .messagesSevAudit {
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-left: 27px;
+    height: 16px;
+    width: 16px;
+}
+
+.messagesSevError {
+    background-image: url("../images/log-message-error-T.png");
+}
+
+.messagesSevWarning {
+    background-image: url("../images/log-message-warning-T.png");
+}
+
+.messagesSevInfo {
+    background-image: url("../images/log-message-info-T.png");
+}
+
+.messagesSevAudit {
+    background-image: url("../images/log-message-audit-DT.png");
+}
+
+.messagesTableClass {
+    border-collapse: collapse;
+    border-style: none;
+}
+
+.messagesTypeTableHeaderClass, .ffdcTimeTableHeaderClass {
+    text-align: center;
+    font-size: 14px;
+    color: #4178BE;
+    padding-top: 9px;
+    padding-left: 20px;
+    padding-right: 16px;
+    padding-bottom: 9px;
+}
+
+.messagesTimeTableHeaderClass {
+    text-align: left;
+    font-size: 14px;
+    color: #4178BE;
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+.messagesMessageTableHeaderClass, .ffdcStackTraceTableHeaderClass {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    color: #4178BE;
+    padding-top: 9px;
+    padding-left: 20px;
+    padding-bottom: 9px;
+}
+
+#messagesTable td, #messagesTable tr, #messagesTable th, #messagesTable table {
+    border-style: solid none solid none;
+    border-width: 1px;
+    border-color: #e3e4e6;
+}
+
+table.messagesTable tbody {
+    overflow-x: scroll;
+}
+
+.messagesTimeClass, .messagesMessageClass, .ffdcStackTraceClass {
+    text-align: left;
+    font-size: 12px;
+    color: #404041;
+    padding-right: 20px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 20px;
+}
+
+.ffdcTimeClass {
+    text-align: left;
+    font-size: 12px;
+    color: #404041;
+    padding-left: 27px;
+}
+
+.messagesSearch {
+    width: 275px;
+    height: 28px;
+    float: right;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+
+.messagesSearchContentPane {
+    color: #AECBD7;
+    background-color: #e3e4e6;
+    border-style: none;
+    text-align: center;
+}
+
+.messagesTextBox {
+    width: 80%;
+    padding-top: 5px;
+    background-color: #e3e4e6;
+    border-style: none;
+    text-align: left;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.messagesSearchIcon {
+    height: 19px;
+    width: 18px;
+    padding: 5px;
+    background-image: url("../images/log-message-search-T.png");
+    background-repeat: no-repeat;
+}
+
+.messagesTextBoxIcon {
+    margin: 5px;
+}
+
+.messagesIconFloatLeft {
+    float: left;
+}
+
+.messagesIconFloatRight {
+    float: right;
+}
+
+.messagesSearchButton {
+    height: 16px;
+    width: 16px;
+    background-color: white;
+    padding: 4px 20px 0px 0px;
+    float: right;
+}
+
+.messagesSearchStackContainer {
+    width: 275px;
+    height: 28px;
+    display: inline-block;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    float: right;
+}
+
+.messagesGraphTitle {
+    color: #404041;
+    font-size: 16px;
+    padding-top: 12px;
+    padding-left: 20px;
+    padding-bottom: 12px;
+    padding-right: 0px;
+}
+
+/* End of LogAnalytics css */

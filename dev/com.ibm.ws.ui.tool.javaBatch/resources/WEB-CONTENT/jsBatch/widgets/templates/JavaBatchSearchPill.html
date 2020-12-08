@@ -1,0 +1,87 @@
+<div id="${id}_right-div"
+	class="searchPillRight searchPillRightNotSelected"
+	data-dojo-attach-point="searchPillRightDiv" data-dojo-attach-event="">
+
+	<div id="${id}_instanceState-input" class="searchPillInputAreaVisible"
+		tabindex="0" data-dojo-type="dijit/form/DropDownButton"
+		data-dojo-attach-point="resourceInstanceStateDropDown"
+		data-dojo-props="autoWidth:true,baseClass:'searchInputDropDownButton inputFont',iconClass:'searchByButtonIcon'">
+		<div id="${id}_instanceState-dropDownMenu"
+			data-dojo-type="dijit/DropDownMenu"
+			data-dojo-attach-point="resourceInstanceStateDropDownMenu"
+			data-dojo-props="baseClass:'searchInputDropDownMenu inputFont jobInstanceStateMenu', 'aria-labelledby':'${id}_instanceState-input'"></div>
+	</div>
+	
+	<input id="${id}_jobInstanceId-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="jobInstanceIdInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+		
+	<input id="${id}_jesJobName-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="jesJobNameInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label', uppercase : true,
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+		
+	<input id="${id}_jesJobId-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="jesJobIdInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label', uppercase : true,
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+	
+	<input id="${id}_lastUpdate-input"
+		class="searchPillInputAreaHidden" value="now"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/DateTextBox"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true,
+ 			 				  		hasDownArrow:false, maxHeight:-1, 'readonly':'readonly'"
+		data-dojo-attach-point="lastUpdateInput"/>
+
+	<div id="${id}_lastUpdateRange-input" data-dojo-type="dijit/layout/ContentPane" class="searchPillInputAreaHidden">
+		<input id="${id}_lastUpdateRangeStart-input" value="now"
+			style = "width: 70px;"
+			aria-label="${ariaLabel}" data-dojo-type="dijit/form/DateTextBox"
+			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true,
+	 			 				  		hasDownArrow:false, maxHeight:-1, 'readonly':'readonly'"
+			data-dojo-attach-point="lastUpdateRangeStartInput"/>
+		<div style="display:inline-block">-</div>
+		<input id="${id}_lastUpdateRangeEnd-input" value="now"
+			style = "width: 70px;"
+			aria-label="${ariaLabel}" data-dojo-type="dijit/form/DateTextBox"
+			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true,
+	 			 				  		hasDownArrow:false, maxHeight:-1, 'readonly':'readonly', align:'right'"
+			data-dojo-attach-point="lastUpdateRangeEndInput"/>
+	</div>
+		
+	<input id="${id}_submitter-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="submitterInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+
+	<input id="${id}_appName-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="appNameInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+
+	<input id="${id}_jobName-input" type="text"
+		class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"
+		aria-label="${ariaLabel}" data-dojo-type="dijit/form/ComboBox"
+		data-dojo-attach-point="jobNameInput"
+		data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1"
+		data-dojo-attach-event="keypress:__handleInputChange" />
+
+
+</div>

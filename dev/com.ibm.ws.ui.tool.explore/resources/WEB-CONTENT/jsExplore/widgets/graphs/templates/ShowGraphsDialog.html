@@ -1,0 +1,253 @@
+<div class="showGraphsDialog">
+  <div id=${showGraphsDialogButtonId} class="showGraphsDialogButton">
+    <div class="showGraphsDialogTableCell">
+    <button id=${showHideButtonId} value=${showHideButtonId} class="showGraphs_closeButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'showGraphs_closeButtonIcon', showLabel: false" data-dojo-attach-point="showHideButton" aria-label="${showHideButtonLabel}" title="${showHideButtonLabel}"><span style="display:none;">${showHideButtonLabel}</span></button>
+    </div>
+  </div>
+    <div id=${showGraphsDialogContainerId} class="showGraphsDialogContainer" style="max-height: calc(100% - 107px);">
+      <div class="showGraphsDialogTitle">
+        ${subTitle}
+      </div>
+   
+      <div id="${graphWarningPaneID}" data-dojo-props="dialog: true" data-dojo-type="jsExplore/widgets/graphs/GraphWarningMessage"  data-dojo-attach-point="graphWarningMsg">
+      </div>
+   
+      <div class="categorySection hideGraph" id=${jvmParentId} data-dojo-attach-point="jvmParentNode">
+      <table class="categorySeparator" role="presentation" id=${jvmHeadingId} data-dojo-attach-point="jvmHeading">
+        <tr>
+          <td class="showGraphsOption" data-dojo-attach-point="addAllJVMGraphOptionNode">
+            <label for="${addAllJVMGraphButtonId}">
+            ${jvmOptionsLabel}
+            </label>
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addAllJVMGraphButtonId} value=${addAllJVMGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllJVMGraphButton" aria-label="${jvmOptionsButtonLabel}" title="${jvmOptionsButtonLabel}"><span style="display:none;">${jvmOptionsLabel}</span></button>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="heapGraphOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="heapGraphOptionNode">
+           ${heapGraphLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addMemoryGraphButtonId} value=${addMemoryGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addMemoryGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${heapGraphLabel}"><span style="display:none;">${heapGraphLabel}</span></button>
+        </td>
+      </tr></table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="classesGraphOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="classesGraphOptionNode">
+           ${classesGraphLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addClassesGraphButtonId} value=${addClassesGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addClassesGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${classesGraphLabel}"><span style="display:none;">${classesGraphLabel}</span></button>
+        </td>
+      </tr></table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="threadsGraphOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="threadsGraphOptionNode">
+           ${threadsGraphLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addThreadsGraphButtonId} value=${addThreadsGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addThreadsGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${threadsGraphLabel}"><span style="display:none;">${threadsGraphLabel}</span></button>
+        </td>
+      </tr></table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="cpuGraphOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="cpuGraphOptionNode">
+           ${cpuGraphLabel}
+        </td>
+         <td class="showGraphsOptionButton">
+           <button id=${addCPUGraphButtonId} value=${addCPUGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addCPUGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${cpuGraphLabel}"><span style="display:none;">${cpuGraphLabel}</span></button>
+         </td>
+      </tr></table>
+      </div>
+      
+      <div class="categorySection hideGraph" id=${threadPoolParentId} data-dojo-attach-point="threadPoolParentNode">
+        <table class="categorySeparator" role="presentation">
+          <tr>
+            <td class="showGraphsOption" data-dojo-attach-point="addAllThreadPoolGraphOptionNode">
+              ${threadPoolLabel}
+            </td>
+            <td class="showGraphsOptionButton">
+              <button id=${addAllThreadPoolGraphButtonId} value=${addAllThreadPoolGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllThreadPoolGraphButton" aria-label="${threadPoolButtonLabel}" title="${threadPoolButtonLabel}"><span style="display:none;">${threadPoolButtonLabel}</span></button>
+            </td>
+          </tr>
+        </table>
+        <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="activeThreadsOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="activeThreadsOptionNode">
+           ${tpActiveLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addActiveThreadsGraphButtonId} value=${addActiveThreadsGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addActiveThreadsGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${tpActiveLabel}"><span style="display:none;">${tpActiveLabel}</span></button>
+        </td>
+        </tr></table>
+      </div>
+      
+      <div class="categorySection hideGraph" id=${connPoolParentId} data-dojo-attach-point="connPoolParentNode">
+        <table class="categorySeparator" role="presentation">
+          <tr>
+            <td class="showGraphsOption" data-dojo-attach-point="addAllConnGraphOptionNode">
+              ${connPoolLabel}
+            </td>
+            <td class="showGraphsOptionButton">
+              <button id=${addAllConnGraphButtonId} value=${addAllConnGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllConnGraphButton" title="${connPoolButtonLabel}" aria-label="${connPoolButtonLabel}"><span style="display:none;">${connPoolButtonLabel}</span></button>
+            </td>
+          </tr>
+        </table>
+        <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="usedConnOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="usedConnOptionNode">
+           ${usedConnCountLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addUsedConnGraphButtonId} value=${addUsedConnGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addUsedConnGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${usedConnCountLabel}"><span style="display:none;">${usedConnCountLabel}</span></button>
+        </td>
+        </tr></table>
+        <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="avgWaitOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="avgWaitOptionNode">
+           ${connAvgWaitLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addAvgWaitGraphButtonId} value=${addAvgWaitGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAvgWaitGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${connAvgWaitLabel}"><span style="display:none;">${connAvgWaitLabel}</span></button>
+        </td>
+        </tr></table>
+      </div>
+      
+      <div class="categorySection hideGraph" id=${sessionMgmtParentId} data-dojo-attach-point="sessionMgmtParentNode">
+        <table class="categorySeparator" role="presentation">
+          <tr>
+            <td class="showGraphsOption" data-dojo-attach-point="addAllSessionMgmtGraphOptionNode">
+              ${sessionMgmtLabel}
+            </td>
+            <td class="showGraphsOptionButton">
+              <button id=${addAllSessionMgmtGraphButtonId} value=${addAllSessionMgmtGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllSessionMgmtGraphButton" aria-label="${sessionMgmtButtonLabel}" title="${sessionMgmtButtonLabel}"><span style="display:none;">${sessionMgmtButtonLabel}</span></button>
+            </td>
+          </tr>
+        </table>
+        <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="activeSessionsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="activeSessionsOptionNode">
+              ${smActiveLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+              <button id=${addActiveSessionsGraphButtonId} value=${addActiveSessionsGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addActiveSessionsGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${smActiveLabel}"><span style="display:none;">${smActiveLabel}</span></button>
+          </td>
+        </tr></table>
+      </div>
+      
+      <div class="categorySection hideGraph" id=${accessLogParentId} data-dojo-attach-point="accessLogParentNode">
+        <table class="categorySeparator" role="presentation">
+          <tr>
+            <td class="showGraphsOption" data-dojo-attach-point="addAllAccessLogGraphOptionNode">
+              ${accessLogLabel}
+            </td>
+            <td class="showGraphsOptionButton">
+              <button id=${addAllAccessLogGraphButtonId} value=${addAllAccessLogGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllAccessLogGraphButton" aria-label="${accessLogButtonLabel}" title="${accessLogButtonLabel}"><span style="display:none;">${accessLogButtonLabel}</span></button>
+            </td>
+          </tr>
+        </table>
+        <div class="hideGraph" id=${accessLogGraphOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="accessLogGraphOptionNode">
+             ${accessLogGraphLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+             <button id=${addAccessLogGraphGraphButtonId} value=${addAccessLogGraphGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAccessLogGraphGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${accessLogGraphLabel}"><span style="display:none;">${accessLogGraphLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${accessLogSummaryOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="accessLogSummaryOptionNode">
+            ${accessLogSummaryLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addAccessLogSummaryGraphButtonId} value=${addAccessLogSummaryGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAccessLogSummaryGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${accessLogSummaryLabel}"><span style="display:none;">${accessLogSummaryLabel}</span></button>
+          </td>
+        </tr></table></div>
+      </div>
+    
+      <div class="categorySection hideGraph" id=${messagesParentId} data-dojo-attach-point="messagesParentNode">
+        <table class="categorySeparator" role="presentation">
+          <tr>
+            <td class="showGraphsOption" data-dojo-attach-point="addAllMessagesGraphOptionNode">
+              ${messagesLabel}
+            </td>
+            <td class="showGraphsOptionButton">
+              <button id=${addAllMessagesGraphButtonId} value=${addAllMessagesGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllMessagesGraphButton"  aria-label="${messagesButtonLabel}" title="${messagesButtonLabel}"><span style="display:none;">${messagesButtonLabel}</span></button>
+            </td>
+          </tr>
+        </table>
+        <div class="hideGraph" id=${messagesGraphOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="messagesGraphOptionNode">
+             ${messagesGraphLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+             <button id=${addMessagesGraphGraphButtonId} value=${addMessagesGraphGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addMessagesGraphGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${messagesGraphLabel}"><span style="display:none;">${messagesGraphLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${messagesTableOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="messagesTableOptionNode">
+             ${messagesTableLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+             <button id=${addMessagesTableGraphButtonId} value=${addMessagesTableGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addMessagesTableGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${messagesTableLabel}"><span style="display:none;">${messagesTableLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${FFDCGraphOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="FFDCGraphOptionNode">
+            ${FFDCGraphLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addFFDCGraphGraphButtonId} value=${addFFDCGraphGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addFFDCGraphGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${FFDCGraphLabel}"><span style="display:none;">${FFDCGraphLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${FFDCTableOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="FFDCTableOptionNode">
+            ${FFDCTableLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addFFDCTableGraphButtonId} value=${addFFDCTableGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addFFDCTableGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${FFDCTableLabel}"><span style="display:none;">${FFDCTableLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${traceLogGraphOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="traceLogGraphOptionNode">
+             ${traceLogGraphLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+             <button id=${addTraceLogGraphGraphButtonId} value=${addTraceLogGraphGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addTraceLogGraphGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${traceLogGraphLabel}"><span style="display:none;">${traceLogGraphLabel}</span></button>
+          </td>
+        </tr></table></div>
+        <div class="hideGraph" id=${traceLogTableOptionId}><table role="presentation" class="showGraphsOptionTable"><tr>
+          <td class="showGraphsOption" data-dojo-attach-point="traceLogTableOptionNode">
+            ${traceLogTableLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addTraceLogTableGraphButtonId} value=${addTraceLogTableGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addTraceLogTableGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${traceLogTableLabel}"><span style="display:none;">${traceLogTableLabel}</span></button>
+          </td>
+        </tr></table></div>
+      </div>
+      
+      <div class="categorySection hideGraph" id=${wcParentId} data-dojo-attach-point="wcParentNode">
+      <table class="categorySeparator" role="presentation">
+        <tr>
+          <td class="showGraphsOption" data-dojo-attach-point="addAllWebContainerGraphOptionNode">
+            ${webContainerLabel}
+          </td>
+          <td class="showGraphsOptionButton">
+            <button id=${addAllWebContainerGraphButtonId} value=${addAllWebContainerGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAllWebContainerGraphButton" aria-label="${webContainerButtonLabel}" title="${webContainerButtonLabel}"><span style="display:none;">${webContainerButtonLabel}</span></button>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="avgRespOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="avgRespOptionNode">
+           ${wcAvgRespLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addAvgRespGraphButtonId} value=${addAvgRespGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addAvgRespGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${wcAvgRespLabel}"><span style="display:none;">${wcAvgRespLabel}</span></button>
+        </td>
+      </tr></table>
+      <table role="presentation" class="showGraphsOptionTable" data-dojo-attach-point="reqCountOptionTable"><tr>
+        <td class="showGraphsOption" data-dojo-attach-point="reqCountOptionNode">
+            ${wcReqCountLabel}
+        </td>
+        <td class="showGraphsOptionButton">
+           <button id=${addReqCountGraphButtonId} value=${addReqCountGraphButtonId} class="addGraphButton" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'enableGraphButtonIcon', showLabel: false" data-dojo-attach-point="addReqCountGraphButton" title="${addButtonLabel}" aria-label="${addButtonLabel}" alt="${addButtonLabel} ${wcReqCountLabel}"><span style="display:none;">${wcReqCountLabel}</span></button>
+        </td>
+      </tr></table>
+      </div>
+    
+    </div>
+</div>

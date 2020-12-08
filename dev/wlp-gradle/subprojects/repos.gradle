@@ -30,16 +30,16 @@ repositories {
             }
         }
     } else {
-        mavenCentral()
-         maven {
-            url ("https://oss.sonatype.org/content/repositories/snapshots/")
+        maven {
+            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
             metadataSources {
                 mavenPom()
                 artifact()
             }
         }
+        mavenCentral()
         maven {
-            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url ("https://oss.sonatype.org/content/repositories/snapshots/")
             metadataSources {
                 mavenPom()
                 artifact()

@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+ <!DOCTYPE html>
+ <html lang="en" style="height: 100%;">
+ <head>
+    <meta name="copyright" content="(C) Copyright IBM Corporation 2019">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+    <style>
+        #toolErrorFlexContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 22px;
+        }
+    
+        #toolErrorFlexContainer #errorImage {
+            background-image: url(../imagesShared/dialog-alert-T.png);
+            height: 32px;
+            width: 32px;
+            margin-right: 20px;
+        }
+    </style>
+    <title>Error page</title>
+</head>
+<body style="height: 100%;">
+    <main id='toolErrorFlexContainer'>
+        <div id='errorImage'></div>
+        <div id='errorText' tabindex="-1"></div>
+    </main>
+</body>
+</html>

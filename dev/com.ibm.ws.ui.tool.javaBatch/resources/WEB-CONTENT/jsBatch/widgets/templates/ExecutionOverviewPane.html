@@ -1,0 +1,104 @@
+<div class="executionDetailHeaderPane">
+
+  <div class="executionIdentitySection" tabindex=0>
+      <!-- Execution Identification Line -->
+      <div class="executionIdentityLine">
+          <div class="executionIdentityLineElement">
+              <div id="jobEID" class="executionIdentityLineLabel leftSideWidth">${executionIdLabel}</div>                        
+              <div class="executionIdentityLineValue executionIdentityLineJobEID" id="execution-id" aria-labelledby="jobEID" data-dojo-attach-point="executionID"></div>
+          </div>
+          <div class="executionIdentityLineElement batchJobNameDiv">
+              <div id="batchJobName" class="executionIdentityLineLabel">${batchJobNameLabel}</div>
+              <div class="executionIdentityLineValue executionIdentityLineJobName" id="jobInstance-batchJobName" aria-labelledBy="batchJobName" data-dojo-attach-point="jobInstanceBatchJobName"></div>
+          </div>
+      </div>
+      
+      <!-- Job Instance Info -->
+      <div class="executionIdentityInfoSection" role="group" aria-label=${parentInfoSection}>${parentInfoSection}
+        <div class="detailSpace">
+           <div id="application" class="detailLabel detailLabelOnWhite leftSideWidth" >${applicationLabel}</div>
+           <div id="jobInstance-application" class="detailValue detailValueOnWhite" aria-labelledby="application" data-dojo-attach-point="jobInstanceApplication"></div>
+        </div>
+        <div class="detailSpace">
+           <div id="instanceState" class="detailLabel detailLabelOnWhite leftSideWidth">${instanceStateLabel}</div>
+           <div id="jobInstance-state" class="detailValue detailValueOnWhite" aria-labelledby="instanceState" data-dojo-attach-point="jobInstanceInstanceState"></div>
+        </div>
+        <div class="detailSpace">
+           <div id="submitter" class="detailLabel detailLabelOnWhite leftSideWidth">${submitterLabel}</div>
+           <div id="jobInstance-submitter" class="detailValue detailValueOnWhite" aria-labelledby="submitter" data-dojo-attach-point="jobInstanceSubmitter"></div>
+        </div>        
+      </div>  
+      
+      <!-- Server Info -->
+      <div id="server" class="executionIdentityInfoSection" role="group" aria-label=${serverSection}>${serverSection}
+        <div class="detailSpace">
+           <div id="serverName" class="detailLabel detailLabelOnWhite leftSideWidth" >${nameLabel}</div>
+           <div id="server-name" class="detailValue detailValueOnWhite" aria-labelledby="serverName" data-dojo-attach-point="serverServerName"></div>
+        </div>
+        <div class="detailSpace">
+           <div id="host" class="detailLabel detailLabelOnWhite leftSideWidth" >${hostLabel}</div>
+           <div id="server-host" class="detailValue detailValueOnWhite" aria-labelledby="host" data-dojo-attach-point="serverHost"></div>
+        </div>
+        <div class="detailSpace">
+           <div id="userDir" class="detailLabel detailLabelOnWhite" >${userDirLabel}</div>
+           <div id="server-userDir" class="detailValueLong detailValueOnWhite" aria-labelledby="userDir" data-dojo-attach-point="serverUserDir"></div>
+        </div>
+      </div>
+  </div>
+  
+  <!-- Execution Instance Info -->
+  <div class="executionInfoSection">
+    <div>
+      <!-- Time Stamp Information -->
+      <div data-dojo-type="ExecutionTitlePane" data-dojo-props="title: '${timesSectionLabel}'">
+        <div>
+          <div class="timesLastUpdateDiv">
+            <div id="lastUpdate" class="timesLastUpdate valueBold">${lastUpdateLabel}</div>
+            <div id="execution-lastUpdate" style="padding-top: 5px;" class="timesLastUpdate valueBold" aria-labelledby="lastUpdate" data-dojo-attach-point="executionLastUpdate"></div>
+          </div>
+          <div style="display: inline-block;">
+            <div>
+              <div id="createTime" class="timeLabel">${createTimeLabel}</div>
+              <div id="execution-createTime" class="timeValue" aria-labelledby="createTime" data-dojo-attach-point="executionCreateTime"></div>
+            </div>
+            <div>
+              <div id="startTime" class="timeLabel">${startTimeLabel}</div>
+              <div id="execution-startTime" class="timeValue" aria-labelledby="startTime" data-dojo-attach-point="executionStartTime"></div>
+            </div>
+            <div>
+              <div id="endTime" class="timeLabel">${endTimeLabel}</div>
+              <div id="execution-endTime" class="timeValue" aria-labelledby="endTime" data-dojo-attach-point="executionEndTime"></div>
+            </div>           
+          </div>
+        </div>
+      </div>
+      
+      <!-- Execution Status Information -->
+      <div data-dojo-type="ExecutionTitlePane" data-dojo-props="title: '${statusSectionLabel}'">
+        <div>
+           <!-- View Log Button -->
+          <div class="executionViewLog">
+            <span id="execution-viewlogButton" type="button" data-dojo-attach-point="executionViewLogButton"></span>
+          </div> 
+          <!-- Job Instance status -->
+          <div style="display: inline-block;">
+            <div id="status" class="detailLabel detailLabelOnGrey leftSideWidth">${batchStatusLabel}</div>
+            <div id="execution-status" class="detailValue detailValueOnGrey" aria-labelledby="status" data-dojo-attach-point="executionStatus"></div>
+          </div>
+          <div class="detailSpace">
+            <div id="exitStatus" class="detailLabel detailLabelOnGrey leftSideWidth">${exitStatusLabel}</div>
+            <div id="execution-exitStatus" class="detailValue detailValueOnGrey longValue" aria-labelledby="exitStatus" data-dojo-attach-point="executionExitStatus"></div>
+          </div>
+        </div>
+      </div>    
+
+      <!-- Job Parameters Information -->
+      <div id="jobParameters" data-dojo-type="ExecutionTitlePane" data-dojo-props="title: '${jobParametersLabel}'">
+         <div id="execution-jobParameters" class="detailValueLong detailValueOnGrey" aria-labelledby="jobParameters" data-dojo-attach-point="executionJobParamters"></div>
+      </div>
+      
+    </div>
+  </div>  
+  
+</div>  
+ 

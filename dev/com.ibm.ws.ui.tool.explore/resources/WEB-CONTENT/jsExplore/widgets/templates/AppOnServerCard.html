@@ -1,0 +1,48 @@
+<div class="cardInner">
+
+    <div class="cardTop">
+        <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardIcon" id="${cardIconDivId}" data-dojo-attach-point="iconCp"></div>
+        <div class="cardTopRight">
+            <div data-dojo-type="dijit/layout/ContentPane" class="cardLabel" id="${cardLabelId}">
+                <span title="${cardLabelTitle}" dir="${cardLabelDir}">${cardLabelTitle}</span>
+            </div>
+            <div data-dojo-type="dijit/layout/ContentPane">
+                <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardStatusIcon">
+                    <span id="${cardStatusIconId}" title="${cardStatusIconTitle}">
+                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 64 64" preserveAspectRatio="xMidYMid meet" style="vertical-align: middle;">
+         	                <use xlink:href="${cardStatusIconImg}"></use>
+                        </svg>
+                    </span>
+                </div>
+                <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardStatusLabel" id="${cardStatusLabelId}">
+                    <span title="${cardStatusLabelTitle}">${cardStatusLabelTitle}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cardBottom">
+        <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardBottomListedStat" id="${cardBottomServerDivId}">
+            <span title="${cardBottomServerIconTitle}">
+                <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" height="16" width="16" preserveAspectRatio="xMidYMid meet" id="${cardBottomServerImgId}"
+                    role="img" aria-label="${cardBottomServerIconTitle}">
+                    <use xlink:href="${cardBottomServerIcon}"></use>
+                </svg>
+            </span>
+            <span class="clusterAppListBottomLabel" id="${cardBottomServerTitleId}" dir="${cardBottomServerDir}" title="${cardBottomServerTitle}">${cardBottomServerTitle}</span>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" baseClass="${cardBottomUserDirClass}" id="${cardBottomUserDirDivId}">
+            <span id="${cardBottomUserDirTitleId}" title="${cardBottomUserDirTitle}">${cardBottomUserDirDisplayTitle}</span>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardBottomListedStat" id="${cardBottomHostDivId}">
+            <span title="${cardBottomHostIconTitle}">
+                <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" height="16" width="16" preserveAspectRatio="xMidYMid meet" id="${cardBottomHostImgId}"
+                    role="img" aria-label="${cardBottomHostIconTitle}">
+                    <use xlink:href="${cardBottomHostIcon}"></use>
+                </svg>
+            </span>
+            <span class="clusterAppListBottomLabel" id="${cardBottomHostTitleId}" dir="${cardBottomHostDir}" title="${cardBottomHostTitle}">${cardBottomHostTitle}</span>
+        </div>
+    </div>
+
+</div>
