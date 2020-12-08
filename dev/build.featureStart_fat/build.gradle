@@ -13,3 +13,13 @@
 dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'
 }
+
+task requireCapabilities{
+  dependsOn autoFVT
+  doLast {
+    File configProps = new File(autoFvtDir, "configuration.properties")
+    configProps.append("\nrequire.capabilities=use-openLiberty-features\n")
+  }
+}
+
+zipAutoFVT.dependsOn requireCapabilities
