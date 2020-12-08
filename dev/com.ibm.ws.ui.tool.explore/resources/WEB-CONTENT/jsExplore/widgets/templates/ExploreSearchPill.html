@@ -1,0 +1,52 @@
+<div id="${id}_right-div" 	class="searchPillRight searchPillRightNotSelected"  aria-label="${ariaLabel}"
+	  data-dojo-attach-point="searchPillRightDiv" data-dojo-attach-event="keypress:checkKeyCode" >	
+   <input id="${id}_name-input" type="text" class="searchPillInputAreaVisible" tabindex="0" spellcheck="false"  aria-label="${ariaLabel}" value="${value}"
+   			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="nameInput" 
+   			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1" 
+   			data-dojo-attach-event="keypress:checkKeyCode,input:checkInput" />
+   <div id="${id}_type-input" class="searchPillInputAreaHidden" tabindex="0"
+   			data-dojo-type="dijit/form/DropDownButton" data-dojo-attach-point="resourceTypeDropDown" 	    			
+   			data-dojo-props="autoWidth:true,baseClass:'searchInputDropDownButton inputFont',iconClass:'searchByButtonIcon'" >
+   	<div id="${id}_type-dropDownMenu" data-dojo-type="dijit/DropDownMenu" data-dojo-attach-point="resourceTypeDropDownMenu" 
+   			data-dojo-props="baseClass:'searchInputDropDownMenu inputFont', 'aria-labelledby':'${id}_type-input'" ></div>
+   </div>
+   <div id="${id}_state-input" class="searchPillInputAreaHidden" tabindex="0"
+   			data-dojo-type="dijit/form/DropDownButton" data-dojo-attach-point="resourceStateDropDown"     			
+   			data-dojo-props="autoWidth:true,baseClass:'searchInputDropDownButton inputFont',iconClass:'searchByButtonIcon'" >
+   <div id="${id}_state-dropDownMenu" data-dojo-type="dijit/DropDownMenu" data-dojo-attach-point="resourceStateDropDownMenu" 
+   				data-dojo-props="baseClass:'searchInputDropDownMenu inputFont', 'aria-labelledby':'${id}_state-input'" ></div>
+   </div>
+   <input id="${id}_tag-input" type="text" class="searchPillInputAreaHidden" tabindex="0" spellcheck="false" value="${value}"
+   			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="tagInput"    			
+   			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label','aria-label':'${tagInputLabel}',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1" 
+   			data-dojo-attach-event="keypress:checkKeyCode,input:checkInput" />
+   <div id="${id}_runtimeType-input" class="searchPillInputAreaHidden" tabindex="0"
+   			data-dojo-type="dijit/form/DropDownButton" data-dojo-attach-point="resourceRuntimeTypeDropDown" 	    			
+   			data-dojo-props="autoWidth:true,baseClass:'searchInputDropDownButton inputFont',iconClass:'searchByButtonIcon'" >
+   	<div id="${id}_runtimeType-dropDownMenu" data-dojo-type="dijit/DropDownMenu" data-dojo-attach-point="resourceRuntimeTypeDropDownMenu" 
+   			data-dojo-props="baseClass:'searchInputDropDownMenu inputFont', 'aria-labelledby':'${id}_runtimeType-input'" ></div>
+   </div>
+   <div id="${id}_container-input" class="searchPillInputAreaHidden" tabindex="0"
+   			data-dojo-type="dijit/form/DropDownButton" data-dojo-attach-point="resourceContainerDropDown" 	    			
+   			data-dojo-props="autoWidth:true,baseClass:'searchInputDropDownButton inputFont',iconClass:'searchByButtonIcon'" >
+   	<div id="${id}_container-dropDownMenu" data-dojo-type="dijit/DropDownMenu" data-dojo-attach-point="resourceContainerDropDownMenu" 
+   			data-dojo-props="baseClass:'searchInputDropDownMenu inputFont', 'aria-labelledby':'${id}_container-input'" ></div>
+   </div>
+   <input id="${id}_owner-input" type="text" class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"  aria-label="${ariaLabel}" value="${value}"
+   			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="ownerInput" 
+   			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1" 
+   			data-dojo-attach-event="keypress:checkKeyCode,input:checkInput" />
+   <input id="${id}_contact-input" type="text" class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"  aria-label="${ariaLabel}" value="${value}"
+   			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="contactInput" 
+   			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1" 
+   			data-dojo-attach-event="keypress:checkKeyCode,input:checkInput" />
+   <input id="${id}_note-input" type="text" class="searchPillInputAreaHidden" tabindex="0" spellcheck="false"  aria-label="${ariaLabel}" value="${value}"
+   			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="noteInput" 
+   			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
+ 			 				  		forceWidth:true,hasDownArrow:false,autoComplete:false,labelType:'text',highlightMatch:'all',maxHeight:-1" 
+   			data-dojo-attach-event="keypress:checkKeyCode,input:checkInput" />
+</div>

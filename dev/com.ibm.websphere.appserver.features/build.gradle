@@ -78,6 +78,14 @@ task copyFeaturePiiFiles {
           into rootProject.file('build.pii.package/nlssrc/' + featureName)
           include 'l10n/*.properties'
         }
+      } else {
+          if (project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources').exists()) {
+              copy {
+                  from project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources')
+                  into rootProject.file('build.pii.package/nlssrc/' + featureName)
+                  include 'l10n/*.properties'
+              }
+          }
       }
     }
   }
@@ -286,6 +294,34 @@ task publishFeatureResources {
     }
   }
 }
+
+task publishAdminCenter {
+  inputs.dir project.file('visibility/public/adminCenter-1.0')
+  outputs.dir buildImage.file('wlp/lib/features')
+  doLast {
+    /*copy {
+      from new File(projectDir, 'visibility/public/adminCenter-1.0/com.ibm.websphere.appserver.adminCenter-1.0.mf')
+      into buildImage.file('wlp/lib/features')
+    }*/
+    copy {
+        from new File(projectDir, 'visibility/public/adminCenter-1.0/resources')
+        into buildImage.file('wlp/lib/features')
+    }
+    copy {
+        from new File(projectDir, 'visibility/private/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/resources')
+        into buildImage.file('wlp/lib/features')
+    }
+    copy {
+        from new File(projectDir, 'visibility/private/com.ibm.websphere.appserver.adminCenter.tool.javaBatch-1.0/resources')
+        into buildImage.file('wlp/lib/features')
+    }
+    copy {
+        from new File(projectDir, 'visibility/private/com.ibm.websphere.appserver.adminCenter.tool.serverConfig-1.0/resources')
+        into buildImage.file('wlp/lib/features')
+    }
+  }
+}
+assemble.dependsOn publishAdminCenter
 
 publishing {
   publications {

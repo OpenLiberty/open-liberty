@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.ui/resources/com/ibm/ws/ui/internal/resources/UIMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR Liberty Toolbox
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Message prefix block: CWWKX1000 - CWWKX1899
+
+LOADED_DEFAULT_CATALOG=CWWKX1000I: The Admin Center default catalog loaded.
+LOADED_DEFAULT_CATALOG.explanation=The default catalog loaded because no catalog has been created yet. 
+LOADED_DEFAULT_CATALOG.useraction=No action is required.
+
+TOOL_NOT_FOUND=CWWKX1001E: Tool {0} is not found in the Admin Center catalog.
+TOOL_NOT_FOUND.explanation=The catalog does not contain a tool with the specified tool ID.
+TOOL_NOT_FOUND.useraction=No action is required.
+TOOL_NOT_FOUND.developeraction=The requested tool was not found in the catalog. The tool ID may be incorrect. Confirm the tool ID is properly formatted. The tool may have been removed from the catalog.
+
+UNABLE_TO_LOAD_CATALOG_SYNTAX=CWWKX1002E: The Admin Center catalog cannot load from persisted storage. The persisted content syntax appears to be corrupt. The default catalog will load instead.
+UNABLE_TO_LOAD_CATALOG_SYNTAX.explanation=The product cannot parse the Admin Center catalog content stored in the underlying persistence layer. The syntax of the data appears to be corrupt. This is an unrecoverable error.
+UNABLE_TO_LOAD_CATALOG_SYNTAX.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_CATALOG_CONTENT=CWWKX1003E: The Admin Center catalog cannot load from persisted storage. The persisted content appears to be corrupt. The default catalog will load instead.
+UNABLE_TO_LOAD_CATALOG_CONTENT.explanation=The content stored in the underlying persistence layer for the Admin Center catalog does not match the expected type. This is an unrecoverable error.
+UNABLE_TO_LOAD_CATALOG_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_CATALOG_ACCESS=CWWKX1004E: The Admin Center catalog cannot load from persisted storage. The underlying persistence layer encountered an I/O error. The default catalog will load instead.
+UNABLE_TO_LOAD_CATALOG_ACCESS.explanation=A problem occurred while accessing the underlying persistence layer when loading the Admin Center catalog. This is an unrecoverable error.
+UNABLE_TO_LOAD_CATALOG_ACCESS.useraction=See earlier log messages for possible corrective actions.
+
+LOADED_CATALOG_NOT_VALID=CWWKX1005E: The Admin Center catalog loaded from persisted storage is not valid. The default catalog will load instead.
+LOADED_CATALOG_NOT_VALID.explanation=The persisted Admin Center catalog is incomplete. This is an unrecoverable error.
+LOADED_CATALOG_NOT_VALID.useraction=See earlier log messages for possible corrective actions.
+
+LOADED_PERSISTED_CATALOG=CWWKX1006I: The Admin Center catalog loaded.
+LOADED_PERSISTED_CATALOG.explanation=The Admin Center catalog loaded from persisted storage. 
+LOADED_PERSISTED_CATALOG.useraction=No action is required.
+
+TOOL_ALREADY_EXIST=CWWKX1007E: Tool {0} already exists in the Admin Center catalog.
+TOOL_ALREADY_EXIST.explanation=The catalog already contains a tool with the specified tool ID.
+TOOL_ALREADY_EXIST.useraction=A tool with the same name and version already exists in the catalog. Specify an alternate tool name (or version) and try again.
+TOOL_ALREADY_EXIST.developeraction=A tool with that ID already exists in the catalog. If you are trying to add a new tool, change either the tool name or version. If you are trying to update the tool, modify the existing tool entry with a PUT request.
+
+TOOL_OBJECT_NOT_VALID=CWWKX1008E: The tool will not be added to the Admin Center catalog. The tool object does not pass validation rule: {0}
+TOOL_OBJECT_NOT_VALID.explanation=The tool object to add to the catalog failed one or more validation rules. The message contains information about the first rule that failed. 
+TOOL_OBJECT_NOT_VALID.useraction=Take corrective action to resolve the specified rule and submit the request again.
+TOOL_OBJECT_NOT_VALID.developeraction=The JSON object representing the tool to add to the catalog violated one of the validation rules. Take corrective action to resolve the specified rule and submit the request again. This can occur if the JSON object is incomplete, or if one of the fields contains a value of the wrong type, syntax or unsupported characters.
+
+FILE_PERSISTENCE_BAD_JSON=CWWKX1009E: The Admin Center persistence layer attempted to load {0}. The file contents are not in valid JSON syntax. The Admin Center cannot present the correct information. The file contents are: {1}
+FILE_PERSISTENCE_BAD_JSON.explanation=The product cannot parse the file because the file contents do not use valid JSON syntax.
+FILE_PERSISTENCE_BAD_JSON.useraction=Restore the file from a backup. The file will be overwritten with a valid copy if any changes to the Admin Center are made.
+
+FILE_PERSISTENCE_WRONG_CLASS=CWWKX1010E: The Admin Center persistence layer attempted to load {0}. The file is not a {1} class. The Admin Center cannot present the correct information. The file contents are: {2}
+FILE_PERSISTENCE_WRONG_CLASS.explanation=The file contents contain valid JSON but the attempt to map the JSON object to the specified class failed.
+FILE_PERSISTENCE_WRONG_CLASS.useraction=Restore the file from a backup. The file will be overwritten with a valid copy if any changes to the Admin Center are made.
+
+FILE_PERSISTENCE_IO_ERROR=CWWKX1011E: The Admin Center persistence layer cannot load {0}. Unable to access the file. The Admin Center cannot present the correct information. The following error occurred: {1}
+FILE_PERSISTENCE_IO_ERROR.explanation=The product cannot access the file.
+FILE_PERSISTENCE_IO_ERROR.useraction=Check the file permissions, check that the file is not locked and verify that the underlying file system and hardware are working correctly.
+
+STORE_CATALOG_TO_PERSISTENCE_ERROR=CWWKX1012E: The Admin Center catalog cannot persist because of an I/O error: {0}
+STORE_CATALOG_TO_PERSISTENCE_ERROR.explanation=The product cannot store the latest changes to the Admin Center catalog. The product will try to store future Admin Center catalog changes.
+STORE_CATALOG_TO_PERSISTENCE_ERROR.useraction=See earlier log messages for possible corrective actions.
+
+STORE_CATALOG_TO_MARSHALL_ERROR=CWWKX1013E: The Admin Center catalog cannot persist because of a JSON marshalling error: {0}
+STORE_CATALOG_TO_MARSHALL_ERROR.explanation=The product cannot store the latest changes to the Admin Center catalog. The product will try to store future Admin Center catalog changes.
+STORE_CATALOG_TO_MARSHALL_ERROR.useraction=See earlier log messages for possible corrective actions.
+
+INVALID_TOOL_CONTENT_WARNING=CWWKX1013W: Tool {0} loaded from the persisted storage is removed from the Admin Center catalog because of an error: {1} 
+INVALID_TOOL_CONTENT_WARNING.explanation=The product removed the tool in persisted storage from the catalog because the tool data is not valid or incomplete. 
+INVALID_TOOL_CONTENT_WARNING.useraction=Restore the catalog from a backup. The catalog file is overwritten with a valid copy if any changes to the Admin Center are made.
+
+FILE_PERSISTENCE_STORE_IO_ERROR=CWWKX1014E: The Admin Center persistence layer cannot store {0}. Unable to access the file. The following error occurred: {1}
+FILE_PERSISTENCE_STORE_IO_ERROR.explanation=The product cannot access the file.
+FILE_PERSISTENCE_STORE_IO_ERROR.useraction=Check the file permissions, check that the file is not locked and verify that the underlying file system and hardware are working correctly.
+
+STORAGE_INITIALIZED=CWWKX1015I: {0} persistence layer initialized for the Admin Center.
+STORAGE_INITIALIZED.explanation=The product initialized the Admin Center persistence layer.
+STORAGE_INITIALIZED.useraction=No action is required.
+
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER=CWWKX1016E: The Admin Center cannot get the display name of user {0}.
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.explanation=The server attempted to identify the display name of the user, but the attempt failed.
+UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.useraction=Ensure that the specified user exists. If so, check trace and ffdc messages for possible corrective action.
+
+OP_REQUIRES_URL=CWWKX1017E: The requested operation {0} requires a valid URL. The URL was not specified.
+OP_REQUIRES_URL.explanation=The operation requires that request parameter "url" be a URL.
+OP_REQUIRES_URL.useraction=Resubmit the request with a valid URL.
+
+# 0 - operation name, 1 - exception text
+OP_BAD_URL=CWWKX1018E: The requested operation {0} requires a valid URL. The specified URL causes an error: {1}
+OP_BAD_URL.explanation=The provided URL parameter is not a valid URL.
+OP_BAD_URL.useraction=Resubmit the request with a valid URL.
+
+POST_REQUIRES_JSON_PAYLOAD=CWWKX1019E: The requested operation requires a JSON payload of type {0}. No JSON payload was specified.
+POST_REQUIRES_JSON_PAYLOAD.explanation=The operation has no payload contents. The operation requires a payload of valid JSON syntax of the appropriate type.
+POST_REQUIRES_JSON_PAYLOAD.useraction=Resubmit the request with a payload that uses valid JSON syntax of the appropriate type.
+
+POST_BAD_JSON_PAYLOAD=CWWKX1020E: The requested operation requires a JSON payload of type {0}. The specified payload does not use valid JSON syntax.
+POST_BAD_JSON_PAYLOAD.explanation=The operation payload contents do not use valid JSON syntax.
+POST_BAD_JSON_PAYLOAD.useraction=Resubmit the request with a payload that uses valid JSON syntax of the appropriate type.
+
+POST_WRONG_JSON_PAYLOAD=CWWKX1021E: The requested operation requires a JSON payload of type {0}. The specified payload is not of the required type.
+POST_WRONG_JSON_PAYLOAD.explanation=The product does not interpret the operation payload contents as having the required type.
+POST_WRONG_JSON_PAYLOAD.useraction=Resubmit the request with a payload that uses valid JSON syntax of the appropriate type.
+
+TOOL_NOT_FOUND_TOOLBOX=CWWKX1022E: Tool {0} is not found in the toolbox for user {1}.
+TOOL_NOT_FOUND_TOOLBOX.explanation=The toolbox for the specified user does not contain the requested tool.
+TOOL_NOT_FOUND_TOOLBOX.useraction=No action is required.
+TOOL_NOT_FOUND_TOOLBOX.developeraction=The product cannot find the requested tool in the toolbox. The tool ID might be incorrect. Confirm that the tool ID is properly formatted. The tool might no longer be in the toolbox.
+
+CATALOG_RESET_SUCCESSFUL=CWWKX1023I: The catalog was successfully reset.
+CATALOG_RESET_SUCCESSFUL.explanation=The product restored the in-memory catalog and the persisted state to the default settings.
+CATALOG_RESET_SUCCESSFUL.useraction=No action is required.
+
+CATALOG_RESET_MUST_BE_CONFIRMED=CWWKX1024E: To reset the catalog, specify the "resetCatalog=true" HTTP request parameter.
+CATALOG_RESET_MUST_BE_CONFIRMED.explanation=The catalog supports a reset operation using the HTTP DELETE method. To ensure catalogs are deleted only when intended, also specify a confirmation request parameter.
+CATALOG_RESET_MUST_BE_CONFIRMED.useraction=No action is required.
+CATALOG_RESET_MUST_BE_CONFIRMED.developeraction=When resetting the catalog, prompt the user for confirmation. A catalog reset operation completely resets the in-memory catalog and the persisted catalog state. Use this operation with caution.
+
+TOOL_ALREADY_EXIST_TOOLBOX=CWWKX1025E: Tool {0} already exists in the toolbox.
+TOOL_ALREADY_EXIST_TOOLBOX.explanation=The toolbox already contains a tool with the specified tool ID.
+TOOL_ALREADY_EXIST_TOOLBOX.useraction=A tool with the same name and version already exists in the toolbox. Specify an alternate tool name (or version) and try again.
+TOOL_ALREADY_EXIST_TOOLBOX.developeraction=A tool with that ID already exists in the toolbox. If you are trying to add a new tool, change either the tool name or version. If you are trying to update the tool, modify the existing tool entry with a PUT request.
+
+TOOL_OBJECT_NOT_VALID_TOOLBOX=CWWKX1026E: The tool will not be added to the toolbox. The tool object does not pass validation rule: {0}
+TOOL_OBJECT_NOT_VALID_TOOLBOX.explanation=The tool object to add to the toolbox failed one or more validation rules. The message contains information about the first rule that failed. 
+TOOL_OBJECT_NOT_VALID_TOOLBOX.useraction=Take corrective action to resolve the specified rule and submit the request again.
+TOOL_OBJECT_NOT_VALID_TOOLBOX.developeraction=The JSON object representing the tool to add to the toolbox violated one of the validation rules. Take corrective action to resolve the specified rule and submit the request again. This can occur if the JSON object is incomplete, or if one of the fields contains a value of the wrong type, syntax or unsupported characters.
+
+TOOLBOX_RESET_SUCCESSFUL=CWWKX1027I: The toolbox was successfully reset.
+TOOLBOX_RESET_SUCCESSFUL.explanation=The product restored the in-memory toolbox and the persisted state to the default settings.
+TOOLBOX_RESET_SUCCESSFUL.useraction=No action is required.
+
+TOOLBOX_RESET_MUST_BE_CONFIRMED=CWWKX1028E: To reset the toolbox, specify the "resetToolbox=true" HTTP request parameter.
+TOOLBOX_RESET_MUST_BE_CONFIRMED.explanation=The toolbox supports a reset operation using the HTTP DELETE method. To ensure toolboxes are deleted only when intended, also specify a confirmation request parameter.
+TOOLBOX_RESET_MUST_BE_CONFIRMED.useraction=No action is required.
+TOOLBOX_RESET_MUST_BE_CONFIRMED.developeraction=When resetting the toolbox, prompt the user for confirmation. A toolbox reset operation completely resets the in-memory toolbox and the persisted toolbox state. Use this operation with caution.
+
+LOADED_DEFAULT_TOOLBOX=CWWKX1029I: The Admin Center default toolbox for user {0} loaded.
+LOADED_DEFAULT_TOOLBOX.explanation=The default toolbox loaded because the specified user does not have a toolbox yet.
+LOADED_DEFAULT_TOOLBOX.useraction=No action is required.
+
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX=CWWKX1030E: The Admin Center toolbox for user {0} cannot load from persisted storage. The persisted content syntax appears to be corrupt. The default toolbox will load instead.
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX.explanation=The product cannot parse the Admin Center toolbox content stored in the underlying persistence layer. The syntax of the data appears to be corrupt. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOLBOX_SYNTAX.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_TOOLBOX_CONTENT=CWWKX1031E: The Admin Center toolbox for user {0} cannot load from persisted storage. The persisted content appears to be corrupt. The default toolbox will load instead.
+UNABLE_TO_LOAD_TOOLBOX_CONTENT.explanation=The content stored in the underlying persistence layer for the Admin Center toolbox does not match the expected type. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOLBOX_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_TOOLBOX_ACCESS=CWWKX1032E: The Admin Center toolbox for user {0} cannot load from persisted storage. The underlying persistence layer encountered an I/O error. The default toolbox will load instead.
+UNABLE_TO_LOAD_TOOLBOX_ACCESS.explanation=A problem occurred while accessing the underlying persistence layer when loading the Admin Center toolbox. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOLBOX_ACCESS.useraction=See earlier log messages for possible corrective actions.
+
+LOADED_TOOLBOX_NOT_VALID=CWWKX1033E: The Admin Center toolbox for user {0} loaded from persisted storage is not valid. The default toolbox will load instead.
+LOADED_TOOLBOX_NOT_VALID.explanation=The persisted Admin Center toolbox is incomplete. This is an unrecoverable error.
+LOADED_TOOLBOX_NOT_VALID.useraction=See earlier log messages for possible corrective actions.
+
+LOADED_PERSISTED_TOOLBOX=CWWKX1034I: The Admin Center toolbox for user {0} loaded.
+LOADED_PERSISTED_TOOLBOX.explanation=The Admin Center toolbox for the specified user loaded from persisted storage.
+LOADED_PERSISTED_TOOLBOX.useraction=No action is required.
+
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX=CWWKX1035W: Tool {0} loaded from the persisted storage is removed from the Admin Center toolbox for user {1} because of an error: {2} 
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX.explanation=The product removed the tool in persisted storage from the toolbox because the tool data is not valid or incomplete. 
+INVALID_TOOL_CONTENT_WARNING_TOOLBOX.useraction=Restore the toolbox from a backup. The toolbox file is overwritten with a valid copy if the user changes the toolbox.
+
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR=CWWKX1036E: The Admin Center toolbox for user {0} cannot persist because of an I/O error: {1}
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR.explanation=The product cannot store the latest changes to the Admin Center toolbox. The product will try to store future Admin Center toolbox changes.
+STORE_TOOLBOX_TO_PERSISTENCE_ERROR.useraction=See earlier log messages for possible corrective actions.
+
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE=CWWKX1037W: Tool {0} loaded from the persisted storage is removed from the Admin Center toolbox for user {1} because it is no longer available in the catalog. 
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE.explanation=The product removed the tool in persisted storage from the toolbox because the tool is no longer available in the catalog. 
+TOOLBOX_TOOL_NO_LONGER_AVAILABLE.useraction=The tool was removed from the toolbox because it is no longer available in the catalog. To restore the tool, install the tool back into the catalog.
+
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1038I: The Admin Center catalog was loaded from the {0} persistence layer and stored to the {1} persistence layer. 
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE.explanation=The product loaded the Admin Center catalog from the previous persistence layer and stored a copy into the new persistence layer. The copy in the new persistence layer will be loaded by subsequent access to persisted storage.
+CATALOG_FILE_PROMOTED_TO_COLLECTIVE.useraction=No action is required.
+
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1039I: The Admin Center toolbox for user {0} was loaded from the {1} persistence layer and stored to the {2} persistence layer. 
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.explanation=The product loaded the Admin Center toolbox from the previous persistence layer and stored a copy into the new persistence layer. The copy in the new persistence layer will be loaded by subsequent access to persisted storage.
+TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.useraction=No action is required.
+
+POST_MAX_JSON_SIZE=CWWKX1040E: The JSON payload for the request exceeds the maximum allowable length of {0}.
+POST_MAX_JSON_SIZE.explanation=The product cannot parse the JSON payload because it exceeds the maximum allowable size for the operation.
+POST_MAX_JSON_SIZE.useraction=Reduce the size of the JSON payload.
+
+TOOL_AND_TYPE_NOT_FOUND=CWWKX1041E: Tool {0} of type {1} is not found in the Admin Center catalog.
+TOOL_AND_TYPE_NOT_FOUND.explanation=The catalog does not contain a tool with the specified tool ID and type.
+TOOL_AND_TYPE_NOT_FOUND.useraction=No action is required.
+TOOL_AND_TYPE_NOT_FOUND.developeraction=The requested tool was not found in the catalog. The tool ID and type pair might be incorrect. Confirm the tool ID is properly formatted and that the type is correct. The tool might no longer be in the catalog.
+
+FEATURE_TOOL_DELETED_FROM_CATALOG=CWWKX1042I: Tool {0} is no longer in the catalog because the corresponding feature {1} was uninstalled. 
+FEATURE_TOOL_DELETED_FROM_CATALOG.explanation=The product uninstalled the tool feature and removed the tool from the catalog. 
+FEATURE_TOOL_DELETED_FROM_CATALOG.useraction=No action is required.
+
+TOOL_LIST_NOT_MATCH_TOOLBOX=CWWKX1043E: The list of toolbox tools did not update. The number of tools {0} to update does not match the number of tools {1} from the current toolbox.
+TOOL_LIST_NOT_MATCH_TOOLBOX.explanation=The list of tools to update does not match the list of tools from the current toolbox.
+TOOL_LIST_NOT_MATCH_TOOLBOX.useraction=Fix the list of toolbox tools and submit the request again.
+TOOL_LIST_NOT_MATCH_TOOLBOX.developeraction=The JSON object representing the list of tools to update to the toolbox does not match the current list of tools from the toolbox. Fix the list of toolbox tools and submit the request again. 
+
+TOOL_LIST_DUPLICATE_TOOL=CWWKX1044E: The list of tools to update contains duplicate entry {0}.
+TOOL_LIST_DUPLICATE_TOOL.explanation=The list of tools to update already contains a tool with the specified tool ID.
+TOOL_LIST_DUPLICATE_TOOL.useraction=A tool with the same name and version already exists in the list. Specify a unique tool name (or version) and try again.
+TOOL_LIST_DUPLICATE_TOOL.developeraction=A tool with that ID already exists in the update list. If you are trying to update the tool, modify the existing tool entry with a PUT request.
+
+TOOL_NOT_FOUND_FROM_TOOLBOX=CWWKX1045E: Tool {0} of type {1} is not found in the current toolbox. 
+TOOL_NOT_FOUND_FROM_TOOLBOX.explanation=The toolbox does not contain a tool with the specified tool ID and type.
+TOOL_NOT_FOUND_FROM_TOOLBOX.useraction=Add the tool or fix the tool ID and type and then submit the request again. 
+TOOL_NOT_FOUND_FROM_TOOLBOX.developeraction=The product cannot find the update tool in the current toolbox. The tool ID and type pair might be incorrect. Confirm that the tool ID is properly formatted and that the type is correct. The tool might no longer be in the toolbox.
+
+TOOLBOX_UPDATE_SUCCESSFUL=CWWKX1046I: The list of tool entries in the toolbox updated successfully.
+TOOLBOX_UPDATE_SUCCESSFUL.explanation=The product stored the in-memory toolbox and the persisted state to the new settings.
+TOOLBOX_UPDATE_SUCCESSFUL.useraction=No action is required.
+
+PASSWORD_VALIDATION_EXCEPTION=CWWKX1047W: An error occurred while validating the password: {0}
+PASSWORD_VALIDATION_EXCEPTION.explanation=The error prevented login password validation.
+PASSWORD_VALIDATION_EXCEPTION.useraction=Check the log for details.  Fix the problem mentioned in the error and try again.
+
+LOADED_PERSISTED_TOOL_DATA=CWWKX1048I: Tool {1} data for user {0} loaded.
+LOADED_PERSISTED_TOOL_DATA.explanation=The tool data for the specified user and tool loaded from persisted storage.
+LOADED_PERSISTED_TOOL_DATA.useraction=No action is required.
+
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT=CWWKX1049E: Tool {1} data for user {0} cannot load from persisted storage. The persisted content might be corrupt.
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT.explanation=The content stored in the underlying persistence layer for the tool does not match the expected type. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOL_DATA_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX=CWWKX1050E: Tool {1} data for user {0} cannot load from persisted storage. The persisted content syntax might be corrupt.
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX.explanation=The product cannot parse the tool data content stored in the underlying persistence layer. The syntax of the data might be corrupt. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOL_DATA_SYNTAX.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS=CWWKX1051E: Tool {1} data for user {0} cannot load from persisted storage. The underlying persistence layer encountered an I/O error.
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS.explanation=A problem occurred while accessing the underlying persistence layer when loading the tool data. This is an unrecoverable error.
+UNABLE_TO_LOAD_TOOL_DATA_ACCESS.useraction=See earlier log messages for possible corrective actions.
+
+POSTED_TOOL_DATA=CWWKX1052I: Tool {1} data for user {0} posted to the storage.
+POSTED_TOOL_DATA.explanation=Tool data is successfully posted to the storage.
+POSTED_TOOL_DATA.useraction=No action required.
+
+UNABLE_TO_PARSE_TOOL_ID=CWWKX1053E: The product cannot obtain the tool name from tool id {0}.
+UNABLE_TO_PARSE_TOOL_ID.explanation=The tool id is not in a format that the product can parse. 
+UNABLE_TO_PARSE_TOOL_ID.useraction=Contact the tool provider for possible corrective actions.
+
+POST_MAX_TEXT_SIZE=CWWKX1054E: The payload for the request exceeds the maximum allowable length of {0}. Reduce the size of the payload.
+POST_MAX_TEXT_SIZE.explanation=The product cannot read the payload because it exceeds the maximum allowable size for the operation.
+POST_MAX_TEXT_SIZE.useraction=Reduce the size of the payload.
+
+POST_NO_PAYLOAD=CWWKX1055E: The payload for the request is empty.
+POST_NO_PAYLOAD.explanation=The product cannot read the payload because it is empty.
+POST_NO_PAYLOAD.useraction=Add payload to the request.
+
+TOOLDATA_DELETE_SUCCESSFUL=CWWKX1056I: The product deleted tool {1} data for user {0} successfully.
+TOOLDATA_DELETE_SUCCESSFUL.explanation=Tool data was successfully deleted from the persistence layer.
+TOOLDATA_DELETE_SUCCESSFUL.useraction=No user action required.
+
+TOOLDATA_DELETE_UNSUCCESSFUL=CWWKX1057E: The product cannot delete tool {1} data for user {0} because another program is using the data. Stop other programs from using the tool data file and then repeat the delete request.
+TOOLDATA_DELETE_UNSUCCESSFUL.explanation=The file containing the tool data is locked by another process, causing an error when the product tries to delete tool data from the persistence layer.
+TOOLDATA_DELETE_UNSUCCESSFUL.useraction=Stop other programs from using the tool data file and then repeat the delete request. If this does not solve the problem, see log messages for possible corrective actions.
+
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE=CWWKX1058W: The product cannot delete tool data folder {0} because another program might be using the folder.
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE.explanation=The specified folder cannot be deleted.
+TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE.useraction=If the folder is in use by other programs, stop the programs from using the folder and then repeat the delete request.
+
+DELETED_PERSISTED_TOOL_DATA=CWWKX1059I: The product deleted tool {1} data for user {0}.
+DELETED_PERSISTED_TOOL_DATA.explanation=The tool data for the specified user and tool was deleted from persisted storage.
+DELETED_PERSISTED_TOOL_DATA.useraction=No action is required.
+
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA=CWWKX1060W: The product cannot delete tool {1} data for user {0} from persisted storage. The underlying persistence layer encountered an I/O error.
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.explanation=A problem occurred while accessing the underlying persistence layer when deleting the tool data.
+UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_POST_TOOL_DATA_CONTENT=CWWKX1061E: The product cannot post tool {1} data for user {0} to persisted storage. The underlying persistence layer encountered an I/O error.
+UNABLE_TO_POST_TOOL_DATA_CONTENT.explanation=A problem occurred while accessing the underlying persistence layer when storing the tool data.
+UNABLE_TO_POST_TOOL_DATA_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT=CWWKX1063E: The product cannot post tool {1} data for user {0} to persisted storage because of a JSON marshalling error.
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT.explanation=A JSON marshalling error prevented the product from accessing the underlying persistence layer when storing the tool data.
+UNABLE_TO_POST_TOOL_JSON_DATA_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH=CWWKX1062E: The product cannot update tool {1} data for user {0} from persisted storage.  The ETag value of the request header does not match the checksum of tool data from the persisted storage.   
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH.explanation=The tool data from the persisted storage was modified after the client's last GET call.
+TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH.useraction=Request a GET call to get the lastes version of tool data then perform the PUT operation.
+
+STORAGE_INITIALIZED_PLAINTEXT_LOADER=CWWKX1063I: {0} persistence layer initialized for the Admin Center tool data loader.
+STORAGE_INITIALIZED_PLAINTEXT_LOADER.explanation=The product initialized the Admin Center persistence layer for tool data loader.
+STORAGE_INITIALIZED_PLAINTEXT_LOADER.useraction=No action is required.
+
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT=CWWKX1064E: The product cannot promote tool {1} data for user {0} from FILE persistence to COLLECTIVE persistence.  The product encountered an I/O error.
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.explanation=A problem occurred while accessing the underlying persistence layer when promote the tool data from FILE persistence to COLLECTIVE persistence.
+UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT=CWWKX1067E: The product cannot promote tool {1} data for user {0} from FILE persistence to COLLECTIVE persistence.  The product encountered a JSON marshalling error.
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT.explanation=A problem occurred while accessing the underlying persistence layer when promoting the tool data from FILE persistence to COLLECTIVE persistence.
+UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT.useraction=See earlier log messages for possible corrective actions.
+
+UNSUPPORTED_SSL_SOCKET_FACTORY=CWWKX1065E: The JVM in use specifies an SSLSocketFactory implementation class that is unavailable in the Liberty profile.
+UNSUPPORTED_SSL_SOCKET_FACTORY.explanation=An SSLSocketFactory implementation class was not found.
+UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Get a JVM that supports Liberty profile products and SSL from Installation Manager offerings or developerWorks. Alternatively, check the ssl.SocketFactory.provider property in the JVM java.security file.
+
+OSGI_SERVICE_ERROR=CWWKX1066E: The {0} OSGi service is not available.
+OSGI_SERVICE_ERROR.explanation=This internal server error occurred because the specified service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the clean option.

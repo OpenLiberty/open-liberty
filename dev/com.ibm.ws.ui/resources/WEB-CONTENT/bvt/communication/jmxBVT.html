@@ -1,0 +1,192 @@
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BVT for JMX resource</title>
+		<script src="../../dojo/dojo.js"></script>
+	</head>
+	
+<body>
+	<h1>BVT for JMX resource</h1>
+	<h3>This is a very simple test scenario to make sure that the IBMJMXConnectorREST API has not changed and that the happy-path flow functions as expected</h3>
+	<table border="1">
+		<thead><tr><th>Test case</th><th>Result</th></tr></thead>
+		<tbody id="testResults"></tbody>
+		<tfoot id ="resultSummary"></tfoot>
+	</table>
+
+	<script>
+		results = (function() {
+			return {
+				__count: 0,
+				__allPass: true,
+				addPass: function() { this.__count++; this.__allPass &= true; },
+				addFail: function() { this.__count++; this.__allPass &= false; },
+				getCount: function() { return this.__count; },
+				allPass: function() { return this.__allPass; },
+				reset: function() { this.__count=0; this.__allPass=true; }
+			};
+		})();
+
+		objHolder = (function() {
+			return {
+				__obj: null,
+				set: function(obj) { this.__obj = obj; },
+				get: function() { return this.__obj; }
+			}
+		})();
+		
+		function addTestResult(testName, pass) {
+			if (pass) {
+				results.addPass();
+			}else{
+				results.addFail();
+			}
+			var row = '<tr><td>'+testName+'</td>';
+			if (pass) {
+				row += '<td style="color:green">PASS</td></tr>';
+			} else {
+				row += '<td style="color:red">FAIL</td></tr>';
+			}
+			document.getElementById("testResults").innerHTML += row;
+		}
+
+		function addTestSummary() {
+			var row = '<tr><td>Total ('+results.getCount()+')</td>';
+			if (results.allPass()) {
+				row += '<td style="color:green">PASS</td></tr>';
+			} else {
+				row += '<td style="color:red">FAIL</td></tr>';
+			}
+			document.getElementById("resultSummary").innerHTML += row;
+		}
+		
+		require(["dojo/Deferred","app/communication/jmx"], function(Deferred, jmx) {
+			function createChainedTest(previous, name, testFunction) {
+				var d = new Deferred(); 
+				previous.then(function() {
+					try {
+						console.log("Running test: " + name);
+						// The next test knows when its done
+						testFunction(name, d);
+					} catch(err) {
+						console.log("Caught error while running: " + name + ". Error: " + err);
+						d.reject(err);
+					}
+				}, function(err) {
+					console.log("The previous test did not complete successfully: '" + err + "'. Skipping test: " + name);
+					d.cancel(err);
+				});
+				return d;
+			}
+			
+			var d1 = new Deferred();
+			d = createChainedTest(d1, "Test attribute() for a Boolean attribute", function(name, d) {
+				jmx.attribute("java.lang:type=ClassLoading", "Verbose").then(function(attr) {
+					if (typeof attr === "boolean") {
+						// Call next test
+						addTestResult(name, true);
+						d.resolve();
+					} else {
+						addTestResult(name, false);
+						d.reject("Attribute was not a boolean");
+					}
+				}, function(err) {
+					addTestResult(name, false);
+					d.reject("Hit unexpected error invoking attribute() for a Boolean");
+				});
+			});
+			
+			d = createChainedTest(d, "Test attribute() for a Double attribute", function(name, d) {
+				jmx.attribute("java.lang:type=OperatingSystem", "SystemCpuLoad").then(function(attr) {
+					if (typeof attr === "number") {
+						// Call next test
+						addTestResult(name, true);
+						d.resolve();
+					} else {
+						addTestResult(name, false);
+						d.reject("Attribute attribute was not a number");
+					}
+				}, function(err) {
+					addTestResult(name, false);
+					d.reject("Hit unexpected error invoking attribute() for a Double");
+				});
+			});
+			
+			d = createChainedTest(d, "Test attribute() for a Integer attribute", function(name, d) {
+				jmx.attribute("java.lang:type=OperatingSystem", "AvailableProcessors").then(function(attr) {
+					if (typeof attr === "number") {
+						// Call next test
+						addTestResult(name, true);
+						d.resolve();
+					} else {
+						addTestResult(name, false);
+						d.reject("Boolean attribute was not a number");
+					}
+				}, function(err) {
+					addTestResult(name, false);
+					d.reject("Hit unexpected error invoking attribute() for an Integer");
+				});
+			});
+			
+			d = createChainedTest(d, "Test attribute() for a Long attribute", function(name, d) {
+				jmx.attribute("java.lang:type=OperatingSystem", "TotalPhysicalMemory").then(function(attr) {
+					if (typeof attr === "number") {
+						// Call next test
+						addTestResult(name, true);
+						d.resolve();
+					} else {
+						addTestResult(name, false);
+						d.reject("Boolean attribute was not a number");
+					}
+				}, function(err) {
+					addTestResult(name, false);
+					d.reject("Hit unexpected error invoking attribute() for a Long");
+				});
+			});
+			
+			d = createChainedTest(d, "Test attribute() for a String attribute", function(name, d) {
+				jmx.attribute("java.lang:type=Runtime", "Name").then(function(attr) {
+					if (typeof attr === "string") {
+						// Call next test
+						addTestResult(name, true);
+						d.resolve();
+					} else {
+						addTestResult(name, false);
+						d.reject("Boolean attribute was not a String");
+					}
+				}, function(err) {
+					addTestResult(name, false);
+					d.reject("Hit unexpected error invoking attribute() for a String");
+				});
+			});
+			
+			d = createChainedTest(d, "Test attribute() for a unknown attribute type", function(name, d) {
+				jmx.attribute("java.lang:type=Runtime", "ObjectName").then(function(attr) {
+					addTestResult(name, false);
+					d.reject("Unknown types should result in an error");
+				}, function(err) {
+					addTestResult(name, true);
+				});
+			});
+			
+			// Always finish up with the summary
+			d.promise.always(function() {
+				addTestSummary();
+			});
+			
+			// Kick off tests
+			d1.resolve();
+		});
+	</script>
+</body>
+</html>

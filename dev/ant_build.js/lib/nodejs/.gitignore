@@ -1,0 +1,6 @@
+/node-v*-ppc/
+/node-v*-x86/
+/node-v*-x64/
+/node-v*-ppc/
+/node-v*-ppcle64/
+/node-v*-s390/

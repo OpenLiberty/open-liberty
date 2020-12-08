@@ -1,0 +1,39 @@
+<div>
+<div data-dojo-type="dojox/mobile/FixedSplitter">
+
+<div data-dojo-type="dojox/mobile/Container" style="top:85px" class="profile-left-panel">
+    <ul class="vmenu-container" style="height:80%;'">
+        <li class="user-profile-section menu-section">
+            <div class="user-profile">
+                <span class="avatar"><img src="images/person-T.png" alt="" /></span>
+                <h2 class="username"><span aria-label="${userName}" dir="${textDirection}">${userName}</span></h2>
+                <h2 class="role"><span aria-label="${userRole}" dir="${textDirection}">${userRole}</span></h2>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div data-dojo-type="dojox/mobile/Container" class="profile-right-panel">
+    <h2 class="title" style="text-align:center;">${prefsTitle}</h2>
+    <div class="section-container">
+            
+        <div class="section">
+            <h3>${enableBidiLabel} <button class="right-button" data-dojo-type="dojox/mobile/ToggleButton" data-dojo-attach-event="onChange:changeBidi" id="enableBidi" role="button" ${enableBidiChecked}>${enableBidiLabel}</button></h3>
+            <fieldset aria-labelledby="textDirectionLabel"><legend id="textDirectionLabel" aria-label="${textDirectionLabel}">${textDirectionLabel}</legend>
+                <div class="group-radius" title="${textDirectionLTR}">
+                    <input type="radio" class="bidiRadioButton" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-event="onChange:setTextDirLTR" name="radioGroup1" value="ltr" id="textDirectionLTR" role="radio" ${ltrTextDirectionChecked} /><label for="textDirectionLTR">${textDirectionLTR}</label>
+                </div>
+                <div class="group-radius" title="${textDirectionRTL}">
+                    <input type="radio" class="bidiRadioButton" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-event="onChange:setTextDirRTL" name="radioGroup1" value="rtl" id="textDirectionRTL" role="radio" ${rtlTextDirectionChecked} /><label for="textDirectionRTL">${textDirectionRTL}</label>
+                </div>
+                <div class="group-radius" title="${textDirectionContextual}">
+                    <input type="radio" class="bidiRadioButton" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-event="onChange:setTextDirContextual" name="radioGroup1" value="contextual" id="textDirectionContextual" role="radio" ${conTextDirectionChecked} /><label for="textDirectionContextual">${textDirectionContextual}</label>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+
+</div>
+</div>

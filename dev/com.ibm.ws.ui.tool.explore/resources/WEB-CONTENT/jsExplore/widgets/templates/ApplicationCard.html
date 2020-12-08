@@ -1,0 +1,33 @@
+<div class="cardInner">
+
+    <div class="cardTop">
+        <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardIcon" id="${cardIconDivId}" data-dojo-attach-point="iconCp"></div>
+        <div class="cardTopRight">
+            <div data-dojo-type="dijit/layout/ContentPane" class="cardLabel" id="${cardLabelId}">
+                <span title="${cardLabelTitle}" dir="${cardLabelDir}">${cardLabelTitle}</span>
+            </div>
+            <div data-dojo-type="dijit/layout/ContentPane">
+                <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardStatusIcon">
+                    <span id="${cardStatusIconId}">
+                        <img src="${cardStatusIconImg}" height="14" width="14" style="vertical-align: middle;" alt="${cardStatusIconTitle}" title="${cardStatusIconTitle}">
+                    </span>
+                </div>
+                <div data-dojo-type="dijit/layout/ContentPane" baseClass="cardStatusLabel" id="${cardStatusLabelId}">
+                    <span title="${cardStatusLabelTitle}">${cardStatusLabelTitle}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cardBottom">
+        <div class="cardBottomListedStat ${cardBottomClusterClass}" id="${cardBottomClusterDivId}">
+            <span title="${cardBottomClusterIconTitle}">
+                <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 32 32" height="16" preserveAspectRatio="xMidYMid meet" id="${cardBottomClusterImgId}"  role="img" aria-label="${cardBottomClusterIconTitle}">
+                    <use xlink:href="images/Liberty-Icon-Stack.svg#cluster-small"/>
+                </svg>
+            </span>
+            <span class="clusterAppListBottomLabel" id="${cardBottomClusterTitleId}" dir="${cardBottomClusterDir}" title="${cardBottomClusterTitle}">${cardBottomClusterTitle}</span>
+        </div>
+    </div>
+
+</div>

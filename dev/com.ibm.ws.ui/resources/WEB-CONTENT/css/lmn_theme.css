@@ -1,0 +1,821 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+#mti_wfs_colophon {
+    display: none !important
+}
+
+.borderbox {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+.clear {
+    clear: both
+}
+
+.mobile body {
+    font-size: 16px;
+    color: #000000; /* Override the rather stupid OneUI / dojo mobile idea of WHITE text */
+}
+
+.mblBackground {
+    background-color: #f9f9f9
+}
+
+.mblView {
+    background-color: #f9f9f9
+}
+
+.mblHeading, .dj_tablet .mblHeading {
+    height: 70px;
+    line-height: 70px;
+    font-size: 2em;
+    font-weight: normal;
+    border-top: none;
+    color: #fff;
+    border-bottom: solid 0 #0875ad;
+    -moz-text-shadow: 0 0 0 transparent;
+    -webkit-text-shadow: 0 0 0 transparent;
+    text-shadow: 0 0 0 transparent;
+    background: #00b0da !important
+}
+
+.mblHeading .mblToolBarButtonBody, .dj_tablet .mblHeading .mblToolBarButtonBody {
+    height: 100%;
+    width: 50px;
+    padding: 0 10px;
+    border: none;
+    line-height: 70px;
+    background: none;
+    margin: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0
+}
+
+.mblHeading .mblToolBarButtonBody .mblImageIcon, .dj_tablet .mblHeading .mblToolBarButtonBody .mblImageIcon {
+    vertical-align: middle;
+    width: 36px
+}
+
+.mblHeading .mblToolBarButtonBody:hover, .dj_tablet .mblHeading .mblToolBarButtonBody:hover, .mblHeading .mblToolBarButtonSelected,
+    .dj_tablet .mblHeading .mblToolBarButtonSelected {
+    background-color: #009ec1
+}
+
+.mblHeading .mblToolBarButtonText, .dj_tablet .mblHeading .mblToolBarButtonText {
+    color: #fff;
+    height: 29px;
+    line-height: 29px;
+    padding: 0 10px;
+    -moz-text-shadow: 0 0 0 transparent;
+    -webkit-text-shadow: 0 0 0 transparent;
+    text-shadow: 0 0 0 transparent;
+    margin-top: 2%
+}
+
+.mblHeading .profileandnotification-button, .dj_tablet .mblHeading .profileandnotification-button {
+    display: none
+}
+
+.mblHeading .notification-show, .dj_tablet .mblHeading .notification-show {
+    position: relative;
+    overflow: visible
+}
+
+.mblHeading .notification-show:before, .dj_tablet .mblHeading .notification-show:before {
+    content: " ";
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #efa609;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    border: solid 2px #48bae9
+}
+
+.main-container h2.main-title {
+    font-size: 1em;
+    line-height: 1.375em;
+    background: #f2f2ee;
+    margin: 0;
+    padding: 0 0 0 10px;
+    color: #888789
+}
+
+#login .mblScrollableViewContainer {
+    height: 100%;
+    background: #d7e1e8
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1
+}
+
+.global-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    opacity: 0;
+    z-index: 10;
+    display: none
+}
+
+.header-blank {
+    height: 80px
+}
+
+.sub-header {
+    margin-top: 20px;
+    overflow: hidden
+}
+
+.sub-header .button-area {
+    float: right
+}
+
+.filterbar-container {
+    position: relative;
+    text-align: center;
+    -moz-transition: all, .3s;
+    -webkit-transition: all, .3s;
+    transition: all, .3s;
+    background: transparent;
+    overflow: hidden
+}
+
+.filterbar-container .filter-area {
+    margin: 15px 0
+}
+
+.filterbar-container .button-area {
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0
+}
+
+.filterbar-container .button-area .cancel-filter-btn {
+    display: none;
+    background: none;
+    border: none;
+    height: 100%;
+    line-height: 70px;
+    text-align: center;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    width: 70px
+}
+
+.filterbar-container .button-area .cancel-filter-btn img {
+    vertical-align: middle
+}
+
+.filterbar-container .button-area .cancel-filter-btn:hover {
+    background-color: #52a0b4
+}
+
+.filterbar-container.focused {
+    background: #7dacc2
+}
+
+.filterbar-container.focused .button-area .cancel-filter-btn {
+    display: inline-block
+}
+
+.normal-btn {
+    background: none;
+    border: solid 1px #fff;
+    -moz-border-radius: 40px;
+    -webkit-border-radius: 40px;
+    -ms-border-radius: 40px;
+    border-radius: 40px;
+    color: #fff
+}
+
+.tab-buttons {
+    display: inline-block
+}
+
+.tab-buttons a {
+    float: left;
+    border: solid 1px #45b2e1;
+    height: 40px;
+    line-height: 35px;
+    display: inline-block;
+    width: 60px;
+    overflow: hidden;
+    text-align: center
+}
+
+.tab-buttons a .lmn-icon {
+    vertical-align: middle
+}
+
+.tab-buttons a.focused {
+    background-color: #45b2e1
+}
+
+.tab-buttons a:first-child {
+    -moz-border-top-left-radius: 40px;
+    -webkit-border-top-left-radius: 40px;
+    border-top-left-radius: 40px;
+    -moz-border-bottom-left-radius: 40px;
+    -webkit-border-bottom-left-radius: 40px;
+    border-bottom-left-radius: 40px
+}
+
+.tab-buttons a:last-child {
+    -moz-border-top-right-radius: 40px;
+    -webkit-border-top-right-radius: 40px;
+    border-top-right-radius: 40px;
+    -moz-border-bottom-right-radius: 40px;
+    -webkit-border-bottom-right-radius: 40px;
+    border-bottom-right-radius: 40px
+}
+
+.acttooltip {
+    width: 320px;
+    margin-top: 0 !important
+}
+
+.acttooltip .button-bar {
+    margin: 0 -10px
+}
+
+.acttooltip .button-bar .mblToolBarButton {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    -moz-text-shadow: 0 0 0 transparent;
+    -webkit-text-shadow: 0 0 0 transparent;
+    text-shadow: 0 0 0 transparent
+}
+
+.acttooltip .button-bar .mblToolBarButton:last-child {
+    margin-bottom: 0
+}
+
+.addtool-tooltip {
+    padding: 15px;
+    width: 300px
+}
+
+.button-bar .mblToolBarButton, .button-bar .mblButton {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    padding: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+    font-weight: normal;
+    background-image: none
+}
+
+.button-bar .mblToolBarButton:last-child, .button-bar .mblButton:last-child {
+    margin-bottom: 0
+}
+
+.blue-btn {
+    color: #fff;
+    font-size: 14px;
+    text-decoration: none;
+    background: #5AAAFA !important;
+    border: none;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    height: 40px;
+    line-height: 40px
+}
+
+.red-btn {
+    color: #fff;
+    font-size: 14px;
+    text-decoration: none;
+    background: #0e0e0e !important;
+    border: none;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    height: 40px;
+    line-height: 40px
+}
+
+.lmn-dlg {
+    -moz-box-shadow: 0 0 0 transparent;
+    -webkit-box-shadow: 0 0 0 transparent;
+    -ms-box-shadow: 0 0 0 transparent;
+    box-shadow: 0 0 0 transparent;
+    -moz-text-shadow: 0 0 0 transparent;
+    -webkit-text-shadow: 0 0 0 transparent;
+    -ms-text-shadow: 0 0 0 transparent;
+    text-shadow: 0 0 0 transparent;
+    background: #f4f4f1 !important;
+    border: none;
+    padding: 20px 0;
+    min-width: 370px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0;
+    color: #000
+}
+
+.lmn-dlg .dlg-title {
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+
+.lmn-dlg .dlg-content {
+    padding: 10px 20px 20px 20px
+}
+
+.lmn-dlg .dlg-content .des {
+    margin: 0;
+    padding: 0
+}
+
+.lmn-dlg .mblDomButtonSilverCircleRedCross>div {
+    background: #282a2c;
+    -moz-box-shadow: 0 0 0 transparent;
+    -webkit-box-shadow: 0 0 0 transparent;
+    -ms-box-shadow: 0 0 0 transparent;
+    box-shadow: 0 0 0 transparent;
+    height: 35px;
+    width: 35px;
+    border: solid 2px #fff;
+    -moz-border-radius: 35px;
+    -webkit-border-radius: 35px;
+    -ms-border-radius: 35px;
+    border-radius: 35px;
+    top: -7px;
+    cursor: pointer
+}
+
+.lmn-dlg .mblDomButtonSilverCircleRedCross>div>div {
+    background-color: #fff;
+    width: 22px;
+    height: 1px;
+    top: 17px;
+    left: 7px
+}
+
+.lmn-dlg .mblDomButtonSilverCircleRedCross>div>div>div {
+    background-color: #fff;
+    width: 1px;
+    height: 22px;
+    top: -10px;
+    left: 10px
+}
+
+.lmn-dlg .tools-list {
+    overflow: hidden;
+    margin-bottom: 0
+}
+
+.lmn-dlg .tools-list li {
+    display: block
+}
+
+.lmn-dlg .tools-list .tool {
+    width: auto;
+    height: auto;
+    padding: 10px 15px;
+    text-align: left
+}
+
+.lmn-dlg .tools-list .tool h3 {
+    font-size: 1.125em
+}
+
+.lmn-dlg .tools-list .tool .tool-avatar {
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    margin-top: -10px
+}
+
+.dj_ios6 .lmn-dlg {
+    -moz-text-shadow: 0 0 0 transparent;
+    -webkit-text-shadow: 0 0 0 transparent;
+    -ms-text-shadow: 0 0 0 transparent;
+    text-shadow: 0 0 0 transparent
+}
+
+.mblTooltip {
+    padding: 10px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    border: none;
+    background-color: #404e56 !important;
+    opacity: 1
+}
+
+.mblTooltipAbove .mblTooltipArrow {
+    border-bottom-color: transparent
+}
+
+.mblTooltipAbove .mblTooltipInnerArrow {
+    border-bottom-color: #404e56
+}
+
+.mbl-right-panel {
+    background-color: #2c2c2c;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    z-index: -1;
+    color: #fff;
+    font-size: .8em
+}
+
+.mbl-right-panel .mblHeading {
+    background: #000;
+    border-bottom: solid 1px #000
+}
+
+.mbl-right-panel .notification-main-container {
+    background-color: #2c2c2c
+}
+
+.section-container>h3 {
+    font-size: 18px;
+    padding: 10px;
+    margin: 0;
+    background-color: #4b4b4b;
+    border-bottom: solid 1px #000
+}
+
+.section-container .section {
+    overflow: hidden;
+    border-bottom: solid 1px #818181;
+    padding: 20px 20px 10px 20px
+}
+
+.section-container .section h3 {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+    font-weight: normal
+}
+
+.section-container .section h3:last-child {
+    margin-bottom: 0
+}
+
+.section-container .section p {
+    margin: 0 0 10px 0
+}
+
+.section-container .section p:last-child {
+    margin-bottom: 0
+}
+
+.recent-tools-list {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.recent-tools-list li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    line-height: 40px;
+    padding-left: 10px
+}
+
+.dj_tablet .toolbox-side-container .mblHeading {
+    background: #000;
+    border-bottom: solid 1px #000
+}
+
+.title-filter-bar {
+    margin: 0;
+    padding: 0
+}
+
+.title-filter-bar .mblSearchBox {
+    width: 160px;
+    margin: -10px 0 0 0;
+    background-color: #2f2f2f;
+    border-color: transparent;
+    position: relative;
+    top: -10px;
+    color: #fff
+}
+
+.vmenu-container {
+    margin: 0;
+    list-style: none;
+    padding: 0
+}
+
+.vmenu-container .menu-section {
+    padding: 15px 20px;
+    height: 65px;
+    border-bottom: solid 1px #737f86
+}
+
+.vmenu-container .menu-section a {
+    line-height: 65px;
+    font-size: 18px;
+    color: #fff;
+    text-decoration: none
+}
+
+.lmn-form p {
+    margin: 0 0 10px 0
+}
+
+.lmn-form .row-input {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    opacity: 0;
+    z-index: 90
+}
+
+.sortbyalphabetic-ico {
+    background-position: -310px -79px;
+    width: 55px
+}
+
+.focused .sortbyalphabetic-ico {
+    background-position: -310px -36px
+}
+
+.sortbyupdatetime-ico {
+    background-position: -394px -79px
+}
+
+.focused .sortbyupdatetime-ico {
+    background-position: -393px -36px
+}
+
+.tileview-ico {
+    background-position: -489px -79px;
+    width: 38px
+}
+
+.focused .tileview-ico {
+    background-position: -489px -36px
+}
+
+.listview-ico {
+    background-position: -555px -79px;
+    width: 38px
+}
+
+.focused .listview-ico {
+    background-position: -555px -36px
+}
+
+.ms-ico {
+    background-position: -217px -25px;
+    width: 18px;
+    height: 18px;
+    margin: 0 2px
+}
+
+.ms-ico.nosupport {
+    background-position: -217px -90px
+}
+
+.ts-ico {
+    background-position: -258px -25px;
+    width: 18px;
+    height: 18px;
+    margin: 0 2px
+}
+
+.ts-ico.nosupport {
+    background-position: -258px -90px
+}
+
+.ds-ico {
+    background-position: -302px -25px;
+    width: 18px;
+    height: 18px;
+    margin: 0 2px
+}
+
+.ds-ico.nosupport {
+    background-position: -302px -90px
+}
+
+@media screen and (min-width: 618px) {
+    .tools-list, .filter-bar {
+        width: 570px;
+        margin: 0 auto
+    }
+    .expendedfolder-inner h2, .expendedfolder-inner .expendedfolder-area {
+        width: 570px
+    }
+}
+
+.mblSlider {
+    background: #e2e2d6;
+    border: none;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px
+}
+
+.mblSlider .mblSliderProgressBar {
+    background: #20b6ec;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px;
+    border: none
+}
+
+.mblSlider .mblSliderHandle {
+    height: 20px;
+    width: 20px;
+    border: solid 3px #fff;
+    background: #1eb5ec;
+    box-shadow: 0 0 0 2px #1eb5ec;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px
+}
+
+.mblToggleButton {
+    width: 46px;
+    height: 26px;
+    background: #a3a39b;
+    -moz-border-radius: 26px;
+    -webkit-border-radius: 26px;
+    -ms-border-radius: 26px;
+    border-radius: 26px;
+    text-indent: -10000px;
+    border: none;
+    -moz-transition: all, .3s;
+    -webkit-transition: all, .3s;
+    transition: all, .3s
+}
+
+/* This override is needed because on Firefox, the iphone css overrides the default mbtToggleButton
+ * and causes the button to look washed out. This overrides the iphone css and the button looks flat.
+ */
+#prefsContainer .mblToggleButton.right-button.unselectable {
+    background-image: none;
+}
+
+.mblToggleButton:after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    background-color: #fff;
+    height: 22px;
+    width: 22px;
+    -moz-border-radius: 21px;
+    -webkit-border-radius: 21px;
+    -ms-border-radius: 21px;
+    border-radius: 21px;
+    -moz-transition: all, .3s;
+    -webkit-transition: all, .3s;
+    transition: all, .3s;
+    border: none;
+    -webkit-transform: none;
+    -moz--transform: none;
+    -ms-transform: none
+}
+
+.mblToggleButtonSelected {
+    background: #4178BE;
+    background-image: none !important;
+}
+
+.mblToggleButtonChecked {
+    background: #4178BE;
+    background-image: none !important;
+}
+
+.mblToggleButtonChecked:after {
+    right: 2px;
+    left: auto
+}
+
+.group-radius dd {
+    margin: 0 0 10px 0
+}
+
+.mblRadioButton {
+    background: #fff;
+    border: solid 3px #fff;
+    height: 20px;
+    width: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 0 2px #8b8b80;
+    vertical-align: middle;
+    position: relative
+}
+
+.mblRadioButtonChecked {
+    background: #1eb5ec !important;
+    box-shadow: 0 0 0 2px #1eb5ec
+}
+
+.mblRadioButton:checked {
+    background: #1eb5ec !important;
+    box-shadow: 0 0 0 2px #1eb5ec
+}
+
+.mblRadioButtonChecked:after {
+    content: "";
+    height: 0 !important;
+    width: 0 !important;
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
+    -ms-border-radius: 18px;
+    border-radius: 18px;
+    background: #00b4ef !important;
+    position: absolute;
+    top: 2px !important;
+    left: 2px !important;
+    border: none !important
+}
+
+@media screen and (min-width: 768px) {
+    .tools-list, .sub-header {
+        width: 760px;
+        margin-left: auto;
+        margin-right: auto
+    }
+    .expendedfolder-inner h2, .expendedfolder-inner .expendedfolder-area {
+        width: 760px;
+    }
+}
+
+@media screen and (min-width: 1010px) {
+    .tools-list, .sub-header {
+        width: 950px;
+        margin-left: auto;
+        margin-right: auto
+    }
+    .expendedfolder-inner h2, .expendedfolder-inner .expendedfolder-area {
+        width: 950px;
+    }
+}
+
+.dj_tablet .main-container .main-title, .dj_tablet .main-container .recent-used-tools {
+    display: none
+}
+
+.dj_tablet .phone-back-to-toolbox-button {
+    display: none
+}
+
+.dj_tablet .phone-profile-button {
+    display: none
+}

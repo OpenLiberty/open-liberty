@@ -1,0 +1,19 @@
+<div class="statusGraph" id="${id}">
+  <div class="displayGraph statusGraphInfo" style="min-width:909px;">
+    <div data-dojo-attach-point="actionButtonNode" data-dojo-type="dijit/layout/ContentPane" class="statusGraphActionButtonNode"></div>
+    <div class="statusGraphTitle">
+      <span style="font-size: ${titleFontSize};">${title}</span>
+      <select id="${id}configListSelect" data-dojo-attach-point="configList" data-dojo-id="${id}configList" multiple="true" name="${id}configList" data-dojo-type="dojox/form/CheckedMultiSelect" dropDown="true" style="display:none;">
+      </select>
+    </div>
+    <div class="statusGraphGraph">
+      <div id='${id}chartNode' data-dojo-attach-point="laChartNode">
+      </div>
+    </div>
+    <div data-dojo-attach-point="singleLegendNode" class="statusGraphSingleLegend">
+    </div>
+  </div>
+  <div data-dojo-attach-point="legendNode" style="display:none;" id="${id}legendNode" class="statusGraphLegend">
+  </div>
+  <div class='sr-only' id='sr_${id}chartNode' data-dojo-attach-point="laSrChartNode"></div>
+</div>
