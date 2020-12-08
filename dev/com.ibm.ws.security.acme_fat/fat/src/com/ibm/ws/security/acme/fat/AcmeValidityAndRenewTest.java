@@ -66,6 +66,8 @@ public class AcmeValidityAndRenewTest {
 
 	public static final long TIME_BUFFER_BEFORE_EXPIRE = 30000L; // milliseconds
 
+	public static final long TIME_BUFFER_MAX = 300000L;
+
 	public static final int CHECKER_SECONDS = 1000;
 
 	@Rule
@@ -329,10 +331,7 @@ public class AcmeValidityAndRenewTest {
 			 * Calculate the actual refresh date so we sleep long enough to be in the renew
 			 * period before restarting the server.
 			 */
-			Calendar cal = Calendar.getInstance();
-			long refreshTime = notAfter - justShyOfValidityPeriod;
-			cal.setTimeInMillis(refreshTime);
-			Date refreshDate = cal.getTime();
+			Date refreshDate = getRefreshDate(notAfter, justShyOfValidityPeriod);
 			while (System.currentTimeMillis() < refreshDate.getTime()) {
 				Log.info(this.getClass(), testName.getMethodName(),
 						"Waiting for " + refreshDate + " to pass before restarting the server.");
@@ -403,7 +402,13 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * The certificate checker should automatically renew the certificate.
 			 */
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, TIME_BUFFER_BEFORE_EXPIRE * 2);
+			Date refreshDate = getRefreshDate(((X509Certificate) startingCertificateChain[0]).getNotAfter().getTime(),
+					justShyOfValidityPeriod);
+			long waitTime = calculateTimeToRenew(refreshDate);
+			Log.info(this.getClass(), testName.getMethodName(),
+					"Waiting for " + waitTime + " while checking for new certificate");
+
+			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
 
 			assertNotNull("Should log message that the certificate was renewed",
 					server.waitForStringInLogUsingMark("CWPKI2052I"));
@@ -848,7 +853,12 @@ public class AcmeValidityAndRenewTest {
 			/*
 			 * The certificate checker should automatically renew the certificate.
 			 */
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, TIME_BUFFER_BEFORE_EXPIRE * 2);
+			Date refreshDate = getRefreshDate(notAfter, justShyOfValidityPeriod);
+			long waitTime = calculateTimeToRenew(refreshDate);
+			Log.info(this.getClass(), testName.getMethodName(),
+					"Waiting for " + waitTime + " while checking for new certificate");
+
+			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
 
 			assertNotNull("Should log message that the certificate was renewed",
 					server.waitForStringInLogUsingMark("CWPKI2052I"));
@@ -896,4 +906,46 @@ public class AcmeValidityAndRenewTest {
 		AcmeFatUtils.stopServer(server, msgs);
 	}
 
+	/**
+	 * 
+	 * Calculate the actual refresh date so we sleep long enough waiting for a new
+	 * certificate
+	 * 
+	 * @param notAfter
+	 * @param justShyOfValidityPeriod
+	 * @return
+	 */
+	private Date getRefreshDate(long notAfter, long justShyOfValidityPeriod) {
+		Calendar cal = Calendar.getInstance();
+		long refreshTime = notAfter - justShyOfValidityPeriod;
+		cal.setTimeInMillis(refreshTime);
+		return cal.getTime();
+	}
+
+	/**
+	 * Calculate the amount of until we hit the renew on a certificate based on the
+	 * provided refreshDate.
+	 * 
+	 * Does a min/max of (TIME_BUFFER_BEFORE_EXPIRE *2) and TIME_BUFFER_MAX
+	 * 
+	 * @param refreshDate
+	 * @return
+	 */
+	private long calculateTimeToRenew(Date refreshDate) {
+		/*
+		 * The certificate checker should automatically renew the certificate.
+		 */
+		long waitTime = refreshDate.getTime() - System.currentTimeMillis();
+		long timeBuffDoubled = TIME_BUFFER_BEFORE_EXPIRE * 2;
+		if (waitTime > TIME_BUFFER_MAX) {
+			Log.info(this.getClass(), testName.getMethodName(), "Wait time calulated to greater than " + TIME_BUFFER_MAX
+					+ ", " + waitTime + ", override to " + TIME_BUFFER_MAX);
+			waitTime = TIME_BUFFER_MAX;
+		} else if (waitTime < timeBuffDoubled) {
+			Log.info(this.getClass(), testName.getMethodName(), "Wait time calulated to be less than "
+					+ timeBuffDoubled + ", " + waitTime + ", override to " + timeBuffDoubled);
+			waitTime = timeBuffDoubled;
+		}
+		return waitTime;
+	}
 }
