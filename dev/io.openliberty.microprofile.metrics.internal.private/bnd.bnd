@@ -21,7 +21,7 @@ IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: @privateMetricsURL
-OL-VirtualHost: ${admin.virtual.host}
+OL-VirtualHost: liberty_ops_host
 
 Import-Package: \
 	org.eclipse.microprofile.metrics;version="[1.0,4)",\

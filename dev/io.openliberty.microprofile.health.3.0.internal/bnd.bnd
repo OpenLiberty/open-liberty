@@ -17,7 +17,7 @@ Bundle-SymbolicName: io.openliberty.microprofile.health.3.0.internal
 Bundle-Description:MicroProfile Health Check 3.0 Implementation; version ${bVersion}
 
 Web-ContextPath: health
-OL-VirtualHost: ${admin.virtual.host}
+OL-VirtualHost: liberty_ops_host
 
 WS-TraceGroup: HEALTH
 
