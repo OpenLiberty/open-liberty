@@ -51,5 +51,3 @@ Service-Component: \
 	com.ibm.ws.jaxws.2.3.common;version=latest, \
 	com.ibm.ws.jaxws.wsat;version=latest, \
 	com.ibm.ws.kernel.feature;version=latest
-
-jakartaeeMe: true

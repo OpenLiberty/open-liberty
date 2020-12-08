@@ -46,6 +46,5 @@ instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.security;version=latest,\
 	com.ibm.ws.jaxws.webcontainer;version=latest
-	
-jakartaeeMe: true
+
 

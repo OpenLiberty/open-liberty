@@ -52,9 +52,7 @@ IBM-API-Package:\
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
- com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
- com.ibm.ws.webservices.handler.jakarta
--jars=com.ibm.websphere.appserver.spi.globalhandler.jakarta; location:=dev/spi/ibm/
+ com.ibm.ws.org.jvnet.mimepull;require-java:="9"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

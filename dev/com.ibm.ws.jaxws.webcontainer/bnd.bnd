@@ -82,3 +82,6 @@ instrument.classesExcludes: com/ibm/ws/jaxws/webcontainer/internal/resources/*.c
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true
+	
