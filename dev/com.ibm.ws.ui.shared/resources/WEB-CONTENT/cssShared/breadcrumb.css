@@ -1,0 +1,441 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+#exploreImage {
+    height: 32px;
+    width: 32px;
+}
+
+#breadcrumbStackContainer-id {
+  height: 44px;
+  width: 100%;
+}
+
+#breadcrumbContainer-id {
+  position: absolute;
+  top: 44px;
+  bottom: 0px;
+  width: 100%;
+  background-color: #F4F4F5; 
+  overflow: auto;
+}
+
+#search-resourceType-select .dijitArrowButtonInner, 
+#search-resourceState-select .dijitArrowButtonInner {
+  display: inline; /* To display the drop down arrow in the dijit/form/Select */
+}
+
+.searchPaneSearchButtonIcon {
+  position: relative;
+  left: 10px;
+  background-image: url('../imagesShared/search-D.png');
+  background-repeat: no-repeat;
+  background-color:#2C363B;    
+  background-position: center center;
+  width: 30px;
+  height: 30px;
+  background-size: 100%;
+}
+
+#breadcrumbAndSearchDiv {
+  height: 44px;;
+  width: 100%;
+}
+
+#breadcrumbDiv {
+    height: 44px; 
+    padding-left: 0px;      
+    padding-bottom: 0px;       
+    top: 0px !important; 
+    left: 0px !important;
+    background-color: #404E56;
+    width: 100%;
+    float: left;
+}
+
+.breadcrumbPane {
+    overflow: hidden;
+    white-space: nowrap;
+    position: absolute;      
+    top: 0px !important; 
+    left: 0px !important;
+    background-color: #404E56;
+    height: 44px;
+}
+.breadcrumbController
+{
+    height: 100%;
+    overflow: hidden;
+    border: 2px solid blue;
+    white-space: nowrap;
+}
+
+.breadcrumb .dijitText
+{
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.oneui .idxBreadcrumbHover .dijitButtonText
+{
+    color: white;
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+.breadcrumbTextOnly,
+.breadcrumb .dijitButtonNode
+{
+    border: none;
+    padding: 0px;
+    padding: 0 5px;
+}
+
+.firstbreadcrumbSeparator {
+	height: 44px;
+	width: 2px;
+	display: inline-block;
+	background-color: #444b4e !important;
+	position:absolute;
+    margin-top:-1px;
+}
+
+.breadcrumbSeparator
+{
+	height: 44px;
+	width: 14px;
+    display: inline-block;
+    background-color: #2C363B;
+    font-size: 100%;
+    position: relative;
+    /*height: 6em;   
+    padding: 7px; 
+    white-space: nowrap;*/
+    background-image: url('../imagesShared/breadcrumb-separater-T.png');
+    position:absolute;
+	margin-top:-1px;
+}
+
+.breadcrumbSeparator:hover,
+.breadcrumbSeparatorButton .dijitButtonNode:hover {
+  cursor: default;
+}
+
+.breadcrumbSeparatorSelected /*only diff is background-color*/
+{
+	height: 44px;
+	width: 14px;
+    display: inline-block;
+    background-color: #404E56;
+    font-size: 100%;
+    position: relative;
+    /*height: 6em;   
+    padding: 7px; 
+    white-space: nowrap;
+    background-image: url('../imagesShared/breadcrumb-separater-selected-T.png');
+    */
+    background-image: url('../imagesShared/breadcrumb-separater-T.png');
+    position:absolute;
+	margin-top:-1px;
+}
+.breadcrumbController span:nth-last-child(2){
+    background-color:transparent;
+}
+/*
+.lastbreadcrumbSeparator {
+    background-color:#404E56;
+}*/
+
+
+.breadcrumbSeparator span {
+    background-color: #2C363B;
+    display: none;
+}
+
+.oneui.dijit_a11y .breadcrumbSeparator span,
+.dijit_a11y .breadcrumbSeparator span{
+    background-color: #2C363B;
+    display: inline;
+    vertical-align: middle;
+}
+
+.dijitRtl .breadcrumbSeparator 
+{
+    background-color: #2C363B;
+    background-position: -33px; 
+} 
+.breadcrumbSeparatorButton,
+.breadcrumbTextOnly,
+.breadcrumb  
+{
+	  height: 44px;
+    font-size: 18px;
+    color: #FFFFFF;
+    vertical-align: middle;
+    display: inline-block;
+    white-space: nowrap;
+    background-color:#2C363B;
+}
+
+.breadcrumbSeparatorButton {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.breadcrumb  
+{
+    padding-left: 16px;
+    padding-right: 6px;
+}
+
+/*
+.breadcrumb .dijitButtonNode {
+    padding-left: 16px !important;
+    padding-right: 12px !important;
+}
+
+.breadcrumb .dijitButtonNode:focus {
+  	box-shadow: inset 0 0 2px 2px rgba(255, 255, 255, 0.3);
+    cursor: pointer;  
+	outline:none;
+}
+*/
+.breadcrumbTextOnly:hover,
+.breadcrumb:hover,
+.lastBreadCrumb {
+	background-color: #404E56;
+}
+
+.breadcrumbController .breadcrumbFocused .dijitButtonContents {
+    outline: none;
+    border: 1px solid #ffffff;
+    margin: -1px;
+    background-color: transparent;
+}
+
+.breadcrumb .dijitButtonContents:focus{
+	outline: none !important;
+}
+
+.borderFocused {
+      box-shadow: inset 0px 0px 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+.breadcrumbController .idxBreadcrumbRtl
+{
+    padding-left: 0px;
+    padding-right: 9px;
+}
+
+.oneui .idxBreadcrumbChecked .dijitButtonText
+{
+    cursor:default;
+    font-size: 18px;
+    color: white;
+}
+
+.breadcrumb .idxBreadcrumbChecked 
+{
+    background-color:#404E56;
+}
+
+.breadcrumbTextOnly .dijitButtonContents{
+	padding: 12px !important;
+}
+ 
+.breadcrumbTextOnly .dijitButtonContents:focus{
+  outline: none;
+} 
+ 
+.breadcrumbDashboard{
+ 	background-repeat: no-repeat;
+    background-color:#2C363B;
+    width: 78px;
+    background-position: center center;
+    border-right: 2px solid #444b4c;
+  }
+  
+ .breadcrumbDashboard.dijitIcon {
+ }
+  
+ /**The dashboard and search buttons appear the same on selected and not on selected, so using a border to indicate hover and focus **/ 
+.breadcrumbDashboard:hover,
+.breadcrumbDashboard .dijitButtonContents:focus,
+.searchButtonIcon:hover,
+#searchButton:focus {
+  outline-color: #778186; /**box-shadow does not appear to be visible; so overriding the blue outline with a color similar to how rgba(255, 255, 255, 0.3) appears on our dark background **/
+  box-shadow: inset 0px 0px 3px 3px rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+  
+.breadcrumbInstances,
+.breadcrumbApps, 
+.breadcrumbClusters,
+.breadcrumbServers,
+.breadcrumbHosts,
+.breadcrumbRuntimes,
+.breadcrumbLiberty,
+.breadcrumbNodejs
+{
+  background-repeat: no-repeat;
+  min-height: 44px;
+  width: 32px;
+  background-position: left center;
+  vertical-align: middle;
+}
+
+.breadcrumbInstances svg,
+.breadcrumbApps svg, 
+.breadcrumbClusters svg,
+.breadcrumbServers svg,
+.breadcrumbHosts svg,
+.breadcrumbRuntimes svg,
+.breadcrumbLiberty svg,
+.breadcrumbNodejs svg
+{
+    height: 28px;
+    width: 28px;
+    margin-top: 25%;
+    margin-right: 30%;
+}
+
+.breadcrumbDashboard svg {
+    height: 30px;
+    width: 30px;
+    margin: 8%;
+}
+
+.searchDiv
+{
+  top: 0px;
+  right: 0px;
+  width: 80px;
+  height: 44px;
+  position: absolute;
+}
+
+.searchButton {
+  border-right: 2px solid #444b4c;
+  outline: none;
+  border: 1px solid #ffffff;
+  margin: -1px;
+}
+
+.searchButtonIcon {
+  background-repeat: no-repeat;
+/*  background-color:#2C363B;*/    
+  background-position: center center;
+  width: 80px;
+  height: 44px;
+}
+
+.searchButtonIcon svg {
+  height: 30px;
+  width: 30px;
+  margin: 8%;
+}
+
+@media screen and (max-device-width : 480px) {
+
+    .breadcrumbPane {
+        height: 45px;
+    }
+ 
+    #breadcrumbStackContainer-id {
+        height: 45px;
+    }
+
+    #breadcrumbContainer-id {
+        top: 45px;
+    }
+
+ 
+    #exploreImage {
+        height: 30px;
+        width: 30px;    
+    }
+    
+    #breadcrumbDiv {
+        height: 45px; 
+    }
+
+    #breadcrumbAndSearchDiv {
+        height: 45px;;
+        margin-right: 45px;
+    }
+
+    .searchButtonIcon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .searchDiv {
+        height: 45px;
+        width: 45px;
+    }
+
+    .breadcrumb .dijitButtonText
+    {
+        font-size: 17px;
+    }
+    
+    .firstbreadcrumbSeparator {
+        height: 46px;
+        width: 1px;
+        display: inline-block;
+        background-color: #444b4e !important;
+        vertical-align: top;
+        margin-top: -9px;
+    }
+
+    .breadcrumbSeparator
+    {
+        height: 46px;
+        width: 9px;
+        display: inline-block;
+        background-color: #2C363B;
+        font-size: 100%;
+        position: relative;
+        background-image: url('../imagesShared/breadcrumb-separater-S.png');
+        vertical-align:top;
+        margin-top:-9px;
+    }   
+    
+    .breadcrumb
+    {
+        min-width: 46px;
+        height: 46px;
+        font-size: 17px;
+        color: white;
+        vertical-align: middle;
+        display: inline;
+        line-height: 1em;
+        white-space: nowrap;
+        padding-left: 10px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        padding-right: 9px;
+        background-color:#2C363B;
+    }
+    
+    .lastBreadCrumb {
+        background-color: #404E56;
+    }
+
+}
+
+/** OneUI overrides */
+.oneui .idxBreadcrumbController
+{
+	padding-bottom:0px;
+}
+
