@@ -24,7 +24,7 @@ tested.features:\
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	org.ektorp:org.ektorp;version=1.4.1,\
+	org.ektorp:org.ektorp;version=1.5.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.testcontainers:database-commons;version=1.14.0,\
 	org.testcontainers:testcontainers;version=1.14.0,\

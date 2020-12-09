@@ -382,7 +382,7 @@ org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0
 org.eclipse.transformer:org.eclipse.transformer:0.2.0
 org.eclipse:yasson:2.0.1
 org.ehcache.modules:ehcache-107:3.8.1
-org.ektorp:org.ektorp:1.4.1
+org.ektorp:org.ektorp:1.5.0
 org.fusesource.jansi:jansi:1.18
 org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10
 org.glassfish.hk2.external:javax.inject:2.3.0-b10
