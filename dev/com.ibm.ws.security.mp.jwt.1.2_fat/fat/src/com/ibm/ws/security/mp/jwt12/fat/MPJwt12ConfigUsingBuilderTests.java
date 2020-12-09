@@ -25,8 +25,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
-import com.ibm.ws.security.mp.jwt12.fat.sharedTests.MPJwt12MPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -68,6 +68,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
@@ -81,7 +82,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
 
-    String[] rsAlgList = { MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.SIGALG_RS384, MpJwt12FatConstants.SIGALG_RS512 };
+    String[] rsAlgList = { MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.SIGALG_RS384, MPJwt12FatConstants.SIGALG_RS512 };
     private static final boolean ExpectExtraMsgs = true;
 
     public static final JwtTokenBuilderUtils builderHelpers = new JwtTokenBuilderUtils();
@@ -118,7 +119,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Authorization_passTokenInAuthHeaderUsingBearer() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization.xml");
         // by default the test tooling puts the token in Authorization header using "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
 
     }
 
@@ -132,7 +133,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Authorization_passTokenInAuthHeaderNotUsingBearer() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization.xml");
         // put the token in the authorization header, but don't use "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, "notBearer", setMissingTokenBadNameExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.AUTHORIZATION, "notBearer", setMissingTokenBadNameExpectations(resourceServer));
     }
 
     // Testing using Header=Authorization and not passing the token is the same as other tests...
@@ -149,7 +150,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Authorization_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization.xml");
         // pass the token as a cookie using "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setMissingTokenExpectations(resourceServer));
     }
 
@@ -166,7 +167,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Authorization_setCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization_withCookie.xml");
         // pass the token as a cookie, but don't use "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, "myJwt", setMissingTokenExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, "myJwt", setMissingTokenExpectations(resourceServer));
     }
 
     /**
@@ -180,7 +181,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Cookie_doNotSetCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie.xml");
         // pass the token as a cookie using the default name "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
     }
 
     /**
@@ -193,7 +194,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Cookie_setCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie_withCookie.xml");
         // pass the token as a cookie using the configured cookie name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, "myJwt", null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, "myJwt", null);
     }
 
     /**
@@ -206,7 +207,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Cookie_setCookieName_passTokenAsCookieUsingDifferentName() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie_withCookie.xml");
         // pass the token as a cookie using a name other than the configured name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, "otherName", setMissingTokenExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, "otherName", setMissingTokenExpectations(resourceServer));
     }
 
     /**
@@ -219,7 +220,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_Header_Cookie_setCookieName_passTokenAsCookieUsingDefaultName() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie_withCookie.xml");
         // put the token in the Cookie - use the cookie name "Bearer" instead of the configured name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setMissingTokenExpectations(resourceServer));
     }
 
@@ -236,7 +237,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization_withCookie.xml");
         // put the token in the authorization header using "Bearer"
         // put some string in a cookie with the configured cookie name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, BothHeaderGood, "myJwt", null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, BothHeaderGood, "myJwt", null);
     }
 
     /**
@@ -251,7 +252,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie_withCookie.xml");
         // put some string in the authorization header using "Bearer"
         // put the token in the cookie using the configured name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, BothCookieGood, "myJwt", null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, BothCookieGood, "myJwt", null);
     }
 
     /**
@@ -266,7 +267,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Authorization_withCookie.xml");
         // put some string in the authorization header using "Bearer"
         // put the token in the cookie using the configured name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, BothCookieGood, "myJwt", setMissingTokenBadNameExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, BothCookieGood, "myJwt", setMissingTokenBadNameExpectations(resourceServer));
     }
 
     /**
@@ -281,7 +282,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_Header_Cookie_withCookie.xml");
         // put the token in the authorization header using "Bearer"
         // put some string in a cookie with the configured cookie name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, BothHeaderGood, "myJwt", setMissingTokenBadNameExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, BothHeaderGood, "myJwt", setMissingTokenBadNameExpectations(resourceServer));
     }
 
     /****************************** End Header & Cookie **********************************/
@@ -318,7 +319,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS256_tokenRS256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_RS256.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
 
     }
 
@@ -331,7 +332,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS384_tokenRS384() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384_encrypt_RS384.xml");
-        genericConfigTest(resourceServer, "sign_RS384_enc_RS384", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, "sign_RS384_enc_RS384", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
     }
 
     /**
@@ -343,7 +344,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS512_tokenRS512() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS512_encrypt_RS512.xml");
-        genericConfigTest(resourceServer, "sign_RS512_enc_RS512", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, "sign_RS512_enc_RS512", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
     }
 
     /**
@@ -355,7 +356,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS384_tokenRS512() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384_encrypt_RS384.xml");
-        genericConfigTest(resourceServer, "sign_RS512_enc_RS512", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS512_enc_RS512", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptMismatchExpectations(resourceServer, ExpectExtraMsgs));
     }
 
@@ -368,7 +369,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtES384_tokenRS256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_ES384.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptMismatchKeyTypeExpectations(resourceServer, ExpectExtraMsgs));
     }
 
@@ -382,7 +383,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJWtRS256_signUsingRS384() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384_encrypt_RS256.xml");
-        genericConfigTest(resourceServer, "sign_RS384_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, "sign_RS384_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
 
     }
 
@@ -396,7 +397,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtRS256_tokenNotEncrypted() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_RS256.xml");
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptNotJWETokenExpectations(resourceServer, ExpectExtraMsgs));
 
     }
@@ -412,7 +413,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         // use the original server config which has no encryption
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig_1_2.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setNoEncryptNotJWSTokenExpectations(resourceServer, ExpectExtraMsgs));
 
     }
@@ -430,11 +431,11 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, defaultUser));
         // add more args to create a JWE with a different key management algorithm
-        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256);
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256);
 
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_KEY_MGMT_ALG, MpJwt12FatConstants.KEY_MGMT_KEY_ALG_256));
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_ENCRYPT_KEY, encryptKey));
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_CONTENT_ENCRYPT_ALG, MpJwt12FatConstants.DEFAULT_CONTENT_ENCRYPT_ALG));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_KEY_MGMT_ALG, MPJwt12FatConstants.KEY_MGMT_KEY_ALG_256));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_ENCRYPT_KEY, encryptKey));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_CONTENT_ENCRYPT_ALG, MPJwt12FatConstants.DEFAULT_CONTENT_ENCRYPT_ALG));
         String token = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "sign_RS256_enc_RS256", extraClaims);
 
         for (TestApps app : setTestAppArray(resourceServer)) {
@@ -443,6 +444,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), token);
 
             validationUtils.validateResult(response, setGoodAppExpectations(app.getUrl(), app.getClassName()));
+
+            actions.destroyWebClient(webClient);
 
         }
     }
@@ -460,11 +463,11 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
         extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, defaultUser));
         // add more args to create a JWE with a different content encryption alg
-        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256);
+        String encryptKey = JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256);
 
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_KEY_MGMT_ALG, MpJwt12FatConstants.DEFAULT_KEY_MGMT_KEY_ALG));
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_ENCRYPT_KEY, encryptKey));
-        extraClaims.add(new NameValuePair(MpJwt12FatConstants.PARAM_CONTENT_ENCRYPT_ALG, MpJwt12FatConstants.CONTENT_ENCRYPT_ALG_192));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_KEY_MGMT_ALG, MPJwt12FatConstants.DEFAULT_KEY_MGMT_KEY_ALG));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_ENCRYPT_KEY, encryptKey));
+        extraClaims.add(new NameValuePair(MPJwt12FatConstants.PARAM_CONTENT_ENCRYPT_ALG, MPJwt12FatConstants.CONTENT_ENCRYPT_ALG_192));
         String token = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "sign_RS256_enc_RS256", extraClaims);
 
         for (TestApps app : setTestAppArray(resourceServer)) {
@@ -473,6 +476,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), token);
 
             validationUtils.validateResult(response, setGoodAppExpectations(app.getUrl(), app.getClassName()));
+
+            actions.destroyWebClient(webClient);
 
         }
     }
@@ -486,7 +491,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtinvalid_signUsingRS256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_invalid.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptInvalidKeyTypeExpectations(resourceServer, "badAlias", ExpectExtraMsgs));
 
     }
@@ -500,7 +505,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtpublicKey_signUsingRS256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_publicKey.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptInvalidKeyTypeExpectations(resourceServer, "rs256", ExpectExtraMsgs));
 
     }
@@ -515,7 +520,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
     public void MPJwt12ConfigUsingBuilderTests_encrypt_mpJwtShortPrivateKey_signUsingRS256() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256_encrypt_shortPrivateKey.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setEncryptShortKeyTypeExpectations(resourceServer, ExpectExtraMsgs));
 
     }
@@ -533,7 +538,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
         // build a jwt token whose payload only contains json data - make sure that we do not allow this format (it's not supported at this time)
         String jwtToken = builderHelpers
                         .buildAlternatePayloadJWEToken(JwtKeyTools
-                                        .getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)));
+                                        .getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256)));
         Log.info(thisClass, _testName, "Funky token: " + jwtToken);
         for (TestApps app : setTestAppArray(resourceServer)) {
             WebClient webClient = actions.createWebClient();
@@ -541,6 +546,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), jwtToken);
 
             validationUtils.validateResult(response, setEncryptInvalidPayloadExpectations(resourceServer, ExpectExtraMsgs));
+
+            actions.destroyWebClient(webClient);
 
         }
     }
@@ -557,9 +564,9 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         // build a jwe token that has "typ" set to "notJOSE" instead of "JOSE".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
-                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
+                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256)),
                                                     "notJOSE", "jwt");
-// for debug       new JwtTokenForTest(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256));
+// for debug       new JwtTokenForTest(jwtToken, JwtKeyTools.getComplexPrivateKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256));
         Log.info(thisClass, _testName, "Funky token: " + jwtToken);
         for (TestApps app : setTestAppArray(resourceServer)) {
             WebClient webClient = actions.createWebClient();
@@ -570,6 +577,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
             // the code that checks the JWE type runs before the signature is checked, so if we get far enough to fail on
             // on the signature, we haven't failed checking the JWE Type :)
             validationUtils.validateResult(response, setBadCertExpectations(resourceServer, KeyMismatch));
+
+            actions.destroyWebClient(webClient);
 
         }
     }
@@ -586,7 +595,7 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
 
         // build a jwe token that has "cty" set to "not_jwt" instead of "jwt".  The token will be encrypted with RS256 and signed with HS256.
         String jwtToken = builderHelpers
-                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MpJwt12FatConstants.SIGALG_RS256)),
+                        .buildJWETokenWithAltHeader(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(jwtBuilderServer, MPJwt12FatConstants.SIGALG_RS256)),
                                                     "JOSE", "not_jwt");
         Log.info(thisClass, _testName, "Funky token: " + jwtToken);
         for (TestApps app : setTestAppArray(resourceServer)) {
@@ -595,6 +604,8 @@ public class MPJwt12ConfigUsingBuilderTests extends MPJwt12MPConfigTests {
             Page response = actions.invokeUrlWithBearerToken(_testName, webClient, app.getUrl(), jwtToken);
 
             validationUtils.validateResult(response, setEncryptBadCtyExpectations(resourceServer, ExpectExtraMsgs));
+
+            actions.destroyWebClient(webClient);
 
         }
     }

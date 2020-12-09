@@ -1,6 +1,6 @@
 <server>
 
-	<include location="${shared.config.dir}/rs11Features.xml" />
+	<include location="${shared.config.dir}/rsFeatures_mpJwt11.xml" />
 
 	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
 
