@@ -786,6 +786,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     @Override
     public void addEjbDescriptor(EjbDescriptor<?> ejbDescriptor) {
+        Tr.entry(tc, "addEjbDescriptor. Adding EjbDescriptor: " + ejbDescriptor + " with ejbName: " + ejbDescriptor.getEjbName() + " to bda: " + getHumanReadableName());
+
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
             this.ejbDescriptors.add(ejbDescriptor);
             Class<?> beanClass = ejbDescriptor.getBeanClass();
