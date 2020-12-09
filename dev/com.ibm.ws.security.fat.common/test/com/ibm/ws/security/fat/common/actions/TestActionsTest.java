@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,6 +127,7 @@ public class TestActionsTest extends CommonTestClass {
                 {
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -208,6 +209,7 @@ public class TestActionsTest extends CommonTestClass {
                 {
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -319,6 +321,7 @@ public class TestActionsTest extends CommonTestClass {
                     one(request).setAdditionalHeader("Cookie", cookieName + "=" + cookieValue);
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -494,6 +497,7 @@ public class TestActionsTest extends CommonTestClass {
                 {
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -558,6 +562,7 @@ public class TestActionsTest extends CommonTestClass {
                     one(request).setRequestParameters(params);
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -616,6 +621,7 @@ public class TestActionsTest extends CommonTestClass {
                 {
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -680,6 +686,7 @@ public class TestActionsTest extends CommonTestClass {
                     one(request).setRequestParameters(params);
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
@@ -835,6 +842,7 @@ public class TestActionsTest extends CommonTestClass {
                 {
                     one(webClient).getPage(request);
                     will(returnValue(page));
+                    one(webClient).close();
                 }
             });
             printResponsePartsExpectation();
