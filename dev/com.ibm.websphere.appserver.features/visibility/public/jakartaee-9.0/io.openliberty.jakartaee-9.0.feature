@@ -23,6 +23,7 @@ Subsystem-Name: Jakarta EE Platform 9.0
  io.openliberty.messagingSecurity-3.0,\
  io.openliberty.messagingServer-3.0,\
  io.openliberty.webProfile-9.0,\
- io.openliberty.xmlBinding-3.0
+ io.openliberty.xmlBinding-3.0,\
+ io.openliberty.xmlWS-3.0
 kind=beta
 edition=base
