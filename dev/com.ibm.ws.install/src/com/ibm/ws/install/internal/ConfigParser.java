@@ -126,6 +126,9 @@ public class ConfigParser {
      */
     public String resolvePath(String path) {
         String result = "/";
+        if (InstallUtils.isWindows) {
+            result = "";
+        }
         String[] splitPath = path.split("/"); //\\$\\{.*\\}
         for (String s : splitPath) {
             String accumulator = "";
@@ -156,11 +159,11 @@ public class ConfigParser {
             }
             result += accumulator;
         }
-        if (result.startsWith("//")) {
-            result.replaceFirst("/", "");
-        }
         if (result.contains("${")) {
             result = resolvePath(result);
+        }
+        if (InstallUtils.isWindows) {
+            result = result.replaceAll("\\/", "\\\\");
         }
         return result;
     }
