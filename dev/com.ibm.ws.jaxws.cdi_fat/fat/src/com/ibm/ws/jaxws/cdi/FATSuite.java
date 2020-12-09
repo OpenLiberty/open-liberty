@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.cdi;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -22,5 +25,13 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 BasicTest.class,
 })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction().addFeature("jaxws-2.3")
+                                    .addFeature("cdi-2.0")
+                                    .removeFeature("cdi-1.2")
+                                    .removeFeature("jaxws-2.2")
+                                    .removeFeature("servlet-3.1")
+                                    .withID("jaxws-2.3"));
 
 }

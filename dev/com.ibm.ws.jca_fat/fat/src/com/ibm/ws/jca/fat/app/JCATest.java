@@ -26,13 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jca.fat.FATSuite;
-
 import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.jca.fat.FATSuite;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -169,4 +167,24 @@ public class JCATest extends FATServletClient {
         runTest();
     }
 
+    /**
+     * Save an unsharable JMS connection handle from one servlet method for use in another.
+     * With HandleList disabled, this should be possible.
+     */
+    @Test
+    public void testSaveUnsharableConnectionForLater_HandleListDisabled() throws Exception {
+        runTest("testSaveUnsharableConnectionForLater_HandleListDisabled");
+        runTest("testUseUnsharableConnectionFromPreviousRequest_HandleListDisabled");
+    }
+
+    /**
+     * Save an unsharable JMS connection handle from one servlet method for use in another.
+     * With HandleList enabled, the connection should be closed automatically by the container,
+     * preventing usage within the second servlet request.
+     */
+    @Test
+    public void testSaveUnsharableConnectionForLater_HandleListEnabled() throws Exception {
+        runTest("testSaveUnsharableConnectionForLater_HandleListEnabled");
+        runTest("testUseUnsharableConnectionFromPreviousRequest_HandleListEnabled");
+    }
 }

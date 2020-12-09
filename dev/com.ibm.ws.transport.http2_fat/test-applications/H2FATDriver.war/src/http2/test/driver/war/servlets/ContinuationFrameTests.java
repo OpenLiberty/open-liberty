@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
-import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
@@ -50,8 +49,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         // create headers to send over to the server; note that the end headers flag IS set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -69,7 +67,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
 
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
-        h2Client.waitFor(headers);
         h2Client.sendFrame(continuationHeaders);
 
         blockUntilConnectionIsDone.await();
@@ -90,8 +87,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         // create headers to send over to the server; note that the end headers flag IS NOT set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -116,7 +112,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
-        h2Client.waitFor(headers);
         h2Client.sendFrame(lastContinuationHeaders);
 
         blockUntilConnectionIsDone.await();
@@ -137,8 +132,7 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         // create headers to send over to the server; note that end_headers IS set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -157,7 +151,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         // send over the header frames followed by the data and continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(new FrameData(3, "derp".getBytes(), false));
-        h2Client.waitFor(headers);
         h2Client.sendFrame(firstContinuationHeaders);
 
         blockUntilConnectionIsDone.await();

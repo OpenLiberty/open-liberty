@@ -170,6 +170,9 @@ public class ContextServiceFATTest {
             server.stopServer("WTRN0017W");
             server.updateServerConfiguration(savedConfig);
         }
+
+        if (server != null)
+            server.deleteFileFromLibertyInstallRoot("lib/features/contextinternals-1.0.mf");
     }
 
     @Test

@@ -8,6 +8,7 @@
     <servlet>
         <servlet-name>com.ibm.ws.jaxrs21.client.jaxrs21clienttimeout.service.TestApplication</servlet-name>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>com.ibm.ws.jaxrs21.client.jaxrs21clienttimeout.service.TestApplication</servlet-name>

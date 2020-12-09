@@ -30,7 +30,6 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -173,11 +172,9 @@ public class CDIInjectionTests extends CDITestBase {
     public void testInjectionProvider() throws Exception {
         String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
 
-        String msgToSearchFor2 = "MyFaces CDI support enabled";
-
-        if (JakartaEE9Action.isActive()) {
-            msgToSearchFor2 = "MyFaces Core CDI support enabled";
-        }
+        // The Message that is output by MyFaces was changed in https://issues.apache.org/jira/browse/MYFACES-4334
+        // for MyFaces 2.3.7 and newer versions. The original message was "MyFaces CDI support enabled".
+        String msgToSearchFor2 = "MyFaces Core CDI support enabled";
 
         this.verifyResponse("CDIInjectionTests", "index.xhtml", "Hello Worldy world", jsf23CDIServer);
 

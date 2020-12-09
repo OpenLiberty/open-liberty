@@ -22,6 +22,9 @@ import io.openliberty.wsoc.tests.BasicTest;
 import io.openliberty.wsoc.tests.Cdi12Test;
 import io.openliberty.wsoc.tests.Cdi20Test;
 import io.openliberty.wsoc.tests.WebSocket11Test;
+import io.openliberty.wsoc.tests.MiscellaneousTest;
+import io.openliberty.wsoc.tests.SecureTest;
+import io.openliberty.wsoc.tests.TraceTest;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -38,7 +41,10 @@ import componenttest.rules.repeater.RepeatTests;
     BasicTest.class,
     WebSocket11Test.class,
     Cdi12Test.class,
-    Cdi20Test.class
+    Cdi20Test.class,
+    MiscellaneousTest.class,
+    SecureTest.class,
+    TraceTest.class
 })
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;

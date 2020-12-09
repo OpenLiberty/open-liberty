@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
@@ -174,8 +175,13 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     @SuppressWarnings("rawtypes")
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
-        return CDI.current();
+        try {
+            return CDI.current();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.cm.handle.HandleListInterface;
 
-public class HCMDetails implements HandleListInterface.Handle {
+public class HCMDetails implements HandleListInterface.HandleDetails {
     private static final TraceComponent tc = Tr.register(HCMDetails.class, J2CConstants.traceSpec, J2CConstants.NLS_FILE);
 
     public final ConnectionManager _cm;
@@ -72,6 +72,14 @@ public class HCMDetails implements HandleListInterface.Handle {
     }
 
     @Override
+    public boolean forHandle(Object h) {
+        boolean isMyHandle = _handle.equals(h);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "forHandle " + h + "? " + isMyHandle);
+        return isMyHandle;
+    }
+
+    @Override
     public void park() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "park", _handle);
@@ -84,14 +92,12 @@ public class HCMDetails implements HandleListInterface.Handle {
             // The RRA throws this exception for the above case.  Other RA's may throw different exceptions
             //  which will fall into the follow on catch clauses which will rethrow the exception.
 
-            Object[] parms = new Object[] { "parkHandle", "parkHandle", _handle, e };
-            Tr.warning(tc, "PARK_OR_REASSOCIATE_FAILED_W_J2CA0083", parms); // TODO message not added to Liberty
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "error is expected if it follows a transaction timeout", e);
         } catch (Exception e) {
             // This could be caused by Transaction timeout having forced a mc.cleanup
             //  which invalidated the handle for this parkHandle call.
 
-            Object[] parms = new Object[] { "parkHandle", "parkHandle", _handle, e };
-            Tr.warning(tc, "PARK_OR_REASSOCIATE_FAILED_W_J2CA0083", parms); // TODO message not added to Liberty
             FFDCFilter.processException(e, getClass().getName(), "373", this);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -119,16 +125,14 @@ public class HCMDetails implements HandleListInterface.Handle {
             // The RRA throws this exception for the above case.  Other RA's may throw different exceptions
             //  which will fall into the followon catch clauses which will rethrow the exception.
 
-            Object[] parms = new Object[] { "reAssociate", "reAssociate", _handle, e };
-            Tr.warning(tc, "PARK_OR_REASSOCIATE_FAILED_W_J2CA0083", parms); // TODO message not added to Liberty
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "error is expected if it follows a transaction timeout", e);
         } catch (Exception e) {
             // This could be caused by Transaction timeout having forced a mc.cleanup
             // which invalidated the handle for this parkHandle call.
 
             // reAssociate failed for some unknown reason
 
-            Object[] parms = new Object[] { "reAssociate", "reAssociate", _handle, e };
-            Tr.warning(tc, "PARK_OR_REASSOCIATE_FAILED_W_J2CA0083", parms); // TODO message not added to Liberty
             FFDCFilter.processException(e, getClass().getName(), "297", this);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

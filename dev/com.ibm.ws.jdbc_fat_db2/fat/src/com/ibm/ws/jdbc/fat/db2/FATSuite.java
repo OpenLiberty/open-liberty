@@ -18,12 +18,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.Db2Container;
-import org.testcontainers.containers.output.OutputFrame;
-
-import com.ibm.websphere.simplicity.log.Log;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.topology.utils.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -32,18 +31,18 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 })
 public class FATSuite {
 
-    public static Db2Container db2 = new Db2Container()
+    public static Db2Container db2 = new Db2Container("aguibert/db2-ssl:1.0")
                     .acceptLicense()
+                    .withUsername("db2inst1") // set in Dockerfile
+                    .withPassword("password") // set in Dockerfile
+                    .withDatabaseName("testdb") // set in Dockerfile
+                    .withExposedPorts(50000, 50001) // 50k is regular 50001 is secure
                     // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
-                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
-                    .withLogConsumer(FATSuite::log);
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "db2", msg);
-    }
+                    .waitingFor(new LogMessageWaitStrategy()
+                                    .withRegEx(".*DB2 SSH SETUP DONE.*")
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25)))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
+                    .withReuse(true);
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

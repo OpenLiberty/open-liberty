@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,12 +35,23 @@ import com.ibm.ws.jaxws.fat.util.TestUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
+/*
+ * This test is responsible for testing whether or not HTTPConduit configuration set in the ibm-ws-bnd.xml file
+ * is picked up and applied to CXF via our integration layer. The test application requires access to CXF internals
+ * so a jaxwsTest-2.3 feature is added to the Liberty image in order to expose those APIs.
+ *
+ */
 @RunWith(FATRunner.class)
 @SkipForRepeat("jaxws-2.3")
 public class HttpConduitPropertiesTest {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("HttpConduitPropertiesTestServer").addFeature("timedexit-1.0").removeFeature("jaxwsTest-2.2").addFeature("jaxwsTest-2.3").withID("jaxwsTest-2.3"));
+
     private static final int CONN_TIMEOUT = 10;
 
     @Server("HttpConduitPropertiesTestServer")
@@ -72,6 +84,8 @@ public class HttpConduitPropertiesTest {
 
         server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/jaxwsTest-2.2.mf");
 
+        server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/jaxwsTest-2.3.mf");
+
         defaultSimpleEchoServiceEndpointAddr = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/SimpleEchoService").toString();
 
         defaultSimpleEchoServiceEndpointAddr2 = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties2/SimpleEchoService").toString();
@@ -90,6 +104,8 @@ public class HttpConduitPropertiesTest {
     @AfterClass
     public static void cleanup() throws Exception {
         server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.2.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.3.mf");
     }
 
     @After
@@ -99,7 +115,7 @@ public class HttpConduitPropertiesTest {
         }
 
         if (server.isStarted()) {
-            server.stopServer(false);
+            server.stopServer();
         }
 
         server.deleteFileFromLibertyServerRoot("dropins/httpConduitProperties.war/WEB-INF/ibm-ws-bnd.xml");

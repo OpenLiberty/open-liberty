@@ -12,31 +12,36 @@
 
 bVersion=1.0
 
+exportVer=2.3
+
 Bundle-Name: JAX-WS 2.3 Common
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
 Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
-
-
-
 # in cxf-rt-frontend-jaxws-3.2 bundle, we exposed:
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
 Export-Package: \
-    com.ibm.ws.jaxws, \
-    com.ibm.ws.jaxws.bus, \
-    com.ibm.ws.jaxws.client;thread-context=true, \
-    com.ibm.ws.jaxws.client.injection, \
-    com.ibm.ws.jaxws.metadata, \
-    com.ibm.ws.jaxws.metadata.builder, \
-    com.ibm.ws.jaxws.security, \
-    com.ibm.ws.jaxws.support, \
-    com.ibm.ws.jaxws.utils, \
-    com.ibm.ws.jaxws.endpoint, \
-    com.ibm.ws.jaxws.threading, \
-    com.ibm.wsspi.jaxws, \
-    com.ibm.ws.jaxws.globalhandler
+    com.ibm.ws.jaxws;version=${exportVer},\
+    com.ibm.ws.jaxws.bus;version=${exportVer},\
+    com.ibm.ws.jaxws.catalog;version=${exportVer},\
+    com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer},\
+    com.ibm.ws.jaxws.client.injection;version=${exportVer},\
+    com.ibm.ws.jaxws.endpoint;version=${exportVer},\
+    com.ibm.ws.jaxws.globalhandler;version=${exportVer},\
+    com.ibm.ws.jaxws.jaxb;version=${exportVer},\
+    com.ibm.ws.jaxws.injection;version=${exportVer},\
+    com.ibm.ws.jaxws.metadata;version=${exportVer},\
+    com.ibm.ws.jaxws.metadata.builder;version=${exportVer},\
+    com.ibm.ws.jaxws.monitor;version=${exportVer},\
+    com.ibm.ws.jaxws.policy;version=${exportVer},\
+    com.ibm.ws.jaxws.security;version=${exportVer},\
+    com.ibm.ws.jaxws.support;version=${exportVer},\
+    com.ibm.ws.jaxws.utils;version=${exportVer},\
+    com.ibm.ws.jaxws.threading;version=${exportVer},\
+    com.ibm.ws.jaxws23.client.security;version=${exportVer},\
+    com.ibm.wsspi.jaxws;version=${exportVer}
 
 Import-Package: \
    javax.xml.bind.*;version="[2.3,3)", \
@@ -52,9 +57,9 @@ Import-Package: \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.*, \
+   com.ibm.ws.jaxws.*,\
    com.ibm.wsspi.jaxws
-
+   
 # Use Dynamic Import Packages for JAXB Context Factory,
 # with that, we could work without ResourceProvider Hook
 DynamicImport-Package: com.sun.xml.bind.v2, \
@@ -65,8 +70,10 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
 -dsannotations:\
   com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
   com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\
+  com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter,\
   com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory,\
-  com.ibm.ws.jaxws.globalhandler.JaxwsGlobalHandlerServiceImpl
+  com.ibm.ws.jaxws.globalhandler.JaxwsGlobalHandlerServiceImpl,\
+  com.ibm.ws.jaxws.JaxwsConduitConfigActivator
 
 
 Service-Component: \
@@ -128,16 +135,6 @@ Service-Component: \
      implementation:=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
      provide:=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
      typeEndpointPublisherManagerMap/registerEndpointPublisher=com.ibm.ws.jaxws.endpoint.EndpointPublisher*; \
-     configuration-policy:=optional; \
-     properties:="service.vendor=IBM", \
-  com.ibm.ws.jaxws.threading.libertyThreadPoolAdapter; \
-     activate:=activate; \
-     deactivate:=deactivate; \
-     scheduledExecutorService="java.util.concurrent.ScheduledExecutorService(service.vendor=IBM)"; \
-     executorService="com.ibm.wsspi.threading.WSExecutorService(service.vendor=IBM)"; \
-     implementation:=com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter; \
-     provide:='com.ibm.ws.jaxws.threading.LibertyThreadPoolAdapter'; \
-     immediate:=true; \
      configuration-policy:=optional; \
      properties:="service.vendor=IBM", \
   com.ibm.ws.jaxws.monitor; \
@@ -202,6 +199,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
@@ -215,7 +213,8 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.websphere.appserver.spi.threading;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.jaxws.tools.2.2.10, \
-	javax.activation:activation;version=1.1
+	javax.activation:activation;version=1.1, \
+	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

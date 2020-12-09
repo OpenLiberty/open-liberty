@@ -11,6 +11,8 @@
 
 dependencies {
   requiredLibs 'net.sf.jtidy:jtidy:9.3.8',
+    'org.apache.httpcomponents.client5:httpclient5:5.0',
+    'org.apache.httpcomponents.core5:httpcore5:5.0',
     'org.eclipse.jetty.websocket:websocket-client:9.2.2.v20140723',
     'org.eclipse.jetty.websocket:websocket-api:9.2.2.v20140723',
     'org.eclipse.jetty.websocket:websocket-common:9.2.2.v20140723',
@@ -38,6 +40,16 @@ addRequiredLibraries {
       // Copy junit jars into a specific folder so they can be referenced
       from configurations.junit
       into "${buildDir}/autoFVT/test-applications/basic.war/resources/WEB-INF/lib"
+    }
+    copy {
+      // Copy junit jars into a specific folder so they can be referenced
+      from configurations.junit
+      into "${buildDir}/autoFVT/test-applications/trace.war/resources/WEB-INF/lib"
+    }
+    copy {
+      // Copy junit jars into a specific folder so they can be referenced
+      from configurations.junit
+      into "${buildDir}/autoFVT/test-applications/secure.war/resources/WEB-INF/lib"
     }
   }
 }

@@ -88,11 +88,14 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
            && !annotatedType.isAnnotationPresent(Decorator.class))
        {
           LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsResource(annotatedType.getJavaClass().getCanonicalName()));
+          //Liberty change start
           if (Application.class.isAssignableFrom(javaClass)) {
               event.setAnnotatedType(wrapAnnotatedType(annotatedType, applicationScopedLiteral));
-          } else {
+          } /* else {
               event.setAnnotatedType(wrapAnnotatedType(annotatedType, requestScopedLiteral));
           }
+          */
+          //Liberty change end
           this.getResources().add(javaClass);
        }
     }

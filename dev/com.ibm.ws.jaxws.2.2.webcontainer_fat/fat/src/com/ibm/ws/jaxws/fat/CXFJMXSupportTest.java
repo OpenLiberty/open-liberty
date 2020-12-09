@@ -42,20 +42,25 @@ import javax.net.ssl.X509TrustManager;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.jmx.test.fat.util.ClientConnector;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class CXFJMXSupportTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("CXFJMXSupportTestServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     @Server("CXFJMXSupportTestServer")
     public static LibertyServer server;
@@ -94,10 +99,12 @@ public class CXFJMXSupportTest {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         } };
 
         SSLContext sc = SSLContext.getInstance("SSL");
@@ -124,8 +131,6 @@ public class CXFJMXSupportTest {
         server.waitForStringInLog("CWPKI0803A.*");
         //Check to see if Rest service is up
         server.waitForStringInLog("CWWKX0103I.*");
-
-        Log.info(thisClass, thisMethod, "@TJJ before constructing Client");
 
         ClientConnector cc = new ClientConnector(server.getServerRoot(), server.getHostname(), server.getHttpDefaultSecurePort());
         mbsc = cc.getMBeanServer();

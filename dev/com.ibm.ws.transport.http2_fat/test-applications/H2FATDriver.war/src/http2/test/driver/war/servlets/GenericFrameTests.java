@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
-import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePing;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
@@ -52,7 +51,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 7, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         //Expected headers for stream 7 request
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
@@ -108,8 +107,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         //Headers frame to send for "second" request
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -118,8 +116,6 @@ public class GenericFrameTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        h2Client.waitFor(headers);
 
         // send out stream 3 headers; end of headers / stream are not set
         frameHeadersToSend.setStreamID(3);
@@ -148,11 +144,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
-
-        // allow first stream to process before sending Ping and ending the test
-        h2Client.waitFor(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         // send a PING frame with the reserved bit set; the server should ignore the reserved field
         boolean reserved = true;
@@ -178,7 +170,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         // malformed frame: set frame type byte to unknown
         //_________________________||____________________ - frame type byte
@@ -207,14 +199,10 @@ public class GenericFrameTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        FrameHeaders headers = setupDefaultPreface(h2Client);
-        h2Client.addExpectedFrame(headers);
+        setupDefaultUpgradedConnection(h2Client);
 
         // send a DATA frame with an ID of 0, for which we'll expect the error frame back from the server
         FrameData invalid = new FrameData(0, "test".getBytes(), 0, false, false, false);
-
-        // wait to give the first stream time to complete in order to have the last stream set correctly in GoAway
-        h2Client.waitFor(headers);
 
         h2Client.sendFrame(invalid);
 

@@ -37,6 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.tests.all.AnnotatedTest;
 import io.openliberty.wsoc.tests.all.BinaryEncodeDecodeTest;
 import io.openliberty.wsoc.tests.all.ConfiguratorTest;
+import io.openliberty.wsoc.tests.all.HeaderTest;
 import io.openliberty.wsoc.tests.all.MultiClientTest;
 import io.openliberty.wsoc.tests.all.OnErrorTest;
 import io.openliberty.wsoc.tests.all.PathParamTest;
@@ -84,6 +85,8 @@ public class BasicTest extends LoggingTest {
     private final ConfiguratorTest ct = new ConfiguratorTest(wt);
 
     private final BinaryEncodeDecodeTest bedt = new BinaryEncodeDecodeTest(wt);
+
+    private final HeaderTest ht = new HeaderTest(wt, SS, getTestCaseLogDirectory());
 
     private static final Logger LOG = Logger.getLogger(BasicTest.class.getName());
 
@@ -154,7 +157,7 @@ public class BasicTest extends LoggingTest {
         }
 
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E");
+            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E", "SRVE8115W", "SRVE0190E");
         }
         bwst.tearDown();
     }
@@ -1210,6 +1213,46 @@ public class BasicTest extends LoggingTest {
         ppt.TestOnOpenThroughUpgrade("/basic/pathUpgradeServlet/testString/1");
 
         ppt.TestOnOpenThroughUpgrade("/basic/pathUpgradeFilter/testString/1");
+    }
+
+    //
+    //
+    //  Invalid wsoc header tests
+    //
+    //
+
+    @Mode(TestMode.FULL)
+    @ExpectedFFDC({ "java.lang.Exception", "java.lang.NumberFormatException" })
+    @Test
+    public void testSSCInvalidVersionHeaders() throws Exception {
+        ht.testInvalidVersionHeaders();
+    }
+
+    @Mode(TestMode.FULL)
+    @ExpectedFFDC({ "java.lang.Exception" })
+    @Test
+    public void testSSCInvalidUpgradeHeaders() throws Exception {
+        ht.testInvalidUpgradeHeaders();
+    }
+
+    @ExpectedFFDC({ "java.lang.Exception" })
+    @Test
+    public void testSSCInvalidAcceptKey() throws Exception {
+        ht.testInvalidAcceptKey();
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testOriginReturns403() throws Exception {
+        ht.testOriginReturns403();
+    }
+
+    @Mode(TestMode.FULL)
+    @AllowedFFDC({ "java.lang.Exception" })
+    // for why we are using AllowedFFDC - see comment #1 at the top of the file
+    @Test
+    public void testServletUpgradeCommitted() throws Exception {
+        ht.testInvalidAcceptKey("/basic/pathUpgradeServlet/testString/1");
     }
 
     /*

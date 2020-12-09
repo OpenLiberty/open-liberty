@@ -83,7 +83,8 @@ tested.features: jaxws-2.3, \
 	org.springframework:spring-core;version=3.0.7.RELEASE,\
 	org.springframework:spring-expression;version=3.0.7.RELEASE,\
 	org.springframework:spring-web;version=3.0.7.RELEASE,\
-	fattest.simplicity
+	fattest.simplicity,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2
   
   
 	

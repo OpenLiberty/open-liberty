@@ -27,6 +27,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -49,11 +50,12 @@ public class FaultToleranceTck20Launcher {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
-                    .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME).fullFATOnly())
-                    .andWith(RepeatFaultTolerance.mp20Features(SERVER_NAME).fullFATOnly())
-                    .andWith(RepeatFaultTolerance.mp13Features(SERVER_NAME).fullFATOnly())
-                    .andWith(RepeatFaultTolerance.mp32Features(SERVER_NAME));
+    public static RepeatTests repeat = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
+                                                                   MicroProfileActions.MP32,
+                                                                   MicroProfileActions.MP22,
+                                                                   MicroProfileActions.MP13,
+                                                                   MicroProfileActions.MP20,
+                                                                   MicroProfileActions.MP30);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -124,16 +126,16 @@ public class FaultToleranceTck20Launcher {
 
         String suiteFileName;
         switch (RepeatTestFilter.getMostRecentRepeatAction()) {
-            case RepeatFaultTolerance.FT20_METRICS11_ID:
-            case RepeatFaultTolerance.MP30_FEATURES_ID:
+            case MicroProfileActions.MP22_ID:
+            case MicroProfileActions.MP30_ID:
                 // For test configurations which only differ my the version of mpMetrics, just run the metrics tests
                 suiteFileName = "tck-suite-metrics-only.xml";
                 break;
-            case RepeatFaultTolerance.MP13_FEATURES_ID:
+            case MicroProfileActions.MP13_ID:
                 // For FT 1.0 configurations, run a compatible subset of tests which have fixes in the FT 2.0 TCK
                 suiteFileName = "tck-suite-10-subset.xml";
                 break;
-            case RepeatFaultTolerance.MP20_FEATURES_ID:
+            case MicroProfileActions.MP20_ID:
                 // For FT 1.1 configurations, run a compatible subset of tests which have fixes in the FT 2.0 TCK
                 suiteFileName = "tck-suite-11-subset.xml";
                 break;

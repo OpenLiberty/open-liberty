@@ -17,7 +17,10 @@ src:\
     test-applications/basic.war/src,\
     test-applications/websocket11.war/src,\
     test-applications/cdi.war/src,\
-    test-applications/context.war/src
+    test-applications/context.war/src,\
+    test-applications/miscellaneous.war/src,\
+    test-applications/secure.war/src,\
+    test-applications/trace.war/src,\
 
 fat.project: true
 
@@ -29,9 +32,12 @@ tested.features: \
 
 
 -buildpath: \
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.websocket.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.1.0;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
     com.ibm.websphere.javaee.jms.1.1;version=latest,\
-    com.ibm.ws.wsoc;version=latest
+    com.ibm.ws.wsoc;version=latest,\
+    org.apache.httpcomponents.client5:httpclient5;version=5.0,\
+    org.apache.httpcomponents.core5:httpcore5;version=5.0

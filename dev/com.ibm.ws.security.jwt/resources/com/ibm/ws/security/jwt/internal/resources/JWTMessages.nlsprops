@@ -371,8 +371,8 @@ DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Use a relative path or URL as the val
 # Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
 # 0=JWT consumer config ID
 JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: The token in the request is not in JSON Web Signature (JWS) format, but the [{0}] JWT consumer only accepts tokens that are in JWS format.
-JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The token in the request might be malformed or might be in JSON Web Encryption (JWE) format. Tokens must be in JWS format if the JWE decryption key location is not configured.
-JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the JWT consumer configuration. Otherwise, ensure that only JWS tokens are sent to this resource.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=The token in the request might be malformed or might be in JSON Web Encryption (JWE) format. Tokens must be in JWS format if the JWE decryption key location is not configured. If you use the MicroProfile JWT feature, the 1.2 version or beyond of the feature must be configured to accept tokens in JWE format.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=To accept JWE tokens, configure the mp.jwt.decrypt.key.location MicroProfile Config property or the keyManagementKeyAlias attribute in the JWT consumer configuration. If you use the MicroProfile JWT feature, ensure that the 1.2 version or beyond is configured. Otherwise, ensure that only JWS tokens are sent to this resource.
 
 # 0=JWT consumer config ID
 JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: The token in the request is not in JSON Web Encryption (JWE) format, but the [{0}] JWT consumer only accepts tokens that are in JWE format.

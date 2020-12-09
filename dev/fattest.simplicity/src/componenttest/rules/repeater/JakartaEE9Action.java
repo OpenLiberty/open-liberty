@@ -10,7 +10,9 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -62,6 +64,8 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "appAuthentication-2.0",
                                                  "appAuthorization-2.0",
                                                  "appSecurity-4.0",
+                                                 "batch-2.0",
+                                                 "batchManagement-2.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
@@ -75,7 +79,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "enterpriseBeansRemote-4.0",
                                                  "enterpriseBeansTest-2.0",
                                                  "mail-2.0",
-                                                 "jaxb-3.0",
                                                  "persistence-3.0",
                                                  "persistenceContainer-3.0",
                                                  "jsonp-2.0",
@@ -94,7 +97,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "restfulWS-3.0",
                                                  "restfulWSClient-3.0",
                                                  "servlet-5.0",
-                                                 "websocket-2.0"
+                                                 "websocket-2.0",
+                                                 "xmlBinding-3.0",
+                                                 "xmlWS-3.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
@@ -217,11 +222,16 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
-        // Capture stdout/stderr streams
-        final PrintStream originalOut = System.out;
-        final PrintStream originalErr = System.err;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
+        // Setup FileOutputStream and never use.  JakartaTransformer defaults cause OOM
+        FileOutputStream fos = null;
+        File throwAwayFile = new File("transformer_output.log");
+        try {
+            fos = new FileOutputStream(throwAwayFile);
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        PrintStream ps = new PrintStream(fos);
         System.setOut(ps);
         System.setErr(ps);
 
@@ -313,13 +323,14 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             Log.error(c, m, e);
             throw new RuntimeException(e);
         } finally {
-            System.setOut(originalOut);
-            System.setErr(originalErr);
-            Log.info(c, m, baos.toString());
             try {
-                baos.close();
-            } catch (IOException ignore) {
+                fos.close();
+            } catch (IOException e) {
             }
+            if (throwAwayFile.exists()) {
+                throwAwayFile.delete();
+            }
+            Log.info(c, m, "Transforming complete app: " + outputPath);
         }
     }
 }

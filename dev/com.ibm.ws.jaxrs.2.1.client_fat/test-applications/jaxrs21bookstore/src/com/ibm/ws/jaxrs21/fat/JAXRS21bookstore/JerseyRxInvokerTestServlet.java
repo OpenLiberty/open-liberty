@@ -66,6 +66,15 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         return false;
     }
 
+    private static final boolean isRestful30() {
+        try {
+            jakarta.ws.rs.core.Application app = new jakarta.ws.rs.core.Application();
+            return true;
+        } catch (NoClassDefFoundError ignore) {
+            return false;
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -1461,6 +1470,11 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testRxObservableInvoker_getConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
         Client c = cb.build();
@@ -1515,6 +1529,11 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         } else {
             //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
             target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testRxFlowableInvoker_getConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
@@ -1667,6 +1686,11 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testRxObservableInvoker_postConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
         Client c = cb.build();
@@ -1721,6 +1745,11 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         } else {
             //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
             target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testRxFlowableInvoker_postConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();

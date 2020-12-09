@@ -16,7 +16,8 @@
    org/apache/cxf=${bin}/org/apache/cxf,\
    META-INF=resources/META-INF
    
-instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class
+instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class, \
+  org/apache/cxf/service/invoker/*.class
 
 -buildpath: \
   javax.activation:activation;version=1.1,\

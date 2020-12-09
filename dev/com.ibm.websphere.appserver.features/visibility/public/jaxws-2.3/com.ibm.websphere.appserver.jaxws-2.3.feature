@@ -5,6 +5,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: jaxws-2.3
+IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-API-Package: \
  javax.jws.soap; type="spec"; require-java:="9", \
  javax.wsdl; type="spec", \
@@ -31,7 +32,8 @@ IBM-API-Package: \
 Subsystem-Name: Java Web Services 2.3
 -features=\
  com.ibm.websphere.appserver.jaxb-2.3, \
- com.ibm.websphere.appserver.internal.jaxws-2.3
+ com.ibm.websphere.appserver.internal.jaxws-2.3, \
+ com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=\
  com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.3.0"
 kind=noship

@@ -1716,6 +1716,9 @@ public class RecoveryManager implements Runnable {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Performing recovery for " + serverName);
 
+            // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
+            _agent.setReplayThread();
+
             // Lets update our entry in the leaseLog early
             if (_leaseLog != null) {
                 // TODO - need a sensible lease time

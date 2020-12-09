@@ -1,18 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,8 +65,8 @@ public class OidcRedirectServlet extends HttpServlet {
 
     /**
      * @param activatedOidcClientImpl
-     *            the activatedOidcClientImpl to set
-     *            (called by the oidcClientImpl on activation)
+     *                                    the activatedOidcClientImpl to set
+     *                                    (called by the oidcClientImpl on activation)
      */
     public static void setActivatedOidcClientImpl(OidcClientImpl activatedOidcClientImpl) {
         OidcRedirectServlet.activatedOidcClientImpl = activatedOidcClientImpl;
@@ -138,6 +139,13 @@ public class OidcRedirectServlet extends HttpServlet {
 
         if (requestUrl == null || requestUrl.isEmpty()) {
             String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1520E
+            Tr.error(tc, errorMsg);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
+            return;
+        }
+
+        if (OidcClientUtil.isReferrerHostValid(request, requestUrl) == false) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE", request.getRequestURL(), (new URL(requestUrl)).getHost()); // CWWKS152XE
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
             return;

@@ -142,6 +142,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             super.setupConnection(message, address, csPolicy);
             return;
         }
+        propagateJaxwsSpecTimeoutSettings(message, csPolicy);
         boolean addressChanged = false;
         // need to do some clean up work on the URI address
         URI uri = address.getURI();
@@ -237,6 +238,19 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         e.setConfig(b.build());
 
         message.put(CXFHttpRequest.class, e);
+    }
+
+
+
+    private void propagateJaxwsSpecTimeoutSettings(Message message, HTTPClientPolicy csPolicy) {
+        int receiveTimeout = determineReceiveTimeout(message, csPolicy);
+        if (csPolicy.getReceiveTimeout() == 60000) {
+            csPolicy.setReceiveTimeout(receiveTimeout);
+        }
+        int connectionTimeout = determineConnectionTimeout(message, csPolicy);
+        if (csPolicy.getConnectionTimeout() == 30000) {
+            csPolicy.setConnectionTimeout(connectionTimeout);
+        }
     }
 
 
@@ -565,7 +579,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
 
 
-            if (sslURL != null && !sslURL.equals(url)) {
+            if (sslURL != null && isSslTargetDifferent(sslURL, url)) {
                 sslURL = null;
                 sslState = null;
                 session = null;
@@ -600,11 +614,21 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             });
         }
 
-        protected void retrySetHttpResponse(HttpResponse r) {
-            if (httpResponse == null && isAsync) {
+        private boolean isSslTargetDifferent(URI lastURL, URI url) {
+            return !lastURL.getScheme().equals(url.getScheme())
+                    || !lastURL.getHost().equals(url.getHost())
+                    || lastURL.getPort() != url.getPort();
+        }
+        
+
+        protected boolean retrySetHttpResponse(HttpResponse r) {
+            if (isAsync) {
                 setHttpResponse(r);
             }
+
+            return !isAsync;
         }
+        
         @FFDCIgnore(Exception.class)
         protected synchronized void setHttpResponse(HttpResponse r) {
             httpResponse = r;
@@ -619,6 +643,8 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
             notifyAll();
         }
+        
+        
         @FFDCIgnore(Exception.class)
         protected synchronized void setException(Exception ex) {
             exception = ex;
@@ -915,6 +941,9 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
 
             KeyManager[] keyManagers = tlsClientParameters.getKeyManagers();
+            if (keyManagers == null) {
+                keyManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultKeyStoreManagers(LOG);
+            }
             KeyManager[] configuredKeyManagers =
                 org.apache.cxf.transport.https.SSLUtils.configureKeyManagersWithCertAlias(
                     tlsClientParameters, keyManagers);
@@ -925,6 +954,10 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
 
             ctx.init(configuredKeyManagers, trustManagers, tlsClientParameters.getSecureRandom());
+            
+            if (ctx.getClientSessionContext() != null) {
+                ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
+            }
         }
 
         sslContext = ctx;

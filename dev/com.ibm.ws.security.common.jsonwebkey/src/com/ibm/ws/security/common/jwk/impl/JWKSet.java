@@ -201,6 +201,12 @@ public class JWKSet {
     public Key getKeyBySetIdAndKeyText(@Sensitive String setId, @Sensitive String keyText, JwkKeyType keyType) {
         Key key = null;
         JSONWebKey jwk = getPEMKey(setId, keyText);
+        if (jwk == null) {
+            Set<JWK> jwks = jwksBySetId.get(keyText);
+            if (jwks != null && jwks.size() == 1) {
+                jwk = jwks.iterator().next();
+            }
+        }
         if (jwk != null) {
             key = getKeyForJwkKeyType(jwk, keyType);
         }

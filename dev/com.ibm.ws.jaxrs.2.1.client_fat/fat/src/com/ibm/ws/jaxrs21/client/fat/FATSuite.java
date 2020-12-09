@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.client.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,6 +27,8 @@ import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ReactiveSampleTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21TimeoutClientTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AlwaysPassesTest.class,
@@ -40,4 +43,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 JAXRS21ClientCompletionStageRxInvokerTest.class,
                 JAXRS21ReactiveSampleTest.class })
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
 }

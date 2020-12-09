@@ -1,0 +1,70 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+WS-TraceGroup: WSSECURITY
+
+Bundle-Name: com.ibm.ws.org.apache.cxf.rt.ws.security
+Bundle-Description: cxf ws security, version 3.3.6
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6
+Bundle-ActivationPolicy: lazy
+
+cxfVersion=3.3.6
+
+Export-Package: \
+  org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyvalidators;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.builders;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.trust.delegation;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.wstrust14;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.cache;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.model;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.custom;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyhandlers;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.secext;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.trust;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.kerberos;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.policy.interceptors;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.xmldsig;version=${cxfVersion}, \
+  org.apache.cxf.ws.security;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.wss4j;version=${cxfVersion}, \
+  org.apache.cxf.ws.security.tokenstore;version=${cxfVersion}
+  
+Import-Package:  \
+  !org.apache.cxf.ws.mex.*,\
+  !com.ctc.wstx.*,\
+  !org.codehaus.stax2.*,\
+  !net.sf.ehcache.*,\
+  org.apache.cxf.*, \
+  org.apache.neethi, \
+  org.apache.neethi.builders, \
+  org.apache.wss4j.*, \
+  org.w3c.dom, \
+  com.ibm.websphere.ras, \
+  com.ibm.websphere.ras.annotation, \
+  com.ibm.ws.ffdc, \
+  *
+
+DynamicImport-Package: \
+  com.ctc.wstx.*
+
+Include-Resource: \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/cxf/*,\
+  cxf-ehcache.xml=resources/cxf-ehcache.xml
+

@@ -27,19 +27,26 @@ import javax.json.JsonStructure;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class MPConcurrentJAXRSTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentJAXRSTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
+
     private static final String APP_NAME = "MPConcurrentJAXRSApp";
 
     /**
@@ -54,7 +61,7 @@ public class MPConcurrentJAXRSTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.jaxrs.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "concurrent.mp.fat.jaxrs.web");
         server.startServer();
         testThreads = Executors.newFixedThreadPool(5);
     }

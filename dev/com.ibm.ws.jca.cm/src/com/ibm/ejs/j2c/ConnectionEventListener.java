@@ -40,7 +40,8 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     /**
      * Default constructor provided so that subclasses need not override (implement).
      */
-    ConnectionEventListener() {}
+    ConnectionEventListener() {
+    }
 
     /**
      * ctor
@@ -84,13 +85,6 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 }
 
                 ConnectionManager cm = mcWrapper.getConnectionManagerWithoutStateCheck();
-
-                if (cm != null && cm.handleToThreadMap != null) {
-                    cm.handleToThreadMap.clear();
-                }
-                if (cm != null && cm.handleToCMDMap != null) {
-                    cm.handleToCMDMap.clear();
-                }
 
                 if (!(mcWrapper.gConfigProps.isSmartHandleSupport() && (cm != null && cm.shareable()))) {
 

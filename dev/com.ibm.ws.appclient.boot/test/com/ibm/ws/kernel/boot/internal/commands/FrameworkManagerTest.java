@@ -162,7 +162,7 @@ public class FrameworkManagerTest {
     public void testClientStartFrameworkException() throws Throwable {
         TestFrameworkManager fm = new TestFrameworkManager() {
             @Override
-            protected Framework startFramework(BootstrapConfig config) {
+            protected Framework initFramework(BootstrapConfig config) {
                 throw new TestException();
             }
         };
@@ -191,7 +191,8 @@ public class FrameworkManagerTest {
     }
 
     @SuppressWarnings("serial")
-    private static class TestException extends RuntimeException {}
+    private static class TestException extends RuntimeException {
+    }
 
     private class TestFrameworkManager extends FrameworkManager {
         private final CountDownLatch frameworkStoppedLatch = new CountDownLatch(1);
@@ -201,7 +202,7 @@ public class FrameworkManagerTest {
         }
 
         @Override
-        protected Framework startFramework(BootstrapConfig config) throws BundleException {
+        protected Framework initFramework(BootstrapConfig config) throws BundleException {
             frameworkStarted = true;
             return FrameworkManagerTest.this.framework;
         }
@@ -222,10 +223,12 @@ public class FrameworkManagerTest {
         }
 
         @Override
-        protected void innerLaunchFramework(boolean isClient) {}
+        protected void innerLaunchFramework(boolean isClient) {
+        }
 
         @Override
-        protected void startServerCommandListener() {}
+        protected void startServerCommandListener() {
+        }
 
         @Override
         public boolean waitForReady() throws InterruptedException {

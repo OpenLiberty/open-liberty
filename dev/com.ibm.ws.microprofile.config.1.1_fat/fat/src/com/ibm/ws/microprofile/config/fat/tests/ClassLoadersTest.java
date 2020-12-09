@@ -23,8 +23,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaders.test.ClassLoadersTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -32,6 +30,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -46,7 +45,7 @@ public class ClassLoadersTest extends FATServletClient {
     public static final String APP_NAME = "classLoaders";
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ClassLoadersServer", Version.CONFIG13_EE7, Version.LATEST);
+    public static RepeatTests r = MicroProfileActions.repeat("ClassLoadersServer", MicroProfileActions.MP14, MicroProfileActions.LATEST);
 
     @Server("ClassLoadersServer")
     @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = APP_NAME)

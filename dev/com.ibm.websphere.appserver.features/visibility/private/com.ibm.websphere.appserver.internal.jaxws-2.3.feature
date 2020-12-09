@@ -13,10 +13,10 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2, \
+ com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=\
  com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
- com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.cxf.client, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2, \
@@ -30,14 +30,18 @@ Subsystem-Name: Internal Java Web Services 2.3
  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
- com.ibm.ws.org.jvnet.mimepull, \
+ com.ibm.ws.org.jvnet.mimepull; require-java:="9", \
  com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
  com.ibm.websphere.javaee.jaxws.2.3; location:="dev/api/spec/"; apiJar=false,\
  com.ibm.ws.jaxws.tools.2.2.10, \
  com.ibm.ws.jaxws.2.3.common; start-phase:=CONTAINER_LATE, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
- com.ibm.ws.prereq.wsdl4j.1.6.2
+ com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ com.ibm.ws.jaxws.2.3.wsat, \
+ com.ibm.ws.javaee.ddmodel.ws, \
+ com.ibm.ws.javaee.ddmodel.wsbnd, \
+ com.ibm.ws.webservices.javaee.common
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

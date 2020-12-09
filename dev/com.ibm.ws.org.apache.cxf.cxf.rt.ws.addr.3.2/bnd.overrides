@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.3.3
+cxfVersion=3.4.1
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2
 
@@ -35,4 +35,7 @@ javax.xml.ws.*;version="[2.3,3)", \
 *
 
 Export-Package: \
-  org.apache.cxf.ws.addr.*;version=${cxfVersion}
+   org.apache.cxf.ws.addressing.soap;version=${cxfVersion}, \
+   org.apache.cxf.ws.addressing.policy;version=${cxfVersion}, \
+   org.apache.cxf.ws.addressing.blueprint;version=${cxfVersion}, \
+   org.apache.cxf.ws.addressing.spring;version=${cxfVersion}

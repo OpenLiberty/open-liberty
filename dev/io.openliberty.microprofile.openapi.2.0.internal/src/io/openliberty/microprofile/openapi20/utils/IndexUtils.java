@@ -63,20 +63,18 @@ public class IndexUtils {
         Indexer indexer = new Indexer();
         FilteredIndexView filter = new FilteredIndexView(null, config);
 
-        // Get the URL to the /WEB-INF/classes directory in the web module
         String containerPhysicalPath = webModuleInfo.getContainer().getPhysicalPath();
         Path containerPath = Paths.get(containerPhysicalPath);
-        Path webinfClassesPath = containerPath.resolve(Constants.DIR_WEB_INF).resolve(Constants.DIR_CLASSES);
-        if (Files.exists(webinfClassesPath) && Files.isDirectory(webinfClassesPath)) {
-            // The /WEB-INF/classes directrory exists.  This is probably an expanded/loose app. Process the files in the directory.
-            try (Stream<Path> walk = Files.walk(webinfClassesPath)) {
+        if (Files.exists(containerPath) && Files.isDirectory(containerPath)) {
+            // Container path is a directory, this is probably an expanded/loose app. Process the files in the directory.
+            try (Stream<Path> walk = Files.walk(containerPath)) {
                 List<Path> files = walk
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
 
                 for (Path file : files) {
                     try {
-                        processFile(file.getFileName().toString(), Files.newInputStream(file), indexer, filter, config);
+                        processFile(containerPath.relativize(file).toString(), Files.newInputStream(file), indexer, filter, config);
                     } catch (IOException e) {
                         if (LoggingUtils.isEventEnabled(tc)) {
                             Tr.event(tc, String.format("Error occurred when processing file %s: %s", file.getFileName().toString(), e.getMessage()));
@@ -85,7 +83,7 @@ public class IndexUtils {
                 } // FOR
             } catch (IOException e) {
                 if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, String.format("Error occurred when attempting to walk files for directory %s: %s", webinfClassesPath, e.getMessage()));
+                    Tr.event(tc, String.format("Error occurred when attempting to walk files for directory %s: %s", containerPath, e.getMessage()));
                 }
             }
         } else if (  Files.isRegularFile(containerPath)
@@ -94,7 +92,7 @@ public class IndexUtils {
                      )
                   ) {
             try {
-                // The /WEB-INF/classes directrory does not exist.  This is a JAR/WAR.
+                // Container path is a .jar or .war file.
                 if (LoggingUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Processing archive: " + containerPath);
                 }

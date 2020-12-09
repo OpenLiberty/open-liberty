@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.microprofile.context.ApplicationContextProvider;
 import com.ibm.ws.microprofile.context.CDIContextProviderHolder;
+import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
 import com.ibm.ws.microprofile.context.SecurityContextProvider;
 import com.ibm.ws.microprofile.context.ThreadIdentityContextProvider;
 import com.ibm.ws.microprofile.context.TransactionContextProvider;
@@ -53,6 +54,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
 
     final ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
     final CDIContextProviderHolder cdiContextProvider = new CDIContextProviderHolder();
+    final EmptyHandleListContextProvider emptyHandleListContextProvider = new EmptyHandleListContextProvider();
     final SecurityContextProvider securityContextProvider = new SecurityContextProvider();
     final TransactionContextProvider transactionContextProvider = new TransactionContextProvider();
     final WLMContextProvider wlmContextProvider = new WLMContextProvider();
@@ -84,6 +86,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
         applicationContextProvider.classloaderContextProviderRef.activate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.activate(osgiComponentContext);
         cdiContextProvider.cdiContextProviderRef.activate(osgiComponentContext);
+        emptyHandleListContextProvider.emptyHandleListContextProviderRef.activate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.activate(osgiComponentContext);
         threadIdendityContextProvider.threadIdentityContextProviderRef.activate(osgiComponentContext);
         transactionContextProvider.transactionContextProviderRef.activate(osgiComponentContext);
@@ -128,6 +131,7 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
         transactionContextProvider.transactionContextProviderRef.deactivate(osgiComponentContext);
         threadIdendityContextProvider.threadIdentityContextProviderRef.deactivate(osgiComponentContext);
         securityContextProvider.securityContextProviderRef.deactivate(osgiComponentContext);
+        emptyHandleListContextProvider.emptyHandleListContextProviderRef.deactivate(osgiComponentContext);
         cdiContextProvider.cdiContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.jeeMetadataContextProviderRef.deactivate(osgiComponentContext);
         applicationContextProvider.classloaderContextProviderRef.deactivate(osgiComponentContext);
@@ -159,6 +163,15 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
                target = "(component.name=com.ibm.ws.classloader.context.provider)")
     protected void setClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         applicationContextProvider.classloaderContextProviderRef.setReference(ref);
+    }
+
+    @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
+               target = "(component.name=io.openliberty.handlelist.context.provider)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEmptyHandleListContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        emptyHandleListContextProvider.emptyHandleListContextProviderRef.setReference(ref);
     }
 
     @Reference(service = com.ibm.wsspi.threadcontext.ThreadContextProvider.class,
@@ -209,6 +222,10 @@ public class ContextManagerProviderImpl implements ApplicationStateListener, Con
 
     protected void unsetClassloaderContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
         applicationContextProvider.classloaderContextProviderRef.unsetReference(ref);
+    }
+
+    protected void unsetEmptyHandleListContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {
+        emptyHandleListContextProvider.emptyHandleListContextProviderRef.unsetReference(ref);
     }
 
     protected void unsetJeeMetadataContextProvider(ServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> ref) {

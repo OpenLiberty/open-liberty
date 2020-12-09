@@ -14,6 +14,8 @@ bVersion=1.0
 Bundle-Name: Message-Driven Beans
 Bundle-SymbolicName: com.ibm.ws.ejbcontainer.mdb
 Bundle-Description: Message-Driven Beans; version=${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+Include-Resource: OSGI-INF=resources/OSGI-INF
 
 WS-TraceGroup: EJBContainer
 
@@ -25,8 +27,12 @@ jakartaeeMe: true
 # ...so we use Require-Bundle to allow multiple classpaths to be searched.
 Require-Bundle: com.ibm.ws.container.service
 
+#  Do not introduce a runtime dependency com.ibm.ws.messaging.* 
+#  and com.ibm.ws.sib.*
 Import-Package: \
   !com.ibm.websphere.pmi.*, \
+  !com.ibm.ws.messaging.*, \
+  !com.ibm.ws.sib.*, \
   com.ibm.websphere.csi, \
   com.ibm.ws.container.service.app.deploy, \
   com.ibm.ws.container.service.metadata, \
@@ -67,7 +73,8 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/mdb/resources/*.class
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.messaging.runtime
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

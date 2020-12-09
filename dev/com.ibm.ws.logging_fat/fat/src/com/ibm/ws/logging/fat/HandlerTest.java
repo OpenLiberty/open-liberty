@@ -770,10 +770,11 @@ public class HandlerTest {
             }
         } catch (Exception e) {
         }
+
     }
 
     @AfterClass
-    public static void completeTest() {
+    public static void completeTest() throws Exception {
         try {
             server.stopServer();
         } catch (Exception e) {
@@ -786,5 +787,18 @@ public class HandlerTest {
             traceServer.stopServer();
         } catch (Exception e) {
         }
+
+        server.uninstallSystemBundle(SAMPLE_SOURCE_HANDLER_BUNDLE_JAR);
+        server.uninstallSystemBundle(FFDC_SOURCE_HANDLER_BUNDLE_JAR);
+        server.uninstallSystemBundle(MSG_SOURCE_HANDLER_BUNDLE_JAR);
+        server.uninstallSystemFeature(SAMPLE_SOURCE_HANDLER_FEATURE);
+
+        MsgServer.uninstallSystemBundle(SAMPLE_SOURCE_HANDLER_BUNDLE_JAR);
+        MsgServer.uninstallSystemBundle(MSG_SOURCE_HANDLER_BUNDLE_JAR);
+        MsgServer.uninstallSystemFeature(SAMPLE_SOURCE_HANDLER_FEATURE);
+
+        traceServer.uninstallSystemBundle(ACCESSLOG_SOURCE_HANDLER_BUNDLE_JAR);
+        traceServer.uninstallSystemBundle(TRACE_SOURCE_HANDLER_BUNDLE_JAR);
+        traceServer.uninstallSystemFeature(TRACE_SOURCE_HANDLER_FEATURE);
     }
 }

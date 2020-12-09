@@ -20,5 +20,5 @@ Subsystem-Name: gRPC Client 1.0
   io.openliberty.grpc.client.1.0.thirdparty; location:="dev/api/third-party/,lib/", \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=ga
-edition=full
+edition=core
 WLP-Activation-Type: parallel

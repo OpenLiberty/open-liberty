@@ -15,17 +15,20 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.microprofile.faulttolerance_fat.fallbackMethod.SimpleSearch;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -37,6 +40,9 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class FallbackMethodTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault("FaultToleranceMultiModule");
 
     @Server(value = "FaultToleranceMultiModule")
     @TestServlet(servlet = FallbackMethodServlet.class, contextRoot = "ftFallbackMethod")

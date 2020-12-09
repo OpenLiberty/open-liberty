@@ -10,6 +10,10 @@
  *******************************************************************************/
 package web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,17 +31,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ejb.EJBContext;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.XATerminator;
 import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.TransactionContext;
 import javax.resource.spi.work.WorkManager;
+import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 import javax.transaction.xa.XAResource;
@@ -49,11 +56,23 @@ public class DerbyRAServlet extends FATServlet {
     private static final long serialVersionUID = 7709282314904580334L;
 
     public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    private static final AtomicReference<Connection> nonDissociatableSharableHandleRef = new AtomicReference<Connection>();
 
     /**
      * Maximum number of milliseconds a test should wait for something to happen
      */
     private static final long TIMEOUT = 5000;
+
+    public void initDatabaseTables() throws ServletException {
+        try {
+            DataSource ds = (DataSource) InitialContext.doLookup("java:module/env/eis/ds5ref-unshareable");
+            try (Connection con = ds.getConnection()) {
+                con.createStatement().execute("CREATE TABLE TESTTBL(NAME VARCHAR(80) NOT NULL PRIMARY KEY, VAL INT NOT NULL)");
+            }
+        } catch (NamingException | SQLException x) {
+            throw new ServletException(x);
+        }
+    }
 
     /**
      * Verify that an admin object can be looked up directly as java.util.Map.
@@ -340,6 +359,94 @@ public class DerbyRAServlet extends FATServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * When HandleList is enabled, it automatically closes shareable parked connection handles that are
+     * leaked across transaction scopes.
+     */
+    public void testNonDissociatableHandlesCannotBeParkedAcrossTransactionScopes() throws Exception {
+        DerbyRABean bean = InitialContext.doLookup("java:global/derbyRAApp/fvtweb/DerbyRABean!web.DerbyRABean");
+
+        Connection con = bean.runInNewGlobalTran(() -> {
+            DataSource ds = (DataSource) InitialContext.doLookup("eis/ds5"); // shareable
+            Connection c = ds.getConnection();
+            Statement st = c.createStatement();
+            st.executeUpdate("INSERT INTO TESTTBL VALUES('park-handle-across-transaction', 3000)");
+            st.close();
+            return c;
+        });
+
+        assertTrue(con.isClosed());
+    }
+
+    /**
+     * When HandleList is enabled, shareable connection handles are parked across EJB methods within a transaction
+     * if the resource adapter does not support DissociatableManagedConnection. The connection handle continues to be
+     * usable in subsequent EJB methods within the transaction, remaining open until the EJB is destroyed, at which
+     * point the HandleList closes connection handles that remain open and would otherwise be leaked.
+     */
+    public void testNonDissociatableHandlesParkedAcrossEJBMethods() throws Exception {
+        DerbyConnectionCachingBean bean = InitialContext.doLookup("java:global/derbyRAApp/fvtweb/DerbyConnectionCachingBean!web.DerbyConnectionCachingBean");
+        UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+        tx.begin();
+        try {
+            bean.connect();
+
+            bean.insert("park-handle-across-EJB-methods-1", 1000);
+            bean.insert("park-handle-across-EJB-methods-2", 2000);
+            assertEquals(Integer.valueOf(1000), bean.find("park-handle-across-EJB-methods-1"));
+            assertEquals(Integer.valueOf(2000), bean.find("park-handle-across-EJB-methods-2"));
+
+            Connection cachedConnection = bean.getCachedConnection();
+            assertFalse(cachedConnection.isClosed());
+
+            bean.removeEJB();
+            assertTrue(cachedConnection.isClosed());
+        } finally {
+            tx.commit();
+        }
+
+        // access the same data from another transaction:
+
+        bean = InitialContext.doLookup("java:global/derbyRAApp/fvtweb/DerbyConnectionCachingBean!web.DerbyConnectionCachingBean");
+        tx.begin();
+        try {
+            bean.connect();
+            assertEquals(Integer.valueOf(1000), bean.find("park-handle-across-EJB-methods-1"));
+            assertEquals(Integer.valueOf(2000), bean.find("park-handle-across-EJB-methods-2"));
+
+            Connection cachedConnection = bean.getCachedConnection();
+            assertFalse(cachedConnection.isClosed());
+
+            bean.removeEJB();
+            assertTrue(cachedConnection.isClosed());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verifies that a non-dissociatable sharable connection handle that was left open by another servlet request
+     * is closed now.
+     *
+     * Prerequisite - must run testNonDissociatableSharableHandleLeftOpenAfterServletMethod prior to this test
+     */
+    public void testNonDissociatableSharableHandleIsClosed() throws Exception {
+        Connection con = nonDissociatableSharableHandleRef.getAndSet(null);
+        assertTrue(con.isClosed());
+    }
+
+    /**
+     * Intentionally leave a non-dissociatable, sharable handle open across the end of a servlet method.
+     * The invoker must run testNonDissociatableSharableHandleIsClosed after this to complete the test.
+     */
+    public void testNonDissociatableSharableHandleLeftOpenAfterServletMethod() throws Exception {
+        DataSource ds = (DataSource) InitialContext.doLookup("eis/ds5");
+        Connection con = ds.getConnection();
+        assertFalse(con.isClosed());
+        assertTrue(nonDissociatableSharableHandleRef.compareAndSet(null, con));
+        // intentionally leave the connection open across the end of the servlet request
     }
 
     /**

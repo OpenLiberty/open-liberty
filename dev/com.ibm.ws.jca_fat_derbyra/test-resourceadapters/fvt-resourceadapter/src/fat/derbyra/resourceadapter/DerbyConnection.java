@@ -203,7 +203,17 @@ public class DerbyConnection implements Connection {
 
     @Override
     public boolean isClosed() throws SQLException {
-        lazyInit();
+        if (isClosed)
+            return true;
+        // Apply only the lazy associate portion of lazyInit. Avoid lazy enlistment when only isClosed is invoked.
+        try {
+            if (mc == null && mcf.isDissociatable()) {
+                ((LazyAssociatableConnectionManager) cm).associateConnection(this, mcf, cri);
+                mc.con = mc.xacon.getConnection();
+            }
+        } catch (ResourceException x) {
+            throw new SQLException(x);
+        }
         return mc == null || mc.con.isClosed();
     }
 

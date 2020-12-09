@@ -13,7 +13,7 @@ IBM-SPI-Package: \
 Subsystem-Name: Jakarta Authentication SPI for Containers (JASPIC) 2.0
 -features=\
   io.openliberty.appSecurity-4.0, \
-  io.openliberty.jaxb-3.0, \
+  io.openliberty.xmlBinding-3.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\

@@ -569,13 +569,13 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         }
     }
 
-    public void countDownFirstReadLatch() {
+    public void countDownFirstReadLatch(boolean force) {
         H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
         if (h2sp != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "calling h2sp to count down firstReadLatch: ");
+                Tr.debug(tc, "calling h2sp to count down firstReadLatch; force: " + force);
             }
-            h2sp.countDownFirstReadLatch();
+            h2sp.countDownFirstReadLatch(force);
         }
     }
 }

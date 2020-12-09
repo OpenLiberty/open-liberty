@@ -10,28 +10,31 @@
  -->
 <server>
 
-	<featureManager>
-	    <feature>concurrent-2.0</feature>
-	    <feature>jdbc-4.2</feature>
-	    <feature>servlet-5.0</feature>
-	    <feature>componenttest-2.0</feature>
+    <featureManager>
+        <feature>concurrent-2.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>servlet-5.0</feature>
+        <feature>componenttest-2.0</feature>
+        <feature>noShip-1.0</feature> <!-- TODO remove this when HandleList becomes beta/GA -->
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
+
     <dataSource id="CPDataSource" jndiName="jdbc/CPDataSource" type="javax.sql.ConnectionPoolDataSource">
-	    <jdbcDriver libraryRef="DerbyLib"/>
-	    <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
-	</dataSource>
+        <connectionManager autoCloseConnections="false"/>
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
+    </dataSource>
 
     <dataSource id="DefaultDataSource"> <!-- an XADataSource -->
-	    <jdbcDriver libraryRef="DerbyLib"/>
-	    <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
-	</dataSource>
+        <connectionManager autoCloseConnections="true"/>
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:concurrent_fat_db"/>
+    </dataSource>
 
-	<library id="DerbyLib">
-	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
-	</library>
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
 
     <!-- permissions for Derby -->
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>

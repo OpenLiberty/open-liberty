@@ -24,11 +24,12 @@
     <variable name="onError" value="FAIL"/>
 
     <jmsConnectionFactory id="cf1" jndiName="jms/cf1">
-      <connectionManager maxPoolSize="2" connectionTimeout="0"/>
+      <connectionManager maxPoolSize="2" connectionTimeout="0" autoCloseConnections="true"/>
       <properties.FAT1 tableName="cf1tbl" userName="CF1USER"/>
     </jmsConnectionFactory>
+
     <jmsConnectionFactory id="cf6" jndiName="jms/cf6">
-      <connectionManager maxPoolSize="6" connectionTimeout="0" enableSharingForDirectLookups="false"/>
+      <connectionManager maxPoolSize="6" connectionTimeout="0" enableSharingForDirectLookups="false" autoCloseConnections="false"/>
       <properties.FAT1 tableName="cf6tbl" userName="CF6USER"/>
     </jmsConnectionFactory>
     

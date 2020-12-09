@@ -40,9 +40,9 @@ public class LibertyJAXBTest extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.web");
 
         if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jaxb-3.0", "servlet-5.0", "componenttest-2.0"));
+            server.changeFeatures(Arrays.asList("xmlBinding-3.0", "servlet-5.0", "componenttest-2.0"));
         }
-        
+
         server.startServer();
     }
 

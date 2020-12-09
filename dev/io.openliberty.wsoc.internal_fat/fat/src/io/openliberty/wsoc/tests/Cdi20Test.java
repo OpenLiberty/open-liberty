@@ -13,6 +13,7 @@ package io.openliberty.wsoc.tests;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,6 +33,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.tests.all.CdiTest;
+import io.openliberty.wsoc.tests.all.HeaderTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
@@ -88,18 +90,21 @@ public class Cdi20Test extends LoggingTest {
                                                                          "cdi.war",
                                                                          "io.openliberty.wsoc.common",
                                                                          "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
                                                                          "io.openliberty.wsoc.endpoints.client.basic",
-                                                                         "io.openliberty.wsoc.endpoints.client.context");
+                                                                         "io.openliberty.wsoc.endpoints.client.context",
+                                                                         "io.openliberty.wsoc.endpoints.client.trace");
         CdiApp = (WebArchive) ShrinkHelper.addDirectory(CdiApp, "test-applications/"+CDI_WAR_NAME+".war/resources");
+        // Exclude header test since not being used anywhere for CDI testing
+        CdiApp = CdiApp.addPackages(true, Filters.exclude(HeaderTest.class), "io.openliberty.wsoc.tests.all");
         WebArchive ContextApp = ShrinkHelper.buildDefaultApp(CONTEXT_WAR_NAME + ".war",
                                                                          "context.war",
                                                                          "io.openliberty.wsoc.common",
                                                                          "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
                                                                          "io.openliberty.wsoc.endpoints.client.basic",
                                                                          "io.openliberty.wsoc.endpoints.client.context");
         ContextApp = (WebArchive) ShrinkHelper.addDirectory(ContextApp, "test-applications/"+CONTEXT_WAR_NAME+".war/resources");
+        // Exclude header test since not being used anywhere for CDI testing
+        ContextApp = ContextApp.addPackages(true, Filters.exclude(HeaderTest.class), "io.openliberty.wsoc.tests.all");
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(CDI_WAR_NAME);
@@ -120,6 +125,8 @@ public class Cdi20Test extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        // Reset Variables for tests after tests have finished
+        CdiTest.resetTests();
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer(null);
         }

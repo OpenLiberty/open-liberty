@@ -1,0 +1,113 @@
+/*
+ * Copyright 2020 International Business Machines Corp.
+ * 
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership. Licensed under the Apache License, 
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package jakarta.batch.runtime;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.util.tracker.ServiceTracker;
+
+import jakarta.batch.operations.BatchRuntimeException;
+import jakarta.batch.operations.JobOperator;
+
+/**
+ * BatchRuntime represents the Jakarta Batch Runtime.
+ * It provides factory access to the JobOperator interface.
+ *
+ */
+public class BatchRuntime {
+
+    private final static String sourceClass = BatchRuntime.class.getName();
+    private final static Logger logger = Logger.getLogger(sourceClass);
+    
+    private static ServiceTracker<JobOperator, JobOperator> jobOperatorTracker = null;
+    private static JobOperator jo;
+    
+    static {
+        
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws InvalidSyntaxException {
+                    jobOperatorTracker = new ServiceTracker<JobOperator, JobOperator>(
+                            FrameworkUtil.getBundle(JobOperator.class).getBundleContext(),
+                            FrameworkUtil.createFilter("(component.name=com.ibm.jbatch.container.api.impl.JobOperatorImplSuspendTran)"),
+                            null);
+                    jobOperatorTracker.open();
+                    return null;
+                }
+            });
+        } catch (Throwable t) {
+            // No real value in unwrapping or otherwise treating the checked exception different from any other Throwable, and it would be 
+            // maybe useful to have an FFDC in the "other Throwable" case.
+            throw new BatchRuntimeException("Failed to load ServiceTracker for JobOperator", t);
+        }
+      
+    }
+    
+    /**
+     * The getJobOperator factory method returns
+     * an instance of the JobOperator interface.
+     *
+     * @return JobOperator instance.
+     * 
+     * @throws BatchRuntimeException if job operator is not available
+     */
+    public static JobOperator getJobOperator() {
+
+        jo = AccessController.doPrivileged(new PrivilegedAction<JobOperator>() {
+            @Override
+            public JobOperator run() {
+                return jobOperatorTracker.getService();
+            }
+        });
+
+        if (jo == null) {
+
+            String msg = getFormattedMessage("batch.container.unavailable",
+                    new Object[] { "<batchPersistence/>"},
+                    "CWWKY0350E: The batch container is not activated. Ensure that batch persistence has been configured via configuration element <batchPersistence />");
+
+            throw new BatchRuntimeException(msg);
+        }
+
+        return jo;
+    } 
+    
+    /**
+     * @return a formatted msg with the given key from the resource bundle.
+     */
+    private static String getFormattedMessage(String msgKey, Object[] fillIns, String defaultMsg) {
+
+    	ResourceBundle resourceBundle = ResourceBundle.getBundle("io.openliberty.jbatch.jakarta.batch.runtime.internal.resources.BatchMessages");
+        
+        if (resourceBundle == null) {
+            return defaultMsg;
+        }
+        
+        String msg = resourceBundle.getString(msgKey);
+        
+        return (msg != null) ? MessageFormat.format( msg, fillIns ) : defaultMsg;
+    }
+        
+}

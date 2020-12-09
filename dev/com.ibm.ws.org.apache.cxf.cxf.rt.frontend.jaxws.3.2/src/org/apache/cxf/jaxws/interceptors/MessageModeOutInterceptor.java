@@ -73,6 +73,7 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
+// No Liberty Change: jaxws-2.3 requires recompiling this class
 public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message> {
     MessageModeOutInterceptorInternal internal;
     SAAJOutInterceptor saajOut;

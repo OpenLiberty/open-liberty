@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ jar {
 }
 
 task globalize {
+  // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
+  def quotationExcludes = bnd('globalize.quotation.excludes')
+
   ext.destinationDir = new File(buildDir, "src/${name}/java")
   if (parseBoolean(bnd('globalize', 'true'))) {
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
@@ -44,6 +47,8 @@ task globalize {
             keyfilter {
                 exclude(name: "*.explanation")
                 exclude(name: "*.useraction")
+                if(quotationExcludes != null)
+                    quotationExcludes.split(',').each{ exclude(name: it.trim()) }
             }
         }
         contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
@@ -150,8 +155,8 @@ dependencies {
                           'commons-cli:commons-cli:1.4',
                           'org.slf4j:slf4j-simple:1.7.30',
                           'org.slf4j:slf4j-api:1.7.26',
-                          'org.eclipse.transformer:org.eclipse.transformer:0.2.0-SNAPSHOT',
-                          'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0-SNAPSHOT'
+                          'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
+                          'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
 }
 
 task jakartaeeTransform {
