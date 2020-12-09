@@ -50,7 +50,7 @@ generate.replacement: true
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.messaging.3.0;version=latest,\
 	io.openliberty.jakarta.interceptor.2.0;version=latest,\
-	io.openliberty.jakarta.ejb.4.0;version=latest,\
+	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.ws.logging; version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations; version=latest, \

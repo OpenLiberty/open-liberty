@@ -8,6 +8,7 @@ WLP-AlsoKnownAs: ejb-4.0
 Subsystem-Name: Jakarta Enterprise Beans 4.0
 Subsystem-Category: JakartaEE9Application
 -features= \
+ com.ibm.websphere.appserver.eeCompatible-9.0, \
  io.openliberty.enterpriseBeansHome-4.0, \
  io.openliberty.enterpriseBeansLite-4.0, \
  io.openliberty.enterpriseBeansPersistentTimer-4.0, \
