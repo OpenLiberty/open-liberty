@@ -17,11 +17,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
@@ -49,8 +49,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -82,8 +80,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
-    	FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
+        FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
+        FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
         skipRestoreServerTracker.addServer(builderServer);
@@ -382,8 +380,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         tokenExpectations.addExpectation(new ResponseUrlExpectation(null, Constants.STRING_EQUALS, url, "Did not reach the expected URL."));
         tokenExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not find \"Unauthorized\" in the response message field"));
 
-        Page tokenResponse = actions.invokeUrlWithParametersAndHeaders(_testName, actions.createWebClient(), url, null, extraHeaders);
+        WebClient webClient = actions.createWebClient();
+        Page tokenResponse = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, null, extraHeaders);
         validationUtils.validateResult(tokenResponse, tokenExpectations);
+        actions.destroyWebClient(webClient);
 
     }
 
