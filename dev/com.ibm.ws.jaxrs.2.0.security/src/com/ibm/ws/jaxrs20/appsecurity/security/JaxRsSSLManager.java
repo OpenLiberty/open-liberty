@@ -46,7 +46,19 @@ public class JaxRsSSLManager {
             connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_HOST, host);
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, port); // String expected by OutboundSSLSelections
-            Properties sslProps = jsseHelper.getProperties(sslRef, connectionInfo, null);
+            Properties sslProps;
+            try {
+                sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                    @Override
+                    public Properties run() throws SSLException {
+                        return jsseHelper.getProperties(sslRef, connectionInfo, null);
+                    }
+                });
+
+            } catch (PrivilegedActionException pae) {
+                Throwable cause = pae.getCause();
+                throw (SSLException) cause;
+            }
 
             Boolean sslCfgExists = null;
             if (sslRef != null) {
