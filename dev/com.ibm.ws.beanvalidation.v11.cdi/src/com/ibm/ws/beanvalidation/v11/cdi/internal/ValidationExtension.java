@@ -416,11 +416,11 @@ public class ValidationExtension extends ValidationExtensionService implements E
         return null;
     }
 
-    @FFDCIgnore(IllegalArgumentException.class)
+    @FFDCIgnore(IllegalStateException.class)
     public static BeanManager getBeanManager() {
         try {
             return CDI.current().getBeanManager();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return null;
         }
     }

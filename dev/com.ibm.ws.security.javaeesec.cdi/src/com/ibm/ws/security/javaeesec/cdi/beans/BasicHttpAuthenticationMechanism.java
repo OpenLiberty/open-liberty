@@ -175,11 +175,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     @SuppressWarnings("rawtypes")
-    @FFDCIgnore(IllegalArgumentException.class)
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
         try {
             return CDI.current();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             return null;
         }
     }
