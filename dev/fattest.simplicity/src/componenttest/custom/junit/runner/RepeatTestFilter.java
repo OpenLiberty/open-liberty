@@ -136,7 +136,10 @@ public class RepeatTestFilter {
         if (!REPEAT_ACTION_STACK.isEmpty()) {
             Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
             while (iter.hasNext()) {
-                actions = actions + "_" + iter.next();
+                String action = iter.next();
+                if (!"NO_MODIFICATION_ACTION".equals(action)) {
+                    actions = actions + "_" + action;
+                }
             }
         }
 
