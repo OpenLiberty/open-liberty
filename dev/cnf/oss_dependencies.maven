@@ -139,6 +139,7 @@ io.smallrye:smallrye-graphql-client:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
+jakarta.authentication:jakarta.authentication-api:2.0.0
 jakarta.authorization:jakarta.authorization-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.ejb:jakarta.ejb-api:4.0.0
@@ -153,8 +154,7 @@ jakarta.jws:jakarta.jws-api:3.0.0
 jakarta.mail:jakarta.mail-api:2.0.0-RC6
 jakarta.persistence:jakarta.persistence-api:3.0.0
 jakarta.resource:jakarta.resource-api:2.0.0
-jakarta.security.auth.message:jakarta.security.auth.message-api:2.0.0-RC1
-jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0-RC2
+jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0
 jakarta.servlet:jakarta.servlet-api:5.0.0

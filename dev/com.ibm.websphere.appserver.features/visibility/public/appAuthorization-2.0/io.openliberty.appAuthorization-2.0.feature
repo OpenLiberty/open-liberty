@@ -9,13 +9,15 @@ IBM-ShortName: appAuthorization-2.0
 WLP-AlsoKnownAs: jacc-2.0
 Subsystem-Name: Jakarta Authorization Contract for Containers 2.0
 IBM-Install-Policy: when-satisfied
--features=io.openliberty.servlet.api-5.0, \
- io.openliberty.appSecurity-4.0, \
- com.ibm.websphere.appserver.javaeedd-1.0, \
- com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=io.openliberty.jakarta.authorization.2.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authorization:jakarta.authorization-api:2.0.0", \
- io.openliberty.security.authorization.internal.jacc
+-features=\
+  io.openliberty.servlet.api-5.0, \
+  io.openliberty.appSecurity-4.0, \
+  io.openliberty.jakarta.authorization-2.0, \
+  com.ibm.websphere.appserver.javaeedd-1.0, \
+  com.ibm.websphere.appserver.containerServices-1.0, \
+  com.ibm.websphere.appserver.eeCompatible-9.0
+-bundles=\
+  io.openliberty.security.authorization.internal.jacc
 kind=beta
 edition=core
 -jars=io.openliberty.jacc.2.0; location:=dev/api/ibm/
