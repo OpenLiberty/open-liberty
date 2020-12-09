@@ -8,7 +8,6 @@
 		<feature>jaxrs-2.0</feature>
 		<feature>jwt-1.0</feature>
 		<feature>mpJwt-1.1</feature>
-		<feature>mpConfig-1.3</feature>
 	</featureManager>
 
 </server>

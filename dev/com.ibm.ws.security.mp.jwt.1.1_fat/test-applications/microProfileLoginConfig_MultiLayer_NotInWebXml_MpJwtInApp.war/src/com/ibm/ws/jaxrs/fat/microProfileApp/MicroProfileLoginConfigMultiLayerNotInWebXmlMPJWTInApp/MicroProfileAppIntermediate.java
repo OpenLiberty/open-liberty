@@ -13,7 +13,7 @@ package com.ibm.ws.jaxrs.fat.microProfileApp.MicroProfileLoginConfigMultiLayerNo
 
 import javax.enterprise.context.RequestScoped;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.CommonMicroProfileApp;
+import com.ibm.ws.security.fat.common.mp.jwt.CommonMicroProfileApp;
 
 @RequestScoped
 public class MicroProfileAppIntermediate extends CommonMicroProfileApp {

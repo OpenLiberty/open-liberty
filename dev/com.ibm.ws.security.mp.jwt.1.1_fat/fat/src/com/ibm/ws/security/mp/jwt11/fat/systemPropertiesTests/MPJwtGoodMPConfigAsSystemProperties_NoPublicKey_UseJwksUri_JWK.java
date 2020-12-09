@@ -13,9 +13,9 @@ package com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP11ConfigSettings;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtGoodMPConfigAsSystemProperties;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -45,7 +45,7 @@ public class MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK exte
 
         // server has an empty mpJwt config
         MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.jwksUri, MP11ConfigSettings.PublicKeyNotSet, MP11ConfigSettings
-                        .buildDefaultIssuerString(jwtBuilderServer), MpJwtFatConstants.JWK_CERT);
+                        .buildDefaultIssuerString(jwtBuilderServer), MPJwt11FatConstants.JWK_CERT);
 
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.SYSTEM_PROP);
 
