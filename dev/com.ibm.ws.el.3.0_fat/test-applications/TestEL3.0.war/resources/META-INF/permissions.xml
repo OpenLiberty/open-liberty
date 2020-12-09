@@ -20,9 +20,4 @@
         <name>getClassLoader</name>  
     </permission>
 
-    <permission>  
-        <class-name>java.lang.RuntimePermission</class-name>
-        <name>accessClassInPackage.com.sun.beans.editors</name>  
-    </permission>
-
 </permissions>
