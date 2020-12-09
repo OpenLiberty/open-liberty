@@ -56,7 +56,7 @@ public class BatchSecurityTest {
         BatchFATHelper.setConfig("BatchSecurity/server.xml", testClass);
         server.startServer("BatchSecurityTest.log");
         FatUtils.waitForSmarterPlanet(server);
-        //FatUtils.waitForSSLKeyAndLTPAKey(server);
+        FatUtils.waitForSSLKeyAndLTPAKey(server);
     }
 
     /**

@@ -48,11 +48,6 @@ public class BatchNoSecurityTest {
 
         BatchAppUtils.addDropinsBatchSecurityWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
-        // TODO: Remove the following lines, which are obviated by addDropinsXxx()
-        //if (JakartaEE9Action.isActive()) {
-        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "batchSecurity.war"));
-        //    JakartaEE9Action.transformApp(Paths.get(server.getServerRoot(), "dropins", "DbServletApp.war"));
-        //}
 
         // Start server 
         server.startServer("BatchSecurityTest.log");

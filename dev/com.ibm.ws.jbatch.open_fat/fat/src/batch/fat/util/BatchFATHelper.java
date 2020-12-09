@@ -83,9 +83,6 @@ public abstract class BatchFATHelper {
     public void setTestName() throws Exception {
         _testName = name.getMethodName();
         Log.info(this.getClass(), _testName, "===== Starting test " + _testName + " =====");
-        if (_testName.endsWith("_EE9_FEATURES")) {
-            _testName = _testName.substring(0, _testName.indexOf("_EE9_FEATURES"));
-        }
     }
 
     protected String getTempFilePrefix(String filePrefix) {
