@@ -12,7 +12,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 src: \
   fat/src,\
   test-bundles/com.ibm.ws.wssecurity.cbh/src,\
@@ -38,8 +37,6 @@ src: \
   test-applications/wss11sig/src,\
   test-applications/wss11sigclient/src,\
   test-applications/WSSampleSei/src,\
-  test-applications/WSSampleSeiClient/src,\
-  test-applications/webcontentclient/src,\
   test-applications/webcontentprovider/src,\
   test-applications/wsstemplates/src,\
   test-applications/wsstemplatesclient/src,\

@@ -24,8 +24,6 @@
 	<classpathentry kind="src" path="test-applications/wss11sig/src"/>
 	<classpathentry kind="src" path="test-applications/wss11sigclient/src"/>
 	<classpathentry kind="src" path="test-applications/WSSampleSei/src"/>
-	<classpathentry kind="src" path="test-applications/WSSampleSeiClient/src"/>
-        <classpathentry kind="src" path="test-applications/webcontentclient/src"/>
 	<classpathentry kind="src" path="test-applications/webcontentprovider/src"/>
 	<classpathentry kind="src" path="test-applications/wsstemplates/src"/>
 	<classpathentry kind="src" path="test-applications/wsstemplatesclient/src"/>
