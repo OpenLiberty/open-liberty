@@ -39,6 +39,7 @@ Import-Package: \
   com.ibm.wsspi.classloading, \
   org.apache.xml.*; resolution:=optional, \
   org.w3c.dom.*, \
+  !javax.activation, \
   javax.xml.stream.*, \
   javax.xml.transform.*, \
   javax.xml.parsers.*, \
@@ -56,6 +57,7 @@ Import-Package: \
   com.sun.codemodel.*,\
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
+  !com.sun.xml.dtdparser.*, \
   !com.sun.xml.fastinfoset.sax.*, \
   !com.sun.xml.fastinfoset.stax.*, \
   !sun.nio.cs*, \
