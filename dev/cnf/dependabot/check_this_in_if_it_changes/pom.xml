@@ -679,7 +679,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>2.0.0-RC2</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -1934,7 +1934,7 @@
     <dependency>
       <groupId>org.ektorp</groupId>
       <artifactId>org.ektorp</artifactId>
-      <version>1.4.1</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
@@ -3030,11 +3030,6 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.14.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>1.18</version>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>

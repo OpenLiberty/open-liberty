@@ -17,7 +17,8 @@ Bundle-Description: Provides Jackson JaxRS Providers as a bundle
 
 -includeresource: \
   @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.11.2;EXACT},\
-  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.11.2;EXACT}
+  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.11.2;EXACT},\
+  @${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.11.2;EXACT}
   
 Export-Package: \
   com.fasterxml.jackson.*;version=2.11.2
