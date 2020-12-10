@@ -10,20 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.couchdb.fat;
 
-import java.io.File;
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.couchdb.fat.tests.CouchDBContainer;
 import com.ibm.ws.couchdb.fat.tests.TestCouchDbWar;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestCouchDbWar.class })
@@ -33,24 +29,9 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
+    // The Dockerfile for 'aguibert/couchdb-ssl:1.0' can be found/rebuilt in the cloudant_fat project
     @ClassRule
-    public static CouchDBContainer couchdb = new CouchDBContainer(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("couchdb:1.7")
-                                    .copy("/opt/couchdb/etc/local.d/testcontainers_config.ini", "/opt/couchdb/etc/local.d/testcontainers_config.ini")
-                                    .copy("/etc/couchdb/cert/couchdb.pem", "/etc/couchdb/cert/couchdb.pem")
-                                    .copy("/etc/couchdb/cert/privkey.pem", "/etc/couchdb/cert/privkey.pem")
-                                    .build())
-                    .withFileFromFile("/opt/couchdb/etc/local.d/testcontainers_config.ini", new File("lib/LibertyFATTestFiles/couchdb-config/testcontainers_config.ini"), 644)
-                    .withFileFromFile("/etc/couchdb/cert/couchdb.pem", new File("lib/LibertyFATTestFiles/ssl-certs/couchdb.pem"), 644)
-                    .withFileFromFile("/etc/couchdb/cert/privkey.pem", new File("lib/LibertyFATTestFiles/ssl-certs/privkey.pem"), 644))
-                                    .withLogConsumer(FATSuite::log);
-    // public static CouchDBContainer couchdb = new CouchDBContainer("couchdb:1.7").withLogConsumer(FATSuite::log);
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "couchdb", msg);
-    }
+    public static CouchDBContainer couchdb = new CouchDBContainer("aguibert/couchdb-ssl:1.0")
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "couchdb"));
 
 }
