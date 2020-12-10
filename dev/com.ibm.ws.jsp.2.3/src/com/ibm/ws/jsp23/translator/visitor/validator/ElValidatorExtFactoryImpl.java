@@ -22,7 +22,6 @@ public class ElValidatorExtFactoryImpl implements ElValidatorExtFactory {
 
     @Override
     public ElValidatorExt getELValidatorExt() {
-        // TODO Auto-generated method stub
         return eve;
     }
 

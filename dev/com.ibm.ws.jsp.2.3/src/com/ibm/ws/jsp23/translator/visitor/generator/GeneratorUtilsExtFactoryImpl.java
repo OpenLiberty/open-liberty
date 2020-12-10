@@ -22,7 +22,6 @@ public class GeneratorUtilsExtFactoryImpl implements GeneratorUtilsExtFactory {
 
     @Override
     public GeneratorUtilsExt getGeneratorUtilsExt() {
-        // TODO Auto-generated method stub
         return gue;
     }
 
