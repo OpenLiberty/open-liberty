@@ -58,13 +58,28 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         return isSynthetic;
     }
 
-    private static String getPrivateRegistry() {
+    static String getPrivateRegistry() {
         String artifactoryServer = System.getProperty("fat.test.artifactory.download.server");
         if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${"))
             throw new IllegalStateException("No private registry configured. System property 'fat.test.artifactory.download.server' was: " + artifactoryServer);
         if (artifactoryServer.startsWith("na.") || artifactoryServer.startsWith("eu."))
             artifactoryServer = artifactoryServer.substring(3);
         return "wasliberty-docker-remote." + artifactoryServer;
+    }
+
+    static String getPrivateRegistryAuthToken() {
+//        try {
+//            ExternalTestService authSvc = ExternalTestService.getService("docker-host-auth");
+//            Log.info(c, "@AGG", "Got props: " + authSvc.getProperties());
+//            return authSvc.getProperties().get("auth-token");
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        String token = System.getProperty("fat.test.artifactory.download.token");
+        if (token == null || token.isEmpty() || token.startsWith("${"))
+            token = null;
+        Log.info(c, "getPrivateRegistryAuthToken", "Got auth token: " + token);
+        return token;
     }
 
 }
