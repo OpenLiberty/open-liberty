@@ -10,37 +10,41 @@
  *******************************************************************************/
 package com.ibm.ws.jca.cm.handle;
 
-import java.util.Vector;
+import java.util.Arrays;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * A list of connection handles that were obtained within a servlet request, or by an EJB instance,
  * or within a contextual task/completion stage.
  * Null elements are not allowed.
  */
-public class HandleList extends Vector<HandleListInterface.HandleDetails> implements HandleListInterface {
-    private static final long serialVersionUID = -4425328702653290017L;
-
-    private boolean destroyed;
+public class HandleList implements HandleListInterface {
+    private HandleDetails[] list = new HandleDetails[10];
+    private int size;
 
     @Override
-    public synchronized HandleList addHandle(HandleListInterface.HandleDetails a) {
+    public HandleList addHandle(HandleListInterface.HandleDetails a) {
         if (a == null)
             throw new NullPointerException();
-        super.add(a);
+        synchronized (this) {
+            if (size >= list.length) // resize if already at capacity
+                System.arraycopy(list, 0, list = new HandleDetails[size + 10], 0, size);
+            list[size++] = a;
+        }
         return this;
     }
 
-    public synchronized void close() {
-        destroyed = true;
-
-        for (int i = elementCount; i > 0;) {
-            HandleDetails r = (HandleDetails) elementData[--i];
-            elementCount--;
-            elementData[i] = null;
-            r.close();
+    public void close() {
+        synchronized (this) {
+            int numToClose = size;
+            size = 0;
+            for (int i = numToClose; i > 0;) {
+                HandleDetails r = list[--i];
+                list[i] = null;
+                r.close();
+            }
         }
-
-        destroyed = false; //reset for re-use
     }
 
     public void componentDestroyed() {
@@ -48,33 +52,48 @@ public class HandleList extends Vector<HandleListInterface.HandleDetails> implem
     }
 
     @Override
-    public synchronized HandleDetails removeHandle(Object h) {
-        if (!destroyed) // prevents re-entry by the same thread in case close-->handle.close triggers an inline removeHandle
-            for (int i = elementCount; i > 0;) {
-                HandleDetails r = (HandleDetails) elementData[--i];
+    public HandleDetails removeHandle(Object h) {
+        synchronized (this) {
+            for (int i = size; i > 0;) {
+                HandleDetails r = list[--i];
                 if (r.forHandle(h)) {
-                    elementData[i] = elementData[--elementCount];
-                    elementData[elementCount] = null;
+                    list[i] = list[--size];
+                    list[size] = null;
                     return r;
                 }
             }
+        }
         return null;
     }
 
     @Override
-    public synchronized void parkHandle() {
-        for (int i = elementCount; i > 0;)
-            ((HandleDetails) elementData[--i]).park();
+    public void parkHandle() {
+        synchronized (this) {
+            for (int i = size; i > 0;)
+                list[--i].park();
+        }
     }
 
     @Override
-    public synchronized void reAssociate() {
-        for (int i = elementCount; i > 0;)
-            ((HandleDetails) elementData[--i]).reassociate();
+    public void reAssociate() {
+        synchronized (this) {
+            for (int i = size; i > 0;)
+                list[--i].reassociate();
+        }
     }
 
     @Override
-    public synchronized String toString() {
-        return "HandleList@" + Integer.toHexString(System.identityHashCode(this)) + super.toString();
+    @Trivial
+    public String toString() {
+        String handleInfo;
+        synchronized (this) {
+            handleInfo = Arrays.toString(list);
+        }
+
+        return new StringBuilder(19 + handleInfo.length()) //
+                        .append("HandleList@") //
+                        .append(Integer.toHexString(System.identityHashCode(this))) //
+                        .append(handleInfo) //
+                        .toString();
     }
 }
