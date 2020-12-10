@@ -34,7 +34,7 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 public class BatchAppUtils {
-
+    
     //////////
     // Methods to build application archives at runtime
 
@@ -76,6 +76,7 @@ public class BatchAppUtils {
     static WebArchive getDbServletAppWar() {
         if (dbServletApp == null) {
             dbServletApp = buildBatchWar("DbServletApp.war",
+                                   true,
                                    "(.*)(DbServlet|ServerKillerServlet|StringUtils)(.*)",  // include regex
                                    "batch.fat.web");
         }
@@ -86,7 +87,8 @@ public class BatchAppUtils {
 
     static WebArchive getBatchSecurityWar() {
         if (batchSecurityWar == null) {
-            batchSecurityWar = buildBatchWar("batchSecurity.war", 
+            batchSecurityWar = buildBatchWar("batchSecurity.war",
+                                       false, 
                                        null, 
                                        "batch.fat.artifacts", "batch.security");
         }
@@ -98,6 +100,7 @@ public class BatchAppUtils {
     static WebArchive getBatchFATWar() throws Exception {
         if (batchFATWar == null) {
             batchFATWar = buildBatchWar("batchFAT.war",
+                                  false,
                                   null, 
                                   "batch.fat.artifacts", "batch.fat.cdi", "batch.fat.common", "batch.fat.web", "batch.fat.web.customlogic",
                                   "chunktests.artifacts",
@@ -113,6 +116,7 @@ public class BatchAppUtils {
     static WebArchive getBonusPayoutWar() throws Exception {
         if (bonusPayoutWar == null) {
             bonusPayoutWar = buildBatchWar("BonusPayout.war", 
+                                     true,
                                      null,
                                      "com.ibm.websphere.samples.batch.artifacts",
                                      "com.ibm.websphere.samples.batch.beans",
@@ -129,7 +133,7 @@ public class BatchAppUtils {
         if (bonusPayoutEAREar == null) {
             final String appName = "BonusPayoutEAR.ear";
             bonusPayoutEAREar = ShrinkWrap.create(EnterpriseArchive.class, appName);
-            File appXml = new File("test-applications/" + appName + "/resources/META-INF/application.xml");
+            File appXml = new File("test-applications/common_fat/" + appName + "/resources/META-INF/application.xml");
             bonusPayoutEAREar.setApplicationXML(appXml);
             bonusPayoutEAREar.addAsModule(getBonusPayoutWar());
         }
@@ -144,8 +148,11 @@ public class BatchAppUtils {
      *  All path names in each packages will be included unless further filtered by the regex pattern.
      */
     static WebArchive buildBatchWar(String appName,
+                                     boolean isCommonFat, 
                                      String regex,
                                      String... packageNames) {
+        
+        String srcRoot = isCommonFat ? "test-applications/common_fat/" : "test-applications/";
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName);
         final boolean INCLUDE_SUBPKGS = false;  // Exclude subpackages
@@ -155,7 +162,7 @@ public class BatchAppUtils {
             webApp.addPackages(INCLUDE_SUBPKGS, Filters.include(regex), packageNames);  // Include only pkg paths matching regex 
         }
         // Web-inf resources
-        File webInf = new File("test-applications/" + appName + "/resources/WEB-INF");
+        File webInf = new File(srcRoot + appName + "/resources/WEB-INF");
         if (webInf.exists()) {
             for (File webInfElement : webInf.listFiles()) {
                 if (!!!webInfElement.isDirectory()) { // Ignore classes subdir
@@ -164,7 +171,7 @@ public class BatchAppUtils {
             }
         }
         // Batch job definition files
-        File webInfBatchJobs = new File("test-applications/" + appName + "/resources/WEB-INF/classes/META-INF/batch-jobs");
+        File webInfBatchJobs = new File(srcRoot + appName + "/resources/WEB-INF/classes/META-INF/batch-jobs");
         if (webInfBatchJobs.exists()) {
             for (File batchJob : webInfBatchJobs.listFiles()) {
                 String target = "classes/META-INF/batch-jobs/" + batchJob.getName();
@@ -172,12 +179,12 @@ public class BatchAppUtils {
             }
         }
         // Package properties
-        File pkgProps = new File("test-applications/" + appName + "/package.properties");
+        File pkgProps = new File(srcRoot + appName + "/package.properties");
         if (pkgProps.exists()) {
             webApp.addAsWebResource(pkgProps);
         }
         // Readme
-        File readme = new File("test-applications/" + appName + "/README.txt");
+        File readme = new File(srcRoot + appName + "/README.txt");
         if (readme.exists()) {
             webApp.addAsWebResource(readme);
         }

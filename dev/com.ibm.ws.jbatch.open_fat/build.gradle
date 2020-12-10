@@ -26,11 +26,11 @@ task copyTestApps {
     // Sources to enable application compilation and shrinkwrap operations
     copy {
       from project(':com.ibm.ws.jbatch.common_fat').file('test-applications')
-      into new File('test-applications')
+      into new File('test-applications/common_fat')
     }
     copy {
       from project(':com.ibm.ws.jbatch.common_fat').file('src/batch/fat/common/util')
-      into new File('test-applications/src/batch/fat/common/util')
+      into new File('test-applications/common_fat/src/batch/fat/common/util')
     }
     // Pre-built application archives
     copy {

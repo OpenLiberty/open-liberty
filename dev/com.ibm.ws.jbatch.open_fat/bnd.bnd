@@ -17,11 +17,10 @@ src: \
 	test-applications/batchFAT.war/resources,\
 	test-applications/batchSecurity.war/src,\
 	test-applications/batchSecurity.war/resources,\
-	test-applications/dbServletApp.war,\
-	test-applications/dbServletApp.war/resources,\
-	test-applications/BonusPayout.war,\
-	test-applications/BonusPayout.war/resources,\
-	test-applications/src
+	test-applications/common_fat/DbServletApp.war/src,\
+	test-applications/common_fat/DbServletApp.war/resources,\
+	test-applications/common_fat/BonusPayout.war/src,\
+	test-applications/common_fat/BonusPayout.war/resources
 
 fat.project: true
 
