@@ -91,4 +91,8 @@ test.project: true
 	org.jboss.arquillian.core:arquillian-core-spi;version=1.3.0.Final,\
 	org.jboss.arquillian.core:arquillian-core-api;version=1.3.0.Final,\
 	org.jboss.arquillian.test:arquillian-test-spi;version=1.3.0.Final,\
-	org.testcontainers:testcontainers;version=1.14.0
+	org.testcontainers:testcontainers;version=1.15.0,\
+	com.github.docker-java:docker-java-core;version=3.2.6,\
+	com.github.docker-java:docker-java-api;version=3.2.6,\
+	com.github.docker-java:docker-java;version=3.2.6,\
+	com.github.docker-java:docker-java-transport;version=3.2.6

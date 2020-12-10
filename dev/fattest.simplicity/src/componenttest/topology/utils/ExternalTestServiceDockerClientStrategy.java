@@ -18,12 +18,14 @@ import java.nio.file.Files;
 import java.util.Properties;
 import java.util.function.Predicate;
 
-import javax.net.SocketFactory;
-
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
 import org.testcontainers.dockerclient.InvalidConfigurationException;
+import org.testcontainers.dockerclient.TransportConfig;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.PingCmd;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientConfig;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,6 +44,11 @@ import componenttest.custom.junit.runner.FATRunner;
 public class ExternalTestServiceDockerClientStrategy extends DockerClientProviderStrategy {
 
     private static final Class<?> c = ExternalTestServiceDockerClientStrategy.class;
+
+    // Try using environment variables
+    private final DockerClientConfig dockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
+    private final TransportConfig config = getTransportConfig();
+    private final DockerClient client = getClientForConfig(config);
 
     public static Predicate<ExternalTestService> serviceFilter = null;
 
@@ -74,7 +81,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         }
     }
 
-    @Override
     public void test() throws InvalidConfigurationException {
         try {
             ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
@@ -132,24 +138,29 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         public void test() throws InvalidConfigurationException {
             final String m = "test";
             final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
-            config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
-            client = getClientForConfig(config);
             Throwable firstIssue = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
                     Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
-                    String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
+                    String dockerHost = dockerClientConfig.getDockerHost().toASCIIString().replace("tcp://", "https://");
                     Log.info(c, m, "  Pinging URL: " + dockerHost);
-                    SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
-                    String resp = new HttpsRequest(dockerHost + "/_ping")
-                                    .sslSocketFactory(sslSf)
-                                    .run(String.class);
+
+//                    FIXME this is the intended way we should be pinging the docker host.
+//                    However, the SSLConfig class was deprecated and moved and moved to another package
+//                    But the DockerClientConfig class was never updated to use the new SSLConfig class
+//                    Issue opened here: https://github.com/docker-java/docker-java/issues/1522
+//                    SocketFactory sslSf = dockerClientConfig.getSSLConfig().getSSLContext().getSocketFactory();
+//                    String resp = new HttpsRequest(dockerHost + "/_ping")
+//                                    .sslSocketFactory(sslSf)
+//                                    .run(String.class);
+
                     // Using the Testcontainers API directly causes intermittent failures with ping
                     // Instead of using their mechanism, attempt to use a manually constructed ping
-                    // try (PingCmd ping = client.pingCmd()) {
-                    //     ping.exec();
-                    // }
-                    Log.info(c, m, "  Ping successful. Response: " + resp);
+                    //TODO use this ping strategy for now until issue above is fixed.
+                    try (PingCmd ping = client.pingCmd()) {
+                        ping.exec();
+                    }
+                    Log.info(c, m, "  Ping successful.");
                     return;
                 } catch (Throwable t) {
                     Log.error(c, m, t, "  Ping failed.");
@@ -207,6 +218,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     public static boolean useRemoteDocker() {
         return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
                USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
+    }
+
+    @Override
+    public TransportConfig getTransportConfig() throws InvalidConfigurationException {
+        return TransportConfig.builder()
+                        .dockerHost(dockerClientConfig.getDockerHost())
+                        .sslConfig(dockerClientConfig.getSSLConfig())
+                        .build();
     }
 
 }
