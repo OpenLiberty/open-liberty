@@ -10,21 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.jca.cm.handle;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
- * TODO implementation needed. Still needs to be ported to Liberty.
- * The ArrayList/synchronized approach is only used temporarily because it
- * was a quick way of mocking up, in an oversimplified way for experimentation
- * purposes, what the real handle list does.
+ * A list of connection handles that were obtained within a servlet request, or by an EJB instance,
+ * or within a contextual task/completion stage.
+ * Null elements are not allowed.
  */
-public class HandleList extends ArrayList<HandleListInterface.HandleDetails> implements HandleListInterface {
+public class HandleList extends Vector<HandleListInterface.HandleDetails> implements HandleListInterface {
     private static final long serialVersionUID = -4425328702653290017L;
 
     private boolean destroyed;
 
     @Override
     public synchronized HandleList addHandle(HandleListInterface.HandleDetails a) {
+        if (a == null)
+            throw new NullPointerException();
         super.add(a);
         return this;
     }
@@ -32,8 +33,12 @@ public class HandleList extends ArrayList<HandleListInterface.HandleDetails> imp
     public synchronized void close() {
         destroyed = true;
 
-        for (int length = super.size(); length > 0;)
-            super.remove(--length).close();
+        for (int i = elementCount; i > 0;) {
+            HandleDetails r = (HandleDetails) elementData[--i];
+            elementCount--;
+            elementData[i] = null;
+            r.close();
+        }
 
         destroyed = false; //reset for re-use
     }
@@ -44,24 +49,28 @@ public class HandleList extends ArrayList<HandleListInterface.HandleDetails> imp
 
     @Override
     public synchronized HandleDetails removeHandle(Object h) {
-        if (!destroyed)
-            for (int i = super.size(); i > 0;)
-                if (get(--i).forHandle(h))
-                    return super.remove(i);
+        if (!destroyed) // prevents re-entry by the same thread in case close-->handle.close triggers an inline removeHandle
+            for (int i = elementCount; i > 0;) {
+                HandleDetails r = (HandleDetails) elementData[--i];
+                if (r.forHandle(h)) {
+                    elementData[i] = elementData[--elementCount];
+                    elementData[elementCount] = null;
+                    return r;
+                }
+            }
         return null;
     }
 
     @Override
     public synchronized void parkHandle() {
-        for (int i = super.size(); i > 0;)
-            get(--i).park();
+        for (int i = elementCount; i > 0;)
+            ((HandleDetails) elementData[--i]).park();
     }
 
     @Override
     public synchronized void reAssociate() {
-        for (int i = super.size(); i > 0;) {
-            get(--i).reassociate();
-        }
+        for (int i = elementCount; i > 0;)
+            ((HandleDetails) elementData[--i]).reassociate();
     }
 
     @Override
