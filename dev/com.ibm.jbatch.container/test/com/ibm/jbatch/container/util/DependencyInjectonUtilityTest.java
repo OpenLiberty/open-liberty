@@ -31,7 +31,7 @@ import com.ibm.jbatch.container.context.impl.JobContextImpl;
 import com.ibm.jbatch.container.context.impl.StepContextImpl;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.util.artifacts.SubClass;
-import com.ibm.jbatch.jsl.model.Property;
+import com.ibm.jbatch.jsl.model.v1.Property;
 
 public class DependencyInjectonUtilityTest {
 
@@ -76,7 +76,7 @@ public class DependencyInjectonUtilityTest {
 		privateSuper.setName("privateSuper");
 		privateSuper.setValue("injected_string_privateSuper");
 
-		List<Property> properties = new ArrayList<Property>();
+		List<com.ibm.jbatch.jsl.model.Property> properties = new ArrayList<com.ibm.jbatch.jsl.model.Property>();
 		properties.add(numRecords);
 		properties.add(ibmBatch);
 		properties.add(privateSuper);

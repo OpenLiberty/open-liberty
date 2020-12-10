@@ -20,6 +20,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
@@ -29,9 +30,7 @@ import org.xml.sax.SAXException;
 
 public class ValidatorHelper {
 
-    public final static String SCHEMA_LOCATION = "jobXML_1_0.xsd";
-
-    private static Schema schema = null;
+    private static HashMap<String, Schema> schemas = new HashMap<>();
 
     private static SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
@@ -41,9 +40,10 @@ public class ValidatorHelper {
      * parse the schema, which may cause a parsing exception:
      * org.xml.sax.SAXException: FWK005 parse may not be called while parsing.
      */
-    public static synchronized Schema getXJCLSchema() {
+    public static synchronized Schema getXJCLSchema(String schemaLocation) {
+        Schema schema = schemas.get(schemaLocation);
         if (schema == null) {
-            final URL url = ValidatorHelper.class.getResource(SCHEMA_LOCATION);
+            final URL url = ValidatorHelper.class.getResource(schemaLocation);
             try {
                 schema = AccessController.doPrivileged(
                                                        new PrivilegedExceptionAction<Schema>() {
@@ -52,6 +52,7 @@ public class ValidatorHelper {
                                                                return sf.newSchema(url);
                                                            }
                                                        });
+                schemas.put(schemaLocation, schema);
             } catch (PrivilegedActionException e) {
                 throw new RuntimeException(e.getCause());
             }

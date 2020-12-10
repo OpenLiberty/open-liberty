@@ -16,9 +16,11 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.Batchlet;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 
@@ -37,7 +39,7 @@ public class BatchletPropertyResolverImpl extends AbstractPropertyResolver<Batch
 
         // Resolve all the properties defined for this batchlet
         if (batchlet.getProperties() != null) {
-            this.resolveElementProperties(batchlet.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) batchlet.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return batchlet;

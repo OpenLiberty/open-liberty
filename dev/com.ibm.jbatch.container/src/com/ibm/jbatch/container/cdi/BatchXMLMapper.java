@@ -30,6 +30,7 @@ public class BatchXMLMapper {
 
     private final static String BATCH_XML = "META-INF/batch.xml";
     private final static QName BATCH_ROOT_ELEM = new QName("http://xmlns.jcp.org/xml/ns/javaee", "batch-artifacts");
+    private final static QName BATCH_ROOT_ELEM_2 = new QName("https://jakarta.ee/xml/ns/jakartaee", "batch-artifacts");
 
     private ArtifactMap artifactMap;
 
@@ -130,9 +131,9 @@ public class BatchXMLMapper {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (!processedRoot) {
                         QName rootQName = xmlStreamReader.getName();
-                        if (!rootQName.equals(BATCH_ROOT_ELEM)) {
+                        if (!rootQName.equals(BATCH_ROOT_ELEM) && !rootQName.equals(BATCH_ROOT_ELEM_2)) {
                             throw new IllegalStateException("Expecting document with root element QName: " + BATCH_ROOT_ELEM
-                                                            + ", but found root element with QName: " + rootQName);
+                                                            + " or " + BATCH_ROOT_ELEM_2 + ", but found root element with QName: " + rootQName);
                         } else {
                             processedRoot = true;
                         }

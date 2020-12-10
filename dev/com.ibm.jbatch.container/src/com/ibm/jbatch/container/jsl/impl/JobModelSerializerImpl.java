@@ -62,7 +62,7 @@ public class JobModelSerializerImpl implements ModelSerializer<JSLJob> {
                                                                                    return JSLJob.class.getClassLoader();
                                                                                }
                                                                            });
-            JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model", currentClassLoader);
+            JAXBContext ctx = JAXBContext.newInstance(job.getClass().getPackage().getName(), currentClassLoader);
             Marshaller m = ctx.createMarshaller();
             m.setEventHandler(handler);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

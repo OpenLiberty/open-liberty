@@ -16,12 +16,14 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 
 
 import com.ibm.jbatch.container.modelresolver.PropertyResolverFactory;
 import com.ibm.jbatch.jsl.model.Decision;
+import com.ibm.jbatch.jsl.model.Property;
 import com.ibm.jbatch.jsl.model.helper.TransitionElement;
 
 public class DecisionPropertyResolverImpl extends AbstractPropertyResolver<Decision> {
@@ -40,7 +42,7 @@ public class DecisionPropertyResolverImpl extends AbstractPropertyResolver<Decis
         // Resolve all the properties defined for this decision
         Properties currentProps = parentProps;
         if (decision.getProperties() != null) {
-            currentProps = this.resolveElementProperties(decision.getProperties().getPropertyList(), submittedProps, parentProps);
+            currentProps = this.resolveElementProperties((List<Property>) decision.getProperties().getPropertyList(), submittedProps, parentProps);
         }
         
         if (decision.getTransitionElements() != null) {
