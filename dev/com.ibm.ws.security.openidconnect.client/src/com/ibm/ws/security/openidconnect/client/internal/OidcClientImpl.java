@@ -339,7 +339,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "customCacheKey is :" + customCacheKey);
                     }
-                    if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
+                    if (oidcClientConfig.isIncludeCustomCacheKeyInSubject()) {
                       customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
                     }
                     customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
