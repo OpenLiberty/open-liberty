@@ -40,6 +40,11 @@ public class FATSuite {
 
     public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.useRemoteDocker();
 
+    static {
+        // Needed for IBM JDK 8 support.
+        java.lang.System.setProperty("com.ibm.jsse2.overrideDefaultTLS", "true");
+    }
+
     @BeforeClass
     public static void startKerberos() throws Exception {
         if (!KerberosPlatformRule.shouldRun(null)) {
