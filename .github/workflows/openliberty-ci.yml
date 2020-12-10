@@ -27,6 +27,11 @@ jobs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
+    # Do not run on draft PRs
+    if: "github.event_name != 'pull_request' || ( \
+          github.event.pull_request.draft == false && \
+          github.event.pull_request.state != 'closed'
+        )"
     steps:
     - uses: actions/checkout@v2
       with:
@@ -94,6 +99,11 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    # Do not run on draft PRs
+    if: "github.event_name != 'pull_request' || ( \
+          github.event.pull_request.draft == false && \
+          github.event.pull_request.state != 'closed'
+        )"
     steps:
     - uses: actions/checkout@v2
 #    - uses: testspace-com/setup-testspace@v1
@@ -144,6 +154,11 @@ jobs:
     name: FAT Tests - ${{matrix.category}}
     needs: build
     runs-on: ${{ needs.build.outputs.test-os }}
+    # Do not run on draft PRs
+    if: "github.event_name != 'pull_request' || ( \
+          github.event.pull_request.draft == false && \
+          github.event.pull_request.state != 'closed'
+        )"
     strategy:
       fail-fast: false
       max-parallel: 19
