@@ -11,6 +11,7 @@
 
 package com.ibm.ws.feature.tests;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,12 +28,10 @@ import com.ibm.ws.feature.utils.FeatureVerifier;
 public class VisibilityTest {
 
   private static Map<String, FeatureInfo> features = null; 
-  private static FeatureVerifier verifier = null;
 
 	@BeforeClass
 	public static void setUpClass() {
 		features = FeatureMapFactory.getFeatureMapFromFile("./visibility/");
-		verifier = new FeatureVerifier(features);
 	}
 
     /**
@@ -150,8 +149,82 @@ public class VisibilityTest {
         }
     }
 
+    /**
+     * Features that are marked ga or beta should be in core or base edition in open liberty.
+     * Features that are marked noship should be in full edition.  This test validates
+     * that the edition is marked correctly.
+     */
+    @Test
+    public void testEdition() {
+        Set<String> possibleEditions = new HashSet<>();
+        possibleEditions.add("base");
+        possibleEditions.add("core");
+        possibleEditions.add("full");
+
+        Set<String> possibleKinds = new HashSet<>();
+        possibleKinds.add("beta");
+        possibleKinds.add("ga");
+        possibleKinds.add("noship");
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            String kind = featureInfo.getKind();
+
+            boolean errorFound = false;
+            if (kind == null || "".equals(kind)) {
+                errorMessage.append("Found issues with " + featureName + '\n');
+                errorMessage.append("     It does not have a kind set\n");
+                errorFound = true;
+            }
+
+            String edition = featureInfo.getEdition();
+            if (edition == null || "".equals(edition)) {
+                if (!errorFound) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorFound = true;
+                }
+                errorMessage.append("     It does not have an edition set\n");
+            }
+
+            if (!possibleEditions.contains(edition)) {
+                if (!errorFound) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorFound = true;
+                }
+                errorMessage.append("     Edition is not a recognized value " + edition + '\n');
+            }
+            
+            if (!possibleKinds.contains(kind)) {
+                if (!errorFound) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorFound = true;
+                }
+                errorMessage.append("     Kind is not a recognized value " + kind + '\n');
+            }
+            
+            if (!errorFound) {
+                if ("full".equals(edition)) {
+                    if (!"noship".equals(kind)) {
+                        errorMessage.append("Found issues with " + featureName + '\n');
+                        errorMessage.append("     Only noship features should have an edition of full\n");
+                    }
+                } else {
+                    if ("noship".equals(kind)) {
+                        errorMessage.append("Found issues with " + featureName + '\n');
+                        errorMessage.append("     noship features should have an edition of full instead of " + edition + '\n');
+                    }
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that have edition set incorrectly: " + '\n' + errorMessage.toString());
+        }
+    }
+    
     @Test
 	public void testVisibility() {
+        FeatureVerifier verifier = new FeatureVerifier(features);
 		Map<String, Set<String>> violations = verifier.verifyAllFeatures();
 
 		boolean failed = false;
@@ -175,5 +248,39 @@ public class VisibilityTest {
 
 	}
 
+    /**
+     * Validates that features are in the right directory, public features in public
+     * directory, protected in protected, auto in auto and others in private.
+     */
+    @Test
+    public void testVisibility2() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+            String visibility = featureInfo.getVisibility();
+            if (visibility == null || "".equals(visibility)) {
+                visibility = "private";
+            }
+
+            if (featureInfo.isAutoFeature()) {
+                if (!"private".equals(visibility)) {
+                    errorMessage.append("Found issues with " + featureName + '\n');
+                    errorMessage.append("     Auto feature should have a visibility of private\n");
+                }
+                visibility = "auto";
+            }
+            File featureFile = featureInfo.getFeatureFile();
+            String fileName = featureFile.getAbsolutePath();
+            fileName = fileName.replace('\\', '/');
+            if (!fileName.contains("/visibility/" + visibility + "/")) {
+                errorMessage.append("Found issues with " + featureName + '\n');
+                errorMessage.append("     Feature visibility " + visibility + " doesn't match the directory the feature is in.\n");
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features that have visibility set incorrectly: " + '\n' + errorMessage.toString());
+        }
+    }
 
 }

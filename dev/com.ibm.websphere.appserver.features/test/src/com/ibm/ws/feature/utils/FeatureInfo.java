@@ -38,7 +38,7 @@ public class FeatureInfo {
 	private String kind;
 
 	private boolean isInit = false;
-	private File feature;
+	private final File feature;
 	private String name;
 	private boolean isAutoFeature = false;
 	private boolean isParallelActivationEnabled = false;
@@ -48,6 +48,10 @@ public class FeatureInfo {
 
 	public FeatureInfo(File feature) {
 		this.feature = feature;
+	}
+
+	public File getFeatureFile() {
+	    return feature;
 	}
 
 	public String[] getAutoFeatures() {
