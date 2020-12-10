@@ -59,14 +59,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private TransportConfig transportConfig;
 
     /**
-     * @deprecated Use {@link #setupTestcontainers()} instead
-     */
-    @Deprecated
-    public static void clearTestcontainersConfig() {
-        setupTestcontainers();
-    }
-
-    /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      * It is not necessary to call this method whenever Testcontainers is used, but if you want to be able to
      * automatically switch between using your local Docker install, or a remote Docker host, call this method
@@ -88,6 +80,38 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         } catch (IOException e) {
             Log.error(c, "clearTestcontainersConfig", e);
         }
+
+        generateDockerConfig();
+    }
+
+    /**
+     * Generate a config file at ~/.docker/config.json if a private docker registry will be used
+     */
+    private static void generateDockerConfig() {
+        final String m = "generateDockerConfig";
+        if (!useRemoteDocker())
+            return;
+
+        File configDir = new File(System.getProperty("user.home"), ".docker");
+        File configFile = new File(configDir, "config.json");
+        if (configFile.exists()) {
+            Log.info(c, m, "Will not generate docker config. Already exists at: " + configFile.getAbsolutePath());
+            return;
+        }
+
+        configDir.mkdirs();
+        Log.info(c, m, "Using remote docker so generating a private registry config file at: " + configFile.getAbsolutePath());
+        String configContents = "{\n" +
+                                "     \"auths\": {\n" +
+                                "          \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "\": {\n" +
+                                "               \"auth\": \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken() + "\",\n"
+                                +
+                                "               \"email\": null\n" +
+                                "          }\n" +
+                                "    }\n" +
+                                "}";
+        Log.info(c, m, "Config contents are:\n" + configContents);
+        writeFile(configFile, configContents);
     }
 
     @Override

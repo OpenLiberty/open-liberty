@@ -298,6 +298,7 @@
                    else="${env.artifactory.download.server}">
           <isset property="artifactory.download.server" />
         </condition>
+		<property name="fat.test.artifactory.download.token" value="${artifactory.download.token}"/>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
