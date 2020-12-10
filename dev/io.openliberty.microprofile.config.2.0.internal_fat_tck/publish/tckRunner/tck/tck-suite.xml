@@ -17,6 +17,7 @@
 					<!-- ConfigProviderTest.testEnvironmentConfigSource() looks for a Config Property called "path". -->
 					<!-- On some Windows machines, the Property can be called "Path", and hence the value isn't found. -->
 					<!-- Therefore this test is skipped on Windows machines. -->
+					<!-- Relates to: https://github.com/eclipse/microprofile-config/issues/664 -->
 					<![CDATA[
 					String os = System.getProperty("os.name");
 					if (os.contains("Windows")){
