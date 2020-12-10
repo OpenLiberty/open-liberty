@@ -25,13 +25,13 @@
     <application location="MPConcurrentTxApp.war"/>
 
     <dataSource id="DefaultDataSource">
-        <connectionManager enableHandleList="true" autoCloseConnections="true"/> <!-- TODO remove enableHandleList once 15181 is merged -->
+        <connectionManager autoCloseConnections="true"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>
 
     <dataSource id="OnePhaseDataSource" jndiName="jdbc/ds1phase" type="javax.sql.ConnectionPoolDataSource">
-        <connectionManager enableHandleList="false" autoCloseConnections="false"/> <!-- TODO remove enableHandleList once 15181 is merged -->
+        <connectionManager autoCloseConnections="false"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>
