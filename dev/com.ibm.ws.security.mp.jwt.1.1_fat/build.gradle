@@ -47,37 +47,54 @@ dependencies {
     }
 }
 
-autoFVT.doLast {
-
-  def servers = [
+ def servers = [
 	'com.ibm.ws.security.mp.jwt.1.1.fat',
 	'com.ibm.ws.security.mp.jwt.1.1.fat.jvmOptions',
 	'com.ibm.ws.security.mp.jwt.1.1.fat.client',
 	'com.ibm.ws.security.mp.jwt.1.1.fat.builder'
-  ]
+ ]
 
-  servers.each { server ->
-
-	/* copy test marker (small test app that marks the start/end of each test case in the server side logs */  
-    copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+task copyServerFiles_sharedConfig { 
+ doLast {
+ 
+ /** copy common config files (like ssl config definitions)  We will override with project specific later **/
+   copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/shared/config')
     }
-
+   copy {
+      from project(':com.ibm.ws.security.fat.common.mp.jwt').file('publish')
+      into new File(autoFvtDir, 'publish')
+      /* eachFile { println it.name } */
+    }
+  }
+ }
+ 
+ task copyServerFiles_keyAndTrust {
+  doLast {
+  servers.each { server ->
+/******************* Start Copy Security Keys **********************/
   	/* Copy all shared key/trust stores from the common security FAT */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-    /* Copy all shared key/trust stores from the common security jwt FAT */
+
+  	/* copy shared key/trust stores from the common jwt security fat project */
     copy { 
      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-    
-  	/* Copy all shared key/trust stores from this project
+ 
+   	/* copy shared key/trust stores from the common mp.jwt project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.mp.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  
+    /* Copy all shared key/trust stores from this project
   		overwrites shared jks files from the common security FAT 
-  	*/
+    */	
     copy { 
      from ('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
@@ -90,48 +107,38 @@ autoFVT.doLast {
      from new File(autoFvtDir, 'publish/servers/' + server + '/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
+/******************* End Copy Security Keys ***********************/
+  }
+  }
+ }
 
-    /* copy the all signature alg config file from security_fat.common */
-    copy {
-      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
-      into new File(autoFvtDir, 'publish/shared/config')
+ task copyServerFiles { 
+  dependsOn ':com.ibm.ws.security.fat.common.mp.jwt:autoFVT'
+ doLast {
+
+  servers.each { server ->
+
+	/* copy test marker (small test app that marks the start/end of each test case in the server side logs */  
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
-    
+
   }
   
   	/* copy builder assistance apps */  
-    /* maybe rename this simple builder */
     copy { 
       from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
       into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.1.fat.builder/apps')
     }
-
-    copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilderAddClaim.war')
-      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.1.fat.builder/apps')
-    }
-    
-    copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilderclient.war')
-      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.mp.jwt.1.1.fat.builder/apps')
-    }
-/*    
-    copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.mp.jwt').projectDir, 'test-applications/microProfileLoginConfig_NotInWebXml_MpJwtInApp.war/resources')
-      into new File(autoFvtDir, 'test-applications/microProfileLoginConfig_NotInWebXml_MpJwtInApp.war/resources')
-    }
-*/    
+     
     copy {
       from new File(project(':com.ibm.ws.security.fat.common.mp.jwt').buildDir, 'autoFVT/test-applications')
       into new File(autoFvtDir, 'test-applications') ;
     }
     
-    /*
-    copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.mp.jwt').projectDir, 'build/classes/java/main/com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class')
-      into new File(projectDir, 'build/classes/java/main/com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class')
-    }
-    */
-    
+  }
 }
+
+autoFVT.dependsOn copyServerFiles_sharedConfig, copyServerFiles_keyAndTrust, copyServerFiles 
 

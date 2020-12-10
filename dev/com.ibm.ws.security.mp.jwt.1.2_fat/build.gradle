@@ -140,12 +140,6 @@ task copyServerFiles_sharedConfig {
       into new File(autoFvtDir, 'test-applications') ;
     }
     
-    /* override the feature file (replacing 1.1 with 1.2) */
-    copy { 
-      from ('publish/shared/config')
-      into new File(autoFvtDir, 'publish/shared/config')
-    } 
-    
     /* copy configs from jwt fat server to the jwt jvmOptions server */
     /* the servers are basically the same, just need the jvmOptions file in only this instance */
     copy {
