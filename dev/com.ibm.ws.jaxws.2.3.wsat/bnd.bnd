@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-exportVer=2.2
+exportVer=2.3
 
 Bundle-Name:JAXWS Atomic Transaction Extension
 Bundle-Description: JAXWS Extension for WSAT, version ${bVersion}
@@ -25,11 +25,8 @@ Export-Package: \
  com.ibm.ws.jaxws.wsat.components;version=${exportVer}
 
 Import-Package: \
-   javax.jws,\
-   javax.xml,\
    javax.xml.namespace,\
    org.osgi.framework;version="1.5.0",\
-   javax.xml.ws.*;version="[2.3,3)", \
    org.apache.cxf.*;version="[3.2,4)", \
    com.ibm.websphere.ras, \
    com.ibm.websphere.ras.annotation, \
