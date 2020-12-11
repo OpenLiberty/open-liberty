@@ -1,0 +1,28 @@
+<server>
+
+	<featureManager>
+		<feature>osgiconsole-1.0</feature>
+		<feature>batch-1.0</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+	
+	<include location="../fatTestPorts.xml"/>
+
+    <batchPersistence jobStoreRef="BatchDatabaseStore" />
+
+    <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
+
+	<logging traceSpecification="com.ibm.jbatch.*=all=enabled:jsr352.test.servlet.*=all=enabled:*=all=enabled" />
+	
+	<fileset includes="db2jcc4.jar" dir="C:\Users\IBM_ADMIN\Downloads" id="FATfileset5"/>
+	
+	<dataSource type="javax.sql.XADataSource"  jndiName="jdbc/batch" id="batchDB">
+        <properties.db2.jcc URL="jdbc:db2:thin:@//moondb05.rtp.raleigh.ibm.com:50002/BATTEST1" user="db2admin" password="sh@reddb"/>
+        <jdbcDriver id="FATJDBCDriver5">
+            <library id="FATLib5">
+                <fileset includes="db2jcc4.jar" dir="C:\Users\IBM_ADMIN\Downloads" id="FATfileset5"/>
+            </library>
+        </jdbcDriver>
+    </dataSource>
+
+</server>
