@@ -125,6 +125,7 @@ public abstract class StateManager
      * 
      * @deprecated
      */
+    @Deprecated
     public StateManager.SerializedView saveSerializedView(FacesContext context)
     {
         Object savedView = saveView(context);
@@ -176,6 +177,7 @@ public abstract class StateManager
      * 
      * @deprecated
      */
+    @Deprecated
     protected Object getTreeStructureToSave(FacesContext context)
     {
         return null;
@@ -188,6 +190,7 @@ public abstract class StateManager
      * 
      * @deprecated
      */
+    @Deprecated
     protected Object getComponentStateToSave(FacesContext context)
     {
         return null;
@@ -210,6 +213,7 @@ public abstract class StateManager
      * 
      * @deprecated
      */
+    @Deprecated
     public void writeState(FacesContext context, StateManager.SerializedView state)
         throws IOException
     {
@@ -269,6 +273,7 @@ public abstract class StateManager
     /**
      * @deprecated
      */
+    @Deprecated
     protected UIViewRoot restoreTreeStructure(FacesContext context, String viewId, String renderKitId)
     {
         return null;
@@ -277,6 +282,7 @@ public abstract class StateManager
     /**
      * @deprecated
      */
+    @Deprecated
     protected void restoreComponentState(FacesContext context, UIViewRoot viewRoot, String renderKitId)
     {
         // default impl does nothing as per JSF 1.2 javadoc
@@ -319,6 +325,7 @@ public abstract class StateManager
     /**
      * @deprecated
      */
+    @Deprecated
     public class SerializedView
     {
         private Object _structure;

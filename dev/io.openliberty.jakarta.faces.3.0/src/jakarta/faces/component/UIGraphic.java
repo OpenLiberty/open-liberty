@@ -71,6 +71,7 @@ public class UIGraphic extends UIComponentBase
     /**
      * @deprecated Use getValueExpression instead
      */
+    @Deprecated
     @Override
     public ValueBinding getValueBinding(String name)
     {
@@ -87,6 +88,7 @@ public class UIGraphic extends UIComponentBase
     /**
      * @deprecated Use setValueExpression instead
      */
+    @Deprecated
     @Override
     public void setValueBinding(String name, ValueBinding binding) 
     {

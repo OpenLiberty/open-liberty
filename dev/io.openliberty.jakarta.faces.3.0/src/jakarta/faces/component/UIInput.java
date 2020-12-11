@@ -902,6 +902,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
+    @Deprecated
     @SuppressWarnings("dep-ann")
     @JSFProperty(stateHolder=true, returnSignature = "void",
             methodSignature = "jakarta.faces.context.FacesContext,jakarta.faces.component.UIComponent,java.lang.Object")
@@ -914,6 +915,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      *  
      * @deprecated 
      */
+    @Deprecated
     public void setValidator(MethodBinding validator)
     {
         getStateHelper().put(PropertyKeys.validator, validator);
@@ -1019,6 +1021,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
+    @Deprecated
     @JSFProperty(stateHolder=true, returnSignature = "void",
                  methodSignature = "jakarta.faces.event.ValueChangeEvent", clientEvent="valueChange")
     public MethodBinding getValueChangeListener()
@@ -1031,6 +1034,7 @@ public class UIInput extends UIOutput implements EditableValueHolder
      * 
      * @deprecated
      */
+    @Deprecated
     public void setValueChangeListener(MethodBinding valueChangeListener)
     {
         getStateHelper().put(PropertyKeys.valueChangeListener, valueChangeListener);

@@ -29,11 +29,13 @@ public interface ActionSource
     /**
      * @deprecated Replaced by ActionSource2.getActionExpression
      */
+    @Deprecated
     public MethodBinding getAction();
 
     /**
      * @deprecated Replaced by ActionSource2.setActionExpression
      */
+    @Deprecated
     public void setAction(MethodBinding action);
 
     /**

@@ -752,6 +752,7 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * @deprecated the ResponseWriter is now set by {@link jakarta.faces.application.ViewHandler#renderView}
      */
+    @Deprecated
     protected void setupResponseWriter()
     {
     }

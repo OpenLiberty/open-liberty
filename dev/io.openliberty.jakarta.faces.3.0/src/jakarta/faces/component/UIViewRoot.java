@@ -82,7 +82,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
 {
     public static final String COMPONENT_FAMILY = "jakarta.faces.ViewRoot";
     public static final String COMPONENT_TYPE = "jakarta.faces.ViewRoot";
-    public static final String METADATA_FACET_NAME = "UIViewRoot_faces_metadata";
+    public static final String METADATA_FACET_NAME = "jakarta_faces_metadata";
     public static final String UNIQUE_ID_PREFIX = "j_id";
     public static final String VIEW_PARAMETERS_KEY = "jakarta.faces.component.VIEW_PARAMETERS_KEY";
     

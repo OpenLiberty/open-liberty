@@ -27,6 +27,7 @@ package jakarta.faces.el;
  * 
  * @deprecated
  */
+@Deprecated
 public abstract class PropertyResolver
 {
 

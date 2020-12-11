@@ -28,7 +28,7 @@ public enum ProjectStage
     SystemTest,
     UnitTest;
     
-    public static final String PROJECT_STAGE_JNDI_NAME = "java:comp/env/jsf/ProjectStage";
+    public static final String PROJECT_STAGE_JNDI_NAME = "java:comp/env/faces/ProjectStage";
 
     /**
      * 

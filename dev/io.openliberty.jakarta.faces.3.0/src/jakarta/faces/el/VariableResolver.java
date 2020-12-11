@@ -25,6 +25,7 @@ import jakarta.faces.context.FacesContext;
  * 
  * @deprecated
  */
+@Deprecated
 public abstract class VariableResolver
 {
     // FIELDS

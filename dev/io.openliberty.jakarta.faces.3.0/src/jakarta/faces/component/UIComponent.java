@@ -367,6 +367,7 @@ public abstract class UIComponent
     /**
      * @deprecated Replaced by setValueExpression
      */
+    @Deprecated
     public abstract void setValueBinding(String name, ValueBinding binding);
 
     public void setValueExpression(String name, ValueExpression expression)
@@ -717,6 +718,7 @@ public abstract class UIComponent
     /**
      * @deprecated Replaced by getValueExpression
      */
+    @Deprecated
     public abstract ValueBinding getValueBinding(String name);
 
     public ValueExpression getValueExpression(String name)

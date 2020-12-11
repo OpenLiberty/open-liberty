@@ -23,6 +23,7 @@ package jakarta.faces.el;
  * 
  * @deprecated
  */
+@Deprecated
 public class PropertyNotFoundException extends EvaluationException
 {
     private static final long serialVersionUID = -7271529989175141594L;

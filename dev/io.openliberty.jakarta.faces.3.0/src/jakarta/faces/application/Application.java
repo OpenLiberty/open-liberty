@@ -364,6 +364,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract UIComponent createComponent(ValueBinding componentBinding, FacesContext context,
                     String componentType) throws FacesException;
 
@@ -481,6 +482,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract MethodBinding createMethodBinding(String ref, Class<?>[] params) throws ReferenceSyntaxException;
 
     /**
@@ -507,6 +509,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException;
 
     /**
@@ -1133,6 +1136,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract void setVariableResolver(VariableResolver resolver);
 
     /**

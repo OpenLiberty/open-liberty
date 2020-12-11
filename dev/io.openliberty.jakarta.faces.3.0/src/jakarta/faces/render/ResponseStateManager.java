@@ -71,6 +71,7 @@ public abstract class ResponseStateManager
      * @throws IOException 
      * @deprecated
      */
+    @Deprecated
     public void writeState(FacesContext context, StateManager.SerializedView state) throws IOException
     {
         // does nothing as per JSF 1.2 javadoc
@@ -104,6 +105,7 @@ public abstract class ResponseStateManager
     /**
      * @deprecated
      */
+    @Deprecated
     public Object getTreeStructureToRestore(FacesContext context, String viewId)
     {
         return null;
@@ -112,6 +114,7 @@ public abstract class ResponseStateManager
     /**
      * @deprecated
      */
+    @Deprecated
     public Object getComponentStateToRestore(FacesContext context)
     {
         return null;

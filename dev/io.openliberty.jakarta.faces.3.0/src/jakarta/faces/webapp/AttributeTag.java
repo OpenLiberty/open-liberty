@@ -31,6 +31,7 @@ import jakarta.servlet.jsp.tagext.TagSupport;
  * 
  * @deprecated the implementation of this clazz is now an implementation detail.
  */
+@Deprecated
 public class AttributeTag extends TagSupport
 {
     private static final long serialVersionUID = 3147657100171678632L;

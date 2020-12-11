@@ -34,6 +34,7 @@ import jakarta.servlet.jsp.tagext.TagSupport;
  * 
  * @deprecated replaced by {@link ValidatorELTag}
  */
+@Deprecated
 public class ValidatorTag extends TagSupport
 {
     private static final long serialVersionUID = 8794036166323016663L;

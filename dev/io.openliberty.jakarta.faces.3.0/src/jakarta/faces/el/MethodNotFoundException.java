@@ -23,6 +23,7 @@ package jakarta.faces.el;
  * 
  * @deprecated
  */
+@Deprecated
 public class MethodNotFoundException extends EvaluationException
 {
     private static final long serialVersionUID = 7107789255726890536L;

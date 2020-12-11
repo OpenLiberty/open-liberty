@@ -23,6 +23,7 @@ package jakarta.faces.webapp;
  * 
  * @deprecated replaced by {@link UIComponentELTag}
  */
+@Deprecated
 public abstract class UIComponentBodyTag extends UIComponentTag
 {
 
