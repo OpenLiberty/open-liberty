@@ -9,7 +9,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.health.spi;  type="stable"
 IBM-ShortName: mpHealth-3.0
 Subsystem-Name: MicroProfile Health 3.0
--features=io.openliberty.org.eclipse.microprofile.health-3.0, \
+-features=com.ibm.websphere.appserver.org.eclipse.microprofile.health-3.0, \
  com.ibm.websphere.appserver.cdi-2.0,\
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.json-1.0, \

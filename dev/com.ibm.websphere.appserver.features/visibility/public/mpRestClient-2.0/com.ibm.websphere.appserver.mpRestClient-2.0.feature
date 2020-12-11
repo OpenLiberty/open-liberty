@@ -12,7 +12,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.rest.client.spi; type="stable"
 IBM-ShortName: mpRestClient-2.0
 Subsystem-Name: MicroProfile Rest Client 2.0
--features=io.openliberty.org.eclipse.microprofile.rest.client-2.0, \
+-features=com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-2.0, \
  com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.javax.annotation-1.3, \
  com.ibm.websphere.appserver.jaxrsClient-2.1, \

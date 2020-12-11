@@ -11,7 +11,7 @@ IBM-API-Package: \
   io.smallrye.config; type="internal"
 IBM-ShortName: mpConfig-2.0
 Subsystem-Name: MicroProfile Config 2.0
--features=io.openliberty.org.eclipse.microprofile.config-2.0, \
+-features=com.ibm.websphere.appserver.org.eclipse.microprofile.config-2.0, \
  com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.javax.annotation-1.3, \
  com.ibm.websphere.appserver.containerServices-1.0, \
