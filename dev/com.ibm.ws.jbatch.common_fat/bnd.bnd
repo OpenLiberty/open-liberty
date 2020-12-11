@@ -21,7 +21,6 @@ Bundle-Description: Common code for Batch FAT projects; version=${bVersion}
 
 src: \
     src,\
-    fat/src,\
     test-applications/BonusPayout.war/src,\
     test-applications/DbServletApp.war/src
 
