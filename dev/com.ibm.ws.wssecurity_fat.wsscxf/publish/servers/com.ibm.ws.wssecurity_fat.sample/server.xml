@@ -28,7 +28,7 @@
 
 
 	<include location="../fatTestPorts.xml" />
-
+    
 	<application
 		id="webcontent"
 		name="webcontent"
@@ -39,7 +39,7 @@
 		name="WSSampleSeiClient"
 		type="war"
 		location="WSSampleSeiClient" />
-
+   
 	<basicRegistry
 		id="basic"
 		realm="customRealm"
