@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.concurrent-2.0
+symbolicName=io.openliberty.concurrent-2.0
 visibility=public
 singleton=true
 IBM-ShortName: concurrent-2.0
