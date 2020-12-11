@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.jbatch.common_fat</name>
+	<name>com.ibm.ws.jbatch.fat.common</name>
 	<comment></comment>
 	<projects>
 	</projects>

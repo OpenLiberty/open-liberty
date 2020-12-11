@@ -16,25 +16,25 @@ addRequiredLibraries {
 }
 
 dependencies {
-  requiredLibs project(":com.ibm.ws.jbatch.common_fat"),
+  requiredLibs project(":com.ibm.ws.jbatch.fat.common"),
 	'commons-io:commons-io:2.6'
 }
 
 task copyTestApps {
-  dependsOn ':com.ibm.ws.jbatch.common_fat:autoFVT'
+  dependsOn ':com.ibm.ws.jbatch.fat.common:autoFVT'
   doLast {
     // Sources to enable application compilation and shrinkwrap operations
     copy {
-      from project(':com.ibm.ws.jbatch.common_fat').file('test-applications')
-      into new File('test-applications/common_fat')
+      from project(':com.ibm.ws.jbatch.fat.common').file('test-applications')
+      into new File('test-applications/fat.common')
     }
     copy {
-      from project(':com.ibm.ws.jbatch.common_fat').file('src/batch/fat/common/util')
-      into new File('test-applications/common_fat/src/batch/fat/common/util')
+      from project(':com.ibm.ws.jbatch.fat.common').file('src/batch/fat/common/util')
+      into new File('test-applications/fat.common/src/batch/fat/common/util')
     }
     // Pre-built application archives
     copy {
-      from project(':com.ibm.ws.jbatch.common_fat').file('build/libs/test-application')
+      from project(':com.ibm.ws.jbatch.fat.common').file('build/libs/test-application')
       into new File('build/libs/autoFVT/build/lib/test-application')
     }
   }

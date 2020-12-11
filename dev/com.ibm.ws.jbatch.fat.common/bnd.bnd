@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: Batch FAT Common
-Bundle-SymbolicName: com.ibm.ws.jbatch.common_fat
+Bundle-SymbolicName: com.ibm.ws.jbatch.fat.common
 Bundle-Description: Common code for Batch FAT projects; version=${bVersion}
 
 #Export-Package: \
@@ -27,6 +27,9 @@ src: \
 test.project: true
 generate.replacement: true
 
+-dependson: \
+    build.changeDetector
+    
 -buildpath: \
 	com.ibm.websphere.javaee.batch.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
@@ -38,5 +41,6 @@ generate.replacement: true
 	fattest.simplicity;version=latest,\
 	org.apache.httpcomponents:httpmime;version=4.3.1,\
 	org.apache.httpcomponents:httpclient;version=latest,\
-	org.apache.httpcomponents:httpcore;version=latest
+	org.apache.httpcomponents:httpcore;version=latest,\
+	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3
 

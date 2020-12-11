@@ -22,14 +22,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.jbatch.common_fat-BonusPayout</name>
+			<name>com.ibm.ws.jbatch.fat.common-BonusPayout</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.jbatch.common_fat/test-applications/BonusPayout.war/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.jbatch.fat.common/test-applications/BonusPayout.war/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.jbatch.common_fat-DbServletApp</name>
+			<name>com.ibm.ws.jbatch.fat.common-DbServletApp</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.jbatch.common_fat/test-applications/DbServletApp.war/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.jbatch.fat.common/test-applications/DbServletApp.war/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

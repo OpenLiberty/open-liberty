@@ -133,7 +133,7 @@ public class BatchAppUtils {
         if (bonusPayoutEAREar == null) {
             final String appName = "BonusPayoutEAR.ear";
             bonusPayoutEAREar = ShrinkWrap.create(EnterpriseArchive.class, appName);
-            File appXml = new File("test-applications/common_fat/" + appName + "/resources/META-INF/application.xml");
+            File appXml = new File("test-applications/fat.common/" + appName + "/resources/META-INF/application.xml");
             bonusPayoutEAREar.setApplicationXML(appXml);
             bonusPayoutEAREar.addAsModule(getBonusPayoutWar());
         }
@@ -152,7 +152,7 @@ public class BatchAppUtils {
                                      String regex,
                                      String... packageNames) {
         
-        String srcRoot = isCommonFat ? "test-applications/common_fat/" : "test-applications/";
+        String srcRoot = isCommonFat ? "test-applications/fat.common/" : "test-applications/";
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName);
         final boolean INCLUDE_SUBPKGS = false;  // Exclude subpackages

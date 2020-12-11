@@ -17,10 +17,10 @@ src: \
 	test-applications/batchFAT.war/resources,\
 	test-applications/batchSecurity.war/src,\
 	test-applications/batchSecurity.war/resources,\
-	test-applications/common_fat/DbServletApp.war/src,\
-	test-applications/common_fat/DbServletApp.war/resources,\
-	test-applications/common_fat/BonusPayout.war/src,\
-	test-applications/common_fat/BonusPayout.war/resources
+	test-applications/fat.common/DbServletApp.war/src,\
+	test-applications/fat.common/DbServletApp.war/resources,\
+	test-applications/fat.common/BonusPayout.war/src,\
+	test-applications/fat.common/BonusPayout.war/resources
 
 fat.project: true
 
@@ -48,10 +48,10 @@ tested.features: \
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
-	com.ibm.ws.jbatch.common_fat;version=latest,\
+	com.ibm.ws.jbatch.fat.common;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	org.osgi.annotation.versioning;version=latest
 
 -testpath: \
 	com.ibm.ws.org.apache.commons.io;version=latest,\
-	com.ibm.ws.jbatch.common_fat;version=latest	
+	com.ibm.ws.jbatch.fat.common;version=latest	
