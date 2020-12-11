@@ -1,1 +1,1 @@
-DELETE FROM ${schemaname}.SimpleEntityOLGH9018;
+DELETE FROM SimpleEntityOLGH9018;

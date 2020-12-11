@@ -58,6 +58,8 @@ public class EJBTestVehicleServlet extends JPATestServlet {
             jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
+        properties.put("dbMajorVersion", getDbMajorVersion());
+        properties.put("dbMinorVersion", getDbMinorVersion());
         properties.put("dbProductName", getDbProductName());
         properties.put("dbProductVersion", getDbProductVersion());
         properties.put("jdbcDriverVersion", getJdbcDriverVersion());
