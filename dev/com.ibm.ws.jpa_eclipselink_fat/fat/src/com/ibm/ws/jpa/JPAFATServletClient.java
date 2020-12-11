@@ -42,6 +42,8 @@ public class JPAFATServletClient extends FATServletClient {
     private static final String dbManagementResourcePath = "test-applications/helpers/DatabaseManagement/resources/";
 
     private static boolean dbMetaAcquired = false;
+    private static String dbMajorVersion = "";
+    private static String dbMinorVersion = "";
     private static String dbProductName = "";
     private static String dbProductVersion = "";
     private static String jdbcDriverVersion = "";
@@ -136,6 +138,8 @@ public class JPAFATServletClient extends FATServletClient {
                 System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
             }
 
+            dbMajorVersion = dbProps.getProperty("dbmajor_version");
+            dbMinorVersion = dbProps.getProperty("dbminor_version");
             dbProductName = dbProps.getProperty("dbproduct_name");
             dbProductVersion = dbProps.getProperty("dbproduct_version");
             jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
@@ -174,6 +178,14 @@ public class JPAFATServletClient extends FATServletClient {
 
     protected boolean isDbMetaAcquired() {
         return dbMetaAcquired;
+    }
+
+    protected String getDbMajorVersion() {
+        return dbMajorVersion;
+    }
+
+    protected String getDbMinorVersion() {
+        return dbMinorVersion;
     }
 
     protected String getDbProductName() {

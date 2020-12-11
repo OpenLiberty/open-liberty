@@ -19,8 +19,8 @@
 
     <!-- Persistence Units for testing Force Bind Parameters -->
     <persistence-unit name="OLGH8294_PROPERTY_JTA">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
             <!-- Testing that with this property set, EclipseLink will 
             force query parameters to be bound (?, ?)  -->
@@ -34,7 +34,7 @@
     </persistence-unit>
 
     <persistence-unit name="OLGH8294_PROPERTY_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
             <!-- Testing that with this property set, EclipseLink will 
             force query parameters to be bound (?, ?)  -->
