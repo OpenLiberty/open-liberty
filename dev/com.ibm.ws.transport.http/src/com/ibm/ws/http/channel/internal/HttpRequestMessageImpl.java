@@ -2178,16 +2178,15 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private boolean isPrivateHeaderTrusted(HeaderKeys key) {
         HttpServiceContextImpl hisc = getServiceContext();
         InetAddress remoteAddr = null;
-        String address = null;
-        if (hisc != null && (remoteAddr = hisc.getRemoteAddr()) != null) {
-            address = remoteAddr.getHostAddress();
+        if (hisc != null) {
+            remoteAddr = hisc.getRemoteAddr();
         }
 
-        boolean trusted = HttpDispatcher.usePrivateHeaders(address, key.getName());
+        boolean trusted = HttpDispatcher.usePrivateHeaders(remoteAddr, key.getName());
 
         if (!trusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + address);
+                Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + remoteAddr.getHostAddress());
             }
             return false;
         }
