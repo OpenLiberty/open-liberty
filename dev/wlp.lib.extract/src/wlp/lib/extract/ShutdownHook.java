@@ -117,8 +117,12 @@ public class ShutdownHook implements Runnable {
             cmd = "bash -c  " + '"' + cmd.replace('\\', '/') + '"';
         }
 
-        Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
-
+        Process stopProcess = Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
+        try {
+            stopProcess.waitFor();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
