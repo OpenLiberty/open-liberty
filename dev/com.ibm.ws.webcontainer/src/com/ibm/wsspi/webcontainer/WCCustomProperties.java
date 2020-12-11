@@ -710,7 +710,7 @@ public class WCCustomProperties {
         HTTPS_INDICATOR_HEADER = WebContainer.getWebContainerProperties().getProperty("httpsindicatorheader"); //PM70260
         if ((HTTPS_INDICATOR_HEADER != null) && HTTPS_INDICATOR_HEADER.trim().equals("")) HTTPS_INDICATOR_HEADER = null; // Eliminate String manipulation/compare on mainline path, getHeader does not accept empty str.
         
-        ENABLE_TRACE_REQUESTS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("enableTraceRequests", "false")).booleanValue();  //71479
+        ENABLE_TRACE_REQUESTS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("enabletracerequests", "false")).booleanValue();  //71479
                 
         //Start 8.5.0.2
         REMOVE_ATTRIBUTE_FOR_NULL_OBJECT = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.removeattributefornullobject", "true")).booleanValue(); //PM71991    
