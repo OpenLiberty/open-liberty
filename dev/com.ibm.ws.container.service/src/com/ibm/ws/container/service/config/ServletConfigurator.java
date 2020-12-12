@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public interface ServletConfigurator {
     /**
      * Generic configuration item. Encapsulates a value, a source, and provides
      * a specific value comparison implementation.
-     * 
+     *
      * @param <I> The type of value held by the configuration item.
      */
     public interface ConfigItem<I> {
@@ -39,16 +39,16 @@ public interface ServletConfigurator {
         /**
          * Answer the value of the configuration item. Null
          * may be returned.
-         * 
+         *
          * @return The value of the configuration item.
          */
         public I getValue();
 
         /**
          * Answer a value of a specific type.
-         * 
+         *
          * @param cls The type of the value which is to be obtained.
-         * 
+         *
          * @return A value of the specified type.
          */
         public <T> T getValue(Class<T> cls);
@@ -56,9 +56,9 @@ public interface ServletConfigurator {
         /**
          * Compare the value of this configuration item with a
          * specified value. The specified value may be null.
-         * 
+         *
          * @param otherValue The other value to compare against.
-         * 
+         *
          * @return True if the values are equal. False if the
          *         values are unequal.
          */
@@ -70,9 +70,9 @@ public interface ServletConfigurator {
          * the library URI is set to the URI of the library. When the
          * source of the item is web.xml, the library URI is fixed to
          * "WEB-INF/web.xml".
-         * 
+         *
          * See {@link #getLibraryURI()}.
-         * 
+         *
          * @return The source of the configuration item.
          */
         public ConfigSource getSource();
@@ -81,7 +81,7 @@ public interface ServletConfigurator {
          * Tell the URI of the library of the configuration item. When
          * the source of the item is web.xml, answer the fixed value
          * "WEB-INF/web.xml".
-         * 
+         *
          * @return The URI of the library of the configuration.
          */
         public String getLibraryURI();
@@ -132,4 +132,9 @@ public interface ServletConfigurator {
                                                                ConfigItem<String> currentLocationItem);
 
     public void addErrorMessage(String errorMessage);
+
+    /**
+     * @return the context-root from <application> <web-ext> if specified. Otherwise null
+     */
+    public String getContextRootFromServerConfig();
 }
