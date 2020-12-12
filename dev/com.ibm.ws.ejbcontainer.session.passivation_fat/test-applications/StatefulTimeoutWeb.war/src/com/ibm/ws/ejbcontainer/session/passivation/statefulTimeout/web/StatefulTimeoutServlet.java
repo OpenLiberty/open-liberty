@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,18 +144,30 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        TimeoutInExtFileOnlyBean bean = (TimeoutInExtFileOnlyBean) new InitialContext().lookup(JNDI_EXT_FILE_ONLY);
-        long invokeTime = bean.getInvocationTime();
-        FATHelper.sleep(BUFFER);
-        try {
-            invokeTime = bean.getInvocationTime();
-        } catch (NoSuchEJBException ex) {
-            fail("Bean timed out after " + BUFFER + " ms, when the ibm-ejb-jar-ext.xml file specified a 15 second timeout.");
+        int retry = 0;
+        long secondInvokeTime = 0;
+        TimeoutInExtFileOnlyBean bean = null;
+        while (bean == null) {
+            bean = (TimeoutInExtFileOnlyBean) new InitialContext().lookup(JNDI_EXT_FILE_ONLY);
+            long firstInvokeTime = bean.getInvocationTime();
+            FATHelper.sleep(BUFFER);
+            try {
+                secondInvokeTime = bean.getInvocationTime();
+            } catch (NoSuchEJBException ex) {
+                long elapsedTime = System.currentTimeMillis() - firstInvokeTime;
+                if ((retry < 3) && (elapsedTime > USER_TIMEOUT)) {
+                    svLogger.info("Retry - Slow system; elapsed time to call method > timeout : " + elapsedTime + " > " + USER_TIMEOUT);
+                    retry++;
+                    bean = null;
+                } else {
+                    fail("Bean timed out after " + BUFFER + " ms, when the ibm-ejb-jar-ext.xml file specified a 15 second timeout.");
+                }
+            }
         }
 
         FATHelper.sleep(USER_TIMEOUT + BUFFER);
         try {
-            long elapsedTime = bean.getInvocationTime() - invokeTime;
+            long elapsedTime = bean.getInvocationTime() - secondInvokeTime;
             fail("Timeout should have occurred after 15 seconds (specified in ibm-ejb-jar-ext.xml file) but did not timeout after waiting " + elapsedTime + " ms.");
         } catch (NoSuchEJBException ex) {
             svLogger.info("Caught expected NoSuchEJBException - PASS");
@@ -172,18 +184,30 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutAnnotationOnlyBean bean = (StatefulTimeoutAnnotationOnlyBean) new InitialContext().lookup(JNDI_ANN_ONLY);
-        long invokeTime = bean.getInvocationTime();
-        FATHelper.sleep(BUFFER);
-        try {
-            invokeTime = bean.getInvocationTime();
-        } catch (NoSuchEJBException ex) {
-            fail("Timeout was " + USER_TIMEOUT + " ms, but bean timed out after sleeping " + BUFFER + " ms.");
+        int retry = 0;
+        long secondInvokeTime = 0;
+        StatefulTimeoutAnnotationOnlyBean bean = null;
+        while (bean == null) {
+            bean = (StatefulTimeoutAnnotationOnlyBean) new InitialContext().lookup(JNDI_ANN_ONLY);
+            long firstInvokeTime = bean.getInvocationTime();
+            FATHelper.sleep(BUFFER);
+            try {
+                secondInvokeTime = bean.getInvocationTime();
+            } catch (NoSuchEJBException ex) {
+                long elapsedTime = System.currentTimeMillis() - firstInvokeTime;
+                if ((retry < 3) && (elapsedTime > USER_TIMEOUT)) {
+                    svLogger.info("Retry - Slow system; elapsed time to call method > timeout : " + elapsedTime + " > " + USER_TIMEOUT);
+                    retry++;
+                    bean = null;
+                } else {
+                    fail("Timeout was " + USER_TIMEOUT + " ms, but bean timed out after sleeping " + BUFFER + " ms.");
+                }
+            }
         }
 
         FATHelper.sleep(USER_TIMEOUT + BUFFER);
         try {
-            long elapsedTime = bean.getInvocationTime() - invokeTime;
+            long elapsedTime = bean.getInvocationTime() - secondInvokeTime;
             fail("Timeout was " + USER_TIMEOUT + " ms, but bean did not time out after sleeping " + elapsedTime + " ms.");
         } catch (NoSuchEJBException ex) {
             svLogger.info("Caught expected NoSuchEJBException - PASS");
@@ -199,18 +223,30 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutXMLOnlyBean bean = (StatefulTimeoutXMLOnlyBean) new InitialContext().lookup(JNDI_XML_ONLY);
-        long invokeTime = bean.getInvocationTime();
-        FATHelper.sleep(BUFFER);
-        try {
-            invokeTime = bean.getInvocationTime();
-        } catch (NoSuchEJBException ex) {
-            fail("Timeout was " + USER_TIMEOUT + " ms, but bean timed out after sleeping " + BUFFER + " ms.");
+        int retry = 0;
+        long secondInvokeTime = 0;
+        StatefulTimeoutXMLOnlyBean bean = null;
+        while (bean == null) {
+            bean = (StatefulTimeoutXMLOnlyBean) new InitialContext().lookup(JNDI_XML_ONLY);
+            long firstInvokeTime = bean.getInvocationTime();
+            FATHelper.sleep(BUFFER);
+            try {
+                secondInvokeTime = bean.getInvocationTime();
+            } catch (NoSuchEJBException ex) {
+                long elapsedTime = System.currentTimeMillis() - firstInvokeTime;
+                if ((retry < 3) && (elapsedTime > USER_TIMEOUT)) {
+                    svLogger.info("Retry - Slow system; elapsed time to call method > timeout : " + elapsedTime + " > " + USER_TIMEOUT);
+                    retry++;
+                    bean = null;
+                } else {
+                    fail("Timeout was " + USER_TIMEOUT + " ms, but bean timed out after sleeping " + BUFFER + " ms.");
+                }
+            }
         }
 
         FATHelper.sleep(USER_TIMEOUT + BUFFER);
         try {
-            long elapsedTime = bean.getInvocationTime() - invokeTime;
+            long elapsedTime = bean.getInvocationTime() - secondInvokeTime;
             fail("Timeout was " + USER_TIMEOUT + " ms, but bean did not time out after sleeping " + elapsedTime + " ms.");
         } catch (NoSuchEJBException ex) {
             svLogger.info("Caught expected NoSuchEJBException - PASS");
@@ -484,20 +520,32 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutAnnotationOverrideExtFileBean bean = (StatefulTimeoutAnnotationOverrideExtFileBean) new InitialContext().lookup(JNDI_ANN_OVERRIDE_EXT_FILE);
-        // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
-        // timeout specified in annotation is 15 seconds
-        long invokeTime = bean.getInvocationTime();
-        FATHelper.sleep(BUFFER);
-        try {
-            invokeTime = bean.getInvocationTime();
-        } catch (NoSuchEJBException ex) {
-            fail("Expected timeout to be 15 seconds, but bean timed out after " + BUFFER + " ms.");
+        int retry = 0;
+        long secondInvokeTime = 0;
+        StatefulTimeoutAnnotationOverrideExtFileBean bean = null;
+        while (bean == null) {
+            bean = (StatefulTimeoutAnnotationOverrideExtFileBean) new InitialContext().lookup(JNDI_ANN_OVERRIDE_EXT_FILE);
+            // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
+            // timeout specified in annotation is 15 seconds
+            long firstInvokeTime = bean.getInvocationTime();
+            FATHelper.sleep(BUFFER);
+            try {
+                secondInvokeTime = bean.getInvocationTime();
+            } catch (NoSuchEJBException ex) {
+                long elapsedTime = System.currentTimeMillis() - firstInvokeTime;
+                if ((retry < 3) && (elapsedTime > USER_TIMEOUT)) {
+                    svLogger.info("Retry - Slow system; elapsed time to call method > timeout : " + elapsedTime + " > " + USER_TIMEOUT);
+                    retry++;
+                    bean = null;
+                } else {
+                    fail("Expected timeout to be 15 seconds, but bean timed out after " + BUFFER + " ms.");
+                }
+            }
         }
 
         FATHelper.sleep(USER_TIMEOUT + BUFFER);
         try {
-            long elapsedTime = bean.getInvocationTime() - invokeTime;
+            long elapsedTime = bean.getInvocationTime() - secondInvokeTime;
             fail("Timeout was " + USER_TIMEOUT + " ms, but bean did not time out after sleeping " + elapsedTime + " ms.");
         } catch (NoSuchEJBException ex) {
             svLogger.info("Caught expected NoSuchEJBException - PASS");
@@ -515,20 +563,32 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutXMLOverrideExtFileBean bean = (StatefulTimeoutXMLOverrideExtFileBean) new InitialContext().lookup(JNDI_XML_OVERRIDE_EXT_FILE);
-        // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
-        // timeout specified in ejb-jar.xml is 15 seconds
-        long invokeTime = bean.getInvocationTime();
-        FATHelper.sleep(BUFFER);
-        try {
-            invokeTime = bean.getInvocationTime();
-        } catch (NoSuchEJBException ex) {
-            fail("Expected timeout to be 15 seconds, but bean timed out after " + BUFFER + " ms.");
+        int retry = 0;
+        long secondInvokeTime = 0;
+        StatefulTimeoutXMLOverrideExtFileBean bean = null;
+        while (bean == null) {
+            bean = (StatefulTimeoutXMLOverrideExtFileBean) new InitialContext().lookup(JNDI_XML_OVERRIDE_EXT_FILE);
+            // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
+            // timeout specified in ejb-jar.xml is 15 seconds
+            long firstInvokeTime = bean.getInvocationTime();
+            FATHelper.sleep(BUFFER);
+            try {
+                secondInvokeTime = bean.getInvocationTime();
+            } catch (NoSuchEJBException ex) {
+                long elapsedTime = System.currentTimeMillis() - firstInvokeTime;
+                if ((retry < 3) && (elapsedTime > USER_TIMEOUT)) {
+                    svLogger.info("Retry - Slow system; elapsed time to call method > timeout : " + elapsedTime + " > " + USER_TIMEOUT);
+                    retry++;
+                    bean = null;
+                } else {
+                    fail("Expected timeout to be 15 seconds, but bean timed out after " + BUFFER + " ms.");
+                }
+            }
         }
 
         FATHelper.sleep(USER_TIMEOUT + BUFFER);
         try {
-            long elapsedTime = bean.getInvocationTime() - invokeTime;
+            long elapsedTime = bean.getInvocationTime() - secondInvokeTime;
             fail("Timeout was " + USER_TIMEOUT + " ms, but bean did not time out after sleeping " + elapsedTime + " ms.");
         } catch (NoSuchEJBException ex) {
             svLogger.info("Caught expected NoSuchEJBException - PASS");
