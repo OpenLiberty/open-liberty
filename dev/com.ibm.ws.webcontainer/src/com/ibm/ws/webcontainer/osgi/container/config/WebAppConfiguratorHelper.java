@@ -719,11 +719,11 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         }
         configureOrderedLibPaths(orderedLibPaths);
         
+        configureContextRoot();
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, "WebAppConfiguration [ " + displayName + " ]");
-        }
-        
-        configureContextRoot();
+        }              
     }
     
     /**
