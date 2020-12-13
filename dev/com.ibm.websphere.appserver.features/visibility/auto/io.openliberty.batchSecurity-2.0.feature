@@ -9,6 +9,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
   com.ibm.wsspi.appserver.webBundleSecurity-1.0
 -bundles=com.ibm.ws.jbatch.security.jakarta
 IBM-Install-Policy: when-satisfied
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel
