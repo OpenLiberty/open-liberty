@@ -4,7 +4,7 @@ visibility=public
 IBM-API-Package: jakarta.security.auth.message.callback; type="spec"
 IBM-ShortName: connectorsInboundSecurity-2.0
 WLP-AlsoKnownAs: jcaInboundSecurity-2.0
-Subsystem-Name: Jakarta EE Connector Architecture Security Inflow 2.0
+Subsystem-Name: Jakarta Connectors 2.0 Inbound Security
 -features=\
    com.ibm.websphere.appserver.transaction-2.0, \
    com.ibm.websphere.appserver.security-1.0, \

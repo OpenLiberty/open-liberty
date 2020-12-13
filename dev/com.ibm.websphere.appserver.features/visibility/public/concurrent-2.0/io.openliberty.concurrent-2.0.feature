@@ -7,7 +7,7 @@ IBM-API-Package: jakarta.enterprise.concurrent; type="spec"
 IBM-API-Service: jakarta.enterprise.concurrent.ContextService; id="DefaultContextService", \
   jakarta.enterprise.concurrent.ManagedExecutorService; id="DefaultManagedExecutorService", \
   jakarta.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"
-Subsystem-Name: Jakarta EE Concurrency 2.0
+Subsystem-Name: Jakarta Concurrency 2.0
 -features=\
   io.openliberty.jakartaeePlatform-9.0, \
   com.ibm.websphere.appserver.appLifecycle-1.0, \

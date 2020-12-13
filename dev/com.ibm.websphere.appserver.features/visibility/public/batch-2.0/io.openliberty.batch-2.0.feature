@@ -15,7 +15,7 @@ IBM-API-Package: \
   jakarta.batch.runtime.context; type="spec", \
   jakarta.inject;  type="spec"
 IBM-ShortName: batch-2.0
-Subsystem-Name: Jakarta Batch API 2.0
+Subsystem-Name: Jakarta Batch 2.0
 -features=\
   io.openliberty.jakarta.xmlBinding-3.0, \
   io.openliberty.jakarta.cdi-3.0,\
