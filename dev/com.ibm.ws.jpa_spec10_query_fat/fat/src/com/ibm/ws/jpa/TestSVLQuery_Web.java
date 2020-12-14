@@ -133,10 +133,6 @@ public class TestSVLQuery_Web extends JPAFATServletClient {
         con.disconnect();
     }
 
-    private void populate(String servletName) {
-
-    }
-
     private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.query.entities.ano");

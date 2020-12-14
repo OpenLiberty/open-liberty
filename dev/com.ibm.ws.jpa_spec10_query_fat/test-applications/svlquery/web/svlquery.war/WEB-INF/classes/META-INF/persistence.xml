@@ -18,8 +18,8 @@
     version="1.0">
 
     <persistence-unit name="QUERY_JTA">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <!-- <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>  -->
         <properties>
             <property name="eclipselink.logging.parameters" value="true"/>
@@ -30,7 +30,7 @@
     </persistence-unit>
 
     <persistence-unit name="QUERY_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <!-- <mapping-file>META-INF/queryTestCatalogXmlSKST.xml</mapping-file>  -->
         <properties>
             <property name="eclipselink.logging.parameters" value="true"/>
