@@ -141,6 +141,7 @@ public class HtmlOutputFormat extends jakarta.faces.component.UIOutput
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.LANG_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

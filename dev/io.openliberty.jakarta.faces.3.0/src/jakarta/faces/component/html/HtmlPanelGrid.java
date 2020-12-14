@@ -462,6 +462,7 @@ public class HtmlPanelGrid extends jakarta.faces.component.UIPanel
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TITLE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

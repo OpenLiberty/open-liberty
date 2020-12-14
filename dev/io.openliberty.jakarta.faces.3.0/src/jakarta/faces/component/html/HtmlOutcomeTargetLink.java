@@ -434,6 +434,7 @@ public class HtmlOutcomeTargetLink extends jakarta.faces.component.UIOutcomeTarg
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

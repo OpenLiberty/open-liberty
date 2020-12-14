@@ -396,6 +396,7 @@ public class HtmlSelectBooleanCheckbox extends jakarta.faces.component.UISelectB
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

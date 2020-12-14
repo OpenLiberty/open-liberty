@@ -524,6 +524,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

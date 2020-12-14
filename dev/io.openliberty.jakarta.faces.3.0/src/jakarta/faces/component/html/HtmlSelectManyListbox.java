@@ -417,6 +417,7 @@ public class HtmlSelectManyListbox extends jakarta.faces.component.UISelectMany
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

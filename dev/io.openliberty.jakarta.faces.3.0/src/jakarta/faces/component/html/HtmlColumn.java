@@ -101,6 +101,7 @@ public class HtmlColumn extends jakarta.faces.component.UIColumn
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.STYLECLASS_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

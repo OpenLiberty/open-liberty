@@ -238,6 +238,7 @@ public class HtmlMessages extends jakarta.faces.component.UIMessages
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TITLE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

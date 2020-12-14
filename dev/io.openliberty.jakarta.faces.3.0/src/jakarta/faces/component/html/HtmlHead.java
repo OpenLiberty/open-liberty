@@ -92,6 +92,7 @@ public class HtmlHead extends jakarta.faces.component.UIOutput
         getStateHelper().put(PropertyKeys.xmlns, xmlns ); 
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

@@ -417,6 +417,7 @@ public class HtmlSelectOneListbox extends jakarta.faces.component.UISelectOne
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

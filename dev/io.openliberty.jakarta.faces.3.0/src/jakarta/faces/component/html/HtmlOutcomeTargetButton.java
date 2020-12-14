@@ -361,6 +361,7 @@ public class HtmlOutcomeTargetButton extends jakarta.faces.component.UIOutcomeTa
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

@@ -442,6 +442,7 @@ public class HtmlCommandLink extends jakarta.faces.component.UICommand
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

@@ -431,6 +431,7 @@ public class HtmlCommandButton extends jakarta.faces.component.UICommand
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
 
+    @Deprecated
     public void setValueBinding(String name, ValueBinding binding)
     {
         super.setValueBinding(name, binding);

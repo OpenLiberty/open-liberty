@@ -40,6 +40,7 @@ import jakarta.servlet.jsp.tagext.Tag;
  * 
  * @deprecated replaced by {@link UIComponentELTag}
  */
+@Deprecated
 public abstract class UIComponentTag extends UIComponentClassicTagBase
 {
 
