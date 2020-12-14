@@ -46,6 +46,8 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.setupServerSideAnnotations(server);
+
         server.startServer();
 
         // Wait for the API to become available
