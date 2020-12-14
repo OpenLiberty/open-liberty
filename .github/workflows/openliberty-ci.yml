@@ -20,14 +20,14 @@ on:
 env:
   LANG: en_US.UTF-8
 jobs:
-  setup: #Validates copyright headers, selects test-os, selects java version, and sets up test categories. 
-    name: Setup 
+  build: #Main build always done on linix run in parallel to setup and unit-test
+    name: Build Open Liberty
     runs-on: ubuntu-18.04
-    outputs: 
+    outputs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
-    steps: 
+    steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
@@ -39,23 +39,11 @@ jobs:
       with:
         java-version: 11
         openjdk_impl: openj9
-    - name: Generate output
+    - name: Generate build parameters
       id: gen-params
       env:
         PRBODY: ${{ github.event.pull_request.body }}
       run: .github/workflow-scripts/generate-params.sh
-  build: #Main build always done on linix run in parallel to setup and unit-test
-    name: Build Open Liberty
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Set up Java
-      uses: joschi/setup-jdk@v2
-      with:
-        java-version: 11
-        openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
@@ -91,9 +79,8 @@ jobs:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
-  unit_tests: #Unit tests always run linux, but could depends on setup to determine jdk
+  unit_tests: #Unit tests always run linux and java 11
     name: Unit Tests
-    needs: setup
     runs-on: ubuntu-18.04
     timeout-minutes: 60
     steps:
@@ -101,7 +88,7 @@ jobs:
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
-        java-version: ${{ needs.setup.outputs.test-java }}
+        java-version: 11
         openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
@@ -140,15 +127,15 @@ jobs:
         name: Unit test report
         path: "dev/unit-results/TEST-*.xml"
         includeSummary: true
-        numFailures: 10 # Truncate number of failures so we don't run out of annoations.
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.
   fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
-    needs: [setup, build]
-    runs-on: ${{ needs.setup.outputs.test-os }}
+    needs: build
+    runs-on: ${{ needs.build.outputs.test-os }}
     strategy:
       fail-fast: false
       max-parallel: 19
-      matrix: ${{fromJson(needs.setup.outputs.test-matrix)}}
+      matrix: ${{fromJson(needs.build.outputs.test-matrix)}}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -158,7 +145,7 @@ jobs:
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
-        java-version: ${{ needs.setup.outputs.test-java }}
+        java-version: ${{ needs.build.outputs.test-java }}
         openjdk_impl: openj9
     - name: Apply Gradle cache
       uses: actions/cache@v2
@@ -212,4 +199,4 @@ jobs:
         name: ${{matrix.category}} report
         path: "dev/fat-results/TEST-*.xml"        
         includeSummary: false
-        numFailures: 5 # Truncate number of failures so we don't run out of annoations.
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.

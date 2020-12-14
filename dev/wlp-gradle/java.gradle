@@ -78,8 +78,7 @@ subprojects {
     // Once testing is complete copy 
     finalizedBy junitReport
     
-    // This is unnecessary as finalizedBy will run regardless of subproject failure
-	//ignoreFailures = true
+	ignoreFailures = true
 	
     //  A number of tests make heavy use of java.util.Random, which can drain the entropy pool of /dev/random on Linux when
     // running on OpenJDK-based distributions. This results in large delays as tests wait for the entropy pool to be repopulated.
