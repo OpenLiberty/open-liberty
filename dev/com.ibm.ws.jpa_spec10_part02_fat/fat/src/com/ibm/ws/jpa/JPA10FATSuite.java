@@ -37,7 +37,7 @@ import com.ibm.ws.jpa.spec10.Relationships_OneXOne_Web;
                 Relationships_OneXMany_Web.class,
                 Relationships_OneXMany_EJB.class,
                 Relationships_OneXOne_EJB.class,
-                Relationships_OneXOne_Web.class,
+                Relationships_OneXOne_Web.class
 })
 public class JPA10FATSuite {
 
