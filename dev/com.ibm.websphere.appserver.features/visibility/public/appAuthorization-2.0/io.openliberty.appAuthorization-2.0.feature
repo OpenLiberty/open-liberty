@@ -7,7 +7,7 @@ IBM-API-Package: jakarta.security.jacc; type="spec", \
  com.ibm.wsspi.security.authorization.jacc; type="ibm-api"
 IBM-ShortName: appAuthorization-2.0
 WLP-AlsoKnownAs: jacc-2.0
-Subsystem-Name: Jakarta Authorization Contract for Containers 2.0
+Subsystem-Name: Jakarta Authorization 2.0
 IBM-Install-Policy: when-satisfied
 -features=\
   io.openliberty.servlet.api-5.0, \

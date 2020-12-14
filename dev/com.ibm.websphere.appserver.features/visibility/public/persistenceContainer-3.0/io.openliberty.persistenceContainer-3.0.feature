@@ -4,7 +4,7 @@ visibility=public
 singleton=true
 kind=beta
 edition=core
-Subsystem-Name: Jakarta Persistence API Container 3.0
+Subsystem-Name: Jakarta Persistence 3.0 Container
 IBM-ShortName: persistenceContainer-3.0
 IBM-AlsoKnownAs: jpaContainer-3.0
 IBM-API-Package: jakarta.persistence; type="spec", \

@@ -11,7 +11,7 @@ IBM-API-Package: jakarta.security.enterprise; type="spec", \
  jakarta.security.auth.message.module; type="spec"
 
 IBM-ShortName: appSecurity-4.0
-Subsystem-Name: Application Security 4.0
+Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
 -features=\
   io.openliberty.cdi-3.0, \
   io.openliberty.expressionLanguage-4.0, \

@@ -16,7 +16,7 @@ Subsystem-Category: JakartaEE9Application
  io.openliberty.jakarta.interceptor-2.0
 -bundles=com.ibm.ws.ejbcontainer.mdb.jakarta, \
  io.openliberty.ejbcontainer.v40.internal
-Subsystem-Name: Message-Driven Beans 4.0
+Subsystem-Name: Jakarta Enterprise Beans 4.0 Message-Driven Beans
 kind=beta
 edition=base
 WLP-Activation-Type: parallel

@@ -4,7 +4,7 @@ visibility=public
 singleton=true
 IBM-ShortName: connectors-2.0
 WLP-AlsoKnownAs: jca-2.0
-Subsystem-Name: Jakarta EE Connector Architecture 2.0
+Subsystem-Name: Jakarta Connectors 2.0
 Subsystem-Category: JakartaEE9Application
 -features=io.openliberty.appserver.connectors-2.0, \
  io.openliberty.jakartaeePlatform-9.0, \
