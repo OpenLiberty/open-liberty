@@ -46,17 +46,12 @@ dependencies {
     'org.codehaus.jackson:jackson-jaxrs:1.6.2',
     'org.codehaus.jackson:jackson-mapper-asl:1.6.2',
     'org.codehaus.jackson:jackson-xc:1.6.2'
-  jackson2x 'com.fasterxml.jackson.core:jackson-annotations:2.4.1',
-    'com.fasterxml.jackson.core:jackson-core:2.4.1',
-    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
-    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1',
-    'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1',
-    'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1'
+  jackson2x project(':io.openliberty.com.fasterxml.jackson'),
+    project(':io.openliberty.com.fasterxml.jackson.jaxrs')
   requiredLibs 'commons-httpclient:commons-httpclient:3.1',
     'commons-logging:commons-logging:1.2',
-	   project(':com.ibm.ws.org.apache.httpcomponents'),
-	  'com.fasterxml.jackson.core:jackson-core:2.4.1',
-    'com.fasterxml.jackson.core:jackson-databind:2.4.1',
+    project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':io.openliberty.com.fasterxml.jackson'),
     'org.apache.wink:wink-client:1.4',
     'org.apache.wink:wink-common:1.4',
     "org.slf4j:slf4j-api:1.7.7",
