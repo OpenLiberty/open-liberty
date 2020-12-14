@@ -68,7 +68,7 @@ public class HandleResponsesTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
-        remoteAppServer.stopServer();
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+        remoteAppServer.stopServer("CWWKE1102W");
     }
 }

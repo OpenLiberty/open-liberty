@@ -67,7 +67,7 @@ public class BasicTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
-        remoteAppServer.stopServer("CWWKO0801E");
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+        remoteAppServer.stopServer("CWWKE1102W", "CWWKO0801E");
     }
 }

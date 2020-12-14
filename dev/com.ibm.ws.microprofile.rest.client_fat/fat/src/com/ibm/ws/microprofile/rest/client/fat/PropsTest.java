@@ -53,6 +53,6 @@ public class PropsTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
     }
 }

@@ -77,10 +77,10 @@ public class CollectionsTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
         }
         if (remoteAppServer != null) {
-            remoteAppServer.stopServer();
+            remoteAppServer.stopServer("CWWKE1102W");
         }
     }
 }
