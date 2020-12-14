@@ -66,7 +66,7 @@ All features (both "Design Approved" and "No Design Approved")
 
 "Design Approved" features
 - [ ] **Accessibility** - ([Steven Zvonek](https://github.com/steven1046)). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
-- [ ] **ID** - ([Kareen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
+- [ ] **ID** - ([Karen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
 - [ ] **Performance** - ([Jared Anderson](https://github.com/jhanders34)). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - ([Don Bourne](https://github.com/donbourne)). Serviceability has been addressed.
 - [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.
