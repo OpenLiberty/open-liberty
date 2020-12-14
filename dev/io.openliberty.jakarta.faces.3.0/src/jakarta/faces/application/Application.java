@@ -801,6 +801,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract PropertyResolver getPropertyResolver();
 
     /**
@@ -889,6 +890,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract VariableResolver getVariableResolver();
 
     /**
@@ -1084,6 +1086,7 @@ public abstract class Application
      * 
      * @deprecated
      */
+    @Deprecated
     public abstract void setPropertyResolver(PropertyResolver resolver);
 
     /**

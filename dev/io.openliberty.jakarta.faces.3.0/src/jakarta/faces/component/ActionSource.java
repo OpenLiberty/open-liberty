@@ -41,8 +41,13 @@ public interface ActionSource
     /**
      * @deprecated Replaced by getActionListeners
      */
+    @Deprecated
     public MethodBinding getActionListener();
 
+    /**
+     * @deprecated Replaced by addActionListener
+     */
+    @Deprecated
     public void setActionListener(MethodBinding actionListener);
 
     public boolean isImmediate();

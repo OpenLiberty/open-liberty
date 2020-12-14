@@ -760,7 +760,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * Invoke encodeBegin on the associated UIComponent. Subclasses can override this method to perform custom
      * processing before or after the UIComponent method invocation.
+     * 
+     * @deprecated
      */
+    @Deprecated
     protected void encodeBegin() throws IOException
     {
         if (log.isLoggable(Level.FINE))
@@ -778,7 +781,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
      * Invoke encodeChildren on the associated UIComponent. Subclasses can override this method to perform custom
      * processing before or after the UIComponent method invocation. This is only invoked for components whose
      * getRendersChildren method returns true.
+     * 
+     * @deprecated
      */
+    @Deprecated
     protected void encodeChildren() throws IOException
     {
         if (log.isLoggable(Level.FINE))
@@ -795,7 +801,10 @@ public abstract class UIComponentClassicTagBase extends UIComponentTagBase imple
     /**
      * Invoke encodeEnd on the associated UIComponent. Subclasses can override this method to perform custom processing
      * before or after the UIComponent method invocation.
+     * 
+     * @deprecated
      */
+    @Deprecated
     protected void encodeEnd() throws IOException
     {
         if (log.isLoggable(Level.FINE))
