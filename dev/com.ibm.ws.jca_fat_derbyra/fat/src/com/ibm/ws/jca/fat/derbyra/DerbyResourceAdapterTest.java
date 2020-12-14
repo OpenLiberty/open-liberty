@@ -130,6 +130,18 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabled() throws Exception {
+        runTest(server, DerbyRAAnnoServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseEnabled");
+        runTest(server, DerbyRAAnnoServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabledClosed");
+    }
+
+    @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabled() throws Exception {
+        runTest(server, DerbyRAAnnoServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseDisabled");
+        runTest(server, DerbyRAAnnoServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabledNotClosed");
+    }
+
+    @Test
     public void testExecutionContext() throws Exception {
         runTest(DerbyRAServlet);
     }

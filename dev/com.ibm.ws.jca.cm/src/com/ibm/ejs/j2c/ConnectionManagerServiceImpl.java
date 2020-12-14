@@ -466,7 +466,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                 Tr.debug(this, tc, "Setting disableLibertyConnectionManager to " + disableLibertyConnectionPool);
         }
 
-        Object value = map.remove("autoCloseConnections");
+        Object value = map.remove(AUTO_CLOSE_CONNECTIONS);
         boolean autoCloseConnections = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
 
         if (disableLibertyConnectionPool) {
