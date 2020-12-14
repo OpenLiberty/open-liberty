@@ -5,6 +5,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.connectionManagement-1.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.handlelist.context.internal
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
