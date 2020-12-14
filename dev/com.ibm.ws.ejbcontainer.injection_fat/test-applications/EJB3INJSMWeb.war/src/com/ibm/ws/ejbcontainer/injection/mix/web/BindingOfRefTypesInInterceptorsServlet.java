@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.jms.MessageListener;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -42,10 +41,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.websphere.ejbcontainer.test.rar.core.FVTXAResourceImpl;
-import com.ibm.websphere.ejbcontainer.test.rar.message.FVTBaseMessageProvider;
-import com.ibm.websphere.ejbcontainer.test.rar.message.FVTMessage;
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+import com.ibm.ws.ejbcontainer.fat.rar.core.FVTXAResourceImpl;
+import com.ibm.ws.ejbcontainer.fat.rar.message.FVTBaseMessageProvider;
+import com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessage;
+import com.ibm.ws.ejbcontainer.fat.rar.message.MessageListener;
 import com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor;
 import com.ibm.ws.ejbcontainer.injection.mix.ejbint.AnnotationInjectionInterceptor2;
 import com.ibm.ws.ejbcontainer.injection.mix.ejbint.MessageDrivenInjectionBean;

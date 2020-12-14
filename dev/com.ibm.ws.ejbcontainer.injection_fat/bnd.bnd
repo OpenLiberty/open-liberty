@@ -23,7 +23,8 @@ src: \
 	test-applications/EJB3INJSXWeb.war/src , \
 	test-applications/EJB3INJSMBean.jar/src, \
 	test-applications/EJB3INJINTMBean.jar/src, \
-	test-applications/EJB3INJSMWeb.war/src
+	test-applications/EJB3INJSMWeb.war/src, \
+	test-resourceadapters/AdapterForEJB.rar/src
 	
 
 fat.project: true
@@ -36,9 +37,12 @@ tested.features: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
-	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.ejbcontainer.fat_tools;version=latest,\
-	com.ibm.websphere.javaee.connector.1.7;version=latest
+	com.ibm.ws.ejbcontainer.fat_tools_rar;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest, \
+	com.ibm.ws.jdbc;version=latest, \
+	com.ibm.ws.jca.cm;version=latest

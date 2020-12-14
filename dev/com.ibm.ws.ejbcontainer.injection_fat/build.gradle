@@ -49,6 +49,31 @@ task addEJBTools {
   }
 }
 
+task addTestResourceAdapter {
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools_rar:build' 
+  doLast{
+      copy {
+          from project(':com.ibm.ws.ejbcontainer.fat_tools_rar').projectDir
+          include 'test-resourceadapters/**'
+      	  into "."
+      }
+      copy {
+          from project(':com.ibm.ws.ejbcontainer.fat_tools_rar').projectDir
+          include 'src/**'
+      	  into "test-resourceadapters/AdapterForEJB.rar/"
+      }
+
+  }       
+}
+
+buildfat {
+ dependsOn cleanFat
+ dependsOn addTestResourceAdapter
+ dependsOn assemble
+ dependsOn build
+ dependsOn zipProjectFVT
+}
+
 addRequiredLibraries {
   dependsOn addEJBTools
   dependsOn addDerby

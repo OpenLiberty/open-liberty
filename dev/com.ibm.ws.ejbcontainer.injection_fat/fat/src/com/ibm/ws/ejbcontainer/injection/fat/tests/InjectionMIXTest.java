@@ -13,6 +13,7 @@ package com.ibm.ws.ejbcontainer.injection.fat.tests;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSFEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSFRemoteEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSLEnvInjectionServlet;
@@ -64,9 +66,8 @@ public class InjectionMIXTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         // Use ShrinkHelper to build the ear
-
-        JavaArchive EJB3INJEJBMBeanJar = ShrinkHelper.buildJavaArchive("EJB3INJEJBMBean.jar", "com.ibm.ws.ejbcontainer.injection.mix.ejb.");
-        EJB3INJEJBMBeanJar = (JavaArchive) ShrinkHelper.addDirectory(EJB3INJEJBMBeanJar, "test-applications/EJB3INJEJBMBean.jar/resources");
+        JavaArchive EJB3INJSMBeanJar = ShrinkHelper.buildJavaArchive("EJB3INJSMBean.jar", "com.ibm.ws.ejbcontainer.injection.mix.ejb.");
+        EJB3INJSMBeanJar = (JavaArchive) ShrinkHelper.addDirectory(EJB3INJSMBeanJar, "test-applications/EJB3INJSMBean.jar/resources");
 
         JavaArchive EJB3INJINTMBeanJar = ShrinkHelper.buildJavaArchive("EJB3INJINTMBean.jar", "com.ibm.ws.ejbcontainer.injection.mix.ejbint.");
         EJB3INJINTMBeanJar = (JavaArchive) ShrinkHelper.addDirectory(EJB3INJINTMBeanJar, "test-applications/EJB3INJINTMBean.jar/resources");
@@ -75,9 +76,18 @@ public class InjectionMIXTest {
 
         EnterpriseArchive EJB3INJSMTestApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB3INJSMTestApp.ear");
         EJB3INJSMTestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EJB3INJSMTestApp, "test-applications/EJB3INJSMTestApp.ear/resources");
-        EJB3INJSMTestApp.addAsModule(EJB3INJEJBMBeanJar).addAsModule(EJB3INJINTMBeanJar).addAsModule(EJB3INJSMWeb);
+        EJB3INJSMTestApp.addAsModule(EJB3INJSMBeanJar).addAsModule(EJB3INJINTMBeanJar).addAsModule(EJB3INJSMWeb);
 
         ShrinkHelper.exportDropinAppToServer(server, EJB3INJSMTestApp);
+
+        //#################### AdapterForEJB.jar  (RAR Implementation)
+        JavaArchive AdapterForEJBJar = ShrinkHelper.buildJavaArchive("AdapterForEJB.jar", "com.ibm.ws.ejbcontainer.fat.rar.*");
+        ShrinkHelper.exportToServer(server, "ralib", AdapterForEJBJar, DeployOptions.SERVER_ONLY);
+
+        //#################### AdapterForEJB.rar
+        ResourceAdapterArchive AdapterForEJBRar = ShrinkWrap.create(ResourceAdapterArchive.class, "AdapterForEJB.rar");
+        ShrinkHelper.addDirectory(AdapterForEJBRar, "test-resourceadapters/AdapterForEJB.rar/resources");
+        ShrinkHelper.exportToServer(server, "connectors", AdapterForEJBRar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
