@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -36,24 +38,23 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
+@RunWith(FATRunner.class)
 public class SharedSubscriptionTest_129623 {
-
     private static LibertyServer clientServer =
         LibertyServerFactory.getLibertyServer("SharedSubscriptionClient");
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
 
-    private static final int clientPort = clientServer.getHttpDefaultPort();
-    private static final String clientHostName = clientServer.getHostname();
+    //
 
     private static final String subscriptionAppName = "SharedSubscription";
     private static final String subscriptionContextRoot = "SharedSubscription";
     private static final String[] subscriptionPackages = new String[] {
         "sharedsubscription.web",
         "sharedsubscription.ejb" };
-
-    //
 
     //
 
@@ -109,7 +110,7 @@ public class SharedSubscriptionTest_129623 {
         // 'readLocalAddress' throws IOException
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();

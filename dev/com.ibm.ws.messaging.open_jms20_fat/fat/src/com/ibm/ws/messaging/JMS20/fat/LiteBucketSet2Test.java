@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.SkipForRepeat;
@@ -88,7 +88,7 @@ public class LiteBucketSet2Test {
         clientServer.startServer("LiteBucketSet2_Client.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         // Stop the messaging client ...
         try {
