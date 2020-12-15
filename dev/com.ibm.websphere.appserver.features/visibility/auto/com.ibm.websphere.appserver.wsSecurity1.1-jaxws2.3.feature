@@ -23,4 +23,4 @@ IBM-Install-Policy: when-satisfied
   com.ibm.ws.wssecurity.341, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=noship
-edition=base
+edition=full

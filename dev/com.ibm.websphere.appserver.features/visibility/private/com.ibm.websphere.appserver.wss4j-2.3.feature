@@ -2,6 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.wss4j-2.3
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
+singleton=true
 -bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0, \
  com.ibm.ws.org.apache.ws.security.wss4j.1.6.7, \
  com.ibm.ws.com.google.guava, \
@@ -20,4 +21,4 @@ visibility=private
  com.ibm.ws.org.opensaml.opensaml.core.3.4.5, \
  com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1
 kind=noship
-edition=core
+edition=full
