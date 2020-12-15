@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 require({cache:{
 'url:js/toolbox/templates/addBookmark.html':"<div>\r\n\t<div data-dojo-attach-point=\"addBookmarkContent\" >\r\n\t\t<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"2\">\r\n\t\t\t<tr>\r\n\t\t\t\t<td><input data-dojo-attach-point=\"bookmarkName\"/><div id=\"bookmarkNameErrorMessageDiv\"></div></td>\r\n\t\t\t</tr>\r\n\t\t\t<tr>\r\n\t\t\t\t<td><input data-dojo-attach-point=\"bookmarkURL\"/><div id=\"bookmarkURLErrorMessageDiv\"  style=\"margin-bottom:15px\"></div></td>\r\n\t\t\t</tr>\r\n\t\t</table>\r\n\t\t<button data-dojo-attach-point=\"addButton\"></button>\r\n\t\t</div>\r\n</div>"}});
 define("js/toolbox/addBookmark", 
