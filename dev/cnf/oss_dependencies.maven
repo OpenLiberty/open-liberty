@@ -393,10 +393,13 @@ org.glassfish.hk2:hk2-locator:2.5.0-b42
 org.glassfish.hk2:hk2-utils:2.3.0-b10
 org.glassfish.hk2:hk2-utils:2.5.0-b42
 org.glassfish.hk2:osgi-resource-locator:1.0.1
-org.glassfish.jaxb:jaxb-core:3.0.0-M3
-org.glassfish.jaxb:jaxb-jxc:3.0.0-M3
-org.glassfish.jaxb:jaxb-runtime:3.0.0-M3
-org.glassfish.jaxb:jaxb-xjc:3.0.0-M3
+org.glassfish.jaxb:codemodel:3.0.0
+org.glassfish.jaxb:jaxb-core:3.0.0
+org.glassfish.jaxb:jaxb-jxc:3.0.0
+org.glassfish.jaxb:jaxb-runtime:3.0.0
+org.glassfish.jaxb:jaxb-xjc:3.0.0
+org.glassfish.jaxb:txw2:3.0.0
+org.glassfish.jaxb:xsom:3.0.0
 org.glassfish.jersey.bundles.repackaged:jersey-guava:2.12
 org.glassfish.jersey.containers:jersey-container-servlet-core:2.12
 org.glassfish.jersey.containers:jersey-container-servlet:2.12
