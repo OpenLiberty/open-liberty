@@ -23,7 +23,7 @@
 
 -buildpath: \
   org.apache.cxf:cxf-rt-rs-mp-client;strategy=exact;version=3.4.1.20201029,\
-  com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+  com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.annotation.1.3;version=latest,\
   com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
@@ -32,9 +32,11 @@
   io.openliberty.org.eclipse.microprofile.rest.client.2.0;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.org.reactivestreams.reactive-streams.1.0,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   com.ibm.ws.jaxrs.2.0.client;version=latest,\
   com.ibm.ws.logging.core;version=latest
