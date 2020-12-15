@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,8 +155,15 @@ public class HungRequestManager {
 									String theId = requestContext.getRequestId().getId();
 									if(hungRequests.putIfAbsent(theId, requestContext) == null){
 										// A new hung thread was found!
+										if (request.isThreadDumpsEnabled()) {
 										// Start the task for creating javacore if its not already running.
 										threadDumpScheduler.startTimer();
+										}
+										else {
+											if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+												Tr.debug(tc, "Creation of thread dumps for hung requests has been disabled in the server config.", request.toString());
+											}
+										}
 										// Notify the interrupt code, and then any other registered listeners.
 										long threadId = requestContext.getThreadId();
 										if ((interruptibleRequestLifecycle != null) && (request.interruptRequest())) {

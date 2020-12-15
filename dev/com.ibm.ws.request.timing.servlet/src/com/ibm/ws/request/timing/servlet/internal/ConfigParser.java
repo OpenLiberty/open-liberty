@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class ConfigParser implements RequestTimingConfigParser {
      */
 	@Override
 	public TimingConfigGroup parseConfiguration(List<Dictionary<String, Object>> configElementList, long defaultSlowRequestThreshold,
-			long defaultHungRequestThreshold, boolean defaultInterruptHungRequest) {
+			long defaultHungRequestThreshold, boolean defaultInterruptHungRequest, boolean defaultEnableThreadDumps) {
 		
 		//Retrieve type specific settings
 		//Check if the configuration contains the relevant attribute
@@ -68,6 +68,7 @@ public class ConfigParser implements RequestTimingConfigParser {
 			try {
 				String pid = null;
 				boolean typeInterruptHungRequest = false;
+				boolean typeEnableThreadDumps = true;
 				long typeSlowReqThreshold = 0, typeHungReqThreshold = 0; 
 				String[] contextInfo = new String[2];
 
@@ -110,13 +111,20 @@ public class ConfigParser implements RequestTimingConfigParser {
 				} else {
 					typeInterruptHungRequest = defaultInterruptHungRequest;
 				}
+				
+				// Check if Thread Dumps should be created for hung requests.
+				if (configElement.get(RequestTimingConstants.RT_ENABLE_THREAD_DUMPS) != null) {
+					typeEnableThreadDumps = Boolean.parseBoolean(configElement.get(RequestTimingConstants.RT_ENABLE_THREAD_DUMPS).toString());
+				} else {
+					typeEnableThreadDumps = defaultEnableThreadDumps;
+				}
 
 				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 					Tr.debug(tc, "Nested servlet timing element found", new Object[] {contextInfo, typeSlowReqThreshold, typeHungReqThreshold, typeInterruptHungRequest});
 				}
 
-				slowRequestTimings.add(new Timing(pid, EVENT_TYPE, contextInfo, typeSlowReqThreshold, false));
-				hungRequestTimings.add(new Timing(pid, EVENT_TYPE, contextInfo, typeHungReqThreshold, typeInterruptHungRequest));
+				slowRequestTimings.add(new Timing(pid, EVENT_TYPE, contextInfo, typeSlowReqThreshold, false, true));
+				hungRequestTimings.add(new Timing(pid, EVENT_TYPE, contextInfo, typeHungReqThreshold, typeInterruptHungRequest, typeEnableThreadDumps));
 			} catch (Exception e){
 				// FFDC is injected here 
 			}

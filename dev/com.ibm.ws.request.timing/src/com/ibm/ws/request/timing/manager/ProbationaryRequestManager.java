@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class ProbationaryRequestManager<C extends RequestTimingConfig, R extends
 		this.config = config;
 		this.clazz = clazz;
 		try{
-			this.rConstructor = this.clazz.getConstructor(RequestContext.class, long.class, long.class, boolean.class, boolean.class);
+			this.rConstructor = this.clazz.getConstructor(RequestContext.class, long.class, long.class, boolean.class, boolean.class, boolean.class);
 		}catch(Exception e){
 			throw new RuntimeException("Probationary request manager instantiation failed.");
 		}
@@ -153,19 +153,21 @@ public class ProbationaryRequestManager<C extends RequestTimingConfig, R extends
 				for(RequestContext activeReqContext: RequestProbeService.getActiveRequests()){
 					long requestThreshold = 0, requestThresholdMean = 0;
 					boolean interruptRequest = false;
+					boolean enableThreadDumps = true;
 					Event rootEvent = activeReqContext.getRootEvent();
 					String requestType = rootEvent.getType();
 					Object contextInfoObj = rootEvent.getContextInfo();
 					String[] contextInfo = ((contextInfoObj != null) && (contextInfoObj instanceof ContextInfoArray)) ? ((ContextInfoArray)contextInfoObj).getContextInfoArray() : null;
 					requestThreshold = config.getRequestThreshold(requestType, contextInfo);
 					interruptRequest = config.getInterruptRequest(requestType, contextInfo);
+					enableThreadDumps = config.getEnableThreadDumps(requestType, contextInfo);
 					// TODO: Need to lookup twice here ^--- by context info, any way to optimize?
 					requestThresholdMean = requestThreshold/2;
 					if(requestThresholdMean > 0){
 						long activeTime = TimeUnit.MILLISECONDS.convert(System.nanoTime() - activeReqContext.getRootEvent().getStartTime(), TimeUnit.NANOSECONDS);
 						if(activeTime >= requestThresholdMean){
 							boolean includeContextInfo = (config.getContextInfoRequirement() == ContextInfoRequirement.ALL_EVENTS) ? true : false;
-							R request = rConstructor.newInstance(activeReqContext, (requestThreshold - activeTime), requestThreshold, includeContextInfo, interruptRequest);
+							R request = rConstructor.newInstance(activeReqContext, (requestThreshold - activeTime), requestThreshold, includeContextInfo, interruptRequest, enableThreadDumps);
 							if(requestQueue.addRequest(request)){
 								if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
 									Tr.debug(tc, "(" + clazz.getSimpleName() + ") Active time (ms) : " + activeTime 

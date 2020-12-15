@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,5 +30,5 @@ public interface RequestTimingConfigParser {
 	 * Process the configuration and generate Timing objects for any
 	 * configuration sub-elements that are recognized by the parser.
 	 */
-	public TimingConfigGroup parseConfiguration(List<Dictionary<String, Object>> configElementList, long defaultSlowRequestThreshold, long defaultHungRequestThreshold, boolean defaultInterruptHungRequest);
+	public TimingConfigGroup parseConfiguration(List<Dictionary<String, Object>> configElementList, long defaultSlowRequestThreshold, long defaultHungRequestThreshold, boolean defaultInterruptHungRequest, boolean defaultEnableThreadDumps);
 }
