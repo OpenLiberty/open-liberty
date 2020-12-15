@@ -8,16 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsp23.webcontainerext;
+package io.openliberty.pages30.webcontainerext;
+
+import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jsp.webcontainerext.JspVersion;
+import com.ibm.ws.jsp.webcontainerext.JspVersionFactory;
 
-public class JspVersionImpl implements JspVersion {
+@Component(property = { "service.vendor=IBM" })
+public class JspVersionFactoryImpl implements JspVersionFactory {
 
-    public JspVersionImpl() {}
+    private static final JspVersionImpl jv = new JspVersionImpl();
 
     @Override
-    public String getJspVersionString() {
-         return "2.3";
+    public JspVersion getJspVersion() {
+        // TODO Auto-generated method stub
+        return jv;
     }
+
 }

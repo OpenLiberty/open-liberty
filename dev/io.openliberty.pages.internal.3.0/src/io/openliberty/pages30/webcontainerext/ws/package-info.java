@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsp23.webcontainerext;
+/**
+ * @version 1.0.0
+ */
+@org.osgi.annotation.versioning.Version("1.0.0")
+@TraceOptions(traceGroup = "jsp",
+                messageBundle = "com.ibm.ws.jsp.resources.messages")
+package io.openliberty.pages30.webcontainerext.ws;
 
-import com.ibm.ws.jsp.webcontainerext.JspVersion;
-
-public class JspVersionImpl implements JspVersion {
-
-    public JspVersionImpl() {}
-
-    @Override
-    public String getJspVersionString() {
-         return "2.3";
-    }
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

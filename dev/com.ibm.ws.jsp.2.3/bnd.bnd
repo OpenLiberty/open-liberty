@@ -81,13 +81,8 @@ Import-Package: \
    org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
    sun.io;resolution:=optional, \
    *
-   
-
--includeresource: \
-   org/apache/jasper/runtime/packageinfo=src/org/apache/jasper/runtime/packageinfo
 
 instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
-instrument.classesExcludes: org/apache/**/*.class
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
@@ -100,4 +95,5 @@ instrument.classesExcludes: org/apache/**/*.class
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.jsp.el;version=latest

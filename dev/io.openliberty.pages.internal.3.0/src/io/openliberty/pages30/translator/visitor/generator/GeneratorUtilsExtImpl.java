@@ -11,7 +11,7 @@
 //  Revisions:
 //  Defect PI59436 03/22/2015   hmpadill    EL expressions returning null in EL 3.0 could produce NPE
 
-package com.ibm.ws.jsp23.translator.visitor.generator;
+package io.openliberty.pages30.translator.visitor.generator;
 
 import java.util.Iterator;
 
@@ -91,7 +91,7 @@ public class GeneratorUtilsExtImpl implements GeneratorUtilsExt {
 
     @Override
     public String getClassFileVersion() {
-         return "2.3";
+         return "3.0";
     }
 
     //PI59436 start
