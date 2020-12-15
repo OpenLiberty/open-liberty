@@ -1,0 +1,1 @@
+INSERT INTO ${schemaname}.SEQUENCE(SEQ_NAME, SEQ_COUNT) values ('SEQ_GEN', 0);

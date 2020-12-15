@@ -82,9 +82,6 @@ public class CDIJPALibTestLogic extends AbstractTestLogic {
             // which should be ignored.
             List<String> listenerMessages = cdiTestComp.getEntityListenerMessages();
             Assert.assertNotNull("Assert cdiTestComp.getEntityListenerMessages() did not return null.", listenerMessages);
-            if (listenerMessages == null) {
-                return;
-            }
 
             int indexOfPrePersist = -1;
             int indexOfPostPersist = -1;

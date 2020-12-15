@@ -26,7 +26,6 @@ import com.ibm.ws.jpa.fvt.txsync.testlogic.AbstractTxSyncTestLogic;
 import com.ibm.ws.jpa.fvt.txsync.testlogic.TargetEntityManager;
 import com.ibm.ws.jpa.fvt.txsync.testlogic.TestWorkRequest;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 /*
@@ -170,18 +169,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -261,18 +254,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -360,18 +347,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -458,18 +439,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -582,11 +557,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -602,7 +572,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 5 points, 6 if emShouldJoinTx==true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -697,11 +666,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -717,7 +681,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 5 points, 6 if emShouldJoinTx==true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -819,11 +782,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -839,7 +797,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 5 points, 6 if emShouldJoinTx==true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -942,11 +899,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -962,7 +914,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 5 points, 6 if emShouldJoinTx==true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1088,18 +1039,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1179,18 +1124,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1278,18 +1217,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1376,18 +1309,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1501,11 +1428,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1521,7 +1443,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points, 5 if emShouldJoinTx == true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1615,11 +1536,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1635,7 +1551,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points, 5 if emShouldJoinTx == true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1737,11 +1652,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1757,7 +1667,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points, 5 if emShouldJoinTx == true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -1858,11 +1767,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1878,7 +1782,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 4 points, 5 if emShouldJoinTx == true)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -2002,11 +1905,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2040,7 +1938,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 6 points, 7 if em1IsUnsynchronized && emShouldJoinTx)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -2150,11 +2047,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2188,7 +2080,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 6 points, 7 if em1IsUnsynchronized && emShouldJoinTx)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -2306,11 +2197,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2344,7 +2230,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 6 points, 7 if em1IsUnsynchronized && emShouldJoinTx)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -2461,11 +2346,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2499,7 +2379,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Test logic to drive Bean #1 (total 6 points, 7 if em1IsUnsynchronized && emShouldJoinTx)
             TestWorkRequest bean1Driver = new TestWorkRequest() {
@@ -2638,18 +2517,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2748,18 +2621,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2865,18 +2732,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2983,18 +2844,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3122,18 +2977,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3232,18 +3081,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3349,18 +3192,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3467,18 +3304,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3608,18 +3439,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3718,18 +3543,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3835,18 +3654,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3953,18 +3766,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4093,18 +3900,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4203,18 +4004,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4320,18 +4115,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4438,18 +4227,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4578,18 +4361,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4688,18 +4465,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4805,18 +4576,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4923,18 +4688,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5065,18 +4824,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5175,18 +4928,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5292,18 +5039,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5410,18 +5151,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5549,18 +5284,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5659,18 +5388,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5776,18 +5499,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5894,18 +5611,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -6033,18 +5744,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -6143,18 +5848,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -6259,18 +5958,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -6377,18 +6070,12 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         final int identity = rand.nextInt();
 
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -6532,45 +6219,5 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
             }
         };
-    }
-
-    /*
-     *
-     */
-
-    public void testTemplate(
-                             TestExecutionContext testExecCtx,
-                             TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        final String testName = "testTemplate";
-
-        // Verify parameters
-
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println(testBucketName + "." + testName + ": End");
-        }
     }
 }

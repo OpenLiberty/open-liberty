@@ -31,7 +31,6 @@ import com.ibm.ws.jpa.fvt.txsync.testlogic.AbstractTxSyncTestLogic;
 import com.ibm.ws.jpa.fvt.txsync.testlogic.TargetEntityManager;
 import com.ibm.ws.jpa.fvt.txsync.testlogic.TestWorkRequest;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
@@ -185,11 +184,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -224,7 +218,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -249,17 +242,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -273,9 +255,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         }
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequest(bean2Driver,
                                             (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -370,11 +349,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -409,7 +383,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -434,17 +407,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -458,9 +420,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         }
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -555,11 +514,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -594,7 +548,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -642,9 +595,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         }
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequest(bean2Driver,
                                             (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -739,11 +689,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -778,7 +723,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -827,9 +771,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         }
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxRequired(bean2Driver,
                                                           (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -925,11 +866,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -964,7 +900,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -1013,9 +948,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         }
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -1112,11 +1044,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1146,7 +1073,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -1168,17 +1094,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -1283,11 +1198,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1317,7 +1227,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -1339,17 +1248,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -1454,11 +1352,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1488,7 +1381,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -1624,11 +1516,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1658,7 +1545,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Create Entity Object for test
             System.out.println("Creating SimpleVersionedEntity10(id=" + identity + ") ...");
@@ -1786,11 +1672,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1819,7 +1700,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -1841,9 +1721,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
-
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
                         System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -1868,17 +1745,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -1888,9 +1754,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -1963,11 +1826,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -1997,7 +1855,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2046,33 +1903,10 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
                         ic = new InitialContext();
-
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -2106,9 +1940,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxNever(bean1Driver,
@@ -2157,11 +1988,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2191,7 +2017,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2240,33 +2065,10 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
                         ic = new InitialContext();
-
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -2305,9 +2107,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxNever(bean1Driver,
@@ -2356,11 +2155,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2389,7 +2183,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2411,8 +2204,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -2438,17 +2229,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
@@ -2458,9 +2238,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -2533,11 +2310,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2567,7 +2339,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2589,8 +2360,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -2616,33 +2385,10 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
                         ic = new InitialContext();
-
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -2676,9 +2422,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxNever(bean1Driver,
@@ -2727,11 +2470,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2761,7 +2499,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2783,8 +2520,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -2810,33 +2545,10 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                     // Check tx join status, business method is tx-never so there should not be an active tran
                     Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//					if (em1IsUnsynchronized) {
-//						if (emShouldJoinTx) {
-//							System.out.println("Joining Unsynchronized EntityManager to the transaction...");
-//							em.joinTransaction();
-//							Assert.assertTrue("Assert that the Unsynchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//						} else {
-//							Assert.assertFalse("Assert that the Unsynchronized EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
-//						}
-//					} else {
-//						Assert.assertTrue("Assert that the Synchronized EntityManager is joined to a transaction.", em.isJoinedToTransaction());
-//					}
 
                     // Create Bean #2 (also a TxSyncBMTSFEXSyncBuddyEJB) and Verify that the persistence context is inherited.  (2 points)
                     try {
                         ic = new InitialContext();
-
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
 
                         bean2.doWorkRequestWithTxNever(bean2Driver,
                                                        (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -2875,9 +2587,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxNever(bean1Driver,
@@ -2927,11 +2636,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -2960,7 +2664,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -2982,8 +2685,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3027,9 +2728,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -3103,11 +2801,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -3137,7 +2830,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3159,8 +2851,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3201,18 +2891,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                     try {
                         ic = new InitialContext();
 
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
-
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
 
@@ -3245,9 +2923,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -3297,11 +2972,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -3331,7 +3001,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3353,8 +3022,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3395,18 +3062,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                     try {
                         ic = new InitialContext();
 
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
-
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
 
@@ -3444,9 +3099,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -3496,11 +3148,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -3529,7 +3176,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3551,8 +3197,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3597,9 +3241,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -3673,11 +3314,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -3707,7 +3343,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3729,8 +3364,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3770,18 +3403,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                     try {
                         ic = new InitialContext();
 
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
-
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
 
@@ -3814,9 +3435,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -3866,11 +3484,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -3900,7 +3513,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -3922,8 +3534,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                         Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                         Assert.assertNotNull("Assert find did not return null.", findEntity);
-                        if (findEntity == null)
-                            return null;
 
                         Assert.assertNotSame("Assert that find did not return the same entity.", entityContainer.get(0), findEntity);
                     } finally {
@@ -3963,18 +3573,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                     try {
                         ic = new InitialContext();
 
-//						System.out.println("Creating TxSyncCMTSFEXBuddyEJB #2 ...");
-//						if (em2IsUnsynchronized) {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXUnsyncBuddyEJB");
-//						} else {
-//							bean2 = (TxSyncCMTSFEXBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFEXSyncBuddyEJB");
-//						}
-//
-//                   	 	Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-//                   	 	if (bean2 == null) {
-//                   	 		return null;
-//                   	 	}
-
                         bean2.doWorkRequestWithTxNotSupported(bean2Driver,
                                                               (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
 
@@ -4012,9 +3610,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -4071,11 +3666,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4105,7 +3695,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4178,9 +3767,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxRequired(bean2Driver,
                                                           (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -4255,11 +3841,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4290,7 +3871,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4377,9 +3957,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -4433,11 +4010,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4462,7 +4034,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4529,9 +4100,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxRequired(bean2Driver,
                                                           (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -4609,11 +4177,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4639,7 +4202,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4720,9 +4282,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -4774,11 +4333,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4803,7 +4357,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -4871,9 +4424,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                         bean2 = (TxSyncCMTSLBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSLBuddyEJB");
 
                         Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                        if (bean2 == null) {
-                            return null;
-                        }
 
                         bean2.doWorkRequestWithTxRequired(bean2Driver,
                                                           (em2IsUnsynchronized ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED));
@@ -4949,11 +4499,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
         // True or False the results should be the same.
@@ -4979,7 +4524,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             // Populate the database (1 point)
             {
@@ -5062,9 +4606,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 bean2 = (TxSyncCMTSFBuddyLocal) ic.lookup("java:comp/env/ejb/TxSyncCMTSFBuddyEJB");
 
                 Assert.assertNotNull("Assert bean2 is not null (lookup & create succeeded).", bean2);
-                if (bean2 == null) {
-                    return;
-                }
                 bean2Container.add(bean2);
 
                 bean1.doWorkRequestWithTxRequired(bean1Driver,
@@ -5262,45 +4803,5 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
             }
         };
-    }
-
-    /*
-     *
-     */
-
-    public void testTemplate(
-                             TestExecutionContext testExecCtx,
-                             TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        final String testName = "testTemplate";
-
-        // Verify parameters
-
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println(testBucketName + "." + testName + ": End");
-        }
     }
 }

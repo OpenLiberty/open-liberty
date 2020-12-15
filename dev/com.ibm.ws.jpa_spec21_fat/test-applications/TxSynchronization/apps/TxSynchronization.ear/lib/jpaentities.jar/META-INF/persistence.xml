@@ -18,9 +18,17 @@
     version="2.1">
 
     <persistence-unit name="TxSync">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
     </persistence-unit>
     <persistence-unit name="TxSync2">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
     </persistence-unit>
 </persistence>

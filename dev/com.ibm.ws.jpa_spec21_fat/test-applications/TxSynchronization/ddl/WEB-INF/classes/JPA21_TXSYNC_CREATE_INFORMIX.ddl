@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.CMN10_SimpleVEnt (id INTEGER NOT NULL, byteArrData BYTE, charData INTEGER, doubleData DOUBLE PRECISION, floatData REAL, intData INTEGER, longData NUMERIC(32,0), strData VARCHAR(255), version INTEGER, PRIMARY KEY (id)) LOCK MODE ROW;

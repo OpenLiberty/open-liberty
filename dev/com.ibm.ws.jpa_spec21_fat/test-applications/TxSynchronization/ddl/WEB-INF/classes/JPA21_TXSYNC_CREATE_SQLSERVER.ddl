@@ -1,0 +1,1 @@
+CREATE TABLE CMN10_SimpleVEnt (id INT NOT NULL, byteArrData IMAGE, charData INT, doubleData FLOAT(32), floatData REAL, intData INT, longData BIGINT, strData VARCHAR(255), version INT, PRIMARY KEY (id));
