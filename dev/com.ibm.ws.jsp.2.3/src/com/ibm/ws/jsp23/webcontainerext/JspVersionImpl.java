@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ public class JspVersionImpl implements JspVersion {
 
     @Override
     public String getJspVersionString() {
-        return "2.3";
+         // See OL #12387
+         // Transformation Required Here for Pages 3.0
+         return "JSPVersion2.3".substring(10,13);
     }
 }

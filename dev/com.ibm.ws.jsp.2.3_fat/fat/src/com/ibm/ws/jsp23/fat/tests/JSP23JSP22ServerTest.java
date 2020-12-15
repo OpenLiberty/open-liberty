@@ -82,8 +82,9 @@ public class JSP23JSP22ServerTest {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // Only Regular Run
     @Test
-    public void testJspFeatureChange() throws Exception {
+    public void testJsp23to22FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
@@ -110,6 +111,37 @@ public class JSP23JSP22ServerTest {
         LOG.info("Response from a 2.2 compilation: " + response.getText());
 
         assertTrue("The response did not contain: JSP version: 2.2", response.getText().contains("JSP version: 2.2"));
+
+    }
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Only for EE9 Run 
+    @Test
+    public void testPages30to23FeatureChange() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        LOG.info("Requesting JSP with pages-3.0 feature enabled");
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "testJspFeatureChange.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response from a 3.0 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: Pages version: 3.0", response.getText().contains("JSP version: 3.0"));
+
+        List<String> jsp22Feature = new ArrayList<String>();
+        jsp22Feature.add("jsp-2.3");
+        server.changeFeatures(jsp22Feature);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("TestJspFeatureChange"), true, new String[0]);
+
+        LOG.info("Requesting JSP with jsp-2.3 feature enabled");
+
+        response = wc.getResponse(request);
+
+        LOG.info("Response from a 2.3 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: JSP version: 2.3", response.getText().contains("JSP version: 2.3"));
 
     }
 }
