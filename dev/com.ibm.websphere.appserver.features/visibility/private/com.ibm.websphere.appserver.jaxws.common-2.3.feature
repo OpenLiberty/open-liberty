@@ -32,6 +32,7 @@ IBM-API-Package:\
 -features=\
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
+ com.ibm.websphere.appserver.eeCompatible-8.0,\
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2, \
  com.ibm.websphere.appserver.httpcommons-1.0, \
@@ -44,7 +45,6 @@ IBM-API-Package:\
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
- com.ibm.ws.cxf.client, \
  com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.jaxws.tools.2.2.10, \

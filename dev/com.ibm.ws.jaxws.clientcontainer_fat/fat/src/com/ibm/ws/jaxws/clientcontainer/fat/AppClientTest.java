@@ -103,10 +103,6 @@ public class AppClientTest {
         CommonApi.createClientWithArgs(testName, testName, response, packages, testName, "helloClient/src/" + testName, getServerInfo());
     }
 
-    /*
-     * TOD0: Resolve Access denied ("org.osgi.framework.AdminPermission" "(id=138)" "context")]
-     * in jaxwsClient-2.3
-     */
     @Test
     public void testPortTypeInjectionClassLevel() throws Exception {
         String testName = "PortTypeInjectionClassLevel";

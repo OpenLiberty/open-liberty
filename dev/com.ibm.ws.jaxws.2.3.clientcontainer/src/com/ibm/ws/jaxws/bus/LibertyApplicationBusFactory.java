@@ -102,18 +102,15 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         return createBus(e, properties, THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread()));
     }
 
-    public LibertyApplicationBus createBus(Map<Class<?>, Object> e, Map<String, Object> properties, ClassLoader classLoader) {
+    public LibertyApplicationBus createBus(final Map<Class<?>, Object> e,final Map<String, Object> properties,final ClassLoader classLoader) {
 
         Bus originalBus = getThreadDefaultBus(false);
 
-        final Map<Class<?>, Object> e1 = e;
-        final Map<String, Object> properties1 = properties;
-        final ClassLoader classLoader1 = classLoader;
         try {
             LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
                 @Override
                 public LibertyApplicationBus run() {
-                    return new LibertyApplicationBus(e1, properties1, classLoader1);
+                    return new LibertyApplicationBus(e, properties, classLoader);
                 }
             });
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
@@ -134,6 +131,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
             bus.initialize();
 
+            // TODO: Switch to using CXF's Logging Feature
             // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
             final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
             in.setPrettyLogging(true);

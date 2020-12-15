@@ -45,8 +45,8 @@ Import-Package: \
    *
 
 Private-Package:\
-   com.ibm.ws.jaxws.*;version=${exportVer},\
-   com.ibm.wsspi.jaxws;version=${exportVer}
+   com.ibm.ws.jaxws.*,\
+   com.ibm.wsspi.jaxws
 
 # Use Dynamic Import Packages for JAXB Context Factory, 
 # with that, we could work without ResourceProvider Hook
@@ -145,3 +145,5 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.websphere.appserver.spi.classloading;version=latest,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+
+jakartaeeMe: true

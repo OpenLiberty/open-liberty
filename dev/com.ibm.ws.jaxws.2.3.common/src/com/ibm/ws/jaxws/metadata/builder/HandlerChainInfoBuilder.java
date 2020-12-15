@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,7 +183,8 @@ public class HandlerChainInfoBuilder {
             // Change from XMLUtil.parse to StaxUtils.read
             Document doc = StaxUtils.read(handlerFileURL.openStream());
             Element el = doc.getDocumentElement();
-            if (!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI())
+            if ((!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI()) &&
+                 !"https://jakarta.ee/xml/ns/jakartaee".equals(el.getNamespaceURI()))
                 || !"handler-chains".equals(el.getLocalName())) {
 
                 // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
@@ -195,7 +196,8 @@ public class HandlerChainInfoBuilder {
             while (node != null) {
                 if (node instanceof Element) {
                     el = (Element) node;
-                    if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")
+                    if ((!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                         !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee"))
                         || !el.getLocalName().equals("handler-chain")) {
 
                         // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
@@ -223,7 +225,8 @@ public class HandlerChainInfoBuilder {
             QName elQName = null;
             if (cur instanceof Element) {
                 el = (Element) cur;
-                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
+                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                    !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee")) {
                     // Change from XMLUtil.toString(Element) to StaxUtils.toString(Element)
                     String xml = StaxUtils.toString(el);
                     throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));

@@ -13,22 +13,16 @@
 bVersion=1.0
 
 src: \
-   fat/src,\
-   test-applications/helloClient/src,\
-   test-applications/helloServer/src,\
-   test-applications/jaxbHello/src,\
-   test-applications/JaxWsTransportSecurityClient/src,\
-   test-applications/TransportSecurityProvider/src,\
-   test-applications/wsBndServiceRefOverride/src
+	fat/src,\
+	test-applications/helloClient/src,\
+	test-applications/helloServer/src,\
+	test-applications/jaxbHello/src,\
+	test-applications/JaxWsTransportSecurityClient/src,\
+	test-applications/TransportSecurityProvider/src,\
+	test-applications/wsBndServiceRefOverride/src
 
 fat.project: true
 
-# These features get added programmatically
-tested.features: jaxws-2.3, \
-  cdi-2.0, \
-  appsecurity-3.0, \
-  jaxb-2.3, \
-  servlet-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

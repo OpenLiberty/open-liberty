@@ -10,7 +10,6 @@ IBM-API-Package: \
  org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
  org.apache.cxf.databinding;type="internal"
 -features=\
- com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
  io.openliberty.xmlws.common-3.0
 -bundles=\
