@@ -246,13 +246,13 @@ public abstract class JPATestServlet extends FATServlet {
             System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
         }
 
-        dbMajorVersion = dbProps.getProperty("dbmajor_version");
-        dbMinorVersion = dbProps.getProperty("dbminor_version");
-        dbProductName = dbProps.getProperty("dbproduct_name");
-        dbProductVersion = dbProps.getProperty("dbproduct_version");
-        jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
-        jdbcURL = dbProps.getProperty("jdbc_url");
-        jdbcUsername = dbProps.getProperty("jdbc_username");
+        dbMajorVersion = dbProps.getProperty("dbmajor_version", "UNKNOWN");
+        dbMinorVersion = dbProps.getProperty("dbminor_version", "UNKNOWN");
+        dbProductName = dbProps.getProperty("dbproduct_name", "UNKNOWN");
+        dbProductVersion = dbProps.getProperty("dbproduct_version", "UNKNOWN");
+        jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version", "UNKNOWN");
+        jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
+        jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
         dbMetaAcquired = true;
     }
