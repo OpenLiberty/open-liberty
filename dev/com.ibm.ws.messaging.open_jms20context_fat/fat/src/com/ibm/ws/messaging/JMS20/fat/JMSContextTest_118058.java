@@ -18,19 +18,18 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 @Mode(TestMode.FULL)
 public class JMSContextTest_118058 {
-    private static LibertyServer engineServer =
-        LibertyServerFactory.getLibertyServer("JMSContextEngine");
+    private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("JMSContextEngine");
 
-    private static LibertyServer clientServer =
-        LibertyServerFactory.getLibertyServer("JMSContextClient");
+    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("JMSContextClient");
 
     private static final int clientPort = clientServer.getHttpDefaultPort();
     private static final String clientHost = clientServer.getHostname();
@@ -47,13 +46,13 @@ public class JMSContextTest_118058 {
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
         engineServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("JMSContextEngine.xml");
 
         clientServer.copyFileToLibertyInstallRoot(
-            "lib/features",
-            "features/testjmsinternals-1.0.mf");
+                                                  "lib/features",
+                                                  "features/testjmsinternals-1.0.mf");
         clientServer.setServerConfigurationFile("JMSContextClient.xml");
         TestUtils.addDropinsWebApp(clientServer, appName, appPackages);
 
@@ -65,13 +64,13 @@ public class JMSContextTest_118058 {
     public static void tearDown() {
         try {
             clientServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
             engineServer.stopServer();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -234,7 +233,18 @@ public class JMSContextTest_118058 {
     // is ignored and AUTO_ACKNOWLEDGE is set
     // Bindings an Security Off
 
-    // Latest fix :JMSRuntimeException will be thrown when client_ack is used
+    /**
+     * See JMS 2.0 specifcation: https://javaee.github.io/javaee-spec/javadocs/javax/jms/Connection.html
+     *
+     * In the Java EE web or EJB container, when there is no active JTA transaction in progress:
+     * If transacted is set to false and acknowledgeMode is set to JMSContext.CLIENT_ACKNOWLEDGE then
+     * the JMS provider is recommended to ignore the specified parameters and instead provide a non-transacted,
+     * auto-acknowledged session. However the JMS provider may alternatively provide
+     * a non-transacted session with client acknowledgement.
+     *
+     * So, using CLIENT_ACKNOWLEDGE should not cause an exception to be thrown, which was previously the case.
+     */
+
     @Mode(TestMode.FULL)
     @Test
     public void testCreateContextWithInvalidSessionMode_B_SecOff() throws Exception {
