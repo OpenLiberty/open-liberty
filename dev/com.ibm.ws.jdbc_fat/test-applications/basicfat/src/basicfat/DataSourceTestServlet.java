@@ -11,6 +11,7 @@
 package basicfat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -222,6 +223,9 @@ public class DataSourceTestServlet extends FATServlet {
                                                               Connection.TRANSACTION_READ_UNCOMMITTED
     };
 
+    // For testing autoCloseConnections
+    private static Connection leakedConnection;
+
     @Override
     public void init(ServletConfig c) throws ServletException {
         //Create table in database container
@@ -409,6 +413,44 @@ public class DataSourceTestServlet extends FATServlet {
                 throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected: dbuser1 Instead: " + user);
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Intentionally leave a connection open across the end of a servlet method.
+     */
+    public void testConfigChangeAutoCloseConnectionsLeakConnection() throws Exception {
+        leakedConnection = ds1u.getConnection();
+    }
+
+    /**
+     * Verify that a connection that was previously leaked across the end of a servlet request
+     * has been closed by the container.
+     */
+    public void testConfigChangeAutoCloseConnectionsConnectionClosed() throws Exception {
+        try (Connection con = leakedConnection) {
+            assertTrue(con.isClosed());
+        } finally {
+            leakedConnection = null;
+        }
+    }
+
+    /**
+     * Verify that a connection that was previously leaked across the end of a servlet request
+     * has not been closed by the container. Use the connection to query the database.
+     */
+    public void testConfigChangeAutoCloseConnectionsConnectionNotClosed() throws Exception {
+        try (Connection con = leakedConnection) {
+            assertFalse(con.isClosed());
+            try (PreparedStatement pstmt = con.prepareStatement("select name from cities where population > ?")) {
+                pstmt.setInt(1, 50000);
+                try (ResultSet result = pstmt.executeQuery()) {
+                    if (result.next())
+                        result.getString(1);
+                }
+            }
+        } finally {
+            leakedConnection = null;
         }
     }
 
