@@ -1,13 +1,11 @@
-DELETE FROM ${schemaname}.CEmployee;
-
-DELETE FROM ${schemaname}.CacheEntityCacheable;
-DELETE FROM ${schemaname}.CacheEntityCacheableNot;
-DELETE FROM ${schemaname}.CacheEntityCollection;
-DELETE FROM ${schemaname}.CacheEntitySimple1;
-DELETE FROM ${schemaname}.CacheEntitySimple2;
-DELETE FROM ${schemaname}.CECollection_CESimple1;
-
-DELETE FROM ${schemaname}.JPA20EMEntityA;
-DELETE FROM ${schemaname}.JPA20EMEntityA_JPA20EMEntityB;
-DELETE FROM ${schemaname}.JPA20EMEntityB;
-DELETE FROM ${schemaname}.JPA20EMEntityC;
+DELETE FROM CacheEntityCacheable;
+DELETE FROM CacheEntityCacheableNot;
+DELETE FROM CacheEntityCollection;
+DELETE FROM CacheEntitySimple1;
+DELETE FROM CacheEntitySimple2;
+DELETE FROM CECollection_CESimple1;
+DELETE FROM CEmployee;
+DELETE FROM JPA20EMEntityA;
+DELETE FROM JPA20EMEntityA_JPA20EMEntityB;
+DELETE FROM JPA20EMEntityB;
+DELETE FROM JPA20EMEntityC;

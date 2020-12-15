@@ -18,15 +18,15 @@
     version="1.0">
 
     <session name="QueryLockModeTestSFEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="QueryLockModeTestSFExEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="QueryLockModeTestSLEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
 </ejb-jar-bnd>
