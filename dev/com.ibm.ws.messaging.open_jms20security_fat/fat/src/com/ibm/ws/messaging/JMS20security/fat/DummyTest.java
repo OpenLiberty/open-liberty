@@ -11,10 +11,11 @@
 package com.ibm.ws.messaging.JMS20security.fat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- *
- */
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
 public class DummyTest {
     @Test
     public void testDummyJMS20Java7Fat() throws Exception {
