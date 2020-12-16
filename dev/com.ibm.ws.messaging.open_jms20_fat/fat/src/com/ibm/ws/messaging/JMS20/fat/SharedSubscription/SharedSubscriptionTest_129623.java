@@ -479,6 +479,7 @@ public class SharedSubscriptionTest_129623 {
 
     // Defect 174713
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionNotFoundException")
     @Test
     public void testUnsubscribeInvalidSID_Tsession_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testUnsubscribeInvalidSID_Tsession_B_SecOff");
