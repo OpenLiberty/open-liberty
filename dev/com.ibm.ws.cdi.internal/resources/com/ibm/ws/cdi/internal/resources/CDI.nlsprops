@@ -73,6 +73,6 @@ spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Failed to create CDI Ex
 spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI failed to invoke the constructor of an extension class that is registered with the getExtensions() method of a CDIExtensionMetadata implementation.
 spi.extension.failed.to.construct.CWOWB1010E.useraction=Fix the error that is preventing your extension from instantiating.
 
-spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: A class {0} registered through the CDI Extension SPI was in a different bundle to the CDIExtensionMetadata implementation.
-spi.extension.class.in.different.bundle.CWOWB1011E.explanation=The class was registered with the getExtensions() or getBeanClasses method of a CDIExtensionMetadata implementation is in a different bundle to the CDIExtensionMetadata implementation and will be ignored.
+spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: A {0} class registered through the CDI Extension SPI is in a different bundle than the CDIExtensionMetadata implementation.
+spi.extension.class.in.different.bundle.CWOWB1011E.explanation=The class is ignored because it was registered with the getExtensions() or getBeanClasses() method of a CDIExtensionMetadata implementation and is in a different bundle than the CDIExtensionMetadata implementation.
 spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Move the affected class or create a new CDIExtensionMetadata implementation in the correct bundle.
