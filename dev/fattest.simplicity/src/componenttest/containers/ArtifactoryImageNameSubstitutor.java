@@ -15,6 +15,8 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.utils.ExternalTestService;
+
 /**
  * An image name substituter is configured in testcontainers.properties and will transform docker image names.
  * Here we use it to apply a private registry prefix so that in remote builds we use an internal mirror
@@ -68,18 +70,15 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     }
 
     static String getPrivateRegistryAuthToken() {
-//        try {
-//            ExternalTestService authSvc = ExternalTestService.getService("docker-host-auth");
-//            Log.info(c, "@AGG", "Got props: " + authSvc.getProperties());
-//            return authSvc.getProperties().get("auth-token");
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        String token = System.getProperty("fat.test.artifactory.download.token");
-        if (token == null || token.isEmpty() || token.startsWith("${"))
-            token = null;
-        Log.info(c, "getPrivateRegistryAuthToken", "Got auth token: " + token);
-        return token;
+        try {
+            String token = ExternalTestService.getProperty("docker-hub-mirror/auth-token");
+            if (token == null || token.isEmpty() || token.startsWith("${"))
+                throw new IllegalStateException("Unable to locate private registry auth token.");
+            Log.info(c, "getPrivateRegistryAuthToken", "Got auth token starting with: " + token.substring(0, 4) + "....");
+            return token;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

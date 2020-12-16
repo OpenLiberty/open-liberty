@@ -65,11 +65,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * in FATSuite beforeClass setup.
      */
     public static void setupTestcontainers() {
+        generateTestcontainersConfig();
+        generateDockerConfig();
+    }
+
+    private static void generateTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
         if (!testcontainersConfigFile.exists())
             return;
 
-        Log.info(c, "clearTestcontainersConfig", "Resetting testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
+        Log.info(c, "generateTestcontainersConfig", "Resetting testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
             Properties tcProps = new Properties();
             tcProps.load(new FileInputStream(testcontainersConfigFile));
@@ -78,10 +83,8 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             Files.deleteIfExists(testcontainersConfigFile.toPath());
             tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {
-            Log.error(c, "clearTestcontainersConfig", e);
+            Log.error(c, "generateTestcontainersConfig", e);
         }
-
-        generateDockerConfig();
     }
 
     /**
