@@ -2186,7 +2186,11 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         if (!trusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + remoteAddr.getHostAddress());
+                if (remoteAddr != null) {
+                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + remoteAddr.getHostAddress());
+                } else {
+                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for this host");
+                }
             }
             return false;
         }

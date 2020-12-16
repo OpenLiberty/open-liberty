@@ -49,6 +49,8 @@ public class HttpDispatcherTest {
     static Field linkRemoteContextAddress;
     static Field linkUsePrivateHeaders;
     static Field linkRemoteAddress;
+    final String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
+    final String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
 
     @BeforeClass
     public static void setupInstance() throws Exception {
@@ -113,8 +115,6 @@ public class HttpDispatcherTest {
 
     @Test
     public void testDefaults() throws Exception {
-        String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
-        String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
         HttpDispatcher d = new HttpDispatcher();
         Map<String, Object> map = buildMap(true, null, (String) null, (String) null);
         d.activate(map);
@@ -163,13 +163,6 @@ public class HttpDispatcherTest {
 
     @Test
     public void testRestrictPrivateHeaders() throws Exception {
-        String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
-        String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
-
-        HttpDispatcher d = new HttpDispatcher();
-        Map<String, Object> map = buildMap(true, null, "none", "none");
-        d.activate(map);
-
         InetAddress testAddr1 = InetAddress.getByAddress("hostname", InetAddress.getByName("1.2.3.4").getAddress());
         InetAddress testAddr2 = InetAddress.getByAddress("hostname", InetAddress.getByName("5.6.7.8").getAddress());
         InetAddress testAddr3 = InetAddress.getByAddress("IBM.com", InetAddress.getByName("1.2.3.4").getAddress());
@@ -190,8 +183,11 @@ public class HttpDispatcherTest {
         InetAddress testAddr18 = InetAddress.getByAddress("fake.com", InetAddress.getByName("192.168.9.0").getAddress());
         InetAddress testAddr19 = InetAddress.getByAddress("fake.com", InetAddress.getByName("192.168.9.255").getAddress());
         InetAddress testAddr20 = InetAddress.getByAddress("fake.com", InetAddress.getByName("127.0.0.3").getAddress());
+        HttpDispatcher d = new HttpDispatcher();
 
         // both trusted header properties are set to "none", so no private headers are allowed from any host
+        Map<String, Object> map = buildMap(true, null, "none", "none");
+        d.activate(map);
         Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
         Assert.assertFalse("Private headers should be disabled for " + testAddr2.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr2, wsprHeader));
         Assert.assertFalse("Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsprHeader));
@@ -238,7 +234,6 @@ public class HttpDispatcherTest {
 
         // note the sensitive header list overrides the private header list, any of the addresses or hosts in the following list
         // can pass either type of header
-
         map = buildMap(true, null, "none",
                        "127.0.0.2, *.ibm.com, 5.6.7.8, 127.0.0.1, 192.168.10.*, 192.168.10.*, d:e:a:d:0:0:0:*, d:e:a:f:*:*:*:*, d:e:a:f:*:*:*:a,  d:e:a:f:0:0:*:*");
         d.modified(map);
@@ -282,6 +277,105 @@ public class HttpDispatcherTest {
         } finally {
             context.assertIsSatisfied();
         }
+    }
+
+    @Test
+    public void testBadPrivateHeaderConfigs() throws Exception {
+        InetAddress testAddr1 = InetAddress.getByAddress("hostname", InetAddress.getByName("1.2.3.4").getAddress());
+        InetAddress testAddr2 = InetAddress.getByAddress("hostname", InetAddress.getByName("5.6.7.8").getAddress());
+        InetAddress testAddr3 = InetAddress.getByAddress("IBM.com", InetAddress.getByName("1.2.3.4").getAddress());
+        InetAddress testAddr4 = InetAddress.getByAddress("fake.com", InetAddress.getByName("127.0.0.1").getAddress());
+        HttpDispatcher d = new HttpDispatcher();
+
+        // setting "none, *" is contradictory; we'll use the first value we encounter, "none" in this case
+        Map<String, Object> map = buildMap(true, null, "none, *", "none, *");
+        d.activate(map);
+        Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertFalse("Private headers should be disabled for " + testAddr2.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr2, wsprHeader));
+        Assert.assertFalse("Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsprHeader));
+        Assert.assertFalse("Private headers should be disabled for " + testAddr4.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr4, wsprHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr2.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr2, wsraHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsraHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr4.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr4, wsraHeader));
+
+        // test an inverse contradictory configuration, "*, none", which should result in trust for all hosts
+        map = buildMap(true, null, "*, none", "*, none");
+        d.modified(map);
+        Assert.assertTrue("Private headers should be enabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertTrue("Private headers should be enabled for " + testAddr2.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr2, wsprHeader));
+        Assert.assertTrue("Private headers should be enabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsprHeader));
+        Assert.assertTrue("Private headers should be enabled for " + testAddr4.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr4, wsprHeader));
+        Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+        Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr2.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr2, wsraHeader));
+        Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsraHeader));
+        Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr4.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr4, wsraHeader));
+
+        // test invalid address format
+        map = buildMap(true, null, "1.f.1.1.1", "none");
+        d.modified(map);
+        Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+
+        // test invalid address wildcard format
+        map = buildMap(true, null, "1.11.f.1.*", "none");
+        d.modified(map);
+        Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+
+        // test invalid host format for sensitive list
+        map = buildMap(true, null, "none", "invalidh@st");
+        d.modified(map);
+        Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+        Assert.assertTrue(outputMgr.checkForMessages(".*trustedSensitiveHeaderOrigin.*invalidh@st.*invalid"));
+
+        // test invalid host format for non-sensitive list, with valid sensitive list
+        map = buildMap(true, null, "invalidh@st", "hostname");
+        d.modified(map);
+        Assert.assertTrue("Private headers should be enabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
+        Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
+        Assert.assertFalse("Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsprHeader));
+        Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsraHeader));
+        Assert.assertTrue(outputMgr.checkForMessages(".*trustedHeaderOrigin.*invalidh@st.*invalid"));
+    }
+
+    @Test
+    public void testPrivateHeaderTrustNullHost() throws Exception {
+        HttpDispatcher d = new HttpDispatcher();
+
+        // pass in a null address: the default trusted*HeaderOrigin values should be returned
+        Map<String, Object> map = buildMap(true, null, "*", "none");
+        d.activate(map);
+        Assert.assertTrue("Private headers should be enabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null));
+        Assert.assertFalse("Sensitive private headers should be disabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null, wsraHeader));
+
+        // configure trust for all headers and make sure that a null-address-host is still trusted
+        map = buildMap(true, null, "*", "*");
+        d.activate(map);
+        Assert.assertTrue("Private headers should be enabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null, wsprHeader));
+        Assert.assertTrue("Sensitive private headers should be enabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null, wsprHeader));
+
+        // configure zero trust and make sure that a null-address-host is not trusted
+        map = buildMap(true, null, "none", "none");
+        d.activate(map);
+        Assert.assertFalse("Private headers should be enabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null));
+        Assert.assertFalse("Sensitive private headers should be disabled for null", HttpDispatcher.usePrivateHeaders((InetAddress) null, wsraHeader));
+
+    }
+
+    @Test
+    public void testPrivateHeaderTrustAddressOnly() throws Exception {
+        HttpDispatcher d = new HttpDispatcher();
+
+        Map<String, Object> map = buildMap(true, null, "1.1.1.1", "1.1.1.2");
+        d.activate(map);
+        // verify that the legacy usePrivateHeaders(String hostAddr) methods work as expected
+        Assert.assertTrue("Private headers should be enabled for 1.1.1.1", HttpDispatcher.usePrivateHeaders("1.1.1.1", wsprHeader));
+        Assert.assertFalse("Sensitive private headers should be disabled for null", HttpDispatcher.usePrivateHeaders("1.1.1.1", wsraHeader));
+        Assert.assertFalse("Private headers should be disabled for 1.1.1.0", HttpDispatcher.usePrivateHeaders("1.1.1.0", wsraHeader));
+        Assert.assertTrue("Sensitive private headers should be enabled for 1.1.1.2", HttpDispatcher.usePrivateHeaders("1.1.1.2", wsraHeader));
+        Assert.assertTrue("Private headers should be enabled for 1.1.1.2", HttpDispatcher.usePrivateHeaders("1.1.1.2"));
     }
 
     @Test

@@ -142,6 +142,12 @@ public class TrustedHeaderOriginLists {
         }
     }
 
+    /**
+     * Given a set of hosts, create the FilterList objects which will be used for trust checks
+     *
+     * @param origins
+     * @param sensitive
+     */
     private void parseAndSetOrigins(HashSet<String> origins, boolean sensitive) {
         List<String> addrs = new ArrayList<String>();
         List<String> hosts = new ArrayList<String>();
@@ -233,7 +239,7 @@ public class TrustedHeaderOriginLists {
                 }
                 if (!isSensitive && !disableAllOrigins) {
                     // check if remote host is trusted to send non-sensitive private headers
-                    if (!isTrusted && !isSensitive && trustedAddresses != null && trustedAddresses.getActive()) {
+                    if (!isTrusted && trustedAddresses != null && trustedAddresses.getActive()) {
                         // check if the remote IP address is in the trustedHeaderOrigin list
                         if (remoteAddr instanceof Inet6Address) {
                             isTrusted = trustedAddresses.findInList6(remoteAddr.getAddress());
@@ -277,7 +283,7 @@ public class TrustedHeaderOriginLists {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "isTrusted returning " + isTrusted + " for " + remoteAddr + " sensitive=" + isSensitive);
+            Tr.exit(tc, "isTrusted returning " + isTrusted + " for remote address = " + remoteAddr + " sensitive = " + isSensitive);
         }
         return isTrusted;
     }

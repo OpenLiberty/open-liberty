@@ -11,6 +11,7 @@
 package com.ibm.ws.http.dispatcher.internal;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -290,11 +291,33 @@ public class HttpDispatcher {
     }
 
     /**
+     * Create a InetAddress object from an address string. Returns null if an exception is encountered, or if
+     * the passed address string is null
+     *
+     * @param String address
+     * @return InetAddress
+     */
+    private static InetAddress getInetAddressFromString(String address) {
+        InetAddress remoteAddr = null;
+        if (address != null) {
+            try {
+                remoteAddr = InetAddress.getByName(address);
+            } catch (UnknownHostException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "exception encountered creating InetAddress from string=" + address + ": " + e);
+                }
+            }
+        }
+        return remoteAddr;
+    }
+
+    /**
      * @param hostAddr the remote address to check
      * @return true if private headers should be used (the default is true)
      */
     public static boolean usePrivateHeaders(String hostAddr) {
-        return usePrivateHeaders((InetAddress) null, null);
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return usePrivateHeaders(remoteAddr, null);
     }
 
     /**
@@ -312,7 +335,8 @@ public class HttpDispatcher {
      * @return true if private headers should be used (the default is true when headerName is not sensitive)
      */
     public static boolean usePrivateHeaders(String hostAddr, String headerName) {
-        return usePrivateHeaders((InetAddress) null, headerName);
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return usePrivateHeaders(remoteAddr, headerName);
     }
 
     /**
@@ -334,6 +358,29 @@ public class HttpDispatcher {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of private headers
+     *
+     *
+     * @param hostAddr The source host address
+     * @return true if hostAddr is a trusted source of private headers
+     */
+    public boolean isTrusted(String hostAddr, String headerName) {
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return isTrusted(remoteAddr, headerName);
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of sensitive private headers
+     *
+     * @param hostAddr The source host address
+     * @return true if hostAddr is a trusted source of sensitive private headers
+     */
+    public boolean isTrustedForSensitiveHeaders(String hostAddr) {
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return isTrustedForSensitiveHeaders(remoteAddr);
     }
 
     /**
