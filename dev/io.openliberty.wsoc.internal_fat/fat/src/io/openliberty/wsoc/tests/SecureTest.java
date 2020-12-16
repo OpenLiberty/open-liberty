@@ -55,12 +55,12 @@ public class SecureTest extends LoggingTest {
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
     private static final Logger LOG = Logger.getLogger(SecureTest.class.getName());
-    
+
     private static final String SECURE_WAR_NAME = "secure";
 
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
         int securePort = 0, port = 0;
-        String host="";
+        String host = "";
         LibertyServer server = SS.getLibertyServer();
         if (WebServerControl.isWebserverInFront()) {
             try {
@@ -77,7 +77,7 @@ public class SecureTest extends LoggingTest {
         }
         return SS.verifyResponse(createWebBrowserForTestCase(),
                                  "/secure/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
-                                                 + "&secureport=" + securePort + "&secure=true",
+                                                                + "&secureport=" + securePort + "&secure=true",
                                  "SuccessfulTest");
     }
 
@@ -85,18 +85,18 @@ public class SecureTest extends LoggingTest {
     public static void setUp() throws Exception {
         // Build the war app and add the dependencies
         WebArchive SecureApp = ShrinkHelper.buildDefaultApp(SECURE_WAR_NAME + ".war",
-                                                                         "secure.war",
-                                                                         "io.openliberty.wsoc.common",
-                                                                         "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
-                                                                         "io.openliberty.wsoc.endpoints.client.secure");
-        SecureApp = (WebArchive) ShrinkHelper.addDirectory(SecureApp, "test-applications/"+SECURE_WAR_NAME+".war/resources");
+                                                            "secure.war",
+                                                            "io.openliberty.wsoc.common",
+                                                            "io.openliberty.wsoc.util.wsoc",
+                                                            "io.openliberty.wsoc.tests.all",
+                                                            "io.openliberty.wsoc.endpoints.client.secure");
+        SecureApp = (WebArchive) ShrinkHelper.addDirectory(SecureApp, "test-applications/" + SECURE_WAR_NAME + ".war/resources");
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(SECURE_WAR_NAME);
             LOG.info("addAppToServer : " + SECURE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), SecureApp);
+                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), SecureApp);
         }
 
         //Replace config for the other server
@@ -113,6 +113,14 @@ public class SecureTest extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+
+        // give the system 10 seconds to settle down before stopping
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException x) {
+
+        }
+
         // test cleanup
         SS.getLibertyServer().setMarkToEndOfLog();
         SS.getLibertyServer().restoreServerConfiguration();
