@@ -57,7 +57,7 @@ import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
-import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSSLOutInterceptor;
+import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -92,7 +92,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
     protected void setSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
         securityConfigSR.setReference(serviceRef);
         LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
-        LibertyJaxWsClientSSLOutInterceptor.setSecurityConfigService(securityConfigSR);
+        LibertyJaxWsClientSecurityOutInterceptor.setSecurityConfigService(securityConfigSR);
     }
 
     protected void unsetSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {

@@ -58,9 +58,12 @@ public class HandlerChainInfoBuilder {
 
     private static JAXBContext context;
 
+    private static JAXBContext xmlWSContext;
+
     static {
         try {
             context = JAXBUtils.newInstance(PortComponentHandlerType.class);
+            xmlWSContext = JAXBUtils.newInstance(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -273,12 +276,37 @@ public class HandlerChainInfoBuilder {
 
     protected HandlerInfo processHandlerElement(Element el) {
         try {
-            PortComponentHandlerType pt = context.createUnmarshaller().unmarshal(el, PortComponentHandlerType.class).getValue();
-            return adaptToHandlerInfo(pt);
+            if (el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
+                PortComponentHandlerType pt = context.createUnmarshaller().unmarshal(el, PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            } else {
+                org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt = xmlWSContext.createUnmarshaller().unmarshal(el,
+                                                                                                                               org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            }
         } catch (JAXBException e) {
             // log the error info
         }
         return null;
+    }
+
+    private HandlerInfo adaptToHandlerInfo(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt) {
+        HandlerInfo handler = new HandlerInfo();
+
+        handler.setId(pt.getId());
+        handler.setHandlerClass(pt.getHandlerClass().getValue());
+        handler.setHandlerName(pt.getHandlerName().getValue());
+
+        for (org.apache.cxf.jaxws30.handler.types.CString sRole : pt.getSoapRole()) {
+            handler.addSoapRole(sRole.getValue());
+        }
+        for (org.apache.cxf.jaxws30.handler.types.XsdQNameType sHead : pt.getSoapHeader()) {
+            handler.addSoapHeader(new XsdQNameInfo(sHead.getValue(), sHead.getId()));
+        }
+        for (org.apache.cxf.jaxws30.handler.types.ParamValueType param : pt.getInitParam()) {
+            handler.addInitParam(new ParamValueInfo(param.getParamName().getValue(), param.getParamValue().getValue()));
+        }
+        return handler;
     }
 
     private HandlerInfo adaptToHandlerInfo(PortComponentHandlerType pt) {

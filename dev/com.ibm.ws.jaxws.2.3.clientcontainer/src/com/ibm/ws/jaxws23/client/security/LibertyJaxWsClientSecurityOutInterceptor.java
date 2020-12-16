@@ -10,29 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws23.client.security;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 
-import org.apache.cxf.common.util.PropertyUtils;
-import org.apache.cxf.common.util.StringUtils;
-import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
+import org.apache.cxf.phase.Phase;
+import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.metadata.ConfigProperties;
@@ -41,40 +33,16 @@ import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-import org.apache.cxf.Bus;
-import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.message.Message;
-import org.apache.cxf.phase.AbstractPhaseInterceptor;
-import org.apache.cxf.phase.Phase;
-import org.apache.cxf.service.model.EndpointInfo;
-import org.apache.cxf.transport.Conduit;
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transport.http.HTTPConduitConfigurer;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
-
-import com.ibm.websphere.ras.ProtectedString;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.jaxws.JaxWsConstants;
-import com.ibm.ws.jaxws.metadata.ConfigProperties;
-import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
-import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
-import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
-
 /**
  * Used to set the SSL config on the Client side conduit. This removes the need to modify the
- * HttpConduit directly through an extended LibertyHttpConduit 
+ * HttpConduit directly through an extended LibertyHttpConduit
  */
-public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseInterceptor<Message> {
+public class LibertyJaxWsClientSecurityOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    private static final TraceComponent tc = Tr.register(LibertyJaxWsClientSSLOutInterceptor.class);
+    private static final TraceComponent tc = Tr.register(LibertyJaxWsClientSecurityOutInterceptor.class);
 
     private static final QName CXF_TRANSPORT_URI_RESOLVER_QNAME = new QName("http://cxf.apache.org", "TransportURIResolver");
     private static final AtomicReference<AtomicServiceReference<JaxWsSecurityConfigurationService>> securityConfigSR = new AtomicReference<AtomicServiceReference<JaxWsSecurityConfigurationService>>();
-
-
 
     private final JaxWsSecurityConfigurationService securityConfigService;
     private static final String HTTPS_SCHEMA = "https";
@@ -82,45 +50,45 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
     private final EndpointInfo endpointInfo;
 
     protected final WebServiceRefInfo wsrInfo;
-    
+
     // Used for SSL check
-    private boolean isSecured = false;
+    private final boolean isSecured = false;
     private String address;
 
     /**
-     * @param endpointInfo 
+     * @param endpointInfo
      * @param phase
      */
-    public LibertyJaxWsClientSSLOutInterceptor(WebServiceRefInfo wsrInfo, JaxWsSecurityConfigurationService securityConfigService,
-                                               Set<ConfigProperties> configPropertiesSet, EndpointInfo endpointInfo) {
+    public LibertyJaxWsClientSecurityOutInterceptor(WebServiceRefInfo wsrInfo, JaxWsSecurityConfigurationService securityConfigService,
+                                                    Set<ConfigProperties> configPropertiesSet, EndpointInfo endpointInfo) {
         super(Phase.PREPARE_SEND);
         this.wsrInfo = wsrInfo;
         this.configPropertiesSet = configPropertiesSet;
         this.securityConfigService = securityConfigService;
         // Does this actually make sense to set the endpointInfo only in the constructor?
         this.endpointInfo = endpointInfo;
-      
+
     }
 
     @Override
     public void handleMessage(Message message) throws Fault {
 
-            Conduit conduit = message.getExchange().getConduit(message);
-            //open the auto redirect when load wsdl, and close auto redirect when process soap message in default.
-            //users can open the auto redirect for soap message with ibm-ws-bnd.xml
-            if (conduit != null) {
-                HTTPClientPolicy clientPolicy = ((HTTPConduit) conduit).getClient();
+        Conduit conduit = message.getExchange().getConduit(message);
+        //open the auto redirect when load wsdl, and close auto redirect when process soap message in default.
+        //users can open the auto redirect for soap message with ibm-ws-bnd.xml
+        if (conduit != null) {
+            HTTPClientPolicy clientPolicy = ((HTTPConduit) conduit).getClient();
 
-                clientPolicy.setAutoRedirect(CXF_TRANSPORT_URI_RESOLVER_QNAME.equals(endpointInfo.getName()));
-            }
+            clientPolicy.setAutoRedirect(CXF_TRANSPORT_URI_RESOLVER_QNAME.equals(endpointInfo.getName()));
+        }
 
-            // Set defaultSSLConfig for this HTTP Conduit, in case it is needed when retrieve WSDL from HTTPS URL
-            AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
-            JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
+        // Set defaultSSLConfig for this HTTP Conduit, in case it is needed when retrieve WSDL from HTTPS URL
+        AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
+        JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
-            customizeClientSecurity(message, securityConfigService);
+        customizeClientSecurity(message, securityConfigService);
     }
-    
+
     protected void customizeClientSecurity(Message message, JaxWsSecurityConfigurationService securityConfigService) {
         QName portName = getPortQName(message);
 
@@ -132,7 +100,7 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             return;
         }
 
-        //TODO now only consider https, can add if support other protocols in future 
+        //TODO now only consider https, can add if support other protocols in future
         //let's check protocols first, we need prepare their check list for configuration
 
         //SSL check
@@ -176,26 +144,22 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         }
 
     }
-    
 
     /**
      * build the qname with the given, and make sure the namespace is ended with "/" if specified.
-     * 
+     *
      * @param portNameSpace
      * @param portLocalName
      * @return
      */
-    public static QName buildQName(String namespace, String localName)
-    {
+    public static QName buildQName(String namespace, String localName) {
         String namespaceURI = namespace;
-        if (!isEmpty(namespace) && !namespace.trim().endsWith("/"))
-        {
+        if (!isEmpty(namespace) && !namespace.trim().endsWith("/")) {
             namespaceURI += "/";
         }
 
         return new QName(namespaceURI, localName);
     }
-
 
     private QName getPortQName(Message message) {
         Object wsdlPort = message.getExchange().get(Message.WSDL_PORT);
@@ -211,7 +175,7 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
 
     /**
      * Check whether the target string is empty
-     * 
+     *
      * @param str
      * @return true if the string is null or the length is zero after trimming spaces.
      */
@@ -232,7 +196,7 @@ public class LibertyJaxWsClientSSLOutInterceptor extends AbstractPhaseIntercepto
 
     /**
      * Set the security configuration service
-     * 
+     *
      * @param securityConfigService the securityConfigService to set
      */
     public static void setSecurityConfigService(AtomicServiceReference<JaxWsSecurityConfigurationService> serviceRefer) {

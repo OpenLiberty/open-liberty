@@ -24,9 +24,9 @@ Export-Package: com.sun.tools.ws.ant;version="2.2.10", \
  org.jvnet.staxex;version="1.7.7", \
  org.jvnet.staxex.util;version="1.7.7"
 
-DynamicImport-Package: \
- com.sun.xml.bind.*;version="[2.2.10,2.2.11)", \
- org.apache.cxf.jaxb.*;version="[3.0,3.1)"
+Import-Package: \
+ com.sun.xml.bind*;version="2.2.10"
+
 
 Private-Package:\
    com.ibm.ws.jaxws.tools.*, \

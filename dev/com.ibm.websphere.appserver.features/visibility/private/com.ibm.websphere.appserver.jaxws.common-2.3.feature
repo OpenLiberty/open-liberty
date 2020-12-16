@@ -32,7 +32,6 @@ IBM-API-Package:\
 -features=\
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.eeCompatible-8.0,\
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2, \
  com.ibm.websphere.appserver.httpcommons-1.0, \
