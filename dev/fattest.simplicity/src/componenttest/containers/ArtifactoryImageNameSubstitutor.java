@@ -28,14 +28,18 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     @Override
     public DockerImageName apply(DockerImageName original) {
-        if (ExternalTestServiceDockerClientStrategy.useRemoteDocker() && !isSyntheticImage(original)) {
-            // Using remote docker, need to substitute image name to use private registry
-            String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
-            Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
-            return DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original);
-        } else {
+        // If we are using local docker, or a programmatically built image, or a registry was explicitly set,
+        // we don't want to perform any substitution -- just return the original
+        if (!ExternalTestServiceDockerClientStrategy.useRemoteDocker() ||
+            isSyntheticImage(original) ||
+            (original.getRegistry() != null && !original.getRegistry().isEmpty())) {
             return original;
         }
+
+        // Using remote docker, need to substitute image name to use private registry
+        String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
+        Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
+        return DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original);
     }
 
     @Override

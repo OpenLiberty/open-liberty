@@ -58,6 +58,8 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private DefaultDockerClientConfig config;
     private TransportConfig transportConfig;
 
+    private static boolean setupComplete = false;
+
     /**
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
      * It is not necessary to call this method whenever Testcontainers is used, but if you want to be able to
@@ -65,8 +67,11 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * in FATSuite beforeClass setup.
      */
     public static void setupTestcontainers() {
+        if (setupComplete)
+            return;
         generateTestcontainersConfig();
         generateDockerConfig();
+        setupComplete = true;
     }
 
     private static void generateTestcontainersConfig() {
@@ -84,11 +89,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {
             Log.error(c, "generateTestcontainersConfig", e);
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * Generate a config file at ~/.docker/config.json if a private docker registry will be used
+     * Or if a config.json already exists, make sure that the private registry is listed. If not, add
+     * the private registry to the existing config
      */
     private static void generateDockerConfig() {
         final String m = "generateDockerConfig";
@@ -97,24 +105,48 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
         File configDir = new File(System.getProperty("user.home"), ".docker");
         File configFile = new File(configDir, "config.json");
-        if (configFile.exists()) {
-            Log.info(c, m, "Will not generate docker config. Already exists at: " + configFile.getAbsolutePath());
-            return;
-        }
+        String contents = "";
 
-        configDir.mkdirs();
-        Log.info(c, m, "Using remote docker so generating a private registry config file at: " + configFile.getAbsolutePath());
-        String configContents = "{\n" +
-                                "     \"auths\": {\n" +
-                                "          \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "\": {\n" +
-                                "               \"auth\": \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken() + "\",\n"
-                                +
-                                "               \"email\": null\n" +
-                                "          }\n" +
-                                "    }\n" +
-                                "}";
-        Log.info(c, m, "Config contents are:\n" + configContents);
-        writeFile(configFile, configContents);
+        String privateAuth = "\t\t\"" + ArtifactoryImageNameSubstitutor.getPrivateRegistry() + "\": {\n" +
+                             "\t\t\t\"auth\": \"" + ArtifactoryImageNameSubstitutor.getPrivateRegistryAuthToken() + "\",\n"
+                             + "\t\t\t\"email\": null\n" + "\t\t}";
+        if (configFile.exists()) {
+            Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
+            try {
+                for (String line : Files.readAllLines(configFile.toPath()))
+                    contents += line + '\n';
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Log.info(c, m, "Original contents:\n" + contents);
+            if (contents.contains(ArtifactoryImageNameSubstitutor.getPrivateRegistry())) {
+                Log.info(c, m, "Config already contains private registry");
+                return;
+            }
+            int authIndex = contents.indexOf("\"auths\"");
+            if (authIndex >= 0) {
+                Log.info(c, m, "Other auths exist. Need to add private registry");
+                int splitAt = contents.indexOf('{', authIndex);
+                String firstHalf = contents.substring(0, splitAt + 1);
+                String secondHalf = contents.substring(splitAt + 1);
+                contents = firstHalf + '\n' + privateAuth + ",\n" + secondHalf;
+            } else {
+                Log.info(c, m, "No auths exist. Adding auth block");
+                int splitAt = contents.indexOf('{');
+                String firstHalf = contents.substring(0, splitAt + 1);
+                String secondHalf = contents.substring(splitAt + 1);
+                String delimiter = secondHalf.contains("{") ? "," : "";
+                contents = firstHalf + "\n\t\"auths\": {\n" + privateAuth + "\n\t}" + delimiter + secondHalf;
+            }
+        } else {
+            configDir.mkdirs();
+            Log.info(c, m, "Using remote docker so generating a private registry config file at: "
+                           + configFile.getAbsolutePath());
+            contents = "{\n\t\"auths\": {\n" + privateAuth + "\n\t}\n}";
+        }
+        Log.info(c, m, "New config.json contents are:\n" + contents);
+        configFile.delete();
+        writeFile(configFile, contents);
     }
 
     @Override
