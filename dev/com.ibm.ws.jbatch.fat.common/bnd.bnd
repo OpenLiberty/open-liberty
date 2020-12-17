@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Batch FAT Common
+Bundle-SymbolicName: com.ibm.ws.jbatch.fat.common
+Bundle-Description: Common code for Batch FAT projects; version=${bVersion}
+
+#Export-Package: \
+#    com.ibm.ws.jbatch.test.*,\
+#    com.ibm.ws.jbatch.test.dbservlet.*
+
+src: \
+    src,\
+    test-applications/BonusPayout.war/src,\
+    test-applications/DbServletApp.war/src
+
+test.project: true
+generate.replacement: true
+
+-dependson: \
+    build.changeDetector
+    
+-buildpath: \
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.componenttest:public.api;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	fattest.simplicity;version=latest,\
+	org.apache.httpcomponents:httpmime;version=4.3.1,\
+	org.apache.httpcomponents:httpclient;version=latest,\
+	org.apache.httpcomponents:httpcore;version=latest,\
+	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3
+

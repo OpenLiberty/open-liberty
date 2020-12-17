@@ -37,4 +37,5 @@ Import-Package: \
 	com.ibm.ws.sipcontainer;version=latest,\
 	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
