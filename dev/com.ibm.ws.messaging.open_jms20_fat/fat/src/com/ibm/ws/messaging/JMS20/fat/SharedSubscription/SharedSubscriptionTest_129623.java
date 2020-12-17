@@ -379,7 +379,9 @@ public class SharedSubscriptionTest_129623 {
         assertTrue("Test testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed", testResult);
     }
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
+    // TFB: This does not seem to occur, and the test passes.
+    //      There is no indication in the test method that an exception should occur.
+    // @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
     @Test
     public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff");
