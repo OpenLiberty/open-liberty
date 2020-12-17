@@ -8,21 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat;
+package io.openliberty.restfulWS30.fat.webXmlNoApp;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.ws.rs.Path;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AppAndResourceTest.class,
-                JsonbTest.class,
-                ValidatorTest.class,
-                WebXmlNoAppTest.class,
-                XmlWithJaxbTest.class,
-                XmlWithoutJaxbTest.class
-})
-public class FATSuite {
+@Path("foo")
+public class FooResourceImpl implements FooResource {
+
+    @Override
+    public String foo() {
+        return "foo";
+    }
 
 }
