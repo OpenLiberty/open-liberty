@@ -23,7 +23,7 @@ Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
 Export-Package: \
     com.ibm.ws.jaxws;version=${exportVer}, \
     com.ibm.ws.jaxws.bus;version=${exportVer}, \
-    com.ibm.ws.jaxws.client;version=${exportVer}, \
+     com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer}, \
     com.ibm.ws.jaxws.client.injection;version=${exportVer}, \
     com.ibm.ws.jaxws.metadata;version=${exportVer}, \
     com.ibm.ws.jaxws.metadata.builder;version=${exportVer}, \

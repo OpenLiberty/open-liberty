@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,12 +50,12 @@ import com.ibm.wsspi.injectionengine.factory.IndirectJndiLookupReferenceFactory;
 /**
  * This class will be the InjectionProcessor implementation responsible for handling @WebServiceRef and @WebServiceRefs annotations.
  * It will also be responsible for handling an equivalent <service-ref> in the XML deployment descriptor.
- * 
+ *
  * The class will be responsible for creating InjectionBinding objects that will later be bound into the JNDI namespace and used to achieve appropriate resource injection.
- * 
+ *
  * Note this class also registers itself as an override processor for the @Resource annotation. It does this so it can support web service reference injections
  * being indicated by the @Resource annotation.
- * 
+ *
  */
 public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, WebServiceRefs> implements OverrideInjectionProcessor<WebServiceRef, Resource> {
 
@@ -109,7 +109,7 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
             Tr.debug(tc, "Found JAX-WS service refs in XML for module: " + ivNameSpaceConfig.getModuleName());
         }
 
-        // build up the metadata and create WebServiceRefBinding instances that will be used by the injection engine, 
+        // build up the metadata and create WebServiceRefBinding instances that will be used by the injection engine,
         // then we will be saving off this metadata in the module or component metadata slot for later use by our ServiceRefObjectFactory
         List<InjectionBinding<WebServiceRef>> bindingList = WebServiceRefBindingBuilder.buildJaxWsWebServiceRefBindings(jaxwsServiceRefs, ivNameSpaceConfig);
 
@@ -164,7 +164,7 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
                 wsrInfo.setHandlerChainDeclaringClassName(instanceClass.getName());
             }
 
-            //MTOM, RespectBinding, Addressing  
+            //MTOM, RespectBinding, Addressing
             //Merge any features that might be set on the field (@MTOM, @RespectBinding, @Addressing)
             //Note that we only support features for port-component-ref type injections.
             //For a port-component-ref type injection, the "Service SEI class" will be set on
@@ -201,7 +201,7 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
                 wsrInfo.setHandlerChainDeclaringClassName(instanceClass.getName());
             }
 
-            //MTOM, RespectBinding, Addressing  
+            //MTOM, RespectBinding, Addressing
             // Merge any features that might be set on the field (@MTOM, @RespectBinding, @Addressing)
             // Note that we only support features for port-component-ref type injections.
             // For a port-component-ref type injection, the "Service SEI class" will be set on
@@ -279,13 +279,13 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
              * if (ivNameSpaceConfig.getClassLoader() != null) {
              * // get the client metadata. in client side, here should be the first time get the client metadata, so will create one.
              * JaxWsClientMetaData clientMetaData = JaxWsMetaDataManager.getJaxWsClientMetaData(ivNameSpaceConfig.getModuleMetaData());
-             * 
+             *
              * // parsing and merge the client configuration from the ibm-ws-bnd.xml
              * if (clientMetaData != null)
              * {
              * mergeWebServicesBndInfo(wsrInfo, clientMetaData);
              * }
-             * 
+             *
              * }
              */
             J2EEName j2eeName = ivNameSpaceConfig.getJ2EEName();
@@ -301,7 +301,7 @@ public class WebServiceRefProcessor extends InjectionProcessor<WebServiceRef, We
 
     /**
      * merge the configurations from the ibm-ws-bnd.xml
-     * 
+     *
      * @param wsrInfo
      */
     private void mergeWebServicesBndInfo(WebServiceRefInfo wsrInfo, JaxWsClientMetaData jaxwsClientMetaData) {

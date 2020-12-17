@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import com.ibm.wsspi.injectionengine.InjectionException;
  * created when the WebServiceRefProcesor encounters metadata describing a service ref that was defined either by an @WebServiceRef
  * annotation or in XML. This class will be called by the injection engine to handle metadata that was found for a
  * service ref that already has a WebServiceRefBinding instance.
- * 
+ *
  */
 public class WebServiceRefBinding extends InjectionBinding<WebServiceRef> {
 
@@ -121,7 +121,7 @@ public class WebServiceRefBinding extends InjectionBinding<WebServiceRef> {
                     if (member != null) {
                         msgKey = "error.service.ref.type.mismatch.for.member";
                         inserts = new Object[] { wsrInfo.getJndiName(), member.getName(), member.getDeclaringClass().getName(),
-                                                annoType.getName(), existingType.getName() };
+                                                 annoType.getName(), existingType.getName() };
                     } else {
                         msgKey = "error.service.ref.type.mismatch.for.class";
                         inserts = new Object[] { wsrInfo.getJndiName(), annoType.getName(), existingType.getName() };
@@ -150,7 +150,7 @@ public class WebServiceRefBinding extends InjectionBinding<WebServiceRef> {
                     if (member != null) {
                         msgKey = "error.service.interface.mismatch.for.member";
                         inserts = new Object[] { wsrInfo.getJndiName(), member.getName(), member.getDeclaringClass().getName(), annoValue.getName(),
-                                                existingValue.getName() };
+                                                 existingValue.getName() };
                     } else {
                         msgKey = "error.service.interface.mismatch.for.class";
                         inserts = new Object[] { wsrInfo.getJndiName(), annoValue.getName(), existingValue.getName() };

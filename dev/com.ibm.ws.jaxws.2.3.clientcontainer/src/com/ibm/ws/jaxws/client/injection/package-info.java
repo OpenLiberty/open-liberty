@@ -18,4 +18,3 @@ package com.ibm.ws.jaxws.client.injection;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.jaxws.internal.JaxWsCommonConstants;
-

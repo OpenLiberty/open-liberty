@@ -12,6 +12,7 @@ package com.ibm.ws.jaxws.metadata;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 
@@ -24,14 +25,15 @@ public class JaxWsClientMetaData {
 
     private final JaxWsModuleMetaData moduleMetaData;
 
-    public JaxWsClientMetaData(JaxWsModuleMetaData moduleMetaData1) {
-        this.moduleMetaData = moduleMetaData1;
+    public JaxWsClientMetaData(final JaxWsModuleMetaData moduleMetaData) {
+        this.moduleMetaData = moduleMetaData;
         this.clientBus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
             @Override
             public LibertyApplicationBus run() {
                 return LibertyApplicationBusFactory.getInstance().createClientScopedBus(moduleMetaData);
+            }
+        });
     }
-        });}
 
     public void destroy() {
 

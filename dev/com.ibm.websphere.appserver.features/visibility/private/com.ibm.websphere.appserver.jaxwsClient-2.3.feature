@@ -2,7 +2,6 @@
 symbolicName=com.ibm.websphere.appserver.jaxwsClient-2.3
 Subsystem-Name: Internal JAX-WS Client Container Features
 singleton=true
-WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install

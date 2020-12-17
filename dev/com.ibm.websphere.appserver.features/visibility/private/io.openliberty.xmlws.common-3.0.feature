@@ -7,7 +7,6 @@ IBM-App-ForceRestart: uninstall, \
 IBM-Process-Types: client, \
  server
 Subsystem-Name: Internal xmlWS 3.2 Common Feature for xmlWS-3.0, xmlWSClient-3.0 server and client features
-WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package:\
  jakarta.jws; type="spec", \
  jakarta.jws.soap; type="spec", \
