@@ -27,6 +27,7 @@ public class JaxWsClientMetaData {
 
     public JaxWsClientMetaData(final JaxWsModuleMetaData moduleMetaData) {
         this.moduleMetaData = moduleMetaData;
+
         this.clientBus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
             @Override
             public LibertyApplicationBus run() {
