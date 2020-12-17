@@ -68,7 +68,7 @@ public class FeatureBuilder extends Builder {
     	String filterString = rawString.toString();
 		String[] messyAutoFeatures = filterString.split(OSGI_PREFIX);
 		for (String messyAutoFeature : messyAutoFeatures) {
-			if (!messyAutoFeature.startsWith("com"))
+			if (!messyAutoFeature.startsWith("com") && !messyAutoFeature.startsWith("io.openliberty"))
 				continue;
 
 			processedAutoFeatures.add(trimAutofeatureString(messyAutoFeature));

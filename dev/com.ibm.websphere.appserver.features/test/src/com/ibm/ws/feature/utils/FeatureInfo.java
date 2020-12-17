@@ -13,7 +13,6 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +44,7 @@ public class FeatureInfo {
 	private boolean isDisableOnConflictEnabled = true;
 	private boolean isSingleton = false;
     private String visibility = "private";
+    private String shortName;
 
 	public FeatureInfo(File feature) {
 		this.feature = feature;
@@ -154,6 +154,12 @@ public class FeatureInfo {
 		return this.kind;
 	}
 
+	public String getShortName() {
+	    if (!isInit)
+	        populateInfo();
+
+	    return this.shortName;
+	}
 
 	private synchronized void populateInfo() {
 		if (isInit)
@@ -178,6 +184,7 @@ public class FeatureInfo {
             if (vis != null) {
                 visibility = vis.trim();
             }
+            this.shortName = builder.getProperty(FeatureBnd.IBM_SHORT_NAME);
 
             this.edition = edition;
             this.kind = kind;

@@ -273,14 +273,91 @@ public class VisibilityTest {
             File featureFile = featureInfo.getFeatureFile();
             String fileName = featureFile.getAbsolutePath();
             fileName = fileName.replace('\\', '/');
-            if (!fileName.contains("/visibility/" + visibility + "/")) {
+            String expectedPathName = "/visibility/" + visibility + "/";
+            if ("public".equals(visibility)) {
+                expectedPathName += (featureInfo.getShortName() + '/');
+            }
+            expectedPathName += (featureName + ".feature");
+            if (!fileName.endsWith(expectedPathName)) {
                 errorMessage.append("Found issues with " + featureName + '\n');
-                errorMessage.append("     Feature visibility " + visibility + " doesn't match the directory the feature is in.\n");
+                errorMessage.append("     Feature is not in the expected directory " + expectedPathName + ".\n");
+                errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
+                if ("public".equals(visibility)) {
+                    errorMessage.append("     AND/OR the feature short name " + featureInfo.getShortName() + " may not match the directory.\n");
+                }
             }
         }
         if (errorMessage.length() != 0) {
-            Assert.fail("Found features that have visibility set incorrectly: " + '\n' + errorMessage.toString());
+            Assert.fail("Found features that appear to be in the wrong directory based off of their settings: " + '\n' + errorMessage.toString());
         }
     }
 
+    /**
+     * Tests that an auto feature has more than one feature in its filter.
+     */
+    @Test
+    public void testAutoFeatures() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+
+            if (!featureInfo.isAutoFeature()) {
+                continue;
+            }
+
+            String[] filterFeatures = featureInfo.getAutoFeatures();
+            if (filterFeatures.length <= 1) {
+                errorMessage.append("Found issues with " + featureName + '\n');
+                if (filterFeatures.length == 0) {
+                    errorMessage.append("     Auto feature filter doesn't have any features listed.\n");
+                } else {
+                    errorMessage.append("     Auto feature filter only depends on one feature " + filterFeatures[0] + ".\n");
+                    errorMessage.append("     The feature and/or bundle dependencies in this auto feature should just be a dependency of that feature\n");
+                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.");
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found auto features who only depend on one feature: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    /**
+     * This test makes sure that public features have properties files that match the long
+     * feature name.  When moving features to the io.openliberty prefix from com.ibm.websphere.appserver
+     * and vice versa, the properties file renames were missed a few times.  This unit test
+     * makes sure that it is found in the build instead of having to be detected by hand.
+     */
+    @Test
+    public void testLocalizationResources() {
+        StringBuilder errorMessage = new StringBuilder();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+            FeatureInfo featureInfo = entry.getValue();
+
+            if (!"public".equals(featureInfo.getVisibility())) {
+                continue;
+            }
+
+            String shortName = featureInfo.getShortName();
+            File featureFile = featureInfo.getFeatureFile();
+
+            String fileName = featureFile.getAbsolutePath();
+            fileName = fileName.replace('\\', '/');
+
+            int lastSlash = fileName.lastIndexOf('/'); 
+            String expectedFileName = fileName.substring(0, lastSlash + 1) + "/resources/l10n/" + featureName + ".properties";
+            
+            if (!new File(expectedFileName).exists()) {
+                String expectedPropertiesFileRelPath = shortName + "/resources/l10n/" + featureName + ".properties"; 
+                errorMessage.append("Found issues with " + featureName + '\n');
+                errorMessage.append("     Expected to find file " + expectedPropertiesFileRelPath + '\n');
+            }
+        }
+        
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features whose localization files are missing or in the wrong package: " + '\n' + errorMessage.toString());
+        }
+    }
 }
