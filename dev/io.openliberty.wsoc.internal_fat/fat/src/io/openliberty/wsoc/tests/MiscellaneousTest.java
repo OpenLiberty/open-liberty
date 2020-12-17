@@ -27,10 +27,10 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.FATRunner;
+import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerSetup;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 
 /**
  *
@@ -56,18 +56,18 @@ public class MiscellaneousTest extends LoggingTest {
     public static void setUp() throws Exception {
         // Build the war app and add the dependencies
         WebArchive MiscellaneousApp = ShrinkHelper.buildDefaultApp(MISCELLANEOUS_WAR_NAME + ".war",
-                                                                         "miscellaneous.war",
-                                                                         "io.openliberty.wsoc.common",
-                                                                         "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
-                                                                         "io.openliberty.wsoc.endpoints.client.basic");
-        MiscellaneousApp = (WebArchive) ShrinkHelper.addDirectory(MiscellaneousApp, "test-applications/"+MISCELLANEOUS_WAR_NAME+".war/resources");
+                                                                   "miscellaneous.war",
+                                                                   "io.openliberty.wsoc.common",
+                                                                   "io.openliberty.wsoc.util.wsoc",
+                                                                   "io.openliberty.wsoc.tests.all",
+                                                                   "io.openliberty.wsoc.endpoints.client.basic");
+        MiscellaneousApp = (WebArchive) ShrinkHelper.addDirectory(MiscellaneousApp, "test-applications/" + MISCELLANEOUS_WAR_NAME + ".war/resources");
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(MISCELLANEOUS_WAR_NAME);
             LOG.info("addAppToServer : " + MISCELLANEOUS_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), MiscellaneousApp);
+                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), MiscellaneousApp);
         }
         SS.startIfNotStarted();
         SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + MISCELLANEOUS_WAR_NAME);
@@ -76,6 +76,14 @@ public class MiscellaneousTest extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+
+        // give the system 10 seconds to settle down before stopping
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException x) {
+
+        }
+
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer(null);
         }
