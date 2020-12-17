@@ -84,7 +84,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         }
 
         if (appClasses.size() == 0) {
-            return;
+            appClasses.add(Application.class);
         }
 
         for (Class<?> app : appClasses) {
@@ -228,7 +228,8 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             String servletClassName = reg.getClassName();
             if (IBM_REST_SERVLET_NAME.equals(servletClassName) ||
                 RESTEASY_DISPATCHER_NAME.equals(servletClassName) ||
-                RESTEASY_DISPATCHER_30_NAME.equals(servletClassName)) {
+                RESTEASY_DISPATCHER_30_NAME.equals(servletClassName) ||
+                Application.class.getName().equals(reg.getName())) {
                 if (mapped) {
                     Tr.warning(tc, "MULTIPLE_REST_SERVLETS_CWWKW1300W", ctx.getServletContextName());
                 }
