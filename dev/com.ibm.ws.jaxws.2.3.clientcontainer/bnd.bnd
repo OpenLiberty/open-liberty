@@ -9,7 +9,6 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-exportVer=2.3
 bVersion=1.0
 
 Bundle-Name: JAX-WS ClientContainer
@@ -17,21 +16,21 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer
 Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
 Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
-# in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
+# in cxf-rt-frontend-jaxws-3.2 bundle, we exposed: 
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
 Export-Package: \
-    com.ibm.ws.jaxws;version=${exportVer},\
-    com.ibm.ws.jaxws.bus;version=${exportVer},\
-    com.ibm.ws.jaxws.client;thread-context=true;version=${exportVer},\
-    com.ibm.ws.jaxws.client.injection;version=${exportVer},\
-    com.ibm.ws.jaxws.metadata;version=${exportVer},\
-    com.ibm.ws.jaxws.metadata.builder;version=${exportVer},\
-    com.ibm.ws.jaxws.security;version=${exportVer},\
-    com.ibm.ws.jaxws.support;version=${exportVer},\
-    com.ibm.ws.jaxws.utils;version=${exportVer},\
-    com.ibm.ws.jaxws23.client.security;version=${exportVer},\
-    com.ibm.wsspi.jaxws;version=${exportVer}
+    com.ibm.ws.jaxws,\
+    com.ibm.ws.jaxws.bus,\
+    com.ibm.ws.jaxws.client;thread-context=true,\
+    com.ibm.ws.jaxws.client.injection,\
+    com.ibm.ws.jaxws.metadata,\
+    com.ibm.ws.jaxws.metadata.builder,\
+    com.ibm.ws.jaxws.security,\
+    com.ibm.ws.jaxws.support,\
+    com.ibm.ws.jaxws.utils,\
+    com.ibm.ws.jaxws23.client.security,\
+    com.ibm.wsspi.jaxws
    
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

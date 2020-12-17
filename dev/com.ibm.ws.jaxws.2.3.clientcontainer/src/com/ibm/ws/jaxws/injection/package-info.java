@@ -10,9 +10,9 @@
  *******************************************************************************/
 
 /**
- * @version 1.0
+ * @version 2.3
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("2.3")
 @TraceOptions(traceGroup = JaxWsCommonConstants.TR_GROUP, messageBundle = JaxWsCommonConstants.TR_RESOURCE_BUNDLE)
 package com.ibm.ws.jaxws.injection;
 

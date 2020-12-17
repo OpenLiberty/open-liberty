@@ -10,8 +10,7 @@
  *******************************************************************************/
 
 /**
- * @version 1.0
+ * @version 2.3
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("2.3")
 package com.ibm.ws.jaxws23.client.security;
-

@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws.common-2.3
 Subsystem-Name: Java Web Services Common 2.3
+WLP-Activation-Type: parallel
 visibility=private
 singleton=true
 IBM-Process-Types: client, \
@@ -43,7 +44,6 @@ IBM-API-Package:\
  com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
- com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.jaxws.tools.2.2.10, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
@@ -57,9 +57,8 @@ IBM-API-Package:\
  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
- com.ibm.ws.org.jvnet.mimepull, \
- com.ibm.ws.prereq.wsdl4j.1.6.2, \
- com.ibm.ws.webservices.javaee.common
+ com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
+ com.ibm.ws.prereq.wsdl4j.1.6.2
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
