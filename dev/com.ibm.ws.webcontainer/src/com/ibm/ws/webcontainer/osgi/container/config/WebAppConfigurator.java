@@ -31,6 +31,7 @@ import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 import com.ibm.ws.javaee.dd.webext.WebExt;
+import com.ibm.ws.javaee.ddmodel.webext.WebExtComponentImpl;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -239,6 +240,20 @@ public class WebAppConfigurator implements ServletConfigurator {
     public void configureWebAppHelperFactory(WebAppConfiguratorHelperFactory webAppConfiguratorHelperFactory, ResourceRefConfigFactory resourceRefConfigFactory) {
         webAppHelper = webAppConfiguratorHelperFactory.createWebAppConfiguratorHelper(this, resourceRefConfigFactory, getListenerInterfaces());        
         this.configHelpers.add(webAppHelper);
+    }
+    
+    public String getContextRootFromServerConfig() {
+        if (webExt == null) {
+            return null;
+        }
+        
+        // if the webExt is from the server config,
+        // it will be of type WebExtComponentImpl
+        if ( !(webExt instanceof WebExtComponentImpl) ) {
+            return null;
+        }
+       
+        return webExt.getContextRoot();
     }
     
     /**
