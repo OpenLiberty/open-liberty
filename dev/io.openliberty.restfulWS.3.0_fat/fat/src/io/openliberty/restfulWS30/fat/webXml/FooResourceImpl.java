@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat.webXmlNoApp;
+package io.openliberty.restfulWS30.fat.webXml;
 
 import jakarta.ws.rs.Path;
 

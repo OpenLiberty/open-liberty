@@ -8,22 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat;
+package io.openliberty.restfulWS30.fat.webXml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Produces;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AppAndResourceTest.class,
-                JsonbTest.class,
-                ValidatorTest.class,
-                WebXmlAppTest.class,
-                WebXmlNoAppTest.class,
-                XmlWithJaxbTest.class,
-                XmlWithoutJaxbTest.class
-})
-public class FATSuite {
-
+public interface BarResource {
+    @GET
+    @Produces("application/json")
+    String bar();
 }

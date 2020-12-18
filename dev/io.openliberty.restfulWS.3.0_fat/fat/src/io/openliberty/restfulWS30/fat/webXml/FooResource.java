@@ -8,20 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat.webXmlNoApp;
+package io.openliberty.restfulWS30.fat.webXml;
 
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 
-@Path("bar")
-public class BarResourceImpl implements BarResource {
-
+public interface FooResource {
     @GET
-    @Produces({"text/html"})
-    @Override
-    public String bar() {
-        return "<html><head><title>Bar</title></head><body>Bar</body></html>";
-    }
-
+    @Produces("text/plain")
+    String foo();
 }

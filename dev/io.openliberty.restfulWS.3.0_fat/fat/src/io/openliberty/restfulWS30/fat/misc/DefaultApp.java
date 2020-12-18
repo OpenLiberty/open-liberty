@@ -8,13 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat.webXmlNoApp;
+package io.openliberty.restfulWS30.fat.misc;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Produces;
 
-public interface BarResource {
-    @GET
-    @Produces("application/json")
-    String bar();
+public class DefaultApp extends jakarta.ws.rs.core.Application {
+
 }

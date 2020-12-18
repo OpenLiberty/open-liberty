@@ -8,22 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat;
+package io.openliberty.restfulWS30.fat.webXml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jakarta.servlet.annotation.WebServlet;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AppAndResourceTest.class,
-                JsonbTest.class,
-                ValidatorTest.class,
-                WebXmlAppTest.class,
-                WebXmlNoAppTest.class,
-                XmlWithJaxbTest.class,
-                XmlWithoutJaxbTest.class
-})
-public class FATSuite {
+@SuppressWarnings("serial")
+@WebServlet("/WebXmlAppTestServlet")
+public class WebXmlAppTestServlet extends AbstractTestServlet {
 
+
+    @Override
+    protected String getContextRoot() {
+        return "/webXmlApp";
+    }
 }

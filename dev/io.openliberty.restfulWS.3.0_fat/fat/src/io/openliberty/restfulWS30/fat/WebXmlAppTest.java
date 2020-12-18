@@ -25,16 +25,17 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.restfulWS30.fat.webXml.WebXmlNoAppTestServlet;
+import io.openliberty.restfulWS30.fat.misc.DefaultApp;
+import io.openliberty.restfulWS30.fat.webXml.WebXmlAppTestServlet;
 
 /**
  * Tests whether a class can be both an <code>Application</code> subclass
  * <em>and<em> a resource class.
  */
 @RunWith(FATRunner.class)
-public class WebXmlNoAppTest extends FATServletClient {
+public class WebXmlAppTest extends FATServletClient {
 
-    public static final String APP_NAME = "webXmlNoApp";
+    public static final String APP_NAME = "webXmlApp";
     public static final String SERVER_NAME = APP_NAME;
     private static final String WEB_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                     + "<web-app version=\"5.0\" xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"\n"
@@ -43,23 +44,24 @@ public class WebXmlNoAppTest extends FATServletClient {
                     + "   https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\">\n"
                     + "\n"
                     + "    <servlet>\n"
-                    + "        <servlet-name>jakarta.ws.rs.core.Application</servlet-name>\n"
+                    + "        <servlet-name>io.openliberty.restfulWS30.fat.misc.DefaultApp</servlet-name>\n"
                     + "    </servlet>\n"
                     + "    <servlet-mapping>\n"
-                    + "        <servlet-name>jakarta.ws.rs.core.Application</servlet-name>\n"
+                    + "        <servlet-name>io.openliberty.restfulWS30.fat.misc.DefaultApp</servlet-name>\n"
                     + "        <url-pattern>/pathFromWebXml/*</url-pattern>\n"
                     + "    </servlet-mapping>\n"
                     + "</web-app>" ;
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = WebXmlNoAppTestServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = WebXmlAppTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsWebInfResource(new StringAsset(WEB_XML), "web.xml")
-                        .addPackages(true, WebXmlNoAppTestServlet.class.getPackage());
+                        .addClass(DefaultApp.class)
+                        .addPackages(true, WebXmlAppTestServlet.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
