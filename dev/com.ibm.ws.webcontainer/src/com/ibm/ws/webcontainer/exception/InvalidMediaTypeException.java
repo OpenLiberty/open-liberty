@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.apache.cxf.transport.http;
+package com.ibm.ws.webcontainer.exception;
 
-import java.io.IOException;
-
-public class InvalidCharsetException extends IOException {
-
-    public InvalidCharsetException(String m) {
-        super(m);
+@SuppressWarnings("serial")
+public class InvalidMediaTypeException extends RuntimeException {
+    
+    public InvalidMediaTypeException(String message) {
+        super(message);
     }
-
-    private static final long serialVersionUID = 1676878985438910205L;
-
 }

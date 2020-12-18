@@ -78,4 +78,9 @@ public class UTF8Test extends AbstractTest {
     public void testCountriesLowerCase() throws Exception {
         this.runTestOnServer(target, "testCountriesLowerCase", null, "OK");
     }
+
+    @Test
+    public void testInvalidBody() throws Exception {
+        this.runTestOnServer(target, "testInvalidBody", null, "400");
+    }
 }

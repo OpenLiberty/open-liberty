@@ -8,16 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.apache.cxf.transport.http;
+package com.ibm.ws.jaxrs.fat.json;
 
-import java.io.IOException;
-
-public class InvalidCharsetException extends IOException {
-
-    public InvalidCharsetException(String m) {
-        super(m);
-    }
-
-    private static final long serialVersionUID = 1676878985438910205L;
-
+public class CountryInfo {
+    public String name;
+    public String capital;
 }
