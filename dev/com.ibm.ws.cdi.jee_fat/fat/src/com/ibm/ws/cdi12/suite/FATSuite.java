@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.CDI12WebServicesTest;
+import com.ibm.ws.cdi12.fat.tests.InjectIntoPath;
 import com.ibm.ws.cdi12.fat.tests.JEEInjectionTargetTest;
 import com.ibm.ws.cdi12.fat.tests.SimpleJSFTest;
 import com.ibm.ws.cdi12.fat.tests.SimpleJSFWithSharedLibTest;
@@ -42,6 +43,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @RunWith(Suite.class)
 @SuiteClasses({
              CDI12WebServicesTest.class,
+             InjectIntoPath.class,
              JEEInjectionTargetTest.class,
              SimpleJSFTest.class,
              SimpleJSFWithSharedLibTest.class,
