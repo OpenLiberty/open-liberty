@@ -558,10 +558,10 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
-                                                         Set<String> extraExtensionClasses) throws CDIException {
+                                                         Set<String> spiExtensionClasses) throws CDIException {
 
         ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly,
-                                                                                        extraExtensionClasses);
+                                                                                        spiExtensionClasses);
 
         return extensionArchive;
     }
