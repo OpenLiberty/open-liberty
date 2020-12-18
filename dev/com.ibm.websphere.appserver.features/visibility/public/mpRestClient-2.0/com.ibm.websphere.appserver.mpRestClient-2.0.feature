@@ -9,7 +9,8 @@ IBM-API-Package: \
   org.eclipse.microprofile.rest.client.annotation; type="stable", \
   org.eclipse.microprofile.rest.client.ext; type="stable", \
   org.eclipse.microprofile.rest.client.inject; type="stable", \
-  org.eclipse.microprofile.rest.client.spi; type="stable"
+  org.eclipse.microprofile.rest.client.spi; type="stable", \
+  org.reactivestreams; type="stable";
 IBM-ShortName: mpRestClient-2.0
 Subsystem-Name: MicroProfile Rest Client 2.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-2.0, \

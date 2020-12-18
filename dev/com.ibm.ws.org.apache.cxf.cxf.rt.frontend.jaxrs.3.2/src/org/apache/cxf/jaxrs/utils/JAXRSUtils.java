@@ -1495,8 +1495,10 @@ public final class JAXRSUtils {
         @SuppressWarnings("rawtypes")
         final Class cls = targetTypeClass;
         // Liberty change start
+        Message prevM = currentMessage.get();
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+            currentMessage.set(m);
+            Object o = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 @Override
                 public Object run() throws IOException, WebApplicationException {
                     return provider.readFrom(
@@ -1504,6 +1506,7 @@ public final class JAXRSUtils {
                                              new HttpHeadersImpl(m).getRequestHeaders(), is);
                 }
             });
+            return o;
         } catch (PrivilegedActionException e) {
             Exception e1 = e.getException();
             if (e1 instanceof IOException) {
@@ -1513,6 +1516,8 @@ public final class JAXRSUtils {
         } catch (JsonbException e) { // JsonBProvider throws a RuntimeException
             // return HTTP 400 instead of 500
             throw new BadRequestException(e);
+        } finally {
+            currentMessage.set(prevM);
         }
         // Liberty change end
     }
@@ -1997,10 +2002,14 @@ public final class JAXRSUtils {
         }
         return response;
     }
-
+    
+    //Liberty change start
+    private static ThreadLocal<Message> currentMessage = new ThreadLocal<>();
     public static Message getCurrentMessage() {
-        return PhaseInterceptorChain.getCurrentMessage();
+        Message m = currentMessage.get();
+        return m != null ? m : PhaseInterceptorChain.getCurrentMessage();
     }
+    //Liberty change end
 
     public static ClassResourceInfo getRootResource(Message m) {
         return (ClassResourceInfo) m.getExchange().get(JAXRSUtils.ROOT_RESOURCE_CLASS);
@@ -2043,7 +2052,7 @@ public final class JAXRSUtils {
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct) {
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
         String errorMessage = errorMsg.toString();
-        Tr.error(tc, errorMessage);
+        Tr.error(tc, errorMessage);new Throwable("ANDY").printStackTrace();
         return errorMessage;
     }
 
