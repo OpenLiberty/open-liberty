@@ -42,7 +42,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
      *
      * 12 POINTS
      */
-    @SuppressWarnings("rawtypes")
     public void testManyXOneCompoundPK001(
                                           TestExecutionContext testExecCtx,
                                           TestExecutionResources testExecResources,
@@ -55,11 +54,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -86,7 +80,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("ManyXOneCompoundPKTestLogic.testManyXOneCompoundPK001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -143,11 +136,6 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
-            if (find_entityA == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -204,63 +192,5 @@ public class ManyXOneCompoundPKTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("ManyXOneCompoundPKTestLogic.testManyXOneCompoundPK001(): End");
         }
-    }
-
-    public void testTemplate(
-                             TestExecutionContext testExecCtx,
-                             TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        // Verify parameters
-
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("ManyXOneCompoundPKTestLogic.testTemplate(): Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch target entity type from test parameters
-        String entityAName = (String) testExecCtx.getProperties().get("EntityAName");
-        ManyXOneCompoundPKEntityEnum targetEntityAType = ManyXOneCompoundPKEntityEnum.resolveEntityByName(entityAName);
-        if (targetEntityAType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-A type specified ('" + entityAName + "').  Cannot execute the test.");
-            return;
-        }
-
-        String entityBName = (String) testExecCtx.getProperties().get("EntityBName");
-        ManyXOneCompoundPKEntityEnum targetEntityBType = ManyXOneCompoundPKEntityEnum.resolveEntityByName(entityBName);
-        if (targetEntityBType == null) {
-            // Oops, unknown type
-            Assert.fail("Invalid Entity-B type specified ('" + entityBName + "').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("ManyXOneCompoundPKTestLogic.testTemplate(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println("ManyXOneCompoundPKTestLogic.testTemplate(): End");
-        }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), ManyXOneCompoundPKEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

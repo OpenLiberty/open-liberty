@@ -17,7 +17,7 @@
     version="1.0">
 
     <persistence-unit name="Inheritance_JTA">
-        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/JPA_JTA_DS</jta-data-source>
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
 
@@ -35,7 +35,7 @@
     </persistence-unit>
 
     <persistence-unit name="Inheritance_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source>
         <properties>
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
 
