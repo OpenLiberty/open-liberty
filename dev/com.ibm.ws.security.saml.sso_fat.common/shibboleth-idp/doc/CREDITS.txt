@@ -1,0 +1,100 @@
+ Current Development Team
+
+   Marvin Addison
+   Virginia Tech
+
+   Scott Cantor
+   The Ohio State University
+
+   Daniel Fisher
+   Virginia Tech
+   
+   Brent Putman
+   Georgetown University
+   
+   Rod Widdowson
+   Steading System Software LLP
+
+   Ian Young
+   Independent
+
+   Tom Zeller
+   Dragonacea, LLC
+      
+  
+ Emeritus Developers
+
+   Derek Atkins
+
+   Jim Fox
+
+   Walter Hoehn
+
+   Chad LaJoie
+
+   Derek Morr
+
+   Will Norris
+  
+ Emeritus Contributors
+
+   Steven Carmody
+   Brown University
+
+   Marlena Erdos
+
+   Ken Klingenstein
+   Internet2
+
+   Nate Klingenstein
+   Internet2
+
+   Nicole Harris
+   TERENA
+
+   RL "Bob" Morgan
+   University of Washington
+   http://shibboleth.net/community/news/20120717.html
+
+   Many others!
+   
+Additional thanks to:
+
+    Internet2
+
+    The National Science Foundation
+    
+    National Research Council of Canada
+
+    Barbara Jenson (CMU), Parviz Dousti (CMU), Tom Dopirak (CMU), 
+      and Sridhar Muppidi (IBM/Tivoli); for helping to develop 
+      the initial Shibboleth prototype
+
+    Brian Pittman (WebAssign), Mark Earnest (PSU), James Shvarts (Columbia), 
+      Ryan Muldoon (Wisconsin), John Hopkins (PSU), Noah Levitt (Columbia), 
+      and David Walker (UCOP); for much help with testing
+      
+    Dave Dearman (NRCC), for contributing a SQL Data Connector for the AA 
+      resolver back in the 1.x release
+
+    Noah Levitt (Columbia), for simplifying the  logging configuration.
+
+    Joel Murphy (Buffalo), for much help with load testing and generally
+      pushing the software to its limits.
+
+    Vishal Goenka (SunGard SCT) for contributing some useful resolver plugins
+
+    Ian Young for donating XSLT scripts for converting metadata across
+      Shibboleth versions
+
+    Derek Morr, from Penn State University, for his initial work on the 2.0 IdP
+   	  authentication engine
+   	  
+   	Christopher Bongaarts and the University of Minnesota for donating an
+   	  account lockout plugin.
+        
+    Kaspar Brand for assisting in the development of CRL-related functionality
+
+    The community at large for helping with end user support, particularly
+      Peter Schober, Paul Hethmon, Kevin Foote, Russell Beall, and Christopher
+      Bongaarts

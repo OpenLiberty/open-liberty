@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="AuthzParameterServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>Authz Parameter servlet</display-name>
+  <description>This is the servlet for testing the OIDC client additional dynamic request parameters tests.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+    <servlet-name>AuthzParameterServlet</servlet-name>
+    <display-name>AuthzParameterServlet</display-name>
+    <description>AuthzParameterServlet</description>
+    <servlet-class>web.AuthzParameterServlet</servlet-class>    
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>AuthzParameterServlet</servlet-name>
+    <url-pattern>/WriteParameters</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Unprotected</web-resource-name>
+        <url-pattern>/Unprotected</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+ 
+
+  <!-- CHALLENGE TYPE -->
+  <login-config>
+  	<auth-method>FORM</auth-method>
+  	<realm-name>Test Realm</realm-name>
+    <form-login-config id="FormLoginConfig_1">
+    	<form-login-page>/login.jsp</form-login-page>
+        <form-error-page>/loginError.jsp</form-error-page>
+    </form-login-config>
+  </login-config>
+
+  <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role>
+
+</web-app>

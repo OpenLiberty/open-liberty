@@ -1,0 +1,83 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    src, \
+    common-classes/src, \
+    test-applications/authzParameter/src, \
+    test-applications/formlogin/src, \
+    test-applications/formlogine2e/src, \
+    test-applications/formlogine2e2/src, \
+    test-applications/helloworld.war/src, \
+    test-applications/manual_complexclient/src, \
+    test-applications/oauthclientcert/src, \
+    test-applications/oauthtaidemo/src, \
+    test-applications/testMediator/src, \
+    test-bundles/com.ibm.ws.security.oauth20.jwt.mediator/src, \
+    test-bundles/com.ibm.ws.security.oauth20.token.mapping/src, \
+    test-bundles/com.ibm.ws.security.oauth20.tokenintrospectprovider/src, \
+    test-bundles/com.ibm.ws.security.oidc.idtoken.mediator/src, \
+    test-bundles/com.ibm.ws.security.openidconnect.userinfoprovider.sample/src
+
+test.project: true
+
+-sub: *.bnd
+
+-buildpath: \
+    com.ibm.json4j;version=latest, \
+    com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+    com.ibm.websphere.javaee.servlet.3.0;version=latest, \
+    com.ibm.websphere.org.osgi.core;version=latest, \
+    com.ibm.websphere.org.osgi.service.component;version=latest, \
+    com.ibm.websphere.org.osgi.service.cm;version=latest, \
+    com.ibm.websphere.security;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.componenttest;version=latest, \
+    com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+    com.ibm.ws.com.google.guava;version=latest, \
+    com.ibm.ws.com.meterware.httpunit.1.7;version=latest, \
+    com.ibm.ws.jaxrs.2.0.client;version=latest, \
+    com.ibm.ws.jaxrs.2.0.common;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.mongo_fat;version=latest, \
+    com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
+    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.security.fat.common;version=latest,\
+    com.ibm.ws.security.oauth.2.0;version=latest, \
+    com.ibm.ws.security.openidconnect.clients.common;version=latest, \
+    com.ibm.ws.security.openidconnect.common;version=latest, \
+    com.ibm.ws.security.spnego.fat.common;version=latest, \
+    com.ibm.ws.security.token;version=latest, \
+    com.ibm.ws.ssl;version=latest, \
+    com.ibm.ws.webcontainer.security_test.servlets;version=latest, \
+    fattest.simplicity;version=latest, \
+    io.openliberty.com.fasterxml.jackson;version=latest, \
+    joda-time;version=latest, \
+    org.mongodb:mongo-java-driver;version=2.13.3, \
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0
+    
+-testpath: \
+    cglib:cglib-nodep;version=3.3.0, \
+    com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+    com.ibm.ws.junit.extensions;version=latest, \
+    com.ibm.ws.kernel.boot.logging;version=latest, \
+    com.ibm.ws.kernel.security.thread;version=latest, \
+    com.ibm.ws.org.glassfish.json.1.1;version=latest, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.security.test.common;version=latest, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock-legacy;version=2.5.0

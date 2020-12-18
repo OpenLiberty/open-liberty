@@ -912,6 +912,11 @@
       <version>2.5.2</version>
     </dependency>
     <dependency>
+      <groupId>net.shibboleth.idp</groupId>
+      <artifactId>idp-war</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
       <groupId>net.shibboleth.utilities</groupId>
       <artifactId>java-support</artifactId>
       <version>7.5.1</version>

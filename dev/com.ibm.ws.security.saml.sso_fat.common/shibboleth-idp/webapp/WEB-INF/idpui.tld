@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+    
+  <tlib-version>1.0</tlib-version>
+  <short-name>idpui</short-name>
+  <uri>urn:mace:shibboleth:2.0:idp:ui</uri>
+  
+  <tag>
+    <description>Service Name - some user friendly description about the relying party</description>
+    <name>serviceName</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServiceNameTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>defaultValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>Service Description - taken from the mdui statement</description>
+    <name>serviceDescription</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServiceDescriptionTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>Service Contact - information about the contact at the SP</description>
+    <name>serviceContact</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServiceContactTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>contactType</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>Service Privacy URL - directly from the metadata if present</description>
+    <name>servicePrivacyURL</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServicePrivacyURLTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>linkText</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>Service Information URL - directly from the metadata if present</description>
+    <name>serviceInformationURL</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServiceInformationURLTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>linkText</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <description>Logo for the SP</description>
+    <name>serviceLogo</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.ServiceLogoTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>alt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>minHeight</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>maxHeight</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>minWidth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>maxWidth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>Service Organization Name - directly from the metadata if present</description>
+    <name>organizationName</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.OrganizationNameTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>Service Organization Display Name - directly from the metadata if present</description>
+    <name>organizationDisplayName</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.OrganizationDisplayNameTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>Service Organization URL - directly from the metadata if present</description>
+    <name>organizationURL</name>
+    <tag-class>net.shibboleth.idp.ui.taglib.OrganizationURLTag</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>linkText</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>uiContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.shibboleth.idp.ui.context.RelyingPartyUIContext</type>
+    </attribute>
+  </tag>
+
+</taglib>

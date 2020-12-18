@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app id="SamlServlet" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>samlclient.war</display-name>
+	<description>samlclient </description>
+
+	<!-- SERVLET DEFINITIONS -->
+	<servlet id="serverlet_1">
+		<display-name>SnoopServlet</display-name>
+		<servlet-name>SnoopServlet</servlet-name>
+		<description>SnoopServlet</description>
+		<servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+		<load-on-startup></load-on-startup>
+		<security-role-ref>
+			<role-name>MappedToEmployee</role-name>
+			<role-link>Employee</role-link>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>MappedToManager</role-name>
+			<role-link>Manager</role-link>
+		</security-role-ref>
+	</servlet>
+
+	<servlet id="serverlet_2">
+		<display-name>SimpleServlet</display-name>
+		<servlet-name>SimpleServlet</servlet-name>
+		<description>SimpleServlet</description>
+		<servlet-class>com.ibm.ws.security.web.saml.sample.FormLoginServlet</servlet-class>
+		<load-on-startup></load-on-startup>
+		<security-role-ref>
+			<role-name>MappedToEmployee</role-name>
+			<role-link>Employee</role-link>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>MappedToManager</role-name>
+			<role-link>Manager</role-link>
+		</security-role-ref>
+	</servlet>
+
+	<servlet id="serverlet_protected">
+		<display-name>ProtectedServlet</display-name>
+		<servlet-name>ProtectedServlet</servlet-name>
+		<description>ProtectedServlet</description>
+		<servlet-class>com.ibm.ws.security.web.saml.sample.ProtectedServlet</servlet-class>
+		<load-on-startup></load-on-startup>
+		<security-role-ref>
+			<role-name>MappedToEmployee</role-name>
+			<role-link>Employee</role-link>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>MappedToManager</role-name>
+			<role-link>Manager</role-link>
+		</security-role-ref>
+	</servlet>
+
+	<servlet-mapping id="ServletMapping_1">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/snoop/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_2">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_protected_all">
+		<servlet-name>ProtectedServlet</servlet-name>
+		<url-pattern>/ProtectedServlet/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_protected">
+		<servlet-name>ProtectedServlet</servlet-name>
+		<url-pattern>/ProtectedServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/defaultSP/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/defaultSP/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNaught">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNaughta">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp1">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp1a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp1NotSigned">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1NotSigned/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp1NotSigneda">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1NotSigned/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp1ReqSigned">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1ReqSigned/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp1ReqSigneda">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1ReqSigned/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp2">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp2/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp2a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp2/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp5">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp5/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp5a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp5/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp13">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp13/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp13a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp13/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_sp50">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp50/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_sp50a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp50/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spAES128">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spAES128a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spAES192">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes192/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spAES192a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes192/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spAES256">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes256/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spAES256_mismatch">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes256_mismatch/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spAES256a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes256/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_spShortLifetime">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spShortLifetime/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spShortLifetimea">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spShortLifetime/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_emptyString">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_emptyString/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_emptyStringa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_emptyString/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_invalidURL">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_invalidURL/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_invalidURLa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_invalidURL/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_relativePath">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_relativePath/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_relativePatha">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_relativePath/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_invalidRelativePath">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_invalidRelativePath/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_invalidRelativePatha">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_invalidRelativePath/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_absLocalURL">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_absLocalURL/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_absLocalURLa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_absLocalURL/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_absExternalURL">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_absExternalURL/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_customLogout_absExternalURLa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/customLogout_absExternalURL/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_server2_sp1">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/server2_sp1/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_server2_sp1a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/server2_sp1/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_Snoop_server2_sp2">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/server2_sp2/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_server2_sp2a">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/server2_sp2/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping id="ServletMapping_883_noprotect">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_884">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/SimpleServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_3">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_4">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/SimpleServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/defaultSP/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_spa">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/defaultSP/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp1">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp1/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_sp1a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp1/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp2">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp2/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_sp2a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp2/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp5">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp5/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_sp5a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp5/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp13">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp13/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_sp13a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp13/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_sp50">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp50/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_sp50a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp50/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_dash-sp">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp-dash/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_dash-spa">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp-dash/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_underscore_sp">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_underscore/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_underscore_spa">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_underscore/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_spAES128">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_spAES128a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_spAES192">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes192/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_spAES192a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes192/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Simple_spAES256">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes256/SimpleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Simple_spAES256a">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes256/SimpleServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spOP">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spOP/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spOPa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spOP/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_Dash_sp">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp-dash/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_Dash_spa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp-dash/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_Underscore_sp">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_underscore/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_Underscore_spa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_underscore/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_notProtected">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1/NotProtectedSnoop/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_notProtecteda">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp1/NotProtectedSnoop</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_SimpleServlet_notProtected">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp1/NotProtectedSimpleServlet/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_SimpleServlet_notProtecteda">
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/fat/sp1/NotProtectedSimpleServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdX509SubjectName">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdX509SubjectName/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdX509SubjectNamea">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdX509SubjectName/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdWindowsDomain">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdWindowsDomain/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdWindowsDomaina">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdWindowsDomain/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdKerberos">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdKerberos/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdKerberosa">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdKerberos/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameidEntity">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameidEntity/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameidEntitya">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameidEntity/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdPersistent">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdPersistent/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdPersistenta">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdPersistent/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdTransient">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdTransient/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdTransienta">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdTransient/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdEncrypted">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdEncrypted/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdEncrypteda">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdEncrypted/snoop/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdCustomize">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdCustomize/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spNameIdCustomizea">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/spNameIdCustomize/snoop/*</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint id="SecurityConstraint_1">
+		<web-resource-collection id="WebResourceCollection_1">
+			<web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+			<url-pattern>/fat/snoop</url-pattern>
+			<url-pattern>/fat/snoop/*</url-pattern>
+			<url-pattern>/fat/defaultSP/snoop</url-pattern>
+			<url-pattern>/fat/defaultSP/snoop/*</url-pattern>
+			<url-pattern>/fat/sp/snoop</url-pattern>
+			<url-pattern>/fat/sp/snoop/*</url-pattern>
+			<url-pattern>/fat/sp1/snoop</url-pattern>
+			<url-pattern>/fat/sp1/snoop/*</url-pattern>
+			<url-pattern>/fat/sp1NotSigned/snoop</url-pattern>
+			<url-pattern>/fat/sp1NotSigned/snoop/*</url-pattern>
+			<url-pattern>/fat/sp1ReqSigned/snoop</url-pattern>
+			<url-pattern>/fat/sp1ReqSigned/snoop/*</url-pattern>
+			<url-pattern>/fat/sp2/snoop</url-pattern>
+			<url-pattern>/fat/sp2/snoop/*</url-pattern>
+			<url-pattern>/fat/sp5/snoop</url-pattern>
+			<url-pattern>/fat/sp5/snoop/*</url-pattern>
+			<url-pattern>/fat/sp13/snoop</url-pattern>
+			<url-pattern>/fat/sp13/snoop/*</url-pattern>
+			<url-pattern>/fat/sp50/snoop</url-pattern>
+			<url-pattern>/fat/sp50/snoop/*</url-pattern>
+			<url-pattern>/fat/sp-dash/snoop</url-pattern>
+			<url-pattern>/fat/sp-dash/snoop/*</url-pattern>
+			<url-pattern>/fat/sp_underscore/snoop</url-pattern>
+			<url-pattern>/fat/sp_underscore/snoop/*</url-pattern>
+			<url-pattern>/fat/spShortLifetime/snoop</url-pattern>
+			<url-pattern>/fat/spShortLifetime/snoop/*</url-pattern>
+			<url-pattern>/fat/spOP/snoop</url-pattern>
+			<url-pattern>/fat/spOP/snoop/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128/snoop/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes192/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes192/snoop/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256/snoop/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256_mismatch/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256_mismatch/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdX509SubjectName/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdX509SubjectName/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdWindowsDomain/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdWindowsDomain/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdKerberos/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdKerberos/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameidEntity/snoop</url-pattern>
+			<url-pattern>/fat/spNameidEntity/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdPersistent/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdPersistent/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdTransient/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdTransient/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdEncrypted/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdEncrypted/snoop/*</url-pattern>
+			<url-pattern>/fat/spNameIdCustomize/snoop</url-pattern>
+			<url-pattern>/fat/spNameIdCustomize/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_emptyString/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_emptyString/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_invalidURL/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_invalidURL/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_relativePath/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_relativePath/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_invalidRelativePath/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_invalidRelativePath/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_absLocalURL/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_absLocalURL/snoop/*</url-pattern>
+			<url-pattern>/fat/customLogout_absExternalURL/snoop</url-pattern>
+			<url-pattern>/fat/customLogout_absExternalURL/snoop/*</url-pattern>
+			<url-pattern>/fat/server2_sp1/snoop</url-pattern>
+			<url-pattern>/fat/server2_sp1/snoop/*</url-pattern>
+			<url-pattern>/fat/server2_sp2/snoop</url-pattern>
+			<url-pattern>/fat/server2_sp2/snoop/*</url-pattern>
+			<url-pattern>/ProtectedServlet</url-pattern>
+			<url-pattern>/ProtectedServlet/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint id="AuthConstraint_1">
+			<role-name>Employee</role-name>
+			<role-name>Manager</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint id="SecurityConstraint_2">
+		<web-resource-collection id="WebResourceCollection_2">
+			<web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+			<url-pattern>/fat/SimpleServlet</url-pattern>
+			<url-pattern>/fat/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/defaultSP/SimpleServlet</url-pattern>
+			<url-pattern>/fat/defaultSP/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp-dash/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp-dash/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp_underscore/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp_underscore/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp1/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp1/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp2/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp2/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp5/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp5/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp13/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp13/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp50/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp50/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes192/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp_enc_aes192/SimpleServlet/*</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256/SimpleServlet</url-pattern>
+			<url-pattern>/fat/sp_enc_aes256/SimpleServlet/*</url-pattern>
+			<url-pattern>/ProtectedServlet</url-pattern>
+			<url-pattern>/ProtectedServlet/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint id="AuthConstraint_2">
+			<role-name>Employee</role-name>
+			<role-name>Manager</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+
+	<!-- CHALLENGE TYPE -->
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>Test Realm</realm-name>
+		<form-login-config id="FormLoginConfig_1">
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/loginError.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<!-- ROLES DEFINITION -->
+	<security-role id="SecurityRole_1">
+		<description>Employee role</description>
+		<role-name>Employee</role-name>
+	</security-role>
+	<security-role id="SecurityRole_2">
+		<description>Manager role</description>
+		<role-name>Manager</role-name>
+	</security-role>
+	<security-role id="SecurityRole_3">
+		<description>AllAuthenticated role</description>
+		<role-name>AllAuthenticated</role-name>
+	</security-role>
+
+</web-app>
+
+

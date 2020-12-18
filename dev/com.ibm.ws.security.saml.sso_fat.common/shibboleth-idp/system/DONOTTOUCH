@@ -1,0 +1,11 @@
+WARNING: The files in the system/ tree should not be modified.
+
+Future upgrades will overwrite these files without regard for local
+modifications. This is necessary to allow alteration of system internals
+to support new features, correct bugs, change implementation classes, etc.
+
+If you make changes to these files, you should back them up across upgrades,
+and are solely responsible for re-applying local changes.
+
+Please consider filing enhancement requests if there are changes you feel
+are necessary so that future versions might better accommodate your needs.

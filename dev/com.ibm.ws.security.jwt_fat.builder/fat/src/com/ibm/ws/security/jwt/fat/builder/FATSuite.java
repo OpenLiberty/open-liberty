@@ -60,7 +60,7 @@ public class FATSuite {
     	.andWith(new JakartaEE9Action().forServerConfigPaths("publish/servers", "publish/shared/config"));
     
     /**
-     * JakartaEE9 transform a list of applications. The applications are the simple app names and they must exist at '<server>/apps/<appname>'.
+     * JakartaEE9 transform a list of applications.
      *
      * @param myServer The server to transform the applications on.
      * @param apps     The names of the applications to transform. Should include the path from the server root directory.
