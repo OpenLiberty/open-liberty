@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/cmdline-subdir.props
+bVersion=1.0
+
+Bundle-Name: IBM XML Web Services WsGen Tool
+Bundle-SymbolicName: io.openliberty.xmlws.3.0.internal.tools.wsgen
+
+Require-Compiler: true
+
+Require-Bundle: io.openliberty.jakarta.jws.3.0; version="[3,4)"; location="dev/api/spec/", \
+ io.openliberty.jakarta.soap.2.0; version="[2,3)", \
+ io.openliberty.xmlWS.3.0.internal.tools, \
+ io.openliberty.xmlBinding.3.0.internal.tools, \
+ io.openliberty.jakarta.activation.2.0; version="[2,3)"; location="dev/api/spec/", \
+ io.openliberty.jakarta.xmlWS.3.0; version="[3.0,4)"; location="dev/api/spec/", \
+ io.openliberty.jakarta.xmlBinding.3.0; version="[3,4)"; location="dev/api/spec/", \
+ com.ibm.ws.logging; version="[1,1.0.100)"
+ 
+Parent-Last-Package: jakarta.xml.bind,\
+ jakarta.xml.bind.annotation,\
+ jakarta.xml.bind.annotation.adapters,\
+ jakarta.xml.bind.attachment,\
+ jakarta.xml.bind.helpers,\
+ jakarta.xml.bind.util,\
+ jakarta.xml.ws,\
+ jakarta.xml.ws.handler,\
+ jakarta.xml.ws.handler.soap,\
+ jakarta.xml.ws.http,\
+ jakarta.xml.ws.soap,\
+ jakarta.xml.ws.spi,\
+ jakarta.xml.ws.spi.http,\
+ jakarta.xml.ws.wsaddressing
+
+Command-Class: com.ibm.ws.jaxws.tools.WsGen
+
+-outputmask: ws-wsgen.jar
+
+instrument.disabled: true
+
+publish.tool.script.subdir=xmlWS/
+publish.tool.script.relative=..
+publish.tool.script.dir.length=11
+publish.tool.jar=ws-wsgen.jar
+publish.tool.script=wsgen

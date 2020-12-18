@@ -53,7 +53,7 @@ IBM-API-Package:\
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.org.jvnet.mimepull, \
- com.ibm.ws.jaxws.tools.2.2.10.jakarta, \
+ io.openliberty.xmlWS.3.0.internal.tools, \
  io.openliberty.com.sun.xml.messaging.saaj
 kind=noship
 edition=full
