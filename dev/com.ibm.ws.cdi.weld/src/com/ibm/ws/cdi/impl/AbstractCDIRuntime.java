@@ -152,6 +152,10 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
             cdi = deployment.getCDI();
         }
 
+        if (cdi == null) {
+            throw new IllegalStateException("Could not find deployment");
+        }
+
         return cdi;
     }
 
