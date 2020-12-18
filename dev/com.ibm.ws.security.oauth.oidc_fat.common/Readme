@@ -1,0 +1,21 @@
+I've added support for a few environment variables to the tooling.
+We can set these to force the type of token, cert and validation 
+endpoint.  With these set, we can control the setup for some of the 
+jaxrs FAT projects.
+
+PLEASE NOTE:  I am NOT checking of the value set for these environment
+variables is any of the valid values that the FATs support, so, set
+at your own risk - you put some odd value in and you'll probably get
+odd behavior!!!!!!!!!!!!
+
+
+To set the type of token the tests will use, set:
+tokenType to either "jwt_token", or "access_token"
+
+To set the type of cert used with JWT tokens, set:
+certType to either "jwk_cert" or "x509_cert"
+This value will only be used if the tokenType is jwt_token
+
+To set the RS server validation type, set:
+rsValidationType to "userinfo", or "introspect"
+This value will only be used if the tokenType is access_token

@@ -1,0 +1,25 @@
+##
+## Velocity Template for generating the result of a SAML2 LogoutResponse received by the IdP
+##
+## Velocity context will contain the following properties
+## profileRequestContext - root of context tree
+## encoder - HTMLEncoder class
+## request - HttpServletRequest
+## response - HttpServletResponse
+## environment - Spring Environment object for property resolution
+## custom - arbitrary object injected by deployer
+##
+#set ( $success = false )
+#set ( $detail = "" )
+#set ( $logout = $profileRequestContext.getInboundMessageContext().getMessage() )
+#if ( $logout and $logout.getStatus() )
+    #set ( $sc = $logout.getStatus().getStatusCode() )
+    #if ( $sc and $sc.getValue() and $sc.getValue().contains('Success') )
+        #set ( $success = true )
+    #end
+    #set ( $sm = $logout.getStatus().getStatusMessage() )
+    #if ($sm and $sm.getStatusMessage() )
+        #set ( $detail = $sm.getStatusMessage().getMessage() )
+    #end
+#end
+{ "result": #if ( $success ) "Success" #else "Failure" #end#if ( $detail != "" ), "detail": "$encoder.encodeForHTML($detail)"#end }

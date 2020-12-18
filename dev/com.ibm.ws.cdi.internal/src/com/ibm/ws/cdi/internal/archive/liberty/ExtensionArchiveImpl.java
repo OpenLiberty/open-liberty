@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,13 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArchive {
 
     private final ExtensionContainerInfo extensionContainerInfo;
-    private Set<String> extraExtensions = null;
+    private Set<String> spiExtensions = null;
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
-                                RuntimeFactory factory, Set<String> extraExtensions) throws CDIException {
+                                RuntimeFactory factory, Set<String> spiExtensions) throws CDIException {
         super(null, extensionContainerInfo, ArchiveType.RUNTIME_EXTENSION, extensionContainerInfo.getClassLoader(), factory);
         this.extensionContainerInfo = extensionContainerInfo;
-        this.extraExtensions = extraExtensions;
+        this.spiExtensions = spiExtensions;
     }
 
     /** {@inheritDoc} */
@@ -56,7 +56,12 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     @Override
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();
-        extensionClasses.addAll(extraExtensions);
+        extensionClasses.addAll(spiExtensions);
         return extensionClasses;
+    }
+
+    @Override
+    public Set<String> getSPIExtensionClasses() {
+        return spiExtensions;
     }
 }

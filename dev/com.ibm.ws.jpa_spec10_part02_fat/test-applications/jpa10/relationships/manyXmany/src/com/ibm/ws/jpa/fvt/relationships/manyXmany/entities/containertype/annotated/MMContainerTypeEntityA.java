@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
@@ -38,39 +39,55 @@ public class MMContainerTypeEntityA implements IContainerTypeEntityA {
 
     // Collection Type
     @ManyToMany
-    @JoinTable(name = "MMCTEA_GCT")
+    @JoinTable(name = "MMCTEA_GCT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Collection<MMContainerTypeEntityB> genericizedCollectionType;
 
     @ManyToMany(targetEntity = MMContainerTypeEntityB.class)
-    @JoinTable(name = "MMCTEA_UGCT")
+    @JoinTable(name = "MMCTEA_UGCT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Collection ungenericizedCollectionType;
 
     // Set Type
     @ManyToMany
-    @JoinTable(name = "MMCTEA_GST")
+    @JoinTable(name = "MMCTEA_GST",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Set<MMContainerTypeEntityB> genericizedSetType;
 
     @ManyToMany(targetEntity = MMContainerTypeEntityB.class)
-    @JoinTable(name = "MMCTEA_UGST")
+    @JoinTable(name = "MMCTEA_UGST",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Set ungenericizedSetType;
 
     // List Type
     @ManyToMany
-    @JoinTable(name = "MMCTEA_GLT")
+    @JoinTable(name = "MMCTEA_GLT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private List<MMContainerTypeEntityB> genericizedListType;
 
     @ManyToMany(targetEntity = MMContainerTypeEntityB.class)
-    @JoinTable(name = "MMCTEA_UGLT")
+    @JoinTable(name = "MMCTEA_UGLT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private List ungenericizedListType;
 
     @ManyToMany
-    @JoinTable(name = "MMCTEA_OLT")
+    @JoinTable(name = "MMCTEA_OLT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     @OrderBy("name ASC")
     private List<MMContainerTypeEntityB> orderedListType;
 
     // Map Type
     @ManyToMany
-    @JoinTable(name = "MMCTEA_GMT")
+    @JoinTable(name = "MMCTEA_GMT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Map<Integer, MMContainerTypeEntityB> genericizedMapType;
 
 //    @ManyToMany(targetEntity = MMContainerTypeEntityB.class)
@@ -79,11 +96,15 @@ public class MMContainerTypeEntityA implements IContainerTypeEntityA {
 
     @ManyToMany
     @MapKey(name = "name")
-    @JoinTable(name = "MMCTEA_GMKT")
+    @JoinTable(name = "MMCTEA_GMKT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     private Map<String, MMContainerTypeEntityB> genericizedMapWithKeyType;
 
     @ManyToMany(targetEntity = MMContainerTypeEntityB.class)
-    @JoinTable(name = "MMCTEA_UGMKT")
+    @JoinTable(name = "MMCTEA_UGMKT",
+               joinColumns = @JoinColumn(name = "MMContainerTypeEntityA_ID"),
+               inverseJoinColumns = @JoinColumn(name = "MMContainerTypeEntityB_ID"))
     @MapKey(name = "name")
     private Map ungenericizedMapWithKeyType;
 
@@ -693,7 +714,7 @@ public class MMContainerTypeEntityA implements IContainerTypeEntityA {
                + ", genericizedSetType=" + genericizedSetType + ", ungenericizedSetType=" + ungenericizedSetType
                + ", genericizedListType=" + genericizedListType + ", ungenericizedListType=" + ungenericizedListType
                + ", orderedListType=" + orderedListType + ", genericizedMapType=" + genericizedMapType
-//                + ", ungenericizedMapType=" + ungenericizedMapType 
+//                + ", ungenericizedMapType=" + ungenericizedMapType
                + ", genericizedMapWithKeyType="
                + genericizedMapWithKeyType + ", ungenericizedMapWithKeyType=" + ungenericizedMapWithKeyType + "]";
     }

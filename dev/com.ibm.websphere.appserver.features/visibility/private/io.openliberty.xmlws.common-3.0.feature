@@ -26,7 +26,7 @@ IBM-API-Package:\
  com.ibm.websphere.appserver.httpcommons-1.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
  io.openliberty.jakarta.xmlWS-3.0,\
- io.openliberty.jakarta.mail-2.0, \
+ io.openliberty.jakarta.mail-2.0,\
  io.openliberty.xmlBinding-3.0
 -bundles=\
  com.ibm.websphere.org.osgi.service.http.jakarta; location:="dev/api/spec/,lib/", \
@@ -52,7 +52,9 @@ IBM-API-Package:\
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.javaee.ddmodel.wsbnd, \
- com.ibm.ws.org.jvnet.mimepull;require-java:="9"
+ com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
+ com.ibm.ws.jaxws.tools.2.2.10.jakarta, \
+ io.openliberty.com.sun.xml.messaging.saaj
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
