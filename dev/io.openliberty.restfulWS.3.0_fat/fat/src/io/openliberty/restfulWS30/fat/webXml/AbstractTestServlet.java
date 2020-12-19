@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat.webXmlNoApp;
+package io.openliberty.restfulWS30.fat.webXml;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,12 +23,11 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/WebXmlNoAppTestServlet")
-public class WebXmlNoAppTestServlet extends FATServlet {
+public abstract class AbstractTestServlet extends FATServlet {
 
     @Test
     public void testCanInvokeResourceClassWithMethodAnnotationsInheritedFromInterface() throws Exception {
-        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/webXmlNoApp/pathFromWebXml/foo");
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + getContextRoot() + "/pathFromWebXml/foo");
         HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
         assertEquals(200, conn.getResponseCode());
         assertEquals("foo", readEntity(conn.getInputStream()));
@@ -36,7 +35,7 @@ public class WebXmlNoAppTestServlet extends FATServlet {
 
     @Test
     public void testCanInvokeResourceClassWithMethodAnnotationsOverridingInterface() throws Exception {
-        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + "/webXmlNoApp/pathFromWebXml/bar");
+        URI uri = URI.create("http://localhost:" + System.getProperty("bvt.prop.HTTP_default") + getContextRoot() + "/pathFromWebXml/bar");
         HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
         assertEquals(200, conn.getResponseCode());
         assertEquals("<html><head><title>Bar</title></head><body>Bar</body></html>", readEntity(conn.getInputStream()));
@@ -52,4 +51,9 @@ public class WebXmlNoAppTestServlet extends FATServlet {
         }
         return sb.toString().trim();
     }
+
+    /**
+     * Returns context root for the client to use. Must start with slash.
+     */
+    protected abstract String getContextRoot();
 }

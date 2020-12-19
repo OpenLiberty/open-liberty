@@ -8,13 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS30.fat.webXmlNoApp;
+package io.openliberty.restfulWS30.fat.webXml;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Produces;
+import jakarta.servlet.annotation.WebServlet;
 
-public interface FooResource {
-    @GET
-    @Produces("text/plain")
-    String foo();
+@SuppressWarnings("serial")
+@WebServlet("/WebXmlNoAppTestServlet")
+public class WebXmlNoAppTestServlet extends AbstractTestServlet {
+
+
+    @Override
+    protected String getContextRoot() {
+        return "/webXmlNoApp";
+    }
 }
