@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.fat.util;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -20,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 public class ExplodedShrinkHelper {
@@ -57,6 +59,9 @@ public class ExplodedShrinkHelper {
         outputFile.mkdirs();
         archive.as(ExplodedExporter.class).exportExploded(outputFile, archive.getName());
         copyFileToDirectory(server, outputFile, dest);
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(Paths.get(outputFile.getAbsolutePath(), archive.getName()));
+        }
         return archive;
     }
 

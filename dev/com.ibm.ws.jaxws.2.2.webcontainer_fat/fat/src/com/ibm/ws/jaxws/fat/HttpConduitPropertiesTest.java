@@ -25,7 +25,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,10 +32,7 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -47,10 +43,7 @@ import componenttest.topology.utils.HttpUtils;
  *
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("jaxws-2.3")
 public class HttpConduitPropertiesTest {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("HttpConduitPropertiesTestServer").addFeature("timedexit-1.0").removeFeature("jaxwsTest-2.2").addFeature("jaxwsTest-2.3").withID("jaxwsTest-2.3"));
 
     private static final int CONN_TIMEOUT = 10;
 
