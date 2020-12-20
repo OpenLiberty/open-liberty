@@ -96,3 +96,5 @@ task addRestConnector(type: Copy) {
 addRequiredLibraries {
   dependsOn addCXF, addSpring, addPureCXF, addRestConnector
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

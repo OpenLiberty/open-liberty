@@ -51,7 +51,15 @@ fat.project: true
 # These features get added programmatically
 tested.features: jaxws-2.3, \
   jaxb-2.3, \
-  servlet-4.0
+  jsp-2.3, \
+  servlet-4.0, \
+  cdi-2.0, \
+  appSecurity-3.0
+#  pages-3.0, \
+#  servlet-5.0, \
+#  appSecurity-4.0, \
+#  xmlBinding-3.0, \
+#  xmlWS-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\
