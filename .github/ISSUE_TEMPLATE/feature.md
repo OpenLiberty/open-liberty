@@ -6,10 +6,13 @@ labels: Epic
 assignees: ''
 
 ---
-Describe the high level feature, including any external spec links.
+## Description of the high level feature, including any external spec links:  <br/><br/><br/>  
 
 
-When ready, add links to the Upcoming Feature Overview document as well as Feature Test Summary and blog post issues:
+
+#### Before proceeding to any items below (active development), this feature must be prioritized on the backlog, and have either the "Design Approved" or "No Design Approved" labels.  Follow the Feature and UFO Approval Process.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), blogs post issues(s):
 - UFO:
 - FTS:
 - Beta Blog Post (if applicable):
