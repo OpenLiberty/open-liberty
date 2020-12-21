@@ -76,16 +76,16 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     private static void generateTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
-        if (!testcontainersConfigFile.exists())
-            return;
 
         Log.info(c, "generateTestcontainersConfig", "Resetting testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
             Properties tcProps = new Properties();
-            tcProps.load(new FileInputStream(testcontainersConfigFile));
-            tcProps.remove("docker.client.strategy");
+            if (testcontainersConfigFile.exists()) {
+                tcProps.load(new FileInputStream(testcontainersConfigFile));
+                tcProps.remove("docker.client.strategy");
+                Files.delete(testcontainersConfigFile.toPath());
+            }
             tcProps.setProperty("image.substitutor", ArtifactoryImageNameSubstitutor.class.getCanonicalName().toString());
-            Files.deleteIfExists(testcontainersConfigFile.toPath());
             tcProps.store(new FileOutputStream(testcontainersConfigFile), "Modified by FAT framework");
         } catch (IOException e) {
             Log.error(c, "generateTestcontainersConfig", e);
