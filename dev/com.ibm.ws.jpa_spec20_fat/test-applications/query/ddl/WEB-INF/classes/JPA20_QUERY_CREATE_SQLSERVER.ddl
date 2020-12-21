@@ -1,0 +1,1 @@
+CREATE TABLE JPA20QueryUnwrapEntity (id INT NOT NULL, strData VARCHAR(255), version BIGINT, PRIMARY KEY (id));

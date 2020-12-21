@@ -17,8 +17,8 @@
     version="2.0">
 
     <persistence-unit name="QueryLockMode_JEE">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/orm.xml</mapping-file>
         <class>com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0001</class>
         <class>com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0002</class>
@@ -138,7 +138,7 @@
     </persistence-unit>
 
     <persistence-unit name="QueryLockMode_JEE_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/orm.xml</mapping-file>
         <class>com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0001</class>
         <class>com.ibm.ws.jpa.fvt.jpa20.querylockmode.model.Entity0002</class>

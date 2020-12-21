@@ -20,4 +20,3 @@ DELETE FROM ${schemaname}.XOColE;
 DELETE FROM ${schemaname}.XOColE_BONameXE;
 DELETE FROM ${schemaname}.XOColE_listElements;
 DELETE FROM ${schemaname}.XOColE_UONameE;
-

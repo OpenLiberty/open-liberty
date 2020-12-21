@@ -11,8 +11,6 @@
 
 package com.ibm.ws.jpa.fvt.cdi.simple.ejb.web;
 
-import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.annotation.WebServlet;
 
@@ -27,8 +25,6 @@ import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 @WebServlet(urlPatterns = { "/JPACDISimpleEJBServlet" })
 public class JPACDISimpleEJBServlet extends EJBTestVehicleServlet {
     private static final long serialVersionUID = -3888645553607380940L;
-    private static final String CLASS_NAME = JPACDISimpleEJBServlet.class.getName();
-    private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
     @PostConstruct
     private void initFAT() {

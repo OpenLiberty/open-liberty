@@ -30,13 +30,13 @@
             </remove-method>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -60,12 +60,6 @@
                 <description>Application-Managed RL-Tran Persistence Context</description>
                 <persistence-unit-ref-name>jpa/OLGH10240_AMRL</persistence-unit-ref-name>
                 <persistence-unit-name>OLGH10240_RL</persistence-unit-name>
-            </persistence-unit-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
             </persistence-unit-ref>
         </session>
 
@@ -82,13 +76,13 @@
             </remove-method>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -100,12 +94,6 @@
                 <persistence-unit-name>OLGH10240_JTA</persistence-unit-name>
                 <persistence-context-type>Extended</persistence-context-type>
             </persistence-context-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
-            </persistence-unit-ref>
         </session>
 
         <!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
@@ -116,13 +104,13 @@
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
+                <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
             </resource-ref>
             <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+                <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
                 <res-auth>Container</res-auth>
                 <res-sharing-scope>Shareable</res-sharing-scope>
@@ -146,12 +134,6 @@
                 <description>Application-Managed RL-Tran Persistence Context</description>
                 <persistence-unit-ref-name>jpa/OLGH10240_AMRL</persistence-unit-ref-name>
                 <persistence-unit-name>OLGH10240_RL</persistence-unit-name>
-            </persistence-unit-ref>
-
-            <persistence-unit-ref>
-                <description>Cleanup Persistence Context</description>
-                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
-                <persistence-unit-name>Cleanup</persistence-unit-name>
             </persistence-unit-ref>
         </session>
     </enterprise-beans>

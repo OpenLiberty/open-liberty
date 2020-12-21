@@ -21,7 +21,6 @@ import com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal;
 import com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
-import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public abstract class AbstractTxSyncTestLogic extends AbstractTestLogic {
@@ -119,12 +118,5 @@ public abstract class AbstractTxSyncTestLogic extends AbstractTestLogic {
                 }
             }
         }
-    }
-
-    protected final void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), TxSynchronizationEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

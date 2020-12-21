@@ -339,11 +339,6 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
                                          || elementClass == BOrderNameXMLEntity.class ? elementClass
                                                          .getMethod(removeColumnsMethodName, columnEntityClass) : null;
 
-            // Cleanup the database for executing the test
-            System.out.println("Cleaning up database before executing test...");
-            cleanupDatabase(jpaRW.getEm(), jpaRW.getTj(), OrderColumnEntityClasses.values());
-            System.out.println("Database cleanup complete.\n");
-
             // Clear persistence context
             System.out.println("Clearing persistence context...");
             jpaRW.getEm().clear();
@@ -728,11 +723,6 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
             Method addColumnsMethod = elementClass == BOrderNameEntity.class
                                       || elementClass == BOrderNameXMLEntity.class ? elementClass
                                                       .getMethod(addColumnsMethodName, columnEntityClass) : null;
-
-            // Cleanup the database for executing the test
-            System.out.println("Cleaning up database before executing test...");
-            cleanupDatabase(jpaRW.getEm(), jpaRW.getTj(), OrderColumnEntityClasses.values());
-            System.out.println("Database cleanup complete.\n");
 
             // Clear persistence context
             System.out.println("Clearing persistence context...");

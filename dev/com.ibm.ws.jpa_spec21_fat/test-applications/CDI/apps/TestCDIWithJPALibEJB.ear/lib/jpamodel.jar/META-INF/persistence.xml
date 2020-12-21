@@ -18,12 +18,12 @@
     version="2.1">
 
     <persistence-unit name="TestCDIJPALib">
-        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
         <class>com.ibm.ws.jpa.fvt.cdi.jpalib.model.Widget</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
 
     <persistence-unit name="TestCDIJPALib_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
     </persistence-unit>
 </persistence>

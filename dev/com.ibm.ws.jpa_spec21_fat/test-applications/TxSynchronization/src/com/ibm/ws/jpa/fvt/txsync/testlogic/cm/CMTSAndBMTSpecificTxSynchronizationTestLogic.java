@@ -182,11 +182,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -196,7 +191,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-////            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -292,11 +286,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -317,7 +306,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -443,11 +431,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -463,7 +446,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -525,11 +507,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -545,7 +522,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -637,11 +613,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -657,7 +628,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -754,11 +724,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -774,7 +739,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -869,11 +833,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -889,7 +848,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1090,11 +1048,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1110,7 +1063,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1311,11 +1263,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1331,7 +1278,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1490,11 +1436,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1510,7 +1451,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1669,11 +1609,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1689,7 +1624,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1830,11 +1764,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -1850,7 +1779,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1897,9 +1825,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -1948,11 +1873,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -1968,7 +1888,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2015,9 +1934,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2066,11 +1982,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2086,7 +1997,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2133,9 +2043,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2184,11 +2091,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2204,7 +2106,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2251,8 +2152,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
 
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
@@ -2302,11 +2201,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2322,7 +2216,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2369,9 +2262,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2419,11 +2309,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2439,7 +2324,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2486,9 +2370,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2541,11 +2422,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2569,7 +2445,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2635,9 +2510,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2694,11 +2566,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2722,7 +2589,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2788,9 +2654,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -2847,11 +2710,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -2875,7 +2733,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2959,9 +2816,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                 Assert.assertFalse("Assert that the EntityManager is not associated with a transaction.", em.isJoinedToTransaction());
 
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -3018,11 +2872,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3046,7 +2895,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3130,9 +2978,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                 Assert.assertFalse("Assert that the EntityManager is not associated with a transaction.", em.isJoinedToTransaction());
 
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
                         } finally {
                             System.out.println("End Running TestWorkRequest.doTestWork() on " + managedComponentObject + " ...");
@@ -3189,11 +3034,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3217,7 +3057,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3284,11 +3123,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
-
                             Assert.assertNotSame("Assert that the delegate EntityManager used in components 1 and 2 are not the same",
                                                  delegate,
                                                  em.getDelegate());
@@ -3347,11 +3182,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3375,7 +3205,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3442,11 +3271,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 
                             Assert.assertFalse("Assert that EntityManager is not joined to a transaction.", em.isJoinedToTransaction());
                             Assert.assertNotNull("Assert find did not return null.", findEntity);
-                            if (findEntity == null)
-                                return null;
-
                             Assert.assertNotSame("Assert that find did not return the same entity.", entityPCtx1, findEntity);
-
                             Assert.assertNotSame("Assert that the delegate EntityManager used in components 1 and 2 are not the same",
                                                  delegate,
                                                  em.getDelegate());
@@ -3504,11 +3329,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3532,7 +3352,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3605,7 +3424,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                 Assert.assertFalse("Assert that the EntityManager is not associated with a transaction.", em.isJoinedToTransaction());
 
                             Assert.assertSame("Assert that find did return the same entity.", entityPCtx1, findEntity);
-
                             Assert.assertSame("Assert that the delegate EntityManager used in components 1 and 2 are the same",
                                               delegate,
                                               em.getDelegate());
@@ -3663,11 +3481,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3691,7 +3504,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3764,7 +3576,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                 Assert.assertFalse("Assert that the EntityManager is not associated with a transaction.", em.isJoinedToTransaction());
 
                             Assert.assertSame("Assert that find did return the same entity.", entityPCtx1, findEntity);
-
                             Assert.assertSame("Assert that the delegate EntityManager used in components 1 and 2 are the same",
                                               delegate,
                                               em.getDelegate());
@@ -3825,11 +3636,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -3859,7 +3665,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3984,11 +3789,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -4018,7 +3818,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -4141,11 +3940,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -4166,7 +3960,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -4270,11 +4063,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -4298,7 +4086,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -4441,11 +4228,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -4472,7 +4254,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -4612,11 +4393,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
@@ -4643,7 +4419,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
         // Execute Test Case
         try {
             System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -4818,41 +4593,5 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                 }
             }
         };
-    }
-
-    public void testTemplate(
-                             TestExecutionContext testExecCtx,
-                             TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        final String testName = "testTemplate";
-
-        // Verify parameters
-
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-        //return;
-//        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource'.  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println(testBucketName + "." + testName + ": Begin");
-//            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println(testBucketName + "." + testName + ": End");
-        }
     }
 }

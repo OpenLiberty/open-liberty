@@ -278,7 +278,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testCRUD001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             jpaResource.getEm().clear();
 
@@ -345,11 +344,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -359,7 +353,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testCRUD001B(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             jpaResource.getEm().clear();
 
@@ -391,9 +384,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             SimpleVersionedEntity10 findEntity = jpaResource.getEm().find(SimpleVersionedEntity10.class, identity);
 
             Assert.assertNotNull("Assert find did not return null.", findEntity);
-            if (findEntity == null)
-                return;
-
             Assert.assertNotSame("Assert that find did not return the same entity.", newEntity, findEntity);
             Assert.assertEquals("Assert the identity is " + identity, identity, findEntity.getId());
             Assert.assertEquals("Assert the String payload is correct.", "Simple String", findEntity.getStrData());
@@ -430,11 +420,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -450,7 +435,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testCRUD002(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             jpaResource.getEm().clear();
 
@@ -516,11 +500,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -536,7 +515,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFlush001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             jpaResource.getEm().clear();
 
@@ -665,11 +643,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -682,7 +655,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -808,11 +780,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -827,7 +794,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock002(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -960,11 +926,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -979,7 +940,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock003(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1112,11 +1072,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1131,7 +1086,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock004(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1264,11 +1218,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1283,7 +1232,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock005(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1416,11 +1364,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1435,7 +1378,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock006(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1568,11 +1510,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1587,7 +1524,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock007(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1720,11 +1656,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1739,7 +1670,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock008(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -1872,11 +1802,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1891,7 +1816,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock001(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2032,11 +1956,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2051,7 +1970,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock002(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2192,11 +2110,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2211,7 +2124,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock003(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2352,11 +2264,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2371,7 +2278,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock004(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2512,11 +2418,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2531,7 +2432,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock005(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2672,11 +2572,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2691,7 +2586,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock006(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2832,11 +2726,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2851,7 +2740,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock007(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -2992,11 +2880,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         }
 
         // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -3011,7 +2894,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
         // Execute Test Case
         try {
             System.out.println("TxSynchronizationTestLogic.testEmLock008(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
 
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
@@ -3128,40 +3010,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             System.out.println("Ending test.");
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock008(): End");
-        }
-    }
-
-    public void testTemplate(
-                             TestExecutionContext testExecCtx,
-                             TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        // Verify parameters
-
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-//        if (jpaCleanupResource == null) {
-//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-//            return;
-//        }
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("TxSynchronizationTestLogic.testTemplate(): Begin");
-//            cleanupDatabase(jpaCleanupResource);
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println("TxSynchronizationTestLogic.testTemplate(): End");
         }
     }
 }

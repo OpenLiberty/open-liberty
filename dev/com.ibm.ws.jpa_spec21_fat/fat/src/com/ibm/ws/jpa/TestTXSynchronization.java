@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -44,6 +45,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
@@ -95,6 +98,8 @@ public class TestTXSynchronization extends JPAFATServletClient {
     })
     public static LibertyServer server;
 
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
@@ -110,6 +115,12 @@ public class TestTXSynchronization extends JPAFATServletClient {
         if (configUpdateTimeout < (120 * 1000)) {
             server.setConfigUpdateTimeout(120 * 1000);
         }
+
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         server.startServer();
 
@@ -195,11 +206,6 @@ public class TestTXSynchronization extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation("TxSynchronization.ear");
         appRecord.setName("TxSynchronization");
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();

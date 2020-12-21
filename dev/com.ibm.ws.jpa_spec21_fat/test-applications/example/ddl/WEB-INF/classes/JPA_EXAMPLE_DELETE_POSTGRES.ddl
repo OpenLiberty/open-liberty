@@ -1,1 +1,1 @@
-DELETE FROM ${schemaname}.SimpleExample;
+DELETE FROM SimpleExample;

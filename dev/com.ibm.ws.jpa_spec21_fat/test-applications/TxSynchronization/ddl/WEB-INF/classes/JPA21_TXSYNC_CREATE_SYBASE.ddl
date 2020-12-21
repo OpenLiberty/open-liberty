@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.CMN10_SimpleVEnt (id INT NOT NULL, byteArrData IMAGE NULL, charData INT NULL, doubleData FLOAT(32) NULL, floatData REAL NULL, intData INT NULL, longData NUMERIC(38) NULL, strData VARCHAR(255) NULL, version INT NULL, UNQ_INDEX NUMERIC IDENTITY UNIQUE, PRIMARY KEY (id));

@@ -20,4 +20,3 @@ DROP TABLE ${schemaname}.XOColE;
 DROP TABLE ${schemaname}.XOColE_BONameXE;
 DROP TABLE ${schemaname}.XOColE_listElements;
 DROP TABLE ${schemaname}.XOColE_UONameE;
-
