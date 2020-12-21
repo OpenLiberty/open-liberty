@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -290,7 +289,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //  SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");
     }
@@ -305,7 +303,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is NOT stateless, the ViewScoped bean should persist through a submit.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanNotTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_NotTransient.xhtml");
     }
