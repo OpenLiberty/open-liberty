@@ -146,6 +146,7 @@ public class DurableUnsharedTest {
 
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableConsumer_JRException_B_SecOff() throws Exception {
@@ -315,6 +316,7 @@ public class DurableUnsharedTest {
         assertTrue("Test testCreateUnSharedDurableConsumer_2SubscribersDiffTopic_TCP failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableUndurableConsumer_JRException_B_SecOff() throws Exception {
@@ -397,6 +399,7 @@ public class DurableUnsharedTest {
 
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableConsumer_Sel_JRException_B_SecOff() throws Exception {
@@ -441,6 +444,7 @@ public class DurableUnsharedTest {
         assertTrue("testCreateUnSharedDurableConsumer_Sel_2SubscribersDiffTopic_TCP failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableUndurableConsumer_Sel_JRException_B_SecOff() throws Exception {

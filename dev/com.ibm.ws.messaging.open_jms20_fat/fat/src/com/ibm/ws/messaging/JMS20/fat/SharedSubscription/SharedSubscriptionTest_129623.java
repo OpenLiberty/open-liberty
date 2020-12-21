@@ -395,6 +395,7 @@ public class SharedSubscriptionTest_129623 {
 
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumer_JRException_B_SecOff() throws Exception {
@@ -418,6 +419,7 @@ public class SharedSubscriptionTest_129623 {
     // client identifier (if set) then a JMSRuntimeException is thrown.
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableUndurableConsumer_JRException_B_SecOff() throws Exception {

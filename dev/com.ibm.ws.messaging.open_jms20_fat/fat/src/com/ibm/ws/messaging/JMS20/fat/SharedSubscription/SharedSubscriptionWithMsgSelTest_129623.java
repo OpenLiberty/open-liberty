@@ -208,6 +208,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_2SubscribersDiffTopic_TCP failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector() throws Exception {
@@ -215,6 +216,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         assertTrue("testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_InvalidMsgSelector_TCP() throws Exception {
@@ -257,6 +259,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
 
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException_SecOff() throws Exception {
@@ -280,6 +283,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
     // client identifier (if set) then a JMSRuntimeException is thrown.
     // Bindings and Security Off
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableUndurableConsumerWithMsgSelector_JRException_SecOff() throws Exception {

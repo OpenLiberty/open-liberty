@@ -209,7 +209,8 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
 
     // Bindings and Security Off
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
+    // @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
+    @ExpectedFFDC("com.ibm.websphere.sib.exception.SIErrorException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedNonDurableConsumerWithMsgSelector_JRException_B_SecOff() throws Exception {
@@ -219,7 +220,8 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
 
     // TCP and SecurityOff
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
+    // @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
+    @ExpectedFFDC("com.ibm.websphere.sib.exception.SIErrorException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedNonDurableConsumerWithMsgSelector_JRException_TCP_SecOff() throws Exception {
@@ -261,6 +263,7 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         assertTrue("testCreateSharedNonDurableConsumerWithMsgSelector_InvalidDestination_TCP_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedNonDurableConsumerWithMsgSelector_InvalidMsgSelector() throws Exception {
