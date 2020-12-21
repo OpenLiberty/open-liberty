@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -244,9 +244,7 @@ public class JmsConnectionImpl implements Connection, JmsConnInternals, ApiJmsCo
     }
 
     // *************************** INTERFACE METHODS *****************************
-    
-    /** @see <a href="https://docs.oracle.com/javaee/7/api/javax/jms/Connection.html#createSession-boolean-int-">JMS Connection 
-        {@inheritDoc} */
+
     @Override
     public Session createSession(boolean transacted, int acknowledgeMode) throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -260,34 +258,26 @@ public class JmsConnectionImpl implements Connection, JmsConnInternals, ApiJmsCo
         // mark that the client id cannot be changed.
         fixClientID();
 
-        // Enforce consistency on transacted flag and acknowledge mode.
+        // enforce consistency on transacted flag and acknowledge mode.
         if (transacted) {
-            // As a transacted Session has been requested, this will take precedence over whatever was set in the acknowledgeMode
-            // If we're in the Web or EJB container, the recommended behaviour is to ignore this and create an AUTO_ACK session, but we can, and do,
-            // create a locally transacted Session as requested.
             acknowledgeMode = Session.SESSION_TRANSACTED;
         }
-
-        else if (isManaged) { // We're in the Web or EJB container and haven't been asked for a locally transacted Session
-
-            // If there's an active transaction then we should ignore the parameters and simply enlist in the transaction.
-            // That should already have been handled.
-
-            // Otherwise allow non-transacted AUTO_ACK or DUPS_OK if that was requested.
-            // The recommended behaviour for other cases is to create a non-transacted AUTO_ACK Session and return that.
-            switch (acknowledgeMode) {
-                case Session.AUTO_ACKNOWLEDGE:
-                case Session.DUPS_OK_ACKNOWLEDGE:
-                    // These are allowed (note if transacted were true, then the ackMode would have been changed before this point.)
-                    break;
-                case Session.CLIENT_ACKNOWLEDGE:
-                case Session.SESSION_TRANSACTED: // We won't actually hit this one as we separately handle local transacted requests earlier, but this will handle it in the recommended way if the code changes in the future.
-                    transacted = false;
-                    acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
-                    break;
+        if (!transacted && isManaged) {
+            if (acknowledgeMode == Session.CLIENT_ACKNOWLEDGE) {
+                throw (JMSException) JmsErrorUtils.newThrowable(JMSException.class,
+                                                                "INVALID_ACKNOWLEDGE_MODE_CWSIA0514",
+                                                                new Object[] { acknowledgeMode },
+                                                                tc
+                                );
             }
+            // if the ackmode is dups_ok then set it to dups_ok, for all the other combination 
+            // set it to auto_ack
+            if (acknowledgeMode == Session.DUPS_OK_ACKNOWLEDGE)
+                acknowledgeMode = Session.DUPS_OK_ACKNOWLEDGE;
+            else
+                acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
         }
-        
+
         // create the jca session.
         boolean internallyTransacted = (transacted
                                         || acknowledgeMode == Session.CLIENT_ACKNOWLEDGE
