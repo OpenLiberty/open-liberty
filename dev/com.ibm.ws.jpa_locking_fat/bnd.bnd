@@ -41,8 +41,9 @@ tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, enterprisebeansl
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
-    org.testcontainers:database-commons;version=latest,\
-    org.testcontainers:jdbc;version=latest,\
-    org.testcontainers:testcontainers;version=latest,\
-    org.rnorth.duct-tape:duct-tape;version=latest,\
-    org.slf4j:slf4j-api;version=latest
+    org.testcontainers:database-commons;version=1.15.0,\
+    org.testcontainers:jdbc;version=1.15.0,\
+    org.testcontainers:testcontainers;version=1.15.0,\
+    org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+    org.slf4j:slf4j-api;version=1.7.7
+

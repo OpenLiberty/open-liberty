@@ -15,15 +15,7 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.apache.commons:commons-compress:1.19',
-               'org.rnorth.duct-tape:duct-tape:1.0.7',
-               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.rnorth:tcp-unix-socket-proxy:1.0.2',
-               'net.java.dev.jna:jna:5.2.0',
-               'org.testcontainers:testcontainers:1.14.0',
-               'org.slf4j:slf4j-api:1.7.7',
-               'org.slf4j:slf4j-jdk14:1.7.7',
-               project(':com.ibm.ws.org.apache.httpcomponents'),
+  requiredLibs project(':com.ibm.ws.org.apache.httpcomponents'),
                'commons-logging:commons-logging:1.1.1',
                'org.shredzone.acme4j:acme4j-client:2.7',
                'org.shredzone.acme4j:acme4j-utils:2.7',
@@ -40,6 +32,8 @@ dependencies {
                'org.apache.commons:commons-compress:1.19',
                'commons-logging:commons-logging:1.1.1'
 }
+
+addRequiredLibraries.dependsOn addTestcontainers
 
 autoFVT.doLast {
   /*

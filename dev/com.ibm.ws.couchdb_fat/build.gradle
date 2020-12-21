@@ -14,13 +14,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.testcontainers:testcontainers:1.14.0',
-               'org.apache.commons:commons-compress:1.18',
-               'org.rnorth.duct-tape:duct-tape:1.0.7',
-               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'net.java.dev.jna:jna:5.2.0',
-               'org.slf4j:slf4j-api:1.7.7',
-               'org.slf4j:slf4j-jdk14:1.7.7'
   couchdb project(':io.openliberty.com.fasterxml.jackson'),
           'commons-codec:commons-codec:1.6',
           'commons-io:commons-io:2.6',
@@ -39,3 +32,4 @@ task copyCouchDB(type: Copy) {
 }
 
  addRequiredLibraries.dependsOn copyCouchDB
+ addRequiredLibraries.dependsOn addTestcontainers

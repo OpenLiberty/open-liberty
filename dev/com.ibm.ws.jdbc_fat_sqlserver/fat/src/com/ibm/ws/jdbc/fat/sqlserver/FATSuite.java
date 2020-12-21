@@ -20,7 +20,7 @@ import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses(SQLServerTest.class)
@@ -40,7 +40,7 @@ public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         sqlserver.start();
     }

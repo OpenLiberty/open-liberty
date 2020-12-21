@@ -22,10 +22,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -55,6 +55,6 @@ public class FATSuite {
         server.copyFileToLibertyInstallRoot("lib/", "bundles/test.feature.sim.ejb.timer.jakarta.jar");
 
         //Allows local tests to switch between using a local docker client, to using a remote docker client. 
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 }
