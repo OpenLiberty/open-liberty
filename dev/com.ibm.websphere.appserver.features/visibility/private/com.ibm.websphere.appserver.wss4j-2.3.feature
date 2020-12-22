@@ -4,7 +4,6 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 -bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0, \
- com.ibm.ws.org.apache.ws.security.wss4j.1.6.7, \
  com.ibm.ws.com.google.guava, \
  com.ibm.ws.org.apache.wss4j.bindings.2.3.0, \
  com.ibm.ws.org.apache.wss4j.policy.2.3.0, \

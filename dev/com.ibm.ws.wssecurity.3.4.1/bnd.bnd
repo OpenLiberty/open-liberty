@@ -13,7 +13,7 @@
 bVersion=1.0
 
 Bundle-Name: wssecurity
-Bundle-SymbolicName: com.ibm.ws.wssecurity.341
+Bundle-SymbolicName: com.ibm.ws.wssecurity.3.4.1
 Bundle-Description: IBM Web Service Security base on CXF wssecurity; version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
