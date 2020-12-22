@@ -35,7 +35,7 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] No Design / No UFO Approval ([Arthur De Magalhaes](https://github.com/arthurdm) - cloud / [Alasdair Nottingham](https://github.com/NottyCode) - server) or N/A.
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] ID Requirements identified. (Epic owner / Feature owner with ID focal point)
-- [ ] Create a child task of this epic entitled "FAT Approval Test Summary". Add the link in above.
+- [ ] Create a child task of this epic entitled ["FAT Approval Test Summary"](https://github.com/OpenLiberty/open-liberty/blob/integration/.github/ISSUE_TEMPLATE/feature_test_summary.md). Add the link in above.
 
 ## **Beta**
 If your feature, or portions of it, are going to be included in a beta  
