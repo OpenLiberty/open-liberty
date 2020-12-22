@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.webcontainer.exception.IncludeFileNotFoundException;
+import com.ibm.ws.webcontainer.exception.InvalidMediaTypeException;
 import com.ibm.ws.webcontainer.servlet.DefaultErrorReporter;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
@@ -161,6 +162,7 @@ public class WebAppErrorReport extends ServletErrorReport     // 96236
         while (rootCause.getCause() != null) {
             rootCause = rootCause.getCause();
         }
+
         if (WCCustomProperties.SERVLET_30_FNF_BEHAVIOR&&rootCause instanceof IncludeFileNotFoundException) {
             r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -174,6 +176,9 @@ public class WebAppErrorReport extends ServletErrorReport     // 96236
             } else {
                 r.setErrorCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             }
+        }
+        else if (rootCause instanceof InvalidMediaTypeException) {
+            r.setErrorCode(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
         else {
             r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
