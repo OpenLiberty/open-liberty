@@ -17,7 +17,7 @@
       heuristicRetryInterval="10"
       recoveryIdentity="FScloud001"
       recoveryGroup="defaultGroup"
-      leaseLength="300"
+      leaseLength="600"
       leaseCheckInterval="25"
     />
 	<application location="transaction.war"/>

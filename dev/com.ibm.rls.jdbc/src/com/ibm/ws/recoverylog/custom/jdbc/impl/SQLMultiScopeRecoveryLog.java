@@ -35,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sql.DataSource;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
@@ -471,7 +472,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // and that there is no real need to enforce the failure scope check
         // in the recoverableUnits method. We must disable these checks in this
         // environment to ensure that this form of peer recovery is can operate.
-        _bypassContainmentCheck = (!Configuration.HAEnabled() && (!Configuration.isZOS()));
+        _bypassContainmentCheck = !Configuration.HAEnabled();
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "_bypassContainmentCheck = " + _bypassContainmentCheck);
@@ -2307,19 +2308,19 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Not the home server, failurescope is " + _failureScope);
                         // Instantiate a PeerLostLogOwnershipException which is less "noisy" than its parent InternalLogException
-                        PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Another server has locked the HA lock row", null);
+                        PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Another server (" + storedServerName + ") has locked the HA lock row", null);
                         markFailed(ple, false, true); // second parameter "false" as we do not wish to fire out error messages
                         if (tc.isEntryEnabled())
-                            Tr.exit(tc, "takeHADBLock", "PeerLostLogOwnershipException");
+                            Tr.exit(tc, "takeHADBLock", ple);
                         throw ple;
                     } else {
                         Tr.audit(tc, "WTRN0100E: " +
-                                     "Another server owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
+                                     "Another server (" + storedServerName + ") owns the log cannot force SQL RecoveryLog " + _logName + " for server " + _serverName);
 
-                        InternalLogException ile = new InternalLogException("Another server has locked the HA lock row", null);
+                        InternalLogException ile = new InternalLogException("Another server (" + storedServerName + ") has locked the HA lock row", null);
                         markFailed(ile);
                         if (tc.isEntryEnabled())
-                            Tr.exit(tc, "takeHADBLock", "InternalLogException");
+                            Tr.exit(tc, "takeHADBLock", ile);
                         throw ile;
                     }
                 }
@@ -2332,7 +2333,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                              "Could not find HA lock row when forcing SQL RecoveryLog " + _logName + " for server " + _serverName);
                 markFailed(ile);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "takeHADBLock", "InternalLogException");
+                    Tr.exit(tc, "takeHADBLock", ile);
                 throw ile;
             }
         } finally {
@@ -2343,7 +2344,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "takeHADBLock", Boolean.valueOf(lockSuccess));
+            Tr.exit(tc, "takeHADBLock", lockSuccess);
         return lockSuccess;
     }
 
@@ -2779,12 +2780,14 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
 
                 // If this is a local recovery process then direct the server to terminate
-                if (Configuration.HAEnabled()) {
+                if (Configuration.HAEnabled() && ConfigurationProviderManager.getConfigurationProvider().isShutdownOnLogFailure()) {
                     if (Configuration.localFailureScope().equals(_failureScope)) {
                         // d254326 - output a message as to why we are terminating the server as in
                         // this case we never drop back to log any messages as for peer recovery.
                         Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", t);
-                        Configuration.getRecoveryLogComponent().terminateServer();
+                        if (ConfigurationProviderManager.getConfigurationProvider().isShutdownOnLogFailure()) {
+                            _recoveryAgent.terminateServer();
+                        }
                     } else {
                         Configuration.getRecoveryLogComponent().leaveGroup(_failureScope);
                     }

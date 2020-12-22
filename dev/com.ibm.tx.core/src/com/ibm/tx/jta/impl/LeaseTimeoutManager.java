@@ -44,7 +44,7 @@ public class LeaseTimeoutManager {
         _recoveryIdentity = recoveryIdentity;
         _recoveryGroup = recoveryGroup;
 
-        _renewer = new LeaseRenewer(leaseLength, leaseLog);
+        _renewer = new LeaseRenewer(leaseLength, leaseLog, recoveryAgent);
         _checker = new LeaseChecker(leaseCheckInterval, recoveryAgent, recoveryDirector);
 
         if (tc.isEntryEnabled())
@@ -53,10 +53,12 @@ public class LeaseTimeoutManager {
 
     private static class LeaseRenewer implements AlarmListener {
 
+        private final RecoveryAgent _recoveryAgent;
         private final SharedServerLeaseLog _leaseLog;
         private Alarm _alarm;
 
-        private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog) {
+        private LeaseRenewer(int delay, SharedServerLeaseLog leaseLog, RecoveryAgent recoveryAgent) {
+            _recoveryAgent = recoveryAgent;
             _leaseLog = leaseLog;
 
             schedule(delay);
@@ -73,11 +75,13 @@ public class LeaseTimeoutManager {
                 Tr.debug(tc, "LeaseRenewal",
                          new Object[] { _recoveryIdentity, _recoveryGroup });
 
+            boolean leaseRenewed = false;
             try {
                 if (_leaseLog.lockLocalLease(_recoveryIdentity)) {
                     _leaseLog.updateServerLease(_recoveryIdentity, _recoveryGroup, false);
 
                     _leaseLog.releaseLocalLease(_recoveryIdentity);
+                    leaseRenewed = true;
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Could not lock lease for " + _recoveryIdentity);
@@ -86,6 +90,9 @@ public class LeaseTimeoutManager {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Swallow exception " + e);
             }
+
+            // Disable lease checking if we failed to renew our own lease;
+            _recoveryAgent.setCheckingLeases(leaseRenewed);
 
             schedule((int) delay);
         }
@@ -128,7 +135,7 @@ public class LeaseTimeoutManager {
                 Tr.debug(tc, "LeaseCheck",
                          new Object[] { _recoveryGroup });
 
-            if (_recoveryAgent != null) {
+            if (_recoveryAgent != null && _recoveryAgent.checkingLeases()) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
                 if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
                     try {

@@ -378,12 +378,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             // the HA framework provides more support for Network Paritioning, we can remove this logic.
             if (clientIdentifier == ClientId.RLCI_TRANSACTIONSERVICE) {
                 Configuration.txRecoveryAgent(recoveryAgent);
-
-                // Also set the isSnapshotSafe flag - we've used the transaction
-                // service admin console to configure this custom property,
-                // although it's really a RLS specific property.   Here, we extract
-                // it from the Tx Recovery Agent and update the RLS configuration
-                Configuration.setSnapshotSafe(recoveryAgent.isSnapshotSafe());
             }
         }
 
@@ -570,7 +564,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
-                recoveryAgent.prepareForRecovery(failureScope);
 
                 // Prepare the maps for the recovery event.
                 addInitializationRecord(recoveryAgent, failureScope);

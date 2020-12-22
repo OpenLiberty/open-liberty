@@ -355,6 +355,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public boolean isShutdownOnLogFailure() {
+        Boolean isSoLF = (Boolean) _props.get("shutdownOnLogFailure");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isShutdownOnLogFailure set to " + isSoLF);
+        return isSoLF;
+    }
+
+    @Override
     public boolean isOnePCOptimization() {
         Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
         if (tc.isDebugEnabled())
