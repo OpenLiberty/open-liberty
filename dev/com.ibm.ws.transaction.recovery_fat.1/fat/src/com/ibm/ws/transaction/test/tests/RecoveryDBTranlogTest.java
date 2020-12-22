@@ -71,7 +71,7 @@ public class RecoveryDBTranlogTest extends FATServletClient {
         }
 
         server.setServerStartTimeout(TestUtils.LOG_SEARCH_TIMEOUT);
-        server.startServer();
+        server.startServerAndValidate(true, true, true, false);
     }
 
     @AfterClass
