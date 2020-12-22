@@ -16,13 +16,15 @@ Bundle-SymbolicName: io.openliberty.xmlws.3.0.internal.tools.wsgen
 
 Require-Compiler: true
 
-Require-Bundle: io.openliberty.jakarta.jws.3.0; version="[3,4)"; location="dev/api/spec/", \
- io.openliberty.jakarta.soap.2.0; version="[2,3)", \
- io.openliberty.xmlWS.3.0.internal.tools, \
- io.openliberty.xmlBinding.3.0.internal.tools, \
- io.openliberty.jakarta.activation.2.0; version="[2,3)"; location="dev/api/spec/", \
- io.openliberty.jakarta.xmlWS.3.0; version="[3.0,4)"; location="dev/api/spec/", \
- io.openliberty.jakarta.xmlBinding.3.0; version="[3,4)"; location="dev/api/spec/", \
+Require-Bundle:\
+ io.openliberty.xmlWS.3.0.internal.tools; version="[1,1.0.100)", \
+ io.openliberty.xmlBinding.3.0.internal.tools; version="[1,1.0.100)", \
+ io.openliberty.jakarta.activation.2.0;version="[1,1.0.100)";location="dev/api/spec/", \
+ io.openliberty.jakarta.jws.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
+ io.openliberty.jakarta.soap.2.0;version="[1,1.0.100)";location="dev/api/spec/", \
+ io.openliberty.jakarta.xmlWS.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
+ io.openliberty.jakarta.xmlBinding.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
+ io.openliberty.com.sun.xml.messaging.saaj; version="[1,1.0.100)", \
  com.ibm.ws.logging; version="[1,1.0.100)"
  
 Parent-Last-Package: jakarta.xml.bind,\
@@ -38,6 +40,7 @@ Parent-Last-Package: jakarta.xml.bind,\
  jakarta.xml.ws.soap,\
  jakarta.xml.ws.spi,\
  jakarta.xml.ws.spi.http,\
+ jakarta.xml.soap, \
  jakarta.xml.ws.wsaddressing
 
 Command-Class: com.ibm.ws.jaxws.tools.WsGen

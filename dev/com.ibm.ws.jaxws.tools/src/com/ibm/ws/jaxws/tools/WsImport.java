@@ -39,7 +39,6 @@ public class WsImport {
                 return null;
             }
         });
-
         //Pass in the JWS and JAX-B APIs as a -classpath arg when Java 9 or above.
         //Otherwise the javac process started by the tooling doesn't contain these APIs.
         if (WsToolsUtils.getMajorJavaVersion() > 8) {
@@ -60,6 +59,7 @@ public class WsImport {
             classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(WebService);
             classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(Service);
 
+            System.out.println("classpathValue path: " + classpathValue);
             if (classpathValue != null) {
                 boolean classpathSet = false;
 
@@ -80,7 +80,6 @@ public class WsImport {
                 }
             }
         }
-
         System.exit(new WsimportTool(System.out).run(args) ? 0 : 1);
     }
 

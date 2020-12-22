@@ -11,6 +11,8 @@
 package com.ibm.ws.jaxws.tools;
 
 import java.io.File;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 
 import com.sun.tools.ws.wscompile.WsgenTool;
@@ -31,9 +33,11 @@ public class WsGen {
             String classpathValue = null;
             Class<?> JAXB = null;
             Class<?> WebService = null;
+            Class<?> SAAJ = null;
             try {
                 JAXB = Thread.currentThread().getContextClassLoader().loadClass("javax.xml.bind.JAXB");
                 WebService = Thread.currentThread().getContextClassLoader().loadClass("javax.jws.WebService");
+                SAAJ = Thread.currentThread().getContextClassLoader().loadClass("javax.xml.soap.SAAJMetaFactory");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 System.exit(2);
@@ -41,6 +45,14 @@ public class WsGen {
 
             classpathValue = WsToolsUtils.getJarFileOfClass(JAXB);
             classpathValue = classpathValue + File.pathSeparator + WsToolsUtils.getJarFileOfClass(WebService);
+
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    System.setProperty("javax.xml.soap.SAAJMetaFactory", "com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl");
+                    return null;
+                }
+            });
 
             if (classpathValue != null) {
                 boolean classpathSet = false;
