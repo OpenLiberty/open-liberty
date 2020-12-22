@@ -15,14 +15,6 @@
     <version>3.0</version>
     <name>MicroProfile Metrics TCK Runner 3.0 TCK Module</name>
 
-	<repositories>
-		<repository>
-			<id>ossrepo</id>
-			<url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1382/</url>
-		</repository>
-	</repositories>
-
-
     <properties>
         <microprofile.metrics.version>3.0</microprofile.metrics.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
