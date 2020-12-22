@@ -35,7 +35,7 @@ public class WsImport {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
-                System.setProperty("javax.xml.accessExternalSchema", "all");
+                System.setProperty("jakarta.xml.accessExternalSchema", "all");
                 return null;
             }
         });
@@ -49,7 +49,7 @@ public class WsImport {
             try {
                 JAXB = Thread.currentThread().getContextClassLoader().loadClass("jakarta.xml.bind.JAXB");
                 WebService = Thread.currentThread().getContextClassLoader().loadClass("jakarta.jws.WebService");
-                Service = Thread.currentThread().getContextClassLoader().loadClass("javax.xml.ws.Service");
+                Service = Thread.currentThread().getContextClassLoader().loadClass("jakarta.xml.ws.Service");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 System.exit(2);

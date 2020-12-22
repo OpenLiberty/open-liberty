@@ -104,15 +104,10 @@ public class WsimportTool {
     protected WsimportOptions options = new WsimportOptions();
 
     public WsimportTool(OutputStream out) {
-
         this(out, null);
-
-        System.out.println("WsimportTool(OutputStream out) entry");
     }
 
     public WsimportTool(OutputStream logStream, Container container) {
-
-        System.out.println("WsimportTool(OutputStream logStream, Container container) entry");
         this.out = (logStream instanceof PrintStream) ? (PrintStream) logStream : new PrintStream(logStream);
         this.container = container;
     }
@@ -196,7 +191,6 @@ public class WsimportTool {
     }
 
     public boolean run(String[] args) {
-        System.out.println("run(String[] args)");
         Listener listener = new Listener();
         Receiver receiver = new Receiver(listener);
         return run(args, listener, receiver);
@@ -204,9 +198,6 @@ public class WsimportTool {
 
     protected boolean run(String[] args, Listener listener,
                           Receiver receiver) {
-
-        System.out.println("run(String[] args, Listener listener,\n"
-                           + "                          Receiver receiver)");
         for (String arg : args) {
             if (arg.equals("-version")) {
                 listener.message(
@@ -320,7 +311,6 @@ public class WsimportTool {
 
     private void addClassesToGeneratedFiles() throws IOException {
 
-        System.out.println("addClassesToGeneratedFiles() entry");
         Iterable<File> generatedFiles = options.getGeneratedFiles();
         final List<File> trackedClassFiles = new ArrayList<File>();
         for (File f : generatedFiles) {
@@ -402,7 +392,6 @@ public class WsimportTool {
     protected void parseArguments(String[] args, Listener listener,
                                   Receiver receiver) throws BadCommandLineException {
 
-        System.out.println("parseArguments() entry");
         options.parseArguments(args);
         options.validate();
         if (options.debugMode)
@@ -412,7 +401,6 @@ public class WsimportTool {
 
     protected Model buildWsdlModel(Listener listener, final Receiver receiver) throws BadCommandLineException, XMLStreamException, IOException {
 
-        System.out.println("buildWsdlModel() entry");
         //set auth info
         //if(options.authFile != null)
         if (!options.disableAuthenticator) {
@@ -486,8 +474,6 @@ public class WsimportTool {
     protected boolean generateCode(Listener listener, Receiver receiver,
                                    Model wsdlModel, boolean generateService) throws IOException {
         //generated code
-
-        System.out.println("generateCode() entry");
         if (!options.quiet)
             listener.message(WscompileMessages.WSIMPORT_GENERATING_CODE());
 
@@ -546,7 +532,6 @@ public class WsimportTool {
      * To take care of JDK6-JDK6u3, where 2.1 API classes are not there
      */
     private static boolean useBootClasspath(Class clazz) {
-        System.out.println("useBootClasspath(Class clazz) entry");
         try {
             ParallelWorldClassLoader.toJarUrl(clazz.getResource('/' + clazz.getName().replace('.', '/') + ".class"));
             return true;
@@ -574,7 +559,6 @@ public class WsimportTool {
             args.add(classDir);
             args.add("-classpath");
             if (majorJavaVersion < 9) {
-                System.out.println("majorJavaVersion < 9");
                 args.add(classpathString);
                 //javac is not working in osgi as the url starts with a bundle
                 if (bootCP) {
@@ -584,7 +568,6 @@ public class WsimportTool {
                              + JavaCompilerHelper.getJarFile(JAXBPermission.class));
                 }
             } else {
-                System.out.println("majorJavaVersion > 9");
                 args.add(classpathString + File.pathSeparator + options.classpath);
             }
 
