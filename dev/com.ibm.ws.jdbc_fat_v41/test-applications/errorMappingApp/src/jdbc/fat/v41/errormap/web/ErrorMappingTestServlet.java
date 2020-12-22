@@ -74,9 +74,9 @@ public class ErrorMappingTestServlet extends FATServlet {
         tx.begin();
         try (Connection con = ds.getConnection()) {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlCode(1234);
+            customCon.setNextErrorCode(1234);
 
-            System.out.println("Triggering sqlCode 1234 on connection");
+            System.out.println("Triggering errorCode 1234 on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
             assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 1234, expected.getErrorCode());
@@ -84,7 +84,7 @@ public class ErrorMappingTestServlet extends FATServlet {
             tx.commit();
         }
 
-        // The sqlcode should be mapped to "stale connection" which should evict the connection from the pool
+        // The errorCode should be mapped to "stale connection" which should evict the connection from the pool
         assertPoolSize("jdbc/errorMap", 0);
     }
 
@@ -102,9 +102,9 @@ public class ErrorMappingTestServlet extends FATServlet {
         tx.begin();
         try (Connection con = ds.getConnection()) {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlCode(5555);
+            customCon.setNextErrorCode(5555);
 
-            System.out.println("Triggering sqlCode 5555 on connection");
+            System.out.println("Triggering errorCode 5555 on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
             assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 5555, expected.getErrorCode());
@@ -112,7 +112,7 @@ public class ErrorMappingTestServlet extends FATServlet {
             tx.commit();
         }
 
-        // Since sqlCode 5555 is not mapped to a stale connection, it should still be in the pool
+        // Since errorCode 5555 is not mapped to a stale connection, it should still be in the pool
         assertPoolSize("jdbc/errorMap", 1);
     }
 
@@ -196,13 +196,13 @@ public class ErrorMappingTestServlet extends FATServlet {
         }
         assertPoolSize("jdbc/manyMappings", 1);
 
-        // Force a connection error for sqlCode -8. This should map to a stale connection and be removed from the pool
+        // Force a connection error for errorCode -8. This should map to a stale connection and be removed from the pool
         tx.begin();
         try (Connection con = manyMappings.getConnection()) {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlCode(-8);
+            customCon.setNextErrorCode(-8);
 
-            System.out.println("Triggering sqlCode '-8' on connection");
+            System.out.println("Triggering errorCode '-8' on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
             assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), -8, expected.getErrorCode());
@@ -215,9 +215,9 @@ public class ErrorMappingTestServlet extends FATServlet {
         tx.begin();
         try (Connection con = manyMappings.getConnection()) {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlCode(1010);
+            customCon.setNextErrorCode(1010);
 
-            System.out.println("Triggering sqlCode '1010' on connection");
+            System.out.println("Triggering errorCode '1010' on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
             assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 1010, expected.getErrorCode());
@@ -232,7 +232,7 @@ public class ErrorMappingTestServlet extends FATServlet {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
             customCon.setNextSqlState("E1111");
 
-            System.out.println("Triggering sqlCode 'E1111' on connection");
+            System.out.println("Triggering sqlState 'E1111' on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
             assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "E1111", expected.getSQLState());
@@ -251,7 +251,7 @@ public class ErrorMappingTestServlet extends FATServlet {
     public void testInvalidConfig_bogusTarget() throws Exception {
         try {
             InitialContext.doLookup("jdbc/invalid/bogusTarget");
-            fail("Should not be able to lookup a datasource with <mapError> with an invalid 'to' attribute");
+            fail("Should not be able to lookup a datasource with <identifyException> with an invalid 'as' attribute");
         } catch (NamingException expected) {
             System.out.println("Caught expected exception: " + expected.getMessage());
         }
@@ -261,7 +261,7 @@ public class ErrorMappingTestServlet extends FATServlet {
     public void testInvalidConfig_noStateOrCode() throws Exception {
         try {
             InitialContext.doLookup("jdbc/invalid/noStateOrCode");
-            fail("Should not be able to lookup a datasource with <mapError> with no 'sqlState' or 'sqlCode' defined");
+            fail("Should not be able to lookup a datasource with <identifyException> with no 'sqlState' or 'errorCode' defined");
         } catch (NamingException expected) {
             System.out.println("Caught expected exception: " + expected.getMessage());
         }
@@ -271,7 +271,7 @@ public class ErrorMappingTestServlet extends FATServlet {
     public void testInvalidConfig_stateAndCode() throws Exception {
         try {
             InitialContext.doLookup("jdbc/invalid/stateAndCode");
-            fail("Should not be able to lookup a datasource with <mapError> with a 'sqlState' and 'sqlCode' defined");
+            fail("Should not be able to lookup a datasource with <identifyException> with a 'sqlState' and 'errorCode' defined");
         } catch (NamingException expected) {
             System.out.println("Caught expected exception: " + expected.getMessage());
         }

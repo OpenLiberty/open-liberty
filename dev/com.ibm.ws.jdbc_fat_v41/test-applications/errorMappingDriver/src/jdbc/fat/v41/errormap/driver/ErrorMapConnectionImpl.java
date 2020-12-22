@@ -36,7 +36,7 @@ public class ErrorMapConnectionImpl implements Connection, ErrorMapConnection {
     private final ErrorMapDataSourceImpl datasource;
     private final Set<Statement> stmtSet = new HashSet<Statement>();
 
-    private Integer sqlCode = null;
+    private Integer errorCode = null;
     private String sqlState = null;
 
     public ErrorMapConnectionImpl(ErrorMapDataSourceImpl ds, Connection conn) {
@@ -373,8 +373,8 @@ public class ErrorMapConnectionImpl implements Connection, ErrorMapConnection {
     }
 
     @Override
-    public void setNextSqlCode(int sqlCode) {
-        this.sqlCode = sqlCode;
+    public void setNextErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 
     @Override
@@ -383,17 +383,17 @@ public class ErrorMapConnectionImpl implements Connection, ErrorMapConnection {
     }
 
     private void blowupIfRequested() throws SQLException {
-        if (sqlCode == null && sqlState == null)
+        if (errorCode == null && sqlState == null)
             return;
 
-        // need to blow up with requeted sqlstate or sqlcode
-        String msg = "Throwing an exception requsted by the test application. sqlCode=" + sqlCode + " sqlState=" + sqlState;
-        SQLException ex = sqlCode != null ? //
-                        new SQLException(msg, sqlState, sqlCode) : //
+        // need to blow up with requeted sqlstate or errorCode
+        String msg = "Throwing an exception requsted by the test application. errorCode=" + errorCode + " sqlState=" + sqlState;
+        SQLException ex = errorCode != null ? //
+                        new SQLException(msg, sqlState, errorCode) : //
                         new SQLException(msg, sqlState);
         log(msg);
         sqlState = null;
-        sqlCode = null;
+        errorCode = null;
         throw ex;
     }
 }

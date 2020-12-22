@@ -54,8 +54,8 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.DSConfig.MapError;
-import com.ibm.ws.rsadapter.DSConfig.MapError.Target;
+import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
+import com.ibm.ws.rsadapter.DSConfig.IdentifyException.Target;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
@@ -142,27 +142,27 @@ public class DatabaseHelper {
         
         customizeStaleStates();
         
-        // Process user-defined error mappings from the <mapError> config elements
-        List<MapError> errorMappings = mcf.dsConfig.get().errorMappings;
-        if (errorMappings != null) {
-            for (MapError mapping : errorMappings) {
-                if (mapping.sqlCode != null) {
-                    if (mapping.to == Target.NONE) {
-                        staleErrorCodes.remove(mapping.sqlCode);
-                    } else if (mapping.to == Target.STALE_CONNECTION) {
-                        staleErrorCodes.add(mapping.sqlCode);
+        // Process user-defined error mappings from the <identifyException> config elements
+        List<IdentifyException> identifyExceptions = mcf.dsConfig.get().identifyExceptions;
+        if (identifyExceptions != null) {
+            for (IdentifyException mapping : identifyExceptions) {
+                if (mapping.errorCode != null) {
+                    if (mapping.as == Target.None) {
+                        staleErrorCodes.remove(mapping.errorCode);
+                    } else if (mapping.as == Target.StaleConnection) {
+                        staleErrorCodes.add(mapping.errorCode);
                     }
                 } else {
-                    if (mapping.to == Target.NONE) {
+                    if (mapping.as == Target.None) {
                         staleSQLStates.remove(mapping.sqlState);
-                    } else if (mapping.to == Target.STALE_CONNECTION) {
+                    } else if (mapping.as == Target.StaleConnection) {
                         staleSQLStates.add(mapping.sqlState);
                     }
                 }
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Stale SQL codes are:  " + staleErrorCodes);
+            Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
             Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
         }
     }
@@ -445,7 +445,7 @@ public class DatabaseHelper {
                          staleErrorCodes.contains(sqlX.getErrorCode()) ||
                          staleSQLStates.contains(sqlX.getSQLState());
         }
-
+        
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "isConnectionError", stale);
 

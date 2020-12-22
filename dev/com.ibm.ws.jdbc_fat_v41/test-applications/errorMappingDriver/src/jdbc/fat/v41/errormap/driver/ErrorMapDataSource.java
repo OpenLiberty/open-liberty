@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 public interface ErrorMapDataSource extends DataSource {
 
-    public void mockNextSqlCode(int sqlCode);
+    public void mockNextErrorCode(int errorCode);
 
     public void mockNextSqlState(String sqlState);
 

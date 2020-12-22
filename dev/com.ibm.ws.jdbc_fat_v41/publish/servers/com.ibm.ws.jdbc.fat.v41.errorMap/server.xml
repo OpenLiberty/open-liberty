@@ -20,7 +20,7 @@
     
     <dataSource jndiName="jdbc/errorMap" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <mapError sqlCode="1234" to="STALE_CONNECTION"/>
+        <identifyException errorCode="1234" as="StaleConnection"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/noMappings" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
@@ -29,46 +29,46 @@
     
     <dataSource jndiName="jdbc/removeMapping" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <mapError sqlState="08001" to="NONE"/>
+        <identifyException sqlState="08001" as="None"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/manyMappings" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <mapError sqlCode="0001" to="STALE_CONNECTION"/>
-        <mapError sqlCode="2" to="STALE_CONNECTION"/>
-        <mapError sqlCode="1003" to="STALE_CONNECTION"/>
-        <mapError sqlState="E1004" to="STALE_CONNECTION"/>
-        <mapError sqlState="5" to="STALE_CONNECTION"/>
-        <mapError sqlCode="6" to="STALE_CONNECTION"/>
-        <mapError sqlCode="7" to="STALE_CONNECTION"/>
-        <mapError sqlCode="-008" to="STALE_CONNECTION"/>
-        <mapError sqlCode="-10009" to="STALE_CONNECTION"/>
-        <mapError sqlCode="1010" to="NONE"/>
-        <mapError sqlState="E1111" to="STALE_CONNECTION"/>
+        <identifyException errorCode="0001" as="StaleConnection"/>
+        <identifyException errorCode="2" as="StaleConnection"/>
+        <identifyException errorCode="1003" as="StaleConnection"/>
+        <identifyException sqlState="E1004" as="StaleConnection"/>
+        <identifyException sqlState="5" as="StaleConnection"/>
+        <identifyException errorCode="6" as="StaleConnection"/>
+        <identifyException errorCode="7" as="StaleConnection"/>
+        <identifyException errorCode="-008" as="StaleConnection"/>
+        <identifyException errorCode="-10009" as="StaleConnection"/>
+        <identifyException errorCode="1010" as="None"/>
+        <identifyException sqlState="E1111" as="StaleConnection"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/noTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <!-- invalid configuration: the 'to' attribute is not defined-->
-        <mapError sqlCode="1234"/>
+        <!-- invalid configuration: the 'as' attribute is not defined-->
+        <identifyException errorCode="1234"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/bogusTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <!-- invalid configuration: the value "BOGUS" is not an allowed value for the 'to' attribute -->
-        <mapError sqlCode="1234" to="BOGUS"/>
+        <!-- invalid configuration: the value "BOGUS" is not an allowed value for the 'as' attribute -->
+        <identifyException errorCode="1234" as="BOGUS"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/noStateOrCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <!-- invalid configuration: either sqlCode or sqlState must be defined -->
-        <mapError to="STALE_CONNECTION"/>
+        <!-- invalid configuration: either errorCode or sqlState must be defined -->
+        <identifyException as="StaleConnection"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/stateAndCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <!-- invalid configuration: sqlCode and sqlState are mutually exclusive -->
-        <mapError sqlCode="1234" sqlState="E1234" to="STALE_CONNECTION"/>
+        <!-- invalid configuration: errorCode and sqlState are mutually exclusive -->
+        <identifyException errorCode="1234" sqlState="E1234" as="StaleConnection"/>
     </dataSource>
     
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>

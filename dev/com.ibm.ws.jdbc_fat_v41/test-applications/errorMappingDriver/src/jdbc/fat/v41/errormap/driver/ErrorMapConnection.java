@@ -14,7 +14,7 @@ import java.sql.Connection;
 
 public interface ErrorMapConnection extends Connection {
 
-    public void setNextSqlCode(int sqlCode);
+    public void setNextErrorCode(int errorCode);
 
     public void setNextSqlState(String sqlState);
 

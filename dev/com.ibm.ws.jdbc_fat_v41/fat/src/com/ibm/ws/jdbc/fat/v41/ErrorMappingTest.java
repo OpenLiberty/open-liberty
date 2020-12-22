@@ -51,7 +51,7 @@ public class ErrorMappingTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKG0058E.*mapError", // expected by 'jdbc/invalid/noTarget'
+        server.stopServer("CWWKG0058E.*identifyException", // expected by 'jdbc/invalid/noTarget'
                           "DSRA8066E.*BOGUS", // expected by testInvalidConfig_bogusTarget
                           "DSRA8067E", // expected by testInvalidConfig_noStateOrCode / testInvalidConfig_stateAndCode
                           "com\\.ibm\\.ws\\.jdbc.*CWWKE0701E" // expected by invalid datasource configs
@@ -61,8 +61,8 @@ public class ErrorMappingTest extends FATServletClient {
     @Test
     public void testInvalidConfig_noTarget() throws Exception {
         runTest(server, APP_NAME + "/ErrorMappingTestServlet", testName);
-        assertNotNull("Should find CWWKG0058E error message in logs indicating that the 'to' attribute is required on the <mapError> element",
-                      server.waitForStringInLog("CWWKG0058E.*mapError.*to"));
+        assertNotNull("Should find CWWKG0058E error message in logs indicating that the 'as' attribute is required on the <identifyException> element",
+                      server.waitForStringInLog("CWWKG0058E.*identifyException.*as"));
     }
 
 }

@@ -40,48 +40,48 @@ import com.ibm.wsspi.resource.ResourceFactory;
 public class DSConfig implements FFDCSelfIntrospectable {
     private static final TraceComponent tc = Tr.register(DSConfig.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
     
-    public static class MapError {
+    public static class IdentifyException {
         
         public static enum Target {
-            NONE,
-            STALE_CONNECTION
+            None,
+            StaleConnection
         }
         
-        public Integer sqlCode;
+        public Integer errorCode;
         public String sqlState;
-        public Target to;
+        public Target as;
         
         @FFDCIgnore(IllegalArgumentException.class)
         public void setProperty(String name, Object value) {
-            if ("sqlCode".equals(name)) {
-                sqlCode = (Integer) value;
+            if ("errorCode".equals(name)) {
+                errorCode = (Integer) value;
             } else if ("sqlState".equals(name)) {
                 sqlState = (String) value;
-            } else if ("to".equals(name)) {
+            } else if ("as".equals(name)) {
                 try {
-                    to = Target.valueOf((String) value);
+                    as = Target.valueOf((String) value);
                 } catch (IllegalArgumentException e) {
-                    Tr.error(tc, "8066E_MAP_ERROR_INVALID_TARGET", value, Arrays.toString(Target.values()));
+                    Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", value, Arrays.toString(Target.values()));
                     throw e;
                 }
             }
         }
         
         public void validate() {
-            if ((sqlCode != null && sqlState != null) ||
-                (sqlCode == null && sqlState == null)) {
-                Tr.error(tc, "8067E_MAP_ERROR_SQLCODE_SQLSTATE");
-                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_MAP_ERROR_SQLCODE_SQLSTATE"));
+            if ((errorCode != null && sqlState != null) ||
+                (errorCode == null && sqlState == null)) {
+                Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
+                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
             }
-            // do not need to validate the 'to' attribute because it is marked required in metatype so it will be enforced in config layer
+            // do not need to validate the 'as' attribute because it is marked required in metatype so it will be enforced in config layer
         }
         
         @Override
         public String toString() {
             return new StringBuilder(super.toString())
-                            .append("{ sqlCode=").append(sqlCode)
+                            .append("{ errorCode=").append(errorCode)
                             .append(", sqlState=").append(sqlState)
-                            .append(", to=" + to).append(" }")
+                            .append(", as=" + as).append(" }")
                             .toString();
         }
     }
@@ -98,7 +98,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
                     JDBC_DRIVER_REF = "jdbcDriverRef",
-                    MAP_ERROR = "mapError",
+                    IDENTIFY_EXCEPTION = "identifyException",
                     ON_CONNECT = "onConnect",
                     QUERY_TIMEOUT = "queryTimeout",
                     RECOVERY_AUTH_DATA_REF = "recoveryAuthDataRef",
@@ -123,7 +123,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                                                                ENABLE_BEGIN_END_REQUEST, // Not a supported property. Only for internal testing/experimentation.
                                                                ENABLE_CONNECTION_CASTING,
                                                                JDBC_DRIVER_REF,
-                                                               MAP_ERROR,
+                                                               IDENTIFY_EXCEPTION,
                                                                ON_CONNECT,
                                                                QUERY_TIMEOUT,
                                                                RECOVERY_AUTH_DATA_REF,
@@ -248,10 +248,10 @@ public class DSConfig implements FFDCSelfIntrospectable {
     public final String jndiName;
     
     /**
-     * List of error mappings to check if certain sqlCode or sqlState values should map to specific actions.
+     * List of identified exceptinos to check if certain errorCode or sqlState values that should map to specific actions.
      * May be null if none are configured
      */
-    public final List<MapError> errorMappings;
+    public final List<IdentifyException> identifyExceptions;
 
     /**
      * List of SQL commands to execute once per newly established connection. Can be null if none are configured.
@@ -334,6 +334,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         entries = wProps;
         entry = entries.pollFirstEntry();
         
+        // All attributes must be removed in alphabetical order, otherwise they will not be found
         beginTranForResultSetScrollingAPIs = remove(BEGIN_TRAN_FOR_SCROLLING_APIS, true);
         beginTranForVendorAPIs = remove(BEGIN_TRAN_FOR_VENDOR_APIS, true);
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
@@ -341,8 +342,8 @@ public class DSConfig implements FFDCSelfIntrospectable {
         enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
+        identifyExceptions = new ArrayList<>(remove(IDENTIFY_EXCEPTION, Collections.emptyMap()).values());
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
-        errorMappings = new ArrayList<>(remove(MAP_ERROR, Collections.emptyMap()).values());
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
         statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null);
@@ -355,7 +356,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                         ? (transactional ? null : CommitOrRollbackOnCleanup.rollback)
                                         : commitOrRollback;
                         
-        for (MapError errorMapping : errorMappings)
+        for (IdentifyException errorMapping : identifyExceptions)
             errorMapping.validate();
 
         if (trace && tc.isDebugEnabled() && entry != null)

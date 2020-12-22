@@ -26,7 +26,7 @@ public class ErrorMapDataSourceImpl implements ErrorMapDataSource, Serializable 
     private static final long serialVersionUID = -8721843807690710887L;
     private final EmbeddedDataSource40 impl;
 
-    private Integer sqlCode = null;
+    private Integer errorCode = null;
     private String sqlState = null;
 
     public ErrorMapDataSourceImpl() {
@@ -106,8 +106,8 @@ public class ErrorMapDataSourceImpl implements ErrorMapDataSource, Serializable 
     }
 
     @Override
-    public void mockNextSqlCode(int sqlCode) {
-        this.sqlCode = sqlCode;
+    public void mockNextErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 
     @Override
@@ -116,17 +116,17 @@ public class ErrorMapDataSourceImpl implements ErrorMapDataSource, Serializable 
     }
 
     private void blowupIfRequested() throws SQLException {
-        if (sqlCode == null && sqlState == null)
+        if (errorCode == null && sqlState == null)
             return;
 
-        // need to blow up with requeted sqlstate or sqlcode
-        String msg = "Throwing an exception requsted by the test application. sqlCode=" + sqlCode + " sqlState=" + sqlState;
-        SQLException ex = sqlCode != null ? //
-                        new SQLException(msg, sqlState, sqlCode) : //
+        // need to blow up with requeted sqlstate or errorCode
+        String msg = "Throwing an exception requsted by the test application. errorCode=" + errorCode + " sqlState=" + sqlState;
+        SQLException ex = errorCode != null ? //
+                        new SQLException(msg, sqlState, errorCode) : //
                         new SQLException(msg, sqlState);
         log(msg);
         sqlState = null;
-        sqlCode = null;
+        errorCode = null;
         throw ex;
     }
 }
