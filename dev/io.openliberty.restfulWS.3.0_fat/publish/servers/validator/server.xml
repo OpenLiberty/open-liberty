@@ -12,4 +12,5 @@
     <javaPermission className="java.net.URLPermission" name="http://localhost:8010/validator/app/-" actions="POST:"/>
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="accessDeclaredMembers" />
     <javaPermission className="org.hibernate.validator.HibernateValidatorPermission" name="*" actions="accessPrivateMembers" />
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 </server>
