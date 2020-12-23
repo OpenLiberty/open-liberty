@@ -22,15 +22,10 @@ Export-Package: com.sun.tools.ws.ant;version="3.0", \
  com.ibm.jtc.jax.xml.ws.policy;version=1.0.0, \
  com.ibm.ws.jaxws.tools;version="3.0", \
  org.jvnet.staxex;version="1.7.7", \
- com.sun.tools.xjc.*;version="3.0", \
- com.sun.xml.messaging.saaj.*;version="2.0", \
  org.jvnet.staxex.util;version="1.7.7"
 
 Import-Package: \
- org.glassfish.jaxb.*;version="3.0", \
- jakarta.xml.soap.*;version="2.0", \
- jakarta.xml.bind.*;version="3.0", \
- *
+ org.glassfish.jaxb.*;version="3.0"
 
 Private-Package:\
  com.ibm.ws.jaxws.tools.*, \
