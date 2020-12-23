@@ -1,9 +1,7 @@
 <server>
     <featureManager>
-    	<feature>jsp-2.3</feature>
-    	<feature>timedexit-1.0</feature>
-        <feature>jaxwsTest-2.2</feature>
-        <feature>ejbLite-3.2</feature>
+    	<feature>pages-3.0</feature>
+        <feature>xmlwsTest-3.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
