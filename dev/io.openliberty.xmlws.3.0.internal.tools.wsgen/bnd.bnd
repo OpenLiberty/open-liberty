@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: IBM XML Web Services WsGen Tool
-Bundle-SymbolicName: io.openliberty.xmlws.3.0.internal.tools.wsgen
+Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools.wsgen
 
 Require-Compiler: true
 

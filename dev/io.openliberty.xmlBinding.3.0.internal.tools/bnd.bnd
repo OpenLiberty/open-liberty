@@ -67,7 +67,7 @@ Import-Package: \
   *
     
 Export-Package: \
-  org.glassfish.jaxb.*;version="3.0";thread-context=true, \
+  org.glassfish.jaxb.*;version="3.0";thread-context=true
 
 Include-Resource: \
   @${repo;org.glassfish.jaxb:codemodel;3.0.0}!/!META-INF/maven/*, \
@@ -88,7 +88,7 @@ Private-Package:\
   io.openliberty.xmlbinding.tools.*, \
   com.sun.istack.*, \
   com.sun.tools.xjc.*,\
-  com.sun.tools.jxc.*
+  com.sun.tools.jxc.*,\
   com.sun.tools.rngdatatype.*, \
   com.sun.tools.rngom.*
 

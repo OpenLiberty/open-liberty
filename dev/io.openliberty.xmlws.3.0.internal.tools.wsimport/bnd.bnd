@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: IBM XML Web Services WsImport Tool
-Bundle-SymbolicName: io.openliberty.xmlws.3.0.internal.tools.wsimport
+Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools.wsimport
 
 Require-Compiler: true
 
