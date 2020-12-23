@@ -17,7 +17,7 @@ package com.ibm.ws.jca.cm.handle;
  */
 public interface HandleListInterface {
     interface HandleDetails {
-        void close();
+        void close(boolean leaked);
 
         // used by removeHandle to determine if this handle details instance pertains to the specified handle
         boolean forHandle(Object h);
