@@ -1,0 +1,96 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+ 
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-bundles/com.ibm.ws.wssecurity.cbh/src,\
+  test-applications/callerclient/src,\
+  test-applications/callertoken/src,\
+  test-applications/cxfclient/src,\
+  test-applications/nowssec/src,\
+  test-applications/untclient/src,\
+  test-applications/untsslclient/src,\
+  test-applications/untoken/src,\
+  test-applications/derivekey/src,\
+  test-applications/derivekeyclient/src,\
+  test-applications/mustunderstand/src,\
+  test-applications/mustunderstandclient/src,\
+  test-applications/nopassclient/src,\
+  test-applications/nopassunt/src,\
+  test-applications/pwdigest/src,\
+  test-applications/pwdigestclient/src,\
+  test-applications/sha2sig/src,\
+  test-applications/sha2sigclient/src,\
+  test-applications/wss11enc/src,\
+  test-applications/wss11encclient/src,\
+  test-applications/wss11sig/src,\
+  test-applications/wss11sigclient/src,\
+  test-applications/WSSampleSei/src,\
+  test-applications/webcontentprovider/src,\
+  test-applications/wsstemplates/src,\
+  test-applications/wsstemplatesclient/src,\
+  test-applications/wsstemplatesclientwithep/src,\
+  test-applications/wsstemplateswithep/src,\
+  test-applications/x509aSync/src,\
+  test-applications/x509aSyncclient/src,\
+  test-applications/x509client/src,\
+  test-applications/x509token/src,\
+  test-applications/x509crl/src,\
+  test-applications/x509crlclient/src,\
+  test-applications/x509enc/src,\
+  test-applications/x509encclient/src,\
+  test-applications/endsuptokens/src,\
+  test-applications/endsuptokensclient/src,\
+  test-applications/x509migbadclient/src,\
+  test-applications/x509migclient/src,\
+  test-applications/x509migtoken/src,\
+  test-applications/x509sig/src,\
+  test-applications/x509sigclient/src
+
+  
+-sub: *.bnd
+
+fat.project: true
+
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+
+	
+-buildpath: \
+  com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
+  com.ibm.ws.security.fat.common;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  httpunit:httpunit;version=1.5.4,\
+  com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
+  com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
+  com.ibm.websphere.security;version=latest,\
+  com.ibm.ws.wssecurity;version=latest,\
+  com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+  com.ibm.ws.org.apache.commons.lang3;version=latest,\
+  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+  com.ibm.websphere.appserver.spi.logging;version=latest,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest
