@@ -2149,7 +2149,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator-cdi</artifactId>
-      <version>7.0.0.Alpha6</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -2159,7 +2159,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>7.0.0.Alpha6</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
