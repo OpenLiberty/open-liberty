@@ -55,7 +55,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
     private final CustomLogProperties _customLogProperties;
 
     /**
-     * Are we working against Oracle, PostgreSQL or Generic (DB2 or SQL Server at least)
+     * Are we working against Oracle, PostgreSQL or DB2
      */
     private boolean _isOracle;
     private boolean _isPostgreSQL;
@@ -65,11 +65,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 
     /**
      * These strings are used for Database table creation. DDL is
-     * different for DB2, MS SQL Server, PostgreSQL and Oracle.
+     * different for DB2, PostgreSQL and Oracle.
      */
-    private final String genericTablePreString = "CREATE TABLE ";
-    private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                                  "LEASE_TIME BIGINT) ";
+    private final String db2TablePreString = "CREATE TABLE ";
+    private final String db2TablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                              "LEASE_TIME BIGINT) ";
 
     private final String oracleTablePreString = "CREATE TABLE ";
     private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
@@ -537,18 +537,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     Tr.debug(tc, "This is a DB2 Database");
                 // Flag the we can tolerate transient SQL error codes
                 //sqlTransientErrorHandlingEnabled = true;
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                // we are MS SQL Server
-                //TODO: WORRY about failover later
-                //_sqlTransientErrorCodes = _db2TransientErrorCodes;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is a Microsoft SQL Server Database");
-                // Flag the we can tolerate transient SQL error codes
-                //sqlTransientErrorHandlingEnabled = true;
             } else {
                 // Not DB2, PostgreSQL or Oracle, cannot handle transient SQL errors
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is neither Oracle, PostgreSQL, MS SQL Server nor DB2, it is " + dbName);
+                    Tr.debug(tc, "This is neither Oracle, PostgreSQL nor DB2, it is " + dbName);
             }
 
             String dbVersion = mdata.getDatabaseProductVersion();
@@ -569,8 +561,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -593,10 +585,10 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 conn.rollback();
                 createTableStmt.execute(postgreSQLTableString);
             } else {
-                String genericTableString = genericTablePreString + _leaseTableName + genericTablePostString;
+                String db2TableString = db2TablePreString + _leaseTableName + db2TablePostString;
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create Generic Table using: " + genericTableString);
-                createTableStmt.executeUpdate(genericTableString);
+                    Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
+                createTableStmt.executeUpdate(db2TableString);
             }
 
         } finally {
