@@ -135,12 +135,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private final Properties _internalLogProperties;
 
     /**
-     * Which RDBMS are we working against?
+     * Are we working against an Oracle Database or DB2
      */
     volatile private boolean _isOracle;
     volatile private boolean _isPostgreSQL;
     volatile private boolean _isDB2;
-    volatile private boolean _isSQLServer;
 
     private boolean isolationFailureReported;
 
@@ -246,14 +245,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                             "RUSECTION_ID BIGINT, " +
                                                             "RUSECTION_DATA_INDEX SMALLINT, " +
                                                             "DATA BYTEA) ";
-
-    private static final String sqlServerTablePreString = "CREATE TABLE ";
-    private static final String sqlServerTablePostString = "( SERVER_NAME VARCHAR(128), " +
-                                                           "SERVICE_ID SMALLINT, " +
-                                                           "RU_ID BIGINT, " +
-                                                           "RUSECTION_ID BIGINT, " +
-                                                           "RUSECTION_DATA_INDEX SMALLINT, " +
-                                                           "DATA VARBINARY(MAX)) ";
 
     // It is possible to use the same INDEX creation DDL for Oracle and DB2 and Generic
     private static final String indexPreString = "CREATE INDEX ";
@@ -402,8 +393,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * </p>
      *
      * @param fileLogProperties The identity and physical properties of the recovery log.
-     * @param recoveryAgent The RecoveryAgent of the associated client service.
-     * @param fs The FailureScope of the associated client service.
+     * @param recoveryAgent     The RecoveryAgent of the associated client service.
+     * @param fs                The FailureScope of the associated client service.
      */
     public SQLMultiScopeRecoveryLog(CustomLogProperties logProperties, RecoveryAgent recoveryAgent, FailureScope fs) {
         if (tc.isEntryEnabled())
@@ -512,10 +503,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * calls independently.
      * </p>
      *
-     * @exception LogCorruptedException The recovery log has become corrupted and
-     *                cannot be opened.
+     * @exception LogCorruptedException  The recovery log has become corrupted and
+     *                                       cannot be opened.
      * @exception LogAllocationException The recovery log could not be created.
-     * @exception InternalLogException An unexpected failure has occured.
+     * @exception InternalLogException   An unexpected failure has occured.
      */
     @Override
     public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException {
@@ -801,8 +792,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 _sqlTransientErrorCodes = _db2TransientErrorCodes;
             } else if (dbName.toLowerCase().contains("postgresql")) {
                 _isPostgreSQL = true;
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                _isSQLServer = true;
             } else {
                 sqlTransientErrorHandlingEnabled = false;
             }
@@ -823,11 +812,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Retrieves log records from the database ready for recovery
      * processing.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void recover(Connection conn) throws SQLException, RecoverableUnitSectionExistsException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -897,8 +886,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must
+     *                                     be opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -932,12 +921,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * finished.
      * </p>
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      *
      */
     @Override
@@ -992,12 +981,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param serviceData The updated service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public synchronized void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException {
@@ -1290,8 +1279,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The new RecoverableUnit.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must be
+     *                                     opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -1358,10 +1347,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param identity Identity of the RecoverableUnit to be removed.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException              Thrown if the recovery log is closed and must be
+     *                                                opened before this call can be issued.
      * @exception InvalidRecoverableUnitException Thrown if the RecoverableUnit does not exist.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception InternalLogException            Thrown if an unexpected error has occured.
      */
     @Override
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException {
@@ -1475,7 +1464,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *         RecoverableUnits.
      *
      * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     @Override
     public synchronized LogCursor recoverableUnits(FailureScope failureScope) throws LogClosedException /* @MD19706C */
@@ -1571,11 +1560,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * information will be removed and all cached information will be forced to disk.
      * </p>
      *
-     * @exception LogClosedException Thrown if the log is closed.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the log is closed.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public void keypoint() throws InternalLogException {
@@ -2112,8 +2101,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Drives the execution of the cached up database work.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void executeBatchStatements(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2277,11 +2266,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * lag in peer recovery where an old server is closing down while
      * a new server is opening the same log for peer recovery.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private boolean takeHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -2371,11 +2360,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * consequently it can close statements in lower isolation levels that RR and still hold the lock
      * until the transaction is completed.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void updateHADBLock(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2532,8 +2521,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createDBTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2590,22 +2579,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 createTableStmt.execute(postgreSQLTableString);
                 // Create index on the new table
                 createTableStmt.execute(postgreSQLIndexString);
-            } else if (_isSQLServer) {
-                String sqlServerFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String sqlServerTableString = sqlServerTablePreString + sqlServerFullTableName + sqlServerTablePostString;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create SQL Server table using: " + sqlServerTableString);
-
-                String sqlServerIndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                              " ON " + sqlServerFullTableName + indexPostString;
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create SQL Server index using: " + sqlServerIndexString);
-                conn.rollback();
-                // Create the SQL Server table
-                createTableStmt.execute(sqlServerTableString);
-                // Create index on the new table
-                createTableStmt.execute(sqlServerIndexString);
             } else {
                 String genericFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
                 String genericTableString = genericTablePreString + genericFullTableName + genericTablePostString;
@@ -2873,10 +2846,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * classes collection of such objects.
      *
      * @param recoverableUnit The RecoverableUnit to be added
-     * @param recovered Flag to indicate if this instances have been created during
-     *            recovery (true) or normal running (false). If its been created
-     *            during recovery we need to reserve the associated id so that
-     *            it can't be allocated to an independent RecoverableUnit.
+     * @param recovered       Flag to indicate if this instances have been created during
+     *                            recovery (true) or normal running (false). If its been created
+     *                            during recovery we need to reserve the associated id so that
+     *                            it can't be allocated to an independent RecoverableUnit.
      */
     protected void addRecoverableUnit(SQLRecoverableUnitImpl recoverableUnit, boolean recovered) {
         if (tc.isEntryEnabled())
