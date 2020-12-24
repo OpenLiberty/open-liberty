@@ -30,6 +30,7 @@ Import-Package: \
 Private-Package:\
  com.ibm.ws.jaxws.tools, \
  com.ibm.ws.jaxws.tools.*, \
+ io.openliberty.xmlWS30.tools.ant, \
  com.sun.tools.ws.wscompile;-split-package:=merge-last;version="3.0.0"
 
 -includeresource:\

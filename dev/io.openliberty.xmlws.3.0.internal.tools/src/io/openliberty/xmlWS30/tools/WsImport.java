@@ -17,8 +17,6 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 
 import com.ibm.ws.jaxws.tools.WsToolsUtils;
-import com.ibm.ws.jaxws.tools.internal.JaxWsToolsConstants;
-import com.ibm.ws.jaxws.tools.internal.JaxWsToolsUtil;
 import com.sun.tools.ws.wscompile.WsimportTool;
 
 /**
@@ -28,11 +26,7 @@ public class WsImport {
     private static final PrintStream err = System.err;
 
     public static void main(String[] args) {
-        if (WsToolsUtils.isTargetRequired(args)) {
-            String errMsg = JaxWsToolsUtil.formatMessage(JaxWsToolsConstants.ERROR_PARAMETER_TARGET_MISSED_KEY);
-            err.println(errMsg);
-            System.exit(1);
-        }
+
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {

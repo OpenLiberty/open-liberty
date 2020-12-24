@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/cmdline-subdir.props
 bVersion=1.0
 
-Bundle-Name: IBM XML Web Services WsImport Tool
+Bundle-Name: XML Web Services WsImport Tool
 Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools.wsimport
 
 Require-Compiler: true
