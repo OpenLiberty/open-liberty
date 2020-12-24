@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/cmdline-subdir.props
 bVersion=1.0
 
-Bundle-Name: IBM XML Web Services WsGen Tool
+Bundle-Name: XML Web Services WsGen Tool
 Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools.wsgen
 
 Require-Compiler: true
@@ -27,23 +27,7 @@ Require-Bundle:\
  io.openliberty.com.sun.xml.messaging.saaj; version="[1,1.0.100)", \
  com.ibm.ws.logging; version="[1,1.0.100)"
  
-Parent-Last-Package: jakarta.xml.bind,\
- jakarta.xml.bind.annotation,\
- jakarta.xml.bind.annotation.adapters,\
- jakarta.xml.bind.attachment,\
- jakarta.xml.bind.helpers,\
- jakarta.xml.bind.util,\
- jakarta.xml.ws,\
- jakarta.xml.ws.handler,\
- jakarta.xml.ws.handler.soap,\
- jakarta.xml.ws.http,\
- jakarta.xml.ws.soap,\
- jakarta.xml.ws.spi,\
- jakarta.xml.ws.spi.http,\
- jakarta.xml.soap, \
- jakarta.xml.ws.wsaddressing
-
-Command-Class: com.ibm.ws.jaxws.tools.WsGen
+Command-Class: io.openliberty.xmlWS30.tools.WsGen
 
 -outputmask: ws-wsgen.jar
 

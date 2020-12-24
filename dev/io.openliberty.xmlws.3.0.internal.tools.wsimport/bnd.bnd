@@ -25,23 +25,8 @@ Require-Bundle:\
  io.openliberty.jakarta.xmlWS.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
  io.openliberty.jakarta.xmlBinding.3.0;version="[1,1.0.100)";location="dev/api/spec/", \
  com.ibm.ws.logging; version="[1,1.0.100)"
- 
-Parent-Last-Package: jakarta.xml.bind,\
-jakarta.xml.bind.annotation,\
-jakarta.xml.bind.annotation.adapters,\
-jakarta.xml.bind.attachment,\
-jakarta.xml.bind.helpers,\
-jakarta.xml.bind.util,\
-jakarta.xml.ws,\
-jakarta.xml.ws.handler,\
-jakarta.xml.ws.handler.soap,\
-jakarta.xml.ws.http,\
-jakarta.xml.ws.soap,\
-jakarta.xml.ws.spi,\
-jakarta.xml.ws.spi.http,\
-jakarta.xml.ws.wsaddressing
 
-Command-Class: com.ibm.ws.jaxws.tools.WsImport
+Command-Class: io.openliberty.xmlWS30.tools.WsImport
 
 -outputmask: ws-wsimport.jar
 

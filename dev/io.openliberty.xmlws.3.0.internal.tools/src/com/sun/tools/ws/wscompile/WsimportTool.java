@@ -1,41 +1,11 @@
 /*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * Copyright (c) 1997, 2018 Oracle and/or its affiliates. All rights reserved.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Distribution License v. 1.0, which is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
  *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
- * http://glassfish.java.net/public/CDDL+GPL_1_1.html
- * or packager/legal/LICENSE.txt.  See the License for the specific
- * language governing permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at packager/legal/LICENSE.txt.
- *
- * GPL Classpath Exception:
- * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
- * file that accompanied this code.
- *
- * Modifications:
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
- *
- * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 package com.sun.tools.ws.wscompile;
@@ -57,9 +27,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import jakarta.xml.bind.JAXBPermission;
 import javax.xml.stream.XMLStreamException;
-import jakarta.xml.ws.EndpointContext;
+
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.Locator;
@@ -90,10 +59,17 @@ import com.sun.tools.xjc.util.NullStream;
 import com.sun.xml.ws.api.server.Container;
 import com.sun.xml.ws.util.ServiceFinder;
 
+import jakarta.jws.WebService;
+import jakarta.xml.ws.EndpointContext;
+import jakarta.xml.bind.JAXBPermission;
+
 /**
  * @author Vivek Pandey
  */
 public class WsimportTool {
+    /** JAXWS module name. JAXWS dependency is mandatory in generated Java module. */
+    private static final String JAXWS_MODULE = "java.xml.ws";
+
     private static final String WSIMPORT = "wsimport";
     private final PrintStream out;
     private final Container container;
@@ -310,7 +286,6 @@ public class WsimportTool {
     }
 
     private void addClassesToGeneratedFiles() throws IOException {
-
         Iterable<File> generatedFiles = options.getGeneratedFiles();
         final List<File> trackedClassFiles = new ArrayList<File>();
         for (File f : generatedFiles) {
@@ -391,7 +366,6 @@ public class WsimportTool {
 
     protected void parseArguments(String[] args, Listener listener,
                                   Receiver receiver) throws BadCommandLineException {
-
         options.parseArguments(args);
         options.validate();
         if (options.debugMode)
@@ -400,7 +374,6 @@ public class WsimportTool {
     }
 
     protected Model buildWsdlModel(Listener listener, final Receiver receiver) throws BadCommandLineException, XMLStreamException, IOException {
-
         //set auth info
         //if(options.authFile != null)
         if (!options.disableAuthenticator) {
@@ -505,9 +478,13 @@ public class WsimportTool {
             }
         }
 
+        if (options.getModuleName() != null) {
+            options.getCodeModel()._prepareModuleInfo(options.getModuleName(), JAXWS_MODULE);
+        }
+
         CodeWriter cw;
         if (options.filer != null) {
-            cw = new WSCodeWriter(options.sourceDir, options);
+            cw = new FilerCodeWriter(options);
         } else {
             cw = new WSCodeWriter(options.sourceDir, options);
         }
@@ -528,18 +505,6 @@ public class WsimportTool {
         this.options.entityResolver = resolver;
     }
 
-    /*
-     * To take care of JDK6-JDK6u3, where 2.1 API classes are not there
-     */
-    private static boolean useBootClasspath(Class clazz) {
-        try {
-            ParallelWorldClassLoader.toJarUrl(clazz.getResource('/' + clazz.getName().replace('.', '/') + ".class"));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     protected boolean compileGeneratedClasses(ErrorReceiver receiver, WsimportListener listener) {
         List<String> sourceFiles = new ArrayList<String>();
 
@@ -552,12 +517,16 @@ public class WsimportTool {
         if (sourceFiles.size() > 0) {
             String classDir = options.destDir.getAbsolutePath();
             String classpathString = createClasspathString();
+            // Start Liberty Change
             int majorJavaVersion = getMajorJavaVersion();
-            boolean bootCP = useBootClasspath(EndpointContext.class) || useBootClasspath(JAXBPermission.class);
+            boolean bootCP = useBootClasspath(EndpointContext.class) || useBootClasspath(JAXBPermission.class) || useBootClasspath(WebService.class);
+            // End Liberty Change
             List<String> args = new ArrayList<String>();
+
             args.add("-d");
             args.add(classDir);
             args.add("-classpath");
+            // Start Liberty Change
             if (majorJavaVersion < 9) {
                 args.add(classpathString);
                 //javac is not working in osgi as the url starts with a bundle
@@ -565,12 +534,16 @@ public class WsimportTool {
                     args.add("-Xbootclasspath/p:"
                              + JavaCompilerHelper.getJarFile(EndpointContext.class)
                              + File.pathSeparator
-                             + JavaCompilerHelper.getJarFile(JAXBPermission.class));
+                             + JavaCompilerHelper.getJarFile(JAXBPermission.class)
+                             + File.pathSeparator
+                             + JavaCompilerHelper.getJarFile(WebService.class));
                 }
             } else {
                 args.add(classpathString + File.pathSeparator + options.classpath);
             }
+            // End Liberty Change
 
+            
             if (options.debug) {
                 args.add("-g");
             }
@@ -588,7 +561,9 @@ public class WsimportTool {
                 args.add(sourceFiles.get(i));
             }
 
-            listener.message(WscompileMessages.WSIMPORT_COMPILING_CODE());
+            if (!options.quiet)
+                listener.message(WscompileMessages.WSIMPORT_COMPILING_CODE());
+
             if (options.verbose) {
                 StringBuilder argstr = new StringBuilder();
                 for (String arg : args) {
@@ -617,7 +592,21 @@ public class WsimportTool {
         System.out.println(WscompileMessages.WSIMPORT_USAGE_EXTENSIONS());
         System.out.println(WscompileMessages.WSIMPORT_USAGE_EXAMPLES());
     }
-
+    
+    /*
+     * To take care of JDK6-JDK6u3, where 2.1 API classes are not there
+     * Liberty Change: Brought method forward into 3.0
+     */
+    private static boolean useBootClasspath(Class clazz) {
+        try {
+            ParallelWorldClassLoader.toJarUrl(clazz.getResource('/' + clazz.getName().replace('.', '/') + ".class"));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    // Liberty Change: Brought method forward into 3.0
     private static int getMajorJavaVersion() {
         String version = System.getProperty("java.version");
         String[] versionElements = version.split("\\D");
