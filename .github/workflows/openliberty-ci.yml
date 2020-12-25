@@ -140,6 +140,12 @@ jobs:
         cd dev
         chmod +x gradlew
         ./gradlew --continue cnf:initialize testResults
+    - name: Upload test events and junit xml
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: Unit Test Outputs
+        path: dev/published_outputs/
     - name: Upload test report
       if: failure()
       uses: actions/upload-artifact@v2
@@ -214,7 +220,7 @@ jobs:
       if: always()
       env:
         CATEGORY: ${{matrix.category}}
-      run: .github/workflow-scripts/check-fat-failures.sh
+      run: .github/workflow-scripts/check-fat-failures.sh  
     - name: Upload failing FAT artifacts
       if: failure()
       uses: aguibert/upload-artifact@v1.0
