@@ -85,6 +85,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
+    public static EmptyAction NO_REPLACEMENT() {
+        return new EmptyAction();
+    }
+
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
      */
