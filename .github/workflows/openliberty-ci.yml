@@ -20,9 +20,9 @@ on:
 env:
   LANG: en_US.UTF-8
 jobs:
-  build:
+  build: #Main build always done on linix run in parallel to setup and unit-test
     name: Build Open Liberty
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     outputs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
@@ -44,24 +44,11 @@ jobs:
       with:
         java-version: 11
         openjdk_impl: openj9
-    - name: Generate output
+    - name: Generate build parameters
       id: gen-params
-      run: |
-        cat > .github/pull_request_body.txt << END_OF_PR_BODY
-        ${{ github.event.pull_request.body }}
-        END_OF_PR_BODY
-        echo "PR Summary is:"
-        cat .github/pull_request_body.txt
-        git diff --name-only HEAD^...HEAD^2 >> .github/modified_files.diff
-        echo "Modified files in this PR are:"
-        cat .github/modified_files.diff
-
-        echo "::set-output name=test-os::ubuntu-latest"
-        echo "::set-output name=test-java::11"
-
-        MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
-        echo "MATRIX_RESULT is $MATRIX_RESULT"
-        echo "::set-output name=test-matrix::$MATRIX_RESULT"
+      env:
+        PRBODY: ${{ github.event.pull_request.body }}
+      run: .github/workflow-scripts/generate-params.sh
     - name: Apply Gradle cache
       uses: actions/cache@v2
       with:
@@ -87,7 +74,9 @@ jobs:
       run: |
         cd dev
         chmod +x gradlew
+        echo "::group::Building Liberty.  This will take approx. 30 minutes"
         ./gradlew cnf:initialize assemble
+        echo "::endgroup::"
         cd .. && zip -rq openliberty-image.zip dev/build.image/wlp/
     - name: Upload liberty image
       uses: actions/upload-artifact@v2
@@ -95,9 +84,9 @@ jobs:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
-  unit_tests:
+  unit_tests: #Unit tests always run linux and java 11
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 60
     # Do not run on draft PRs
     if: "github.event_name != 'pull_request' || ( \
@@ -105,10 +94,7 @@ jobs:
           github.event.pull_request.state != 'closed'
         )"
     steps:
-    - uses: actions/checkout@v2
-#    - uses: testspace-com/setup-testspace@v1
-#      with:
-#        domain: ${{ github.repository_owner }}  
+    - uses: actions/checkout@v2 
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
@@ -136,21 +122,23 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Run unit tests
-      run: |
-        cd dev
-        chmod +x gradlew
-        ./gradlew --continue cnf:initialize testResults
-    - name: Upload test report
-      if: failure()
+      id: run-unit-tests
+      run: .github/workflow-scripts/run-unit-tests.sh
+    - name: Upload unit test artifact
+      if: steps.run-unit-tests.outputs.status == 'failure'
       uses: actions/upload-artifact@v2
       with:
-        name: Unit test logs
+        name: Unit Test Logs
         path: dev/cnf/generated/testReports/allUnitTests
-    - name: Upload unit test results
-      shell: bash
-      if: always()
-      run: .github/workflow-scripts/upload-unit-tests.sh
-  fat_tests:
+    - name: Analyze junit output
+      if: steps.run-unit-tests.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.6
+      with:
+        name: Unit test report
+        path: "dev/unit-results/TEST-*.xml"
+        includeSummary: true
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.
+  fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
     name: FAT Tests - ${{matrix.category}}
     needs: build
     runs-on: ${{ needs.build.outputs.test-os }}
@@ -169,9 +157,6 @@ jobs:
         fetch-depth: 50
     - name: Reclaim disk space
       run: .github/workflow-scripts/reclaim-disk-space.sh
-#    - uses: testspace-com/setup-testspace@v1
-#      with:
-#        domain: ${{ github.repository_owner }}
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:
@@ -210,16 +195,23 @@ jobs:
         GH_EVENT_NAME: ${{github.event_name}}
       run: .github/workflow-scripts/run-fat-build.sh
     - name: Check for FAT failures
+      id: check-fat-failure
       shell: bash
-      if: always()
       env:
         CATEGORY: ${{matrix.category}}
       run: .github/workflow-scripts/check-fat-failures.sh
     - name: Upload failing FAT artifacts
-      if: failure()
+      if: steps.check-fat-failure.outputs.status == 'failure'
       uses: aguibert/upload-artifact@v1.0
       with:
         name: ${{matrix.category}}
         path: dev/failing_buckets/*.zip
         single-archive: "false"
-      
+    - name: Analyze junit output
+      if: steps.check-fat-failure.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.6
+      with:
+        name: ${{matrix.category}} report
+        path: "dev/fat-results/TEST-*.xml"        
+        includeSummary: false
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.

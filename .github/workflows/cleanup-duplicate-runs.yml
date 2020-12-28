@@ -9,7 +9,7 @@ jobs:
   cleanup-prs:
     if: github.repository == 'OpenLiberty/open-liberty'
     name: "Cleanup Duplicate Builds"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: n1hility/cancel-previous-runs@v2
         with:
