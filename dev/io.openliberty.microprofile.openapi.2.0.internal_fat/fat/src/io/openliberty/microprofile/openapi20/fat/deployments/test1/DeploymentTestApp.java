@@ -1,4 +1,4 @@
-package io.openliberty.microprofile.openapi20.fat.deployments;
+package io.openliberty.microprofile.openapi20.fat.deployments.test1;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

@@ -1,4 +1,4 @@
-package io.openliberty.microprofile.openapi20.fat.deployments.test1;
+package io.openliberty.microprofile.openapi20.fat.deployments.test2;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,14 +9,14 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("/")
-public class DeploymentTestResource {
+public class DeploymentTestResource2 {
 
     @GET
-    @Path("/test")
+    @Path("/test2")
     @Operation(summary = "test method")
     @APIResponse(responseCode = "200", description = "constant \"OK\" response")
     @Produces(value = MediaType.TEXT_PLAIN)
-    public String test() {
+    public String test2() {
         return "OK";
     }
 
