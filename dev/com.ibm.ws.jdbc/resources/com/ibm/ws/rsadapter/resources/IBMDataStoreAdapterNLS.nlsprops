@@ -376,9 +376,9 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 
 # 8067E
 # Do not translate: errorCode, sqlState, identifyException
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Exactly one of either the ''errorCode'' or ''sqlState'' attributes must be specified on the identifyException element.
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=The errorCode and sqlState attributes are mutually exclusive, and one of the attributes must be specified.
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Update the configuration to specify exactly one of the errorCode or sqlState attributes on the identifyException element.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: At least one of the 'errorCode' or 'sqlState' attributes must be specified on the identifyException element.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=One of the errorCode or sqlState attributes must be specified.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Update the configuration to specify at least one of the errorCode or sqlState attributes on the identifyException element.
 
 # 8100E      JAVAX_CONN_ERR
 # 

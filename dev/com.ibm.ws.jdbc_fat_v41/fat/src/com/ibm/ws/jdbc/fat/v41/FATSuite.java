@@ -26,8 +26,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                JDBC41UpgradeTest.class,
-//                JDBC41Test.class,
+                JDBC41UpgradeTest.class,
+                JDBC41Test.class,
                 ErrorMappingTest.class
 })
 public class FATSuite {

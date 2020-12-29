@@ -103,6 +103,14 @@ public class DatabaseHelper {
      * SQLException SQL States that indicate a stale connection.
      */
     final Set<String> staleSQLStates = new HashSet<String>();
+    
+    /**
+     * Pairs of SQLException error codes and SQL states that indicate a stale exception.
+     * This differs from staleErrorCodes and staleSQLStates because here both items must
+     * match in order to be considered stale.
+     * The entries are of the format: SQLSTATE-SQLCODE
+     */
+    final Set<String> staleStateAndCodes = new HashSet<String>();
 
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
@@ -146,7 +154,14 @@ public class DatabaseHelper {
         List<IdentifyException> identifyExceptions = mcf.dsConfig.get().identifyExceptions;
         if (identifyExceptions != null) {
             for (IdentifyException mapping : identifyExceptions) {
-                if (mapping.errorCode != null) {
+                if (mapping.errorCode != null && mapping.sqlState != null) {
+                    String key = mapping.sqlState + "-" + mapping.errorCode;
+                    if (mapping.as == Target.None) {
+                        staleStateAndCodes.remove(key);
+                    } else if (mapping.as == Target.StaleConnection) {
+                        staleStateAndCodes.add(key);
+                    }
+                } else if (mapping.errorCode != null) {
                     if (mapping.as == Target.None) {
                         staleErrorCodes.remove(mapping.errorCode);
                     } else if (mapping.as == Target.StaleConnection) {
@@ -438,10 +453,12 @@ public class DatabaseHelper {
                 Tr.debug(this, tc, "checking " + t,
                          sqlX == null ? null : sqlX.getSQLState(),
                          sqlX == null ? null : sqlX.getErrorCode());
+            
             if (sqlX != null)
                 stale |= sqlX instanceof SQLRecoverableException ||
                          sqlX instanceof SQLNonTransientConnectionException ||
                          sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
+                         staleStateAndCodes.contains(sqlX.getSQLState() + "-" + sqlX.getErrorCode()) ||
                          staleErrorCodes.contains(sqlX.getErrorCode()) ||
                          staleSQLStates.contains(sqlX.getSQLState());
         }

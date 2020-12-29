@@ -58,6 +58,9 @@ public class ErrorMappingTest extends FATServletClient {
         );
     }
 
+    /**
+     * Verify that a an <identifyException> element with no 'as' attribute defined raises an error in logs
+     */
     @Test
     public void testInvalidConfig_noTarget() throws Exception {
         runTest(server, APP_NAME + "/ErrorMappingTestServlet", testName);

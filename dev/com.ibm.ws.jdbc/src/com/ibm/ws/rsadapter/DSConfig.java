@@ -68,8 +68,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         }
         
         public void validate() {
-            if ((errorCode != null && sqlState != null) ||
-                (errorCode == null && sqlState == null)) {
+            if (errorCode == null && sqlState == null) {
                 Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
                 throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
             }

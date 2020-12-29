@@ -65,10 +65,9 @@
         <identifyException as="StaleConnection"/>
     </dataSource>
     
-    <dataSource jndiName="jdbc/invalid/stateAndCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+    <dataSource jndiName="jdbc/stateAndCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
-        <!-- invalid configuration: errorCode and sqlState are mutually exclusive -->
-        <identifyException errorCode="1234" sqlState="E1234" as="StaleConnection"/>
+        <identifyException errorCode="5001" sqlState="E5001" as="StaleConnection"/>
     </dataSource>
     
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>

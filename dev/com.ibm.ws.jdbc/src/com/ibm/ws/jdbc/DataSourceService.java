@@ -559,14 +559,14 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         try {
-            PropertyService vendorProps = new PropertyService();
-            NavigableMap<String, Object> wasProps = parseConfiguration(properties, vendorProps);
+            PropertyService vProps = new PropertyService();
+            NavigableMap<String, Object> wProps = parseConfiguration(properties, vProps);
 
             // Clone properties so that we can later detect modifications from the current values
-            vendorProps = (PropertyService) vendorProps.clone();
+            vProps = (PropertyService) vProps.clone();
 
-            String jndiName = (String) wasProps.remove(JNDI_NAME);
-            String type = (String) wasProps.remove(DSConfig.TYPE);
+            String jndiName = (String) wProps.remove(JNDI_NAME);
+            String type = (String) wProps.remove(DSConfig.TYPE);
 
             // Trace some of the most important config settings
             if (trace && tc.isDebugEnabled())
@@ -578,7 +578,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             boolean createdDefaultConnectionManager = false;
             
             if (conMgrSvc == null) {
-                if (wasProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
+                if (wProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
                     SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "MISSING_RESOURCE_J2CA8030",
                                                                                     DSConfig.CONNECTION_MANAGER_REF, "", DATASOURCE, jndiName == null ? id : jndiName);
                     if (failure != null)
@@ -608,26 +608,26 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             if(type == null){
                 boolean atLeastJDBC43 = jdbcRuntime.getVersion().compareTo(JDBCRuntimeVersion.VERSION_4_3) >= 0;
                 vendorImpl = atLeastJDBC43 || id != null && id.contains("dataSource[DefaultDataSource]")
-                                ? jdbcDriverSvc.createAnyPreferXADataSource(vendorProps, id)
-                                : jdbcDriverSvc.createAnyPreferLegacyOrder(vendorProps, id);
+                                ? jdbcDriverSvc.createAnyPreferXADataSource(vProps, id)
+                                : jdbcDriverSvc.createAnyPreferLegacyOrder(vProps, id);
                 ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                     : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                     : vendorImpl instanceof DataSource ? DataSource.class
                     : Driver.class;
             } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                 ifc = ConnectionPoolDataSource.class;
-                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vendorProps, id);
+                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps, id);
             } else if (XADataSource.class.getName().equals(type)) {
                 ifc = XADataSource.class;
-                vendorImpl = jdbcDriverSvc.createXADataSource(vendorProps, id);
+                vendorImpl = jdbcDriverSvc.createXADataSource(vProps, id);
             } else if (DataSource.class.getName().equals(type)) {
                 ifc = DataSource.class;
-                vendorImpl = jdbcDriverSvc.createDataSource(vendorProps, id);
+                vendorImpl = jdbcDriverSvc.createDataSource(vProps, id);
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
-                String url = vendorProps.getProperty("URL", vendorProps.getProperty("url"));
+                String url = vProps.getProperty("URL", vProps.getProperty("url"));
                 if (url != null && !"".equals(url)) {
-                    vendorImpl = jdbcDriverSvc.getDriver(url, vendorProps, id);
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
                 } else 
                     throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4014.URL.for.Driver.missing", jndiName == null ? id : jndiName));
             } else
@@ -635,13 +635,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // Convert isolationLevel constant name to integer
             vendorImplClassName = vendorImpl.getClass().getName();
-            parseIsolationLevel(wasProps, vendorImplClassName);
+            parseIsolationLevel(wProps, vendorImplClassName);
             
-            Object objIsolationLevel = wasProps.get(DataSourceDef.isolationLevel.name());
+            Object objIsolationLevel = wProps.get(DataSourceDef.isolationLevel.name());
             int wIsolationLevel = objIsolationLevel == null ? -1 : (int) objIsolationLevel;
             
             if(wIsolationLevel == Connection.TRANSACTION_NONE) {
-                Object objTransactional = wasProps.get(DataSourceDef.transactional.name());
+                Object objTransactional = wProps.get(DataSourceDef.transactional.name());
                 boolean wTransactional = objTransactional == null ? true : (boolean) objTransactional;
                 
                 if (wTransactional) {
@@ -652,7 +652,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             // Derby Embedded needs a reference count so that we can shutdown databases when no longer used.
             isDerbyEmbedded = vendorImplClassName.startsWith("org.apache.derby.jdbc.Embedded");
             if (isDerbyEmbedded) {
-                String dbName = (String) vendorProps.get(DataSourceDef.databaseName.name());
+                String dbName = (String) vProps.get(DataSourceDef.databaseName.name());
                 if (dbName != null) {
                     // Maintaining compatibility here. Variables are no longer normalized by default, but the ResourceFactoryBuilder is still
                     // using VariableRegistry.resolveString() to resolve variables in data source definitions. 
@@ -670,10 +670,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", connMgrPropsAllowed);
                     sentUCPConnMgrPropsIgnoredInfoMessage = true;
                 }
-                updateConfigForUCP(wasProps);
+                updateConfigForUCP(wProps);
             }
 
-            dsConfigRef.set(new DSConfig(id, jndiName, wasProps, vendorProps, connectorSvc));
+            dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
 
             WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
 
