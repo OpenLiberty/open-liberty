@@ -40,7 +40,7 @@ for project in */ ; do
         pushd $project/build/libs/test-reports/test &> /dev/null
         # Then copy unit test file(s) to central location
         for f in TEST-com.*.xml TEST-io.*.xml ; do 
-            cp $f $UNIT_DIR
+            cp $f $UNIT_DIR  &> /dev/null #ignore cases where literal globs are evaluated
         done
         popd &> /dev/null
     fi
