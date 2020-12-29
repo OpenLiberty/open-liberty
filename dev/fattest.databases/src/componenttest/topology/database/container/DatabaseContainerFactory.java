@@ -10,8 +10,6 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -135,7 +133,7 @@ public class DatabaseContainerFactory {
 	            	withCommand.invoke(cont, "postgres -c max_prepared_transactions=5");
 	                break;
 	            case SQLServer:
-	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
+	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04");
 	            	//Accept license agreement
 	            	Method acceptSQLServerLicense = cont.getClass().getMethod("acceptLicense");
 	            	acceptSQLServerLicense.invoke(cont);
@@ -152,8 +150,7 @@ public class DatabaseContainerFactory {
 	        withLogConsumer.invoke(cont, (Consumer<OutputFrame>) dbContainerType::log);
         
         } catch (Exception e) {
-        	e.printStackTrace();
-        	fail("Unable to create a " + dbContainerType.name() + " TestContainer instance.");
+        	throw new RuntimeException("Unable to create a " + dbContainerType.name() + " TestContainer instance.", e);
         }
         
         return cont;
