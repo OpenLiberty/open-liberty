@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
 import com.ibm.ws.jpa.jpa22.OLGH14192Test;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -40,4 +41,9 @@ public class FATSuite {
     public static RepeatTests repeat = RepeatTests
                     .with(new EmptyAction().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
+
+    static {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 }

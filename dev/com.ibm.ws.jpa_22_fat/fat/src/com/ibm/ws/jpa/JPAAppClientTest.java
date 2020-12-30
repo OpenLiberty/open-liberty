@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,11 @@
 
 package com.ibm.ws.jpa;
 
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
+
 import java.io.File;
 import java.util.List;
 
@@ -20,18 +25,26 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.util.LibertyClientUtil;
+import componenttest.topology.database.container.util.LibertyConfigUtil;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 
 @RunWith(FATRunner.class)
+@SkipIfSysProp({ DB_Oracle, DB_SQLServer, DB_DB2 })
 public class JPAAppClientTest {
     private static final String APPCLIENT_ROOT = "test-applications/appclient";
     private final static String CLIENT_NAME = "JPAAppClient";
@@ -39,9 +52,16 @@ public class JPAAppClientTest {
 
     protected static LibertyClient client = LibertyClientFactory.getLibertyClient(CLIENT_NAME);
 
+    //Test container
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
     @BeforeClass
     public static void setUp() throws Exception {
-
+        //Setup properties on client.xml
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        LibertyConfigUtil.addConfigVariable("DB_DRIVER", type.getDriverName());
+        LibertyClientUtil.setupGenericProperties(client, testContainer);
     }
 
     @AfterClass

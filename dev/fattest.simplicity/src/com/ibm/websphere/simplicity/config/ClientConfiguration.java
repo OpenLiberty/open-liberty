@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,12 @@ public class ClientConfiguration implements Cloneable {
 
     @XmlElement(name = "application")
     private ConfigElementList<Application> applications;
+
+    @XmlElement(name = "dataSource")
+    private ConfigElementList<DataSource> dataSources;
+
+    @XmlElement(name = "databaseStore")
+    private ConfigElementList<DatabaseStore> databaseStores;
 
     @XmlElement(name = "library")
     private ConfigElementList<Library> libraries;
@@ -95,8 +101,31 @@ public class ClientConfiguration implements Cloneable {
     }
 
     /**
+     * @return gets all configured top level dataSource elements.
+     */
+    public ConfigElementList<DataSource> getDataSources() {
+        if (this.dataSources == null) {
+            this.dataSources = new ConfigElementList<DataSource>();
+        }
+        return this.dataSources;
+    }
+
+    /**
+     * Returns a list of configured top level databaseStores elements.
+     *
+     * @return A list of configured top level databaseStores elements.
+     */
+    public ConfigElementList<DatabaseStore> getDatabaseStores() {
+        if (this.databaseStores == null) {
+            this.databaseStores = new ConfigElementList<DatabaseStore>();
+        }
+
+        return this.databaseStores;
+    }
+
+    /**
      * Retrieves a description of this configuration.
-     * 
+     *
      * @return a description of this configuration
      */
     public String getDescription() {
@@ -105,7 +134,7 @@ public class ClientConfiguration implements Cloneable {
 
     /**
      * Sets the description of this configuration
-     * 
+     *
      * @param description the description of this configuration
      */
     @XmlAttribute
@@ -185,11 +214,11 @@ public class ClientConfiguration implements Cloneable {
 
     /**
      * Removes all applications with a specific name
-     * 
-     * @param name
-     *            the name of the applications to remove
-     * @return the removed applications (no longer bound to the client
-     *         configuration)
+     *
+     * @param  name
+     *                  the name of the applications to remove
+     * @return      the removed applications (no longer bound to the client
+     *              configuration)
      */
     public ConfigElementList<Application> removeApplicationsByName(String name) {
         ConfigElementList<Application> installedApps = this.getApplications();
@@ -206,15 +235,15 @@ public class ClientConfiguration implements Cloneable {
     /**
      * Adds an application to the current config, or updates an application with
      * a specific name if it already exists
-     * 
-     * @param name
-     *            the name of the application
-     * @param path
-     *            the fully qualified path to the application archive on the
-     *            liberty machine
-     * @param type
-     *            the type of the application (ear/war/etc)
-     * @return the deployed application
+     *
+     * @param  name
+     *                  the name of the application
+     * @param  path
+     *                  the fully qualified path to the application archive on the
+     *                  liberty machine
+     * @param  type
+     *                  the type of the application (ear/war/etc)
+     * @return      the deployed application
      */
     public Application addApplication(String name, String path, String type) {
         ConfigElementList<Application> apps = this.getApplications();
