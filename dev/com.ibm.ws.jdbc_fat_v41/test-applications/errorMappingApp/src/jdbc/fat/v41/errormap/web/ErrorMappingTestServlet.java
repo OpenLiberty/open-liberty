@@ -64,31 +64,7 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testStaleConnection() throws Exception {
-
-        tx.begin();
-        try (Connection con = ds.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/errorMap", 1);
-
-        // Force a stale connection. The connection should be purged from the pool.
-        tx.begin();
-        try (Connection con = ds.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(1234);
-
-            System.out.println("Triggering errorCode 1234 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 1234, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-
-        // The errorCode should be mapped to "stale connection" which should evict the connection from the pool
-        assertPoolSize("jdbc/errorMap", 0);
+        assertStale("jdbc/errorMap", null, 1234);
     }
 
     /**
@@ -96,30 +72,7 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testUnmappedError() throws Exception {
-        tx.begin();
-        try (Connection con = ds.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/errorMap", 1);
-
-        // Force a connection error. It will not be purged from the pool because it is not mapped to a stale connection
-        tx.begin();
-        try (Connection con = ds.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(5555);
-
-            System.out.println("Triggering errorCode 5555 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 5555, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-
-        // Since errorCode 5555 is not mapped to a stale connection, it should still be in the pool
-        assertPoolSize("jdbc/errorMap", 1);
+        assertNotStale("jdbc/errorMap", null, 5555);
     }
 
     /**
@@ -127,31 +80,17 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testRemovedMapping() throws Exception {
-        tx.begin();
-        try (Connection con = removeMapping.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/removeMapping", 1);
+        assertNotStale("jdbc/removeMapping", "08001", null);
+    }
 
-        // Force a connection error for sqlState '08001'. Normally it would map to a connection error according to the built-in
-        // mappings we have, but since the mapping has been removed it will not be purged from the pool
-        tx.begin();
-        try (Connection con = removeMapping.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("08001");
-
-            System.out.println("Triggering sqlState '08001' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "08001", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-
-        // Since the error mapping for sqlState '08001' was removed, the connection should still be in the pool
-        assertPoolSize("jdbc/removeMapping", 1);
+    /**
+     * Test removing a mapping for only a specific sqlcode and sqlstate
+     * Normally SQLState 08003 maps to stale, but here we have explicitly configured state=08003 && code=1234
+     * to map to "None" to remove the mapping
+     */
+    @Test
+    public void testRemovedMapping_stateAndCode() throws Exception {
+        assertNotStale("jdbc/removeMapping", "08003", 1234);
     }
 
     /**
@@ -159,43 +98,9 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testNoMappings() throws Exception {
-        tx.begin();
-        try (Connection con = noMappings.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/noMappings", 1);
+        assertStale("jdbc/noMappings", "08001", null);
 
-        // Force a connection error for sqlState '08001'. This should map to a stale connection and be removed from the pool
-        tx.begin();
-        try (Connection con = noMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("08001");
-
-            System.out.println("Triggering sqlState '08001' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "08001", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/noMappings", 0);
-
-        // Force a connection error for sqlState '08002'. This should NOT map to a stale connection and remain in the pool
-        tx.begin();
-        try (Connection con = noMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("08002");
-
-            System.out.println("Triggering sqlState '08002' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "08002", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/noMappings", 1);
+        assertNotStale("jdbc/noMappings", "08002", null);
     }
 
     /**
@@ -203,43 +108,9 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testBuiltinMappings() throws Exception {
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 1);
+        assertStale("jdbc/manyMappings", "55032", null);
 
-        // Force sqlState=55032. This should map to stale due to the builtin mappings in the generic DatabaseHelper
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("55032");
-
-            System.out.println("Triggering sqlState=55032 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "55032", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 0);
-
-        // Force errorCode=45000. This should map to stale due to the builtin mappings in the derby-specific helper
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(45000);
-
-            System.out.println("Triggering errorCode=45000 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 45000, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 0);
+        assertStale("jdbc/manyMappings", null, 45000);
     }
 
     /**
@@ -247,58 +118,11 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testManyMappings() throws Exception {
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 1);
+        assertStale("jdbc/manyMappings", null, -8);
 
-        // Force a connection error for errorCode -8. This should map to a stale connection and be removed from the pool
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(-8);
+        assertNotStale("jdbc/manyMappings", null, 1010);
 
-            System.out.println("Triggering errorCode '-8' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), -8, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 0);
-
-        // Force a connection error for sqlState '1010'. This should NOT map to a stale connection and remain in the pool
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(1010);
-
-            System.out.println("Triggering errorCode '1010' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 1010, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 1);
-
-        // Force a connection error for sqlState 'E1111'. This should map to a stale connection and be removed from the pool
-        tx.begin();
-        try (Connection con = manyMappings.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("E1111");
-
-            System.out.println("Triggering sqlState 'E1111' on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "E1111", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/manyMappings", 0);
+        assertStale("jdbc/manyMappings", "E1111", null);
     }
 
     public void testInvalidConfig_noTarget() throws Exception {
@@ -339,32 +163,7 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testStateAndCode_01() throws Exception {
-        tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/stateAndCode", 1);
-
-        // Force a stale connection. The connection should be purged from the pool.
-        tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(5001);
-            customCon.setNextSqlState("E5001");
-
-            System.out.println("Triggering errorCode=5001 sqlState=E5001 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 5001, expected.getErrorCode());
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "E5001", expected.getSQLState());
-        } finally {
-            tx.commit();
-        }
-
-        // The errorCode and sqlState should be mapped to "stale connection" which should evict the connection from the pool
-        assertPoolSize("jdbc/stateAndCode", 0);
+        assertStale("jdbc/stateAndCode", "E5001", 5001);
     }
 
     /**
@@ -373,30 +172,7 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testStateAndCode_02() throws Exception {
-        tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
-            System.out.println("Got an initial connection");
-        } finally {
-            tx.commit();
-        }
-        assertPoolSize("jdbc/stateAndCode", 1);
-
-        // Force a stale connection. The connection should be purged from the pool.
-        tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
-            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextErrorCode(5001);
-
-            System.out.println("Triggering errorCode=5001 on connection");
-            customCon.createStatement();
-        } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), 5001, expected.getErrorCode());
-        } finally {
-            tx.commit();
-        }
-
-        // The exception should NOT map to "stale connection" and connection should still be in the pool
-        assertPoolSize("jdbc/stateAndCode", 1);
+        assertNotStale("jdbc/stateAndCode", null, 5001);
     }
 
     /**
@@ -405,30 +181,73 @@ public class ErrorMappingTestServlet extends FATServlet {
      */
     @Test
     public void testStateAndCode_03() throws Exception {
+        assertNotStale("jdbc/stateAndCode", "E5001", null);
+    }
+
+    private void assertStale(String jndiName, String sqlState, Integer errorCode) throws Exception {
+        DataSource ds = InitialContext.doLookup(jndiName);
         tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
-            System.out.println("Got an initial connection");
+        try (Connection con = ds.getConnection()) {
+            System.out.println("Got an initial connection from " + jndiName);
         } finally {
             tx.commit();
         }
-        assertPoolSize("jdbc/stateAndCode", 1);
+        assertPoolSize(jndiName, 1);
 
-        // Force a stale connection. The connection should be purged from the pool.
         tx.begin();
-        try (Connection con = stateAndCode.getConnection()) {
+        try (Connection con = ds.getConnection()) {
             ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
-            customCon.setNextSqlState("E5001");
+            if (sqlState != null)
+                customCon.setNextSqlState(sqlState);
+            if (errorCode != null)
+                customCon.setNextErrorCode(errorCode);
 
-            System.out.println("Triggering sqlState=E5001 on connection");
+            System.out.println("Triggering SQLException with sqlState=" + sqlState + " and errorCode=" + errorCode + " on connection");
             customCon.createStatement();
         } catch (SQLException expected) {
-            assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), "E5001", expected.getSQLState());
+            if (sqlState != null)
+                assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), sqlState, expected.getSQLState());
+            if (errorCode != null)
+                assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), (int) errorCode, expected.getErrorCode());
         } finally {
             tx.commit();
         }
 
-        // The exception should NOT map to "stale connection" and connection should still be in the pool
-        assertPoolSize("jdbc/stateAndCode", 1);
+        // Pool should be empty because error should have mapped to stale
+        assertPoolSize(jndiName, 0);
+    }
+
+    private void assertNotStale(String jndiName, String sqlState, Integer errorCode) throws Exception {
+        DataSource ds = InitialContext.doLookup(jndiName);
+        tx.begin();
+        try (Connection con = ds.getConnection()) {
+            System.out.println("Got an initial connection from " + jndiName);
+        } finally {
+            tx.commit();
+        }
+        assertPoolSize(jndiName, 1);
+
+        tx.begin();
+        try (Connection con = ds.getConnection()) {
+            ErrorMapConnection customCon = con.unwrap(ErrorMapConnection.class);
+            if (sqlState != null)
+                customCon.setNextSqlState(sqlState);
+            if (errorCode != null)
+                customCon.setNextErrorCode(errorCode);
+
+            System.out.println("Triggering SQLException with sqlState=" + sqlState + " and errorCode=" + errorCode + " on connection");
+            customCon.createStatement();
+        } catch (SQLException expected) {
+            if (sqlState != null)
+                assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), sqlState, expected.getSQLState());
+            if (errorCode != null)
+                assertEquals("Did not get expected exception. Message was: " + expected.getMessage(), (int) errorCode, expected.getErrorCode());
+        } finally {
+            tx.commit();
+        }
+
+        // connection should still be in pool because exception should NOT map to stale
+        assertPoolSize(jndiName, 1);
     }
 
     private static void assertPoolSize(String jndiName, int expectedSize) throws Exception {

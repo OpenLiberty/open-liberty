@@ -15,24 +15,24 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException; 
-import java.sql.SQLInvalidAuthorizationSpecException; 
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.sql.PreparedStatement; 
 
-import javax.naming.Context; 
+import javax.naming.Context;
+import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
@@ -43,9 +43,6 @@ import javax.transaction.xa.XAException;
 import org.ietf.jgss.GSSCredential;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
-
-import javax.resource.ResourceException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -108,10 +105,14 @@ public class DatabaseHelper {
      * Pairs of SQLException error codes and SQL states that indicate a stale exception.
      * This differs from staleErrorCodes and staleSQLStates because here both items must
      * match in order to be considered stale.
-     * The entries are of the format: SQLSTATE-SQLCODE
+     * The entries are of the format: SQLSTATE/SQLCODE created by {@link #createStaleMapKey(String, Integer)}
+     * If any SQLState or SQLCode matches, then a start (*) is used.
+     * Examples:
+     * - match state=E1234 && code 456 has key E1234/456
+     * - match state=E1234 and any code has key E1234/*
      */
-    final Set<String> staleStateAndCodes = new HashSet<String>();
-
+    private final Map<String,IdentifyException.Target> userDefinedStales = new HashMap<>();
+    
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
      */
@@ -151,30 +152,9 @@ public class DatabaseHelper {
         customizeStaleStates();
         
         // Process user-defined error mappings from the <identifyException> config elements
-        List<IdentifyException> identifyExceptions = mcf.dsConfig.get().identifyExceptions;
-        if (identifyExceptions != null) {
-            for (IdentifyException mapping : identifyExceptions) {
-                if (mapping.errorCode != null && mapping.sqlState != null) {
-                    String key = mapping.sqlState + "-" + mapping.errorCode;
-                    if (mapping.as == Target.None) {
-                        staleStateAndCodes.remove(key);
-                    } else if (mapping.as == Target.StaleConnection) {
-                        staleStateAndCodes.add(key);
-                    }
-                } else if (mapping.errorCode != null) {
-                    if (mapping.as == Target.None) {
-                        staleErrorCodes.remove(mapping.errorCode);
-                    } else if (mapping.as == Target.StaleConnection) {
-                        staleErrorCodes.add(mapping.errorCode);
-                    }
-                } else {
-                    if (mapping.as == Target.None) {
-                        staleSQLStates.remove(mapping.sqlState);
-                    } else if (mapping.as == Target.StaleConnection) {
-                        staleSQLStates.add(mapping.sqlState);
-                    }
-                }
-            }
+        for (IdentifyException mapping : mcf.dsConfig.get().identifyExceptions) {
+            String key = createStaleMapKey(mapping.sqlState, mapping.errorCode);
+            userDefinedStales.put(key, mapping.as);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
@@ -454,13 +434,27 @@ public class DatabaseHelper {
                          sqlX == null ? null : sqlX.getSQLState(),
                          sqlX == null ? null : sqlX.getErrorCode());
             
-            if (sqlX != null)
-                stale |= sqlX instanceof SQLRecoverableException ||
-                         sqlX instanceof SQLNonTransientConnectionException ||
-                         sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
-                         staleStateAndCodes.contains(sqlX.getSQLState() + "-" + sqlX.getErrorCode()) ||
-                         staleErrorCodes.contains(sqlX.getErrorCode()) ||
-                         staleSQLStates.contains(sqlX.getSQLState());
+            if (sqlX != null) {
+                // first check user-defined mappings
+                IdentifyException.Target target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), sqlX.getErrorCode()));
+                if (target == null)
+                    target = userDefinedStales.get(createStaleMapKey(null, sqlX.getErrorCode()));
+                if (target == null)
+                    target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), null));
+                
+                if (target == Target.None) {
+                    stale = false;
+                } else if (target == Target.StaleConnection) {
+                    stale = true;
+                } else {
+                    // No user-defined mappings, use default handling
+                    stale |= sqlX instanceof SQLRecoverableException ||
+                             sqlX instanceof SQLNonTransientConnectionException ||
+                             sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
+                             staleErrorCodes.contains(sqlX.getErrorCode()) ||
+                             staleSQLStates.contains(sqlX.getSQLState());
+                }
+            }
         }
         
         if (isTraceOn && tc.isEntryEnabled())
@@ -1217,5 +1211,11 @@ public class DatabaseHelper {
      */
     public boolean supportsSubjectDoAsForKerberos() {
         return false;
+    }
+    
+    private static String createStaleMapKey(String sqlState, Integer sqlCode) {
+        return (sqlState == null ? "*" : sqlState) + 
+               "/" + 
+               (sqlCode == null ? "*" : sqlCode);
     }
 }

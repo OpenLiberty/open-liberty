@@ -248,7 +248,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
     
     /**
      * List of identified exceptinos to check if certain errorCode or sqlState values that should map to specific actions.
-     * May be null if none are configured
      */
     public final List<IdentifyException> identifyExceptions;
 

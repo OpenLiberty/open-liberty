@@ -30,6 +30,7 @@
     <dataSource jndiName="jdbc/removeMapping" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
         <identifyException sqlState="08001" as="None"/>
+        <identifyException sqlState="08003" sqlCode="1234" as="None"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/manyMappings" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
