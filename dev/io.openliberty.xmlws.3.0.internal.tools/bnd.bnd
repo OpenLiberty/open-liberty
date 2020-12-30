@@ -1,0 +1,66 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.xmlWS.3.0.internal.tools
+Bundle-Description: XML Web Services Tools, version ${bVersion}
+Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools
+
+Export-Package: com.sun.tools.ws.ant;version="3.0", \
+ com.ibm.jtc.jax.tools.ws;version=1.0.0, \
+ com.ibm.jtc.jax.tools.ws.spi;version=1.0.0, \
+ com.ibm.jtc.jax.xml.ws.api;version=1.0.0, \
+ com.ibm.jtc.jax.xml.ws.policy;version=1.0.0, \
+ io.openliberty.xmlWS30.tools;version="3.0", \
+ org.jvnet.staxex;version="1.7.7", \
+ org.jvnet.staxex.util;version="1.7.7"
+
+Import-Package: \
+ org.glassfish.jaxb.*;version="3.0"
+
+Private-Package:\
+ com.ibm.ws.jaxws.tools, \
+ com.ibm.ws.jaxws.tools.*, \
+ io.openliberty.xmlWS30.tools.ant, \
+ com.sun.tools.ws.wscompile;-split-package:=merge-last;version="3.0.0"
+
+-includeresource:\
+ @${repo;com.sun.xml.ws:jaxws-rt;3.0.0;EXACT}!/!META-INF/maven/*, \
+ @${repo;com.sun.xml.ws:jaxws-tools;3.0.0;EXACT}!/!META-INF/maven/*, \
+ @${repo;com.sun.org.apache.xml.internal:resolver;20050927;EXACT}!/!META-INF/maven/*, \
+ @${repo;org.jvnet.staxex:stax-ex;1.7.7;EXACT}!/!META-INF/maven/*, \
+ @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3;EXACT}!/!META-INF/maven/*, \
+ com/sun/tools/ws/wscompile=${bin}/com/sun/tools/ws/wscompile
+
+instrument.disabled: true
+
+-buildpath: \
+	com.sun.xml.ws:jaxws-tools;strategy=exact;version=3.0.0, \
+    com.ibm.ws.jaxws.tools.2.2.10;version=latest,\
+    io.openliberty.com.sun.xml.messaging.saaj;version=latest,\
+	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\
+	io.openliberty.xmlBinding.3.0.internal.tools;version=latest,\
+	io.openliberty.jakarta.xmlWS.3.0;version=latest,\
+	io.openliberty.jakarta.jws.3.0;version=latest,\
+	io.openliberty.jakarta.soap.2.0;version=latest,\
+	com.sun.xml.ws:jaxws-rt;strategy=exact;version=3.0.0, \
+	com.sun.org.apache.xml.internal:resolver;strategy=exact;version=20050927, \
+	org.jvnet.staxex:stax-ex;strategy=exact;version=1.7.7, \
+	com.sun.xml.stream.buffer:streambuffer;strategy=exact;version=1.5.3, \
+	org.glassfish.jaxb:codemodel;strategy=exact;version=3.0.0,\
+    org.glassfish.jaxb:jaxb-jxc;strategy=exact;version=3.0.0,\
+	org.glassfish.jaxb:jaxb-core;strategy=exact;version=3.0.0,\
+    org.glassfish.jaxb:jaxb-runtime;strategy=exact;version=3.0.0,\
+	org.glassfish.jaxb:jaxb-xjc;strategy=exact;version=3.0.0,\
+    org.glassfish.jaxb:txw2;strategy=exact;version=3.0.0,\
+    org.glassfish.jaxb:xsom;strategy=exact;version=3.0.0,\
+	com.ibm.ws.org.apache.ant;version=latest

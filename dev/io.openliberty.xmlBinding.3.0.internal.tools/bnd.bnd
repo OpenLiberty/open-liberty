@@ -87,6 +87,8 @@ Include-Resource: \
 Private-Package:\
   io.openliberty.xmlbinding.tools.*, \
   com.sun.istack.*, \
+  com.sun.tools.xjc.*,\
+  com.sun.tools.jxc.*,\
   com.sun.tools.rngdatatype.*, \
   com.sun.tools.rngom.*
 
