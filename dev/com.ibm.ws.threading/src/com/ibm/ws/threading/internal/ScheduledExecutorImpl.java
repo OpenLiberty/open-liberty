@@ -18,6 +18,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+
 /*
  * This implementation is essentially a wrapper around an scheduled executor but defers execution to the default
  * ExecutorService
@@ -58,6 +60,16 @@ public final class ScheduledExecutorImpl extends ScheduledThreadPoolExecutor {
     @Override
     protected <V> RunnableScheduledFuture<V> decorateTask(Runnable r, RunnableScheduledFuture<V> task) {
         ExecutorService executorService = this.executor;
+
+        // Run scheduled tasks on a policy executor if supplied via ScheduledPolicyExecutorTask
+        if (r instanceof ScheduledPolicyExecutorTask)
+            executorService = ((ScheduledPolicyExecutorTask) r).getExecutor();
+        else if (r instanceof SchedulingRunnableFixedHelper) {
+            Runnable rr = ((SchedulingRunnableFixedHelper<?>) r).m_runnable;
+            if (rr instanceof ScheduledPolicyExecutorTask)
+                executorService = ((ScheduledPolicyExecutorTask) rr).getExecutor();
+        }
+
         // executor will be null after unsetExecutor is called on shutdown. Just return the task in this case.
         if (this.executor == null)
             return task;
@@ -67,7 +79,10 @@ public final class ScheduledExecutorImpl extends ScheduledThreadPoolExecutor {
 
     @Override
     protected <V> RunnableScheduledFuture<V> decorateTask(Callable<V> c, RunnableScheduledFuture<V> task) {
-        ExecutorService executorService = this.executor;
+        // Run scheduled tasks on a policy executor if supplied via ScheduledPolicyExecutorTask
+        ExecutorService executorService = c instanceof ScheduledPolicyExecutorTask ? //
+                        ((ScheduledPolicyExecutorTask) c).getExecutor() : //
+                        this.executor;
 
         // executor will be null after unsetExecutor is called on shutdown. Just return the task in this case.
         if (this.executor == null)
