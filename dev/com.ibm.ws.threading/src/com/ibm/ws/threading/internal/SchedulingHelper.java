@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -27,14 +28,14 @@ import java.util.concurrent.TimeoutException;
  * Base Wrapper for the Scheduled Runnable/Callable returned on overridden schedule methods. It's used to present a consistent state of the
  * submitted Callable/Runnable as it progresses through the underlying ScheduledThreadPoolExecutor and its redirection into
  * the Default ExecutorService.
- * 
+ *
  * @param <V>
  */
 class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     /**
      * Wrapped Runnable/Callable related to this future instance
      */
-    private final Callable<V> m_callable;
+    private final Object m_task;
 
     /**
      * Done state of submitted Runnable/Callable
@@ -68,11 +69,11 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /**
      * Exception to throw at completion for a get() call.
-     * 
+     *
      * get() -- Waits until cancelled or executor ends or exception one Task, then Throws??
-     * 
+     *
      * @throws CancellationException if the computation was cancelled
-     * @throws RuntimeException we encountered a problem on our way to dispatching the Task
+     * @throws RuntimeException      we encountered a problem on our way to dispatching the Task
      */
     RuntimeException m_pendingException = null;
 
@@ -84,13 +85,13 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /**
      * Initialize the helper to manage a new Task.
-     * 
-     * @param inCallable Task to schedule.
-     * @param inTask RunnableScheduledFuture associated with the scheduling of inCallable.
+     *
+     * @param task       Callable or Runnable task to schedule.
+     * @param inTask     RunnableScheduledFuture associated with the scheduling of inCallable.
      * @param inExecutor default Executor to direct the dispatch of the inCallable to.
      */
-    public SchedulingHelper(Callable<V> inCallable, RunnableScheduledFuture<V> inTask, ExecutorService inExecutor, BlockingQueue<Runnable> scheduledExecutorQueue) {
-        this.m_callable = inCallable;
+    public SchedulingHelper(Object task, RunnableScheduledFuture<V> inTask, ExecutorService inExecutor, BlockingQueue<Runnable> scheduledExecutorQueue) {
+        this.m_task = task;
         this.m_coordinationLatch = new CountDownLatch(1);
         this.m_executor = inExecutor;
         this.m_schedFuture = inTask;
@@ -99,7 +100,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Delayed#getDelay(java.util.concurrent.TimeUnit)
      */
     @Override
@@ -109,7 +110,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
@@ -137,13 +138,13 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("SchedulingHelper<V>: ");
-        sb.append("m_callable: " + (m_callable != null ? m_callable.toString() : "null"));
+        sb.append("m_task: ").append(m_task);
         sb.append(", m_isDone: " + m_isDone);
         sb.append(", m_cancelResult: " + m_cancelResult);
-        sb.append(", m_schedFuture: " + (m_schedFuture != null ? m_schedFuture.toString() : "null"));
-        sb.append(", m_coordinationLatch: " + (m_coordinationLatch != null ? m_coordinationLatch.toString() : "null"));
+        sb.append(", m_schedFuture: ").append(m_schedFuture);
+        sb.append(", m_coordinationLatch: ").append(m_coordinationLatch);
         sb.append(", m_executor: " + m_executor);
         sb.append(", m_defaultFuture: " + m_defaultFuture);
         sb.append(", m_pendingException: " + m_pendingException);
@@ -153,7 +154,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#isCancelled()
      */
     @Override
@@ -163,7 +164,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#cancel(boolean)
      */
     @Override
@@ -205,7 +206,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#isDone()
      */
     @Override
@@ -228,7 +229,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#get()
      */
     @Override
@@ -244,7 +245,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
      */
     @Override
@@ -262,7 +263,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.RunnableScheduledFuture#isPeriodic()
      */
     @Override
@@ -272,7 +273,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -281,12 +282,24 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             if (this.isDone()) {
                 return;
             }
-            ExpeditedFutureTask<V> futureTask = new ExpeditedFutureTask<V>(this.m_callable);
+            @SuppressWarnings("unchecked")
+            ExpeditedFutureTask<V> futureTask = this.m_task instanceof Callable //
+                            ? new ExpeditedFutureTask<V>((Callable<V>) this.m_task) //
+                            : new ExpeditedFutureTask<V>((Runnable) this.m_task, null);
             this.m_defaultFuture = futureTask;
             this.m_executor.execute(futureTask);
             this.m_scheduledExecutorQueue.remove(this);
         } catch (Exception e) {
             this.m_pendingException = new RuntimeException(e);
+            // If this SchedulingHelper is unable to invoke a SchedulingRunnableFixedHelper (for a repeating task),
+            // then let the SchedulingRunnableFixedHelper know that it has failed and will never run:
+            if (m_task instanceof SchedulingRunnableFixedHelper) {
+                SchedulingRunnableFixedHelper<?> repeatingTaskFuture = (SchedulingRunnableFixedHelper<?>) m_task;
+                if (repeatingTaskFuture.m_pendingException == null) {
+                    repeatingTaskFuture.m_pendingException = new RejectedExecutionException(e);
+                    repeatingTaskFuture.m_coordinationLatch.countDown();
+                }
+            }
             return;
         } finally {
             // Let blocked ScheduleFuture methods thru now.
@@ -306,6 +319,10 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
          */
         public ExpeditedFutureTask(Callable<V> arg0) {
             super(arg0);
+        }
+
+        public ExpeditedFutureTask(Runnable runnable, V result) {
+            super(runnable, result);
         }
 
         /*
