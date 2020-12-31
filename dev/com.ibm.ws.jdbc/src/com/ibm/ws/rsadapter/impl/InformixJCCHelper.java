@@ -65,7 +65,12 @@ public class InformixJCCHelper extends InformixHelper {
         mcf.supportsGetTypeMap = false;
 
         configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleErrorCodes,
                            -4499);
     }

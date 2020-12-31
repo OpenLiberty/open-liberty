@@ -21,6 +21,7 @@ import java.sql.SQLNonTransientException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
@@ -61,6 +62,7 @@ import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
 import com.ibm.ws.rsadapter.impl.DatabaseHelper;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -237,7 +239,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "activate", PropertyService.hidePasswords(properties));
-
+        
         String jndiName = (String) properties.get(JNDI_NAME);
         id = (String) properties.get("config.displayId");
 
@@ -842,8 +844,18 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
                     vProps.put(key, value);
                 }
-            } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key))
+            } else if (key.length() > DSConfig.IDENTIFY_EXCEPTION.length() + 3 && key.startsWith(DSConfig.IDENTIFY_EXCEPTION + '.')) {
+                @SuppressWarnings("unchecked")
+                Map<Integer,DSConfig.IdentifyException> errorMappings = (Map<Integer, IdentifyException>) wProps.computeIfAbsent(DSConfig.IDENTIFY_EXCEPTION, k -> new HashMap<>(3));
+                
+                String unProcessedKey = key.substring(DSConfig.IDENTIFY_EXCEPTION.length() + 1);
+                int id = Integer.valueOf(unProcessedKey.substring(0, unProcessedKey.indexOf('.'))); // get the '0' in identifyException.0.foo
+                IdentifyException errorMapping = errorMappings.computeIfAbsent(id, k -> new IdentifyException());
+                String propertyName = unProcessedKey.substring(unProcessedKey.indexOf('.') + 1); // get the 'foo' in identifyException.0.foo
+                errorMapping.setProperty(propertyName, value);
+            } else if (key.indexOf('.') == -1 && !WPROPS_TO_SKIP.contains(key)) {
                 wProps.put(key, value);
+            }
         }
         
         //Don't send out auth alias recommendation message with UCP since it may be required to set the 
