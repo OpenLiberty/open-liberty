@@ -1,7 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.adminCenter.tool.javaBatch-1.0
-visibility=private
-IBM-ShortName: javaBatch-1.0
+visibility=auto
 Subsystem-Name: Java Batch
 Subsystem-Category: adminCenter
 Subsystem-Version: 1.0.0
