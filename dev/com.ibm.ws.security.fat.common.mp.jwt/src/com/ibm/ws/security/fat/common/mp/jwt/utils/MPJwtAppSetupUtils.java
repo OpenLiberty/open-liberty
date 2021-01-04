@@ -241,7 +241,7 @@ public class MPJwtAppSetupUtils {
     public WebArchive addDefaultFileAssetsForAppsToWar(String warName, WebArchive war) throws Exception {
         war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class")),
                 "com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class");
-        war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt//MPJwtFatConstants.class")), "com/ibm/ws/security/fat/common/mp/jwt//MPJwtFatConstants.class");
+        war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class")), "com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class");
         war.add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
         war.add(new FileAsset(new File("test-applications/" + warName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
         return war;

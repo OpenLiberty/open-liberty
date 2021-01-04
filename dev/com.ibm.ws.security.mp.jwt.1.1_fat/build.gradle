@@ -36,6 +36,7 @@ dependencies {
       'xerces:xercesImpl:2.11.0'
 }
 
+/*
  gradle.taskGraph.whenReady {taskGraph ->
     println "Found task graph: " + taskGraph
     println "Found " + taskGraph.allTasks.size() + " tasks."
@@ -46,6 +47,7 @@ dependencies {
         }
     }
 }
+*/
 
  def servers = [
 	'com.ibm.ws.security.mp.jwt.1.1.fat',

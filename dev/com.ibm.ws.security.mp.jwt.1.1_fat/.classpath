@@ -22,6 +22,5 @@
 	<classpathentry kind="src" path="test-applications/microProfileLoginConfig_MultiLayer_NotInWebXml_MpJwtInApp.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/com.ibm.ws.security.fat.common.mp.jwt/build/libs/com.ibm.ws.security.fat.common.mp.jwt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
