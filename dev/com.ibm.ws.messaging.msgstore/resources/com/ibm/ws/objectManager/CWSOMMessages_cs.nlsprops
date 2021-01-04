@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,13 @@ InternalTransaction_BackoutOrphan.useraction=Aplikace ztratila odkaz na transakc
 Pokud do\u0161lo k nestandardn\u00edmu ukon\u010den\u00ed pr\u00e1ce aplikace, nen\u00ed t\u0159eba prov\u00e1d\u011bt dal\u0161\u00ed akci. \
 Pokud v\u0161ak aplikace ztratila odkaz, ani\u017e by byla jej\u00ed \u010dinnost ukon\u010dena nestandardn\u011b, lze v aplikaci p\u0159edpokl\u00e1dat logickou chybu.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostika: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Intern\u00ed diagnostick\u00e1 zpr\u00e1va.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.

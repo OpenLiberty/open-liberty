@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,13 @@ InternalTransaction_BackoutOrphan.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc15
 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ube44\uc815\uc0c1\uc801\uc73c\ub85c \uc885\ub8cc\ub41c \uacbd\uc6b0 \ub354 \uc774\uc0c1 \uc791\uc5c5\uc744 \uc218\ud589\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \
 \uadf8\ub7ec\ub098 \ube44\uc815\uc0c1\uc801\uc73c\ub85c \uc885\ub8cc\ub418\uc9c0 \uc54a\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \ucc38\uc870\uac00 \uc190\uc2e4\ub41c \uacbd\uc6b0\uc5d0\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \ub17c\ub9ac \uc624\ub958\ub85c \uac04\uc8fc\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: \uc9c4\ub2e8: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=\ub0b4\ubd80 \uc9c4\ub2e8 \uba54\uc2dc\uc9c0.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.

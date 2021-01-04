@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,13 @@ InternalTransaction_BackoutOrphan.useraction=L'applicazione in uso ha perso il r
 Se l'applicazione \u00e8 terminata in modo anomalo non c'\u00e8 altro da fare. \
 Se tuttavia, l'applicazione ha perso il relativo riferimento senza terminare in modo anomalo questo potrebbe essere considerato un errore logico nell'applicazione.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostica: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Messaggio diagnostico interno.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.

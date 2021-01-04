@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,6 +74,13 @@ InternalTransaction_BackoutOrphan.useraction=Aplica\u0163ia dumneavoastr\u0103 a
 Dac\u0103 aplica\u0163ia a terminat anormal atunci nu mai este nimic de f\u0103cut. \
 Totu\u015fi dac\u0103 aplica\u0163ia a pierdut referin\u0163a sa f\u0103r\u0103 s\u0103 se termine anormal, aceasta poate fi considerat\u0103 o eroare logic\u0103 a aplica\u0163iei.
               
+# {0} the orphan transaction
+# {1} tick count when this was reported
+# {2} unknown or free
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostice: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Mesaj de diagnostic intern.
+InternalTransaction_OrphanDiagnostics.useraction=n/a.
+
 # ----------------------------------------------------------------------------------------------------
 
 # {0} ObjectStore which could not safely be closed.
