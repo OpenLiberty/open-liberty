@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.PathItem;
+import org.eclipse.microprofile.openapi.models.Paths;
 
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.OpenApiConfig.OperationIdStrategy;
@@ -132,15 +134,29 @@ public class ConfigSerializer {
     }
 
     private static Set<String> getPathNames(OpenAPI model) {
-        return model.getPaths().getPathItems().keySet();
+        return getPathItems(model).keySet();
     }
 
     private static Set<String> getOperationIds(OpenAPI model) {
-        return model.getPaths().getPathItems().values().stream() // Get the paths
+        return getPathItems(model).values().stream() // Get the paths
                     .flatMap(i -> i.getOperations().values().stream()) // Get all the operations from all the paths
                     .filter(o -> o.getOperationId() != null) // Filter out the ones without an id
                     .map(o -> o.getOperationId()) // Extract just the operation id
                     .collect(Collectors.toSet()); // Collect the IDs into a set
+    }
+    
+    private static Map<String, PathItem> getPathItems(OpenAPI model) {
+        Paths paths = model.getPaths();
+        if (paths == null) {
+            return Collections.emptyMap();
+        }
+        
+        Map<String, PathItem> pathItems = paths.getPathItems();
+        if (pathItems == null) {
+            return Collections.emptyMap();
+        }
+        
+        return pathItems;
     }
 
 }
