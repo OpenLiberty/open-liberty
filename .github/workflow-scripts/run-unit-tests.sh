@@ -39,7 +39,7 @@ for project in */ ; do
     if [[ -d "$project/build/libs/test-reports/test" ]]; then
         pushd $project/build/libs/test-reports/test &> /dev/null
         # Then copy unit test file(s) to central location
-        for f in TEST-com.*.xml TEST-io.*.xml ; do 
+        for f in TEST-com.*.xml TEST-io.*.xml TEST-wlp.*.xml ; do 
             cp $f $UNIT_DIR  &> /dev/null #ignore cases where literal globs are evaluated
         done
         popd &> /dev/null

@@ -43,6 +43,9 @@ jobs:
     - name: Validate copyright headers
       if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-copyright-headers.sh
+    - name: Validate new tests
+      if: "github.event_name == 'pull_request'"
+      run: .github/workflow-scripts/validate-new-tests.sh
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:

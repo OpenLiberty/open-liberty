@@ -97,7 +97,7 @@ do
   FAT_RESULTS=$PWD/fat-results
   mkdir $FAT_RESULTS
   echo "Collecing fat results in $FAT_RESULTS"
-  for f in $RESULTS_DIR/junit/TEST-com.*.xml $RESULTS_DIR/junit/TEST-io.*.xml; do 
+  for f in $RESULTS_DIR/junit/TEST-com.*.xml $RESULTS_DIR/junit/TEST-io.*.xml $RESULTS_DIR/junit/TEST-wlp.*.xml; do 
       cp $f $FAT_RESULTS &> /dev/null #ignore cases where literal globs are evaluated
   done
   echo "::endgroup::"
