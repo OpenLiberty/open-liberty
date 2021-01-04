@@ -146,7 +146,8 @@ public class DurableUnsharedTest {
 
     // Bindings and Security Off
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
+    @ExpectedFFDC( { "com.ibm.wsspi.sib.core.exception.SIDestinationLockedException",
+                     "com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException"} )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableConsumer_JRException_B_SecOff() throws Exception {
@@ -399,7 +400,8 @@ public class DurableUnsharedTest {
 
     // Bindings and Security Off
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
+    @ExpectedFFDC( { "com.ibm.wsspi.sib.core.exception.SIDestinationLockedException",
+                     "com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException" } )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateUnSharedDurableConsumer_Sel_JRException_B_SecOff() throws Exception {

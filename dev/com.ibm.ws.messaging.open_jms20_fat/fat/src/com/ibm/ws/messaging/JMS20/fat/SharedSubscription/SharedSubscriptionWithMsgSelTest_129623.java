@@ -259,7 +259,8 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
 
     // Bindings and Security Off
 
-    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException")
+    @ExpectedFFDC( { "com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException",
+                     "com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException" } )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumerWithMsgSelector_JRException_SecOff() throws Exception {

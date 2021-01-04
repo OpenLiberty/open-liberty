@@ -334,8 +334,8 @@ public class SharedSubscriptionTest_129626 {
 
     // Bindings and Security Off
 
-    // @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException")
-    @ExpectedFFDC("com.ibm.websphere.sib.exception.SIErrorException")
+    @ExpectedFFDC( { "com.ibm.websphere.sib.exception.SIErrorException",
+                     "com.ibm.wsspi.sib.core.exception.SINonDurableSubscriptionMismatchException" } )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedNonDurableConsumer_JRException_B_SecOff() throws Exception {
