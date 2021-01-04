@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +46,8 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     }
 
     // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
-    private static final boolean isIBMJdk8 = (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable())
-                                             && JavaInfo.majorVersion() <= 8;
+    private static final boolean isIBMJdk8 = JavaInfo.majorVersion() <= 8 &&
+                                             (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable());
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -91,30 +94,72 @@ public class Krb5LoginModuleWrapper implements LoginModule {
 
         if (isIBMJdk8) {
             // Sanitize any OpenJDK-only config options
-            if (options.containsKey("isInitiator")) {
-                String isInitiator = (String) options.remove("isInitiator");
-                if ("true".equalsIgnoreCase(isInitiator)) {
-                    options.put("credsType", "both");
-                }
-            }
-            options.remove("doNotPrompt");
-            options.remove("refreshKrb5Config");
 
-            options.remove(OPENJDK_USE_KEYTAB);
-            if (options.containsKey("keyTab")) {
-                String keytab = (String) options.remove("keyTab");
-                options.put(IBM_JDK_USE_KEYTAB, keytab);
-            }
+            //Remove OpenJDK-only style options.
             options.remove("clearPass");
+            options.remove("isInitiator");
+            options.remove("refreshKrb5Config");
+            options.remove(OPENJDK_USE_KEYTAB);
+
+            //Remove and save OpenJDK-only style options.
+            boolean doNotPrompt = Boolean.valueOf((String) options.remove("doNotPrompt"));
             boolean useTicketCache = Boolean.valueOf((String) options.remove("useTicketCache"));
             String ticketCache = (String) options.remove("ticketCache");
-            if (useTicketCache) {
+            String keytab = (String) options.remove("keyTab");
+
+            //Enable noninteractive keyTab login to start with (requires useKeytab or useDefaultKeytab to also be set).
+            options.put("credsType", "both");
+
+            /*
+             * Taken from:
+             * https://www.ibm.com/support/knowledgecenter/SSYKE2_8.0.0/com.ibm.java.security.api.80.doc/jgss/com/ibm/security/auth/module/Krb5LoginModule.html
+             * The keytab and ccache options take precedence over tryFirstPass.
+             *
+             * Taken from:
+             * https://www.ibm.com/support/knowledgecenter/ssw_ibm_i_71/rzaha/rzahajgssusejaas20.htm
+             *
+             * The login proceeds noninteractively when you specify the credential type as initiator (credsType=initiator) and
+             * you perform one of the following actions:
+             *
+             * Specify the useCcache option
+             * Set the useDefaultCcache option to true
+             *
+             * The login also proceeds noninteractively when you specify the credential type as acceptor or both (credsType=acceptor or credsType=both)
+             * and you perform one of the following actions:
+             *
+             * Specify the useKeytab option
+             * Set the useDefaultKeytab option to true
+             *
+             * Interactive logins:
+             * Other configurations result in the login module prompting for a principal name and password so that it may obtain a TGT from a Kerberos KDC.
+             * The login module prompts for only a password when you specify the principal option.
+             */
+            if (!doNotPrompt) {
+                //A password was provided so enable interactive login.
+                options.put("useFirstPass", "true");
+            } else if (useTicketCache) {
+                options.put("credsType", "initiator"); //Enables noninteractive cCache login
                 if (ticketCache != null) {
-                    options.put("useCcache", ticketCache);
+                    // IBM JDK requires they ticketCache option to be a valid URL
+                    String ticketCacheURL = coerceToURL(ticketCache);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Coerced ticketCache path from " + ticketCache + " to " + ticketCacheURL);
+                    options.put("useCcache", ticketCacheURL);
                 } else {
                     options.put("useDefaultCcache", "true");
                 }
+            } else if (keytab != null) {
+                // IBM JDK requires they keytab option to be a valid URL
+                String keytabURL = coerceToURL(keytab);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Coerced keytab path from " + keytab + " to " + keytabURL);
+                options.put(IBM_JDK_USE_KEYTAB, keytabURL);
+            } else {
+                // If no keyTab path specified, still set useDefaultKeytab=true because then the
+                // default JDK or default OS locations will be checked
+                options.put("useDefaultKeytab", "true");
             }
+
         }
 
         if (useKeytabValue != null && useKeytabValue.equals("true") && options.get("keyTab") == null) {
@@ -168,6 +213,23 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         });
 
         return value;
+    }
+
+    @FFDCIgnore(MalformedURLException.class)
+    private static String coerceToURL(String path) {
+        try {
+            // If this works we already have a valid URL. Return it.
+            new URL(path);
+            return path;
+        } catch (MalformedURLException e1) {
+            try {
+                return new File(path).toURI().toURL().toString();
+            } catch (MalformedURLException e2) {
+                // if we cannot return the path as a URL, return the original path
+                // to let IBM JDK handle the error messaging
+                return path;
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -55,9 +55,6 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        Collections.addAll(staleErrorCodes,
-                           -4499);
-
         Properties props = mcf.dsConfig.get().vendorProps;
         // we are not reading the tracelevel since we don't set the trace on the connection as we do with dB2, 
         // with Derby, we set the trace on the DS level only.  NO API from Derby to set per connection.
@@ -111,6 +108,14 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         else { // means need to integrate
             derbyNSPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           -4499);
     }
 
     public boolean doesStatementCacheIsoLevel() {

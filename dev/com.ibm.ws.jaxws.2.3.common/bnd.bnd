@@ -51,6 +51,7 @@ Import-Package: \
    !org.apache.tools.ant;version=!, \
    !com.ibm.ws.jaxws.globalhandler, \
    !com.ibm.ws.jaxws.threading, \
+   !com.sun.tools.ws.ant, \
    org.apache.cxf.*;version="[3.2,4)", \
    javax.annotation;version=!, \
    javax.xml.soap;version=!, \
@@ -63,6 +64,7 @@ Private-Package:\
 # Use Dynamic Import Packages for JAXB Context Factory,
 # with that, we could work without ResourceProvider Hook
 DynamicImport-Package: com.sun.xml.bind.v2, \
+   org.glassfish.jaxb.runtime.v2.*, \
    com.ibm.xml.xlxp2.jaxb, \
    com.ibm.xml.xlxp2.api.stax, \
    com.ibm.xml.xlxp2.api.wssec
@@ -223,3 +225,5 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
+	
+jakartaeeMe: true

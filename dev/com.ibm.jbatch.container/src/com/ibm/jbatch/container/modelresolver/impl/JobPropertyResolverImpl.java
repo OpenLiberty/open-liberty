@@ -16,6 +16,7 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.container.modelresolver.PropertyResolverFactory;
@@ -23,6 +24,7 @@ import com.ibm.jbatch.jsl.model.Decision;
 import com.ibm.jbatch.jsl.model.Flow;
 import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Listener;
+import com.ibm.jbatch.jsl.model.Property;
 import com.ibm.jbatch.jsl.model.Split;
 import com.ibm.jbatch.jsl.model.Step;
 import com.ibm.jbatch.jsl.model.helper.ExecutionElement;
@@ -58,7 +60,7 @@ public class JobPropertyResolverImpl extends AbstractPropertyResolver<JSLJob> {
         // Resolve all the properties defined for a job
         Properties currentProps = null;
         if (job.getProperties() != null) {
-            currentProps = this.resolveElementProperties(job.getProperties().getPropertyList(), submittedProps, parentProps);
+            currentProps = this.resolveElementProperties((List<Property>) job.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         // Resolve Listener properties, this is list of listeners List<Listener>

@@ -818,7 +818,7 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
             }
 
             try {
-                List<Property> propList = (chunk.getCheckpointAlgorithm().getProperties() == null) ? null : chunk.getCheckpointAlgorithm().getProperties().getPropertyList();
+                List<Property> propList = (chunk.getCheckpointAlgorithm().getProperties() == null) ? null : (List<Property>) chunk.getCheckpointAlgorithm().getProperties().getPropertyList();
 
                 InjectionReferences injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, propList);
 
@@ -852,7 +852,7 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
             logger.entering(sourceClass, sourceMethod);
 
         ItemReader itemReader = chunk.getReader();
-        List<Property> itemReaderProps = itemReader.getProperties() == null ? null : itemReader.getProperties().getPropertyList();
+        List<Property> itemReaderProps = itemReader.getProperties() == null ? null : (List<Property>) itemReader.getProperties().getPropertyList();
         try {
             InjectionReferences injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, itemReaderProps);
 
@@ -867,7 +867,7 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
 
         ItemProcessor itemProcessor = chunk.getProcessor();
         if (itemProcessor != null) {
-            List<Property> itemProcessorProps = itemProcessor.getProperties() == null ? null : itemProcessor.getProperties().getPropertyList();
+            List<Property> itemProcessorProps = itemProcessor.getProperties() == null ? null : (List<Property>) itemProcessor.getProperties().getPropertyList();
             try {
 
                 InjectionReferences injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, itemProcessorProps);
@@ -882,7 +882,7 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
         }
 
         ItemWriter itemWriter = chunk.getWriter();
-        List<Property> itemWriterProps = itemWriter.getProperties() == null ? null : itemWriter.getProperties().getPropertyList();
+        List<Property> itemWriterProps = itemWriter.getProperties() == null ? null : (List<Property>) itemWriter.getProperties().getPropertyList();
         try {
             InjectionReferences injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, itemWriterProps);
 

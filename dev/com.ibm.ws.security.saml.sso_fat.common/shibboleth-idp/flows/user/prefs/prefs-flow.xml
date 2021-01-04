@@ -1,0 +1,25 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <!--
+    This flow allows a user to adjust various client-side preferences.
+    
+    It's partly example, partly a placeholder to allow adjustment of a few
+    existing cookie-based options used by some features of the IdP for the time
+    being while leaving the option of a more comprehensive UI down the road.
+    
+    As a flow, it's nothing much, just a view rendered to push some JS into
+    the browser to maintain things. Notably, it doesn't require a user login.
+    -->
+
+    <end-state id="RenderView" view="user-prefs">
+        <on-entry>
+            <evaluate expression="environment" result="requestScope.environment" />
+            <evaluate expression="T(net.shibboleth.utilities.java.support.codec.HTMLEncoder)" result="requestScope.encoder" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="requestScope.request" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="requestScope.response" />
+            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="requestScope.custom" />
+        </on-entry>
+    </end-state>
+</flow>

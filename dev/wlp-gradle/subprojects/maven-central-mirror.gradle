@@ -1,0 +1,49 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ 
+// applying this script will configure the project to use either:
+// A) maven central (if on public network)
+// B) internal maven central mirror (if on IBM network)
+ 
+repositories.clear()
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+    maven {
+      url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+      metadataSources {
+        mavenPom()
+        artifact()
+      }
+    }
+  }
+  
+  // Always include sonatype snapshot repo for ONLY the transformer snapshot dependency
+  maven {
+    url ("https://oss.sonatype.org/content/repositories/snapshots/")
+    metadataSources {
+      mavenPom()
+      artifact()
+    }
+    content {
+      includeGroup "org.eclipse.transformer"
+      includeGroup "org.eclipse.transformer.cli"
+    }
+  }
+}

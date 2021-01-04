@@ -24,7 +24,7 @@ fat.project: true
   io.openliberty.jakarta.annotation.2.0;version=latest,\
   io.openliberty.jakarta.activation.2.0;version=latest,\
   io.openliberty.jakarta.servlet.5.0;version=latest,\
-  io.openliberty.jakarta.ejb.4.0;version=latest, \
+  io.openliberty.jakarta.enterpriseBeans.4.0;version=latest, \
   io.openliberty.jakarta.mail.2.0;version=latest, \
   io.openliberty.mail.2.0.thirdparty;version=latest, \
   com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest, \

@@ -58,7 +58,6 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         if (classes == null) {
             return;
         }
-        addMappingParam(servletContext);
 
         // auto-discovered application classes, providers, and resources
         Set<Class<?>> appClasses = new HashSet<Class<?>>();
@@ -84,9 +83,10 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         }
 
         if (appClasses.size() == 0) {
-            return;
+            appClasses.add(Application.class);
         }
 
+        addMappingParam(servletContext, appClasses);
         for (Class<?> app : appClasses) {
             register(app, providers, resources, servletContext);
         }
@@ -210,7 +210,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
      * 
      * This method adds that programmatically.
      */
-    private void addMappingParam(ServletContext ctx) {
+    private void addMappingParam(ServletContext ctx, Set<Class<?>> appClasses) {
         boolean globallyMapped = false;
         if (ctx.getInitParameter(RESTEASY_MAPPING_PREFIX) != null) {
             // user has already set this for the entire web app - use their settings
@@ -225,10 +225,13 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             }
 
             ServletRegistration reg = entry.getValue();
+            String servletName = reg.getName();
             String servletClassName = reg.getClassName();
             if (IBM_REST_SERVLET_NAME.equals(servletClassName) ||
                 RESTEASY_DISPATCHER_NAME.equals(servletClassName) ||
-                RESTEASY_DISPATCHER_30_NAME.equals(servletClassName)) {
+                RESTEASY_DISPATCHER_30_NAME.equals(servletClassName) ||
+                Application.class.getName().equals(servletName) ||
+                appClasses.stream().anyMatch(c -> c.getName().equals(servletName))) {
                 if (mapped) {
                     Tr.warning(tc, "MULTIPLE_REST_SERVLETS_CWWKW1300W", ctx.getServletContextName());
                 }

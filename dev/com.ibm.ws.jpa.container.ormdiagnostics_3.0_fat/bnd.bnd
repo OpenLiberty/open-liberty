@@ -23,7 +23,7 @@ fat.project: true
 #      or binaries from an archive repository like Maven (e.g. commons-logging:commons-logging)
 -buildpath: \
     io.openliberty.jakarta.annotation.2.0;version=latest,\
-    io.openliberty.jakarta.ejb.4.0;version=latest,\
+    io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
     io.openliberty.jakarta.messaging.3.0;version=latest,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
     io.openliberty.jakarta.persistence.3.0;version=latest,\

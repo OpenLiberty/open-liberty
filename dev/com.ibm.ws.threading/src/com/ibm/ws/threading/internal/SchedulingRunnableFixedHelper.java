@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,9 @@ import java.util.concurrent.TimeoutException;
  * Wrapper for the ScheduledFuture returned on overridden scheduleWithFixedRate and scheduleWithFixedDelay methods.
  * It's used to present a consistent state of the submitted Runnable as it progresses through the underlying
  * ScheduledThreadPoolExecutor and its redirection into the Default ExecutorService.
- * 
+ *
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @param <V>
  */
 class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runnable {
@@ -57,11 +59,11 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /**
      * Exception to throw at completion for a get() call.
-     * 
+     *
      * get() -- Waits until cancelled or executor ends or exception one Task, then Throws??
-     * 
+     *
      * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException we encountered a problem on our way to dispatching the Task
+     * @throws ExecutionException    we encountered a problem on our way to dispatching the Task
      */
     Exception m_pendingException = null;
 
@@ -85,13 +87,13 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
     /**
      * Initialize to manage the supplied Runnable for dispatch on the Default Executor threadpool according to
      * the schedule parms.
-     * 
+     *
      * @param scheduledWithDelay boolean indicating if the runnable was scheduled with delay or fixed interval.
-     * @param inRunnable Runnable to manage.
-     * @param inExecutor ScheduledExecutorImpl for scheduling.
-     * @param initialDelay initialDelay the time to delay first execution.
-     * @param period the period between successive executions.
-     * @param unit the time unit of the initialDelay and period parameters.
+     * @param inRunnable         Runnable to manage.
+     * @param inExecutor         ScheduledExecutorImpl for scheduling.
+     * @param initialDelay       initialDelay the time to delay first execution.
+     * @param period             the period between successive executions.
+     * @param unit               the time unit of the initialDelay and period parameters.
      */
     public SchedulingRunnableFixedHelper(boolean scheduledWithDelay, Runnable inRunnable, ScheduledExecutorImpl inExecutor, long initialDelay, long period, TimeUnit unit) {
         this.m_scheduledExecutor = inExecutor;
@@ -111,10 +113,21 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
     }
 
     /**
+     * Initialize the ScheduledFuture that tracks the next execution.
+     * Because the task is scheduled prior to this init method being invoked, a timing window exists where
+     * the task could run and schedule the following execution before m_schedFuture is initialized.
+     * If that happens, skip over initializing the value to avoid writing stale data that is out-of-date.
+     *
      * @param schedFuture
+     * @return if this method invocation resulted in initializing to the specified value, otherwise false.
      */
-    protected void setScheduledFuture(ScheduledFuture<?> schedFuture) {
-        this.m_schedFuture = schedFuture;
+    protected synchronized boolean initScheduledFuture(ScheduledFuture<?> schedFuture) {
+        if (this.m_schedFuture == null) {
+            this.m_schedFuture = schedFuture;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -136,11 +149,11 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#cancel(boolean)
      */
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public synchronized boolean cancel(boolean mayInterruptIfRunning) {
 
         if (m_isDone == true) {
             return false;
@@ -161,7 +174,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#isDone()
      */
     @Override
@@ -174,7 +187,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#get()
      */
     @Override
@@ -194,7 +207,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
      */
     @Override
@@ -216,37 +229,35 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Delayed#getDelay(java.util.concurrent.TimeUnit)
      */
     @Override
     public long getDelay(TimeUnit unit) {
-        return this.m_schedFuture.getDelay(unit);
+        ScheduledFuture<?> f;
+        while ((f = m_schedFuture) == null)
+            Thread.yield(); // wait for initialization
+
+        return f.getDelay(unit);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
     public int compareTo(Delayed o) {
-        return this.m_schedFuture.compareTo(o);
-    }
+        ScheduledFuture<?> f;
+        while ((f = m_schedFuture) == null)
+            Thread.yield(); // wait for initialization
 
-    @Override
-    public boolean equals(Object o) {
-        return this.m_schedFuture.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.m_schedFuture.hashCode();
+        return f.compareTo(o);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Future#isCancelled()
      */
     @Override
@@ -256,7 +267,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -285,7 +296,10 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
                 scheduleTime = (this.m_myNextExecutionTime > currentTime) ? (this.m_myNextExecutionTime - currentTime) : 0;
             }
 
-            m_schedFuture = this.m_scheduledExecutor.schedule(this, scheduleTime, TimeUnit.NANOSECONDS);
+            synchronized (this) {
+                if (!m_isDone)
+                    m_schedFuture = this.m_scheduledExecutor.schedule(this, scheduleTime, TimeUnit.NANOSECONDS);
+            }
         } catch (Exception e) {
             this.m_pendingException = e;
             this.m_coordinationLatch.countDown();

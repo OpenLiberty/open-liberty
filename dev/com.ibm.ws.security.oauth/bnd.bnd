@@ -15,6 +15,17 @@ Bundle-Name: WAS Security OAuth 2.0
 Bundle-SymbolicName: com.ibm.ws.security.oauth.2.0
 Bundle-Description: WAS Security OAuth 2.0, version=${bVersion}
 
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.oauth.internal.2.0.jar
+#JakartaEE-Bundle-Name: Liberty Security OAuth 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.oauth.internal.2.0
+#JakartaEE-Bundle-Description: Liberty Security OAuth 2.0, version=${bVersion}
+#JakartaEE-Bundle-Version: 
+
+
 Web-ContextPath: /oauth2
 WS-TraceGroup: \
   OAUTH20

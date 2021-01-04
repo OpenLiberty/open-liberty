@@ -4,8 +4,9 @@ visibility=public
 singleton=true
 IBM-ShortName: mail-2.0
 Subsystem-Version: 2.0
-Subsystem-Name: mail 2.0
+Subsystem-Name: Jakarta Mail 2.0
 WLP-AlsoKnownAs: javaMail-2.0
+WLP-Activation-Type: parallel
 IBM-API-Package: \
   jakarta.mail; type="spec", \
   jakarta.mail.internet; type="spec", \

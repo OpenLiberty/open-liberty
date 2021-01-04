@@ -25,7 +25,7 @@ public class JMSActivationSpecImpl implements ActivationSpec {
     @ConfigProperty(type = String.class)
     private String destination;
 
-    @ConfigProperty(type = String.class, defaultValue = "javax.jms.Topic")
+    @ConfigProperty(type = String.class, defaultValue = "${env.TOPIC_INTERFACE}")
     private String destinationType;
 
     @ConfigProperty

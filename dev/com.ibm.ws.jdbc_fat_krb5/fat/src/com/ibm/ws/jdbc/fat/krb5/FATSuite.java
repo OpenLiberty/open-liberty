@@ -21,9 +21,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -40,6 +40,11 @@ public class FATSuite {
 
     public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.useRemoteDocker();
 
+    static {
+        // Needed for IBM JDK 8 support.
+        java.lang.System.setProperty("com.ibm.jsse2.overrideDefaultTLS", "true");
+    }
+
     @BeforeClass
     public static void startKerberos() throws Exception {
         if (!KerberosPlatformRule.shouldRun(null)) {
@@ -48,7 +53,7 @@ public class FATSuite {
         }
 
         // Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         // Filter out any external docker servers in the 'libhpike' cluster
         ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {

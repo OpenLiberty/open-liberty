@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.ItemWriter;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class ItemWriterPropertyResolverImpl extends AbstractPropertyResolver<ItemWriter> {
@@ -36,7 +38,7 @@ public class ItemWriterPropertyResolverImpl extends AbstractPropertyResolver<Ite
 
         // Resolve all the properties defined for this artifact
         if (writer.getProperties() != null) {
-            this.resolveElementProperties(writer.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) writer.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return writer;

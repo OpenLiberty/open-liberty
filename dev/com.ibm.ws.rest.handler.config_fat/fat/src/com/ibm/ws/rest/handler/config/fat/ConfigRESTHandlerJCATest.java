@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -33,14 +32,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once jca-2.0 is available
 public class ConfigRESTHandlerJCATest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.config.jca.fat")
     public static LibertyServer server;
@@ -56,6 +53,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.config.adapter"));
         ShrinkHelper.exportToServer(server, "connectors", ata_rar);
+
+        FATSuite.setupServerSideAnnotations(server);
 
         server.startServer();
 

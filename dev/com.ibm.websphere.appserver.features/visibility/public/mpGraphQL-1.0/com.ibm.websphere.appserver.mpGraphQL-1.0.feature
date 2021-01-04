@@ -15,12 +15,12 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.websphere.appserver.jsonb-1.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+ com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
  io.openliberty.mpCompatible-0.0; ibm.tolerates:="4.0"
 -bundles= \
  com.ibm.ws.com.graphql.java, \
  com.ibm.ws.io.smallrye.graphql, \
- com.ibm.ws.org.jboss.logging, \
- com.ibm.ws.org.reactivestreams.reactive-streams.1.0
+ com.ibm.ws.org.jboss.logging
 #already provided by kernel...
 #com.ibm.ws.org.jboss.jandex, \
 kind=ga

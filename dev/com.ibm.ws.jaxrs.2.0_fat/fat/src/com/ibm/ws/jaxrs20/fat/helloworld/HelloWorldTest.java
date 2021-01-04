@@ -27,7 +27,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -55,7 +57,7 @@ public class HelloWorldTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("SRVE0315E", "SRVE0777E");
         }
     }
 
@@ -94,10 +96,11 @@ public class HelloWorldTest {
         runGetMethod(200, "/helloworld/apppathrest%21/helloworld", "Hello World");
     }
 
-    // disable this test until webcontainer fixes on their end as well
-//    @Test
+    @Test
+    @SkipForRepeat("EE9_FEATURES")
+    @ExpectedFFDC("com.ibm.ws.webcontainer.exception.InvalidMediaTypeException")
     public void testInvalidCharset() throws Exception {
-        assertEquals(400, runGetMethodInvalidCharset("/helloworld/rest/helloworld"));
+        assertEquals(415, runGetMethodInvalidCharset("/helloworld/rest/helloworld"));
     }
 
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut)

@@ -1,0 +1,230 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled false }
+
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
+  }
+}
+
+
+configurations {
+    shibbolethIdp
+    shibbolethIdp.transitive = false
+    
+    collectedDeps
+    collectedDeps.transitive = false
+}
+
+dependencies {
+    /*
+     * These dependencies will be used for the shibboleth IDP server.
+     */
+    shibbolethIdp 'ch.qos.logback:logback-classic:1.1.3',
+                  'net.shibboleth.idp:idp-war:3.3.1',
+                  'org.slf4j:jcl-over-slf4j:1.7.12'
+                  
+    /*
+     * These JARs will be copied into $buildDir/collectedJars
+     * for eash of retrieval by other projects.
+     */
+    collectedDeps 'commons-codec:commons-codec:1.4',
+                  'commons-logging:commons-logging:1.1.1',
+                  'com.unboundid:unboundid-ldapsdk:5.1.0',
+//                  'jdom:1.1.2',                                     NOT USED IN OPEN LIBERTY YET
+                  project(':com.ibm.json4j'),
+                  project(':com.ibm.ws.com.unboundid'),
+                  project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+//                  project(':com.ibm.ws.org.apache.commons.lang'),   NOT IN OPEN LIBERTY
+                  project(':com.ibm.ws.org.joda.time'),
+                  project(':com.ibm.ws.org.opensaml.xmltooling')
+}
+
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/*
+ * This is where we will download JARs to.
+ */
+def downloadDir= "${projectDir}/build/downloads"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SAML_Demo.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task SAML_Demo_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "SAML_Demo.war"
+  classpath = classpath.filter{ false }
+
+  manifest {
+    attributes("Class-Path": "")
+  }  
+
+  from ('test-applications/SAML_Demo.war/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/web/saml/sample/SnoopServlet2.class' 
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SAML_Demo.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task SAML_Demo_EAR(type: Jar) {
+  dependsOn 'SAML_Demo_WAR'
+
+  destinationDir file(appBuildDir)
+  archiveName "SAML_Demo.ear"
+
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from (new File(appBuildDir)) {
+    include 'SAML_Demo.war'
+  }
+  from ('test-applications/SAML_Demo.ear/resources') {
+    include '**'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** samlclient.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task samlclient_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "samlclient.war"
+  classpath = classpath.filter{ false }
+  
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from ('test-applications/samlclient.war/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/oauth_oidc/fat/clientcert/**' 
+    include 'com/ibm/ws/security/web/saml/sample/**'
+    exclude 'com/ibm/ws/security/web/saml/sample/SnoopServlet2.class' 
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copies the IDP WAR and JARs
+ **
+ ******************************************************************
+ ******************************************************************/
+task copy_IDP {
+  copy {
+    from configurations.shibbolethIdp
+    into downloadDir
+    rename 'idp-war-.*.war', 'idp.war'
+  } 
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Updates the idp.war to include a few JARs that are for some
+ ** reason missing from the maven repo copies.
+ **
+ ******************************************************************
+ ******************************************************************/
+task updateIdp_WAR(type: Zip, dependsOn: copy_IDP) {
+  def originalWar = new File(downloadDir, 'idp.war')
+  
+  destinationDir file(appBuildDir)
+  archiveFileName = 'idp.war'
+
+  from (zipTree(originalWar))
+  
+  from (downloadDir) {
+    include 'jcl-over-slf4j-*.jar', 'logback-classic-*.jar'
+    into 'WEB-INF/lib'
+  }
+}
+
+
+assemble.dependsOn SAML_Demo_EAR
+assemble.dependsOn samlclient_WAR
+assemble.dependsOn updateIdp_WAR
+
+
+/*
+ * Configure any other additional artifacts.
+ */
+assemble.doLast {
+  /* 
+   * Collect all the required jars and put them in one uniform place
+   * so that we don't need to keep adding them in each external
+   * project.
+   */
+  copy { 
+    from configurations.collectedDeps
+    into "${buildDir}/collectedJars"
+  }
+
+
+  /*
+   * Copy the Shibboleth configuration to the build directory and
+   * then copy the Shibboleth IDP war to the same directory.
+   */
+  copy {
+    from new File(projectDir, 'shibboleth-idp')
+    into new File(buildDir, 'shibboleth-idp')
+  }
+  copy {
+    from appBuildDir
+    into new File(buildDir, 'shibboleth-idp/war')
+    include 'idp.war'
+  }
+}

@@ -70,10 +70,7 @@ WS-TraceGroup: MPOPENAPI
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.fasterxml.jackson.core.jackson-core;version=2.11.2,\
-    com.fasterxml.jackson.core.jackson-annotations;version=2.11.2,\
-    com.fasterxml.jackson.core:jackson-databind;version=2.11.2,\
-    com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.11.2,\
+    io.openliberty.com.fasterxml.jackson;version=latest,\
     io.openliberty.microprofile.openapi.internal.common;version=latest
 
 -testpath: \

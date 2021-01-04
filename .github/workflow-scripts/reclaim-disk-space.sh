@@ -1,3 +1,4 @@
+#!/bin/bash
 # Reclaim disk space, otherwise we only have 13 GB free at the start of a job
 
 echo "Before cleaning disk space:"

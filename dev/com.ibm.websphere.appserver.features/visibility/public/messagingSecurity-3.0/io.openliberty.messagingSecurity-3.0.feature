@@ -3,7 +3,7 @@ symbolicName=io.openliberty.messagingSecurity-3.0
 visibility=public
 IBM-ShortName: messagingSecurity-3.0
 WLP-AlsoKnownAs: wasJmsSecurity-3.0
-Subsystem-Name: Message Server Security 3.0
+Subsystem-Name: Messaging Server 3.0 Security
 -features=com.ibm.websphere.appserver.security-1.0,\
  com.ibm.websphere.appserver.transaction-2.0, \
  io.openliberty.messagingServer-3.0, \

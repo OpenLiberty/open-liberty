@@ -10,7 +10,7 @@ IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api", \
  com.ibm.websphere.ejbcontainer; type="internal"
 Subsystem-Category: JakartaEE9Application
 -features=io.openliberty.jakartaeePlatform-9.0, \
- io.openliberty.jakarta.ejb-4.0, \
+ io.openliberty.jakarta.enterpriseBeans-4.0, \
  io.openliberty.ejbLiteCore-2.0, \
  com.ibm.websphere.appserver.contextService-1.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
@@ -21,7 +21,7 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.ws.ejbcontainer.async.jakarta
 -jars=com.ibm.websphere.appserver.api.ejbcontainer; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.ejbcontainer_1.0-javadoc.zip
-Subsystem-Name: Jakarta Enterprise Beans Lite 4.0
+Subsystem-Name: Jakarta Enterprise Beans 4.0 Lite
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

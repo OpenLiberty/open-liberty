@@ -10,32 +10,41 @@
  *******************************************************************************/
 package com.ibm.ws.jca.cm.handle;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
- * TODO implementation needed. Still needs to be ported to Liberty.
- * The ArrayList/synchronized approach is only used temporarily because it
- * was a quick way of mocking up, in an oversimplified way for experimentation
- * purposes, what the real handle list does.
+ * A list of connection handles that were obtained within a servlet request, or by an EJB instance,
+ * or within a contextual task/completion stage.
+ * Null elements are not allowed.
  */
-public class HandleList extends ArrayList<HandleListInterface.HandleDetails> implements HandleListInterface {
-    private static final long serialVersionUID = -4425328702653290017L;
-
-    private boolean destroyed;
+public class HandleList implements HandleListInterface {
+    private HandleDetails[] list = new HandleDetails[10];
+    private int size;
 
     @Override
-    public synchronized HandleList addHandle(HandleListInterface.HandleDetails a) {
-        super.add(a);
+    public HandleList addHandle(HandleListInterface.HandleDetails a) {
+        if (a == null)
+            throw new NullPointerException();
+        synchronized (this) {
+            if (size >= list.length) // resize if already at capacity
+                System.arraycopy(list, 0, list = new HandleDetails[size + 10], 0, size);
+            list[size++] = a;
+        }
         return this;
     }
 
-    public synchronized void close() {
-        destroyed = true;
-
-        for (int length = super.size(); length > 0;)
-            super.remove(--length).close();
-
-        destroyed = false; //reset for re-use
+    public void close() {
+        synchronized (this) {
+            int numToClose = size;
+            size = 0;
+            for (int i = numToClose; i > 0;) {
+                HandleDetails r = list[--i];
+                list[i] = null;
+                r.close(true);
+            }
+        }
     }
 
     public void componentDestroyed() {
@@ -43,29 +52,48 @@ public class HandleList extends ArrayList<HandleListInterface.HandleDetails> imp
     }
 
     @Override
-    public synchronized HandleDetails removeHandle(Object h) {
-        if (!destroyed)
-            for (int i = super.size(); i > 0;)
-                if (get(--i).forHandle(h))
-                    return super.remove(i);
+    public HandleDetails removeHandle(Object h) {
+        synchronized (this) {
+            for (int i = size; i > 0;) {
+                HandleDetails r = list[--i];
+                if (r.forHandle(h)) {
+                    list[i] = list[--size];
+                    list[size] = null;
+                    return r;
+                }
+            }
+        }
         return null;
     }
 
     @Override
-    public synchronized void parkHandle() {
-        for (int i = super.size(); i > 0;)
-            get(--i).park();
-    }
-
-    @Override
-    public synchronized void reAssociate() {
-        for (int i = super.size(); i > 0;) {
-            get(--i).reassociate();
+    public void parkHandle() {
+        synchronized (this) {
+            for (int i = size; i > 0;)
+                list[--i].park();
         }
     }
 
     @Override
-    public synchronized String toString() {
-        return "HandleList@" + Integer.toHexString(System.identityHashCode(this)) + super.toString();
+    public void reAssociate() {
+        synchronized (this) {
+            for (int i = size; i > 0;)
+                list[--i].reassociate();
+        }
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        String handleInfo;
+        synchronized (this) {
+            handleInfo = Arrays.toString(list);
+        }
+
+        return new StringBuilder(19 + handleInfo.length()) //
+                        .append("HandleList@") //
+                        .append(Integer.toHexString(System.identityHashCode(this))) //
+                        .append(handleInfo) //
+                        .toString();
     }
 }

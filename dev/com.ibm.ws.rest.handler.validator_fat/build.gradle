@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
+//addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addDerby
 
 dependencies {

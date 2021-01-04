@@ -1,7 +1,7 @@
 ---
 name: Feature Test Summary
 about: Create a summary of the planned testing for a feature
-title: ''
+title: Feature Test Summary
 labels: Feature Test Summary
 assignees: ''
 

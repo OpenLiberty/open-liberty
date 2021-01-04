@@ -14,6 +14,7 @@
     <feature>concurrent-1.0</feature>
     <feature>jdbc-4.1</feature>
     <feature>servlet-3.1</feature>
+    <feature>transportSecurity-1.0</feature>
   </featureManager>
     
   <include location="../fatTestPorts.xml"/>
@@ -33,6 +34,13 @@
       databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
     <containerAuthData user="${env.USER}" password="${env.PASSWORD}"/>
     <recoveryAuthData user="${env.USER}" password="${env.PASSWORD}"/>
+  </dataSource>
+  
+  <dataSource jndiName="jdbc/sqlserver-ssl">
+    <jdbcDriver libraryRef="SQLServerLibAnon"/>
+    <properties.microsoft.sqlserver databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"
+                encrypt="true" trustServerCertificate="true"/>
+    <containerAuthData user="${env.USER}" password="${env.PASSWORD}"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/ss" isolationLevel="TRANSACTION_SNAPSHOT">

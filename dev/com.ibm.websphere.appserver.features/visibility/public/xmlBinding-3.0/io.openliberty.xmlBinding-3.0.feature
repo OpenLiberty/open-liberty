@@ -15,13 +15,20 @@ IBM-API-Package: \
 IBM-ShortName: xmlBinding-3.0
 IBM-Process-Types: client, \
  server
-Subsystem-Name: Jakarta XML Bindings 3.0
+Subsystem-Name: Jakarta XML Binding 3.0
 -features=\
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakarta.xmlBinding-3.0
 -bundles=\
   io.openliberty.xmlBinding.3.0.internal.tools
+-files=\
+ bin/xmlBinding/xjc.bat, \
+ bin/xmlBinding/tools/ws-schemagen.jar, \
+ bin/xmlBinding/schemagen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
+ bin/xmlBinding/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
+ bin/xmlBinding/tools/ws-xjc.jar, \
+ bin/xmlBinding/schemagen.bat
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

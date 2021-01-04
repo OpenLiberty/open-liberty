@@ -16,10 +16,12 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.container.modelresolver.PropertyResolverFactory;
 import com.ibm.jbatch.jsl.model.Listener;
+import com.ibm.jbatch.jsl.model.Property;
 import com.ibm.jbatch.jsl.model.Step;
 import com.ibm.jbatch.jsl.model.helper.TransitionElement;
 
@@ -44,7 +46,7 @@ public class StepPropertyResolverImpl extends AbstractPropertyResolver<Step> {
         // Resolve all the properties defined for this step
         Properties currentProps = parentProps;
         if (step.getProperties() != null) {
-            currentProps = this.resolveElementProperties(step.getProperties().getPropertyList(), submittedProps, parentProps);
+            currentProps = this.resolveElementProperties((List<Property>) step.getProperties().getPropertyList(), submittedProps, parentProps);
         }
         
         // Resolve partition

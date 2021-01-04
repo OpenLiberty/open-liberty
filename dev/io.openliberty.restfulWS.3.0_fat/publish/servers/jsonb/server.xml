@@ -8,4 +8,5 @@
     <include location="../fatTestPorts.xml"/>
     
     <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 </server>

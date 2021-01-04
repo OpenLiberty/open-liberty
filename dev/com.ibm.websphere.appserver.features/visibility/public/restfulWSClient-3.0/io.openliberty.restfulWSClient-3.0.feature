@@ -15,7 +15,7 @@ IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: restfulWSClient-3.0
 WLP-AlsoKnownAs: jaxrsClient-3.0
-Subsystem-Name: Java RESTful Services Client 3.0
+Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
 -features=\
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \

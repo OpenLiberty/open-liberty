@@ -31,11 +31,11 @@ fat.test.databases: true
 	fattest.databases;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.concurrency.2.0;version=latest,\
-	io.openliberty.jakarta.ejb.4.0,\
+	io.openliberty.jakarta.enterpriseBeans.4.0,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
-	org.testcontainers:database-commons;version=1.14.0,\
-	org.testcontainers:jdbc;version=1.14.0,\
-	org.testcontainers:testcontainers;version=1.14.0,\
+	org.testcontainers:database-commons;version=1.15.0,\
+	org.testcontainers:jdbc;version=1.15.0,\
+	org.testcontainers:testcontainers;version=1.15.0,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7

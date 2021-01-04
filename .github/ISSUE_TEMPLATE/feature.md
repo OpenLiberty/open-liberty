@@ -6,10 +6,14 @@ labels: Epic
 assignees: ''
 
 ---
-Describe the high level feature, including any external spec links.
+## Description of the high level feature, including any external spec links:  
+<br/><br/><br/>  
 
 
-When ready, add links to the Upcoming Feature Overview document as well as Feature Test Summary and blog post issues:
+##
+#### Before proceeding to any items below (active development), this feature must be prioritized on the backlog, and have either the "Design Approved" or "No Design Approved" labels.  Follow the Feature and UFO Approval Process.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), and blogs post issues(s):
 - UFO:
 - FTS:
 - Beta Blog Post (if applicable):
@@ -31,7 +35,7 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] No Design / No UFO Approval ([Arthur De Magalhaes](https://github.com/arthurdm) - cloud / [Alasdair Nottingham](https://github.com/NottyCode) - server) or N/A.
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] ID Requirements identified. (Epic owner / Feature owner with ID focal point)
-- [ ] Create a child task of this epic entitled "FAT Approval Test Summary". Add the link in above.
+- [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.
 
 ## **Beta**
 If your feature, or portions of it, are going to be included in a beta  
@@ -66,7 +70,7 @@ All features (both "Design Approved" and "No Design Approved")
 
 "Design Approved" features
 - [ ] **Accessibility** - ([Steven Zvonek](https://github.com/steven1046)). Accessibility testing is complete or N/A. Approver adds label focalApproved:accessibility to the Epic in Github.
-- [ ] **ID** - ([Kareen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
+- [ ] **ID** - ([Karen Deen](https://github.com/chirp1)). Documentation work is complete or N/A . Approver adds label focalApproved:id to the Epic in Github.
 - [ ] **Performance** - ([Jared Anderson](https://github.com/jhanders34)). Performance testing is complete with no high severity defects or N/A . Approver adds label focalApproved:performance to the Epic in Github.
 - [ ] **Serviceability** - ([Don Bourne](https://github.com/donbourne)). Serviceability has been addressed.
 - [ ] **STE** - (Swati Kasundra). STE chart deck is complete or N/A . Approver adds label focalApproved:ste to the Epic in Github.

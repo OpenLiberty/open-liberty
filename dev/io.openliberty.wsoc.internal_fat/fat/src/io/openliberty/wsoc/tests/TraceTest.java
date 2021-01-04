@@ -31,11 +31,11 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.wsoc.tests.all.TraceEnabledTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.tests.all.TraceEnabledTest;
 
 /**
  * Tests WebSocket Stuff
@@ -58,12 +58,12 @@ public class TraceTest extends LoggingTest {
     private final TraceEnabledTest mct = new TraceEnabledTest(wt);
 
     private static final Logger LOG = Logger.getLogger(SecureTest.class.getName());
-    
+
     private static final String TRACE_WAR_NAME = "trace";
 
     protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
         int securePort = 0, port = 0;
-        String host="";
+        String host = "";
         LibertyServer server = SS.getLibertyServer();
         if (WebServerControl.isWebserverInFront()) {
             try {
@@ -81,7 +81,7 @@ public class TraceTest extends LoggingTest {
         // seem odd, but "context" is the root here because the client side app lives in the context war file
         return SS.verifyResponse(createWebBrowserForTestCase(),
                                  "/trace/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
-                                                 + "&secureport=" + securePort,
+                                                                + "&secureport=" + securePort,
                                  "SuccessfulTest");
     }
 
@@ -89,19 +89,19 @@ public class TraceTest extends LoggingTest {
     public static void setUp() throws Exception {
         // Build the war app and add the dependencies
         WebArchive TraceApp = ShrinkHelper.buildDefaultApp(TRACE_WAR_NAME + ".war",
-                                                                         "trace.war",
-                                                                         "trace.war.configurator",
-                                                                         "io.openliberty.wsoc.common",
-                                                                         "io.openliberty.wsoc.util.wsoc",
-                                                                         "io.openliberty.wsoc.tests.all",
-                                                                         "io.openliberty.wsoc.endpoints.client.trace");
-        TraceApp = (WebArchive) ShrinkHelper.addDirectory(TraceApp, "test-applications/"+TRACE_WAR_NAME+".war/resources");
+                                                           "trace.war",
+                                                           "trace.war.configurator",
+                                                           "io.openliberty.wsoc.common",
+                                                           "io.openliberty.wsoc.util.wsoc",
+                                                           "io.openliberty.wsoc.tests.all",
+                                                           "io.openliberty.wsoc.endpoints.client.trace");
+        TraceApp = (WebArchive) ShrinkHelper.addDirectory(TraceApp, "test-applications/" + TRACE_WAR_NAME + ".war/resources");
         // Verify if the apps are in the server before trying to deploy them
         if (SS.getLibertyServer().isStarted()) {
             Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(TRACE_WAR_NAME);
             LOG.info("addAppToServer : " + TRACE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), TraceApp);
+                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), TraceApp);
         }
         SS.startIfNotStarted();
         SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TRACE_WAR_NAME);
@@ -112,6 +112,14 @@ public class TraceTest extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+
+        // give the system 10 seconds to settle down before stopping
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException x) {
+
+        }
+
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer(null);
         }

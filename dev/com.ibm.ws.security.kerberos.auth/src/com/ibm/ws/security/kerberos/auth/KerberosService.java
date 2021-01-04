@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.auth;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
@@ -32,6 +36,7 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.kerberos.auth.internal.Krb5CallbackHandler;
@@ -56,6 +61,7 @@ public class KerberosService {
     private final LRUCache subjectCache = new LRUCache(2500);
 
     @Activate
+    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
     protected void activate(ComponentContext ctx) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "activate", ctx.getProperties());
@@ -71,7 +77,36 @@ public class KerberosService {
                     Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "keytab", keytab.toAbsolutePath());
                 }
             } else {
-                Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", keytab.toAbsolutePath());
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "rawKeytab is not a path to a file. Checking if it is a file URL.");
+                    }
+                    URL keytabUrl = new URL(rawKeytab);
+                    File keytabFile = new File(keytabUrl.toURI());
+                    if (keytabFile.exists()) {
+                        if (tc.isInfoEnabled()) {
+                            Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "keytab", rawKeytab);
+                        }
+                    } else {
+                        Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                    }
+                } catch (MalformedURLException ex) {
+                    // catch blocks are separate due to a limitation of @FFDCIgnore
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
+                    }
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                } catch (URISyntaxException ex) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
+                    }
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                } catch (IllegalArgumentException ex) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
+                    }
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                }
             }
         } else {
             keytab = null;

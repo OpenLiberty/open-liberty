@@ -46,6 +46,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,6 +78,9 @@ public class PolicyExecutorServlet extends FATServlet {
 
     @Resource(lookup = "test/CompletionStageFactory")
     private CompletionStageFactory completionStageFactory;
+
+    @Resource(lookup = "test/LibertyScheduledExecutor")
+    private ScheduledExecutorService libertyScheduledExecutor;
 
     @Resource(lookup = "test/TestPolicyExecutorProvider")
     private PolicyExecutorProvider provider;
@@ -4142,6 +4147,362 @@ public class PolicyExecutorServlet extends FATServlet {
             fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
         } catch (IllegalStateException x) {
         } // pass
+    }
+
+    /**
+     * Uses ScheduledPolicyExecutorTask to schedule a one-shot Callable task for the
+     * Liberty scheduled executor to run on a policy executor.
+     */
+    @AllowedFFDC("java.util.concurrent.RejectedExecutionException") // when we intentionally schedule a task beyond the queue capacity
+    @Test
+    public void testLibertyScheduledExecutorRunsCallableOnPolicyExecutor() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsCallableOnPolicyExecutor")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+        try {
+            // Use up the only max concurrency slot
+            CountDownLatch task1started = new CountDownLatch(1);
+            CountDownLatch task1blocker = new CountDownLatch(1);
+            ScheduledCallableTask task1 = new ScheduledCallableTask(executor, task1started, task1blocker);
+
+            ScheduledFuture<Boolean> future1 = libertyScheduledExecutor.schedule(task1, 41, TimeUnit.MILLISECONDS);
+            assertTrue(task1started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Use up the only position in the queue
+            CountDownLatch task2started = new CountDownLatch(1);
+            ScheduledCallableTask task2 = new ScheduledCallableTask(executor, task2started, task2started);
+
+            ScheduledFuture<Boolean> future2 = libertyScheduledExecutor.schedule(task2, 42, TimeUnit.MILLISECONDS);
+
+            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && executor.queueCapacityRemaining() > 0; TimeUnit.MILLISECONDS.sleep(100));
+            assertEquals(0, executor.queueCapacityRemaining());
+
+            // Attempt to exceed the maximum queue size
+            CountDownLatch task3started = new CountDownLatch(1);
+            ScheduledCallableTask task3 = new ScheduledCallableTask(executor, task3started, task3started);
+
+            ScheduledFuture<Boolean> future3 = libertyScheduledExecutor.schedule(task3, 43, TimeUnit.MILLISECONDS);
+            try {
+                Boolean result = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail(future3 + " should not be able to run with queue full and concurrency at maximum. Result: " + result);
+            } catch (Exception x) {
+                // Expect CWWKE1201E for exceeding queue capacity
+                boolean found = false;
+                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
+                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
+                if (!found)
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            // Run a task on the Liberty scheduled executor without delegating to the policy executor
+            ScheduledFuture<Integer> future4 = libertyScheduledExecutor.schedule((Callable<Integer>) () -> 144, 44, TimeUnit.MILLISECONDS);
+            assertEquals(Integer.valueOf(144), future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertFalse(future1.isDone());
+            assertFalse(future2.isDone());
+            assertTrue(future3.isDone());
+            assertTrue(future4.isDone());
+
+            // Tasks 2 still has not started. Task 3 should never start.
+            assertEquals(1, task2started.getCount());
+            assertEquals(1, task3started.getCount());
+
+            // Scheduled task can be canceled while running
+            assertTrue(future1.cancel(true));
+
+            // The remaining task runs cleanly.
+            assertTrue(future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(future1.isDone());
+            assertTrue(future2.isDone());
+            assertTrue(future1.isCancelled());
+            assertFalse(future2.isCancelled());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Uses ScheduledPolicyExecutorTask to schedule a repeating fixed-delay task for the
+     * Liberty scheduled executor to run on a policy executor.
+     */
+    @AllowedFFDC({
+                   "java.lang.NullPointerException", // test case schedules a task that intentionally raises this exception
+                   "java.util.concurrent.CompletionException", // can be raised by test task when cancel interrupts it
+                   "java.util.concurrent.RejectedExecutionException" // when we intentionally schedule a task beyond the queue capacity
+    })
+    @Test
+    public void testLibertyScheduledExecutorRunsFixedDelayTaskOnPolicyExecutor() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsFixedDelayTaskOnPolicyExecutor")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+        try {
+            // Use up the only max concurrency slot
+            CountDownLatch task1started3times = new CountDownLatch(3);
+            CountDownLatch task1run3blocker = new CountDownLatch(1);
+            ScheduledRunnableTask task1 = new ScheduledRunnableTask(executor, task1started3times, task1run3blocker);
+
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.scheduleWithFixedDelay(task1, 31, 33, TimeUnit.MILLISECONDS);
+            assertTrue(task1started3times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Use up the only position in the queue
+            CountDownLatch task2started4times = new CountDownLatch(4);
+            CountDownLatch forceNullPointerOn4thExecution = null;
+            ScheduledRunnableTask task2 = new ScheduledRunnableTask(executor, task2started4times, forceNullPointerOn4thExecution);
+
+            ScheduledFuture<?> future2 = libertyScheduledExecutor.scheduleWithFixedDelay(task2, 32, 34, TimeUnit.MILLISECONDS);
+
+            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && executor.queueCapacityRemaining() > 0; TimeUnit.MILLISECONDS.sleep(100));
+            assertEquals(0, executor.queueCapacityRemaining());
+
+            // Attempt to exceed the maximum queue size
+            CountDownLatch task3started = new CountDownLatch(1);
+            ScheduledRunnableTask task3 = new ScheduledRunnableTask(executor, task3started, task3started);
+
+            ScheduledFuture<?> future3 = libertyScheduledExecutor.scheduleWithFixedDelay(task3, 30, 333, TimeUnit.MILLISECONDS);
+            try {
+                future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail(future3 + " should not be able to run with queue full and concurrency at maximum.");
+            } catch (Exception x) {
+                // Expect CWWKE1201E for exceeding queue capacity
+                boolean found = false;
+                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
+                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
+                if (!found)
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            // Run a repeating task on the Liberty scheduled executor without delegating to the policy executor
+            CountDownLatch task4started5times = new CountDownLatch(5);
+            ScheduledFuture<?> future4 = libertyScheduledExecutor.scheduleWithFixedDelay(() -> task4started5times.countDown(), 34, 35, TimeUnit.MILLISECONDS);
+            assertTrue(task4started5times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(future4.cancel(false));
+
+            assertFalse(future1.isDone());
+            assertFalse(future2.isDone());
+            assertTrue(future3.isDone());
+
+            // Tasks 2 still has not started. Task 3 should never start.
+            assertEquals(4, task2started4times.getCount());
+            assertEquals(1, task3started.getCount());
+
+            // Scheduled task can be canceled while running
+            assertTrue(future1.cancel(true));
+
+            // The remaining task runs cleanly until it intentionally failures during the 4th execution.
+            assertTrue(task2started4times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                fail("Should not have result for (intentionally) failed task: " + future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NullPointerException))
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            assertTrue(future1.isDone());
+            assertTrue(future2.isDone());
+            assertTrue(future1.isCancelled());
+            assertFalse(future2.isCancelled());
+
+            try {
+                fail("Should not be able to get result of cancelled task: " + future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (CancellationException x) {
+                // pass
+            } catch (ExecutionException x) {
+                if ((x.getCause() instanceof CompletionException) && x.getCause().getCause() instanceof InterruptedException)
+                    ; // TODO Liberty scheduled executor appears to have a race condition where failure due to cancel might be reported ahead of the cancellation itself
+                else
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Uses ScheduledPolicyExecutorTask to schedule a repeating fixed-rate task for the
+     * Liberty scheduled executor to run on a policy executor.
+     */
+    @AllowedFFDC({
+                   "java.lang.NullPointerException", // test case schedules a task that intentionally raises this exception
+                   "java.util.concurrent.CompletionException", // can be raised by test task when cancel interrupts it
+                   "java.util.concurrent.RejectedExecutionException" // when we intentionally schedule a task beyond the queue capacity
+    })
+    @Test
+    public void testLibertyScheduledExecutorRunsFixedRateTaskOnPolicyExecutor() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsFixedRateTaskOnPolicyExecutor")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+        try {
+            // Use up the only max concurrency slot
+            CountDownLatch task1started5times = new CountDownLatch(5);
+            CountDownLatch task1run5blocker = new CountDownLatch(1);
+            ScheduledRunnableTask task1 = new ScheduledRunnableTask(executor, task1started5times, task1run5blocker);
+
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.scheduleAtFixedRate(task1, 51, 55, TimeUnit.MILLISECONDS);
+            assertTrue(task1started5times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Use up the only position in the queue
+            CountDownLatch task2started6times = new CountDownLatch(6);
+            CountDownLatch forceNullPointerOn6thExecution = null;
+            ScheduledRunnableTask task2 = new ScheduledRunnableTask(executor, task2started6times, forceNullPointerOn6thExecution);
+
+            ScheduledFuture<?> future2 = libertyScheduledExecutor.scheduleAtFixedRate(task2, 52, 56, TimeUnit.MILLISECONDS);
+
+            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && executor.queueCapacityRemaining() > 0; TimeUnit.MILLISECONDS.sleep(100));
+            assertEquals(0, executor.queueCapacityRemaining());
+
+            // Attempt to exceed the maximum queue size
+            CountDownLatch task3started = new CountDownLatch(1);
+            ScheduledRunnableTask task3 = new ScheduledRunnableTask(executor, task3started, task3started);
+
+            ScheduledFuture<?> future3 = libertyScheduledExecutor.scheduleAtFixedRate(task3, 53, 535, TimeUnit.MILLISECONDS);
+            try {
+                future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail(future3 + " should not be able to run with queue full and concurrency at maximum.");
+            } catch (Exception x) {
+                // Expect CWWKE1201E for exceeding queue capacity
+                boolean found = false;
+                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
+                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
+                if (!found)
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            // Run a repeating task on the Liberty scheduled executor without delegating to the policy executor
+            CountDownLatch task4started3times = new CountDownLatch(3);
+            ScheduledFuture<?> future4 = libertyScheduledExecutor.scheduleAtFixedRate(() -> task4started3times.countDown(), 54, 45, TimeUnit.MILLISECONDS);
+            assertTrue(task4started3times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(future4.cancel(false));
+
+            assertFalse(future1.isDone());
+            assertFalse(future2.isDone());
+            assertTrue(future3.isDone());
+
+            // Tasks 2 still has not started. Task 3 should never start.
+            assertEquals(6, task2started6times.getCount());
+            assertEquals(1, task3started.getCount());
+
+            // Scheduled task can be canceled while running
+            assertTrue(future1.cancel(true));
+
+            // The remaining task runs cleanly until it intentionally failures during the 4th execution.
+            assertTrue(task2started6times.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            try {
+                fail("Should not have result for (intentionally) failed task: " + future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof NullPointerException))
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            assertTrue(future1.isDone());
+            assertTrue(future2.isDone());
+            assertTrue(future1.isCancelled());
+            assertFalse(future2.isCancelled());
+
+            try {
+                fail("Should not be able to get result of cancelled task: " + future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (CancellationException x) {
+                // pass
+            } catch (ExecutionException x) {
+                if ((x.getCause() instanceof CompletionException) && x.getCause().getCause() instanceof InterruptedException)
+                    ; // TODO Liberty scheduled executor appears to have a race condition where failure due to cancel might be reported ahead of the cancellation itself
+                else
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Uses ScheduledPolicyExecutorTask to schedule a one-shot Runnable task for the
+     * Liberty scheduled executor to run on a policy executor.
+     */
+    @AllowedFFDC("java.util.concurrent.RejectedExecutionException") // when we intentionally schedule a task beyond the queue capacity
+    @Test
+    public void testLibertyScheduledExecutorRunsRunnableOnPolicyExecutor() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsRunnableOnPolicyExecutor")
+                        .maxConcurrency(1)
+                        .maxQueueSize(2)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+        try {
+            // Use up the only max concurrency slot
+            CountDownLatch task1started = new CountDownLatch(1);
+            CountDownLatch task1blocker = new CountDownLatch(1);
+            ScheduledRunnableTask task1 = new ScheduledRunnableTask(executor, task1started, task1blocker);
+
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.schedule(task1, 61, TimeUnit.MILLISECONDS);
+            assertTrue(task1started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Use up the only positions in the queue
+            CountDownLatch task2started = new CountDownLatch(1);
+            ScheduledRunnableTask task2 = new ScheduledRunnableTask(executor, task2started, task2started);
+
+            ScheduledFuture<?> future2 = libertyScheduledExecutor.schedule(task2, 62, TimeUnit.MILLISECONDS);
+
+            CountDownLatch task3started = new CountDownLatch(1);
+            ScheduledRunnableTask task3 = new ScheduledRunnableTask(executor, task3started, task3started);
+
+            ScheduledFuture<?> future3 = libertyScheduledExecutor.schedule(task3, 63, TimeUnit.MILLISECONDS);
+
+            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS && executor.queueCapacityRemaining() > 0; TimeUnit.MILLISECONDS.sleep(100));
+            assertEquals(0, executor.queueCapacityRemaining());
+
+            // Attempt to exceed the maximum queue size
+            CountDownLatch task4started = new CountDownLatch(1);
+            ScheduledRunnableTask task4 = new ScheduledRunnableTask(executor, task3started, task3started);
+
+            ScheduledFuture<?> future4 = libertyScheduledExecutor.schedule(task4, 64, TimeUnit.MILLISECONDS);
+            try {
+                future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail(future4 + " should not be able to run with queue full and concurrency at maximum.");
+            } catch (Exception x) {
+                // Expect CWWKE1201E for exceeding queue capacity
+                boolean found = false;
+                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
+                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
+                if (!found)
+                    throw new RuntimeException("Test failed. See cause.", x);
+            }
+
+            // Run a task on the Liberty scheduled executor without delegating to the policy executor
+            ScheduledFuture<Integer> future5 = libertyScheduledExecutor.schedule((Callable<Integer>) () -> 605, 65, TimeUnit.MILLISECONDS);
+            assertEquals(Integer.valueOf(605), future5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertFalse(future1.isDone());
+            assertFalse(future2.isDone());
+            assertFalse(future3.isDone());
+            assertTrue(future4.isDone());
+            assertTrue(future5.isDone());
+
+            // Tasks 2 and 3 still have not started. Task 4 should never start.
+            assertEquals(1, task2started.getCount());
+            assertEquals(1, task3started.getCount());
+            assertEquals(1, task4started.getCount());
+
+            // Scheduled task can be canceled while running
+            assertTrue(future1.cancel(true));
+
+            // The remaining tasks run cleanly.
+            future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertTrue(future1.isDone());
+            assertTrue(future2.isDone());
+            assertTrue(future3.isDone());
+            assertTrue(future1.isCancelled());
+            assertFalse(future2.isCancelled());
+            assertFalse(future3.isCancelled());
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     // Invoke groups of tasks on the policy executor that break themselves into multiple tasks that also

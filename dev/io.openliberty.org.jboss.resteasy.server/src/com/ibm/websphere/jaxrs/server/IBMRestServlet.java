@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.websphere.jaxrs.server;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -18,4 +24,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class IBMRestServlet extends HttpServlet30Dispatcher {
     private static final long serialVersionUID = -7916305366621576524L;
 
+    @Override
+    protected void doTrace(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        service("TRACE", request, response);
+    }
 }

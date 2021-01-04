@@ -65,17 +65,11 @@ import java.util.ArrayList;
  * </p>
  */
 public interface RecoveryAgent {
-    //------------------------------------------------------------------------------
-    // Method: RecoveryAgent.prepareForRecovery
-    //------------------------------------------------------------------------------
-    /**
-     * Directs the client service to get ready to process recovery for the given
-     * FailureScope. The client service uses the RecoveryLogManager instance it
-     * obtained when it registered to 'getRecoveryLog' the corresponding recovery
-     *
-     * @param failureScope The failure scope for which recovery may be about to start.
-     */
-    void prepareForRecovery(FailureScope failureScope);
+    boolean checkingLeases();
+
+    void setCheckingLeases(boolean b);
+
+    void terminateServer();
 
     //------------------------------------------------------------------------------
     // Method: RecoveryAgent.initiateRecovery
@@ -90,7 +84,7 @@ public interface RecoveryAgent {
      * @param failureScope The failure scope for which recovery is starting
      *
      * @exception RecoveryFailedException Thrown by the client service if it is
-     *                unable to complete recovery processing
+     *                                        unable to complete recovery processing
      * @throws LogPropertiesNotReadyException
      */
     void initiateRecovery(FailureScope failureScope) throws RecoveryFailedException;
@@ -105,7 +99,7 @@ public interface RecoveryAgent {
      * @param failureScope The failure scope for which recovery is terminating
      *
      * @exception TerminationFailedException Thrown by the client service if it is
-     *                unable to terminate recovery processing
+     *                                           unable to terminate recovery processing
      */
     void terminateRecovery(FailureScope failureScope) throws TerminationFailedException;
 
@@ -147,26 +141,13 @@ public interface RecoveryAgent {
     int clientVersion();
 
     //------------------------------------------------------------------------------
-    // Method: RecoveryAgent.logDirectories
-    //------------------------------------------------------------------------------
-    /**
-     * Returns an array of strings such that each string is a fully qualified log
-     * directory that the client indends to use for logging.
-     *
-     * @param failureScope The target failure scope
-     *
-     * @return String[] The log directory set.
-     */
-    String[] logDirectories(FailureScope failureScope);
-
-    //------------------------------------------------------------------------------
     // Method: RecoveryAgent.agentReportedFailure()
     //------------------------------------------------------------------------------
     /**
      * Informs the recovery agent that another recovery agent (identified by the client
      * id) has been upable to handle recovery processing for the given failure scope.
      *
-     * @param int The client id of the failing recovery agent.
+     * @param int          The client id of the failing recovery agent.
      * @param failureScope The target failure scope.
      *
      * @return String[] The log directory set.
@@ -189,20 +170,6 @@ public interface RecoveryAgent {
      */
     boolean disableFileLocking();
 
-    /**
-     * Returns a flag to indicate if the client wants RLS to prepare the recovery logs
-     * for a system snapshot in a safe fashion - i.e. the data in the recovery log files
-     * provide a consistent state in the event of disaster recovery.
-     *
-     * To make the RLS snapshot safe will have a impact on recovery log (and therefore it's
-     * client services, such as Transaction).
-     *
-     * By default, isSnapshotSafe is FALSE.
-     *
-     * @return boolean
-     */
-    boolean isSnapshotSafe();
-
     //------------------------------------------------------------------------------
     // Method: RecoveryAgent.logFileWarning()
     //------------------------------------------------------------------------------
@@ -210,8 +177,8 @@ public interface RecoveryAgent {
      * Notify RecoveryAgent of logfile space running out.
      * Called when the log file first crosses the 75% full threshold.
      *
-     * @param logname The name provided by the client service on the FileLogProperties
-     *            used to create this logfile
+     * @param logname    The name provided by the client service on the FileLogProperties
+     *                       used to create this logfile
      * @param bytesInUse The space required for current log data
      * @param bytesTotal The total space available for data
      */

@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.PartitionMapper;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class PartitionMapperPropertyResolverImpl extends
@@ -46,7 +48,7 @@ public class PartitionMapperPropertyResolverImpl extends
         // Resolve all the properties defined for this step
 		Properties currentProps = parentProps;
         if (partitionMapper.getProperties() != null) {
-            currentProps = this.resolveElementProperties(partitionMapper.getProperties().getPropertyList(), submittedProps, parentProps);
+            currentProps = this.resolveElementProperties((List<Property>) partitionMapper.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 		
 		return partitionMapper;

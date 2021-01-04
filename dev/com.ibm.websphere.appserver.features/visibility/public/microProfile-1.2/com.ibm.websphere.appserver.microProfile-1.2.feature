@@ -17,6 +17,7 @@ Subsystem-Name: MicroProfile 1.2
  com.ibm.websphere.appserver.mpFaultTolerance-1.0, \
  com.ibm.websphere.appserver.mpHealth-1.0, \
  com.ibm.websphere.appserver.mpJwt-1.0, \
- com.ibm.websphere.appserver.mpMetrics-1.0
+ com.ibm.websphere.appserver.mpMetrics-1.0, \
+  io.openliberty.mpCompatible-0.0
 kind=ga
 edition=core

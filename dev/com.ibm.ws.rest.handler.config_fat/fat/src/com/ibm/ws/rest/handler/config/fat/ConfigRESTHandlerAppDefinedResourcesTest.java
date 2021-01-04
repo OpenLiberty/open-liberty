@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -41,14 +40,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable once jms-3.0 and jca-3.0 are available
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     private static final String APP_NAME = "AppDefResourcesApp";
 
@@ -79,6 +77,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                                         .addClass("org.test.config.jmsadapter.ManagedJMSTopicConnectionFactoryImpl")
                                         .addClass("org.test.config.jmsadapter.NoOpSessionImpl"));
         ShrinkHelper.exportToServer(server, "connectors", tca_rar);
+
+        FATSuite.setupServerSideAnnotations(server);
 
         server.startServer();
 
@@ -1166,7 +1166,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      */
     @AllowedFFDC({ "java.lang.IllegalArgumentException", // expected: Could not parse configuration value as a duration: 1:05:30
                    "java.security.PrivilegedActionException", // expected: Value 1:05:30 is not supported for agedTimeout
-                   "javax.resource.ResourceException" // expected: Value 1:05:30 is not supported for agedTimeout
+                   "javax.resource.ResourceException", // expected: Value 1:05:30 is not supported for agedTimeout
+                   "jakarta.resource.ResourceException" // expected: Value 1:05:30 is not supported for agedTimeout
     })
     @Test
     public void testValidateAppDefinedDataSources() throws Exception {
@@ -1196,7 +1197,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(stack.get(1));
         assertNotNull(stack.get(2));
         assertNotNull(err, cause = failure.getJsonObject("cause"));
-        assertEquals(err, "javax.resource.ResourceException", cause.getString("class"));
+        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.resource.ResourceException" : "javax.resource.ResourceException", cause.getString("class"));
         assertNotNull(err, message = cause.getString("message"));
         assertTrue(err, message.startsWith("J2CA8011E") && message.contains("1:05:30"));
         assertNotNull(err, stack = cause.getJsonArray("stack"));
@@ -1318,7 +1319,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, JakartaEE9Action.isActive() ? "3.0" : "2.0", j.getString("jmsProviderSpecVersion"));
         assertEquals(err, "clientID", j.getString("clientID"));
     }
 
@@ -1339,7 +1340,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, j = j.getJsonObject("info"));
         assertEquals(err, "IBM", j.getString("jmsProviderName"));
         assertEquals(err, "1.0", j.getString("jmsProviderVersion"));
-        assertEquals(err, "2.0", j.getString("jmsProviderSpecVersion"));
+        assertEquals(err, JakartaEE9Action.isActive() ? "3.0" : "2.0", j.getString("jmsProviderSpecVersion"));
     }
 
     /**

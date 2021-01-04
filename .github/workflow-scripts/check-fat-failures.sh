@@ -1,3 +1,4 @@
+#!/bin/bash
 set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
@@ -26,7 +27,7 @@ cd dev
 mkdir failing_buckets
 FAILURE=false
 
-echo "### Bucket results";
+echo "::group::Bucket results";
 for FAT_BUCKET in $FAT_BUCKETS
 do
   if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
@@ -41,10 +42,11 @@ do
     echo "  [ PASSED ] $FAT_BUCKET";
   fi
 done
+echo "::endgroup::";
 
-set -e
 if $FAILURE; then
-  echo "At least one bucket failed.";
-  exit 1;
+    echo "::set-output name=status::failure"
+else
+    echo "::set-output name=status::success"
 fi
 

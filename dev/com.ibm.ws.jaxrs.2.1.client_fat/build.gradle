@@ -9,17 +9,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
+  if (isUsingArtifactory) { 
+    maven { 
+      credentials { 
+        username userProps.getProperty("artifactory.download.user") 
+        password userProps.getProperty("artifactory.download.token")    
+      } 
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")   
+    }   
+  } else {  
+    mavenCentral()  
+  } 
 }
 
 configurations {
@@ -66,9 +66,8 @@ dependencies {
   mockserver 'ch.qos.logback:logback-classic:1.1.3'
   mockserver 'janino:janino:2.5.10'
   mockserver 'org.mock-server:mockserver-logging:3.10.7'
-  mockserver 'com.fasterxml.jackson.core:jackson-core:2.7.8'
-  mockserver 'com.fasterxml.jackson.core:jackson-annotations:2.7.8'
-  mockserver 'com.fasterxml.jackson.core:jackson-databind:2.7.8'
+  mockserver 'ch.qos.logback:logback-core:1.1.3'
+  mockserver project(':io.openliberty.com.fasterxml.jackson')
   mockserver 'com.github.fge:json-schema-validator:2.2.6'
   mockserver 'com.jcraft:jzlib:1.1.3'
   mockserver 'javax.servlet:javax.servlet-api:3.0.1'

@@ -15,6 +15,8 @@
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 
+ext.testcontainersVersion = '1.15.0'
+
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
 
@@ -42,6 +44,7 @@ configurations {
   databaseRotationDrivers
   derby
   jakartaTransformer
+  testcontainers
 }
 
 dependencies {
@@ -54,27 +57,38 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 
-  databaseRotationDrivers 'org.testcontainers:testcontainers:1.14.0',
-       'org.testcontainers:database-commons:1.14.0',
-       'org.testcontainers:jdbc:1.14.0',
-       'org.testcontainers:oracle-xe:1.14.0',
-       'org.testcontainers:mssqlserver:1.14.0',
-       'org.testcontainers:postgresql:1.14.0',
-       'org.testcontainers:db2:1.14.0',
-       'org.apache.commons:commons-compress:1.18',
-       'org.rnorth.duct-tape:duct-tape:1.0.7',
-       'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-       'org.rnorth:tcp-unix-socket-proxy:1.0.2',
-       'net.java.dev.jna:jna:5.2.0',
-       'org.slf4j:slf4j-api:1.7.7',
-       'org.slf4j:slf4j-jdk14:1.7.7'
+  // this will inherit from the 'testcontainers' config
+  databaseRotationDrivers "org.testcontainers:database-commons:${testcontainersVersion}",
+       "org.testcontainers:jdbc:${testcontainersVersion}",
+       "org.testcontainers:oracle-xe:${testcontainersVersion}",
+       "org.testcontainers:mssqlserver:${testcontainersVersion}",
+       "org.testcontainers:postgresql:${testcontainersVersion}",
+       "org.testcontainers:db2:${testcontainersVersion}"
 
   jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
-                          'commons-cli:commons-cli:1.4',
-                          'org.slf4j:slf4j-simple:1.7.30',
-                          'org.slf4j:slf4j-api:1.7.26',
-                          'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
-                          'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+       'commons-cli:commons-cli:1.4',
+       'org.slf4j:slf4j-simple:1.7.30',
+       'org.slf4j:slf4j-api:1.7.26',
+       'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
+       'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+
+  testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
+       'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
+       'com.github.docker-java:docker-java-api:3.2.5',
+       'com.github.docker-java:docker-java-transport:3.2.5',
+       'com.github.docker-java:docker-java-transport-zerodep:3.2.5',
+       'net.java.dev.jna:jna:5.5.0',
+       'org.apache.commons:commons-compress:1.20',
+       'org.rnorth.duct-tape:duct-tape:1.0.8',
+       'org.rnorth.visible-assertions:visible-assertions:2.1.2',
+       'org.slf4j:slf4j-api:1.7.26',
+       'org.slf4j:slf4j-jdk14:1.7.7'
+}
+
+task addTestcontainers(type: Copy) {
+  mustRunAfter jar
+  from configurations.testcontainers
+  into new File(autoFvtDir, 'lib')
 }
 
 task addRequiredLibraries(type: Copy) {
@@ -120,6 +134,7 @@ task copyJdbcDrivers(type: Copy) {
 
 task copyDatabaseRotationDrivers(type: Copy) {
   mustRunAfter jar
+  dependsOn addTestcontainers
   from configurations.databaseRotationDrivers
   into new File(autoFvtDir, 'lib')
 }
@@ -374,8 +389,14 @@ task autoFVT {
   }
 }
 
-task zipAutoFVT(type: Zip) {
+task customizeAutoFVT {
   dependsOn autoFVT
+  enabled project.file('fat').exists()
+  // no-op task that allows buckets to override behavior of default autoFVT task
+}
+
+task zipAutoFVT(type: Zip) {
+  dependsOn customizeAutoFVT
   from autoFvtDir
   into 'autoFVT'
   archiveName 'autoFVT.zip'
@@ -430,6 +451,7 @@ task runfat(type: Exec) {
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
+  environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM
   environment "fat.test.localrun", "true"

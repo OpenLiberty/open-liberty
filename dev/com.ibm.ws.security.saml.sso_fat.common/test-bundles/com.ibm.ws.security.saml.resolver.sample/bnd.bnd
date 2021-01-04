@@ -1,0 +1,14 @@
+-include= ~../../../ant_build/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name:SAML User Identity Resolver Sample
+Bundle-SymbolicName: com.ibm.ws.security.saml.resolver.sample
+Bundle-Description: Liberty SAML User Identity Resolver feature, version ${bVersion}.
+Bundle-Activator: com.ibm.ws.security.saml.resolver.sample.Activator
+
+Export-Package: \
+  com.ibm.ws.security.saml.resolver.sample
+  
+# Update the metatype.xml for the configuration of your component in the resources/OSGI-INF/metatype folder
+# Include-Resource: \
+#   OSGI-INF=resources/OSGI-INF

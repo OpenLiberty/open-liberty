@@ -1,2 +1,2 @@
-DELETE FROM ${schemaname}.NoResultEntityOLGH8014;
-DELETE FROM ${schemaname}.SimpleEntityOLGH8014;
+DELETE FROM NoResultEntityOLGH8014;
+DELETE FROM SimpleEntityOLGH8014;

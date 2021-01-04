@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   02/15/2013  chrisc         EndorsingSupportingTokens tests
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>endsuptokensvc</display-name>
+
+    <servlet>
+        <servlet-name>endsuptokens0</servlet-name>
+        <display-name>endsuptokens0</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc0</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens0</servlet-name>
+       <url-pattern>/EndSupTokensService0</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens0Body</servlet-name>
+        <display-name>endsuptokens0Body</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc0Body</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>endsuptokens0Body</servlet-name>
+       <url-pattern>/EndSupTokensService0Body</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens0BodyElement</servlet-name>
+        <display-name>endsuptokens0BodyElement</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc0BodyElement</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>endsuptokens0BodyElement</servlet-name>
+       <url-pattern>/EndSupTokensService0BodyElement</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens0Key</servlet-name>
+        <display-name>endsuptokens0Key</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc0Key</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>endsuptokens0Key</servlet-name>
+       <url-pattern>/EndSupTokensService0Key</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens1</servlet-name>
+        <display-name>endsuptokens1</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc1</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens1</servlet-name>
+       <url-pattern>/EndSupTokensService1</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens2</servlet-name>
+        <display-name>endsuptokens2</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc2</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens2</servlet-name>
+       <url-pattern>/EndSupTokensService2</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens3</servlet-name>
+        <display-name>endsuptokens3</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc3</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>endsuptokens3</servlet-name>
+       <url-pattern>/EndSupTokensService3</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens4</servlet-name>
+        <display-name>endsuptokens4</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc4</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens4</servlet-name>
+       <url-pattern>/EndSupTokensService4</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens5</servlet-name>
+        <display-name>endsuptokens5</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc5</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens5</servlet-name>
+       <url-pattern>/EndSupTokensService5</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens6</servlet-name>
+        <display-name>endsuptokens6</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc6</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens6</servlet-name>
+       <url-pattern>/EndSupTokensService6</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>endsuptokens7</servlet-name>
+        <display-name>endsuptokens7</display-name>
+        <description>UNT EndorsingSupportingTokens Web Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.endsuptokens.EndSupTokensWebSvc7</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>endsuptokens7</servlet-name>
+       <url-pattern>/EndSupTokensService7</url-pattern>
+    </servlet-mapping>
+                                                                                                                                                                             
+    <session-config>
+       <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

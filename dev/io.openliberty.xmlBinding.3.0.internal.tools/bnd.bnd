@@ -39,6 +39,7 @@ Import-Package: \
   com.ibm.wsspi.classloading, \
   org.apache.xml.*; resolution:=optional, \
   org.w3c.dom.*, \
+  !javax.activation, \
   javax.xml.stream.*, \
   javax.xml.transform.*, \
   javax.xml.parsers.*, \
@@ -53,9 +54,10 @@ Import-Package: \
   !org.apache.xerces*, \
   !org.jvnet*, \
   !com.sun.mirror.*, \
-  !com.sun.codemodel.*,\ 
+  com.sun.codemodel.*,\
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
+  !com.sun.xml.dtdparser.*, \
   !com.sun.xml.fastinfoset.sax.*, \
   !com.sun.xml.fastinfoset.stax.*, \
   !sun.nio.cs*, \
@@ -68,20 +70,25 @@ Export-Package: \
   org.glassfish.jaxb.*;version="3.0";thread-context=true
 
 Include-Resource: \
+  @${repo;org.glassfish.jaxb:codemodel;3.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-core;3.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-jxc;3.0.0}!/!META-INF/maven/*, \
   @${repo;org.glassfish.jaxb:jaxb-runtime;3.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:txw2;3.0.0}!/!META-INF/maven/*, \
+  @${repo;org.glassfish.jaxb:xsom;3.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.xml.bind.external:rngom;3.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.istack:istack-commons-runtime;4.0.0}!/!META-INF/maven/*, \
   @${repo;com.sun.istack:istack-commons-tools;4.0.0}!/!META-INF/maven/*, \
-  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.0}!/!META-INF/maven/*, \
   META-INF/services/jakarta.xml.bind.JAXBContext=resources/META-INF/services/jakarta.xml.bind.JAXBContext, \
   META-INF/services/jakarta.xml.bind.JAXBContextFactory=resources/META-INF/services/jakarta.xml.bind.JAXBContextFactory
 
 Private-Package:\
   io.openliberty.xmlbinding.tools.*, \
   com.sun.istack.*, \
+  com.sun.tools.xjc.*,\
+  com.sun.tools.jxc.*,\
   com.sun.tools.rngdatatype.*, \
   com.sun.tools.rngom.*
 
@@ -89,10 +96,12 @@ instrument.disabled: true
 
 -buildpath: \
 	jakarta.xml.bind:jakarta.xml.bind-api;version=3.0.0, \
+	org.glassfish.jaxb:codemodel;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-core;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-jxc;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-runtime;version=3.0.0, \
 	org.glassfish.jaxb:jaxb-xjc;version=3.0.0, \
+	org.glassfish.jaxb:xsom;version=3.0.0, \
 	com.sun.xml.bind.external:relaxng-datatype;version=3.0.0, \
     com.sun.xml.bind.external:rngom;version=3.0.0, \
     com.sun.istack:istack-commons-runtime;version=4.0.0, \

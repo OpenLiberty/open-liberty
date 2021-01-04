@@ -68,7 +68,7 @@ Subsystem-Category: JakartaEE9Application
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
-Subsystem-Name: Jakarta Servlets 5.0
+Subsystem-Name: Jakarta Servlet 5.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

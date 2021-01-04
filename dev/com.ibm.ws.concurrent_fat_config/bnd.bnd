@@ -26,7 +26,7 @@ fat.project: true
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.ws.componenttest.2.0;version=latest,\
   io.openliberty.jakarta.annotation.2.0;version=latest,\
-  io.openliberty.jakarta.ejb.4.0;version=latest,\
+  io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
   io.openliberty.jakarta.concurrency.2.0;version=latest,\
   io.openliberty.jakarta.servlet.5.0;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest

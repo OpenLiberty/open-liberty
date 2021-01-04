@@ -140,6 +140,8 @@ public abstract class JPATestServlet extends FATServlet {
 //        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get(testResource));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
+        properties.put("dbMajorVersion", getDbMajorVersion());
+        properties.put("dbMinorVersion", getDbMinorVersion());
         properties.put("dbProductName", getDbProductName());
         properties.put("dbProductVersion", getDbProductVersion());
         properties.put("jdbcDriverVersion", getJdbcDriverVersion());
@@ -204,6 +206,8 @@ public abstract class JPATestServlet extends FATServlet {
     }
 
     private static boolean dbMetaAcquired = false;
+    private static String dbMajorVersion = "";
+    private static String dbMinorVersion = "";
     private static String dbProductName = "";
     private static String dbProductVersion = "";
     private static String jdbcDriverVersion = "";
@@ -242,11 +246,13 @@ public abstract class JPATestServlet extends FATServlet {
             System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
         }
 
-        dbProductName = dbProps.getProperty("dbproduct_name");
-        dbProductVersion = dbProps.getProperty("dbproduct_version");
-        jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
-        jdbcURL = dbProps.getProperty("jdbc_url");
-        jdbcUsername = dbProps.getProperty("jdbc_username");
+        dbMajorVersion = dbProps.getProperty("dbmajor_version", "UNKNOWN");
+        dbMinorVersion = dbProps.getProperty("dbminor_version", "UNKNOWN");
+        dbProductName = dbProps.getProperty("dbproduct_name", "UNKNOWN");
+        dbProductVersion = dbProps.getProperty("dbproduct_version", "UNKNOWN");
+        jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version", "UNKNOWN");
+        jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
+        jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
         dbMetaAcquired = true;
     }
@@ -298,6 +304,22 @@ public abstract class JPATestServlet extends FATServlet {
         System.out.println(sb);
 
         System.out.println("*****");
+    }
+
+    /**
+     * @return the dbMajorVersion
+     */
+    public static String getDbMajorVersion() throws Exception {
+        fetchDatabaseMetadata();
+        return dbMajorVersion;
+    }
+
+    /**
+     * @return the dbMinorVersion
+     */
+    public static String getDbMinorVersion() throws Exception {
+        fetchDatabaseMetadata();
+        return dbMinorVersion;
     }
 
     /**

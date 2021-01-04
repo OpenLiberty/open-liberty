@@ -40,7 +40,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
  com.ibm.websphere.appserver.containerServices-1.0, \
  io.openliberty.jakarta.persistence-3.0, \
  io.openliberty.jakartaeePlatform-9.0, \
- io.openliberty.jakarta.ejb-4.0, \
+ io.openliberty.jakarta.enterpriseBeans-4.0, \
  io.openliberty.jakarta.annotation-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  io.openliberty.jakarta.interceptor-2.0, \

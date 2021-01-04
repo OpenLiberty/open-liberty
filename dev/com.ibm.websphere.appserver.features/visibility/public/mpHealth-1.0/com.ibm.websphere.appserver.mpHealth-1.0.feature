@@ -19,7 +19,6 @@ Subsystem-Name: MicroProfile Health 1.0
  com.ibm.wsspi.appserver.webBundle-1.0, \
  io.openliberty.mpCompatible-0.0
 -bundles=\
- com.ibm.websphere.org.eclipse.microprofile.health.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:1.0", \
  com.ibm.websphere.jsonsupport, \
  com.ibm.ws.microprofile.health; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2

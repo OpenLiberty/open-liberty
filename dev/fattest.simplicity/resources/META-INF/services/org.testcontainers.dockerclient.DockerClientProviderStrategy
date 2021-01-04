@@ -1,1 +1,1 @@
-componenttest.topology.utils.ExternalTestServiceDockerClientStrategy
+componenttest.containers.ExternalTestServiceDockerClientStrategy

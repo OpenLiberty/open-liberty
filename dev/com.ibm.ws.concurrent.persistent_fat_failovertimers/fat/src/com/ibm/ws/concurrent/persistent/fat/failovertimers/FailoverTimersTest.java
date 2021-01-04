@@ -163,10 +163,10 @@ public class FailoverTimersTest extends FATServletClient {
     public static void tearDown() throws Exception {
         try {
             if (serverA.isStarted())
-                serverA.stopServer();
+                serverA.stopServer("CWWKC1503W");
         } finally {
             if (serverB.isStarted())
-                serverB.stopServer();
+                serverB.stopServer("CWWKC1503W");
         }
     }
 
@@ -206,9 +206,9 @@ public class FailoverTimersTest extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                           "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
-                           "CWWKC1501W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
-                           "CWWKC1503W.*Timer_400_1700", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
+                           "CNTR0020E", // EJB threw an unexpected (non-declared) exception during invocation of ...
+                           "CWWKC1501W", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                           "CWWKC1503W", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... due to failure ...
                            "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
         );
     }
@@ -250,7 +250,7 @@ public class FailoverTimersTest extends FATServletClient {
         // to the intentionally failed task.
         serverA.stopServer(
                            "CWWKC1501W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... The task is scheduled to retry after ...
-                           "CWWKC1503W.*", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry] OR timer rolls back for trying to run while server is stopping
+                           "CWWKC1503W", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task due to failure ... [no retry] OR timer rolls back for trying to run while server is stopping
                            "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
         );
     }
@@ -292,6 +292,7 @@ public class FailoverTimersTest extends FATServletClient {
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
             serverB.stopServer("CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                               "CWWKC1503W",
                                "DSRA.*", "J2CA.*", "WTRN.*" // task running during server shutdown
             );
         }
@@ -342,7 +343,7 @@ public class FailoverTimersTest extends FATServletClient {
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer(
                                               "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
-                                              "CWWKC1503W.*AutoCountingSingletonTimer", // timer not invoking due to server stop
+                                              "CWWKC1503W", // timer not invoking due to server stop
                                               "DSRA.*", "J2CA.*", "WTRN.*" // transaction in progress across server stop
             );
         }
@@ -391,6 +392,6 @@ public class FailoverTimersTest extends FATServletClient {
         runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
                 "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
 
-        serverForFailover.stopServer("CWWKC1503W.*AutoCountingSingletonTimer");
+        serverForFailover.stopServer("CWWKC1503W");
     }
 }

@@ -50,6 +50,7 @@ Include-Resource: \
   OSGI-INF/metatype=resources/OSGI-INF/metatype,\
   OSGI-INF/l10n=resources/OSGI-INF/l10n,\
   com/ibm/jbatch/container/jsl/jobXML_1_0.xsd=src/com/ibm/jbatch/container/jsl/jobXML_1_0.xsd,\
+  com/ibm/jbatch/container/jsl/jobXML_2_0.xsd=src/com/ibm/jbatch/container/jsl/jobXML_2_0.xsd,\
   xsd=resources/xsd
 
 -dsannotations: com.ibm.jbatch.container.api.impl.JobOperatorImpl,\

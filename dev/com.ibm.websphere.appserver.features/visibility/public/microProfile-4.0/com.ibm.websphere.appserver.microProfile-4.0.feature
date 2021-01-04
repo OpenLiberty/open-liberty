@@ -21,6 +21,7 @@ Subsystem-Name: MicroProfile 4.0
   com.ibm.websphere.appserver.mpMetrics-3.0, \
   com.ibm.websphere.appserver.mpOpenAPI-2.0, \
   com.ibm.websphere.appserver.mpOpenTracing-2.0, \
-  com.ibm.websphere.appserver.mpRestClient-2.0
+  com.ibm.websphere.appserver.mpRestClient-2.0, \
+  io.openliberty.mpCompatible-4.0
 kind=beta
 edition=core

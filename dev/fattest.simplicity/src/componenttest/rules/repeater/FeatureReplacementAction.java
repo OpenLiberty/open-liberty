@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -67,6 +68,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jaxb", "xmlBinding");
         featureNameMapping.put("jaxrsClient", "restfulWSClient");
         featureNameMapping.put("jaxws", "xmlWS");
+        featureNameMapping.put("jaxwsTest", "xmlwsTest");
         featureNameMapping.put("jca", "connectors");
         featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
         featureNameMapping.put("jpa", "persistence");
@@ -81,6 +83,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
+    }
+
+    public static EmptyAction NO_REPLACEMENT() {
+        return new EmptyAction();
     }
 
     /**
@@ -110,8 +116,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
-    private final Set<String> removeFeatures = new HashSet<>();
-    private final Set<String> addFeatures = new HashSet<>();
+    private final Set<String> removeFeatures = new LinkedHashSet<>();
+    private final Set<String> addFeatures = new LinkedHashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
     private final Set<String> serverConfigPaths = new HashSet<String>();

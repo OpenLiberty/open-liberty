@@ -14,11 +14,18 @@
 
     <groupId>com.ibm.ws.microprofile.rest.client</groupId>
     <artifactId>tck.runner.tck</artifactId>
-    <version>1.4</version>
+    <version>2.0</version>
     <name>MicroProfile RestClient 2.0 TCK Runner TCK Module</name>
 
+	<repositories>
+		<repository>
+			<id>ossrepo</id>
+			<url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1385/</url>
+		</repository>
+	</repositories>
+
     <properties>
-        <microprofile.rest.client.version>2.0-RC2</microprofile.rest.client.version>
+        <microprofile.rest.client.version>2.0</microprofile.rest.client.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -33,6 +40,7 @@
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
         <jetty.version>9.4.31.v20200723</jetty.version>
+        <reactive.streams.version>1.0.3</reactive.streams.version>
     </properties>
 
     <dependencyManagement>
@@ -61,6 +69,12 @@
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-tck</artifactId>
             <version>${microprofile.rest.client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams-tck</artifactId>
+            <version>${reactive.streams.version}</version>
         </dependency>
 
         <dependency>
@@ -133,6 +147,14 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.logging_}</systemPath>
+        </dependency>
+
+		<dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>org.reactivestreams.reactive-streams</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.reactivestreams.reactive-streams.1.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -245,6 +267,11 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlets</artifactId>
             <version>${jetty.version}</version>
         </dependency>
         <dependency>
