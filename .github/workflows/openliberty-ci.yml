@@ -1,6 +1,10 @@
 name: OpenLiberty CI
 
 on:
+  schedule:
+  # Runs at the begining of every week day.
+  # The daily build will be a good way to check to make sure build breaks don't get introduced to the GH actions build.
+  - cron: '0 0 * * 1-5'
   pull_request:
     branches: 
     - integration
