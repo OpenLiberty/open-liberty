@@ -8,5 +8,5 @@ IBM-Provision-Capability:  osgi.identity; filter:="(&(type=osgi.subsystem.featur
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.appSecurity-4.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxws.clientcontainer.security
-kind=noship
-edition=full
+kind=beta
+edition=core
