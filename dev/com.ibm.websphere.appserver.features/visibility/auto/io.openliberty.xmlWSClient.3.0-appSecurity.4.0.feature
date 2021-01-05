@@ -9,4 +9,4 @@ IBM-Provision-Capability:  osgi.identity; filter:="(&(type=osgi.subsystem.featur
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxws.clientcontainer.security
 kind=beta
-edition=core
+edition=base

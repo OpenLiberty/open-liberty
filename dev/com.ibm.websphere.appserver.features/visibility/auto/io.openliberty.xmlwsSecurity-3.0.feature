@@ -9,5 +9,5 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxws.2.3.security
 kind=beta
-edition=core
+edition=base
 WLP-Activation-Type: parallel

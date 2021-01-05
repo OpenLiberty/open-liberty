@@ -12,4 +12,4 @@ IBM-Process-Types: client
 -bundles=\
   com.ibm.ws.jaxws.2.3.clientcontainer.jakarta
 kind=beta
-edition=core
+edition=base

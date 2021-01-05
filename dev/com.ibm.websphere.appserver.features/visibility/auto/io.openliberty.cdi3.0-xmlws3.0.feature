@@ -10,5 +10,5 @@ IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.jndi-1.0
 -bundles=com.ibm.ws.jaxws.cdi.jakarta
 kind=beta
-edition=core
+edition=base
 WLP-Activation-Type: parallel

@@ -56,5 +56,5 @@ IBM-API-Package:\
  io.openliberty.xmlWS.3.0.internal.tools, \
  io.openliberty.com.sun.xml.messaging.saaj
 kind=beta
-edition=core
+edition=base
 WLP-Activation-Type: parallel
