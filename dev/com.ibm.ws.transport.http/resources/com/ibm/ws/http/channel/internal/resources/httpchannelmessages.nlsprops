@@ -178,10 +178,10 @@ cookies.samesite.knownDuplicateName=CWWKT0037W: A cookie name or pattern [{0}], 
 cookies.samesite.knownDuplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
 cookies.samesite.knownDuplicateName.useraction=Ensure that cookie names and patterns are unique across the lax, none, and strict configuration lists.
 
-trusted.header.origin.invalid.value=CWWKT0038W: The configured trustedHeaderOrigin value [{0}] is invalid and will not be used.
-trusted.header.origin.invalid.value.explanation=The specified value is not a full IP address or correctly formatted hostname.
+trusted.header.origin.invalid.value=CWWKT0038W: The [{0}] configured trustedHeaderOrigin value is invalid and cannot be used.
+trusted.header.origin.invalid.value.explanation=The specified value must be either a full IP address or correctly formatted hostname.
 trusted.header.origin.invalid.value.useraction=Ensure that configured IP addresses contain a value for each segment, and that hostnames do not contain any invalid characters.
 
-trusted.sensitive.header.origin.invalid.value=CWWKT0039W: The configured trustedSensitiveHeaderOrigin value [{0}] is invalid and will not be used.
-trusted.sensitive.header.origin.invalid.value.explanation=The specified value is not a full IP address or correctly formatted hostname.
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: The [{0}] configured trustedSensitiveHeaderOrigin value is invalid and cannot be used.
+trusted.sensitive.header.origin.invalid.value.explanation=The specified value must be either a full IP address or correctly formatted hostname.
 trusted.sensitive.header.origin.invalid.value.useraction=Ensure that configured IP addresses contain a value for each segment, and that hostnames do not contain any invalid characters.

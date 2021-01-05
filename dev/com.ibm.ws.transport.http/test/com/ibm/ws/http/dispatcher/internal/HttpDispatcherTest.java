@@ -328,7 +328,7 @@ public class HttpDispatcherTest {
         d.modified(map);
         Assert.assertFalse("Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsprHeader));
         Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
-        Assert.assertTrue(outputMgr.checkForMessages(".*trustedSensitiveHeaderOrigin.*invalidh@st.*invalid"));
+        Assert.assertTrue(outputMgr.checkForMessages(".*invalidh@st.*trustedSensitiveHeaderOrigin.*invalid"));
 
         // test invalid host format for non-sensitive list, with valid sensitive list
         map = buildMap(true, null, "invalidh@st", "hostname");
@@ -337,7 +337,7 @@ public class HttpDispatcherTest {
         Assert.assertTrue("Sensitive Private headers should be enabled for " + testAddr1.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr1, wsraHeader));
         Assert.assertFalse("Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsprHeader));
         Assert.assertFalse("Sensitive Private headers should be disabled for " + testAddr3.getHostAddress(), HttpDispatcher.usePrivateHeaders(testAddr3, wsraHeader));
-        Assert.assertTrue(outputMgr.checkForMessages(".*trustedHeaderOrigin.*invalidh@st.*invalid"));
+        Assert.assertTrue(outputMgr.checkForMessages(".*invalidh@st.*trustedHeaderOrigin.*invalid"));
     }
 
     @Test
