@@ -8,11 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jpa.management;
+package com.ibm.ws.jpa;
 
 public enum JPAVersion {
+    UNKNOWN(1, "Unknown"),
     JPA20(6, "2.0"),
-    JPA21(7, "2.1");
+    JPA21(7, "2.1"),
+    JPA22(8, "2.2"),
+    JPA30(9, "3.0");
 
     private final int jeeSpecLevel;
     private final String versionStr;

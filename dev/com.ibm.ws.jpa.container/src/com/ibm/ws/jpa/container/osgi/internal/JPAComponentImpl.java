@@ -65,6 +65,7 @@ import com.ibm.ws.jpa.JPAComponent;
 import com.ibm.ws.jpa.JPAExPcBindingContextAccessor;
 import com.ibm.ws.jpa.JPAProviderIntegration;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.jpa.JPAVersion;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfo;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfoRefAddr;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory;
@@ -331,10 +332,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {}
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
@@ -857,9 +860,11 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Reference(name = REFERENCE_APP_COORD)
-    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
-    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
     @Override
     public void registerJPAExPcBindingContextAccessor(JPAExPcBindingContextAccessor accessor) {
@@ -1001,6 +1006,15 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
             JPAIntrospection.executeIntrospectionAnalysis(out);
         } finally {
             JPAIntrospection.endJPAIntrospection();
+        }
+    }
+
+    @Override
+    public JPAVersion getJPAVersion() {
+        try {
+            return getJPARuntime().getJPARuntimeVersion();
+        } catch (Throwable t) {
+            return JPAVersion.UNKNOWN;
         }
     }
 }

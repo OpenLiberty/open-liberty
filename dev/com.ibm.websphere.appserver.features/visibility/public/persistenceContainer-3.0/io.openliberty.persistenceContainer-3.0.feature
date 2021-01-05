@@ -21,7 +21,7 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=com.ibm.ws.jpa.container.v22.jakarta, \
+-bundles=com.ibm.ws.jpa.container.v30.jakarta, \
  com.ibm.ws.jpa.container.jakarta, \
  com.ibm.ws.jpa.container.thirdparty.jakarta
 WLP-Activation-Type: parallel
