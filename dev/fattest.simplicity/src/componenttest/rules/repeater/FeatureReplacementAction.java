@@ -569,11 +569,18 @@ public class FeatureReplacementAction implements RepeatTestAction {
         // "servlet-3.1" ==> "servlet"
         String baseFeature = originalFeature.substring(0, dashOffset + 1);
         // "servlet-4.0".startsWith("servlet-")
+        // If multiple versions of a feature listed in the replacement list, it will take the last
+        // version by looping through all of the features instead of stopping on the first that matches.
+        // The Set is a LinkedHashSet so it will iterate over them in the order that add was called.
+        String replaceFeature = null;
         for (String replacementFeature : replacementFeatures) {
             if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
-                Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
-                return replacementFeature;
+                replaceFeature = replacementFeature;
             }
+        }
+        if (replaceFeature != null) {
+            Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replaceFeature + " ]");
+            return replaceFeature;
         }
         // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesn't match
         // the original feature name it replaces. We also check vice versa if the feature is an EE9 feature that involves a name change
