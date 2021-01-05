@@ -374,6 +374,10 @@ public abstract class AbstractTestLogic {
         return containsIgnoreCase(lDbProductName, "mysql");
     }
 
+    protected boolean isSQLServer(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "sql server") || containsIgnoreCase(lDbProductName, "sqlserver");
+    }
+
     protected boolean isHana(String lDbProductName) {
         return containsIgnoreCase(lDbProductName, "hdb");
     }

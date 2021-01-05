@@ -547,4 +547,718 @@ public class JULoopQueryAnoTestServlet extends JPATestServlet {
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test063_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test063_AMJTA_Web";
+        final String testMethod = "testLoop063";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test064_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test064_AMJTA_Web";
+        final String testMethod = "testLoop064";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test065_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test065_AMJTA_Web";
+        final String testMethod = "testLoop065";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test066_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test066_AMJTA_Web";
+        final String testMethod = "testLoop066";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test067_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test067_AMJTA_Web";
+        final String testMethod = "testLoop067";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test068_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test068_AMJTA_Web";
+        final String testMethod = "testLoop068";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test069_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test069_AMJTA_Web";
+        final String testMethod = "testLoop069";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test070_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test070_AMJTA_Web";
+        final String testMethod = "testLoop070";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test071_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test071_AMJTA_Web";
+        final String testMethod = "testLoop071";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test072_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test072_AMJTA_Web";
+        final String testMethod = "testLoop072";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test073_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test073_AMJTA_Web";
+        final String testMethod = "testLoop073";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test074_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test074_AMJTA_Web";
+        final String testMethod = "testLoop074";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test075_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test075_AMJTA_Web";
+        final String testMethod = "testLoop075";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test076_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test076_AMJTA_Web";
+        final String testMethod = "testLoop076";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test077_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test077_AMJTA_Web";
+        final String testMethod = "testLoop077";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test078_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test078_AMJTA_Web";
+        final String testMethod = "testLoop078";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test079_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test079_AMJTA_Web";
+        final String testMethod = "testLoop079";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+//    Test 80 Fails with java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
+//        Exception Description: Problem compiling [select d.name, m.name from DeptBean d, in (d.mgr) m].
+//        [42, 47] The collection-valued path 'd.mgr' must resolve to an association field.
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test080_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test080_AMJTA_Web";
+        final String testMethod = "testLoop080";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test081_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test081_AMJTA_Web";
+        final String testMethod = "testLoop081";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test082_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test082_AMJTA_Web";
+        final String testMethod = "testLoop082";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test083_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test083_AMJTA_Web";
+        final String testMethod = "testLoop083";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test084_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test084_AMJTA_Web";
+        final String testMethod = "testLoop084";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test085_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test085_AMJTA_Web";
+        final String testMethod = "testLoop085";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test086_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test086_AMJTA_Web";
+        final String testMethod = "testLoop086";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test087_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test087_AMJTA_Web";
+        final String testMethod = "testLoop087";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test088_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test088_AMJTA_Web";
+        final String testMethod = "testLoop088";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test089_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test089_AMJTA_Web";
+        final String testMethod = "testLoop089";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test090_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test090_AMJTA_Web";
+        final String testMethod = "testLoop090";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test091_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test091_AMJTA_Web";
+        final String testMethod = "testLoop091";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test092_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test092_AMJTA_Web";
+        final String testMethod = "testLoop092";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test093_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test093_AMJTA_Web";
+        final String testMethod = "testLoop093";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test094_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test094_AMJTA_Web";
+        final String testMethod = "testLoop094";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test095_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test095_AMJTA_Web";
+        final String testMethod = "testLoop095";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test096_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test096_AMJTA_Web";
+        final String testMethod = "testLoop096";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test097_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test097_AMJTA_Web";
+        final String testMethod = "testLoop097";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test098_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test098_AMJTA_Web";
+        final String testMethod = "testLoop098";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test099_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test099_AMJTA_Web";
+        final String testMethod = "testLoop099";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test100_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test100_AMJTA_Web";
+        final String testMethod = "testLoop100";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // Tests 101-103 are commented out until the test comparator has the smarts to consider the special
+    // sorting involved in these tests.
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test101_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test101_AMJTA_Web";
+        final String testMethod = "testLoop101";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test102_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test102_AMJTA_Web";
+        final String testMethod = "testLoop102";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test103_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test103_AMJTA_Web";
+        final String testMethod = "testLoop103";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test104_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test104_AMJTA_Web";
+        final String testMethod = "testLoop104";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test105_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test105_AMJTA_Web";
+        final String testMethod = "testLoop105";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test106_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test106_AMJTA_Web";
+        final String testMethod = "testLoop106";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test107_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test107_AMJTA_Web";
+        final String testMethod = "testLoop107";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // Commenting out until a suitable evaluation for testing ordering can be resolved.
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test108_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test108_AMJTA_Web";
+        final String testMethod = "testLoop108";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test109_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test109_AMJTA_Web";
+        final String testMethod = "testLoop109";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test110_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test110_AMJTA_Web";
+        final String testMethod = "testLoop110";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test111_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test111_AMJTA_Web";
+        final String testMethod = "testLoop111";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test112_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test112_AMJTA_Web";
+        final String testMethod = "testLoop112";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test113_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test113_AMJTA_Web";
+        final String testMethod = "testLoop113";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test114_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test114_AMJTA_Web";
+        final String testMethod = "testLoop114";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test115_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test115_AMJTA_Web";
+        final String testMethod = "testLoop115";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test116_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test116_AMJTA_Web";
+        final String testMethod = "testLoop116";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test117_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test117_AMJTA_Web";
+        final String testMethod = "testLoop117";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test118_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test118_AMJTA_Web";
+        final String testMethod = "testLoop118";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test119_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test119_AMJTA_Web";
+        final String testMethod = "testLoop119";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test120_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test120_AMJTA_Web";
+        final String testMethod = "testLoop120";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test121_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test121_AMJTA_Web";
+        final String testMethod = "testLoop121";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test122_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test122_AMJTA_Web";
+        final String testMethod = "testLoop122";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test123_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test123_AMJTA_Web";
+        final String testMethod = "testLoop123";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test124_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test124_AMJTA_Web";
+        final String testMethod = "testLoop124";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test125_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test125_AMJTA_Web";
+        final String testMethod = "testLoop125";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test126_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test126_AMJTA_Web";
+        final String testMethod = "testLoop126";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test127_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test127_AMJTA_Web";
+        final String testMethod = "testLoop127";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test128_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test128_AMJTA_Web";
+        final String testMethod = "testLoop128";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test129_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test129_AMJTA_Web";
+        final String testMethod = "testLoop129";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test130_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test130_AMJTA_Web";
+        final String testMethod = "testLoop130";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test131_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test131_AMJTA_Web";
+        final String testMethod = "testLoop131";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test132_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test132_AMJTA_Web";
+        final String testMethod = "testLoop132";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test133_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test133_AMJTA_Web";
+        final String testMethod = "testLoop133";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test134_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test134_AMJTA_Web";
+        final String testMethod = "testLoop134";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test135_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test135_AMJTA_Web";
+        final String testMethod = "testLoop135";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test136_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test136_AMJTA_Web";
+        final String testMethod = "testLoop136";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // Potentially a bug in eclipselink
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test137_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test137_AMJTA_Web";
+        final String testMethod = "testLoop137";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // Potentially a bug in eclipselink
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test138_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test138_AMJTA_Web";
+        final String testMethod = "testLoop138";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test139_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test139_AMJTA_Web";
+        final String testMethod = "testLoop139";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test140_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test140_AMJTA_Web";
+        final String testMethod = "testLoop140";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test141_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test141_AMJTA_Web";
+        final String testMethod = "testLoop141";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test142_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test142_AMJTA_Web";
+        final String testMethod = "testLoop142";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test143_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test143_AMJTA_Web";
+        final String testMethod = "testLoop143";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test144_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test144_AMJTA_Web";
+        final String testMethod = "testLoop144";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test145_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test145_AMJTA_Web";
+        final String testMethod = "testLoop145";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test146_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test146_AMJTA_Web";
+        final String testMethod = "testLoop146";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test147_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test147_AMJTA_Web";
+        final String testMethod = "testLoop147";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test148_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test148_AMJTA_Web";
+        final String testMethod = "testLoop148";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // Commented out, eclipselink doesn't produce the null row entry
+    //@Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test149_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test149_AMJTA_Web";
+        final String testMethod = "testLoop149";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_spec10_query_svlquery_juloopquery_ano_test150_AMJTA_Web() throws Exception {
+        final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test150_AMJTA_Web";
+        final String testMethod = "testLoop150";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
 }

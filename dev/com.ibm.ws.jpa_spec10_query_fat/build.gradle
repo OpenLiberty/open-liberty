@@ -30,4 +30,5 @@ addRequiredLibraries {
   dependsOn copyDatabaseRotationDrivers
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn addTestcontainers
 }
