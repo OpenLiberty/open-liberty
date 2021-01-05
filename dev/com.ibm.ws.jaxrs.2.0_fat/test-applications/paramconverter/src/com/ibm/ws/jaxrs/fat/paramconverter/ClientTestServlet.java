@@ -13,6 +13,7 @@ package com.ibm.ws.jaxrs.fat.paramconverter;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Array;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -242,5 +243,32 @@ public class ClientTestServlet extends FATServlet {
         String expected = "abc";
         assertEquals("expected: " + expected + " actual: " + actual, expected, actual);
     }
+
+ // Waiting for feature 15234    @Test
+    public void testQueryParamSpecialCharacters() throws Exception {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("application/resource/queryParamSpecialCharacters")
+                        .queryParam("/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~%1A!$'()*+,;:@", "apiKeyQueryParam1Value")
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        String actual = response.readEntity(String.class);
+        String expected = "apiKeyQueryParam1Value";
+        assertEquals("expected: " + expected + " actual: " + actual, expected, actual);
+    }
+
+// Waiting for feature 15234    @Test
+    public void testQueryParamSpecialCharactersEncoded() throws Exception {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("application/resource/queryParamSpecialCharacters")
+                        .queryParam(URLEncoder.encode("/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~%1A!$'()*+,;:@", "UTF-8"), "apiKeyQueryParam1Value")
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        String actual = response.readEntity(String.class);
+        String expected = "apiKeyQueryParam1Value";
+        assertEquals("expected: " + expected + " actual: " + actual, expected, actual);
+    }
+
 
 }

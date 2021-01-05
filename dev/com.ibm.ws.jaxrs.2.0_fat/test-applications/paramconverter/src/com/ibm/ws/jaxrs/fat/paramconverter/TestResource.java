@@ -126,4 +126,10 @@ public class TestResource {
         return Response.ok(string).build();
     }
 
+    @GET
+    @Path("queryParamSpecialCharacters")
+    public Response queryParamSpecialCharacters(@QueryParam("/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~%1A!$'()*+,;:@") String queryParm1) {
+        System.out.println("queryParamSpecialCharacters queryParm1 = " + queryParm1);
+        return Response.ok(queryParm1).build();
+    }
 }
