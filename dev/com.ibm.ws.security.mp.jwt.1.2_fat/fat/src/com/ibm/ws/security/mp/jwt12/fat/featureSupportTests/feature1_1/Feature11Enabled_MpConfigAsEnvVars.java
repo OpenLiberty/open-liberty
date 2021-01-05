@@ -34,6 +34,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class Feature11Enabled_MpConfigAsEnvVars extends Feature11Enabled_GenericEnvVarsAndSystemPropertiesTests {

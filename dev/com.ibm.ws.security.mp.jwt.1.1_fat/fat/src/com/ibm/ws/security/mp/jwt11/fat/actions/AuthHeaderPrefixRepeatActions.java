@@ -10,22 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.actions;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 
 public class AuthHeaderPrefixRepeatActions {
 
     public static AuthHeaderPrefixTypes asBearerType() {
 
-        return new AuthHeaderPrefixTypes(MpJwtFatConstants.TOKEN_TYPE_BEARER);
+        return new AuthHeaderPrefixTypes(MPJwt11FatConstants.TOKEN_TYPE_BEARER);
     }
 
     public static AuthHeaderPrefixTypes asTokenType() {
 
-        return new AuthHeaderPrefixTypes(MpJwtFatConstants.TOKEN_TYPE_TOKEN);
+        return new AuthHeaderPrefixTypes(MPJwt11FatConstants.TOKEN_TYPE_TOKEN);
     }
 
     public static AuthHeaderPrefixTypes asMiscType() {
 
-        return new AuthHeaderPrefixTypes(MpJwtFatConstants.TOKEN_TYPE_MISC);
+        return new AuthHeaderPrefixTypes(MPJwt11FatConstants.TOKEN_TYPE_MISC);
     }
 }

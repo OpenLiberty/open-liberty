@@ -1,0 +1,7 @@
+This folder should contain classes that provide common methods for each of the MP Jwt release FATs.
+ie:
+	There are mpJwt constants that are common to all mpJwt releases.
+	There are mpJwt 1.1 constants that extend the common constants.
+	There are mpJwt 1.2 constants that extend the 1.1 contants.
+	
+I put these classes in a common project so all future releases can build upon these classes (and classes like them).

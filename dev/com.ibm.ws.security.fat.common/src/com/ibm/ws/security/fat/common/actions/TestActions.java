@@ -41,7 +41,13 @@ public class TestActions {
      * Invokes the specified URL and returns the Page object that represents the response.
      */
     public Page invokeUrl(String currentTest, String url) throws Exception {
-        return invokeUrl(currentTest, createWebClient(), url);
+        WebClient webClient = createWebClient();
+
+        Page page = invokeUrl(currentTest, webClient, url);
+
+        destroyWebClient(webClient);
+
+        return page;
     }
 
     /**
@@ -62,7 +68,12 @@ public class TestActions {
      * Invoke the specified URL, adding a basic auth header first
      */
     public Page invokeUrlWithBasicAuth(String currentTest, String url, String user, String password) throws Exception {
-        return invokeUrlWithBasicAuth(currentTest, createWebClient(), url, user, password);
+
+        WebClient webClient = createWebClient();
+        Page page = invokeUrlWithBasicAuth(currentTest, webClient, url, user, password);
+        destroyWebClient(webClient);
+        return page;
+
     }
 
     /**
@@ -186,7 +197,10 @@ public class TestActions {
     }
 
     public Page invokeUrlWithParametersUsingGet(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.GET, requestParams);
+        WebClient wc = createWebClient();
+        Page page = invokeUrlWithParameters(currentTest, wc, url, HttpMethod.GET, requestParams);
+        destroyWebClient(wc);
+        return page;
     }
 
     public Page invokeUrlWithParametersUsingPost(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
@@ -194,7 +208,10 @@ public class TestActions {
     }
 
     public Page invokeUrlWithParametersUsingPost(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.POST, requestParams);
+        WebClient wc = createWebClient();
+        Page page = invokeUrlWithParameters(currentTest, wc, url, HttpMethod.POST, requestParams);
+        destroyWebClient(wc);
+        return page;
     }
 
     public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, HttpMethod method, List<NameValuePair> requestParams) throws Exception {
@@ -235,7 +252,11 @@ public class TestActions {
      * Submits the specified WebRequest and returns the Page object that represents the response.
      */
     public Page submitRequest(String currentTest, WebRequest request) throws Exception {
-        return submitRequest(currentTest, createWebClient(), request);
+        WebClient webClient = createWebClient();
+        Page page = submitRequest(currentTest, webClient, request);
+        destroyWebClient(webClient);
+
+        return page;
     }
 
     /**
@@ -249,10 +270,17 @@ public class TestActions {
         if (request == null) {
             throw new Exception("Cannot invoke the URL because the provided WebRequest object is null.");
         }
+        boolean clientPassed = true;
         if (wc == null) {
+            clientPassed = false;
             wc = createWebClient();
         }
-        return submitRequestWithNonNullObjects(currentTest, wc, request);
+        Page page = submitRequestWithNonNullObjects(currentTest, wc, request);
+
+        if (!clientPassed) { // we created the client, we should clean it up - avoid memory leaks
+            destroyWebClient(wc);
+        }
+        return page;
     }
 
     private Page submitRequestWithNonNullObjects(String currentTest, WebClient wc, WebRequest request) throws Exception {
@@ -311,6 +339,13 @@ public class TestActions {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setUseInsecureSSL(true);
         return webClient;
+    }
+
+    public void destroyWebClient(WebClient webClient) {
+        if (webClient != null) {
+            webClient.close();
+        }
+
     }
 
     public WebRequest createHttpRequest(String url, HttpMethod method) throws MalformedURLException {

@@ -103,7 +103,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     @Override
     protected String testName(FrameworkMethod method) {
         String testName = super.testName(method);
-        if (RepeatTestFilter.isAnyRepeatActionActive() && !RepeatTestFilter.isRepeatActionActive("NO_MODIFICATION_ACTION")) {
+        if (RepeatTestFilter.isAnyRepeatActionActive()) {
             testName = testName + RepeatTestFilter.getRepeatActionsAsString();
         }
         return testName;

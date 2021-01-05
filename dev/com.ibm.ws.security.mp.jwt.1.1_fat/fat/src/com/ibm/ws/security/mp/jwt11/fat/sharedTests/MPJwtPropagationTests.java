@@ -25,17 +25,20 @@ import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.actions.MpJwtFatActions;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.CommonMpJwtFat;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MPJwt11AppSetupUtils;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MpJwtMessageConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
+import com.ibm.ws.security.fat.common.utils.ServerFileUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.actions.MpJwtFatActions;
-import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -74,16 +77,23 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
     private final MpJwtFatActions actions = new MpJwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
-    String defaultUser = MpJwtFatConstants.TESTUSER;
-    String defaultPassword = MpJwtFatConstants.TESTUSERPWD;
+    String defaultUser = MPJwt11FatConstants.TESTUSER;
+    String defaultPassword = MPJwt11FatConstants.TESTUSERPWD;
 
     protected static Boolean getsGoodResults = true;
     protected static Boolean webTargetConfigured_true = true;
     protected static Boolean webTargetConfigured_false = false;
 
+    protected final static MPJwt11AppSetupUtils setupUtils = new MPJwt11AppSetupUtils();
+
+    private static ServerFileUtils fatUtils = new ServerFileUtils();
+
     protected static Boolean webTargetConfigured = webTargetConfigured_true;
 
     public static void propagationSetUp(String clientConfig, boolean webTargetConfiguredSetting) throws Exception {
+
+        fatUtils.updateFeatureFiles(resourceClient, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()), "mpConfigFeatures", "rsFeatures");
+        fatUtils.updateFeatureFiles(resourceServer, setActionInstance(RepeatTestFilter.getRepeatActionsAsString()), "mpConfigFeatures", "rsFeatures");
 
         setUpAndStartRSClient(resourceClient, clientConfig);
         setUpAndStartRSServerForPropagationTests(resourceServer, "rs_server_for_propagation_tests.xml");
@@ -95,25 +105,25 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
     /********************** Helper Methods **************************/
     protected static void setUpAndStartRSClient(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSClientApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_3_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MPJwt11FatConstants.BVT_SERVER_3_PORT_NAME_ROOT);
     }
 
     protected static void setUpAndStartRSServerForPropagationTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerPropagationApps(server);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(server, MPJwt11FatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
     }
 
     protected static void deployRSClientApps(LibertyServer server) throws Exception {
@@ -148,11 +158,11 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         WebClient webClient = actions.createWebClient();
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new NameValuePair(MpJwtFatConstants.TARGET_APP, buildAppUrl(resourceServer, MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                                               MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP)));
+        params.add(new NameValuePair(MPJwt11FatConstants.TARGET_APP, buildAppUrl(resourceServer, MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
+                                                                                 MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP)));
         // add where the client should set the token (or not set it at all)
         if (where != null) {
-            params.add(new NameValuePair(MpJwtFatConstants.WHERE, where));
+            params.add(new NameValuePair(MPJwt11FatConstants.WHERE, where));
         }
 
         Page response = actions.invokeUrlWithBearerTokenAndParms(_testName, webClient, clientUrl, builtToken, params);
@@ -160,6 +170,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
 
         validationUtils.validateResult(response, expectations);
 
+        actions.destroyWebClient(webClient);
     }
 
     /**
@@ -181,9 +192,9 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
      * @throws Exception
      */
     public String buildClientUrl() throws Exception {
-        String clientUrl = SecurityFatHttpUtils.getServerSecureUrlBase(resourceClient) + MpJwtFatConstants.LOGINCONFIG_PROPAGATION_ROOT_CONTEXT + "/rest/"
-                           + MpJwtFatConstants.LOGINCONFIG_PROPAGATION
-                           + "/" + MpJwtFatConstants.MPJWT_GENERIC_APP_NAME;
+        String clientUrl = SecurityFatHttpUtils.getServerSecureUrlBase(resourceClient) + MPJwt11FatConstants.LOGINCONFIG_PROPAGATION_ROOT_CONTEXT + "/rest/"
+                           + MPJwt11FatConstants.LOGINCONFIG_PROPAGATION
+                           + "/" + MPJwt11FatConstants.MPJWT_GENERIC_APP_NAME;
         return clientUrl;
     }
 
@@ -203,16 +214,16 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
     public Expectations getPropagationExpectations(boolean successfulResults) throws Exception {
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MpJwtFatConstants.EXECUTED_MSG_STRING
-                                                                                           + MpJwtFatConstants.MPJWT_APP_CLASS_PROPAGATION_CLIENT, "Did not execute "
-                                                                                                                                                   + MpJwtFatConstants.LOGINCONFIG_PROPAGATION));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MPJwt11FatConstants.EXECUTED_MSG_STRING
+                                                                                           + MPJwt11FatConstants.MPJWT_APP_CLASS_PROPAGATION_CLIENT, "Did not execute "
+                                                                                                                                                     + MPJwt11FatConstants.LOGINCONFIG_PROPAGATION));
 
         if (successfulResults) {
-            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MpJwtFatConstants.EXECUTED_MSG_STRING
-                                                                                               + MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTNOTINWEBXML_MPJWTINAPP, "Did not execute "
-                                                                                                                                                                             + MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTNOTINWEBXML_MPJWTINAPP));
+            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MPJwt11FatConstants.EXECUTED_MSG_STRING
+                                                                                               + MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTNOTINWEBXML_MPJWTINAPP, "Did not execute "
+                                                                                                                                                                               + MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTNOTINWEBXML_MPJWTINAPP));
         } else {
-            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MpJwtFatConstants.HTTP_UNAUTHORIZED_EXCEPTION, "Did not get 401 exception out of target application."));
+            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MPJwt11FatConstants.HTTP_UNAUTHORIZED_EXCEPTION, "Did not get 401 exception out of target application."));
             expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5522E_MPJWT_TOKEN_NOT_FOUND));
         }
 
@@ -227,24 +238,25 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         MPJwtPropagation_generic_test(null, webTargetConfigured);
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void MPJwtPropagation_useClientProp_stringTrue() throws Exception {
-        MPJwtPropagation_generic_test(MpJwtFatConstants.PROPAGATE_TOKEN_STRING_TRUE, getsGoodResults);
+        MPJwtPropagation_generic_test(MPJwt11FatConstants.PROPAGATE_TOKEN_STRING_TRUE, getsGoodResults);
     }
 
     @Test
     public void MPJwtPropagation_useClientProp_booleanTrue() throws Exception {
-        MPJwtPropagation_generic_test(MpJwtFatConstants.PROPAGATE_TOKEN_BOOLEAN_TRUE, getsGoodResults);
+        MPJwtPropagation_generic_test(MPJwt11FatConstants.PROPAGATE_TOKEN_BOOLEAN_TRUE, getsGoodResults);
     }
 
     @Test
     public void MPJwtPropagation_useClientProp_stringFalse() throws Exception {
-        MPJwtPropagation_generic_test(MpJwtFatConstants.PROPAGATE_TOKEN_STRING_FALSE, webTargetConfigured);
+        MPJwtPropagation_generic_test(MPJwt11FatConstants.PROPAGATE_TOKEN_STRING_FALSE, webTargetConfigured);
     }
 
     @Test
     public void MPJwtPropagation_useClientProp_booleanFalse() throws Exception {
-        MPJwtPropagation_generic_test(MpJwtFatConstants.PROPAGATE_TOKEN_BOOLEAN_FALSE, webTargetConfigured);
+        MPJwtPropagation_generic_test(MPJwt11FatConstants.PROPAGATE_TOKEN_BOOLEAN_FALSE, webTargetConfigured);
     }
 
 }

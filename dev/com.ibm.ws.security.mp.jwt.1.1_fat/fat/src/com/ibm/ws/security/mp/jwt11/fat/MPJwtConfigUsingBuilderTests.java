@@ -34,10 +34,10 @@ import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtTokenHeaderExpectation;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MpJwtMessageConstants;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -98,14 +98,14 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
-//  String[] algList = { MpJwtFatConstants.SIGALG_HS256, MpJwtFatConstants.SIGALG_HS384, MpJwtFatConstants.SIGALG_HS512,
-//  MpJwtFatConstants.SIGALG_RS256, MpJwtFatConstants.SIGALG_RS384, MpJwtFatConstants.SIGALG_RS512,
-//  MpJwtFatConstants.SIGALG_ES512, MpJwtFatConstants.SIGALG_ES384, MpJwtFatConstants.SIGALG_ES512,
-//  MpJwtFatConstants.SIGALG_PS256, MpJwtFatConstants.SIGALG_PS384, MpJwtFatConstants.SIGALG_PS512 };
+//  String[] algList = { MPJwt11FatConstants.SIGALG_HS256, MPJwt11FatConstants.SIGALG_HS384, MPJwt11FatConstants.SIGALG_HS512,
+//  MPJwt11FatConstants.SIGALG_RS256, MPJwt11FatConstants.SIGALG_RS384, MPJwt11FatConstants.SIGALG_RS512,
+//  MPJwt11FatConstants.SIGALG_ES512, MPJwt11FatConstants.SIGALG_ES384, MPJwt11FatConstants.SIGALG_ES512,
+//  MPJwt11FatConstants.SIGALG_PS256, MPJwt11FatConstants.SIGALG_PS384, MPJwt11FatConstants.SIGALG_PS512 };
 
-    String[] algList = { MpJwtFatConstants.SIGALG_HS256, MpJwtFatConstants.SIGALG_HS384, MpJwtFatConstants.SIGALG_HS512,
-                         MpJwtFatConstants.SIGALG_RS256, MpJwtFatConstants.SIGALG_RS384, MpJwtFatConstants.SIGALG_RS512,
-                         MpJwtFatConstants.SIGALG_ES256, MpJwtFatConstants.SIGALG_ES384, MpJwtFatConstants.SIGALG_ES512 };
+    String[] algList = { MPJwt11FatConstants.SIGALG_HS256, MPJwt11FatConstants.SIGALG_HS384, MPJwt11FatConstants.SIGALG_HS512,
+                         MPJwt11FatConstants.SIGALG_RS256, MPJwt11FatConstants.SIGALG_RS384, MPJwt11FatConstants.SIGALG_RS512,
+                         MPJwt11FatConstants.SIGALG_ES256, MPJwt11FatConstants.SIGALG_ES384, MPJwt11FatConstants.SIGALG_ES512 };
 
     private static final String SavedPS256Token = null;
     private static final String SavedPS384Token = null;
@@ -165,6 +165,8 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
             validationUtils.validateResult(response, expectations);
         }
 
+        actions.destroyWebClient(webClient);
+
     }
 
     /**
@@ -176,7 +178,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      */
     public Expectations setBadSigALgExpectations(LibertyServer server) throws Exception {
 
-        Expectations expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
+        Expectations expectations = badAppExpectations(MPJwt11FatConstants.UNAUTHORIZED_MESSAGE);
 
         expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
         expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
@@ -227,7 +229,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      */
     public Expectations setPSAlgWithoutJava11Expectations(LibertyServer server) throws Exception {
 
-        Expectations expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
+        Expectations expectations = badAppExpectations(MPJwt11FatConstants.UNAUTHORIZED_MESSAGE);
 
 //        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
 //        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
@@ -327,7 +329,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
-        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS, MPJwt11FatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 
@@ -624,7 +626,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "HS256");
         // make sur we issued the correct token
         Expectations builderExpectations = new Expectations();
-        builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MpJwtFatConstants.SIGALG_HS256));
+        builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MPJwt11FatConstants.SIGALG_HS256));
         validationUtils.validateResult(builtToken, builderExpectations);
 
         genericConfigTest(builtToken);
@@ -648,7 +650,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "hs256_keyMisMatch");
         // make sur we issued the correct token
         Expectations builderExpectations = new Expectations();
-        builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MpJwtFatConstants.SIGALG_HS256));
+        builderExpectations.addExpectation(new JwtTokenHeaderExpectation(HeaderConstants.ALGORITHM, StringCheckType.CONTAINS, MPJwt11FatConstants.SIGALG_HS256));
         validationUtils.validateResult(builtToken, builderExpectations);
 
         Expectations expectations = new Expectations();
@@ -757,8 +759,8 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
-        String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE);
-        String className = MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE;
+        String testUrl = buildAppUrl(resourceServer, MPJwt11FatConstants.MICROPROFILE_SERVLET, MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE);
+        String className = MPJwt11FatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE;
 
         WebClient webClient = actions.createWebClient();
 
@@ -780,6 +782,8 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
         // Try to use the token again - this time, in a different conversation
         genericConfigTest(builtToken, expectations);
+
+        actions.destroyWebClient(webClient);
 
         // On fast machines - tests that follow create an identical token and it's basically marked logged
         // out before it's created.  Sleep so the next test gets a unique token
@@ -856,7 +860,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         // we want to make sure that we get the name someuser from the subject
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
-        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
 
         genericConfigTest(builtToken, expectations);
 
@@ -884,7 +888,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
-        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS, "com.ibm.wsspi.security.cred.securityName=someuser", "Response did NOT contain \"com.ibm.wsspi.security.cred.securityName=someuser\" to indicate that the user in the credential was \"someuser\" "));
 
         genericConfigTest(builtToken, expectations);
 
@@ -946,7 +950,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         //        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
         // TODO - remove check for login page when issue 5280 is fixed
-        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS, MPJwt11FatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 
@@ -1100,7 +1104,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         //        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS1106A_AUTHENTICATION_FAILED, "Message log did not contain an error indicating a problem authenticating the request the provided token."));
         // TODO - remove check for login page when issue 5280 is fixed
-        expectations.addExpectation(new ResponseFullExpectation(MpJwtFatConstants.STRING_CONTAINS, MpJwtFatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS, MPJwt11FatConstants.FORM_LOGIN_HEADING, "Did NOT land on the base security form login page"));
 
         genericConfigTest(builtToken, expectations);
 
@@ -1199,7 +1203,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES256.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES256);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES256);
     }
 
     /**
@@ -1215,7 +1219,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES384.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES384);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES384);
     }
 
     /**
@@ -1231,7 +1235,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingES512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_ES512.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_ES512);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_ES512);
     }
 
     /**
@@ -1247,7 +1251,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS256.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS256);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS256);
     }
 
     /**
@@ -1263,7 +1267,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS384.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS384);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS384);
     }
 
     /**
@@ -1279,7 +1283,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_RS512.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_RS512);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_RS512);
     }
 
     // TODO - enable once PS is supported - make sure that 1) things behave well with Java 11 and b) things fail appropriately with older java versions
@@ -1296,7 +1300,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 //    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS256.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS256);
+//        genericSigAlgTest(MPJwt11FatConstants.SIGALG_PS256);
 //    }
 //
 //    /**
@@ -1312,7 +1316,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 //    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS384.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS384);
+//        genericSigAlgTest(MPJwt11FatConstants.SIGALG_PS384);
 //    }
 //
 //    /**
@@ -1328,7 +1332,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
 //    public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingPS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 //
 //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_PS512.xml");
-//        genericSigAlgTest(MpJwtFatConstants.SIGALG_PS512);
+//        genericSigAlgTest(MPJwt11FatConstants.SIGALG_PS512);
 //    }
 
     /**
@@ -1340,7 +1344,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS256.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS256);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS256);
     }
 
     /**
@@ -1352,7 +1356,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS384.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS384);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS384);
     }
 
     /**
@@ -1364,7 +1368,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingHS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_HS512.xml");
-        genericSigAlgTest(MpJwtFatConstants.SIGALG_HS512);
+        genericSigAlgTest(MPJwt11FatConstants.SIGALG_HS512);
     }
 
     /******************************** End signatureAlgorithm (new Algorithms) ***************************************/

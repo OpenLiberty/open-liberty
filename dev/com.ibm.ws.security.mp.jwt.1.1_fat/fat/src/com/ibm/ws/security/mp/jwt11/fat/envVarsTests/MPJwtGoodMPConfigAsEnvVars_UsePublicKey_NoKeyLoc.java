@@ -13,9 +13,9 @@ package com.ibm.ws.security.mp.jwt11.fat.envVarsTests;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP11ConfigSettings;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtGoodMPConfigAsEnvVars;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -44,7 +44,7 @@ public class MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc extends MPJwtGoodM
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
         MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(MP11ConfigSettings.PublicKeyLocationNotSet, MP11ConfigSettings.ComplexPublicKey, MP11ConfigSettings
-                        .buildDefaultIssuerString(jwtBuilderServer), MpJwtFatConstants.X509_CERT);
+                        .buildDefaultIssuerString(jwtBuilderServer), MPJwt11FatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.ENV_VAR);
 
     }

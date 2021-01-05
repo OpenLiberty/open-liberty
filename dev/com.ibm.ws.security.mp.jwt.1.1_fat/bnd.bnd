@@ -12,9 +12,8 @@
 bVersion=1.0
 
 src: \
-    fat/src, \
-    src, \
-    test-applications/microProfileApp.war/src, \
+    src,\
+    fat/src,\
     test-applications/microProfileApplicationScopedClaimInjectBoolean.war/src, \
     test-applications/microProfileApplicationScopedClaimInjectLong.war/src, \
     test-applications/microProfileApplicationScopedClaimInjectSet.war/src, \
@@ -34,14 +33,15 @@ src: \
     test-applications/microProfileSessionScopedClaimInjectLong.war/src, \
     test-applications/microProfileSessionScopedClaimInjectSet.war/src, \
     test-applications/microProfileSessionScopedClaimInjectString.war/src,\
-    test-applications/microProfileMP-ConfigInMETA-INF.war/src,\
-	test-applications/microProfileMP-ConfigNotInApp.war/src,\
-	test-applications/microProfileMP-ConfigUnderWeb-INF.war/src
     
 
 test.project: true
 
-
+-dependson: \
+    build.changeDetector,\
+    com.ibm.ws.security.fat.common.jwt,\
+    com.ibm.ws.security.fat.common.mp.jwt
+    
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
@@ -74,6 +74,7 @@ test.project: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.fat.common.mp.jwt;version=latest,\
 	com.ibm.ws.security.mp.jwt;version=latest,\
 	com.ibm.ws.security.jwt;version=latest,\
 	com.ibm.ws.security;version=latest,\

@@ -15,8 +15,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
-import com.ibm.ws.security.mp.jwt12.fat.sharedTests.MPJwt12MPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt12MPConfigTests;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -58,6 +58,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
@@ -71,7 +72,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
 
-    String[] rsAlgList = { MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.SIGALG_RS384, MpJwt12FatConstants.SIGALG_RS512 };
+    String[] rsAlgList = { MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.SIGALG_RS384, MPJwt12FatConstants.SIGALG_RS512 };
 
     /**
      * Startup the builder and resource servers
@@ -107,7 +108,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     public void Feature11Enabled_ConfigInServerXmlTests_Header_Authorization_passTokenInAuthHeaderUsingBearer() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_Header_Authorization.xml");
         // by default the test tooling puts the token in Authorization header using "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
 
     }
 
@@ -122,7 +123,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     public void Feature11Enabled_ConfigInServerXmlTests_Header_Cookie_doNotSetCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_Header_Cookie.xml");
         // pass the token as a cookie using the default name "Bearer"
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setMissingTokenExpectations(resourceServer));
     }
 
@@ -137,7 +138,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     public void Feature11Enabled_ConfigInServerXmlTests_Header_Cookie_setCookieName_passTokenAsCookie() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_Header_Cookie_withCookie.xml");
         // pass the token as a cookie using the configured cookie name
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.COOKIE, "myJwt", setMissingTokenExpectations(resourceServer));
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.COOKIE, "myJwt", setMissingTokenExpectations(resourceServer));
     }
 
     /****************************** End Header & Cookie **********************************/
@@ -174,7 +175,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     @Test
     public void Feature11Enabled_ConfigInServerXmlTests_NoKeyManagementKeyAliasKey_JWEToken_test() throws Exception {
 
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setNoEncryptNotJWSTokenExpectations(resourceServer, true));
 
     }
@@ -190,7 +191,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     public void Feature11Enabled_ConfigInServerXmlTests_KeyManagementKeyAliasKeyRS256_JWEToken_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_KeyManagementKeyAlias.xml");
-        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER,
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER,
                           setNoEncryptNotJWSTokenExpectations(resourceServer, true));
 
     }
@@ -199,7 +200,7 @@ public class Feature11Enabled_ConfigInServerXmlTests extends MPJwt12MPConfigTest
     public void Feature11Enabled_ConfigInServerXmlTests_KeyManagementKeyAliasKeyRS256_JWSToken_test() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_mpJwt11_KeyManagementKeyAlias.xml");
-        genericConfigTest(resourceServer, MpJwt12FatConstants.SIGALG_RS256, MpJwt12FatConstants.AUTHORIZATION, MpJwt12FatConstants.TOKEN_TYPE_BEARER, null);
+        genericConfigTest(resourceServer, MPJwt12FatConstants.SIGALG_RS256, MPJwt12FatConstants.AUTHORIZATION, MPJwt12FatConstants.TOKEN_TYPE_BEARER, null);
 
     }
 

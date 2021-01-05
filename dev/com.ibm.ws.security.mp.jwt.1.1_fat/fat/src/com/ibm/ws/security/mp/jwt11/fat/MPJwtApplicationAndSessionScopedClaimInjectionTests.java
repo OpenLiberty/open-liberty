@@ -11,7 +11,6 @@
 package com.ibm.ws.security.mp.jwt11.fat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -24,11 +23,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MPJwt11AppSetupUtils;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MpJwtMessageConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -72,7 +72,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonMpJwtFat {
+public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends MPJwtMPConfigTests {
 
     protected static Class<?> thisClass = MPJwtBasicTests.class;
 
@@ -84,6 +84,8 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
 
     private final TestValidationUtils validationUtils = new TestValidationUtils();
     String testAction = TestActions.ACTION_INSTALL_APP;
+
+    protected final static MPJwt11AppSetupUtils setupUtils = new MPJwt11AppSetupUtils();
 
     private final String[] reconfigMsgs = { MpJwtMessageConstants.CWWKS5603E_CLAIM_CANNOT_BE_INJECTED, MpJwtMessageConstants.CWWKZ0002E_EXCEPTION_WHILE_STARTING_APP };
 
@@ -119,17 +121,15 @@ public class MPJwtApplicationAndSessionScopedClaimInjectionTests extends CommonM
      * @throws Exception
      */
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
 
         generateRSServerTestApps(server);
-        serverTracker.addServer(server);
         skipRestoreServerTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
+        startRSServerForMPTests(server, configFile);
+
     }
 
     /**

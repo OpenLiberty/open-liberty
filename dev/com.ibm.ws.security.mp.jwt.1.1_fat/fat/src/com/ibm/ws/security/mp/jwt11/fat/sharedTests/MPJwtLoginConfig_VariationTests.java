@@ -17,11 +17,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MPJwt11AppSetupUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -46,7 +47,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
+public class MPJwtLoginConfig_VariationTests extends MPJwtMPConfigTests {
 
     protected static Class<?> thisClass = MPJwtLoginConfig_VariationTests.class;
 
@@ -65,8 +66,7 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
         YES, NO
     };
 
-//    protected static final boolean WillUseJWTToken = true;
-//    protected static final boolean WillNotUseJwtToken = false;
+    protected final static MPJwt11AppSetupUtils setupUtils = new MPJwt11AppSetupUtils();
 
     /********************** Helper Methods **************************/
     public static void loginConfigSetUp(String rsServerConfig) throws Exception {
@@ -77,15 +77,14 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
     }
 
     protected static void setUpAndStartRSServerForLoginConfigTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerLoginConfigApps(server);
-        serverTracker.addServer(server);
         skipRestoreServerTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        startRSServerForMPTests(server, configFile);
+
     }
 
     /**
@@ -148,6 +147,8 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
         }
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, goodAppExpectations(testUrl, className));
+
+        actions.destroyWebClient(webClient);
     }
 
     /**
@@ -179,10 +180,11 @@ public class MPJwtLoginConfig_VariationTests extends CommonMpJwtFat {
         if (ExpectedResult.GOOD.equals(expectedResult)) {
             expectations = goodAppExpectations(testUrl, className);
         } else {
-            expectations = badAppExpectations(MpJwtFatConstants.UNAUTHORIZED_MESSAGE);
+            expectations = badAppExpectations(MPJwt11FatConstants.UNAUTHORIZED_MESSAGE);
         }
         Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, builtToken);
         validationUtils.validateResult(response, expectations);
+        actions.destroyWebClient(webClient);
 
     }
 }

@@ -14,9 +14,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP12ConfigSettings;
 import com.ibm.ws.security.mp.jwt12.fat.sharedTests.GenericEnvVarsAndSystemPropertiesTests;
-import com.ibm.ws.security.mp.jwt12.fat.utils.MP12ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtGoodMP12ConfigAsSystemProperties_Audiences extends GenericEnvVarsAndSystemPropertiesTests {
@@ -45,8 +46,8 @@ public class MPJwtGoodMP12ConfigAsSystemProperties_Audiences extends GenericEnvV
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.COOKIE,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, "client01, client02", MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
+        commonMpJwt12Setup(sysPropResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MPJwt12FatConstants.COOKIE,
+                           MPJwt12FatConstants.TOKEN_TYPE_BEARER, "client01, client02", MP12ConfigSettings.AlgorithmNotSet, MP12ConfigSettings.DecryptKeyLocNotSet,
                            MPConfigLocation.SYSTEM_PROP);
 
     }

@@ -30,6 +30,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
@@ -512,8 +513,10 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        WebClient webClient = actions.createWebClient();
 
-        Page response = actions.invokeUrl(_testName, protectedUrl); // get back the login page
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl); // get back the login page
+        Log.info(thisClass, _testName, "returned response " + response.toString());
         validationUtils.validateResult(response, currentAction, expectations);
 
         // things should have bombed and we should be back at the login page
@@ -523,6 +526,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
+        actions.destroyWebClient(webClient);
     }
 
     /**
