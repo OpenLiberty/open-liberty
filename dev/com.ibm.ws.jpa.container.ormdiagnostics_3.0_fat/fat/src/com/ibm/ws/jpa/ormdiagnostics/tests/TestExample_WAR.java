@@ -139,7 +139,7 @@ public class TestExample_WAR {
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
-        Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v22.internal.JPA22Runtime"));
+        Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v30.internal.JPA30Runtime"));
 
         Assert.assertTrue(introspectorData.contains("Provider Runtime Integration Service = com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider"));
 
