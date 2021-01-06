@@ -198,7 +198,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         void createNotifications() {
-            appForceRestart = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART);
+            appForceRestart = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART, true);
             featureBundlesResolved = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
         }
 
