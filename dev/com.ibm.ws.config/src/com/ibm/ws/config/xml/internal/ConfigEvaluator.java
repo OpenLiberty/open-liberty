@@ -594,21 +594,44 @@ class ConfigEvaluator {
             return;
         }
         @SuppressWarnings("unchecked")
-        List<Object> rawList = (List<Object>) rawValue;
+        List<ConfigElement> rawList = (List<ConfigElement>) rawValue;
         int cardinality = context.getAttributeDefinition(attributeName).getCardinality();
         if ((rawList.size()) > 1 && (-1 <= cardinality) && (cardinality <= 1)) {
             SimpleElement element = mergeConfigElementValues(rawList, context);
             flattenConfigElement(element, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
         } else {
-            for (Object o : rawList) {
-                if (!(o instanceof ConfigElement)) {
-                    //TODO error
-                    continue;
-                }
-                flattenConfigElement((ConfigElement) o, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
+            List<ConfigElement> mergedElementList = mergeConfigElementsById(rawList);
+            for (ConfigElement element : mergedElementList) {
+                flattenConfigElement(element, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
             }
         }
         return;
+    }
+
+    /**
+     * @param rawList
+     * @return
+     */
+    private List<ConfigElement> mergeConfigElementsById(List<ConfigElement> rawList) {
+        List<ConfigElement> returnVal = new ArrayList<ConfigElement>();
+        Set<String> visited = new HashSet<String>();
+        for (ConfigElement ce : rawList) {
+
+            if (ce.getId() == null) {
+                returnVal.add(ce);
+            } else {
+                if (visited.add(ce.getId())) {
+                    for (ConfigElement other : rawList) {
+                        if (!other.equals(ce) && ce.getId().equals(other.getId())) {
+                            ce.override(other);
+                        }
+                    }
+                    returnVal.add(ce);
+                }
+            }
+
+        }
+        return returnVal;
     }
 
     private void flattenConfigElement(ConfigElement nestedElement, String flatPrefix, AtomicInteger i, String attributeName, String elementName, EvaluationContext context,
