@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.wab.internal;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
@@ -82,7 +83,8 @@ class WAB implements BundleTrackerCustomizer<WAB> {
 
     private final WABTracker<WAB> trackerForThisWAB;
 
-    private static class AddRemoveLock extends Object {};
+    private static class AddRemoveLock extends Object {
+    };
 
     private final AddRemoveLock addRemoveLock = new AddRemoveLock();
 
@@ -118,7 +120,7 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     void enableTracker() {
         //tracking count is -1 when the tracker is not open yet.
         if (trackerForThisWAB.getTrackingCount() == -1) {
-            installer.executeRunnable(new Runnable() {
+            Future<?> future = installer.executeRunnable(new Runnable() {
                 @Override
                 public void run() {
                     // Don't bother running if the server is shutting down.
@@ -207,6 +209,7 @@ class WAB implements BundleTrackerCustomizer<WAB> {
                     }
                 }
             });
+            installer.addSystemWABDeployFuture(this, future);
         }
     }
 
@@ -240,8 +243,9 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     }
 
     private String resolveVirtualHost() {
-        if (rawVirtualHost == null) return null;
-    
+        if (rawVirtualHost == null)
+            return null;
+
         if (rawVirtualHost.startsWith("${")) {
             String resolvedVirtHost = installer.resolveVariable(rawVirtualHost);
             if (rawVirtualHost.equals(resolvedVirtHost)) {

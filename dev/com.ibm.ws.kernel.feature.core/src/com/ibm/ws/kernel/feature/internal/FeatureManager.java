@@ -81,6 +81,7 @@ import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.ProcessType;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.kernel.feature.Visibility;
@@ -287,6 +288,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
+
+    @Reference
+    private volatile List<ServerReadyStatus> serverReadyChecks;
 
     private static final class KernelFeaturesHolder {
 
@@ -750,6 +754,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
 
+                    checkServerReady();
+
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
                     bundleContext.registerService(ServerStarted.class, new ServerStarted() {
@@ -782,6 +788,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             // Update/progress messages -- AFTER we've written cache files
             writeUpdateMessages(featureChange.provisioningMode, preInstalledFeatures, deletedAutoFeatures, deletedPublicAutoFeatures);
         }
+    }
+
+    private void checkServerReady() {
+        serverReadyChecks.forEach(ServerReadyStatus::check);
     }
 
     public void queryServer(FeatureChange featureChange) throws IllegalStateException {
