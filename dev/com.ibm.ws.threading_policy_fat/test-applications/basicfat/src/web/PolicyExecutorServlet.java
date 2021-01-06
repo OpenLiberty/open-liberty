@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,10 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -4503,6 +4505,181 @@ public class PolicyExecutorServlet extends FATServlet {
         } finally {
             executor.shutdownNow();
         }
+    }
+
+    /**
+     * Schedule tasks while suspended. Verify that none of the tasks run until the
+     * policy executor is resumed.
+     */
+    @Test
+    public void testLibertyScheduledExecutorScheduleWhileSuspended() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorScheduleWhileSuspended")
+                        .maxConcurrency(5)
+                        .expedite(5);
+
+        ScheduledBlockingQueueTask task = new ScheduledBlockingQueueTask(executor);
+
+        // Suspend the policy executor by reconfiguring it
+        Map<String, Object> suspendConfig = new TreeMap<String, Object>();
+        suspendConfig.put("expedite", 0);
+        suspendConfig.put("max", 0);
+        suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
+        suspendConfig.put("maxWaitForEnqueue", 0l);
+        suspendConfig.put("runIfQueueFull", false);
+        executor.updateConfig(suspendConfig);
+
+        try {
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.schedule(task, 5, TimeUnit.MILLISECONDS);
+            ScheduledFuture<?> future2 = libertyScheduledExecutor.schedule(task, 6, TimeUnit.MILLISECONDS);
+            ScheduledFuture<?> future3 = libertyScheduledExecutor.schedule(task, 7, TimeUnit.MILLISECONDS);
+
+            TimeUnit.MILLISECONDS.sleep(500);
+
+            // No tasks should run while suspended
+            assertFalse(future1.isDone());
+            assertFalse(future2.isDone());
+            assertFalse(future3.isDone());
+            assertNull(task.poll());
+
+            // Resume the policy executor by reconfiguring it again
+            Map<String, Object> resumeConfig = new TreeMap<String, Object>();
+            resumeConfig.put("expedite", 5);
+            resumeConfig.put("max", 5);
+            resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
+            resumeConfig.put("maxWaitForEnqueue", 0l);
+            resumeConfig.put("runIfQueueFull", false);
+            executor.updateConfig(resumeConfig);
+
+            // Task executes once for each time it was scheduled
+            assertNotNull(task.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertNotNull(task.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertNotNull(task.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            // There should be no extra executions
+            assertNull(task.poll());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Use a policy executor config change to suspend a repeating task that runs on the Liberty Scheduled Executor.
+     */
+    @Test
+    public void testLibertyScheduledExecutorSuspendAfterSchedule() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorSuspendAfterSchedule")
+                        .maxConcurrency(3)
+                        .expedite(3);
+
+        ScheduledBlockingQueueTask task1 = new ScheduledBlockingQueueTask(executor);
+        try {
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.scheduleAtFixedRate(task1, 333, 33, TimeUnit.MILLISECONDS);
+
+            // Suspend the policy executor by reconfiguring it
+            Map<String, Object> suspendConfig = new TreeMap<String, Object>();
+            suspendConfig.put("expedite", 0);
+            suspendConfig.put("max", 0);
+            suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
+            suspendConfig.put("maxWaitForEnqueue", 0l);
+            suspendConfig.put("runIfQueueFull", false);
+            executor.updateConfig(suspendConfig);
+
+            // Clear out any executions that might have already happened or that might overlap the suspend
+            TimeUnit.SECONDS.sleep(1);
+            task1.clear();
+
+            // While suspended, no further executions should occur
+            assertNull(task1.poll(300, TimeUnit.MILLISECONDS));
+
+            // Resume the policy executor by reconfiguring it again
+            Map<String, Object> resumeConfig = new TreeMap<String, Object>();
+            resumeConfig.put("expedite", 3);
+            resumeConfig.put("max", 3);
+            resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
+            resumeConfig.put("maxWaitForEnqueue", 0l);
+            resumeConfig.put("runIfQueueFull", false);
+            executor.updateConfig(resumeConfig);
+
+            // Task executes repeatedly
+            assertNotNull(task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(future1.cancel(false));
+        } finally {
+            executor.shutdownNow();
+        }
+
+        // Clear out any executions that might overlap the cancel/shutdown
+        TimeUnit.SECONDS.sleep(1);
+        task1.clear();
+
+        // After shutdown, no further executions should occur
+        assertNull(task1.poll(300, TimeUnit.MILLISECONDS));
+    }
+
+    /**
+     * Use a policy executor config change to suspend a repeating task while it is running
+     * on the Liberty Scheduled Executor.
+     */
+    @Test
+    public void testLibertyScheduledExecutorSuspendWhileRunning() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorSuspendWhileRunning")
+                        .maxConcurrency(4)
+                        .expedite(4);
+
+        Runnable suspendOnSecondExecution = () -> {
+            // Suspend the policy executor by reconfiguring it
+            Map<String, Object> suspendConfig = new TreeMap<String, Object>();
+            suspendConfig.put("expedite", 0);
+            suspendConfig.put("max", 0);
+            suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
+            suspendConfig.put("maxWaitForEnqueue", 0l);
+            suspendConfig.put("runIfQueueFull", false);
+            executor.updateConfig(suspendConfig);
+        };
+
+        ScheduledBlockingQueueTask task1 = new ScheduledBlockingQueueTask(executor, null, suspendOnSecondExecution);
+        try {
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.scheduleAtFixedRate(task1, 44, 56, TimeUnit.MILLISECONDS);
+
+            // First two executions should occur, and then the task should suspend the executor,
+            assertEquals(Integer.valueOf(1), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(2), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // While suspended, no further executions should occur
+            assertNull(task1.poll(300, TimeUnit.MILLISECONDS));
+
+            // Resume the policy executor by reconfiguring it again
+            Map<String, Object> resumeConfig = new TreeMap<String, Object>();
+            resumeConfig.put("expedite", 4);
+            resumeConfig.put("max", 4);
+            resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
+            resumeConfig.put("maxWaitForEnqueue", 0l);
+            resumeConfig.put("runIfQueueFull", false);
+            executor.updateConfig(resumeConfig);
+
+            // Task executes repeatedly
+            assertEquals(Integer.valueOf(3), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(4), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(5), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(future1.cancel(false));
+        } finally {
+            executor.shutdownNow();
+        }
+
+        // Clear out any executions that might overlap the cancel/shutdown
+        TimeUnit.SECONDS.sleep(1);
+        task1.clear();
+
+        // After shutdown, no further executions should occur
+        assertNull(task1.poll(300, TimeUnit.MILLISECONDS));
     }
 
     // Invoke groups of tasks on the policy executor that break themselves into multiple tasks that also
