@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -98,7 +97,6 @@ public class HelloWorldTest {
 
     @Test
     @SkipForRepeat("EE9_FEATURES")
-    @ExpectedFFDC("com.ibm.ws.webcontainer.exception.InvalidMediaTypeException")
     public void testInvalidCharset() throws Exception {
         assertEquals(415, runGetMethodInvalidCharset("/helloworld/rest/helloworld"));
     }
