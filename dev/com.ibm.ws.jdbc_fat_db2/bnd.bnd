@@ -26,7 +26,7 @@ fat.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.db2.jcc;version=1.4.0,\
-    org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
     org.testcontainers:database-commons;version=1.15.1,\
     org.testcontainers:jdbc;version=1.15.1,\
     org.testcontainers:db2;version=1.15.1,\

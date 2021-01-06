@@ -68,7 +68,6 @@ addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn copyCommonFiles
 addRequiredLibraries.dependsOn copySharedPostgres
 addRequiredLibraries.dependsOn addJakartaTransformer
-addRequiredLibraries.dependsOn copyFattestDatabases
 addRequiredLibraries.dependsOn addTestcontainers
 
 jar {

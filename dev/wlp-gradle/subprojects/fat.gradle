@@ -139,18 +139,6 @@ task copyDatabaseRotationDrivers(type: Copy) {
   into new File(autoFvtDir, 'lib')
 }
 
-if (findProject(':fattest.databases') != null) {
-  // Not all projects include fattest.databases, so we must conditionally define the task
-  // otherwise project(':fattest.databases') will not be found and raise an error
-  task copyFattestDatabases(type: Copy) {
-    mustRunAfter jar
-    dependsOn ':fattest.databases:assemble'
-    from new File(project(':fattest.databases').buildDir, 'libs')
-    include 'fattest.databases.jar'
-    into new File(autoFvtDir, 'lib')
-  }
-}
-
 task copyFeatureBundles {
   mustRunAfter assemble
   enabled project.file('test-bundles').exists()
