@@ -2926,7 +2926,7 @@ public class ConfigEvaluatorTest {
                      "        <c.2.1 attr='c21c'/>" +
                      "        <c.2.1 attr='c21d'/>" +
                      "      </c.2>" +
-                     //         "      <c1 id='child1' attr='c1a' multiAttr='c1First' />" +
+                     "      <c1 id='child1' attr='c1a' multiAttr='c1First' />" +
                      "    </top>" +
                      "</server>";
 
