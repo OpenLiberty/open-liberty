@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,7 +81,10 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         try {
             Properties tcProps = new Properties();
             if (testcontainersConfigFile.exists()) {
-                tcProps.load(new FileInputStream(testcontainersConfigFile));
+                Log.info(c, "generateTestcontainersConfig", "File already exists");
+                FileInputStream fis = new FileInputStream(testcontainersConfigFile);
+                tcProps.load(fis);
+                fis.close();
                 tcProps.remove("docker.client.strategy");
                 Files.delete(testcontainersConfigFile.toPath());
             }
