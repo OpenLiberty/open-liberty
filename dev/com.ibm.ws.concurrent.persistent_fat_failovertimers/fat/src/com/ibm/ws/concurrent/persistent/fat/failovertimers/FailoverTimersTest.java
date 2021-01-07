@@ -384,7 +384,7 @@ public class FailoverTimersTest extends FATServletClient {
         assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));
 
         LibertyServer serverToStop = SERVER_A_NAME.equals(serverName) ? serverA : serverB;
-        serverToStop.stopServer();
+        serverToStop.stopServer("CWWKC1503W");
 
         String nameOfServerForFailover = serverToStop == serverA ? SERVER_B_NAME : SERVER_A_NAME;
         LibertyServer serverForFailover = serverToStop == serverA ? serverB : serverA;
