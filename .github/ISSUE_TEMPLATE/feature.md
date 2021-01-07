@@ -64,7 +64,7 @@ Before Onboarding the beta
 #### You **MUST** have the Design Approved or No Design Approved label before requesting focal point approvals.
 
 All features (both "Design Approved" and "No Design Approved")
-- [ ] **FAT** - ([Adam Yoho](https://github.com/ayoho), [Martin Holder](https://github.com/mhldr), or [Dave Waddling](https://github.com/dave-waddling)). SOE FATS are running successfully or N/A . Approver adds label focalApproved:fat to the Epic in Github.
+- [ ] **FAT** - ([OpenLiberty/fat-approvers](https://github.com/orgs/OpenLiberty/teams/fat-approvers)). SOE FATS are running successfully or N/A . Approver adds label focalApproved:fat to the Epic in Github.
 - [ ] **Demo** - ([Tom Evans](https://github.com/tevans78) or [Chuck Bridgham](https://github.com/cbridgha)). Demo is scheduled for an upcoming EOI. Approver adds label focalApproved:demo to the Epic in Github.
 - [ ] **Globalization** ([Sam Wong](https://github.com/samwatibm) - Liberty / Simy Cheeran - tWAS). Translation is complete or N/A. TVT - complete or N/A. Approver adds label focalApproved:globalization to the Epic in Github.
 
