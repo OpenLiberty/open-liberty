@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -26,12 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction().addFeature("jaxws-2.3")
-                                    .addFeature("cdi-2.0")
-                                    .removeFeature("cdi-1.2")
-                                    .removeFeature("jaxws-2.2")
-                                    .removeFeature("servlet-3.1")
-                                    .withID("jaxws-2.3"));
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jaxws-2.2").addFeature("jaxws-2.3").withID("jaxws-2.3"))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"));
 
 }
