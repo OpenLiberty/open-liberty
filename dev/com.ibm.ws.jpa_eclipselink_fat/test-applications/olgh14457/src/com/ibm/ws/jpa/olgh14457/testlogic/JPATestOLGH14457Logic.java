@@ -22,6 +22,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
+import com.ibm.ws.testtooling.testlogic.AbstractTestLogic.JPAProviderImpl;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
@@ -30,11 +31,6 @@ public class JPATestOLGH14457Logic extends AbstractTestLogic {
     public void testCaseExpressionReturnType(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                              Object managedComponentObject) {
         final String testName = getTestName();
-
-        if (isUsingJPA30Feature()) {
-            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for jpa-3.0");
-            return;
-        }
 
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
@@ -56,9 +52,8 @@ public class JPATestOLGH14457Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 2.7 is updated
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
+        if ((isUsingJPA30Feature()) && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
             return;
         }
 

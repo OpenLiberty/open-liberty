@@ -21,8 +21,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestExample_EJB.class,
-                TestExample_Web.class,
+//                TestExample_EJB.class,
+//                TestExample_Web.class,
                 TestOLGH8820_EJB.class,
                 TestOLGH8820_Web.class,
                 TestOLGH10240_EJB.class,
