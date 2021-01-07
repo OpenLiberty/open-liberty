@@ -70,11 +70,12 @@ public class JwtBuilderActions extends TestActions {
         Page response = null;
         try {
             response = invokeUrlWithParameters(testName, webClient, jwtBuilderUrl, requestParams);
-            webClient.close();
             return response;
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtBuilder", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }
@@ -136,11 +137,12 @@ public class JwtBuilderActions extends TestActions {
         try {
             response = invokeUrlWithParametersAndHeaders(testName, webClient, jwtBuilderUrl, requestParams,
                     requestHeaders);
-            webClient.close();
             return response;
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtBuilder", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }
