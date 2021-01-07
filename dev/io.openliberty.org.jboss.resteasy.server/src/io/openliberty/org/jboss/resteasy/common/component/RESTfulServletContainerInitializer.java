@@ -117,6 +117,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 String servletClassName = servletReg.getClassName();
                 if (servletClassName == null) {
                     ServletRegistration.Dynamic dynReg = servletContext.addServlet(servletReg.getName(), HttpServlet30Dispatcher.class);
+                    dynReg.setAsyncSupported(true);
                     dynReg.setInitParameter(APPLICATION, applicationClass.getName());
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
