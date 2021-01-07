@@ -80,8 +80,8 @@ import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.webcontainer.exception.InvalidMediaTypeException;
 
 /**
  * Common base for HTTP Destination implementations.
@@ -469,7 +469,7 @@ public abstract class AbstractHTTPDestination
                 // Liberty Change Start
                 String m = "Invalid MediaType encoding: " + enc;
                 Tr.warning(tc, m);
-                throw new InvalidMediaTypeException(m); // throw so webcontainer returns a 415
+                throw new InvalidCharsetException(m);
                 // Liberty Change End
             }
             inMessage.put(Message.ENCODING, normalizedEncoding);

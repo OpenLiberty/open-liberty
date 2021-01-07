@@ -40,7 +40,8 @@ Export-Package: \
 	com.ibm.websphere.jaxrs20.multipart;version=1.1.0,\
 	com.ibm.ws.jaxrs20.clientconfig,\
 	org.apache.cxf.feature,\
-	org.apache.cxf.jaxrs.client;version=3.1.18
+	org.apache.cxf.jaxrs.client;version=3.1.18,\
+	com.ibm.ws.cxf.exceptions;version=3.1.18
 
 Import-Package: \
  !com.wordnik.swagger.jaxrs.config, \
@@ -188,8 +189,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 	com.ibm.websphere.appserver.spi.threading, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.jaxrs.2.x.config;version=latest,\
-	javax.activation:activation;version=1.1, \
-	com.ibm.ws.webcontainer;version=latest
+	javax.activation:activation;version=1.1
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

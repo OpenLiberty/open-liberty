@@ -15,7 +15,8 @@ Export-Package: \
   org.apache.cxf.transport.https;version=${exportVer},\
   org.apache.cxf.transport.servlet;version=${exportVer},\
   org.apache.cxf.transports.http;version=${exportVer},\
-  org.apache.cxf.transports.http.configuration;version=${exportVer}
+  org.apache.cxf.transports.http.configuration;version=${exportVer},\
+  com.ibm.ws.cxf.exceptions;version=${exportVer}
   
 Import-Package: \
   !org.apache.aries.*,\
