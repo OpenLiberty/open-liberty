@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,10 @@ public class TestActions {
     }
 
     public Page invokeUrlWithBearerTokenUsingGet(String currentTest, String url, String token) throws Exception {
-        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
+        WebClient webClient = createWebClient();
+        Page response = invokeUrlWithAuthorizationHeaderToken(currentTest, webClient, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.GET, null);
+        destroyWebClient(webClient);
+        return response;
     }
 
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, WebClient wc, String url, String token) throws Exception {
@@ -112,7 +115,10 @@ public class TestActions {
     }
 
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, String url, String token) throws Exception {
-        return invokeUrlWithAuthorizationHeaderToken(currentTest, new WebClient(), url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
+        WebClient webClient = createWebClient();
+        Page response = invokeUrlWithAuthorizationHeaderToken(currentTest, webClient, url, Constants.TOKEN_TYPE_BEARER, token, HttpMethod.POST, null);
+        destroyWebClient(webClient);
+        return response;
     }
 
     public Page invokeUrlWithAuthorizationHeaderToken(String currentTest, WebClient wc, String url, String tokenPrefix, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
