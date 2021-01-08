@@ -32,7 +32,8 @@ Please provide the following information the week before the GA date (to allow f
 If you have previously provided this information for an Open Liberty beta blog post and nothing has changed since the beta, just provide a link to the published beta blog post and we'll take the information from there.
 
 ## What happens next?
-- Make sure this blog post is linked back to the Epic for this feature/function. 
+- Add the label for the beta you're targeting: `target:YY00X-beta`.
+- Make sure this blog post is linked back to the Epic for this feature/function.
 - Your paragraph will be included in the GA release blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
 - If you would _also_ like to write a standalone blog post about your update (highly recommended), raise an issue on the [Open Liberty blogs repo](https://github.com/OpenLiberty/blogs/issues/new/choose). State in the issue that the blog post relates to a specific release so that we can ensure it is published on an appropriate date (it won't be the same day as the GA blog post).
