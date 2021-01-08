@@ -19,10 +19,10 @@ fat.project: true
 
 tested.features: \
   jaxws-2.2,\
-  ejb-3.2, \
   jaxws-2.3, \
   cdi-2.0,\
   cdi-3.0,\
+  servlet-4.0, \
   servlet-5.0, \
   xmlBinding-3.0, \
   xmlWS-3.0
