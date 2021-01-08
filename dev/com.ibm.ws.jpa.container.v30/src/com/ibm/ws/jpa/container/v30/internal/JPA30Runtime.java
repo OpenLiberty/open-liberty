@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jpa.container.v22.internal;
+package com.ibm.ws.jpa.container.v30.internal;
 
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
@@ -27,10 +27,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.jpa.JPAPuId;
-import com.ibm.ws.jpa.container.v22.JPAEMFactoryV22;
-import com.ibm.ws.jpa.container.v22.JPAExEmInvocationV22;
-import com.ibm.ws.jpa.container.v22.JPAExEntityManagerV22;
-import com.ibm.ws.jpa.container.v22.JPATxEntityManagerV22;
+import com.ibm.ws.jpa.container.v30.JPAEMFactoryV30;
+import com.ibm.ws.jpa.container.v30.JPAExEmInvocationV30;
+import com.ibm.ws.jpa.container.v30.JPAExEntityManagerV30;
+import com.ibm.ws.jpa.container.v30.JPATxEntityManagerV30;
 import com.ibm.ws.jpa.management.AbstractJPAComponent;
 import com.ibm.ws.jpa.management.JPA20Runtime;
 import com.ibm.ws.jpa.management.JPAExEmInvocation;
@@ -42,9 +42,9 @@ import com.ibm.ws.jpa.JPAVersion;
 
 @Component(service = JPARuntime.class,
            property = Constants.SERVICE_RANKING + ":Integer=21")
-public class JPA22Runtime extends JPA20Runtime implements JPARuntime {
+public class JPA30Runtime extends JPA20Runtime implements JPARuntime {
     private static final TraceComponent tc = Tr.register
-                    (JPA22Runtime.class,
+                    (JPA30Runtime.class,
                      JPA_TRACE_GROUP,
                      JPA_RESOURCE_BUNDLE_NAME);
 
@@ -52,7 +52,7 @@ public class JPA22Runtime extends JPA20Runtime implements JPARuntime {
 
     @Override
     public JPAVersion getJPARuntimeVersion() {
-        return JPAVersion.JPA22;
+        return JPAVersion.JPA30;
     }
 
     @Override
@@ -62,24 +62,24 @@ public class JPA22Runtime extends JPA20Runtime implements JPARuntime {
 
     @Override
     public EntityManagerFactory createJPAEMFactory(JPAPuId puId, J2EEName j2eeName, EntityManagerFactory emf) {
-        return new JPAEMFactoryV22(puId, j2eeName, emf);
+        return new JPAEMFactoryV30(puId, j2eeName, emf);
     }
 
     @Override
     public JPATxEntityManager createJPATxEntityManager(JPAPuId puRefId, JPAPUnitInfo puInfo, J2EEName j2eeName, String refName, Map<?, ?> properties,
                                                        boolean isUnsynchronized, AbstractJPAComponent jpaComponent) {
-        return new JPATxEntityManagerV22(puRefId, puInfo, j2eeName, refName, properties, isUnsynchronized, jpaComponent);
+        return new JPATxEntityManagerV30(puRefId, puInfo, j2eeName, refName, properties, isUnsynchronized, jpaComponent);
     }
 
     @Override
     public JPAExEntityManager createJPAExEntityManager(JPAPuId puRefId, JPAPUnitInfo puInfo, J2EEName j2eeName, String refName, Map<?, ?> properties,
                                                        boolean isUnsynchronized, AbstractJPAComponent jpaComponent) {
-        return new JPAExEntityManagerV22(puRefId, puInfo, j2eeName, refName, properties, isUnsynchronized, jpaComponent);
+        return new JPAExEntityManagerV30(puRefId, puInfo, j2eeName, refName, properties, isUnsynchronized, jpaComponent);
     }
 
     @Override
     public JPAExEmInvocation createExEmInvocation(UOWCoordinator uowCoord, EntityManager em, boolean txIsUnsynchronized) {
-        return new JPAExEmInvocationV22(uowCoord, em, txIsUnsynchronized);
+        return new JPAExEmInvocationV30(uowCoord, em, txIsUnsynchronized);
     }
 
     @Override
