@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.logstash.collector.tests;
 
 import static org.junit.Assert.assertTrue;
@@ -86,7 +93,8 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
     @Test
     public void containerEnvVarTest() throws Exception {
 
-        boolean foundEnvVars = true;
+        boolean foundHostEnv = true;
+        boolean foundServerEnv = true;
 
         String stringHost = waitForStringInContainerOutput("TEST_HOST_NAME");
         String stringServer = waitForStringInContainerOutput("TEST_SERVER_NAME");
@@ -94,11 +102,15 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
         Log.info(c, "containerEnvVarTest", "stringHost: " + stringHost);
         Log.info(c, "containerEnvVarTest", "stringServer: " + stringServer);
 
-        if (stringHost == null || stringServer == null) {
-            foundEnvVars = false;
+        if (stringHost == null) {
+            foundHostEnv = false;
+        }
+        if (stringServer == null) {
+            foundServerEnv = true;
         }
 
-        assertTrue("Could not find one or more of the set env vars CONTAINER_HOST and CONTAINER_NAME", foundEnvVars);
+        assertTrue("Could not find env var CONTAINER_HOST", foundHostEnv);
+        assertTrue("Could not find env var CONTAINER_NAME", foundServerEnv);
     }
 
     private static void serverStart() throws Exception {

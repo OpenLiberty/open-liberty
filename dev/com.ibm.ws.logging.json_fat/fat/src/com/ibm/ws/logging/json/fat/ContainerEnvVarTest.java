@@ -15,13 +15,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Check CONTAINER_HOST and CONTAINER_NAME env vars
@@ -31,20 +30,23 @@ public class ContainerEnvVarTest {
 
     private static final String MESSAGE_LOG = "logs/messages.log";
 
-    private static final String SERVER_CONTAINER_NAME = "com.ibm.ws.logging.json.ContainerNameEnvServer";
-    private static final String SERVER_CONTAINER_HOST = "com.ibm.ws.logging.json.ContainerHostEnvServer";
+    public static final String SERVER_CONTAINER_NAME = "com.ibm.ws.logging.json.ContainerNameEnvServer";
+    public static final String SERVER_CONTAINER_HOST = "com.ibm.ws.logging.json.ContainerHostEnvServer";
 
-    private static LibertyServer server_container_name;
-    private static LibertyServer server_container_host;
+    @Server(SERVER_CONTAINER_NAME)
+    public static LibertyServer server_container_name;
+
+    @Server(SERVER_CONTAINER_HOST)
+    public static LibertyServer server_container_host;
 
     private static LibertyServer serverInUse;
 
-    @BeforeClass
-    public static void initialSetup() throws Exception {
-        server_container_name = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_NAME);
-        server_container_host = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_HOST);
-
-    }
+//    @BeforeClass
+//    public static void initialSetup() throws Exception {
+//        server_container_name = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_NAME);
+//        server_container_host = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_HOST);
+//
+//    }
 
     public void setUp(LibertyServer server) throws Exception {
         serverInUse = server;
