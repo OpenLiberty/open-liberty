@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -447,6 +447,10 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         }
         if (os.toLowerCase().contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
             || System.getProperty("java.vendor.url").toLowerCase().contains("sun") || !healthCenterInstalled) {
+            return true;
+        }
+        // Skip zOS temporary as zOS JDK has a bug that does not return any GC information.
+        if (os.contains("OS/390") || os.contains("z/OS") || os.contains("zOS")) {
             return true;
         }
         return false;
