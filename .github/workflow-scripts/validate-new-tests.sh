@@ -1,4 +1,5 @@
-
+#!/bin/bash
+# This script performs validation for PRs that will fail if a fat was created/renamed/removed but not updated in test-categories
 
 TEST_CATEGORY_DIR=$PWD/.github/test-categories/
 DEV_DIR=$PWD/dev

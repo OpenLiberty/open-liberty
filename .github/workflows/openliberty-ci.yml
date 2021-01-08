@@ -25,7 +25,7 @@ env:
   LANG: en_US.UTF-8
 jobs:
   validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
-    name: validation
+    name: Validation
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
       if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-copyright-headers.sh
     - name: Validate new tests
-      # Probably should only do this for PRs.  But for now run on schedule so we can catch tests suites that get merged incorrectly
+      # Probably should only do this for PRs.  But for now always run so we can catch tests suites that get merged incorrectly
       # if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-new-tests.sh
   build: #Main build always done on linix run in parallel to setup and unit-test
