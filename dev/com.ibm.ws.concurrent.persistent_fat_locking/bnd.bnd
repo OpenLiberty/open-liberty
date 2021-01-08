@@ -30,6 +30,7 @@ fat.test.databases: true
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
 	fattest.databases;version=latest,\
+    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

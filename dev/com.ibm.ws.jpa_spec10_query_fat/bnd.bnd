@@ -37,6 +37,7 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0,
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
     fattest.databases;version=latest,\
+    com.github.docker-java:docker-java-api;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

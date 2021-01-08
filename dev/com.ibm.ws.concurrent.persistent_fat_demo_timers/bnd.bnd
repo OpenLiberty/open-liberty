@@ -27,6 +27,7 @@ fat.test.databases: true
 #fat.test.use.remote.docker: true
 
 -buildpath: \
+    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	fattest.databases;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
