@@ -79,6 +79,7 @@ public class TrustedHeaderOriginLists {
             }
         } else {
             // no trusted header hosts were defined, use defualt - "*"
+            trustAllOrigins = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "trusted private headers hosts: *");
             }
@@ -92,9 +93,6 @@ public class TrustedHeaderOriginLists {
                 }
             }
             parseAndSetOrigins(restrictPrivateHeaderOrigin, false);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "trusted private headers hosts: " + Arrays.toString(addrs.toArray()));
-            }
         }
         addrs.clear();
 
@@ -122,12 +120,13 @@ public class TrustedHeaderOriginLists {
             }
         } else {
             // no trusted sensitive header hosts were defined, use defualt - "none"
+            disableAllSensitiveOrigins = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "trusted sensitive private headers hosts: none");
             }
             return;
         }
-        // if IP addresses were listed, only trust sensitive private headers from those hosts
+        // if hosts were listed, only trust sensitive private headers from those hosts
         if (!addrs.isEmpty()) {
             HashSet<String> restrictSensitiveHeaderOrigin = new HashSet<String>();
             for (String s : addrs) {
@@ -136,9 +135,6 @@ public class TrustedHeaderOriginLists {
                 }
             }
             parseAndSetOrigins(restrictSensitiveHeaderOrigin, true);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "trusted sensitive private headers hosts: " + Arrays.toString(addrs.toArray()));
-            }
         }
     }
 
@@ -159,9 +155,6 @@ public class TrustedHeaderOriginLists {
             for (String origin : origins) {
                 boolean result = isStringIPAddressesValid(new String[] { origin });
                 if (result) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "parseAndSetOrigins host treated as an address: " + origin);
-                    }
                     addrs.add(origin);
                 } else {
                     result = isStringHostnameValid(origin);
@@ -174,11 +167,9 @@ public class TrustedHeaderOriginLists {
                             }
                         }
                         continue;
+                    } else {
+                        hosts.add(origin);
                     }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "parseAndSetOrigins host treated as a hostname: " + origin);
-                    }
-                    hosts.add(origin);
                 }
             }
         }
@@ -187,6 +178,9 @@ public class TrustedHeaderOriginLists {
             if (addrs != null && !addrs.isEmpty()) {
                 trustedAddresses.buildData(addrs.toArray(new String[0]), false);
                 trustedAddresses.setActive(true);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trusted private headers host addresses: " + Arrays.toString(addrs.toArray()));
+                }
             }
 
             trustedHosts = new FilterListFastStr();
@@ -196,12 +190,19 @@ public class TrustedHeaderOriginLists {
                     trustedHosts.buildData(hosts.toArray(new String[0]));
                 }
                 trustedHosts.setActive(true);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trusted private headers host names: " + Arrays.toString(addrs.toArray()));
+                }
             }
         } else {
             sensitiveTrustedAddresses = new FilterList();
             if (addrs != null && !addrs.isEmpty()) {
                 sensitiveTrustedAddresses.buildData(addrs.toArray(new String[0]), false);
                 sensitiveTrustedAddresses.setActive(true);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trusted sensitive private headers host addresses: " + Arrays.toString(addrs.toArray()));
+                }
+
             }
 
             sensitiveTrustedHosts = new FilterListFastStr();
@@ -211,6 +212,9 @@ public class TrustedHeaderOriginLists {
                     sensitiveTrustedHosts.buildData(hosts.toArray(new String[0]));
                 }
                 sensitiveTrustedHosts.setActive(true);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trusted sensitive private headers host names: " + Arrays.toString(hosts.toArray()));
+                }
             }
         }
     }
