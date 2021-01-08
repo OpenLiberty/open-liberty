@@ -44,11 +44,12 @@ public class JwtConsumerActions extends JwtTokenActions {
         Page response = null;
         try {
             response = invokeUrlWithParameters(testName, webClient, jwtConsumerUrl, requestParams);
-            webClient.close();
             return response;
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtConsumer", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }
