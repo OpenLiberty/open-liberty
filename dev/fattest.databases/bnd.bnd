@@ -31,7 +31,7 @@ test.project: true
 	org.testcontainers:database-commons;version=1.15.1,\
 	org.testcontainers:jdbc;version=1.15.1,\
 	org.testcontainers:testcontainers;version=1.15.1,\
-	com.github.docker-java:docker-java-api;version=3.2.5,\
+	com.github.docker-java:docker-java-api;version=3.2.7,\
 	fattest.simplicity;version=latest,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
 	org.slf4j:slf4j-api;version=1.7.7

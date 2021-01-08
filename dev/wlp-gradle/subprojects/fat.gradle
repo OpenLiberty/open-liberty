@@ -74,9 +74,9 @@ dependencies {
 
   testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
        'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
-       'com.github.docker-java:docker-java-api:3.2.5',
-       'com.github.docker-java:docker-java-transport:3.2.5',
-       'com.github.docker-java:docker-java-transport-zerodep:3.2.5',
+       'com.github.docker-java:docker-java-api:3.2.7',
+       'com.github.docker-java:docker-java-transport:3.2.7',
+       'com.github.docker-java:docker-java-transport-zerodep:3.2.7',
        'net.java.dev.jna:jna:5.5.0',
        'org.apache.commons:commons-compress:1.20',
        'org.rnorth.duct-tape:duct-tape:1.0.8',
