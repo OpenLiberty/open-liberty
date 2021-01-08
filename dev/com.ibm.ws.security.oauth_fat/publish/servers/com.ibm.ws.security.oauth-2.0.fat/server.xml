@@ -215,4 +215,7 @@
 			dir="${server.config.dir}"
 			includes="testLib.jar" />
 	</library>
+	
+	<javaPermission className="java.net.SocketPermission" actions="connect,resolve" name="*"/>
+	
 </server>
