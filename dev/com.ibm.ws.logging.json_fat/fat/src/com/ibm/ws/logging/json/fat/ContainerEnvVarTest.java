@@ -41,13 +41,6 @@ public class ContainerEnvVarTest {
 
     private static LibertyServer serverInUse;
 
-//    @BeforeClass
-//    public static void initialSetup() throws Exception {
-//        server_container_name = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_NAME);
-//        server_container_host = LibertyServerFactory.getLibertyServer(SERVER_CONTAINER_HOST);
-//
-//    }
-
     public void setUp(LibertyServer server) throws Exception {
         serverInUse = server;
         if (server != null && !server.isStarted()) {
