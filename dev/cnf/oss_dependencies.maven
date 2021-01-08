@@ -132,6 +132,8 @@ io.smallrye.config:smallrye-config:2.0.1
 io.smallrye:smallrye-graphql-client-api:1.0.9
 io.smallrye:smallrye-graphql-client:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9
+io.smallrye:smallrye-open-api-core:2.1.0-RC2
+io.smallrye:smallrye-open-api-jaxrs:2.1.0-RC2
 jakarta.activation:jakarta.activation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.0.0
 jakarta.authentication:jakarta.authentication-api:2.0.0
@@ -373,7 +375,7 @@ org.eclipse.microprofile.metrics:microprofile-metrics-api:2.3
 org.eclipse.microprofile.metrics:microprofile-metrics-api:3.0
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.0.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
-org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0-RC3
+org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.2
