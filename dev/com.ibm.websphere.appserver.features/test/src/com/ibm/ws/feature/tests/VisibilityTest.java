@@ -285,10 +285,10 @@ public class VisibilityTest {
                 }
             } else {
             	String withoutFeatureDir = expectedPathName + (featureName + ".feature");
-            	String withFeatureDir = expectedPathName + featureName + "/" + (featureName + ".feature");
-            	if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureDir)) {
+            	String withFeatureShortNameDir = expectedPathName + featureInfo.getShortName() + "/" + (featureName + ".feature");
+            	if (!fileName.endsWith(withoutFeatureDir) && !fileName.endsWith(withFeatureShortNameDir)) {
                     errorMessage.append("Found issues with " + featureName + '\n');
-                    errorMessage.append("     Feature is not in the expected directory " + withoutFeatureDir +" or "+ withFeatureDir + ".\n");
+                    errorMessage.append("     Feature is not in the expected directory " + withoutFeatureDir +" or "+ withFeatureShortNameDir + ".\n");
                     errorMessage.append("     The feature's visibility " + visibility + " may not match the directory.\n");
                 }
             }
