@@ -2,4 +2,5 @@ com.ibm.ws.install.featureUtility_fat
 com.ibm.ws.install.packaging_fat
 com.ibm.ws.os.packaging_fat
 com.ibm.ws.repository_fat
+com.ibm.ws.repository_fat_shared
 wlp.lib.extract_fat

@@ -9,4 +9,3 @@ com.ibm.ws.concurrent.persistent_fat_mbean
 com.ibm.ws.concurrent.persistent_fat_multiple
 com.ibm.ws.concurrent.persistent_fat_multiserver
 com.ibm.ws.concurrent.persistent_fat_oneexec
-
