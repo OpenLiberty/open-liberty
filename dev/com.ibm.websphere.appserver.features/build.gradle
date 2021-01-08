@@ -304,15 +304,15 @@ task publishAdminCenter {
         into buildImage.file('wlp/lib/features')
     }
     copy {
-        from new File(projectDir, 'visibility/private/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/resources')
+        from new File(projectDir, 'visibility/private/explore-1.0/resources')
         into buildImage.file('wlp/lib/features')
     }
     copy {
-        from new File(projectDir, 'visibility/auto/com.ibm.websphere.appserver.adminCenter.tool.javaBatch-1.0/resources')
+        from new File(projectDir, 'visibility/auto/javaBatch-1.0/resources')
         into buildImage.file('wlp/lib/features')
     }
     copy {
-        from new File(projectDir, 'visibility/private/com.ibm.websphere.appserver.adminCenter.tool.serverConfig-1.0/resources')
+        from new File(projectDir, 'visibility/private/serverConfig-1.0/resources')
         into buildImage.file('wlp/lib/features')
     }
   }

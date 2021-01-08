@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.adminCenter.tool.serverConfig-1.0
 visibility=private
+IBM-ShortName: serverConfig-1.0
 Subsystem-Name: Server Config
 Subsystem-Category: adminCenter
 Subsystem-Version: 1.0.0
