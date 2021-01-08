@@ -23,9 +23,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
@@ -33,7 +33,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 public class ContainerEnvVarTest extends LogstashCollectorTest {
 
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer("ContainerEnvServer");
+    @Server("ContainerEnvServer")
+    public static LibertyServer server;
 
     private String testName = "";
     private static Class<?> c = ContainerEnvVarTest.class;
