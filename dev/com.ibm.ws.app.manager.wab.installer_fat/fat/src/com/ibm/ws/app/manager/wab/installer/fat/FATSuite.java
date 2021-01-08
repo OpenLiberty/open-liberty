@@ -26,7 +26,7 @@ import componenttest.rules.repeater.RepeatTests;
  * The classes specified in the @SuiteClasses annotation
  * below should represent all of the test cases for this FAT.
  */
-@SuiteClasses({ ConfigurableWABTests.class })
+@SuiteClasses({ ConfigurableWABTests.class, WabStartDelayTests.class })
 public class FATSuite {
     @ClassRule
     // run tests as-is and again with EE9 features+packages
