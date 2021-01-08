@@ -239,7 +239,7 @@ public class FeatureManagerTest {
 
                     allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
                     will(returnValue(featureUpdatesCompleted));
-                    allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART);
+                    allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART, true);
                     will(returnValue(appForceRestart));
                     allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
                     will(returnValue(featureBundlesResolved));
