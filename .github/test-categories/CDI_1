@@ -1,3 +1,7 @@
+#TEST COMMENT and a bunch of empty lines
+
+
+
 com.ibm.ws.cdi.2.0_fat
 com.ibm.ws.cdi.annotations_fat
 com.ibm.ws.cdi.api_fat

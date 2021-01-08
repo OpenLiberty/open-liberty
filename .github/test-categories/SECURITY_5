@@ -1,4 +1,3 @@
-com.ibm.ws.security.oauth.oidc_fat.common
 com.ibm.ws.security.saml.sso_fat
 com.ibm.ws.security.saml.sso_fat.common
 com.ibm.ws.security.spnego_fat
