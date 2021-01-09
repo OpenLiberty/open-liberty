@@ -178,7 +178,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         Object instance = null;
 
         // First, obtain an instance of the JAX-WS Service class.
-        Service svc = null;
+        final Service svc;
 
         List<WebServiceFeature> originalWsFeatureList = LibertyProviderImpl.getWebServiceFeatures();
         WebServiceRefInfo originalWebServiceRefInfo = LibertyProviderImpl.getWebServiceRefInfo();
@@ -207,7 +207,12 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Creating a port instance based on class: " + tInfo.getServiceRefTypeClass().getName());
             }
-            instance = svc.getPort(typeClass);
+            instance = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return svc.getPort(typeClass);
+                }
+            });
         } else {// Otherwise, this was just a normal Service-type injection so we'll return the service.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Service instance created based on class: " + svc.getClass().getName());
