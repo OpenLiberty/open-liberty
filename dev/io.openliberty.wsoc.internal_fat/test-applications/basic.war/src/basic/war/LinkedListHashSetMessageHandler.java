@@ -22,13 +22,12 @@ public class LinkedListHashSetMessageHandler implements MessageHandler.Whole<Lin
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.MessageHandler.Whole#onMessage(java.lang.Object)
      */
     @Override
     public void onMessage(LinkedList<HashSet<String>> arg0) {
-        // TODO Auto-generated method stub
-
+        // Do nothing.
     }
 
 }

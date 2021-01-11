@@ -46,8 +46,7 @@ public class SessionTimeoutContextListenerImpl implements ServletContextListener
      */
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        // TODO Auto-generated method stub
-
+        // Do nothing.
     }
 
 }

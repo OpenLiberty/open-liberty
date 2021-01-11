@@ -96,7 +96,6 @@ public class CodedServerEndpointConfig implements ServerEndpointConfig {
      */
     @Override
     public Class<?> getEndpointClass() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -107,7 +106,6 @@ public class CodedServerEndpointConfig implements ServerEndpointConfig {
      */
     @Override
     public String getPath() {
-        // TODO Auto-generated method stub
         return null;
     }
 
