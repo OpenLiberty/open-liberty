@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Modifica\u0163i ac\u0163iunea ca
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Atributul {0} nu este valid pentru MBean-ul {1}.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a ob\u0163ine sau seta un atribut care nu a fost disponibil pentru MBean-ul specificat.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Schimba\u0163i atributul specificat cu unul dintre atributele disponibile pentru acest MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: O conexiune ob\u0163inut\u0103 de la {0} nu a fost \u00eenchis\u0103. Urm\u0103toarea stiv\u0103 identific\u0103 codul care a ob\u0163inut conexiunea: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=O conexiune nu a fost \u00eenchis\u0103 de codul care a ob\u0163inut-o. Stiva identific\u0103 o zon\u0103 de cod unde apare o conexiune care nu este \u00eenchis\u0103, dar pot exista \u015fi alte instan\u0163e \u00een alte p\u0103r\u0163i. Pentru a evita dezordinea \u00een istorice \u015fi pentru a minimiza impactul colect\u0103rii de stive, este raportat\u0103 doar o apari\u0163ie la pornirea serverului.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Utiliz\u00e2nd stiva ca un ghid, localiza\u0163i codul care cere conexiunea \u015fi actualiza\u0163i-l pentru a \u00eenchide conexiunea.

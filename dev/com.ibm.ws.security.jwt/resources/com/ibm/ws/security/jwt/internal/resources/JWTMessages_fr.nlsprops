@@ -335,9 +335,10 @@ ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Le consommateur de jeton Web J
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Le jeton JWE est peut-\u00eatre incorrectement form\u00e9 ou des informations peuvent manquer. La cl\u00e9 de gestion des cl\u00e9s qui est utilis\u00e9e pour d\u00e9chiffrer le jeton JWE peut manquer ou ne pas parvenir \u00e0 d\u00e9chiffrer le jeton.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le jeton JWE est correctement form\u00e9. V\u00e9rifiez que la configuration du consommateur de jeton Web JSON (JWT) r\u00e9f\u00e9rence la cl\u00e9 de gestion des cl\u00e9s qui correspond \u00e0 la cl\u00e9 utilis\u00e9e pour chiffrer le jeton JWE.
 
-#
-# CWWKS6057E is available
-#
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: Le jeton JWE (JSON Web Encryption) contient un jeton de signature Web JSON (JWS) imbriqu\u00e9, mais l''en-t\u00eate {0} dans le jeton JWE a pour valeur [{1}]. L''en-t\u00eate {0} doit avoir pour valeur {2} si le contenu du jeton JWE est un jeton JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=La sp\u00e9cification MicroProfile JSON Web Token 1.2 exige que l'en-t\u00eate de type de contenu des jetons JWE ait la valeur sp\u00e9cifi\u00e9e dans le message si le contenu du jeton est un jeton JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Assurez-vous que l'en-t\u00eate de type de contenu du jeton JWE est associ\u00e9 \u00e0 la valeur requise.
 
 # Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
 # 0=Builder config ID
@@ -360,3 +361,22 @@ ERROR_BUILDING_SIGNED_JWE.useraction=Reportez-vous \u00e0 l'erreur incluse dans 
 KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Le g\u00e9n\u00e9rateur de jeton Web JSON (JWT) [{0}] ne peut pas cr\u00e9er de jeton JWE (JSON Web Encryption) car la cl\u00e9 de gestion des cl\u00e9s est introuvable. L''alias de cl\u00e9 de gestion des cl\u00e9s est [{1}] et le magasin de cl\u00e9s de confiance est [{2}].
 KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=La cl\u00e9 de gestion des cl\u00e9s est la cl\u00e9 utilis\u00e9e pour chiffrer la cl\u00e9 Content Encryption Key d'un jeton JWE. Vous devez sp\u00e9cifier une cl\u00e9 de gestion des cl\u00e9s pour que le g\u00e9n\u00e9rateur JWT puisse cr\u00e9er des jetons JWE. Vous pouvez sp\u00e9cifier une cl\u00e9 de gestion des cl\u00e9s en utilisant l'alias de cl\u00e9 et les valeurs de magasin de cl\u00e9s configur\u00e9es qui sont sp\u00e9cifi\u00e9es dans le message ou en utilisant l'API JwtBuilder.
 KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=V\u00e9rifiez qu'une cl\u00e9 associ\u00e9e \u00e0 l'alias sp\u00e9cifi\u00e9 dans le message existe dans le magasin de cl\u00e9s mentionn\u00e9. Si l'API JwtBuilder est utilis\u00e9e, assurez-vous qu'une cl\u00e9 de gestion des cl\u00e9s est fournie.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: Il semble que la valeur de la propri\u00e9t\u00e9 MicroProfile Config [{0}] inclue une cha\u00eene de cl\u00e9 priv\u00e9e, ce qui ne constitue pas une configuration prise en charge.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=La fonction MicroProfile JWT ne prend pas en charge la sp\u00e9cification de cha\u00eenes de cl\u00e9s priv\u00e9es dans la propri\u00e9t\u00e9 MicroProfile Config sp\u00e9cifi\u00e9e dans le message. La valeur de cette propri\u00e9t\u00e9 doit \u00eatre un chemin d'acc\u00e8s relatif ou une URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utilisez un chemin d'acc\u00e8s relatif ou une URL comme valeur pour la propri\u00e9t\u00e9 MicroProfile Config sp\u00e9cifi\u00e9e dans le message. Les valeurs d'emplacement qui sont prises en charge sont les m\u00eames que pour la propri\u00e9t\u00e9 mp.jwt.verify.publickey.location.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Le jeton figurant dans la demande n''est pas au format JWS (JSON Web Signature) alors que le consommateur de jeton JWT [{0}] accepte uniquement les jetons au format JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Il se peut que le jeton qui figure dans la demande soit incorrectement form\u00e9 ou qu'il soit au format JWE (JSON Web Encryption). Les jetons doivent \u00eatre au format JWS si l'emplacement de la cl\u00e9 de d\u00e9chiffrement JWE n'est pas configur\u00e9. Si vous utilisez la fonction MicroProfile JWT, la version 1.2 ou une version ult\u00e9rieure de la fonction doit \u00eatre configur\u00e9e pour accepter les jetons au format JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pour accepter les jetons JWE, configurez la propri\u00e9t\u00e9 MicroProfile Config mp.jwt.decrypt.key.location ou l'attribut keyManagementKeyAlias dans la configuration de consommateur JWT. Si vous utilisez la fonction MicroProfile JWT, assurez-vous que la version 1.2 ou une version ult\u00e9rieure est configur\u00e9e. Sinon, assurez-vous que seuls des jetons JWS sont envoy\u00e9s \u00e0 cette ressource.
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Le jeton figurant dans la demande n''est pas au format JWE (JSON Web Encryption) alors que le consommateur de jeton JWT [{0}] accepte uniquement les jetons au format JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il se peut que le jeton qui figure dans la demande soit incorrectement form\u00e9 ou qu'il soit au format JWS (JSON Web Signature). Les jetons doivent \u00eatre au format JWE si l'emplacement de la cl\u00e9 de d\u00e9chiffrement JWE est configur\u00e9.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pour accepter des jetons JWS \u00e0 la place des jetons JWE, configurez la propri\u00e9t\u00e9 MicroProfile Config mp.jwt.decrypt.key.location et l'attribut keyManagementKeyAlias dans la configuration de consommateur JWT. Sinon, assurez-vous que seuls des jetons JWE sont envoy\u00e9s \u00e0 cette ressource.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Le contenu du jeton JWE (JSON Web Encryption) qui est inclus dans la demande n'est pas un jeton JWS (JSON Web Signature).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=La charge d'un jeton JWE doit \u00eatre un jeton Web JSON (JWT) valide au format JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assurez-vous que le contenu du jeton JWE est un jeton Web JSON (JWT) au format JWS. 

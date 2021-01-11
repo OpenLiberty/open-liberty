@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0750 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# {0} is a space separated list of interface class names
+rest.client.interface.using.request.scope=CWWKW0750I: Le seguenti interfacce sono configurate come RequestScoped, il che risulter\u00e0 in un calo delle prestazioni: {0} 
+rest.client.interface.using.request.scope.explanation=Le interfacce MicroProfile Rest Client che fanno parte dell'ambito della richiesta vengono inizializzate ad ogni richiesta, il che spesso comporta calcoli ridondanti. Le interfacce che fanno parte dell'ambito dell'applicazione eseguiranno il processo di inizializzazione solo una volta per istanza dell'applicazione. Un'interfaccia pu\u00f2 essere considerata come parte dell'ambito della richiesta se \u00e8 annotata con @RequestScoped o se \u00e8 inserita in un bean CDI che fa parte dell'ambito della richiesta con l'annotazione @Dependent o senza alcuna annotazione dell'ambito.  
+rest.client.interface.using.request.scope.useraction=A meno che non vi sia un valido motivo per non farlo, valutare l'utilizzo dell'annotazione @ApplicationScoped nell'interfaccia per evitare inizializzazioni ridondanti.

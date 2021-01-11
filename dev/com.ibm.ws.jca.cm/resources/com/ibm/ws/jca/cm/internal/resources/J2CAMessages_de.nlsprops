@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=\u00c4ndern Sie die aufzurufende
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Das Attribut {0} ist f\u00fcr die MBean {1} nicht g\u00fcltig.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Es wurde versucht, ein Attribut abzurufen oder zu definieren, das f\u00fcr die angegebene MBean nicht verf\u00fcgbar ist.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=\u00c4ndern Sie das angegeben Attribut in eines der verf\u00fcgbaren Attribute f\u00fcr diese MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: Eine von {0} angeforderte Verbindung wurde nicht geschlossen. Der folgende Stapel identifiziert den Code, mit dem die Verbindung angefordert wurde: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=Eine \u00fcber den Code angeforderte Verbindung wurde nicht geschlossen. Der Stapel identifiziert einen einzigen Codebereich mit einer nicht geschlossenen Verbindung, aber an anderen Stellen k\u00f6nnen noch weitere Instanzen vorhanden sein. Um eine \u00dcberladung der Protokolle zu verhindern und die Auswirkungen der Stapelerfassung zu minimieren, wird nur ein einziges Vorkommen pro Serverstart berichtet.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Suchen Sie mithilfe des Stapels den Code, der die Verbindung anfordert, und aktualisieren Sie den Code so, dass die Verbindung geschlossen wird.

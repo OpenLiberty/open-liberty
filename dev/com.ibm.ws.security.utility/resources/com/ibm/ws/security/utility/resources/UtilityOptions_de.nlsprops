@@ -167,7 +167,7 @@ Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\
 \t \
 Java-Befehl ''keytool''. Dieses Flag kann im Befehl mehrfach verwendet werden.\n\
 \ 
-line.
+
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -227,5 +227,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tGibt den Port an.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tGibt den Host an.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOptional. Das Ergebnis wird in die angegebene Datei und\n\
+\tnicht in die Konsolenanzeige geschrieben.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tEnth\u00e4lt weitere Informationen zu nicht sicheren Protokollen.

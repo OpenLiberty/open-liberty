@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -281,5 +281,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=\u8bf7\u67e5\u770b server.xml \u6587\u4ef
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: \u591a\u4e2a OpenID Connect \u5ba2\u6237\u673a\u8ba4\u8bc1\u8fc7\u6ee4\u5668\u4e0e\u9488\u5bf9 [{0}] URL \u7684\u8bf7\u6c42\u5339\u914d\u3002\u5339\u914d\u8fc7\u6ee4\u5668\u4e3a [{1}]\u3002\u8fd9\u53ef\u80fd\u5bfc\u81f4\u4e0d\u786e\u5b9a\u884c\u4e3a\u3002
 AUTHFILTER_MULTIPLE_MATCHED.explanation=\u591a\u4e2a\u8ba4\u8bc1\u8fc7\u6ee4\u5668\u4e0e\u4e00\u4e2a\u5165\u7ad9\u8bf7\u6c42\u5339\u914d\u3002\u4f7f\u7528\u5176\u4e2d\u4e00\u4e2a\u8fc7\u6ee4\u5668\u7684\u4efb\u4f55\u5ba2\u6237\u673a\u53ef\u80fd\u5904\u7406\u8be5\u8bf7\u6c42\uff0c\u4ece\u800c\u5bfc\u81f4\u4e0d\u786e\u5b9a\u884c\u4e3a\u3002
 AUTHFILTER_MULTIPLE_MATCHED.useraction=\u8bf7\u67e5\u770b server.xml \u6587\u4ef6\u5e76\u66f4\u6b63\u914d\u7f6e\u3002
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u5bf9 [{0}] \u7684\u8bf7\u6c42\u65e0\u6548\u3002\u5176\u540d\u79f0\u4ee5 WASReqURLOidc \u5f00\u5934\u7684\u5fc5\u9700 Cookie \u5177\u6709\u4e0d\u6b63\u786e\u7684\u503c\u3002\u8be5 Cookie \u4e2d\u6240\u4f7f\u7528\u7684\u4e3b\u673a\u540d [{1}] \u4e0e\u63d0\u4f9b\u7a0b\u5e8f\u4e2d\u6240\u6ce8\u518c\u7684\u540d\u79f0\u4e0d\u5339\u914d\u3002\u8fd4\u56de\u4e86\u54cd\u5e94\u4ee3\u7801 500\u3002
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u63a5\u6536\u5230\u7684\u8bf7\u6c42\u5305\u542b\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=\u8bf7\u9a8c\u8bc1 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u914d\u7f6e\u548c\u5ba2\u6237\u673a\u914d\u7f6e\u3002\u5982\u679c\u4fee\u6539 Cookie \u7684\u7528\u6237\u4ee3\u7406\u5177\u6709\u7684\u4e3b\u673a\u540d\u4e0e\u5411\u63d0\u4f9b\u7a0b\u5e8f\u6ce8\u518c\u7684\u91cd\u5b9a\u5411\u7684\u4e3b\u673a\u540d\u4e0d\u540c\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u5bfc\u81f4\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002\u5982\u679c\u4e3b\u673a\u540d\u7b26\u5408\u9884\u671f\uff0c\u90a3\u4e48\u5c06\u8be5\u4e3b\u673a\u540d\u6dfb\u52a0\u5230 server.xml \u4e2d\u7684 webAppSecurity \u5143\u7d20\u7684 wasReqURLRedirectDomainNames \u5c5e\u6027\u3002
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

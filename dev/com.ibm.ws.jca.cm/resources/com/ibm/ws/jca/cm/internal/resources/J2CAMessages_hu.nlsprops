@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=M\u00f3dos\u00edtsa a megh\u00ed
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: A(z) {0} attrib\u00fatum nem \u00e9rv\u00e9nyes a(z) {1} MBean komponenshez.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Olyan attrib\u00fatum kiolvas\u00e1s\u00e1ra vagy be\u00e1ll\u00edt\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely nem \u00e9rhet\u0151 el a megadott MBean komponenshez.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=M\u00f3dos\u00edtsa a megadott attrib\u00fatumot az MBean komponenshez el\u00e9rhet\u0151 attrib\u00fatumok egyik\u00e9re.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: A k\u00f6vetkez\u0151 helyr\u0151l kialak\u00edtott kapcsolat nem lett lez\u00e1rva: {0}. A kapcsolatot kialak\u00edt\u00f3 k\u00f3dot a k\u00f6vetkez\u0151 verem azonos\u00edtja: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=A kapcsolatot az azt kialak\u00edt\u00f3 k\u00f3d nem z\u00e1rta le. A verem a k\u00f3d egy olyan ter\u00fclet\u00e9t azonos\u00edtja, ahol lez\u00e1ratlan kapcsolat fordul el\u0151, de m\u00e1shol egy\u00e9b p\u00e9ld\u00e1nyok is l\u00e9tezhetnek. A napl\u00f3k telezs\u00fafol\u00e1s\u00e1t elker\u00fclend\u0151 \u00e9s a verem begy\u0171jt\u00e9sek hat\u00e1s\u00e1nak minim\u00e1lisra cs\u00f6kkent\u00e9se \u00e9rdek\u00e9ben, kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sonk\u00e9nt csak egy el\u0151fordul\u00e1s ker\u00fcl jelent\u00e9sre.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=A verem seg\u00edts\u00e9g\u00e9vel keresse meg a kapcsolatot k\u00e9r\u0151 k\u00f3dot \u00e9s m\u00f3dos\u00edtsa azt, hogy lez\u00e1rja a kapcsolatot.

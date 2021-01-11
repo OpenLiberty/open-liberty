@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Wenn die Ausnahme unerwartet ist, 
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Der angepasste X.509-Zertifikatsmapper hat einen leeren Wert oder einen Nullwert zur\u00fcckgegeben. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Der angepasste X.509-Zertifikatsmapper muss einen nicht leeren Wert ungleich null zur\u00fcckgeben oder eine der benannten Ausnahmen ausl\u00f6sen.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=\u00c4ndern Sie die Implementierung des angepassten X.509-Zertifikatsmappers so, dass kein leerer Wert und kein Nullwert zur\u00fcckgegeben wird. Wenn kein g\u00fcltiger Wert zur\u00fcckgegeben werden kann, muss die Implementierung eine gepr\u00fcfte Ausnahme zur\u00fcckgeben.
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Das definierte Attribut userFilter wird ignoriert, weil loginProperty-Attribute definiert sind. Der Benutzerfilter wird dynamisch generiert.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Es ist mindestens eine Instanz des Attributs loginProperty definiert. Diese Attribute werden verwendet, um den Benutzerfilter zu erstellen.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Wenn das Attribut userFilter bevorzugt wird, entfernen Sie alle loginProperty-Attribute.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Die folgenden Anmeldeeigenschaften sind nicht g\u00fcltig: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Mindestens eine Anmeldeeigenschaft ist keine g\u00fcltige WIM-PersonAccount-Eigenschaft.
+INVALID_LOGIN_PROPERTIES.useraction=W\u00e4hlen Sie g\u00fcltige PersonAccount-Eigenschaften aus oder f\u00fcgen Sie die Eigenschaften PersonAccount als erweiterte Eigenschaften hinzu. Stellen Sie sicher, dass die Gro\u00df-/Kleinschreibung f\u00fcr jede Anmeldeeigenschaft mit der Gro\u00df-/Kleinschreibung der entsprechenden PersonAccount-Eigenschaft \u00fcbereinstimmt.

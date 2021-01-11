@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Specifica\u0163i un fi\u015fier WSDL existent pent
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Tipul de legare specificat {0} nu se potrive\u015fte celui din documentul WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Tipul de legare specificat {0} pentru componenta port {1} nu se potrive\u015fte cu defini\u0163ia din documentul WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Dac\u0103 tipul de legare este specificat folosind adnotarea BindingType sau din descriptorul de implementare, valoarea sa trebuie s\u0103 se potriveasc\u0103 celei din documentul WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualiza\u0163i valoarea tipului de legare s\u0103 se potriveasc\u0103 celui din documentul WSDL.
 

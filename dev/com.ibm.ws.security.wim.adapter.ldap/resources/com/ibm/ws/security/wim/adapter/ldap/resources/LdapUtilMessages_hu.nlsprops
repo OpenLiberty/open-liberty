@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Ha ez egy v\u00e1ratlan hiba, vizs
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00fcres vagy null\u00e9rt\u00e9ket adott vissza. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 csak nem \u00fcres \u00e9s nem null \u00e9rt\u00e9ket adhat vissza, k\u00fcl\u00f6nben a megadott kiv\u00e9telek egyik\u00e9t jelenti.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=M\u00f3dos\u00edtsa az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st \u00fagy, hogy ne \u00fcres vagy null\u00e9rt\u00e9ket adjon vissza. Ha nem adhat\u00f3 vissza \u00e9rv\u00e9nyes \u00e9rt\u00e9k, a megval\u00f3s\u00edt\u00e1snak ellen\u0151rz\u00f6tt hib\u00e1t kell jelentenie. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: A megadott userFilter attrib\u00fatum figyelmen k\u00edv\u00fcl marad, mert loginProperty attrib\u00fatumok vannak megadva. A felhaszn\u00e1l\u00f3i sz\u0171r\u0151 dinamikusan ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=A loginProperty attrib\u00fatum legal\u00e1bb egy p\u00e9ld\u00e1nya meg van adva. Ezeket az attrib\u00fatumokat haszn\u00e1lj\u00e1k a felhaszn\u00e1l\u00f3i sz\u0171r\u0151 \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1hoz.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Ha a userFilter attrib\u00fatum a prefer\u00e1lt, akkor t\u00e1vol\u00edtson el minden loginProperty attrib\u00fatumot.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: A k\u00f6vetkez\u0151 bejelentkez\u00e9si tulajdons\u00e1gok \u00e9rv\u00e9nytelenek: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Legal\u00e1bb egy bejelentkez\u00e9si tulajdons\u00e1g nem \u00e9rv\u00e9nyes WIM PersonAccount tulajdons\u00e1g.
+INVALID_LOGIN_PROPERTIES.useraction=V\u00e1lasszon \u00e9rv\u00e9nyes PersonAccount tulajdons\u00e1gokat vagy adja hozz\u00e1 a tulajdons\u00e1gokat a PersonAccount elemhez kiterjesztett tulajdons\u00e1gk\u00e9nt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kis- \u00e9s nagybet\u0171k mindegyik bejelentkez\u00e9si tulajdons\u00e1gban megegyeznek a megfelel\u0151 PersonAccount tulajdons\u00e1g kis- \u00e9s nagybet\u0171ivel.

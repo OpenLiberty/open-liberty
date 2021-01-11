@@ -39,8 +39,10 @@ invalidExtensionName=Le nom de l''extension \"{0}\" doit commencer par \"x-\"
 headerExampleOrExamples=L''objet En-t\u00eate \"{0}\" ne peut pas comporter \u00e0 la fois la zone \"examples\" et la zone \"example\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
 headerSchemaAndContent=L''objet En-t\u00eate \"{0}\" doit contenir une propri\u00e9t\u00e9 de sch\u00e9ma ou une propri\u00e9t\u00e9 de contenu, mais il ne peut pas contenir les deux.
 headerSchemaOrContent=L''objet En-t\u00eate \"{0}\" doit contenir une propri\u00e9t\u00e9 de sch\u00e9ma ou une propri\u00e9t\u00e9 de contenu.
-headerContentMap=La mappe \"content\" dans l''objet En-t\u00eate \"{0}\" ne doit contenir qu''une seule entr\u00e9e. 
-licenseInvalidURL=L''objet Licence doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide. 
+headerContentMap=La mappe \"content\" dans l''objet En-t\u00eate \"{0}\" ne doit contenir qu''une seule entr\u00e9e.
+
+licenseInvalidURL=L''objet Licence doit contenir une URL valide. La valeur \"{0}\" sp\u00e9cifi\u00e9e pour l''URL n''est pas valide.
+
 linkOperationRefInvalidOrMissing=L''objet Lien \"{0}\" sp\u00e9cifie une zone \"operationRef\" relative associ\u00e9e \u00e0 la valeur \"{1}\", qui d\u00e9signe un objet Op\u00e9ration non valide.
 linkOperationRefAndId=L''objet Lien \"{0}\" d\u00e9finit la zone \"operationRef\" et la zone \"operationId\", qui s''excluent mutuellement.
 linkOperationIdInvalid=L''objet Lien sp\u00e9cifie une zone \"operationId\" associ\u00e9e \u00e0 la valeur \"{0}\", qui d\u00e9signe un objet Op\u00e9ration qui n''existe pas.
@@ -67,7 +69,8 @@ parameterInFieldInvalid=La valeur \"{0}\" sp\u00e9cifi\u00e9e pour la zone \"in\
 parameterExampleOrExamples=L''objet Param\u00e8tre \"{0}\" sp\u00e9cifie une zone \"example\" et une zone \"examples\". Une zone seulement doit \u00eatre sp\u00e9cifi\u00e9e.
 parameterSchemaOrContent=L''objet Param\u00e8tre \"{0}\" ne contient pas de propri\u00e9t\u00e9 \"schema\" ni de propri\u00e9t\u00e9 \"content\".
 parameterSchemaAndContent=L''objet Param\u00e8tre \"{0}\" ne doit pas contenir de propri\u00e9t\u00e9 \"schema\" ni de propri\u00e9t\u00e9 \"content\".
-parameterContentMapMustNotBeEmpty=La mappe \"content\" dans l''objet Param\u00e8tre \"{0}\" ne doit contenir qu''une seule entr\u00e9e. 
+parameterContentMapMustNotBeEmpty=La mappe \"content\" dans l''objet Param\u00e8tre \"{0}\" ne doit contenir qu''une seule entr\u00e9e.
+
 pathItemInvalidRef=L''objet El\u00e9ment de chemin contient une valeur $ref \"{0}\" non valide pour l''\u00e9l\u00e9ment de chemin \"{1}\". Toute r\u00e9f\u00e9rence \u00e0 un \u00e9l\u00e9ment de chemin doit \u00eatre externe.
 pathItemRequiredField=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le param\u00e8tre de chemin \"{0}\" du chemin \"{1}\" ne contient pas la zone \"required\" ou sa valeur est diff\u00e9rente de \"true\"
 pathItemDuplicate=L''objet El\u00e9ment de chemin doit contenir un chemin valide. Le chemin \"{0}\" d\u00e9finit un param\u00e8tre \"{1}\" dupliqu\u00e9 au niveau du chemin : \"{2}\"
@@ -88,7 +91,8 @@ referenceNotPartOfModel=La valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas d\u0
 referenceNotValid=La valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas valide.
 referenceNotValidFormat=Le format de la valeur de r\u00e9f\u00e9rence \"{0}\" n''est pas valide.
 referenceNull=La valeur de r\u00e9f\u00e9rence est null.
-referenceToObjectInvalid=La valeur \"{0}\" n''est pas une r\u00e9f\u00e9rence valide. 
+referenceToObjectInvalid=La valeur \"{0}\" n''est pas une r\u00e9f\u00e9rence valide.
+
 responseMustContainOneCode=L'objet R\u00e9ponses doit contenir au moins un code de r\u00e9ponse.
 responseShouldContainSuccess=L'objet R\u00e9ponses doit contenir au moins un code de r\u00e9ponse pour la r\u00e9ussite de l'op\u00e9ration.
 

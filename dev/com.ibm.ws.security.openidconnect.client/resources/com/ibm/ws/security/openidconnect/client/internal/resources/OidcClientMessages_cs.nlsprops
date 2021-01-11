@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Zkontrolujte soubor server.xml a opravte 
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: V\u00edce ne\u017e jeden filtr ov\u011b\u0159en\u00ed klienta OpenID Connect odpov\u00edd\u00e1 po\u017eadavku na adresu URL [{0}]. Odpov\u00eddaj\u00edc\u00ed filtry byly [{1}]. To m\u016f\u017ee zp\u016fsobit neur\u010dit\u00e9 chov\u00e1n\u00ed.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=V\u00edce ne\u017e jeden filtr ov\u011b\u0159en\u00ed odpov\u00edd\u00e1 p\u0159\u00edchoz\u00edm po\u017eadavk\u016fm. Ka\u017ed\u00fd klient, kter\u00fd pou\u017e\u00edv\u00e1 n\u011bkter\u00fd z t\u011bchto filtr\u016f, by mohl zpracovat po\u017eadavek, co\u017e vede k neur\u010den\u00e9mu chov\u00e1n\u00ed. 
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Zkontrolujte soubor server.xml a opravte konfiguraci.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Vy\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 \u0159et\u011bzcem WASReqURLOidc, m\u00e1 nespr\u00e1vnou hodnotu. N\u00e1zev hostitele [{1}] pou\u017eit\u00fd v souboru cookie se neshoduje s n\u00e1zvem, kter\u00fd je registrov\u00e1n u poskytovatele. Je vr\u00e1cen k\u00f3d odezvy 500.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
