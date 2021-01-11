@@ -28,6 +28,7 @@ fat.test.databases: true
 
 -buildpath: \
 	fattest.databases;version=latest,\
+    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
