@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logstash.collector.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -94,8 +95,8 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
     @Test
     public void containerEnvVarTest() throws Exception {
 
-        boolean foundHostEnv = true;
-        boolean foundServerEnv = true;
+        boolean foundHostEnv = false;
+        boolean foundServerEnv = false;
 
         String stringHost = waitForStringInContainerOutput("TEST_HOST_NAME");
         String stringServer = waitForStringInContainerOutput("TEST_SERVER_NAME");
@@ -103,10 +104,10 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
         Log.info(c, "containerEnvVarTest", "stringHost: " + stringHost);
         Log.info(c, "containerEnvVarTest", "stringServer: " + stringServer);
 
-        if (stringHost == null) {
-            foundHostEnv = false;
+        if (stringHost != null) {
+            foundHostEnv = true;
         }
-        if (stringServer == null) {
+        if (stringServer != null) {
             foundServerEnv = true;
         }
 
@@ -117,6 +118,17 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
     private static void serverStart() throws Exception {
         Log.info(c, "serverStart", "--->  Starting Server.. ");
         server.startServer();
+
+        Log.info(c, "serverStart", "---> Wait for feature to start ");
+        // CWWKZ0001I: Application LogstashApp started in x seconds.
+        assertNotNull("Cannot find CWWKZ0001I from messages.log", server.waitForStringInLogUsingMark("CWWKZ0001I", 15000));
+
+        Log.info(c, "serverStart", "---> Wait for application to start ");
+        // CWWKT0016I: Web application available (default_host): http://localhost:8010/LogstashApp/
+        assertNotNull("Cannot find CWWKT0016I from messages.log", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
+
+        // Wait for CWWKT0016I in Logstash container output
+        waitForStringInContainerOutput("CWWKT0016I");
     }
 
     @Override
