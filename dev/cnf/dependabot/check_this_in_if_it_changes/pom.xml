@@ -1834,7 +1834,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
-      <version>1.2-RC1</version>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.lra</groupId>

@@ -60,7 +60,7 @@ Debugging:
    
 To debug with a local version of the tests, download the test jar to your local system and in the
 /io.openliberty.microprofile.jwt.1.2.internal_fat_tck/publish/tckRunner/tck/pom.xml, update and uncomment the following lines
-       <systemPath>/Users/YourName/MPJWT12/1.2-RC1/microprofile-jwt-auth-tck-1.2-RC1.jar</systemPath> 
+       <systemPath>/Users/YourName/MPJWT12/1.2/microprofile-jwt-auth-tck-1.2.jar</systemPath> 
        <scope>system</scope> 
    
    
