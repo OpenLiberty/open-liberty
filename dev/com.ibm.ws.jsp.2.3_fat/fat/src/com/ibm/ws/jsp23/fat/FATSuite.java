@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
+import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
+import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPTests;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -36,7 +38,9 @@ import componenttest.rules.repeater.RepeatTests;
                 JSPTests.class,
                 JSPJava8Test.class,
                 JSPCdiTest.class,
-                JSP23JSP22ServerTest.class
+                JSP23JSP22ServerTest.class,
+                JSPPrepareJSPThreadCountNonDefaultValueTests.class,
+                JSPPrepareJSPThreadCountDefaultValueTests.class
 })
 public class FATSuite {
 
