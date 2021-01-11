@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -58,6 +59,9 @@ public class ConfigSerializer {
         INFO_LICENSE_NAME("getInfoLicenseName", OpenApiConfig::getInfoLicenseName),
         INFO_LICENSE_URL("getInfoLicenseUrl", OpenApiConfig::getInfoLicenseName),
         OPERATION_ID_STRATEGY("getOperationIdStrategy", OpenApiConfig::getOperationIdStrategy, OperationIdStrategy::name),
+        ARRAY_REFERENCES_ENABLE("arrayReferencesEnable", c -> Boolean.toString(c.arrayReferencesEnable())),
+        DEFAULT_PRODUCES("getDefaultProduces", OpenApiConfig::getDefaultProduces, Optional::toString),
+        DEFAULT_CONSUMES("getDefaultConsumes", OpenApiConfig::getDefaultConsumes, Optional::toString),
         ;
 
         Function<OpenApiConfig, String> function;
