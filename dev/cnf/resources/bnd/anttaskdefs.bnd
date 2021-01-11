@@ -13,11 +13,11 @@ repo.rasInstrumentation.path: ${path;\
     ${repo;wlp-rasInstrumentation}}
     
 repo.generateChecksums.path: ${path;\
-	${repo;wlp-generateChecksums},\
+    ${repo;wlp-generateChecksums},\
     ${repo;com.ibm.ws.kernel.boot.core},\
     ${repo;com.ibm.ws.org.apache.ant},\
-	${repo;com.ibm.ws.org.apache.aries.util},\
-	${repo;com.ibm.websphere.org.osgi.core}}
+    ${repo;com.ibm.ws.org.apache.aries.util},\
+    ${repo;com.ibm.websphere.org.osgi.core}}
     
 repo.nlsTasks.path: ${path;\
     ${repo;commons-io:commons-io;2.4},\
@@ -80,3 +80,4 @@ repo.mavenRepoTasks.path: ${path;\
 
 repo.junitReportTask.path: ${path;\
     ${repo;org.apache.ant:ant-junit;1.9.6}}
+
