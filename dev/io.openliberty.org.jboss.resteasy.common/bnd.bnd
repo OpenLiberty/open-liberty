@@ -152,6 +152,7 @@ Include-Resource:\
   META-INF=resources/META-INF
 
 -buildpath: \
+    io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	org.jboss.resteasy:resteasy-client-api;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-client;strategy=exact;version=4.5.8.Final,\
 	org.jboss.resteasy:resteasy-core-spi;strategy=exact;version=4.5.8.Final,\
