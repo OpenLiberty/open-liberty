@@ -28,7 +28,7 @@ public enum DatabaseContainerType {
     DerbyClient("derbyclient.jar", "componenttest.topology.database.container.DerbyClientContainer", "Properties_derby_client"),
     Oracle("ojdbc8_g.jar", "componenttest.topology.database.container.OracleContainer", "Properties_oracle"),
     Postgres("postgresql.jar", "org.testcontainers.containers.PostgreSQLContainer", "Properties_postgresql"),
-    SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.SQLServerContainer", "Properties_microsoft_sqlserver");
+    SQLServer("mssql-jdbc.jar", "org.testcontainers.containers.MSSQLServerContainer", "Properties_microsoft_sqlserver");
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;

@@ -114,17 +114,17 @@
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-api</artifactId>
-      <version>3.2.5</version>
+      <version>3.2.7</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport-zerodep</artifactId>
-      <version>3.2.5</version>
+      <version>3.2.7</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport</artifactId>
-      <version>3.2.5</version>
+      <version>3.2.7</version>
     </dependency>
     <dependency>
       <groupId>com.google.api.grpc</groupId>
@@ -2739,7 +2739,7 @@
     <dependency>
       <groupId>org.rnorth.duct-tape</groupId>
       <artifactId>duct-tape</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.webdriver</groupId>
@@ -3059,42 +3059,42 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>database-commons</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-xe</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.15.0</version>
+      <version>1.15.1</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
