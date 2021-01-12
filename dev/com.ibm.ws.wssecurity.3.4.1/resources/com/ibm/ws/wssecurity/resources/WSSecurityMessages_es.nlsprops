@@ -41,12 +41,12 @@
 
 # Message logged once during server startup
 # {0} is the exception
-error.policy.notloaded=CWWKW0202E: WS-Security no puede aplicarse a ning\u00fan servicio web. Se ha producido un error cuando se intentaba registrar un cargador de pol\u00edticas WS-Security con la infraestructura CXF: [{0}]
-error.policy.notloaded.explanation=El cargador de pol\u00edticas WS-Security no se ha podido registrar con la infraestructura CXF durante el inicio del servidor. Debido al error, el tiempo de ejecuci\u00f3n de WS-Security no se invocar\u00e1 para ning\u00fan mensaje SOAP y no se a\u00f1adir\u00e1n restricciones de WS-Security.
+error.policy.notloaded=CWWKW0202E: WS-Security no puede aplicarse a ning\u00fan servicio web.  Se ha producido un error cuando se intentaba registrar un cargador de pol\u00edticas WS-Security con la infraestructura CXF: [{0}]
+error.policy.notloaded.explanation=El cargador de pol\u00edticas WS-Security no se ha podido registrar con la infraestructura CXF durante el inicio del servidor.  Debido al error, el tiempo de ejecuci\u00f3n de WS-Security no se invocar\u00e1 para ning\u00fan mensaje SOAP y no se a\u00f1adir\u00e1n restricciones de WS-Security.
 error.policy.notloaded.useraction=Enc\u00e1rguese del error que se describe en el mensaje.
 
 # Message logged once during server startup
-WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security no puede aplicarse a ninguna aplicaci\u00f3n de cliente de servicios web. El elemento de configuraci\u00f3n de cliente de WS-Security, wsSecurityClient, no existe en server.xml.
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security no puede aplicarse a ninguna aplicaci\u00f3n de cliente de servicios web.  El elemento de configuraci\u00f3n de cliente de WS-Security, wsSecurityClient, no existe en server.xml.
 WSSECURITY_NO_CONFIG_DEFINED.explanation=La caracter\u00edstica wsSecurity-1.1 est\u00e1 habilitada, pero el componente de WS-Security no encuentra el elemento wsSecurityClient en server.xml.
 WSSECURITY_NO_CONFIG_DEFINED.useraction=Si se necesitan restricciones de WS-Security para una aplicaci\u00f3n de servicio web de cliente, a\u00f1ada el elemento de configuraci\u00f3n wsSecurityClient necesario a server.xml.
 
@@ -68,8 +68,8 @@ UNKNOWN_CALLER_TOKEN_NAME.explanation=El nombre especificado para el elemento ca
 UNKNOWN_CALLER_TOKEN_NAME.useraction=Consulte el archivo server.xml para comprobar que se ha especificado un valor soportado para el elemento callerToken. Los valores v\u00e1lidos se muestran en el mensaje de error.
 
 # Message logged at runtime for each errant inbound SOAP request
-multiple_unt_exist_err=CWWKW0206E: No se puede crear un sujeto de seguridad para el servicio web. No se puede identificar el callerToken en el mensaje de entrada porque existe m\u00e1s de un UsernameToken en la cabecera de seguridad SOAP.
-multiple_unt_exist_err.explanation=El callerToken en el archivo security.xml est\u00e1 establecido en UsernameToken y la cabecera de seguridad en el mensaje SOAP de entrada contiene m\u00e1s de un UsernameToken. Como consecuencia, el tiempo de ejecuci\u00f3n de WS-Security no puede determinar qu\u00e9 UsernameToken se va a utilizar para la se\u00f1al del interlocutor.
+multiple_unt_exist_err=CWWKW0206E: No se puede crear un sujeto de seguridad para el servicio web.  No se puede identificar el callerToken en el mensaje de entrada porque existe m\u00e1s de un UsernameToken en la cabecera de seguridad SOAP.
+multiple_unt_exist_err.explanation=callerToken en server.xml est\u00e1 establecido en UsernameToken y la cabecera de seguridad del mensaje SOAP de entrada contiene m\u00e1s de un UsernameToken.  Como consecuencia, el tiempo de ejecuci\u00f3n de WS-Security no puede determinar qu\u00e9 UsernameToken se va a utilizar para la se\u00f1al del interlocutor.
 multiple_unt_exist_err.useraction=Realice una de las acciones siguientes: 1) Cambie la configuraci\u00f3n del cliente para enviar s\u00f3lo un UsernameToken; 2) Elimine la configuraci\u00f3n de callerToken en server.xml
 
 # TO BE DELETED
@@ -84,7 +84,7 @@ multiple_unt_exist_err.useraction=Realice una de las acciones siguientes: 1) Cam
 
 # Message logged at runtime for each errant inbound SOAP request
 # {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
-no_caller_exist_err=CWWKW0207E: No se puede crear un sujeto de seguridad para el servicio web. Se ha configurado un callerToken {0}, pero no hay ninguna se\u00f1al {0} en la cabecera de seguridad SOAP de entrada. No se ha podido seleccionar una se\u00f1al de interlocutor.
+no_caller_exist_err=CWWKW0207E: No se puede crear un sujeto de seguridad para el servicio web.  Se ha configurado un callerToken {0}, pero no hay ninguna se\u00f1al {0} en la cabecera de seguridad SOAP de entrada.  No se ha podido seleccionar una se\u00f1al de interlocutor.
 no_caller_exist_err.explanation=El callerToken configurado en server.xml no est\u00e1 presente en la cabecera de seguridad SOAP. 
 no_caller_exist_err.useraction=Realice una de las acciones siguientes: 1) Cambie la configuraci\u00f3n del cliente para enviar la se\u00f1al de interlocutor correcta; 2) Elimine la configuraci\u00f3n de callerToken en el server.xml
 
@@ -95,8 +95,8 @@ no_caller_exist_err.useraction=Realice una de las acciones siguientes: 1) Cambie
 
 # Message logged at runtime for each errant inbound SOAP request.
 # {0} is the error message received from base security
-error_authenticate=CWWKW0210E: No se puede crear un sujeto de seguridad para el servicio web debido a  [{0}].
-error_authenticate.explanation=No se ha podido crear un sujeto de seguridad para la se\u00f1al de interlocutor recuperada de la cabecera de seguridad SOAP. La raz\u00f3n del error se describe en el mensaje.
+error_authenticate=CWWKW0210E: No se puede crear un sujeto de seguridad para el servicio web debido a [{0}].
+error_authenticate.explanation=No se ha podido crear un sujeto de seguridad para la se\u00f1al de interlocutor recuperada de la cabecera de seguridad SOAP.  La raz\u00f3n del error se describe en el mensaje.
 error_authenticate.useraction=Enc\u00e1rguese del error que se describe en el mensaje.
 
 # TO BE DELETED
@@ -137,16 +137,13 @@ saml_token_issue_instant_in_future.useraction=Aseg\u00farese de que la fecha y l
 
 failed_to_extract_saml_element=CWWKW0218W: Se ha producido una excepci\u00f3n al intentar extraer el elemento SAML de la se\u00f1al de SAML proporcionada. La excepci\u00f3n era: [{0}]
 failed_to_extract_saml_element.explanation=Se ha producido una excepci\u00f3n al analizar la se\u00f1al de SAML. Puede que el formato de la se\u00f1al no sea correcto o bien que se haya producido un error interno al intentar analizar la serie de se\u00f1al.
-failed_to_extract_saml_element.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error.
-
+failed_to_extract_saml_element.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error. 
 failed_to_extract_saml_token_from_subject=CWWKW0219W: Se ha producido una excepci\u00f3n al intentar extraer la se\u00f1al SAML del sujeto. La excepci\u00f3n era: [{0}]
 failed_to_extract_saml_token_from_subject.explanation=Se ha producido una excepci\u00f3n al extraer la se\u00f1al SAML del sujeto.
-failed_to_extract_saml_token_from_subject.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error.
-
+failed_to_extract_saml_token_from_subject.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error. 
 failed_to_obtain_subject_info=CWWKW0220E: La autenticaci\u00f3n ha fallado debido a una excepci\u00f3n al obtener informaci\u00f3n del sujeto en la aserci\u00f3n de SAML. La excepci\u00f3n era: [{0}]
 failed_to_obtain_subject_info.explanation=Se ha producido una excepci\u00f3n al intentar obtener informaci\u00f3n sobre el sujeto en la se\u00f1al SAML proporcionada.
-failed_to_obtain_subject_info.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error.
-
+failed_to_obtain_subject_info.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error. 
 failed_to_authenticate=CWWKW0221E: No se ha podido realizar la autenticaci\u00f3n debido a una excepci\u00f3n inesperada. La excepci\u00f3n era: [{0}]
 failed_to_authenticate.explanation=Probablemente se ha producido un problema al obtener la informaci\u00f3n del sujeto o la identidad al interactuar con el registro de usuarios.
 failed_to_authenticate.useraction=Compruebe los registros de servidor para obtener m\u00e1s informaci\u00f3n sobre el error. Aseg\u00farese de que la informaci\u00f3n del sujeto en la se\u00f1al de SAML se correlaciona con los valores esperados en el registro de usuarios configurado.

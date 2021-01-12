@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Pokud byla v\u00fdjimka neo\u010de
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vr\u00e1til pr\u00e1zdnou hodnotu nebo hodnotu null. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 mus\u00ed vr\u00e1tit nepr\u00e1zdnou hodnotu nebo nenulovou hodnotu nebo vyvolat jednu z pojmenovan\u00fdch v\u00fdjimek.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Upravte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 tak, aby nevracela pr\u00e1zdnou hodnotu nebo hodnotu null. Pokud nem\u016f\u017ee b\u00fdt platn\u00e1 hodnota vr\u00e1cena, mus\u00ed implementace vyvolat kontrolovanou v\u00fdjimku. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Definovan\u00fd atribut userFilter je ignorov\u00e1n, proto\u017ee jsou definov\u00e1ny atributy loginProperty. Filtr u\u017eivatel\u016f je dynamicky generov\u00e1n.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Je definov\u00e1na jedna nebo v\u00edce instanc\u00ed atributu loginProperty. Tyto atributy se pou\u017e\u00edvaj\u00ed k sestaven\u00ed filtru u\u017eivatel\u016f.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Pokud je up\u0159ednost\u0148ov\u00e1n atribut userFilter, odeberte v\u0161echny atributy loginProperty.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: N\u00e1sleduj\u00edc\u00ed vlastnosti p\u0159ihl\u00e1\u0161en\u00ed jsou neplatn\u00e9: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Jedna nebo v\u00edce vlastnost\u00ed p\u0159ihl\u00e1\u0161en\u00ed nejsou platn\u00e9 vlastnosti WIM PersonAccount.
+INVALID_LOGIN_PROPERTIES.useraction=Bu\u010f zvolte platn\u00e9 vlastnosti PersonAccount, nebo p\u0159idejte vlastnosti do PersonAccount jako roz\u0161\u00ed\u0159en\u00e9 vlastnosti. Ov\u011b\u0159te, \u017ee se p\u0159\u00edpad pro ka\u017edou vlastnost p\u0159ihl\u00e1\u0161en\u00ed shoduje s p\u0159\u00edpadem pro odpov\u00eddaj\u00edc\u00ed vlastnost PersonAccount.

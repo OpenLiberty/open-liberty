@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0750 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# {0} is a space separated list of interface class names
+rest.client.interface.using.request.scope=CWWKW0750I: N\u00e1sleduj\u00edc\u00ed rozhran\u00ed jsou konfigurov\u00e1na jako RequestScoped, co\u017e bude m\u00edt za n\u00e1sledek pomalej\u0161\u00ed v\u00fdkon: {0} 
+rest.client.interface.using.request.scope.explanation=Rozhran\u00ed MicroProfile Rest Client v rozsahu vymezen\u00fdm po\u017eadavkem, jsou inicializov\u00e1na p\u0159i ka\u017ed\u00e9m po\u017eadavku, co\u017e \u010dasto vyvol\u00e1v\u00e1 redundantn\u00ed v\u00fdpo\u010dty. Rozhran\u00ed v rozsahu aplikace budou prov\u00e1d\u011bt proces inicializace pouze jednou pro ka\u017edou instanci aplikace. Rozhran\u00ed m\u016f\u017ee b\u00fdt pova\u017eov\u00e1no za rozhran\u00ed v rozsahu po\u017eadavku, kdy\u017e je anotov\u00e1no jako @RequestScoped nebo kdy\u017e je vlo\u017eeno do objektu typu CDI bean v rozsahu po\u017eadavku s anotac\u00ed @Dependent nebo s anotac\u00ed no scope (bez rozsahu). 
+rest.client.interface.using.request.scope.useraction=Pokud nen\u00ed k dispozici platn\u00e1 p\u0159\u00ed\u010dina, zva\u017ete pou\u017eit\u00ed anotace @ApplicationScoped na rozhran\u00ed, abyste se vyvarovali nadbyte\u010dn\u00e9 inicializace.

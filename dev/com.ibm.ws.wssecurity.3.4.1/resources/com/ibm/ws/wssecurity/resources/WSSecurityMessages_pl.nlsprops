@@ -41,19 +41,19 @@
 
 # Message logged once during server startup
 # {0} is the exception
-error.policy.notloaded=CWWKW0202E: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej us\u0142ugi Web Service. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zarejestrowania programu \u0142aduj\u0105cego strategii WS-Security w strukturze CXF: [{0}]
-error.policy.notloaded.explanation=Program \u0142aduj\u0105cy strategii WS-Security nie mo\u017ce zosta\u0107 zarejestrowany w strukturze CXF podczas uruchamiania serwera. Z powodu tego b\u0142\u0119du \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie zostanie wywo\u0142ane dla \u017cadnego komunikatu SOAP i ograniczenia zabezpiecze\u0144 WS-Security nie zostan\u0105 dodane.
+error.policy.notloaded=CWWKW0202E: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security do \u017cadnej us\u0142ugi WWW.  Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zarejestrowania programu \u0142aduj\u0105cego strategii WS-Security w strukturze CXF: [{0}]
+error.policy.notloaded.explanation=Program \u0142aduj\u0105cy strategii WS-Security nie mo\u017ce zosta\u0107 zarejestrowany w strukturze CXF podczas uruchamiania serwera.  Z powodu tego b\u0142\u0119du \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie zostanie wywo\u0142ane dla \u017cadnego komunikatu SOAP i ograniczenia zabezpiecze\u0144 WS-Security nie zostan\u0105 dodane.
 error.policy.notloaded.useraction=Spr\u00f3buj usun\u0105\u0107 b\u0142\u0105d opisany w komunikacie.
 
 # Message logged once during server startup
-WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej aplikacji klienckiej us\u0142ugi Web Service. Element konfiguracji klienta WS-Security wsSecurityClient nie istnieje w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security do \u017cadnej aplikacji klienckiej us\u0142ugi WWW.  Element konfiguracji klienta WS-Security wsSecurityClient nie istnieje w pliku server.xml.
 WSSECURITY_NO_CONFIG_DEFINED.explanation=Sk\u0142adnik wsSecurity-1.1 jest w\u0142\u0105czony, ale komponent WS-Security nie mo\u017ce znale\u017a\u0107 elementu wsSecurityClient w pliku server.xml.
-WSSECURITY_NO_CONFIG_DEFINED.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane dla aplikacji klienckiej us\u0142ugi Web Service, dodaj wymagany element konfiguracji wsSecurityClient do pliku server.xml. 
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane w przypadku aplikacji klienckiej us\u0142ugi WWW, dodaj wymagany element konfiguracji wsSecurityClient do pliku server.xml.
 
 # Message logged once during server startup
-WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej aplikacji dostawcy us\u0142ug Web Service. Element konfiguracji dostawcy WS-Security wsSecurityProvider nie istnieje w pliku server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I: Nie mo\u017cna zastosowa\u0107 zabezpiecze\u0144 WS-Security dla \u017cadnej aplikacji dostawcy us\u0142ug WWW. Element konfiguracji dostawcy WS-Security wsSecurityProvider nie istnieje w pliku server.xml.
 WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation=Sk\u0142adnik wsSecurity-1.1 jest w\u0142\u0105czony, ale komponent WS-Security nie mo\u017ce znale\u017a\u0107 elementu wsSecurityProvider w pliku server.xml.
-WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane dla aplikacji dostawcy us\u0142ug Web Service, dodaj wymagany element konfiguracji wsSecurityProvider do pliku server.xml. 
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Je\u015bli ograniczenia zabezpiecze\u0144 WS-Security s\u0105 wymagane w przypadku aplikacji dostawcy us\u0142ug WWW, dodaj wymagany element konfiguracji wsSecurityProvider do pliku server.xml.
 
 # TO BE DELETED
 # WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
@@ -63,14 +63,14 @@ WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Je\u015bli ograniczenia zabezpiecze
 # Message logged once during server startup on error when reading in the config
 # {0} is a token type, ex: X509, UsernameToken
 # {1} is the list of valid token types
-UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Konfiguracji znacznika programu wywo\u0142uj\u0105cego nie mo\u017cna zastosowa\u0107 do aplikacji dostawcy us\u0142ug WWW. Nazwa [{0}] podana dla elementu callerToken w konfiguracji elementu wsSecurityProvider w pliku server.xml jest niepoprawna. Poprawne warto\u015bci to: [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Konfiguracji znacznika programu wywo\u0142uj\u0105cego nie mo\u017cna zastosowa\u0107 do aplikacji dostawcy us\u0142ug WWW.  Nazwa [{0}] podana dla elementu callerToken w konfiguracji elementu wsSecurityProvider w pliku server.xml jest niepoprawna. Poprawne warto\u015bci to: [{1}] 
 UNKNOWN_CALLER_TOKEN_NAME.explanation=Nazwa podana dla elementu callerToken w konfiguracji elementu wsSecurityProvider w pliku server.xml jest niepoprawna.
-UNKNOWN_CALLER_TOKEN_NAME.useraction=Sprawd\u017a, czy w pliku server.xml okre\u015blono obs\u0142ugiwan\u0105 warto\u015b\u0107 dla elementu callerToken. Poprawne warto\u015bci s\u0105 wy\u015bwietlone w komunikacie o b\u0142\u0119dzie.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=Sprawd\u017a, czy w pliku server.xml podano obs\u0142ugiwan\u0105 warto\u015b\u0107 elementu callerToken. Poprawne warto\u015bci s\u0105 wy\u015bwietlone w komunikacie o b\u0142\u0119dzie.
 
 # Message logged at runtime for each errant inbound SOAP request
-multiple_unt_exist_err=CWWKW0206E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service. Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele element\u00f3w UsernameToken w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
-multiple_unt_exist_err.explanation=W pliku security.xml element callerToken jest ustawiony na warto\u015b\u0107 UsernameToken i nag\u0142\u00f3wek zabezpiecze\u0144 w przychodz\u0105cym komunikacie SOAP zawiera wiele element\u00f3w UsernameToken.  Z tego powodu \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie mo\u017ce okre\u015bli\u0107, kt\u00f3rego elementu UsernameToken u\u017cy\u0107 dla znacznika programu wywo\u0142uj\u0105cego.
-multiple_unt_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 tylko jeden element UsernameToken. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml. 
+multiple_unt_exist_err=CWWKW0206E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.  Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele element\u00f3w UsernameToken w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_unt_exist_err.explanation=W pliku server.xml element callerToken jest ustawiony na warto\u015b\u0107 UsernameToken, a nag\u0142\u00f3wek zabezpiecze\u0144 w przychodz\u0105cym komunikacie SOAP zawiera wiele warto\u015bci UsernameToken.  Z tego powodu \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie mo\u017ce okre\u015bli\u0107, kt\u00f3rego elementu UsernameToken u\u017cy\u0107 w przypadku znacznika programu wywo\u0142uj\u0105cego.
+multiple_unt_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 tylko jeden element UsernameToken. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
 
 # TO BE DELETED
 #  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
@@ -84,7 +84,7 @@ multiple_unt_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych c
 
 # Message logged at runtime for each errant inbound SOAP request
 # {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
-no_caller_exist_err=CWWKW0207E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service. Skonfigurowano element callerToken {0}, lecz nie ma znacznika {0} w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP. Nie mo\u017cna wybra\u0107 znacznika programu wywo\u0142uj\u0105cego.
+no_caller_exist_err=CWWKW0207E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.  Skonfigurowano element callerToken {0}, ale nie ma znacznika {0} w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Nie mo\u017cna wybra\u0107 znacznika programu wywo\u0142uj\u0105cego.
 no_caller_exist_err.explanation=Element callerToken skonfigurowany w pliku server.xml nie jest obecny w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP. 
 no_caller_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 poprawny znacznik programu wywo\u0142uj\u0105cego. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
 
@@ -95,8 +95,8 @@ no_caller_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czyn
 
 # Message logged at runtime for each errant inbound SOAP request.
 # {0} is the error message received from base security
-error_authenticate=CWWKW0210E: Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla us\u0142ugi Web Service, przyczyna: [{0}].
-error_authenticate.explanation=Nie mo\u017cna utworzy\u0107 tematu zabezpiecze\u0144 dla znacznika programu wywo\u0142uj\u0105cego pobranego z nag\u0142\u00f3wka zabezpiecze\u0144 SOAP. Przyczyna b\u0142\u0119du jest opisana w komunikacie.
+error_authenticate=CWWKW0210E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW, przyczyna: [{0}].
+error_authenticate.explanation=Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla znacznika programu wywo\u0142uj\u0105cego pobranego z nag\u0142\u00f3wka zabezpiecze\u0144 SOAP.  Przyczyna b\u0142\u0119du jest opisana w komunikacie.
 error_authenticate.useraction=Spr\u00f3buj usun\u0105\u0107 b\u0142\u0105d opisany w komunikacie.
 
 # TO BE DELETED
@@ -106,13 +106,13 @@ error_authenticate.useraction=Spr\u00f3buj usun\u0105\u0107 b\u0142\u0105d opisa
 # no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
 
 # Message logged at runtime for each errant inbound SOAP request.
-multiple_endorsing_token_err=CWWKW0212E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym. Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
-multiple_endorsing_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w EndorsingSupportingTokens jest niedozwolone. 
+multiple_endorsing_token_err=CWWKW0212E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.  Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym.  Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_endorsing_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 true (warto\u015b\u0107 domy\u015blna), a istnieje wiele element\u00f3w EndorsingSupportingTokens w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w EndorsingSupportingTokens jest niedozwolone.                                   
 multiple_endorsing_token_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 strategi\u0119 w taki spos\u00f3b, aby tylko jeden element endorsingSupportingToken by\u0142 do\u0142\u0105czany do komunikatu. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml. 3) Ustaw element endorsingSupportingToken na warto\u015b\u0107 false w konfiguracji elementu callerToken w pliku server.xml.
 
 # Message logged at runtime for each errant inbound SOAP request.
-multiple_asymmetric_token_err=CWWKW0213E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym. Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
-multiple_asymmetric_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w Asymmetric jest niedozwolone. 
+multiple_asymmetric_token_err=CWWKW0213E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.  Znacznik programu wywo\u0142uj\u0105cego nie mo\u017ce zosta\u0107 zidentyfikowany w komunikacie przychodz\u0105cym.  Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_asymmetric_token_err.explanation=Element callerToken w pliku server.xml ma warto\u015b\u0107 X509Token, element endorsingSupportingToken ma warto\u015b\u0107 false, a istnieje wiele znacznik\u00f3w podpisu Asymmetric w przychodz\u0105cym nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.  Poniewa\u017c pojedynczy znacznik programu wywo\u0142uj\u0105cego musi istnie\u0107 w komunikacie, aby mo\u017cna by\u0142o pomy\u015blnie wybra\u0107 znacznik programu wywo\u0142uj\u0105cego, stosowanie wielu element\u00f3w Asymmetric jest niedozwolone.                                   
 multiple_asymmetric_token_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 strategi\u0119 w taki spos\u00f3b, aby tylko jeden znacznik podpisu Asymmetric by\u0142 do\u0142\u0105czany do komunikatu. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
 
 # Do not translate "NotBefore"
@@ -195,7 +195,7 @@ SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Us\u0142uga UserCredentialResolver u
 SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Je\u015bli wyj\u0105tek UserIdentityException nie jest oczekiwany, upewnij si\u0119, \u017ce us\u0142uga UserCredentialResolver jest poprawnie skonfigurowana.
 
 # Message logged at runtime for each errant inbound SOAP request
-multiple_saml_exist_err=CWWKW0231E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW. Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele asercji Salm w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
+multiple_saml_exist_err=CWWKW0231E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla us\u0142ugi WWW.  Nie mo\u017cna zidentyfikowa\u0107 elementu callerToken w komunikacie przychodz\u0105cym, poniewa\u017c istnieje wiele asercji Salm w nag\u0142\u00f3wku zabezpiecze\u0144 SOAP.
 multiple_saml_exist_err.explanation=W pliku server.xml element callerToken jest ustawiony na warto\u015b\u0107 SamlToken, a nag\u0142\u00f3wek zabezpiecze\u0144 w przychodz\u0105cym komunikacie SOAP zawiera wiele asercji Saml.  Z tego powodu \u015brodowisko wykonawcze zabezpiecze\u0144 WS-Security nie mo\u017ce okre\u015bli\u0107, kt\u00f3rej asercji Saml u\u017cy\u0107 dla znacznika programu wywo\u0142uj\u0105cego.
 multiple_saml_exist_err.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Zmie\u0144 konfiguracj\u0119 klienta, aby wysy\u0142a\u0107 tylko jedn\u0105 asercj\u0119 Saml. 2) Usu\u0144 konfiguracj\u0119 elementu callerToken z pliku server.xml.
 

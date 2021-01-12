@@ -51,13 +51,13 @@ emptyRegistry.info.CWMMC0004I.useraction=Entrez des m\u00e9triques dans le regis
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMMC0005E=CWMMC0005E: Une erreur interne s'est produite : {0}
-internal.error.CWMMC0005E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.
-internal.error.CWMMC0005E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'application.
+internal.error.CWMMC0005E.explanation=Le serveur d'applications a rencontr\u00e9 une erreur interne.
+internal.error.CWMMC0005E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'applications.
 
 #Generic error for internal failures. 
 internal.error.CWMMC0006E=CWMMC0006E: Une erreur interne s'est produite.
-internal.error.CWMMC0006E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.
-internal.error.CWMMC0006E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'application.
+internal.error.CWMMC0006E.explanation=Le serveur d'applications a rencontr\u00e9 une erreur interne.
+internal.error.CWMMC0006E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'applications.
 
 #Memory usedHeap message
 memory.usedHeap.description=Affiche la quantit\u00e9 de m\u00e9moire dynamique utilis\u00e9e en octets.
@@ -129,7 +129,8 @@ session.invalidated.total.description=Nombre de sessions d\u00e9connect\u00e9es 
 session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect\u00e9es suite au d\u00e9passement du d\u00e9lai d'attente depuis l'activation de cette m\u00e9trique.
 
 
-REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
+REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur. La m\u00e9trique n'enregistre pas le temps \u00e9coul\u00e9 ni le comptage d'une demande REST si celle-ci a g\u00e9n\u00e9r\u00e9 une exception non mapp\u00e9e. Elle effectue le suivi de la dur\u00e9e la plus longue enregistr\u00e9e et de la dur\u00e9e la plus courte enregistr\u00e9e au cours de la minute compl\u00e8te pr\u00e9c\u00e9dente.
+REST.request.unmappedException.description=Nombre total d'exceptions non mapp\u00e9es \u00e9mises par cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

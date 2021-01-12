@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Zmie\u0144 wywo\u0142ywane dzia\
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: {0} nie jest poprawnym atrybutem dla komponentu MBean {1}.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Podj\u0119to pr\u00f3b\u0119 pobrania lub ustawienia atrybutu, kt\u00f3ry by\u0142 niedost\u0119pny dla podanego komponentu MBean.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Zmie\u0144 podany atrybut na jeden z dost\u0119pnych atrybut\u00f3w dla tego komponentu MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: Po\u0142\u0105czenie uzyskane z {0} nie zosta\u0142o zamkni\u0119te. Nast\u0119puj\u0105cy stos identyfikuje kod, kt\u00f3ry uzyska\u0142 po\u0142\u0105czenie: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=Po\u0142\u0105czenie nie zosta\u0142o zamkni\u0119te przez kod, kt\u00f3ry je uzyska\u0142. Stos identyfikuje jeden obszar kodu, w kt\u00f3rym wyst\u0119puje niezamkni\u0119te po\u0142\u0105czenie, ale mo\u017cliwe s\u0105 tak\u017ce inne wyst\u0105pienia. Aby unikn\u0105\u0107 nadmiernego zape\u0142nienia dziennik\u00f3w i zminimalizowa\u0107 wp\u0142yw rejestrowania stos\u00f3w na wydajno\u015b\u0107, zg\u0142aszane jest tylko jedno wyst\u0105pienie na ka\u017cde uruchomienie serwera.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Na podstawie stosu znajd\u017a kod, kt\u00f3ry \u017c\u0105da po\u0142\u0105czenia, i zmodyfikuj go tak, aby zamyka\u0142 po\u0142\u0105czenie.

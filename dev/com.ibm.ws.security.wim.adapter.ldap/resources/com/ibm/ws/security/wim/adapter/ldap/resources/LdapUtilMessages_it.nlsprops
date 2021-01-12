@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Se l'eccezione era imprevista, esa
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Il mapper certificato X.509 personalizzato ha restituito un valore vuoto o null. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Il mapper certificato X.509 personalizzato deve restituire un valore non vuoto e non null o emettere una delle eccezioni indicate.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Modificare l'implementazione del mapper certificato X.509 personalizzato in modo che non restituisca un valore vuoto o null. Se non pu\u00f2 essere restituito un valore valido, l'implementazione deve emettere un'eccezione controllata. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: L'attributo userFilter definito viene ignorato perch\u00e9 sono definiti gli attributi loginProperty. Il filtro utente viene generato in modo dinamico.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Sono definite una o pi\u00f9 istanze dell'attributo loginProperty. Questi attributi vengono utilizzati per creare il filtro utente.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Se si preferisce l'attributo userFilter, rimuovere gli attributi loginProperty.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Le seguenti propriet\u00e0 di login non sono valide: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Una o pi\u00f9 propriet\u00e0 di login non sono propriet\u00e0 PersonAccount WIM valide.
+INVALID_LOGIN_PROPERTIES.useraction=Selezionare propriet\u00e0 PersonAccount valide o aggiungere le propriet\u00e0 a PersonAccount come propriet\u00e0 estese. Assicurarsi che le lettere maiuscole/minuscole per ciascuna propriet\u00e0 di login corrispondano alle maiuscole/minuscole per la propriet\u00e0 PersonAccount corrispondente.

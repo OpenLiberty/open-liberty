@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Revise el archivo server.xml y corrija la
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: M\u00e1s de un filtro de autenticaci\u00f3n de cliente de OpenID Connect coincide con una solicitud al URL [{0}]. Los filtros coincidentes eran [{1}]. Esto puede producir un comportamiento indeterminado.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=M\u00e1s de un filtro de autenticaci\u00f3n coincide con la solicitud de entrada. Cualquier cliente que utilice uno de estos filtros puede procesar la solicitud, produciendo un comportamiento indeterminado.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Revise el archivo server.xml y corrija la configuraci\u00f3n.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una solicitud a [{0}] no es v\u00e1lida. Una cookie necesaria con un nombre que empieza con WASReqURLOidc tiene un valor incorrecto. El nombre de host [{1}] que se utiliza en la cookie no coincide con el nombre que se ha registrado en el proveedor. Se devuelve un c\u00f3digo de respuesta de 500.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Se ha recibido una solicitud que incluye una cookie mal formada.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. La cookie mal formada puede estar causada por la modificaci\u00f3n de cookies en el agente de usuario con un nombre de host que difiere del nombre de host de la redirecci\u00f3n que se ha registrado en el proveedor. Si se espera el nombre de host, a\u00f1\u00e1dalo al atributo wasReqURLRedirectDomainNames del elemento webAppSecurity en server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

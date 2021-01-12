@@ -46,7 +46,7 @@ error.policy.notloaded.explanation=A WS-Security ir\u00e1nyelv bet\u00f6lt\u0151
 error.policy.notloaded.useraction=Jav\u00edtsa az \u00fczenetben le\u00edrt hib\u00e1t.
 
 # Message logged once during server startup
-WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security nem alkalmazhat\u00f3 b\u00e1rmelyik webszolg\u00e1ltat\u00e1s \u00fcgyf\u00e9lalkalmaz\u00e1sra.  A WS-Security \u00fcgyf\u00e9lbe\u00e1ll\u00edt\u00e1si eleme, a wsSecurityClient nem l\u00e9tezik a server.xml f\u00e1jlban.
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security nem alkalmazhat\u00f3 b\u00e1rmelyik webszolg\u00e1ltat\u00e1s \u00fcgyf\u00e9lalkalmaz\u00e1sra.  A WS-Security \u00fcgyf\u00e9l-be\u00e1ll\u00edt\u00e1si eleme, a wsSecurityClient nem l\u00e9tezik a server.xml f\u00e1jlban.
 WSSECURITY_NO_CONFIG_DEFINED.explanation=A wsSecurity-1.1 szolg\u00e1ltat\u00e1s enged\u00e9lyezett, de a WS-Security \u00f6sszetev\u0151 nem tal\u00e1lja a wsSecurityClient elemet a server.xml f\u00e1jlban.
 WSSECURITY_NO_CONFIG_DEFINED.useraction=Ha WS-Security megszor\u00edt\u00e1sok sz\u00fcks\u00e9gesek egy \u00fcgyf\u00e9l webszolg\u00e1ltat\u00e1s alkalmaz\u00e1shoz, akkor adja hozz\u00e1 a wsSecurityClient konfigur\u00e1ci\u00f3s elemet a server.xml f\u00e1jlhoz.
 

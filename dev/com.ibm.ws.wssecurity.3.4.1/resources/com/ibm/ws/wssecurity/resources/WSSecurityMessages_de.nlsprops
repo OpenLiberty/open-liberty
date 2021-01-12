@@ -69,7 +69,7 @@ UNKNOWN_CALLER_TOKEN_NAME.useraction=\u00dcberpr\u00fcfen Sie die Datei server.x
 
 # Message logged at runtime for each errant inbound SOAP request
 multiple_unt_exist_err=CWWKW0206E: Es kann kein Sicherheitssubjekt f\u00fcr den Web-Service erstellt werden. Das callerToken in der eingehenden Nachricht kann nicht identifiziert werden, weil mehrere UsernameToken-Instanzen im SOAP-Security-Header vorhanden sind.
-multiple_unt_exist_err.explanation=Das callerToken in der Datei security.xml ist auf UsernameToken gesetzt, und der Security-Header in der eingehenden SOAP-Nachricht enth\u00e4lt mehrere UsernameToken-Instanzen. Deshalb kann die WS-Security-Laufzeitumgebung nicht feststellen, welches UsernameToken f\u00fcr das Caller-Token zu verwenden ist.
+multiple_unt_exist_err.explanation=Das callerToken in der Datei server.xml ist auf UsernameToken gesetzt, und der Security-Header in der eingehenden SOAP-Nachricht enth\u00e4lt mehrere UsernameToken-Instanzen. Deshalb kann die WS-Security-Laufzeitumgebung nicht feststellen, welches UsernameToken f\u00fcr das Caller-Token zu verwenden ist.
 multiple_unt_exist_err.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Clientkonfiguration so, dass nur ein einziges UsernameToken gesendet wird. 2) Entfernen Sie die callerToken-Konfiguration in der Datei server.xml.
 
 # TO BE DELETED

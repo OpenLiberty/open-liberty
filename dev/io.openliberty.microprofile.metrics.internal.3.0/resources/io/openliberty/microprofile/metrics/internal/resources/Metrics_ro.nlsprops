@@ -129,7 +129,8 @@ session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat 
 session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
 
 
-REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului.
+REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului. Indicele de m\u0103surare nu va \u00eenregistra timpul scurs \u015fi nici nu va lua \u00een considerare o cerere REST care a avut ca rezultat o excep\u0163ie care nu este mapat\u0103. De asemenea urm\u0103re\u015fte cea mai mare durat\u0103 de timp \u015fi cea mai mic\u0103 durat\u0103 de timp \u00eenregistrate \u00een ultimul minut \u00eentreg terminat.
+REST.request.unmappedException.description=Num\u0103rul total de excep\u0163ii care nu sunt mapate care au ap\u0103rut de la aceast\u0103 metod\u0103 de resurs\u0103 RESTful de la pornirea serverului.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

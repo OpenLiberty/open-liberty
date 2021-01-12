@@ -29,7 +29,7 @@
 # 0350 - 0399: jakarta.batch
 # 
 
-batch.container.unavailable=CWWKY0350E: Le conteneur de lots n''est pas activ\u00e9. V\u00e9rifiez que la persistance de lots a \u00e9t\u00e9 configur\u00e9e via l''\u00e9l\u00e9ment de configuration {0}.
+batch.container.unavailable=CWWKY0350E: Le conteneur Batch n''est pas activ\u00e9. V\u00e9rifiez que la persistance Batch a \u00e9t\u00e9 configur\u00e9e via l''\u00e9l\u00e9ment de configuration {0}.
 batch.container.unavailable.explanation=Une tentative d'acc\u00e8s au conteneur Batch a \u00e9chou\u00e9 car ce dernier n'est pas activ\u00e9. Cela est g\u00e9n\u00e9ralement d\u00fb \u00e0 une absence de configuration. 
 batch.container.unavailable.useraction=V\u00e9rifiez que la persistance Batch a \u00e9t\u00e9 configur\u00e9e.
  

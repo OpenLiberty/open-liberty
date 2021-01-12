@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Remplacez l'action qui est appel
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E : L''attribut {0} n''est pas valide pour le bean g\u00e9r\u00e9 {1}.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Une tentative d'obtention ou de d\u00e9finition d'un attribut qui n'\u00e9tait plus disponible a \u00e9t\u00e9 effectu\u00e9e pour le bean g\u00e9r\u00e9 sp\u00e9cifi\u00e9.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Remplacez l'attribut sp\u00e9cifi\u00e9 par l'un des attributs disponibles pour ce bean g\u00e9r\u00e9.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: Une connexion obtenue depuis {0} n''a pas \u00e9t\u00e9 ferm\u00e9e. La pile suivante identifie le code qui a obtenu les connexions : {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=Une connexion n'a pas \u00e9t\u00e9 ferm\u00e9e par le code qui l'a obtenue. La pile identifie une zone du code dans laquelle se trouve une connexion non ferm\u00e9e, mais d'autres instances peuvent exister ailleurs. Pour \u00e9viter d'encombrer les journaux et r\u00e9duire l'impact des piles de collecte, une seule occurrence est signal\u00e9e pour chaque d\u00e9marrage du serveur.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=En utilisant la pile comme guide, recherchez le code qui demande la connexion et mettez-le \u00e0 jour pour fermer la connexion.

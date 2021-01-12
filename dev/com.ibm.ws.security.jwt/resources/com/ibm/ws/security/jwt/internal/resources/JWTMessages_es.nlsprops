@@ -334,10 +334,10 @@ BETA_SIGNATURE_ALGORITHM_USED.useraction=Configure un algoritmo de firma que est
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: El consumidor de JWT [{0}] ha encontrado un error al extraer la carga \u00fatil de JWS (JSON Web Signature) de la se\u00f1al JWE (JSON Web Encryption). {1}
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Es posible que la se\u00f1al JWE est\u00e9 mal formada o que falte informaci\u00f3n en la misma. Puede que falte la clave de gesti\u00f3n de claves que se utiliza para descifrar la se\u00f1al JWE o que dicha clave no sea capaz de descifrar la se\u00f1al.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Verifique que el JWE est\u00e9 bien formado. Verifique que la configuraci\u00f3n de consumidor JWT hace referencia a la clave de gesti\u00f3n de claves que corresponde a la clave que se utiliza para cifrar la se\u00f1al JWE.
-#
-# CWWKS6057E is available
-#
-
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: La se\u00f1al JWE (JSON Web Encryption) contiene una se\u00f1al JWS (JSON Web Signature) anidada, pero la cabecera {0} en JWE est\u00e1 establecida en [{1}]. La cabecera JWE {0} se debe establecer en {2} si la carga \u00fatil de JWE es una JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=La especificaci\u00f3n MicroProfile JSON Web Token 1.2 requiere que las se\u00f1ales JWE tengan su cabecera de tipo de contenido establecida en el valor especificado en el mensaje si el contenido de la se\u00f1al es una JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Aseg\u00farese de que la cabecera de tipo de contenido de la se\u00f1al JWE est\u00e9 establecida en el valor necesario.
 # Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
 # 0=Builder config ID
 KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: El constructor JWT [{0}] no puede crear se\u00f1ales JWE (JSON Web Encryption) porque no se ha proporcionado una clave de gesti\u00f3n de claves.
@@ -358,3 +358,21 @@ ERROR_BUILDING_SIGNED_JWE.useraction=Compruebe el error que se incluye en el men
 KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: El constructor JWT [{0}] no puede crear una se\u00f1al JWE (JSON Web Encryption) porque no se puede encontrar una clave de gesti\u00f3n de claves. El alias de clave de gesti\u00f3n de claves es [{1}] y el almac\u00e9n de confianza configurado es [{2}].
 KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=Una clave de gesti\u00f3n de claves es una clave que se utiliza para cifrar la clave de cifrado de contenido de una se\u00f1al JWE. Se debe especificar una clave de gesti\u00f3n de claves para que el constructor JWT pueda crear se\u00f1ales JWE. Se puede especificar una clave de gesti\u00f3n de claves utilizando el alias de clave y los valores de almac\u00e9n de confianza configurados que se especifican en el mensaje o utilizando la API JwtBuilder.
 KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verifique que existe una clave con el alias que se especifica en el mensaje en el almac\u00e9n de confianza especificado en el mensaje. Si se utiliza la API JwtBuilder, aseg\u00farese de que se proporciona una clave de gesti\u00f3n de claves.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: El valor de la propiedad de configuraci\u00f3n de MicroProfile [{0}] parece incluir una serie de clave privada, que no es una configuraci\u00f3n admitida.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=La caracter\u00edstica MicroProfile JWT no da soporte a la especificaci\u00f3n de series de claves privadas en la propiedad de configuraci\u00f3n de MicroProfile que se ha especificado en el mensaje. El valor de esta propiedad debe ser una v\u00eda de acceso relativa o un URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utilice una v\u00eda de acceso relativa o un URL como valor para la propiedad de configuraci\u00f3n MicroProfile especificada en el mensaje. Los valores de ubicaci\u00f3n admitidos son los mismos que para la propiedad mp.jwt.verify.publickey.location.
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: La se\u00f1al de la solicitud no est\u00e1 en formato JWS (JSON Web Signature), pero el consumidor JWT [{0}] solo acepta se\u00f1ales que est\u00e1n en formato JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=La se\u00f1al de la solicitud puede estar mal formada o puede estar en formato JWE (JSON Web Encryption). Las se\u00f1ales deben estar en formato JWS si la ubicaci\u00f3n de clave de descifrado JWE no est\u00e1 configurada. Si utiliza la caracter\u00edstica MicroProfile JWT, la versi\u00f3n 1.2 o posterior de la caracter\u00edstica se debe configurar de modo que acepte se\u00f1ales en formato JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Para aceptar se\u00f1ales JWE, configure la propiedad de configuraci\u00f3n de MicroProfile mp.jwt.decrypt.key.location o el atributo keyManagementKeyAlias en la configuraci\u00f3n del consumidor JWT. Si utiliza la caracter\u00edstica MicroProfile JWT, aseg\u00farese de que se ha configurado la versi\u00f3n 1.2 o posterior. De lo contrario, aseg\u00farese de que solo se env\u00eden se\u00f1ales JWS a este recurso.
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: La se\u00f1al de la solicitud no est\u00e1 en formato JWE (JSON Web Encryption), pero el consumidor JWT [{0}] solo acepta se\u00f1ales que est\u00e1n en formato JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=La se\u00f1al de la solicitud puede estar mal formada o puede estar en formato JWS (JSON Web Signature). Las se\u00f1ales deben estar en formato JWE si la ubicaci\u00f3n de clave de descifrado JWE est\u00e1 configurada.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Para aceptar se\u00f1ales JWS en lugar de se\u00f1ales JWE, elimine la propiedad de configuraci\u00f3n de MicroProfile mp.jwt.decrypt.key.location y el atributo keyManagementKeyAlias en la configuraci\u00f3n del consumidor JWT. De lo contrario, aseg\u00farese de que solo se env\u00eden se\u00f1ales JWE a este recurso.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: La carga \u00fatil de la se\u00f1al JWE (JSON Web Encryption) que se incluye en la solicitud no es una se\u00f1al JWS (JSON Web Signature).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=La carga \u00fatil de una se\u00f1al JWE debe ser una JWT (JSON Web Token) v\u00e1lida en formato JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Aseg\u00farese de que la carga \u00fatil de la se\u00f1al JWE sea una JWT v\u00e1lida en formato JWS.

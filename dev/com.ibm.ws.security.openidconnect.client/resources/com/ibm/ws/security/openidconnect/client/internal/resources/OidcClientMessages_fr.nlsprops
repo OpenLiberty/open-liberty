@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -283,4 +283,8 @@ AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Plusieurs filtres d''authentification de
 AUTHFILTER_MULTIPLE_MATCHED.explanation=Plusieurs filtres d'authentification correspondent \u00e0 une demande entrante. Tout client utilisant l'un de ces filtres peut traiter la demande, ce qui g\u00e9n\u00e8re un comportement ind\u00e9termin\u00e9.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=R\u00e9visez le fichier server.xml et corrigez la configuration.
 
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Une demande envoy\u00e9e \u00e0 [{0}] n''est pas valide. Un cookie requis dont le nom commence par WASReqURLOidc poss\u00e8de une valeur incorrecte. Le nom d''h\u00f4te [{1}] qui est utilis\u00e9 dans le cookie ne correspond pas au nom enregistr\u00e9 aupr\u00e8s du fournisseur. Le code de r\u00e9ponse 500 est renvoy\u00e9.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Une demande incluant un cookie incorrectement form\u00e9 a \u00e9t\u00e9 re\u00e7ue.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie soit incorrectement form\u00e9 suite \u00e0 sa modification au niveau de l'agent utilisateur avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de la redirection enregistr\u00e9 aupr\u00e8s du fournisseur. Si le nom d'h\u00f4te est attendu, ajoutez-le \u00e0 l'attribut wasReqURLRedirectDomainNames de l'\u00e9l\u00e9ment webAppSecurity dans le fichier server.xml. 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
