@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.net.URL;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -71,7 +70,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.LITE)
-    @Ignore
     public void testMicroProfile40() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP40.xml");
@@ -92,7 +90,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     public void testMP40andConcurrent10() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP40andConcurrent10.xml");
@@ -111,7 +108,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testMP40andConcurrent20() throws Exception {
         try {
@@ -135,7 +131,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     public void testMP40andEE8() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP40andEE8.xml");
@@ -154,7 +149,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.LITE)
-    @Ignore
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testMP40andEE9() throws Exception {
         try {
@@ -165,7 +159,8 @@ public class MPCompatibleTest {
                                           false, //expectStartFailure
                                           false); //validateTimedExit
         } finally {
-            server.stopServer("CWWKF0044E: The .* and .* features cannot be loaded at the same time",
+            server.stopServer("CWWKF0033E: The singleton features .* and .* cannot be loaded at the same time",
+                              "CWWKF0044E: The .* and .* features cannot be loaded at the same time",
                               "CWWKF0046W: The configuration includes an incompatible combination of features");
         }
     }
@@ -178,7 +173,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testMP40andMP33() throws Exception {
         try {
@@ -202,7 +196,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testMP40andMPConfig14() throws Exception {
         try {
@@ -226,7 +219,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.LITE)
-    @Ignore
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testMP40andCtxPropagtion10() throws Exception {
         try {
@@ -250,7 +242,6 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.LITE)
-    @Ignore
     public void testMP40andCtxPropagtion11() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP40andMPCtx11.xml");
@@ -265,6 +256,9 @@ public class MPCompatibleTest {
      * microProfile-3.3 plus mpGraphQL-1.0 and mpReactiveMessaging-1.0
      * Should pass.
      *
+     * mpGraphQL-1.0 currently produces some warnings that need to be investigated
+     * https://github.com/OpenLiberty/open-liberty/issues/15496
+     *
      * @throws Exception
      */
     @Test
@@ -275,14 +269,20 @@ public class MPCompatibleTest {
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
-            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+            //I think CWWWC0002W is a configuration error and should not appear
+            //Should be removed by issue 15496
+            server.stopServer("CWMOT0010W", //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+                              "CWWWC0002W");//CWWWC0002W: No servlet definition is found for the ExecutionServlet servlet name in the AuthorizationFilter filter mapping.
         }
     }
 
     /**
      * microProfile-4.0 plus mpGraphQL-1.0
-     * mpReactiveMessaging-1.0 should also be included as soon as possible
+     * mpReactiveMessaging-1.0 should be included once the following feature is completed
      * https://github.com/OpenLiberty/open-liberty/issues/15440
+     *
+     * mpGraphQL-1.0 currently produces some warnings that need to be investigated
+     * https://github.com/OpenLiberty/open-liberty/issues/15496
      *
      * Should pass.
      *
@@ -290,14 +290,16 @@ public class MPCompatibleTest {
      */
     @Test
     @Mode(TestMode.FULL)
-    @Ignore
     public void testMP40plusStandalone() throws Exception {
         try {
             server.setServerConfigurationFromFilePath("MP40plusStandalone.xml");
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
-            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+            //I think CWWWC0002W is a configuration error and should not appear
+            //Should be removed by issue 15496
+            server.stopServer("CWMOT0010W", //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+                              "CWWWC0002W");//CWWWC0002W: No servlet definition is found for the ExecutionServlet servlet name in the AuthorizationFilter filter mapping.
         }
     }
 
@@ -319,16 +321,18 @@ public class MPCompatibleTest {
 
             String sep = System.getProperty("line.separator");
             StringBuilder lines = new StringBuilder();
-            for (String line = br.readLine(); line != null; line = br
-                                                                     .readLine())
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
                 lines.append(line).append(sep);
+            }
 
-            if (lines.indexOf(testOut) < 0)
+            if (lines.indexOf(testOut) < 0) {
                 fail("Missing success message in output. " + lines);
+            }
 
-            if (retcode != exprc)
+            if (retcode != exprc) {
                 fail("Bad return Code from Get. Expected " + exprc + "Got"
                      + retcode);
+            }
 
             return lines;
         } finally {
