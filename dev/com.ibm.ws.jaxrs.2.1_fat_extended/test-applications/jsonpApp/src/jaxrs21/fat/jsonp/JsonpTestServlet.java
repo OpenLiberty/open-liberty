@@ -56,4 +56,11 @@ public class JsonpTestServlet extends FATServlet {
         int res = t.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(jsonNum), Integer.class);
         assertEquals(4, res);
     }
+
+    @Test
+    public void testJsonString(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        WebTarget t = target(req, "/resource/string/addBar");
+        String res = t.request().accept(MediaType.APPLICATION_JSON).post(Entity.json("\"foo\""), String.class);
+        assertEquals("\"fooBar\"", res);
+    }
 }
