@@ -19,20 +19,16 @@
 
 package org.apache.cxf.transport.http;
 
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import org.apache.cxf.common.util.ReflectionUtil;
-import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.helpers.JavaUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
@@ -45,14 +41,47 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  *
  */
 public class CXFAuthenticator extends Authenticator {
-    static CXFAuthenticator instance;
+    static Authenticator wrapped;	// Liberty change:CXFAuthenticator instance is replaced by Authenticator wrapped
+    static boolean setup; // Liberty change: added
 
 
     public CXFAuthenticator() {
+		try { // Liberty change: addition start
+            for (Field f : Authenticator.class.getDeclaredFields()) {
+                    if (f.getType().equals(Authenticator.class)) {
+                        try {
+                        wrapped = AccessController.doPrivileged(new PrivilegedExceptionAction<Authenticator>() {
+                            @Override
+                            public Authenticator run() throws Exception {
+                                f.setAccessible(true);
+                                return (Authenticator)f.get(null);
+                            }
+                        });
+                    } catch (PrivilegedActionException pae) {
+                            // ignore
+                        }
+                    }
+                }
+        } catch (Throwable ex) {
+            //ignore
+        } // Liberty change: addition end
     }
 
-    @FFDCIgnore({Exception.class, Exception.class, InvocationTargetException.class, Throwable.class, Throwable.class})
     public static synchronized void addAuthenticator() {
+        if (!setup) {// Liberty change: addition start
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                    @Override
+                    public Void run() throws Exception {
+                        Authenticator.setDefault(new CXFAuthenticator());
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException pae) {
+                }
+                setup = true;
+            }	// Liberty change: addition end
+/*		Liberty change: lines below are removed
         if (instance == null) {
             instance = new CXFAuthenticator();
             Authenticator wrapped = null;
@@ -146,11 +175,30 @@ public class CXFAuthenticator extends Authenticator {
             } catch (Throwable t) {
                 //ignore
             }
-        }
-    }
+        }	Liberty change: end */
+                }
 
     protected PasswordAuthentication getPasswordAuthentication() {
         PasswordAuthentication auth = null;
+        // Liberty change: code below added
+        if (wrapped != null) {
+          try {
+              for (Field f : Authenticator.class.getDeclaredFields()) {
+                  if (!Modifier.isStatic(f.getModifiers())) {
+                      f.setAccessible(true);
+                      f.set(wrapped, f.get(this));
+                  }
+              }
+              Method m = Authenticator.class.getDeclaredMethod("getPasswordAuthentication");
+              m.setAccessible(true);
+              auth = (PasswordAuthentication)m.invoke(wrapped);
+            } catch (Throwable t) {
+                //ignore
+            }
+        }
+        if (auth != null) {
+          return auth;
+        }
         Message m = PhaseInterceptorChain.getCurrentMessage();
         if (m != null) {
             Exchange exchange = m.getExchange();
@@ -167,9 +215,10 @@ public class CXFAuthenticator extends Authenticator {
                 } else if (getRequestorType() == RequestorType.SERVER
                     && httpConduit.getAuthorization() != null) {
 
-                    if ("basic".equals(getRequestingScheme()) || "digest".equals(getRequestingScheme())) {
-                        return null;
-                    }
+                    // Liberty change: Code below is removed
+                    // if ("basic".equals(getRequestingScheme()) || "digest".equals(getRequestingScheme())) {
+                    //     return null;
+                    // }
 
                     String un = httpConduit.getAuthorization().getUserName();
                     String pwd = httpConduit.getAuthorization().getPassword();
@@ -183,4 +232,27 @@ public class CXFAuthenticator extends Authenticator {
         // this HTTP call has therefore not been generated by CXF
         return auth;
     }
+
+    // Liberty change: method below is added
+    public static Authenticator getDefault() {
+    try {
+        // In java 9 there is a static Authenticator.getDefault() method
+        // which does not require using reflection to read private fields
+        return (Authenticator) Authenticator.class.getDeclaredMethod("getDefault").invoke(null);
+    } catch (Exception ignore) {
+        //ignore
+    }
+    // end change
+
+    try {
+        for (Field f : Authenticator.class.getDeclaredFields()) {
+            if (f.getType().equals(Authenticator.class)) {
+                f.setAccessible(true);
+                return (Authenticator) f.get(null);
+            }
+        }
+    } catch (Throwable ex) {
+    }
+    throw new IllegalStateException("Unable to locate default java.net.Authenticator");
+  }
 }

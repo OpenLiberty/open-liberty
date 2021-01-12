@@ -227,6 +227,7 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                                                                                  header.getLocalPart());
                     for (Element elem : elemList) {
                         Element hel = DOMUtils.getFirstElement(elem);
+                        hel = (Element) DOMUtils.getDomElement(hel);    // Liberty change: line added
                         while (hel != null) {
                             // Need to add any attributes that are present on the parent element
                             // which otherwise would be lost.

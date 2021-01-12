@@ -99,10 +99,12 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200403;version=${exportVer},\
   org.apache.cxf.ws.addressing.v200408;version=${exportVer},\
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
-  org.apache.cxf.wsdl.http;version=${exportVer}
-
+  org.apache.cxf.wsdl.http;version=${exportVer},\
+  com.sun.xml.messaging.saaj.*;version="2.0.0";thread-context=true
+  
 Private-Package: \
-  com.ibm.ws.cxf.core
+  com.ibm.ws.cxf.core,\
+  com.sun.activation.registries
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the

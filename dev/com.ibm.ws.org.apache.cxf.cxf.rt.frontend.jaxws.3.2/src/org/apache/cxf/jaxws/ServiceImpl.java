@@ -160,6 +160,8 @@ public class ServiceImpl extends ServiceDelegate {
 
         if (url != null) {
             try {
+                // Liberty change: log line below is added
+                LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
                 initializePorts();
             } catch (ServiceConstructionException e) {
                 throw new WebServiceException(e);
@@ -212,11 +214,20 @@ public class ServiceImpl extends ServiceDelegate {
                 addPort(name, bindingID, address);
             }
         } catch (WebServiceException e) {
+            // Liberty change: log line below is added
+            LOG.log(Level.FINE, "Caught WebServiceException : e");
             throw e;
         } catch (Throwable e) {
             if (e instanceof UncheckedException && LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, e.getLocalizedMessage(), e);
             }
+            LOG.log(Level.FINE, "Caught Throwable : e");
+            // Liberty Change
+            // Log the original ConnectionException and throw a new WebServicesException
+            if (e.getMessage().contains("ConnectException")) {
+                LOG.log(Level.FINE, "Throwing WebServiceException: ConnectException...");
+                throw new WebServiceException(e);
+            }// Liberty change: end
             WSDLServiceFactory sf = new WSDLServiceFactory(bus, wsdlURL, serviceName);
             Service service = sf.create();
             for (ServiceInfo si : service.getServiceInfos()) {
@@ -273,7 +284,7 @@ public class ServiceImpl extends ServiceDelegate {
         //When the dispatch is created from EPR, the EPR's address will be set in portInfo
         PortInfoImpl portInfo = getPortInfo(portName);
         if (portInfo != null
-            && portInfo.getAddress() != null
+            // && portInfo.getAddress() != null   Liberty change: line is removed
             && !portInfo.getAddress().equals(ei.getAddress())) {
             ei.setAddress(portInfo.getAddress());
         }

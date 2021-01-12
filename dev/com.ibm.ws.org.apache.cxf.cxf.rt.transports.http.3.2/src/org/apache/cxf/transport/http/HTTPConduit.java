@@ -1504,7 +1504,7 @@ public abstract class HTTPConduit
             case HttpURLConnection.HTTP_MOVED_TEMP:
             case HttpURLConnection.HTTP_SEE_OTHER:
             case 307:
-            case 308:
+//            case 308: Liberty change: line is removed
                 return redirectRetransmit();
             case HttpURLConnection.HTTP_UNAUTHORIZED:
             case HttpURLConnection.HTTP_PROXY_AUTH:
@@ -1653,7 +1653,7 @@ public abstract class HTTPConduit
             }
             if (exchange != null) {
                 exchange.put(Message.RESPONSE_CODE, rc);
-                if (rc == 404 || rc == 503 || rc == 429) {
+                if (rc == 404 || rc == 503) {	 // Liberty change: || rc == 429 is removed from if clause
                     exchange.put("org.apache.cxf.transport.service_not_available", true);
                 }
             }
@@ -1689,10 +1689,8 @@ public abstract class HTTPConduit
             }
             propagateConduit(exchange, inMessage);
 
-            if ((!doProcessResponse(outMessage, responseCode)
-                || HttpURLConnection.HTTP_ACCEPTED == responseCode)
-                && MessageUtils.getContextualBoolean(outMessage, 
-                    Message.PROCESS_202_RESPONSE_ONEWAY_OR_PARTIAL, true)) {
+            if (!doProcessResponse(outMessage, responseCode)
+                || HttpURLConnection.HTTP_ACCEPTED == responseCode) {
                 in = getPartialResponse();
                 if (in == null
                     || !MessageUtils.getContextualBoolean(outMessage, Message.PROCESS_ONEWAY_RESPONSE, false)) {
@@ -1988,7 +1986,7 @@ public abstract class HTTPConduit
         // retransmit, it means we have already supplied information
         // which must have been wrong, or we wouldn't be here again.
         // Otherwise, the server may be 401 looping us around the realms.
-        if (!authURLs.add(currentURL.toString() + realm)) {
+        if (authURLs.contains(currentURL.toString() + realm)) {	// Liberty change: !authURLs.add is replaced by authURLs.contains
             String logMessage = "Authorization loop detected on Conduit \""
                 + conduitName
                 + "\" on URL \""
@@ -2002,5 +2000,6 @@ public abstract class HTTPConduit
 
             throw new IOException(logMessage);
         }
+        authURLs.add(currentURL.toString() + realm);	// Liberty change: line is added
     }
 }

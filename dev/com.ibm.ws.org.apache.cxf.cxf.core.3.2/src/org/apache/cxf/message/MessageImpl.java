@@ -20,11 +20,14 @@
 package org.apache.cxf.message;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.InterceptorChain;
@@ -32,7 +35,10 @@ import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+@Trivial  // Liberty change: line added
 public class MessageImpl extends StringMapImpl implements Message {
+    private static final Logger LOG = LogUtils.getL7dLogger(MessageImpl.class); // Liberty change: line added
     private static final long serialVersionUID = -3020763696429459865L;
 
     private Exchange exchange;
@@ -42,6 +48,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     // array of Class<T>/T pairs for contents
     private Object[] contents = new Object[20];
     private int index;
+    private Map<String, Object> contextCache; // Liberty change: line added
 
 
 
@@ -62,15 +69,18 @@ public class MessageImpl extends StringMapImpl implements Message {
             interceptorChain = impl.interceptorChain;
             contents = impl.contents;
             index = impl.index;
+            contextCache = impl.contextCache; // Liberty change: line added
         } else {
             throw new RuntimeException("Not a MessageImpl! " + m.getClass());
         }
     }
 
+    @Override // Liberty change: line added
     public Collection<Attachment> getAttachments() {
         return CastUtils.cast((Collection<?>)get(ATTACHMENTS));
     }
 
+	@Override // Liberty change: line added
     public void setAttachments(Collection<Attachment> attachments) {
         put(ATTACHMENTS, attachments);
     }
@@ -80,36 +90,46 @@ public class MessageImpl extends StringMapImpl implements Message {
         return null;
     }
 
+	@Override // Liberty change: line added
     public Destination getDestination() {
         return get(Destination.class);
     }
 
+	@Override // Liberty change: line added
     public Exchange getExchange() {
         return exchange;
     }
 
+	@Override // Liberty change: line added
     public String getId() {
         return id;
     }
 
+	@Override // Liberty change: line added
     public InterceptorChain getInterceptorChain() {
         return this.interceptorChain;
     }
 
+	@Override // Liberty change: line added
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
+        LOG.entering("MessageImpl", "getContent");	// Liberty change: line added
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
+                LOG.exiting("MessageImpl", "getContent");	// Liberty change: line added
                 return (T)contents[x + 1];
             }
         }
         return null;
     }
 
+	@Override // Liberty change: line added
     public <T> void setContent(Class<T> format, Object content) {
+        LOG.entering("MessageImpl", "setContent"); // Liberty change: line added
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
                 contents[x + 1] = content;
+                LOG.exiting("MessageImpl", "setContent"); // Liberty change: line added
                 return;
             }
         }
@@ -123,8 +143,10 @@ public class MessageImpl extends StringMapImpl implements Message {
         contents[index] = format;
         contents[index + 1] = content;
         index += 2;
+        LOG.exiting("MessageImpl", "setContent"); // Liberty change: line added
     }
 
+	@Override // Liberty change: line added
     public <T> void removeContent(Class<T> format) {
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
@@ -140,6 +162,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
     }
 
+	@Override // Liberty change: line added
     public Set<Class<?>> getContentFormats() {
 
         Set<Class<?>> c = new HashSet<>();
@@ -153,14 +176,17 @@ public class MessageImpl extends StringMapImpl implements Message {
         put(Destination.class, d);
     }
 
+	@Override // Liberty change: line added
     public void setExchange(Exchange e) {
         this.exchange = e;
     }
 
+	@Override // Liberty change: line added
     public void setId(String i) {
         this.id = i;
     }
 
+	@Override // Liberty change: line added
     public void setInterceptorChain(InterceptorChain ic) {
         this.interceptorChain = ic;
     }
@@ -276,6 +302,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     //Liberty code change start
+	@Override // Liberty change: line added
     public void resetContextCache() {
     }
 

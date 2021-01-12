@@ -149,13 +149,14 @@ public class SoapOutInterceptor extends AbstractSoapInterceptor {
                 List<Header> hdrList = message.getHeaders();
                 for (Header header : hdrList) {
                     XMLStreamWriter writer = xtw;
+/*                  Liberty change: if block below is removed
                     if (xtw instanceof W3CDOMStreamWriter) {
                         Element nd = ((W3CDOMStreamWriter)xtw).getCurrentNode();
                         if (header.getObject() instanceof Element
                             && nd.isSameNode(((Element)header.getObject()).getParentNode())) {
                             continue;
                         }
-                    }
+                    } Liberty change: end */
                     if (header instanceof SoapHeader) {
                         SoapHeader soapHeader = (SoapHeader)header;
                         writer = new SOAPHeaderWriter(xtw, soapHeader, soapVersion, soapPrefix);
